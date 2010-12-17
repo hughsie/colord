@@ -1,0 +1,26 @@
+              colord
+
+colord is a system activated daemon that maps devices to color profiles.
+
+
+     [GCM]   [system-config-printer]        SESSION
+       |                 |
+_______|_________________|______________________
+       |                 |
+       |                 |
+     [colord]----------[CUPS]               SYSTEM
+
+What colord does:
+
+* Provides a DBus API for system frameworks to query, e.g.
+  "Get me the profiles for device $foo" or
+  "Create a device and assign it profile $bar"
+
+* Provides a persistant key-file backed store that is preserved accross
+  reboots.
+
+* Provides the session for a way to set system settings, for instance
+  setting the display profile for all users and all sessions.
+
+colord also provides a debugging utility tool called colormgr that
+allows the end user to add, remove and assign color devices.
