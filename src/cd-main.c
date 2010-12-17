@@ -28,8 +28,118 @@
 static GMainLoop *loop = NULL;
 static GDBusNodeInfo *introspection = NULL;
 static GDBusConnection *connection = NULL;
+static GPtrArray *devices_array = NULL;
 
 #define COLORD_SERVICE		"org.freedesktop.ColorManager"
+#define COLORD_PATH		"/org/freedesktop/ColorManager"
+
+/**
+ * cd_main_handle_method_call:
+ **/
+static void
+cd_main_handle_method_call (GDBusConnection *connection_, const gchar *sender,
+			    const gchar *object_path, const gchar *interface_name,
+			    const gchar *method_name, GVariant *parameters,
+			    GDBusMethodInvocation *invocation, gpointer user_data)
+{
+	GVariant *tuple = NULL;
+	GVariant *value = NULL;
+	gchar **devices = NULL;
+	guint i;
+	const gchar *device;
+
+	/* return 'as' */
+	if (g_strcmp0 (method_name, "GetDevices") == 0) {
+
+		/* copy the device path */
+		devices = g_new0 (gchar *, devices_array->len + 1);
+		for (i=0; i<devices_array->len; i++) {
+			device = g_ptr_array_index (devices_array, i);
+			devices[i] = g_strdup (device);
+		}
+
+		/* format the value */
+		value = g_variant_new_strv ((const gchar * const *) devices, -1);
+		tuple = g_variant_new_tuple (&value, 1);
+		g_dbus_method_invocation_return_value (invocation, tuple);
+		goto out;
+	}
+
+out:
+	if (tuple != NULL)
+		g_variant_unref (tuple);
+	if (value != NULL)
+		g_variant_unref (value);
+	g_strfreev (devices);
+	return;
+}
+
+/**
+ * cd_main_handle_get_property:
+ **/
+static GVariant *
+cd_main_handle_get_property (GDBusConnection *connection_, const gchar *sender,
+			     const gchar *object_path, const gchar *interface_name,
+			     const gchar *property_name, GError **error,
+			     gpointer user_data)
+{
+	GVariant *retval = NULL;
+
+	if (g_strcmp0 (property_name, "FubarXXX") == 0) {
+		retval = g_variant_new_boolean (TRUE);
+	}
+
+	return retval;
+}
+
+/**
+ * cd_main_on_bus_acquired_cb:
+ **/
+static void
+cd_main_on_bus_acquired_cb (GDBusConnection *connection_,
+			    const gchar *name,
+			    gpointer user_data)
+{
+	guint registration_id;
+	static const GDBusInterfaceVTable interface_vtable = {
+		cd_main_handle_method_call,
+		cd_main_handle_get_property,
+		NULL
+	};
+
+	registration_id = g_dbus_connection_register_object (connection_,
+							     COLORD_PATH,
+							     introspection->interfaces[0],
+							     &interface_vtable,
+							     NULL,  /* user_data */
+							     NULL,  /* user_data_free_func */
+							     NULL); /* GError** */
+	g_assert (registration_id > 0);
+}
+
+/**
+ * cd_main_on_name_acquired_cb:
+ **/
+static void
+cd_main_on_name_acquired_cb (GDBusConnection *connection_,
+			     const gchar *name,
+			     gpointer user_data)
+{
+	g_debug ("acquired name: %s", name);
+	connection = g_object_ref (connection_);
+}
+
+/**
+ * cd_main_on_name_lost_cb:
+ **/
+static void
+cd_main_on_name_lost_cb (GDBusConnection *connection_,
+			 const gchar *name,
+			 gpointer user_data)
+{
+	g_debug ("lost name: %s", name);
+	g_main_loop_quit (loop);
+}
 
 /**
  * main:
@@ -64,6 +174,7 @@ main (int argc, char *argv[])
 
 	/* create new objects */
 	loop = g_main_loop_new (NULL, FALSE);
+	devices_array = g_ptr_array_new_with_free_func (g_free);
 
 	/* load introspection from file */
 	file = g_file_new_for_path (DATADIR "/dbus-1/interfaces/org.freedesktop.ColorManager.xml");
@@ -82,6 +193,15 @@ main (int argc, char *argv[])
 		goto out;
 	}
 
+	/* own the object */
+	owner_id = g_bus_own_name (G_BUS_TYPE_SYSTEM,
+				   COLORD_SERVICE,
+				   G_BUS_NAME_OWNER_FLAGS_NONE,
+				   cd_main_on_bus_acquired_cb,
+				   cd_main_on_name_acquired_cb,
+				   cd_main_on_name_lost_cb,
+				   NULL, NULL);
+
 	/* wait */
 	g_main_loop_run (loop);
 
@@ -89,13 +209,16 @@ main (int argc, char *argv[])
 	retval = 0;
 out:
 	g_free (introspection_data);
+	if (devices_array != NULL)
+		g_ptr_array_unref (devices_array);
 	if (file != NULL)
 		g_object_unref (file);
 	if (owner_id > 0)
 		g_bus_unown_name (owner_id);
 	if (connection != NULL)
 		g_object_unref (connection);
-	g_dbus_node_info_unref (introspection);
+	if (introspection != NULL)
+		g_dbus_node_info_unref (introspection);
 	g_main_loop_unref (loop);
 	return retval;
 }
