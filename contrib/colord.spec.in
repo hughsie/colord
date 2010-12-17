@@ -1,0 +1,47 @@
+%define alphatag                #ALPHATAG#
+
+Summary:   Color daemon
+Name:      colord
+Version:   #VERSION#
+Release:   0.#BUILD#%{?alphatag}%{?dist}
+License:   GPLv2+
+URL:       http://github.com/hughsie/colord
+Source0:   http://www.packagekit.org/releases/%{name}-%{version}.tar.gz
+
+BuildRequires: glib2-devel
+BuildRequires: polkit-devel
+BuildRequires: intltool
+BuildRequires: gettext
+
+%description
+colord is a low level system activated daemon that maps color devices
+to color profiles in the system context.
+
+%prep
+%setup -q
+
+%build
+%configure \
+        --disable-static \
+        --disable-dependency-tracking
+
+make %{?_smp_mflags}
+
+%install
+make install DESTDIR=$RPM_BUILD_ROOT
+
+#%find_lang %{name}
+
+#%files -f %{name}.lang
+%files
+%defattr(-,root,root,-)
+%doc README AUTHORS NEWS COPYING
+%{_libexecdir}/colord
+%{_sysconfdir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
+%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml
+%{_datadir}/polkit-1/actions/org.freedesktop.color.policy
+
+%changelog
+* #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#
+- Update from git
+
