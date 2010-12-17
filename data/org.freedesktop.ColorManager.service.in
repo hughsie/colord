@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.freedesktop.ColorManager
+Exec=@servicedir@/packagekitd
+User=root

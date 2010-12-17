@@ -1,0 +1,48 @@
+<!DOCTYPE node PUBLIC
+'-//freedesktop//DTD D-BUS Object Introspection 1.0//EN'
+'http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd'>
+<node>
+  <interface name='org.freedesktop.ColorManager.Profile'>
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          The interface used for quering color profiles.
+        </doc:para>
+      </doc:description>
+    </doc:doc>
+
+    <!--*****************************************************************************************-->
+    <property name='Title' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The printable title for the profile.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--*****************************************************************************************-->
+    <property name='Filename' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The profile filename, if one exists.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!-- ************************************************************ -->
+    <signal name='Changed'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Some value on the interface has changed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </signal>
+
+  </interface>
+</node>

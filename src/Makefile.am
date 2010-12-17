@@ -1,0 +1,26 @@
+introspectiondir = $(datadir)/dbus-1/interfaces
+dist_introspection_DATA = 					\
+	org.freedesktop.ColorManager.xml			\
+	org.freedesktop.ColorManager.Device.xml			\
+	org.freedesktop.ColorManager.Profile.xml
+
+INCLUDES =						\
+	$(GLIB_CFLAGS)					\
+	-DG_LOG_DOMAIN=\"Cd\"				\
+	-DLIBEXECDIR=\"$(libexecdir)\"			\
+	-DDATADIR=\"$(datadir)\"			\
+	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
+	-DVERSION="\"$(VERSION)\""			\
+	-DLOCALEDIR=\""$(localedir)"\"
+
+libexec_PROGRAMS =					\
+	colord
+
+colord_SOURCES =					\
+	cd-main.c
+
+colord_LDADD =						\
+	$(GLIB_LIBS)
+
+colord_CFLAGS =						\
+	$(WARNINGFLAGS_C)

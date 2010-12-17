@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+<policyconfig>
+
+  <!--
+    Policy definitions for System Color Manager actions.
+    Copyright (c) 2010 Richard Hughes <richard@hughsie.com>
+  -->
+
+  <vendor>System Color Manager</vendor>
+  <vendor_url>http://www.freedesktop.org/projects/system-color-manager/</vendor_url>
+  <icon_name>application-vnd.iccprofile</icon_name>
+
+  <action id="org.freedesktop.color-manager.add-device">
+    <!-- SECURITY:
+          - Normal users should not have to authenticate to add devices
+     -->
+    <_description>Install color device</_description>
+    <_message>Authentication is required to add a color device</_message>
+    <icon_name>application-vnd.iccprofile</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+</policyconfig>
+

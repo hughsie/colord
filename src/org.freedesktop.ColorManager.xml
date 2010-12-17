@@ -1,0 +1,309 @@
+<!DOCTYPE node PUBLIC
+'-//freedesktop//DTD D-BUS Object Introspection 1.0//EN'
+'http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd'>
+<node>
+  <interface name='org.freedesktop.ColorManager'>
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          The interface used for quering color parameters for the system.
+        </doc:para>
+      </doc:description>
+    </doc:doc>
+
+    <!--*****************************************************************************************-->
+    <method name='GetProfilesForDevice'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets the profiles for a specific device.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='device_path' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A device path, e.g. <doc:tt>/org/freedesktop/ColorManager/device/xrandr_ibm_france_ltn154p2_l05</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='s' name='options' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              Options to give hints about what profiles to choose. Currently unused.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='as' name='profiles' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              An array of profile paths to use with this device.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='GetProfilesForType'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets the profiles for a device type.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='type' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A device type, e.g. <doc:tt>scanner</doc:tt>, <doc:tt>display</doc:tt>,
+              <doc:tt>printer</doc:tt> or <doc:tt>camera</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='s' name='options' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              Options to give hints about what profiles to choose. Currently unused.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='as' name='profiles' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              An array of profile paths to use with this type of device.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='GetProfilesForFile'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets the profiles for a file.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='filename' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              Fully qualified filename, e.g. <doc:tt>/home/hughsie/Photos/Hughsie.jpg</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='s' name='options' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              Options to give hints about what profiles to choose. Currently unused.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='as' name='profiles' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              An array of profile paths to use with this type of device.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='GetDevices'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a list of all the devices which have assigned color profiles.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='as' name='devices' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              An array of device IDs, e.g. <doc:tt>['/org/freedesktop/ColorManager/device/xrandr_ibm_france_ltn154p2_l05']</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='GetProfiles'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a list of all the profiles recognised by the system.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='as' name='devices' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              An array of profile IDs, e.g. <doc:tt>['/org/freedesktop/ColorManager/profile/adobe_rgb']</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='CreateProfile'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Creates a profile.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='CreateDevice'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Creates a device.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='device_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <signal name='Changed'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Some value on the interface or the number of devices or
+            profiles has changed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </signal>
+
+    <!--*****************************************************************************************-->
+    <signal name='DeviceAdded'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            A device has been added.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='device_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The device path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </signal>
+
+    <!--*****************************************************************************************-->
+    <signal name='DeviceRemoved'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            A device has been removed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='device_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The device path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </signal>
+
+    <!--*****************************************************************************************-->
+    <signal name='ProfileAdded'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            A profile has been added.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </signal>
+
+    <!--*****************************************************************************************-->
+    <signal name='ProfileRemoved'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            A profile has been removed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </signal>
+
+  </interface>
+</node>

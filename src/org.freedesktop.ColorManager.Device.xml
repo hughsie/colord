@@ -1,0 +1,122 @@
+<!DOCTYPE node PUBLIC
+'-//freedesktop//DTD D-BUS Object Introspection 1.0//EN'
+'http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd'>
+<node>
+  <interface name='org.freedesktop.ColorManager.Device'>
+    <doc:doc>
+      <doc:description>
+        <doc:para>
+          The interface used for quering color parameters for a specific device.
+        </doc:para>
+      </doc:description>
+    </doc:doc>
+
+    <!--*****************************************************************************************-->
+    <property name='Created' type='i' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The date the device was created.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--*****************************************************************************************-->
+    <property name='Model' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The device model string.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--*****************************************************************************************-->
+    <property name='Profiles' type='as' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The profile paths accosiated with this device.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!-- ************************************************************ -->
+    <signal name='Changed'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Some value on the interface has changed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </signal>
+
+    <!--*****************************************************************************************-->
+    <method name='AddProfile'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Adds a profile to the device. The profile must have been previously created.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The profile ID to add.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='RemoveProfile'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Removes a profile for a device.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The profile ID that has already been added to the device.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='MakeProfileDefault'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Sets the default profile for a device.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The profile ID that has already been added to the device.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+  </interface>
+</node>
