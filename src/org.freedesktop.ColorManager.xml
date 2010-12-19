@@ -12,6 +12,17 @@
     </doc:doc>
 
     <!--*****************************************************************************************-->
+    <property name='DaemonVersion' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The daemon version.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--*****************************************************************************************-->
     <method name='GetProfilesForDevice'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
@@ -181,6 +192,16 @@
           </doc:para>
         </doc:description>
       </doc:doc>
+      <arg type='s' name='profile_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A unique profile ID that is used to map to the profile.
+              This is normally the MD5 hash of the disk profile.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
       <arg type='s' name='profile_path' direction='out'>
         <doc:doc>
           <doc:summary>
@@ -202,6 +223,15 @@
           </doc:para>
         </doc:description>
       </doc:doc>
+      <arg type='s' name='device_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A device ID that is used to map to the device path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
       <arg type='s' name='device_path' direction='out'>
         <doc:doc>
           <doc:summary>

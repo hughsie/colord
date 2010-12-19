@@ -34,6 +34,17 @@
     </property>
 
     <!--*****************************************************************************************-->
+    <property name='DeviceId' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The device id string.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--*****************************************************************************************-->
     <property name='Profiles' type='as' access='read'>
       <doc:doc>
         <doc:description>

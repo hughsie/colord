@@ -24,3 +24,15 @@ colord_LDADD =						\
 
 colord_CFLAGS =						\
 	$(WARNINGFLAGS_C)
+
+bin_PROGRAMS =						\
+	colormgr
+
+colormgr_SOURCES =					\
+	cd-util.c
+
+colormgr_LDADD =					\
+	$(GLIB_LIBS)
+
+colormgr_CFLAGS =					\
+	$(WARNINGFLAGS_C)

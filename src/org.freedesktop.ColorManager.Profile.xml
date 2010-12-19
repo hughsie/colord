@@ -12,6 +12,17 @@
     </doc:doc>
 
     <!--*****************************************************************************************-->
+    <property name='ProfileId' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The identification hash of the profile.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--*****************************************************************************************-->
     <property name='Title' type='s' access='read'>
       <doc:doc>
         <doc:description>
