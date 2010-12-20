@@ -46,6 +46,7 @@ typedef struct {
 	gchar		*filename;
 	gchar		*object_path;
 	gchar		*profile_id;
+	gchar		*title;
 	guint		 registration_id;
 } CdProfileItem;
 
@@ -75,6 +76,7 @@ cd_main_profile_item_free (CdProfileItem *item)
 		g_dbus_connection_unregister_object (connection,
 						     item->registration_id);
 	}
+	g_free (item->title);
 	g_free (item->object_path);
 	g_free (item->profile_id);
 	g_free (item->filename);
@@ -205,7 +207,7 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 	CdProfileItem *item;
 
 	/* return '' */
-	if (g_strcmp0 (method_name, "ParseFilename") == 0) {
+	if (g_strcmp0 (method_name, "SetFilename") == 0) {
 
 		/* copy the profile path */
 		item = cd_main_profile_find_by_object_path (object_path);
@@ -219,11 +221,12 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(s)",
+		g_variant_get (parameters, "(o)",
 			       &filename);
 
 		/* add to the array */
 		item->filename = g_strdup (filename);
+		item->title = g_strdup ("This is a parsed profile title");
 
 		/* emit */
 		cd_main_profile_emit_changed (item);
@@ -260,7 +263,8 @@ cd_main_profile_get_property (GDBusConnection *connection_, const gchar *sender,
 	GVariant *retval = NULL;
 
 	if (g_strcmp0 (property_name, "Title") == 0) {
-		retval = g_variant_new_string ("hello dave");
+		item = cd_main_profile_find_by_object_path (object_path);
+		retval = g_variant_new_string (item->title);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "ProfileId") == 0) {

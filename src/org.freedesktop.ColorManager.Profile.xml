@@ -44,6 +44,29 @@
       </doc:doc>
     </property>
 
+    <!--*****************************************************************************************-->
+    <method name='SetFilename'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Sets the ICC profile filename for the device.
+            This method will also parse the ICC profile, and set the
+            title on this object.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='filename' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The fully qualified filename of the profile.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
     <!-- ************************************************************ -->
     <signal name='Changed'>
       <doc:doc>

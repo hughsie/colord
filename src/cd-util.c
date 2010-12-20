@@ -266,6 +266,30 @@ main (int argc, char *argv[])
 			goto out;
 		}
 
+	} else if (g_strcmp0 (argv[1], "profile-set-filename") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		/* execute sync method */
+		response = g_dbus_connection_call_sync (connection,
+							COLORD_DBUS_SERVICE,
+							argv[2],
+							COLORD_DBUS_INTERFACE_PROFILE,
+							"SetFilename",
+							g_variant_new ("(s)", argv[3]),
+							NULL,
+							G_DBUS_CALL_FLAGS_NONE,
+							-1, NULL, &error);
+		if (response == NULL) {
+			/* TRANSLATORS: the DBus method failed */
+			g_print ("%s %s\n", _("The request failed:"), error->message);
+			g_error_free (error);
+			goto out;
+		}
+
 	} else {
 
 		g_print ("Command '%s' not known\n", argv[1]);

@@ -5,3 +5,4 @@
 ./colormgr device-add-profile /org/freedesktop/ColorManager/dave /org/freedesktop/ColorManager/norman
 ./colormgr find-device dave
 ./colormgr find-profile norman
+./colormgr profile-set-filename /org/freedesktop/ColorManager/norman /home/hughsie/Code/colord/data/test.icc
