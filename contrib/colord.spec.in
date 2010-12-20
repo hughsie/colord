@@ -37,7 +37,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc README AUTHORS NEWS COPYING
 %{_libexecdir}/colord
-%{_libexecdir}/colormgr
+%{_bindir}/colormgr
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy

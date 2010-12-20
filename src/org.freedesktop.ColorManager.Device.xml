@@ -76,11 +76,11 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='s' name='profile_id' direction='in'>
+      <arg type='o' name='profile_path' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The profile ID to add.
+              The profile path to add.
             </doc:para>
           </doc:summary>
         </doc:doc>
@@ -97,7 +97,7 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='s' name='profile_id' direction='in'>
+      <arg type='o' name='profile_id' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>

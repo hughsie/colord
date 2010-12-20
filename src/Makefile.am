@@ -17,6 +17,7 @@ libexec_PROGRAMS =					\
 	colord
 
 colord_SOURCES =					\
+	cd-common.h					\
 	cd-main.c
 
 colord_LDADD =						\

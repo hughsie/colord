@@ -28,6 +28,77 @@
 #include "cd-common.h"
 
 /**
+ * cd_util_show_profile:
+ **/
+static void
+cd_util_show_profile (const gchar *object_path)
+{
+	const gchar *filename = NULL;
+	const gchar *profile_id = NULL;
+	const gchar *qualifier = NULL;
+	const gchar *title = NULL;
+	GDBusProxy *proxy;
+	GError *error = NULL;
+	GVariant *variant_filename = NULL;
+	GVariant *variant_profile_id = NULL;
+	GVariant *variant_qualifier = NULL;
+	GVariant *variant_title = NULL;
+
+	g_print ("Object Path: %s\n", object_path);
+
+	/* get proxy */
+	proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+					       G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
+					       NULL,
+					       COLORD_DBUS_SERVICE,
+					       object_path,
+					       COLORD_DBUS_INTERFACE_PROFILE,
+					       NULL,
+					       &error);
+	if (proxy == NULL) {
+		g_print ("Failed to get profile properties: %s",
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* print profile id */
+	variant_profile_id = g_dbus_proxy_get_cached_property (proxy, "ProfileId");
+	if (variant_profile_id != NULL)
+		profile_id = g_variant_get_string (variant_profile_id, NULL);
+	g_print ("ProfileId:\t\t%s\n", profile_id);
+
+	/* print title */
+	variant_title = g_dbus_proxy_get_cached_property (proxy, "Title");
+	if (variant_title != NULL)
+		title = g_variant_get_string (variant_title, NULL);
+	g_print ("Title:\t\t%s\n", title);
+
+	/* print qualifier */
+	variant_qualifier = g_dbus_proxy_get_cached_property (proxy, "Qualifier");
+	if (variant_qualifier != NULL)
+		qualifier = g_variant_get_string (variant_qualifier, NULL);
+	g_print ("Qualifier:\t\t%s\n", qualifier);
+
+	/* print filename */
+	variant_filename = g_dbus_proxy_get_cached_property (proxy, "Filename");
+	if (variant_filename != NULL)
+		filename = g_variant_get_string (variant_filename, NULL);
+	g_print ("Filename:\t\t%s\n", filename);
+out:
+	if (variant_profile_id != NULL)
+		g_variant_unref (variant_profile_id);
+	if (variant_title != NULL)
+		g_variant_unref (variant_title);
+	if (variant_qualifier != NULL)
+		g_variant_unref (variant_qualifier);
+	if (variant_filename != NULL)
+		g_variant_unref (variant_filename);
+	if (proxy != NULL)
+		g_object_unref (proxy);
+}
+
+/**
  * cd_util_show_device:
  **/
 static void
@@ -207,7 +278,7 @@ main (int argc, char *argv[])
 		for (i=0; i < len; i++) {
 			g_variant_get_child (response_child, i,
 					     "o", &object_path_tmp);
-			g_print ("%i.\t%s\n", i+1, object_path_tmp);
+			cd_util_show_profile (object_path_tmp);
 			g_free (object_path_tmp);
 		}
 
@@ -340,7 +411,7 @@ main (int argc, char *argv[])
 							argv[2],
 							COLORD_DBUS_INTERFACE_DEVICE,
 							"AddProfile",
-							g_variant_new ("(s)", argv[3]),
+							g_variant_new ("(o)", argv[3]),
 							NULL,
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);

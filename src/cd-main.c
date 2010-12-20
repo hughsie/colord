@@ -27,11 +27,11 @@
 
 #include "cd-common.h"
 
-static GMainLoop *loop = NULL;
+static GDBusConnection *connection = NULL;
 static GDBusNodeInfo *introspection_daemon = NULL;
 static GDBusNodeInfo *introspection_device = NULL;
 static GDBusNodeInfo *introspection_profile = NULL;
-static GDBusConnection *connection = NULL;
+static GMainLoop *loop = NULL;
 static GPtrArray *devices_array = NULL;
 static GPtrArray *profiles_array = NULL;
 
@@ -213,7 +213,7 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* copy the profile path */
 		item = cd_main_profile_find_by_object_path (object_path);
-		if (item != NULL) {
+		if (item == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       1, //FIXME
 							       0,
@@ -242,7 +242,7 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* copy the profile path */
 		item = cd_main_profile_find_by_object_path (object_path);
-		if (item != NULL) {
+		if (item == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       1, //FIXME
 							       0,
@@ -288,29 +288,31 @@ cd_main_profile_get_property (GDBusConnection *connection_, const gchar *sender,
 			     gpointer user_data)
 {
 	CdProfileItem *item;
-//	const gchar *profile;
 	gchar **profiles = NULL;
-//	guint i;
 	GVariant *retval = NULL;
 
 	if (g_strcmp0 (property_name, "Title") == 0) {
 		item = cd_main_profile_find_by_object_path (object_path);
-		retval = g_variant_new_string (item->title);
+		if (item->title != NULL)
+			retval = g_variant_new_string (item->title);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "ProfileId") == 0) {
 		item = cd_main_profile_find_by_object_path (object_path);
-		retval = g_variant_new_string (item->profile_id);
+		if (item->profile_id != NULL)
+			retval = g_variant_new_string (item->profile_id);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Qualifier") == 0) {
 		item = cd_main_profile_find_by_object_path (object_path);
-		retval = g_variant_new_string (item->qualifier);
+		if (item->qualifier != NULL)
+			retval = g_variant_new_string (item->qualifier);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Filename") == 0) {
 		item = cd_main_profile_find_by_object_path (object_path);
-		retval = g_variant_new_string (item->filename);
+		if (item->filename != NULL)
+			retval = g_variant_new_string (item->filename);
 		goto out;
 	}
 
@@ -411,7 +413,7 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* copy the device path */
 		item = cd_main_device_find_by_object_path (object_path);
-		if (item != NULL) {
+		if (item == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       1, //FIXME
 							       0,
@@ -424,12 +426,12 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(o)",
 			       &profile_object_path);
 		item_profile = cd_main_profile_find_by_object_path (profile_object_path);
-		if (item_profile != NULL) {
+		if (item_profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       1, //FIXME
 							       0,
 							       "profile object path '%s' does not exist",
-							       object_path);
+							       profile_object_path);
 			goto out;
 		}
 
@@ -502,10 +504,6 @@ cd_main_device_get_property (GDBusConnection *connection_, const gchar *sender,
 
 	g_critical ("failed to set property %s", property_name);
 out:
-	if (profiles != NULL) {
-		for (i=0; profiles[i] != NULL; i++)
-			g_variant_unref (profiles[i]);
-	}
 	return retval;
 }
 

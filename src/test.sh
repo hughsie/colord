@@ -7,3 +7,4 @@
 ./colormgr find-profile norman
 ./colormgr profile-set-filename /org/freedesktop/ColorManager/norman /home/hughsie/Code/colord/data/test.icc
 ./colormgr profile-set-qualifier /org/freedesktop/ColorManager/norman "RGB.Plain.300dpi"
+./colormgr get-devices
