@@ -8,13 +8,14 @@ SUBDIRS = 						\
 	po						\
 	policy						\
 	data						\
+	man						\
 	src
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`
 
 DISTCLEANFILES =					\
-	colord-*.tar.gz				\
+	colord-*.tar.gz					\
 	intltool-extract				\
 	intltool-merge					\
 	intltool-update

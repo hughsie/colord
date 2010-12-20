@@ -9,3 +9,6 @@ $(servicemain_DATA): $(servicemain_in_files) Makefile
 
 EXTRA_DIST =						\
 	$(servicemain_in_files)
+
+DISTCLEANFILES =					\
+	org.freedesktop.ColorManager.service
