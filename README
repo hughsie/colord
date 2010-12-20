@@ -1,7 +1,8 @@
               colord
 
 colord is a system activated daemon that maps devices to color profiles.
-
+It is used by gnome-color-manager for system integration and use when
+there are no users logged in.
 
      [GCM]   [system-config-printer]        SESSION
        |                 |
@@ -24,3 +25,30 @@ What colord does:
 
 colord also provides a debugging utility tool called colormgr that
 allows the end user to add, remove and assign color devices.
+
+FAQ:
+
+Q: So, how does this work with gnome-color-manager?
+A: At startup GCM sends it's per-session database and virtual devices to
+   colord, and the session devices are removed when the user logs off.
+
+Q: How do system daemons add devices and profiles?
+A: Like this:
+
+    for device in self.devices:
+        o = CreateDevice(device.name)
+        for profile in device.profiles:
+            p = AddProfile(profile.id)
+            if profile.icc_filename:
+                p.SetFilename(profile.icc_filename)
+            p.SetQualifier(profile.qualifier)
+            o.AddProfile(p)
+
+Q: How would a system daemon like CUPS use colord?
+A: Like this:
+
+    d = FindDeviceById(device.name)
+    if d:
+        p = d.GetProfileForQualifier(qualifier)
+        if p:
+            p.Use()
