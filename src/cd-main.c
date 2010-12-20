@@ -24,6 +24,7 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <locale.h>
+#include <polkit/polkit.h>
 
 #include "cd-common.h"
 
@@ -34,6 +35,7 @@ static GDBusNodeInfo *introspection_profile = NULL;
 static GMainLoop *loop = NULL;
 static GPtrArray *devices_array = NULL;
 static GPtrArray *profiles_array = NULL;
+static PolkitAuthority *authority = NULL;
 
 typedef struct {
 	gchar		*device_id;
@@ -169,6 +171,29 @@ cd_main_profile_find_by_id (const gchar *profile_id)
 	return item;
 }
 
+typedef enum {
+	CD_MAIN_ERROR_FAILED,
+	CD_MAIN_ERROR_LAST
+} CdMainError;
+
+/**
+ * cd_main_error_quark:
+ **/
+static GQuark
+cd_main_error_quark (void)
+{
+	static GQuark quark = 0;
+	if (!quark) {
+		quark = g_quark_from_static_string ("colord");
+		g_dbus_error_register_error (quark,
+					     CD_MAIN_ERROR_FAILED,
+					     COLORD_DBUS_SERVICE ".Failed");
+	}
+	return quark;
+}
+
+#define CD_MAIN_ERROR			cd_main_error_quark()
+
 /**
  * cd_main_profile_emit_changed:
  **/
@@ -193,6 +218,55 @@ cd_main_profile_emit_changed (CdProfileItem *item)
 }
 
 /**
+ * cd_main_sender_authenticated:
+ **/
+static gboolean
+cd_main_sender_authenticated (GDBusMethodInvocation *invocation, const gchar *sender)
+{
+	gboolean ret = FALSE;
+	GError *error = NULL;
+	PolkitAuthorizationResult *result = NULL;
+	PolkitSubject *subject;
+
+	/* do authorization async */
+	subject = polkit_system_bus_name_new (sender);
+	result = polkit_authority_check_authorization_sync (authority, subject,
+			"org.freedesktop.color-manager.add-device",
+			NULL,
+			POLKIT_CHECK_AUTHORIZATION_FLAGS_NONE,
+			NULL,
+			&error);
+
+	/* failed */
+	if (result == NULL) {
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_MAIN_ERROR,
+						       CD_MAIN_ERROR_FAILED,
+						       "could not check for auth: %s",
+						       error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* did not auth */
+	if (!polkit_authorization_result_get_is_authorized (result)) {
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_MAIN_ERROR,
+						       CD_MAIN_ERROR_FAILED,
+						       "failed to obtain auth");
+		goto out;
+	}
+
+	/* success */
+	ret = TRUE;
+out:
+	if (result != NULL)
+		g_object_unref (result);
+	g_object_unref (subject);
+	return ret;
+}
+
+/**
  * cd_main_profile_method_call:
  **/
 static void
@@ -201,22 +275,28 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
+	CdProfileItem *item;
+	gboolean ret;
+	gchar *filename = NULL;
+	gchar **profiles = NULL;
+	gchar *qualifier = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
-	gchar **profiles = NULL;
-	gchar *filename = NULL;
-	gchar *qualifier = NULL;
-	CdProfileItem *item;
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "SetFilename") == 0) {
+
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation, sender);
+		if (!ret)
+			goto out;
 
 		/* copy the profile path */
 		item = cd_main_profile_find_by_object_path (object_path);
 		if (item == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       1, //FIXME
-							       0,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
 							       "profile object path '%s' does not exist",
 							       object_path);
 			goto out;
@@ -240,12 +320,17 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return '' */
 	if (g_strcmp0 (method_name, "SetQualifier") == 0) {
 
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation, sender);
+		if (!ret)
+			goto out;
+
 		/* copy the profile path */
 		item = cd_main_profile_find_by_object_path (object_path);
 		if (item == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       1, //FIXME
-							       0,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
 							       "profile object path '%s' does not exist",
 							       object_path);
 			goto out;
@@ -400,23 +485,28 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
-	GVariant *tuple = NULL;
-	GVariant *value = NULL;
-	gchar **devices = NULL;
-//	guint i;
-	gchar *profile_object_path = NULL;
 	CdDeviceItem *item;
 	CdProfileItem *item_profile;
+	gboolean ret;
+	gchar **devices = NULL;
+	gchar *profile_object_path = NULL;
+	GVariant *tuple = NULL;
+	GVariant *value = NULL;
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "AddProfile") == 0) {
+
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation, sender);
+		if (!ret)
+			goto out;
 
 		/* copy the device path */
 		item = cd_main_device_find_by_object_path (object_path);
 		if (item == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       1, //FIXME
-							       0,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
 							       "device object path '%s' does not exist",
 							       object_path);
 			goto out;
@@ -428,8 +518,8 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 		item_profile = cd_main_profile_find_by_object_path (profile_object_path);
 		if (item_profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       1, //FIXME
-							       0,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
 							       "profile object path '%s' does not exist",
 							       profile_object_path);
 			goto out;
@@ -563,16 +653,15 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
+	CdDeviceItem *item_device;
+	CdProfileItem *item_profile;
+	gboolean ret;
+	gchar *device_id = NULL;
+	GError *error = NULL;
+	guint i;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	GVariant **variant_array = NULL;
-	guint i;
-//	const gchar *device;
-	gchar *device_id = NULL;
-	CdDeviceItem *item_device;
-	CdProfileItem *item_profile;
-//	gboolean ret;
-	GError *error = NULL;
 
 	/* return 'as' */
 	if (g_strcmp0 (method_name, "GetDevices") == 0) {
@@ -600,8 +689,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		item_device = cd_main_device_find_by_id (device_id);
 		if (item_device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       1, //FIXME
-							       0,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
 							       "device id '%s' does not exists",
 							       device_id);
 			goto out;
@@ -620,8 +709,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		item_profile = cd_main_profile_find_by_id (device_id);
 		if (item_profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       1, //FIXME
-							       0,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
 							       "profile id '%s' does not exists",
 							       device_id);
 			goto out;
@@ -655,13 +744,18 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 's' */
 	if (g_strcmp0 (method_name, "CreateDevice") == 0) {
 
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation, sender);
+		if (!ret)
+			goto out;
+
 		/* does already exist */
 		g_variant_get (parameters, "(s)", &device_id);
 		item_device = cd_main_device_find_by_id (device_id);
 		if (item_device != NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       1, //FIXME
-							       0,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
 							       "device object path '%s' already exists",
 							       item_device->object_path);
 			goto out;
@@ -685,13 +779,18 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 's' */
 	if (g_strcmp0 (method_name, "CreateProfile") == 0) {
 
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation, sender);
+		if (!ret)
+			goto out;
+
 		/* does already exist */
 		g_variant_get (parameters, "(s)", &device_id);
 		item_profile = cd_main_profile_find_by_id (device_id);
 		if (item_profile != NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       1, //FIXME
-							       0,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
 							       "profile object path '%s' already exists",
 							       item_profile->object_path);
 			goto out;
@@ -835,6 +934,12 @@ main (int argc, char *argv[])
 							cd_main_device_item_free);
 	profiles_array = g_ptr_array_new_with_free_func ((GDestroyNotify)
 							 cd_main_profile_item_free);
+	authority = polkit_authority_get_sync (NULL, &error);
+	if (authority == NULL) {
+		g_error ("failed to get pokit authority: %s", error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* load introspection from file */
 	file_daemon = g_file_new_for_path (DATADIR "/dbus-1/interfaces/"
@@ -932,6 +1037,8 @@ out:
 		g_dbus_node_info_unref (introspection_device);
 	if (introspection_profile != NULL)
 		g_dbus_node_info_unref (introspection_profile);
+	if (authority != NULL)
+		g_object_unref (authority);
 	g_main_loop_unref (loop);
 	return retval;
 }
