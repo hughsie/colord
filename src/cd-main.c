@@ -477,6 +477,32 @@ cd_main_device_emit_changed (CdDeviceItem *item)
 }
 
 /**
+ * cd_main_find_device_by_qualifier:
+ **/
+static CdProfileItem *
+cd_main_find_device_by_qualifier (const gchar *regex, GPtrArray *array)
+{
+	CdProfileItem *item = NULL;
+	CdProfileItem *item_tmp;
+	guint i;
+	gboolean ret;
+
+	/* find using a wildcard */
+	for (i=0; i<array->len; i++) {
+		item_tmp = g_ptr_array_index (array, i);
+		ret = g_regex_match_simple (regex,
+					    item_tmp->qualifier,
+					    0, 0);
+		if (ret) {
+			item = item_tmp;
+			goto out;
+		}
+	}
+out:
+	return  item;
+}
+
+/**
  * cd_main_device_method_call:
  **/
 static void
@@ -491,6 +517,7 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 	gboolean ret;
 	gchar **devices = NULL;
 	gchar *profile_object_path = NULL;
+	gchar *regex = NULL;
 	guint i;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
@@ -551,9 +578,48 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
+	/* return 'o' */
+	if (g_strcmp0 (method_name, "GetProfileForQualifier") == 0) {
+
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation, sender);
+		if (!ret)
+			goto out;
+
+		/* copy the device path */
+		item = cd_main_device_find_by_object_path (object_path);
+		if (item == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "device object path '%s' does not exist",
+							       object_path);
+			goto out;
+		}
+
+		/* find the profile by the qualifier search string */
+		g_variant_get (parameters, "(s)", &regex);
+		item_profile = cd_main_find_device_by_qualifier (regex,
+								 item->profiles);
+		if (item_profile == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "nothing matched expression '%s'",
+							       regex);
+			goto out;
+		}
+
+		value = g_variant_new_object_path (item_profile->object_path);
+		tuple = g_variant_new_tuple (&value, 1);
+		g_dbus_method_invocation_return_value (invocation, tuple);
+		goto out;
+	}
+
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
+	g_free (regex);
 	g_free (profile_object_path);
 	if (tuple != NULL)
 		g_variant_unref (tuple);
