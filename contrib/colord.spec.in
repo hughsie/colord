@@ -5,11 +5,12 @@ Name:      colord
 Version:   #VERSION#
 Release:   0.#BUILD#%{?alphatag}%{?dist}
 License:   GPLv2+
-URL:       http://github.com/hughsie/colord
-Source0:   http://www.packagekit.org/releases/%{name}-%{version}.tar.gz
+URL:       http://gitorious.org/colord
+Source0:   http://people.freedesktop.org/~hughsient/releases/%{name}-%{version}.tar.gz
 
 BuildRequires: glib2-devel
 BuildRequires: polkit-devel
+BuildRequires: lcms2-devel
 BuildRequires: intltool
 BuildRequires: gettext
 
@@ -30,10 +31,9 @@ make %{?_smp_mflags}
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 
-#%find_lang %{name}
+%find_lang %{name}
 
-#%files -f %{name}.lang
-%files
+%files -f %{name}.lang
 %defattr(-,root,root,-)
 %doc README AUTHORS NEWS COPYING
 %{_libexecdir}/colord
