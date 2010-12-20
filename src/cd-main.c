@@ -487,9 +487,11 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 {
 	CdDeviceItem *item;
 	CdProfileItem *item_profile;
+	CdProfileItem *item_profile_tmp;
 	gboolean ret;
 	gchar **devices = NULL;
 	gchar *profile_object_path = NULL;
+	guint i;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 
@@ -525,8 +527,22 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
+		/* check it does not already exist */
+		for (i=0; i<item->profiles->len; i++) {
+			item_profile_tmp = g_ptr_array_index (item->profiles, i);
+			if (g_strcmp0 (item_profile->object_path,
+				       item_profile_tmp->object_path) == 0) {
+				g_dbus_method_invocation_return_error (invocation,
+								       CD_MAIN_ERROR,
+								       CD_MAIN_ERROR_FAILED,
+								       "profile object path '%s' has already been added",
+								       profile_object_path);
+				goto out;
+			}
+		}
+
 		/* add to the array */
-		g_ptr_array_add (item->profiles, g_strdup (profile_object_path));
+		g_ptr_array_add (item->profiles, item_profile);
 
 		/* emit */
 		cd_main_device_emit_changed (item);
@@ -557,7 +573,7 @@ cd_main_device_get_property (GDBusConnection *connection_, const gchar *sender,
 			     gpointer user_data)
 {
 	CdDeviceItem *item;
-	const gchar *profile;
+	CdProfileItem *item_profile;
 	guint i;
 	GVariant **profiles = NULL;
 	GVariant *retval = NULL;
@@ -581,8 +597,8 @@ cd_main_device_get_property (GDBusConnection *connection_, const gchar *sender,
 		/* copy the object paths */
 		profiles = g_new0 (GVariant *, item->profiles->len + 1);
 		for (i=0; i<item->profiles->len; i++) {
-			profile = g_ptr_array_index (item->profiles, i);
-			profiles[i] = g_variant_new_object_path (profile);
+			item_profile = g_ptr_array_index (item->profiles, i);
+			profiles[i] = g_variant_new_object_path (item_profile->object_path);
 		}
 
 		/* format the value */
@@ -617,7 +633,7 @@ cd_main_create_device (const gchar *device_id, GError **error)
 	item = g_new0 (CdDeviceItem, 1);
 	item->device_id = g_strdup (device_id);
 	item->object_path = g_build_filename (COLORD_DBUS_PATH, device_id, NULL);
-	item->profiles = g_ptr_array_new_with_free_func (g_free);
+	item->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_main_profile_item_free);
 	g_ptr_array_add (devices_array, item);
 	g_debug ("Adding device %s", item->object_path);
 	item->registration_id = g_dbus_connection_register_object (connection,
