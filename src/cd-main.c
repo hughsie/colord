@@ -21,8 +21,9 @@
 
 #include "config.h"
 
-#include <glib/gi18n.h>
 #include <gio/gio.h>
+#include <glib/gi18n.h>
+#include <lcms2.h>
 #include <locale.h>
 #include <polkit/polkit.h>
 
@@ -276,10 +277,15 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
 	CdProfileItem *item;
+	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret;
+	gchar *data = NULL;
 	gchar *filename = NULL;
 	gchar **profiles = NULL;
 	gchar *qualifier = NULL;
+	gchar text[1024];
+	GError *error = NULL;
+	gsize len;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 
@@ -302,13 +308,48 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
+		/* copy the profile path */
+		if (item->filename != NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "profile '%s' filename already set",
+							       object_path);
+			goto out;
+		}
+
 		/* check the profile_object_path exists */
 		g_variant_get (parameters, "(s)",
 			       &filename);
 
-		/* add to the array */
+		/* parse the ICC file */
+		ret = g_file_get_contents (filename, &data, &len, &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "failed to open profile: %s",
+							       error->message);
+			g_error_free (error);
+			goto out;
+		}
+		lcms_profile = cmsOpenProfileFromMem (data, len);
+		if (lcms_profile == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "failed to parse %s",
+							       filename);
+			goto out;
+		}
+
+		/* get the description as the title */
+		cmsGetProfileInfoASCII (lcms_profile,
+					cmsInfoDescription,
+					"en", "US",
+					text, 1024);
 		item->filename = g_strdup (filename);
-		item->title = g_strdup ("This is a parsed profile title");
+		item->title = g_strdup (text);
 
 		/* emit */
 		cd_main_profile_emit_changed (item);
@@ -355,6 +396,9 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 out:
 	g_free (filename);
 	g_free (qualifier);
+	g_free (data);
+	if (lcms_profile != NULL)
+		cmsCloseProfile (lcms_profile);
 	if (tuple != NULL)
 		g_variant_unref (tuple);
 	if (value != NULL)

@@ -7,6 +7,7 @@ dist_introspection_DATA = 					\
 INCLUDES =						\
 	$(GLIB_CFLAGS)					\
 	$(POLKIT_CFLAGS)				\
+	$(LCMS_CFLAGS)					\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DDATADIR=\"$(datadir)\"			\
@@ -23,6 +24,7 @@ colord_SOURCES =					\
 
 colord_LDADD =						\
 	$(POLKIT_LIBS)					\
+	$(LCMS_LIBS)					\
 	$(GLIB_LIBS)
 
 colord_CFLAGS =						\
