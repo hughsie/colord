@@ -46,6 +46,7 @@ typedef struct {
 	gchar		*filename;
 	gchar		*object_path;
 	gchar		*profile_id;
+	gchar		*qualifier;
 	gchar		*title;
 	guint		 registration_id;
 } CdProfileItem;
@@ -76,6 +77,7 @@ cd_main_profile_item_free (CdProfileItem *item)
 		g_dbus_connection_unregister_object (connection,
 						     item->registration_id);
 	}
+	g_free (item->qualifier);
 	g_free (item->title);
 	g_free (item->object_path);
 	g_free (item->profile_id);
@@ -202,8 +204,8 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	gchar **profiles = NULL;
-//	guint i;
 	gchar *filename = NULL;
+	gchar *qualifier = NULL;
 	CdProfileItem *item;
 
 	/* return '' */
@@ -221,7 +223,7 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(o)",
+		g_variant_get (parameters, "(s)",
 			       &filename);
 
 		/* add to the array */
@@ -235,10 +237,39 @@ cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
+	/* return '' */
+	if (g_strcmp0 (method_name, "SetQualifier") == 0) {
+
+		/* copy the profile path */
+		item = cd_main_profile_find_by_object_path (object_path);
+		if (item != NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       1, //FIXME
+							       0,
+							       "profile object path '%s' does not exist",
+							       object_path);
+			goto out;
+		}
+
+		/* check the profile_object_path exists */
+		g_variant_get (parameters, "(s)",
+			       &qualifier);
+
+		/* save in the struct */
+		item->qualifier = g_strdup (qualifier);
+
+		/* emit */
+		cd_main_profile_emit_changed (item);
+
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
 	g_free (filename);
+	g_free (qualifier);
 	if (tuple != NULL)
 		g_variant_unref (tuple);
 	if (value != NULL)
@@ -270,6 +301,11 @@ cd_main_profile_get_property (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (property_name, "ProfileId") == 0) {
 		item = cd_main_profile_find_by_object_path (object_path);
 		retval = g_variant_new_string (item->profile_id);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Qualifier") == 0) {
+		item = cd_main_profile_find_by_object_path (object_path);
+		retval = g_variant_new_string (item->qualifier);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Filename") == 0) {
@@ -385,7 +421,7 @@ cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(s)",
+		g_variant_get (parameters, "(o)",
 			       &profile_object_path);
 		item_profile = cd_main_profile_find_by_object_path (profile_object_path);
 		if (item_profile != NULL) {
@@ -430,8 +466,8 @@ cd_main_device_get_property (GDBusConnection *connection_, const gchar *sender,
 {
 	CdDeviceItem *item;
 	const gchar *profile;
-	gchar **profiles = NULL;
 	guint i;
+	GVariant **profiles = NULL;
 	GVariant *retval = NULL;
 
 	if (g_strcmp0 (property_name, "Created") == 0) {
@@ -449,18 +485,27 @@ cd_main_device_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, "Profiles") == 0) {
 		item = cd_main_device_find_by_object_path (object_path);
-		profiles = g_new0 (gchar *, item->profiles->len + 1);
+
+		/* copy the object paths */
+		profiles = g_new0 (GVariant *, item->profiles->len + 1);
 		for (i=0; i<item->profiles->len; i++) {
 			profile = g_ptr_array_index (item->profiles, i);
-			profiles[i] = g_strdup (profile);
+			profiles[i] = g_variant_new_object_path (profile);
 		}
-		retval = g_variant_new_strv ((const gchar * const*) profiles, -1);
+
+		/* format the value */
+		retval = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
+					      profiles,
+					      item->profiles->len);
 		goto out;
 	}
 
 	g_critical ("failed to set property %s", property_name);
 out:
-	g_strfreev (profiles);
+	if (profiles != NULL) {
+		for (i=0; profiles[i] != NULL; i++)
+			g_variant_unref (profiles[i]);
+	}
 	return retval;
 }
 
@@ -502,7 +547,7 @@ cd_main_create_device (const gchar *device_id, GError **error)
 					     COLORD_DBUS_PATH,
 					     COLORD_DBUS_INTERFACE_DEVICE,
 					     "DeviceAdded",
-					     g_variant_new ("(s)",
+					     g_variant_new ("(o)",
 							    item->object_path),
 					     error);
 	if (!ret)
@@ -522,7 +567,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 {
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
-	gchar **devices = NULL;
+	GVariant **variant_array = NULL;
 	guint i;
 //	const gchar *device;
 	gchar *device_id = NULL;
@@ -535,14 +580,16 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetDevices") == 0) {
 
 		/* copy the object paths */
-		devices = g_new0 (gchar *, devices_array->len + 1);
+		variant_array = g_new0 (GVariant *, devices_array->len + 1);
 		for (i=0; i<devices_array->len; i++) {
 			item_device = g_ptr_array_index (devices_array, i);
-			devices[i] = g_strdup (item_device->object_path);
+			variant_array[i] = g_variant_new_object_path (item_device->object_path);
 		}
 
 		/* format the value */
-		value = g_variant_new_strv ((const gchar * const *) devices, -1);
+		value = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
+					     variant_array,
+					     devices_array->len);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -592,14 +639,16 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetProfiles") == 0) {
 
 		/* copy the object paths */
-		devices = g_new0 (gchar *, profiles_array->len + 1);
+		variant_array = g_new0 (GVariant *, profiles_array->len + 1);
 		for (i=0; i<profiles_array->len; i++) {
 			item_profile = g_ptr_array_index (profiles_array, i);
-			devices[i] = g_strdup (item_profile->object_path);
+			variant_array[i] = g_variant_new_object_path (item_profile->object_path);
 		}
 
 		/* format the value */
-		value = g_variant_new_strv ((const gchar * const *) devices, -1);
+		value = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
+					     variant_array,
+					     profiles_array->len);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -629,7 +678,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* format the value */
-		value = g_variant_new_string (item_device->object_path);
+		value = g_variant_new_object_path (item_device->object_path);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -659,7 +708,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* format the value */
-		value = g_variant_new_string (item_profile->object_path);
+		value = g_variant_new_object_path (item_profile->object_path);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -672,7 +721,10 @@ out:
 		g_variant_unref (tuple);
 	if (value != NULL)
 		g_variant_unref (value);
-	g_strfreev (devices);
+	if (variant_array != NULL) {
+		for (i=0; variant_array[i] != NULL; i++)
+			g_variant_unref (variant_array[i]);
+	}
 	return;
 }
 

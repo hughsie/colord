@@ -28,19 +28,98 @@
 #include "cd-common.h"
 
 /**
+ * cd_util_show_device:
+ **/
+static void
+cd_util_show_device (const gchar *object_path)
+{
+	const gchar *device_id;
+	const gchar *model;
+	gchar *profile_tmp;
+	GDBusProxy *proxy;
+	GError *error = NULL;
+	gsize len;
+	guint64 created;
+	guint i;
+	GVariantIter iter;
+	GVariant *variant_created = NULL;
+	GVariant *variant_device_id = NULL;
+	GVariant *variant_model = NULL;
+	GVariant *variant_profiles = NULL;
+
+	g_print ("Object Path: %s\n", object_path);
+
+	/* get proxy */
+	proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+					       G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
+					       NULL,
+					       COLORD_DBUS_SERVICE,
+					       object_path,
+					       COLORD_DBUS_INTERFACE_DEVICE,
+					       NULL,
+					       &error);
+	if (proxy == NULL) {
+		g_print ("Failed to get device properties: %s",
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* print created date */
+	variant_created = g_dbus_proxy_get_cached_property (proxy, "Created");
+	created = g_variant_get_uint64 (variant_created);
+	g_print ("Created:\t%" G_GUINT64_FORMAT "\n", created);
+
+	/* print model */
+	variant_model = g_dbus_proxy_get_cached_property (proxy, "Model");
+	model = g_variant_get_string (variant_model, NULL);
+	g_print ("Model:\t\t%s\n", model);
+
+	/* print device id */
+	variant_device_id = g_dbus_proxy_get_cached_property (proxy, "DeviceId");
+	device_id = g_variant_get_string (variant_device_id, NULL);
+	g_print ("Device ID:\t%s\n", device_id);
+
+	/* print profiles */
+	variant_profiles = g_dbus_proxy_get_cached_property (proxy, "Profiles");
+	len = g_variant_iter_init (&iter, variant_profiles);
+	if (len == 0)
+		g_print ("No assigned profiles!\n");
+	for (i=0; i<len; i++) {
+		g_variant_get_child (variant_profiles, i,
+				     "o", &profile_tmp);
+		g_print ("Profile %i:\t%s\n", i+1, profile_tmp);
+		g_free (profile_tmp);
+	}
+out:
+	if (variant_created != NULL)
+		g_variant_unref (variant_created);
+	if (variant_model != NULL)
+		g_variant_unref (variant_model);
+	if (variant_device_id != NULL)
+		g_variant_unref (variant_device_id);
+	if (variant_profiles != NULL)
+		g_variant_unref (variant_profiles);
+	if (proxy != NULL)
+		g_object_unref (proxy);
+}
+
+/**
  * main:
  **/
 int
 main (int argc, char *argv[])
 {
-	const gchar **devices;
 	const gchar *object_path;
 	//gboolean ret;
 	GDBusConnection *connection;
 	GError *error = NULL;
 	GOptionContext *context;
 	guint i;
+	gsize len;
+	GVariantIter iter;
 	guint retval = 1;
+	gchar *object_path_tmp = NULL;
 	GVariant *response_child = NULL;
 	GVariant *response = NULL;
 
@@ -83,7 +162,7 @@ main (int argc, char *argv[])
 							COLORD_DBUS_INTERFACE,
 							"GetDevices",
 							NULL,
-							G_VARIANT_TYPE ("(as)"),
+							G_VARIANT_TYPE ("(ao)"),
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);
 		if (response == NULL) {
@@ -95,9 +174,12 @@ main (int argc, char *argv[])
 
 		/* print each device */
 		response_child = g_variant_get_child_value (response, 0);
-		devices = g_variant_get_strv (response_child, NULL);
-		for (i=0; devices[i] != NULL; i++) {
-			g_print ("%i.\t%s\n", i+1, devices[i]);
+		len = g_variant_iter_init (&iter, response_child);
+		for (i=0; i < len; i++) {
+			g_variant_get_child (response_child, i,
+					     "o", &object_path_tmp);
+			cd_util_show_device (object_path_tmp);
+			g_free (object_path_tmp);
 		}
 
 	} else if (g_strcmp0 (argv[1], "get-profiles") == 0) {
@@ -109,7 +191,7 @@ main (int argc, char *argv[])
 							COLORD_DBUS_INTERFACE,
 							"GetProfiles",
 							NULL,
-							G_VARIANT_TYPE ("(as)"),
+							G_VARIANT_TYPE ("(ao)"),
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);
 		if (response == NULL) {
@@ -121,9 +203,12 @@ main (int argc, char *argv[])
 
 		/* print each device */
 		response_child = g_variant_get_child_value (response, 0);
-		devices = g_variant_get_strv (response_child, NULL);
-		for (i=0; devices[i] != NULL; i++) {
-			g_print ("%i.\t%s\n", i+1, devices[i]);
+		len = g_variant_iter_init (&iter, response_child);
+		for (i=0; i < len; i++) {
+			g_variant_get_child (response_child, i,
+					     "o", &object_path_tmp);
+			g_print ("%i.\t%s\n", i+1, object_path_tmp);
+			g_free (object_path_tmp);
 		}
 
 	} else if (g_strcmp0 (argv[1], "create-device") == 0) {
@@ -140,7 +225,7 @@ main (int argc, char *argv[])
 							COLORD_DBUS_INTERFACE,
 							"CreateDevice",
 							g_variant_new ("(s)", argv[2]),
-							G_VARIANT_TYPE ("(s)"),
+							G_VARIANT_TYPE ("(o)"),
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);
 		if (response == NULL) {
@@ -227,7 +312,7 @@ main (int argc, char *argv[])
 							COLORD_DBUS_INTERFACE,
 							"CreateProfile",
 							g_variant_new ("(s)", argv[2]),
-							G_VARIANT_TYPE ("(s)"),
+							G_VARIANT_TYPE ("(o)"),
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);
 		if (response == NULL) {
@@ -279,6 +364,30 @@ main (int argc, char *argv[])
 							argv[2],
 							COLORD_DBUS_INTERFACE_PROFILE,
 							"SetFilename",
+							g_variant_new ("(s)", argv[3]),
+							NULL,
+							G_DBUS_CALL_FLAGS_NONE,
+							-1, NULL, &error);
+		if (response == NULL) {
+			/* TRANSLATORS: the DBus method failed */
+			g_print ("%s %s\n", _("The request failed:"), error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+	} else if (g_strcmp0 (argv[1], "profile-set-qualifier") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		/* execute sync method */
+		response = g_dbus_connection_call_sync (connection,
+							COLORD_DBUS_SERVICE,
+							argv[2],
+							COLORD_DBUS_INTERFACE_PROFILE,
+							"SetQualifier",
 							g_variant_new ("(s)", argv[3]),
 							NULL,
 							G_DBUS_CALL_FLAGS_NONE,

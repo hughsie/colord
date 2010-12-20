@@ -34,6 +34,20 @@
     </property>
 
     <!--*****************************************************************************************-->
+    <property name='Qualifier' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The qualifier for the profile.
+            A qualifier is used as a way to select a profile for a device.
+            This might be something free text like "High quality studio' or
+            something more programmable like "RGB.Plain.300dpi"
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--*****************************************************************************************-->
     <property name='Filename' type='s' access='read'>
       <doc:doc>
         <doc:description>
@@ -61,6 +75,27 @@
           <doc:summary>
             <doc:para>
               The fully qualified filename of the profile.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='SetQualifier'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Sets the qualifier for the profile.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='qualifier' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The profile qualifier, e.g. "RGB.Plain".
             </doc:para>
           </doc:summary>
         </doc:doc>

@@ -45,7 +45,7 @@
     </property>
 
     <!--*****************************************************************************************-->
-    <property name='Profiles' type='as' access='read'>
+    <property name='Profiles' type='ao' access='read'>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -123,6 +123,37 @@
           <doc:summary>
             <doc:para>
               The profile ID that has already been added to the device.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='GetProfileForQualifier'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a single profile object path for a qualifier.
+            The search term can contain '*' and '?' wildcards.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='search_term' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The search term, e.g. "RGB.*.300dpi"
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='s' name='object_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The profile path for the search term.
             </doc:para>
           </doc:summary>
         </doc:doc>
