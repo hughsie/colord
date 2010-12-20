@@ -162,6 +162,70 @@
     </method>
 
     <!--*****************************************************************************************-->
+    <method name='FindDeviceById'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a device path for the device ID.
+            This method is required as device ID's may have to be mangled
+            to conform with the DBus path specification.
+            For instance, a device ID of "cups$34:dev' would have a object
+            path of "/org/freedesktop/ColorManager/cups_34_dev".
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='device_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A device ID.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='o' name='device_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A device path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='FindProfileById'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a profile path for the profile ID.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A profile ID.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='o' name='profile_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
     <method name='GetProfiles'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>

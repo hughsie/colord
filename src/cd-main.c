@@ -544,6 +544,46 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
+	/* return 's' */
+	if (g_strcmp0 (method_name, "FindDeviceById") == 0) {
+
+		g_variant_get (parameters, "(s)", &device_id);
+		item_device = cd_main_device_find_by_id (device_id);
+		if (item_device == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       1, //FIXME
+							       0,
+							       "device id '%s' does not exists",
+							       device_id);
+			goto out;
+		}
+
+		/* format the value */
+		value = g_variant_new ("(o)", item_device->object_path);
+		g_dbus_method_invocation_return_value (invocation, value);
+		goto out;
+	}
+
+	/* return 's' */
+	if (g_strcmp0 (method_name, "FindProfileById") == 0) {
+
+		g_variant_get (parameters, "(s)", &device_id);
+		item_profile = cd_main_profile_find_by_id (device_id);
+		if (item_profile == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       1, //FIXME
+							       0,
+							       "profile id '%s' does not exists",
+							       device_id);
+			goto out;
+		}
+
+		/* format the value */
+		value = g_variant_new ("(o)", item_profile->object_path);
+		g_dbus_method_invocation_return_value (invocation, value);
+		goto out;
+	}
+
 	/* return 'as' */
 	if (g_strcmp0 (method_name, "GetProfiles") == 0) {
 
