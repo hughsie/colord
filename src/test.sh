@@ -9,3 +9,5 @@
 ./colormgr profile-set-qualifier /org/freedesktop/ColorManager/norman "RGB.Plain.300dpi"
 ./colormgr get-devices
 ./colormgr device-get-profile-for-qualifier /org/freedesktop/ColorManager/dave "RGB.*.300dpi"
+./colormgr delete-device dave
+./colormgr get-profiles

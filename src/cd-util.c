@@ -398,6 +398,30 @@ main (int argc, char *argv[])
 		object_path = g_variant_get_string (response_child, NULL);
 		g_print ("Created profile %s\n", object_path);
 
+	} else if (g_strcmp0 (argv[1], "delete-device") == 0) {
+
+		if (argc < 2) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		/* execute sync method */
+		response = g_dbus_connection_call_sync (connection,
+							COLORD_DBUS_SERVICE,
+							COLORD_DBUS_PATH,
+							COLORD_DBUS_INTERFACE,
+							"DeleteDevice",
+							g_variant_new ("(s)", argv[2]),
+							NULL,
+							G_DBUS_CALL_FLAGS_NONE,
+							-1, NULL, &error);
+		if (response == NULL) {
+			/* TRANSLATORS: the DBus method failed */
+			g_print ("%s %s\n", _("The request failed:"), error->message);
+			g_error_free (error);
+			goto out;
+		}
+
 	} else if (g_strcmp0 (argv[1], "device-add-profile") == 0) {
 
 		if (argc < 3) {

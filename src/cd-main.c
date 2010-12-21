@@ -783,6 +783,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	CdProfileItem *item_profile;
 	gboolean ret;
 	gchar *device_id = NULL;
+	gchar *object_path_tmp = NULL;
 	GError *error = NULL;
 	guint i;
 	GVariant *tuple = NULL;
@@ -855,6 +856,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		variant_array = g_new0 (GVariant *, profiles_array->len + 1);
 		for (i=0; i<profiles_array->len; i++) {
 			item_profile = g_ptr_array_index (profiles_array, i);
+g_warning ("item_profile->object_path=%s", item_profile->object_path);
 			variant_array[i] = g_variant_new_object_path (item_profile->object_path);
 		}
 
@@ -903,6 +905,48 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	}
 
 	/* return 's' */
+	if (g_strcmp0 (method_name, "DeleteDevice") == 0) {
+
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation, sender);
+		if (!ret)
+			goto out;
+
+		/* does already exist */
+		g_variant_get (parameters, "(s)", &device_id);
+		item_device = cd_main_device_find_by_id (device_id);
+		if (item_device == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "device id '%s' not found",
+							       device_id);
+			goto out;
+		}
+
+		/* remove from the array before emitting */
+		object_path_tmp = g_strdup (item_device->object_path);
+		g_ptr_array_remove (devices_array, item_device);
+
+		/* emit signal */
+		ret = g_dbus_connection_emit_signal (connection,
+						     NULL,
+						     COLORD_DBUS_PATH,
+						     COLORD_DBUS_INTERFACE,
+						     "DeviceRemoved",
+						     g_variant_new ("(o)",
+								    object_path_tmp),
+						     &error);
+		if (!ret) {
+			g_warning ("failed to send signal %s", error->message);
+			g_error_free (error);
+		}
+
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
+	/* return 's' */
 	if (g_strcmp0 (method_name, "CreateProfile") == 0) {
 
 		/* require auth */
@@ -940,6 +984,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
+	g_free (object_path_tmp);
 	if (tuple != NULL)
 		g_variant_unref (tuple);
 	if (value != NULL)

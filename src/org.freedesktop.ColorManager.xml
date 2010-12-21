@@ -23,6 +23,7 @@
     </property>
 
     <!--*****************************************************************************************-->
+<!--
     <method name='GetProfilesForDevice'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
@@ -60,8 +61,10 @@
         </doc:doc>
       </arg>
     </method>
+-->
 
     <!--*****************************************************************************************-->
+<!--
     <method name='GetProfilesForType'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
@@ -100,8 +103,10 @@
         </doc:doc>
       </arg>
     </method>
+-->
 
     <!--*****************************************************************************************-->
+<!--
     <method name='GetProfilesForFile'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
@@ -139,6 +144,7 @@
         </doc:doc>
       </arg>
     </method>
+-->
 
     <!--*****************************************************************************************-->
     <method name='GetDevices'>
@@ -301,6 +307,48 @@
           <doc:summary>
             <doc:para>
               A profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='DeleteDevice'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Deletes a device.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='device_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A device ID that is used to map to the device path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*****************************************************************************************-->
+    <method name='DeleteProfile'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Deletes a profile.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A profile ID that is used to map to the profile path.
             </doc:para>
           </doc:summary>
         </doc:doc>
