@@ -24,11 +24,24 @@
 
 #include "config.h"
 
+#include <gio/gio.h>
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
+
+#define CD_MAIN_ERROR			cd_main_error_quark()
+
+typedef enum {
+	CD_MAIN_ERROR_FAILED,
+	CD_MAIN_ERROR_LAST
+} CdMainError;
+
+GQuark		 cd_main_error_quark		(void);
+gboolean	 cd_main_sender_authenticated	(GDBusMethodInvocation *invocation,
+						 const gchar *sender);
 
 #endif /* __CD_COMMON_H__ */
 

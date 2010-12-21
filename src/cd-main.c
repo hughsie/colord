@@ -23,464 +23,48 @@
 
 #include <gio/gio.h>
 #include <glib/gi18n.h>
-#include <lcms2.h>
 #include <locale.h>
-#include <polkit/polkit.h>
 
 #include "cd-common.h"
+#include "cd-device.h"
+#include "cd-profile.h"
+#include "cd-device-array.h"
+#include "cd-profile-array.h"
 
 static GDBusConnection *connection = NULL;
 static GDBusNodeInfo *introspection_daemon = NULL;
 static GDBusNodeInfo *introspection_device = NULL;
 static GDBusNodeInfo *introspection_profile = NULL;
 static GMainLoop *loop = NULL;
-static GPtrArray *devices_array = NULL;
-static GPtrArray *profiles_array = NULL;
-static PolkitAuthority *authority = NULL;
-
-typedef struct {
-	gchar		*device_id;
-	gchar		*object_path;
-	guint		 registration_id;
-	GPtrArray	*profiles;
-} CdDeviceItem;
-
-typedef struct {
-	gchar		*filename;
-	gchar		*object_path;
-	gchar		*profile_id;
-	gchar		*qualifier;
-	gchar		*title;
-	guint		 registration_id;
-} CdProfileItem;
-
-/**
- * cd_main_device_item_free:
- **/
-static void
-cd_main_device_item_free (CdDeviceItem *item)
-{
-	if (item->registration_id > 0) {
-		g_dbus_connection_unregister_object (connection,
-						     item->registration_id);
-	}
-	g_ptr_array_unref (item->profiles);
-	g_free (item->object_path);
-	g_free (item->device_id);
-	g_free (item);
-}
-
-/**
- * cd_main_profile_item_free:
- **/
-static void
-cd_main_profile_item_free (CdProfileItem *item)
-{
-	if (item->registration_id > 0) {
-		g_dbus_connection_unregister_object (connection,
-						     item->registration_id);
-	}
-	g_free (item->qualifier);
-	g_free (item->title);
-	g_free (item->object_path);
-	g_free (item->profile_id);
-	g_free (item->filename);
-	g_free (item);
-}
-
-/**
- * cd_main_device_find_by_object_path:
- **/
-static CdDeviceItem *
-cd_main_device_find_by_object_path (const gchar *object_path)
-{
-	CdDeviceItem *item = NULL;
-	CdDeviceItem *item_tmp;
-	guint i;
-
-	/* find item */
-	for (i=0; i<devices_array->len; i++) {
-		item_tmp = g_ptr_array_index (devices_array, i);
-		if (g_strcmp0 (item_tmp->object_path, object_path) == 0) {
-			item = item_tmp;
-			break;
-		}
-	}
-	return item;
-}
-
-/**
- * cd_main_profile_find_by_object_path:
- **/
-static CdProfileItem *
-cd_main_profile_find_by_object_path (const gchar *object_path)
-{
-	CdProfileItem *item = NULL;
-	CdProfileItem *item_tmp;
-	guint i;
-
-	/* find item */
-	for (i=0; i<profiles_array->len; i++) {
-		item_tmp = g_ptr_array_index (profiles_array, i);
-		if (g_strcmp0 (item_tmp->object_path, object_path) == 0) {
-			item = item_tmp;
-			break;
-		}
-	}
-	return item;
-}
-
-/**
- * cd_main_device_find_by_id:
- **/
-static CdDeviceItem *
-cd_main_device_find_by_id (const gchar *device_id)
-{
-	CdDeviceItem *item = NULL;
-	CdDeviceItem *item_tmp;
-	guint i;
-
-	/* find item */
-	for (i=0; i<devices_array->len; i++) {
-		item_tmp = g_ptr_array_index (devices_array, i);
-		if (g_strcmp0 (item_tmp->device_id, device_id) == 0) {
-			item = item_tmp;
-			break;
-		}
-	}
-	return item;
-}
-
-/**
- * cd_main_profile_find_by_id:
- **/
-static CdProfileItem *
-cd_main_profile_find_by_id (const gchar *profile_id)
-{
-	CdProfileItem *item = NULL;
-	CdProfileItem *item_tmp;
-	guint i;
-
-	/* find item */
-	for (i=0; i<profiles_array->len; i++) {
-		item_tmp = g_ptr_array_index (profiles_array, i);
-		if (g_strcmp0 (item_tmp->profile_id, profile_id) == 0) {
-			item = item_tmp;
-			break;
-		}
-	}
-	return item;
-}
-
-typedef enum {
-	CD_MAIN_ERROR_FAILED,
-	CD_MAIN_ERROR_LAST
-} CdMainError;
-
-/**
- * cd_main_error_quark:
- **/
-static GQuark
-cd_main_error_quark (void)
-{
-	static GQuark quark = 0;
-	if (!quark) {
-		quark = g_quark_from_static_string ("colord");
-		g_dbus_error_register_error (quark,
-					     CD_MAIN_ERROR_FAILED,
-					     COLORD_DBUS_SERVICE ".Failed");
-	}
-	return quark;
-}
-
-#define CD_MAIN_ERROR			cd_main_error_quark()
-
-/**
- * cd_main_profile_emit_changed:
- **/
-static void
-cd_main_profile_emit_changed (CdProfileItem *item)
-{
-	gboolean ret;
-	GError *error = NULL;
-
-	/* emit signal */
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     item->object_path,
-					     COLORD_DBUS_INTERFACE_PROFILE,
-					     "Changed",
-					     NULL,
-					     &error);
-	if (!ret) {
-		g_warning ("failed to send signal %s", error->message);
-		g_error_free (error);
-	}
-}
-
-/**
- * cd_main_sender_authenticated:
- **/
-static gboolean
-cd_main_sender_authenticated (GDBusMethodInvocation *invocation, const gchar *sender)
-{
-	gboolean ret = FALSE;
-	GError *error = NULL;
-	PolkitAuthorizationResult *result = NULL;
-	PolkitSubject *subject;
-
-	/* do authorization async */
-	subject = polkit_system_bus_name_new (sender);
-	result = polkit_authority_check_authorization_sync (authority, subject,
-			"org.freedesktop.color-manager.add-device",
-			NULL,
-			POLKIT_CHECK_AUTHORIZATION_FLAGS_NONE,
-			NULL,
-			&error);
-
-	/* failed */
-	if (result == NULL) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
-						       "could not check for auth: %s",
-						       error->message);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* did not auth */
-	if (!polkit_authorization_result_get_is_authorized (result)) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
-						       "failed to obtain auth");
-		goto out;
-	}
-
-	/* success */
-	ret = TRUE;
-out:
-	if (result != NULL)
-		g_object_unref (result);
-	g_object_unref (subject);
-	return ret;
-}
-
-/**
- * cd_main_profile_method_call:
- **/
-static void
-cd_main_profile_method_call (GDBusConnection *connection_, const gchar *sender,
-			    const gchar *object_path, const gchar *interface_name,
-			    const gchar *method_name, GVariant *parameters,
-			    GDBusMethodInvocation *invocation, gpointer user_data)
-{
-	CdProfileItem *item;
-	cmsHPROFILE lcms_profile = NULL;
-	gboolean ret;
-	gchar *data = NULL;
-	gchar *filename = NULL;
-	gchar **profiles = NULL;
-	gchar *qualifier = NULL;
-	gchar text[1024];
-	GError *error = NULL;
-	gsize len;
-	GVariant *tuple = NULL;
-	GVariant *value = NULL;
-
-	/* return '' */
-	if (g_strcmp0 (method_name, "SetFilename") == 0) {
-
-		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
-		if (!ret)
-			goto out;
-
-		/* copy the profile path */
-		item = cd_main_profile_find_by_object_path (object_path);
-		if (item == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "profile object path '%s' does not exist",
-							       object_path);
-			goto out;
-		}
-
-		/* copy the profile path */
-		if (item->filename != NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "profile '%s' filename already set",
-							       object_path);
-			goto out;
-		}
-
-		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(s)",
-			       &filename);
-
-		/* parse the ICC file */
-		ret = g_file_get_contents (filename, &data, &len, &error);
-		if (!ret) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "failed to open profile: %s",
-							       error->message);
-			g_error_free (error);
-			goto out;
-		}
-		lcms_profile = cmsOpenProfileFromMem (data, len);
-		if (lcms_profile == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "failed to parse %s",
-							       filename);
-			goto out;
-		}
-
-		/* get the description as the title */
-		cmsGetProfileInfoASCII (lcms_profile,
-					cmsInfoDescription,
-					"en", "US",
-					text, 1024);
-		item->filename = g_strdup (filename);
-		item->title = g_strdup (text);
-
-		/* emit */
-		cd_main_profile_emit_changed (item);
-
-		g_dbus_method_invocation_return_value (invocation, NULL);
-		goto out;
-	}
-
-	/* return '' */
-	if (g_strcmp0 (method_name, "SetQualifier") == 0) {
-
-		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
-		if (!ret)
-			goto out;
-
-		/* copy the profile path */
-		item = cd_main_profile_find_by_object_path (object_path);
-		if (item == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "profile object path '%s' does not exist",
-							       object_path);
-			goto out;
-		}
-
-		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(s)",
-			       &qualifier);
-
-		/* save in the struct */
-		item->qualifier = g_strdup (qualifier);
-
-		/* emit */
-		cd_main_profile_emit_changed (item);
-
-		g_dbus_method_invocation_return_value (invocation, NULL);
-		goto out;
-	}
-
-	/* we suck */
-	g_critical ("failed to process method %s", method_name);
-out:
-	g_free (filename);
-	g_free (qualifier);
-	g_free (data);
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
-	if (tuple != NULL)
-		g_variant_unref (tuple);
-	if (value != NULL)
-		g_variant_unref (value);
-	g_strfreev (profiles);
-	return;
-}
-
-/**
- * cd_main_profile_get_property:
- **/
-static GVariant *
-cd_main_profile_get_property (GDBusConnection *connection_, const gchar *sender,
-			     const gchar *object_path, const gchar *interface_name,
-			     const gchar *property_name, GError **error,
-			     gpointer user_data)
-{
-	CdProfileItem *item;
-	gchar **profiles = NULL;
-	GVariant *retval = NULL;
-
-	if (g_strcmp0 (property_name, "Title") == 0) {
-		item = cd_main_profile_find_by_object_path (object_path);
-		if (item->title != NULL)
-			retval = g_variant_new_string (item->title);
-		goto out;
-	}
-	if (g_strcmp0 (property_name, "ProfileId") == 0) {
-		item = cd_main_profile_find_by_object_path (object_path);
-		if (item->profile_id != NULL)
-			retval = g_variant_new_string (item->profile_id);
-		goto out;
-	}
-	if (g_strcmp0 (property_name, "Qualifier") == 0) {
-		item = cd_main_profile_find_by_object_path (object_path);
-		if (item->qualifier != NULL)
-			retval = g_variant_new_string (item->qualifier);
-		goto out;
-	}
-	if (g_strcmp0 (property_name, "Filename") == 0) {
-		item = cd_main_profile_find_by_object_path (object_path);
-		if (item->filename != NULL)
-			retval = g_variant_new_string (item->filename);
-		goto out;
-	}
-
-	g_critical ("failed to set property %s", property_name);
-out:
-	g_strfreev (profiles);
-	return retval;
-}
+static CdDeviceArray *devices_array = NULL;
+static CdProfileArray *profiles_array = NULL;
 
 /**
  * cd_main_create_profile:
  **/
-static CdProfileItem *
+static CdProfile *
 cd_main_create_profile (const gchar *profile_id, GError **error)
 {
 	gboolean ret;
-	CdProfileItem *item;
-	static const GDBusInterfaceVTable interface_vtable = {
-		cd_main_profile_method_call,
-		cd_main_profile_get_property,
-		NULL
-	};
+	CdProfile *profile;
 
 	g_assert (connection != NULL);
 
 	/* create an object */
-	item = g_new0 (CdProfileItem, 1);
-	item->profile_id = g_strdup (profile_id);
-	item->object_path = g_build_filename (COLORD_DBUS_PATH, profile_id, NULL);
-	g_ptr_array_add (profiles_array, item);
-	g_debug ("Adding profile %s", item->object_path);
-	item->registration_id = g_dbus_connection_register_object (connection,
-							     item->object_path,
-							     introspection_profile->interfaces[0],
-							     &interface_vtable,
-							     NULL,  /* user_data */
-							     NULL,  /* user_data_free_func */
-							     NULL); /* GError** */
-	g_assert (item->registration_id > 0);
+	profile = cd_profile_new ();
+	cd_profile_set_id (profile, profile_id);
+
+	/* register object */
+	ret = cd_profile_register_object (profile,
+					  connection,
+					  introspection_profile->interfaces[0],
+					  error);
+	if (!ret)
+		goto out;
+
+	/* add */
+	cd_profile_array_add (profiles_array, profile);
+	g_debug ("Adding profile %s", cd_profile_get_object_path (profile));
 
 	/* emit signal */
 	ret = g_dbus_connection_emit_signal (connection,
@@ -489,271 +73,38 @@ cd_main_create_profile (const gchar *profile_id, GError **error)
 					     COLORD_DBUS_INTERFACE_PROFILE,
 					     "ProfileAdded",
 					     g_variant_new ("(s)",
-							    item->object_path),
+							    cd_profile_get_object_path (profile)),
 					     error);
 	if (!ret)
 		goto out;
 out:
-	return item;
-}
-
-/**
- * cd_main_device_emit_changed:
- **/
-static void
-cd_main_device_emit_changed (CdDeviceItem *item)
-{
-	gboolean ret;
-	GError *error = NULL;
-
-	/* emit signal */
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     item->object_path,
-					     COLORD_DBUS_INTERFACE_DEVICE,
-					     "Changed",
-					     NULL,
-					     &error);
-	if (!ret) {
-		g_warning ("failed to send signal %s", error->message);
-		g_error_free (error);
-	}
-}
-
-/**
- * cd_main_find_device_by_qualifier:
- **/
-static CdProfileItem *
-cd_main_find_device_by_qualifier (const gchar *regex, GPtrArray *array)
-{
-	CdProfileItem *item = NULL;
-	CdProfileItem *item_tmp;
-	guint i;
-	gboolean ret;
-
-	/* find using a wildcard */
-	for (i=0; i<array->len; i++) {
-		item_tmp = g_ptr_array_index (array, i);
-		ret = g_regex_match_simple (regex,
-					    item_tmp->qualifier,
-					    0, 0);
-		if (ret) {
-			item = item_tmp;
-			goto out;
-		}
-	}
-out:
-	return  item;
-}
-
-/**
- * cd_main_device_method_call:
- **/
-static void
-cd_main_device_method_call (GDBusConnection *connection_, const gchar *sender,
-			    const gchar *object_path, const gchar *interface_name,
-			    const gchar *method_name, GVariant *parameters,
-			    GDBusMethodInvocation *invocation, gpointer user_data)
-{
-	CdDeviceItem *item;
-	CdProfileItem *item_profile;
-	CdProfileItem *item_profile_tmp;
-	gboolean ret;
-	gchar **devices = NULL;
-	gchar *profile_object_path = NULL;
-	gchar *regex = NULL;
-	guint i;
-	GVariant *tuple = NULL;
-	GVariant *value = NULL;
-
-	/* return '' */
-	if (g_strcmp0 (method_name, "AddProfile") == 0) {
-
-		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
-		if (!ret)
-			goto out;
-
-		/* copy the device path */
-		item = cd_main_device_find_by_object_path (object_path);
-		if (item == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "device object path '%s' does not exist",
-							       object_path);
-			goto out;
-		}
-
-		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(o)",
-			       &profile_object_path);
-		item_profile = cd_main_profile_find_by_object_path (profile_object_path);
-		if (item_profile == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "profile object path '%s' does not exist",
-							       profile_object_path);
-			goto out;
-		}
-
-		/* check it does not already exist */
-		for (i=0; i<item->profiles->len; i++) {
-			item_profile_tmp = g_ptr_array_index (item->profiles, i);
-			if (g_strcmp0 (item_profile->object_path,
-				       item_profile_tmp->object_path) == 0) {
-				g_dbus_method_invocation_return_error (invocation,
-								       CD_MAIN_ERROR,
-								       CD_MAIN_ERROR_FAILED,
-								       "profile object path '%s' has already been added",
-								       profile_object_path);
-				goto out;
-			}
-		}
-
-		/* add to the array */
-		g_ptr_array_add (item->profiles, item_profile);
-
-		/* emit */
-		cd_main_device_emit_changed (item);
-
-		g_dbus_method_invocation_return_value (invocation, NULL);
-		goto out;
-	}
-
-	/* return 'o' */
-	if (g_strcmp0 (method_name, "GetProfileForQualifier") == 0) {
-
-		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
-		if (!ret)
-			goto out;
-
-		/* copy the device path */
-		item = cd_main_device_find_by_object_path (object_path);
-		if (item == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "device object path '%s' does not exist",
-							       object_path);
-			goto out;
-		}
-
-		/* find the profile by the qualifier search string */
-		g_variant_get (parameters, "(s)", &regex);
-		item_profile = cd_main_find_device_by_qualifier (regex,
-								 item->profiles);
-		if (item_profile == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "nothing matched expression '%s'",
-							       regex);
-			goto out;
-		}
-
-		value = g_variant_new_object_path (item_profile->object_path);
-		tuple = g_variant_new_tuple (&value, 1);
-		g_dbus_method_invocation_return_value (invocation, tuple);
-		goto out;
-	}
-
-	/* we suck */
-	g_critical ("failed to process method %s", method_name);
-out:
-	g_free (regex);
-	g_free (profile_object_path);
-	if (tuple != NULL)
-		g_variant_unref (tuple);
-	if (value != NULL)
-		g_variant_unref (value);
-	g_strfreev (devices);
-	return;
-}
-
-/**
- * cd_main_device_get_property:
- **/
-static GVariant *
-cd_main_device_get_property (GDBusConnection *connection_, const gchar *sender,
-			     const gchar *object_path, const gchar *interface_name,
-			     const gchar *property_name, GError **error,
-			     gpointer user_data)
-{
-	CdDeviceItem *item;
-	CdProfileItem *item_profile;
-	guint i;
-	GVariant **profiles = NULL;
-	GVariant *retval = NULL;
-
-	if (g_strcmp0 (property_name, "Created") == 0) {
-		retval = g_variant_new_uint64 (0);
-		goto out;
-	}
-	if (g_strcmp0 (property_name, "Model") == 0) {
-		retval = g_variant_new_string ("hello dave");
-		goto out;
-	}
-	if (g_strcmp0 (property_name, "DeviceId") == 0) {
-		item = cd_main_device_find_by_object_path (object_path);
-		retval = g_variant_new_string (item->device_id);
-		goto out;
-	}
-	if (g_strcmp0 (property_name, "Profiles") == 0) {
-		item = cd_main_device_find_by_object_path (object_path);
-
-		/* copy the object paths */
-		profiles = g_new0 (GVariant *, item->profiles->len + 1);
-		for (i=0; i<item->profiles->len; i++) {
-			item_profile = g_ptr_array_index (item->profiles, i);
-			profiles[i] = g_variant_new_object_path (item_profile->object_path);
-		}
-
-		/* format the value */
-		retval = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
-					      profiles,
-					      item->profiles->len);
-		goto out;
-	}
-
-	g_critical ("failed to set property %s", property_name);
-out:
-	return retval;
+	return profile;
 }
 
 /**
  * cd_main_create_device:
  **/
-static CdDeviceItem *
+static CdDevice *
 cd_main_create_device (const gchar *device_id, GError **error)
 {
 	gboolean ret;
-	CdDeviceItem *item;
-	static const GDBusInterfaceVTable interface_vtable = {
-		cd_main_device_method_call,
-		cd_main_device_get_property,
-		NULL
-	};
+	CdDevice *device;
 
 	g_assert (connection != NULL);
 
 	/* create an object */
-	item = g_new0 (CdDeviceItem, 1);
-	item->device_id = g_strdup (device_id);
-	item->object_path = g_build_filename (COLORD_DBUS_PATH, device_id, NULL);
-	item->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_main_profile_item_free);
-	g_ptr_array_add (devices_array, item);
-	g_debug ("Adding device %s", item->object_path);
-	item->registration_id = g_dbus_connection_register_object (connection,
-							     item->object_path,
-							     introspection_device->interfaces[0],
-							     &interface_vtable,
-							     NULL,  /* user_data */
-							     NULL,  /* user_data_free_func */
-							     NULL); /* GError** */
-	g_assert (item->registration_id > 0);
+	device = cd_device_new ();
+	cd_device_set_id (device, device_id);
+	cd_device_array_add (devices_array, device);
+	g_debug ("Adding device %s", cd_device_get_object_path (device));
+
+	/* register object */
+	ret = cd_device_register_object (device,
+					 connection,
+					 introspection_device->interfaces[0],
+					 error);
+	if (!ret)
+		goto out;
 
 	/* emit signal */
 	ret = g_dbus_connection_emit_signal (connection,
@@ -762,12 +113,12 @@ cd_main_create_device (const gchar *device_id, GError **error)
 					     COLORD_DBUS_INTERFACE_DEVICE,
 					     "DeviceAdded",
 					     g_variant_new ("(o)",
-							    item->object_path),
+							    cd_device_get_object_path (device)),
 					     error);
 	if (!ret)
 		goto out;
 out:
-	return item;
+	return device;
 }
 
 /**
@@ -779,31 +130,20 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
-	CdDeviceItem *item_device;
-	CdProfileItem *item_profile;
+	CdDevice *device;
+	CdProfile *profile;
 	gboolean ret;
 	gchar *device_id = NULL;
 	gchar *object_path_tmp = NULL;
 	GError *error = NULL;
-	guint i;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
-	GVariant **variant_array = NULL;
 
 	/* return 'as' */
 	if (g_strcmp0 (method_name, "GetDevices") == 0) {
 
-		/* copy the object paths */
-		variant_array = g_new0 (GVariant *, devices_array->len + 1);
-		for (i=0; i<devices_array->len; i++) {
-			item_device = g_ptr_array_index (devices_array, i);
-			variant_array[i] = g_variant_new_object_path (item_device->object_path);
-		}
-
 		/* format the value */
-		value = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
-					     variant_array,
-					     devices_array->len);
+		value = cd_device_array_get_variant (devices_array);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -813,8 +153,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "FindDeviceById") == 0) {
 
 		g_variant_get (parameters, "(s)", &device_id);
-		item_device = cd_main_device_find_by_id (device_id);
-		if (item_device == NULL) {
+		device = cd_device_array_get_by_id (devices_array, device_id);
+		if (device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
@@ -824,7 +164,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* format the value */
-		value = g_variant_new ("(o)", item_device->object_path);
+		value = g_variant_new ("(o)", cd_device_get_object_path (device));
 		g_dbus_method_invocation_return_value (invocation, value);
 		goto out;
 	}
@@ -833,8 +173,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "FindProfileById") == 0) {
 
 		g_variant_get (parameters, "(s)", &device_id);
-		item_profile = cd_main_profile_find_by_id (device_id);
-		if (item_profile == NULL) {
+		profile = cd_profile_array_get_by_id (profiles_array, device_id);
+		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
@@ -844,7 +184,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* format the value */
-		value = g_variant_new ("(o)", item_profile->object_path);
+		value = g_variant_new ("(o)", cd_profile_get_object_path (profile));
 		g_dbus_method_invocation_return_value (invocation, value);
 		goto out;
 	}
@@ -852,18 +192,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 'as' */
 	if (g_strcmp0 (method_name, "GetProfiles") == 0) {
 
-		/* copy the object paths */
-		variant_array = g_new0 (GVariant *, profiles_array->len + 1);
-		for (i=0; i<profiles_array->len; i++) {
-			item_profile = g_ptr_array_index (profiles_array, i);
-g_warning ("item_profile->object_path=%s", item_profile->object_path);
-			variant_array[i] = g_variant_new_object_path (item_profile->object_path);
-		}
-
 		/* format the value */
-		value = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
-					     variant_array,
-					     profiles_array->len);
+		value = cd_profile_array_get_variant (profiles_array);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -879,26 +209,26 @@ g_warning ("item_profile->object_path=%s", item_profile->object_path);
 
 		/* does already exist */
 		g_variant_get (parameters, "(s)", &device_id);
-		item_device = cd_main_device_find_by_id (device_id);
-		if (item_device != NULL) {
+		device = cd_device_array_get_by_id (devices_array, device_id);
+		if (device != NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
 							       "device object path '%s' already exists",
-							       item_device->object_path);
+							       cd_device_get_object_path (device));
 			goto out;
 		}
 
 		/* copy the device path */
-		item_device = cd_main_create_device (device_id, &error);
-		if (item_device == NULL) {
+		device = cd_main_create_device (device_id, &error);
+		if (device == NULL) {
 			g_dbus_method_invocation_return_gerror (invocation,
 								error);
 			goto out;
 		}
 
 		/* format the value */
-		value = g_variant_new_object_path (item_device->object_path);
+		value = g_variant_new_object_path (cd_device_get_object_path (device));
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -914,8 +244,8 @@ g_warning ("item_profile->object_path=%s", item_profile->object_path);
 
 		/* does already exist */
 		g_variant_get (parameters, "(s)", &device_id);
-		item_device = cd_main_device_find_by_id (device_id);
-		if (item_device == NULL) {
+		device = cd_device_array_get_by_id (devices_array, device_id);
+		if (device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
@@ -925,8 +255,9 @@ g_warning ("item_profile->object_path=%s", item_profile->object_path);
 		}
 
 		/* remove from the array before emitting */
-		object_path_tmp = g_strdup (item_device->object_path);
-		g_ptr_array_remove (devices_array, item_device);
+		object_path_tmp = g_strdup (cd_device_get_object_path (device));
+		cd_device_array_remove (devices_array, device);
+		g_debug ("Removing device %s", cd_device_get_object_path (device));
 
 		/* emit signal */
 		ret = g_dbus_connection_emit_signal (connection,
@@ -956,26 +287,26 @@ g_warning ("item_profile->object_path=%s", item_profile->object_path);
 
 		/* does already exist */
 		g_variant_get (parameters, "(s)", &device_id);
-		item_profile = cd_main_profile_find_by_id (device_id);
-		if (item_profile != NULL) {
+		profile = cd_profile_array_get_by_id (profiles_array, device_id);
+		if (profile != NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
 							       "profile object path '%s' already exists",
-							       item_profile->object_path);
+							       cd_profile_get_object_path (profile));
 			goto out;
 		}
 
 		/* copy the device path */
-		item_profile = cd_main_create_profile (device_id, &error);
-		if (item_profile == NULL) {
+		profile = cd_main_create_profile (device_id, &error);
+		if (profile == NULL) {
 			g_dbus_method_invocation_return_gerror (invocation,
 								error);
 			goto out;
 		}
 
 		/* format the value */
-		value = g_variant_new_object_path (item_profile->object_path);
+		value = g_variant_new_object_path (cd_profile_get_object_path (profile));
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -989,10 +320,6 @@ out:
 		g_variant_unref (tuple);
 	if (value != NULL)
 		g_variant_unref (value);
-	if (variant_array != NULL) {
-		for (i=0; variant_array[i] != NULL; i++)
-			g_variant_unref (variant_array[i]);
-	}
 	return;
 }
 
@@ -1101,16 +428,8 @@ main (int argc, char *argv[])
 
 	/* create new objects */
 	loop = g_main_loop_new (NULL, FALSE);
-	devices_array = g_ptr_array_new_with_free_func ((GDestroyNotify)
-							cd_main_device_item_free);
-	profiles_array = g_ptr_array_new_with_free_func ((GDestroyNotify)
-							 cd_main_profile_item_free);
-	authority = polkit_authority_get_sync (NULL, &error);
-	if (authority == NULL) {
-		g_error ("failed to get pokit authority: %s", error->message);
-		g_error_free (error);
-		goto out;
-	}
+	devices_array = cd_device_array_new ();
+	profiles_array = cd_profile_array_new ();
 
 	/* load introspection from file */
 	file_daemon = g_file_new_for_path (DATADIR "/dbus-1/interfaces/"
@@ -1189,9 +508,9 @@ out:
 	g_free (introspection_device_data);
 	g_free (introspection_profile_data);
 	if (devices_array != NULL)
-		g_ptr_array_unref (devices_array);
+		g_object_unref (devices_array);
 	if (profiles_array != NULL)
-		g_ptr_array_unref (profiles_array);
+		g_object_unref (profiles_array);
 	if (file_daemon != NULL)
 		g_object_unref (file_daemon);
 	if (file_device != NULL)
@@ -1208,8 +527,6 @@ out:
 		g_dbus_node_info_unref (introspection_device);
 	if (introspection_profile != NULL)
 		g_dbus_node_info_unref (introspection_profile);
-	if (authority != NULL)
-		g_object_unref (authority);
 	g_main_loop_unref (loop);
 	return retval;
 }

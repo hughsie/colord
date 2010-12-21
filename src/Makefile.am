@@ -19,7 +19,16 @@ libexec_PROGRAMS =					\
 	colord
 
 colord_SOURCES =					\
+	cd-common.c					\
 	cd-common.h					\
+	cd-device-array.c				\
+	cd-device-array.h				\
+	cd-device.c					\
+	cd-device.h					\
+	cd-profile-array.c				\
+	cd-profile-array.h				\
+	cd-profile.c					\
+	cd-profile.h					\
 	cd-main.c
 
 colord_LDADD =						\
