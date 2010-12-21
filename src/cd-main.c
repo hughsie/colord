@@ -210,21 +210,13 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* does already exist */
 		g_variant_get (parameters, "(s)", &device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
-		if (device != NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "device object path '%s' already exists",
-							       cd_device_get_object_path (device));
-			goto out;
-		}
-
-		/* copy the device path */
-		device = cd_main_create_device (device_id, &error);
 		if (device == NULL) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
-			goto out;
+			device = cd_main_create_device (device_id, &error);
+			if (device == NULL) {
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				goto out;
+			}
 		}
 
 		/* format the value */
