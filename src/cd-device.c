@@ -47,6 +47,7 @@ struct _CdDevicePrivate
 	GPtrArray			*profiles;
 	guint				 registration_id;
 	guint				 watcher_id;
+	guint				 created;
 };
 
 enum {
@@ -292,7 +293,7 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	GVariant *retval = NULL;
 
 	if (g_strcmp0 (property_name, "Created") == 0) {
-		retval = g_variant_new_uint64 (0);
+		retval = g_variant_new_uint64 (priv->created);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Model") == 0) {
@@ -492,6 +493,7 @@ cd_device_init (CdDevice *device)
 	device->priv = CD_DEVICE_GET_PRIVATE (device);
 	device->priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	device->priv->profile_array = cd_profile_array_new ();
+	device->priv->created = g_get_real_time ();
 }
 
 /**
