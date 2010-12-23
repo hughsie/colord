@@ -102,6 +102,18 @@ fi
 AM_CONDITIONAL(HAVE_DOCBOOK2MAN, [test "$DOCBOOK2MAN" != "no"])
 
 dnl ---------------------------------------------------------------------------
+dnl - Build GUI gui
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(gui, AS_HELP_STRING([--enable-gui],[enable GUI gui]),
+	      enable_gui=$enableval,enable_gui=yes)
+AM_CONDITIONAL(CD_BUILD_GUI, test x$enable_gui = xyes)
+if test x$enable_gui = xyes; then
+	PKG_CHECK_MODULES(GTK, gtk+-3.0)
+	AC_SUBST(GTK_CFLAGS)
+	AC_SUBST(GTK_LIBS)
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl - Makefiles, etc.
 dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([

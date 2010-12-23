@@ -1,5 +1,6 @@
 *.gmo
 .intltool-merge-cache
 Makefile.in.in
+*.pot
 POTFILES
 stamp-it

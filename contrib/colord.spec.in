@@ -25,6 +25,7 @@ to color profiles in the system context.
 %build
 %configure \
         --disable-static \
+        --disable-gui \
         --disable-dependency-tracking
 
 make %{?_smp_mflags}
