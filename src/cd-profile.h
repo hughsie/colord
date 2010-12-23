@@ -46,6 +46,7 @@ struct _CdProfile
 struct _CdProfileClass
 {
 	GObjectClass		 parent_class;
+	void			(* invalidate)		(CdProfile	*profile);
 };
 
 GType		 cd_profile_get_type			(void);
@@ -68,6 +69,8 @@ void		 cd_profile_set_qualifier		(CdProfile	*profile,
 							 const gchar	*qualifier);
 const gchar	*cd_profile_get_title			(CdProfile	*profile);
 const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
+void		 cd_profile_watch_sender		(CdProfile	*profile,
+							 const gchar	*sender);
 
 G_END_DECLS
 

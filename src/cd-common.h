@@ -32,6 +32,10 @@
 #define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
 
+#define	CD_DBUS_OPTIONS_MASK_NORMAL	0
+#define	CD_DBUS_OPTIONS_MASK_TEMP	1
+#define	CD_DBUS_OPTIONS_MASK_DISK	2
+
 #define CD_MAIN_ERROR			cd_main_error_quark()
 
 typedef enum {

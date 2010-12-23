@@ -46,6 +46,7 @@ struct _CdDevice
 struct _CdDeviceClass
 {
 	GObjectClass		 parent_class;
+	void			(* invalidate)		(CdDevice	*device);
 };
 
 GType		 cd_device_get_type			(void);
@@ -63,6 +64,8 @@ gboolean	 cd_device_register_object		(CdDevice	*device,
 							 GDBusConnection *connection,
 							 GDBusInterfaceInfo *info,
 							 GError		**error);
+void		 cd_device_watch_sender			(CdDevice	*device,
+							 const gchar	*sender);
 
 G_END_DECLS
 

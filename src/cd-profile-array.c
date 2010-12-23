@@ -58,6 +58,19 @@ cd_profile_array_add (CdProfileArray *profile_array, CdProfile *profile)
 }
 
 /**
+ * cd_profile_array_remove:
+ **/
+void
+cd_profile_array_remove (CdProfileArray *profile_array, CdProfile *profile)
+{
+	g_return_if_fail (CD_IS_PROFILE_ARRAY (profile_array));
+	g_return_if_fail (CD_IS_PROFILE (profile));
+
+	g_ptr_array_remove (profile_array->priv->array,
+			    g_object_ref (profile));
+}
+
+/**
  * cd_profile_array_get_by_id:
  **/
 CdProfile *

@@ -176,21 +176,37 @@ out:
 }
 
 /**
+ * cd_util_mask_from_string:
+ **/
+static guint
+cd_util_mask_from_string (const gchar *value)
+{
+	if (g_strcmp0 (value, "normal") == 0)
+		return CD_DBUS_OPTIONS_MASK_NORMAL;
+	if (g_strcmp0 (value, "temp") == 0)
+		return CD_DBUS_OPTIONS_MASK_TEMP;
+	if (g_strcmp0 (value, "disk") == 0)
+		return CD_DBUS_OPTIONS_MASK_DISK;
+	g_warning ("mask string '%s' unknown", value);
+	return CD_DBUS_OPTIONS_MASK_NORMAL;
+}
+
+/**
  * main:
  **/
 int
 main (int argc, char *argv[])
 {
 	const gchar *object_path;
-	//gboolean ret;
+	gchar *object_path_tmp = NULL;
 	GDBusConnection *connection;
 	GError *error = NULL;
 	GOptionContext *context;
-	guint i;
 	gsize len;
-	GVariantIter iter;
+	guint i;
+	guint mask;
 	guint retval = 1;
-	gchar *object_path_tmp = NULL;
+	GVariantIter iter;
 	GVariant *response_child = NULL;
 	GVariant *response = NULL;
 
@@ -284,18 +300,21 @@ main (int argc, char *argv[])
 
 	} else if (g_strcmp0 (argv[1], "create-device") == 0) {
 
-		if (argc < 3) {
+		if (argc < 4) {
 			g_print ("Not enough arguments\n");
 			goto out;
 		}
 
 		/* execute sync method */
+		mask = cd_util_mask_from_string (argv[3]);
 		response = g_dbus_connection_call_sync (connection,
 							COLORD_DBUS_SERVICE,
 							COLORD_DBUS_PATH,
 							COLORD_DBUS_INTERFACE,
 							"CreateDevice",
-							g_variant_new ("(s)", argv[2]),
+							g_variant_new ("(su)",
+								       argv[2],
+								       mask),
 							G_VARIANT_TYPE ("(o)"),
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);
@@ -324,7 +343,8 @@ main (int argc, char *argv[])
 							COLORD_DBUS_PATH,
 							COLORD_DBUS_INTERFACE,
 							"FindDeviceById",
-							g_variant_new ("(s)", argv[2]),
+							g_variant_new ("(s)",
+								       argv[2]),
 							G_VARIANT_TYPE ("(o)"),
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);
@@ -371,18 +391,21 @@ main (int argc, char *argv[])
 
 	} else if (g_strcmp0 (argv[1], "create-profile") == 0) {
 
-		if (argc < 3) {
+		if (argc < 4) {
 			g_print ("Not enough arguments\n");
 			goto out;
 		}
 
 		/* execute sync method */
+		mask = cd_util_mask_from_string (argv[3]);
 		response = g_dbus_connection_call_sync (connection,
 							COLORD_DBUS_SERVICE,
 							COLORD_DBUS_PATH,
 							COLORD_DBUS_INTERFACE,
 							"CreateProfile",
-							g_variant_new ("(s)", argv[2]),
+							g_variant_new ("(su)",
+								       argv[2],
+								       mask),
 							G_VARIANT_TYPE ("(o)"),
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);

@@ -40,10 +40,99 @@ static CdDeviceArray *devices_array = NULL;
 static CdProfileArray *profiles_array = NULL;
 
 /**
+ * cd_main_profile_removed:
+ **/
+static void
+cd_main_profile_removed (CdProfile *profile)
+{
+	gboolean ret;
+	gchar *object_path_tmp;
+	GError *error = NULL;
+
+	/* remove from the array before emitting */
+	object_path_tmp = g_strdup (cd_profile_get_object_path (profile));
+	cd_profile_array_remove (profiles_array, profile);
+	g_debug ("Removing profile %s", cd_profile_get_object_path (profile));
+
+	/* emit signal */
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "ProfileRemoved",
+					     g_variant_new ("(o)",
+							    object_path_tmp),
+					     &error);
+	if (!ret) {
+		g_warning ("failed to send signal %s", error->message);
+		g_error_free (error);
+	}
+	g_free (object_path_tmp);
+}
+
+/**
+ * cd_main_profile_invalidate_cb:
+ **/
+static void
+cd_main_profile_invalidate_cb (CdProfile *profile,
+			       gpointer user_data)
+{
+	g_debug ("profile '%s' invalidated",
+		 cd_profile_get_id (profile));
+	cd_main_profile_removed (profile);
+}
+
+/**
+ * cd_main_device_removed:
+ **/
+static void
+cd_main_device_removed (CdDevice *device)
+{
+	gboolean ret;
+	gchar *object_path_tmp;
+	GError *error = NULL;
+
+	/* remove from the array before emitting */
+	object_path_tmp = g_strdup (cd_device_get_object_path (device));
+	cd_device_array_remove (devices_array, device);
+	g_debug ("Removing device %s", cd_device_get_object_path (device));
+
+	/* emit signal */
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "DeviceRemoved",
+					     g_variant_new ("(o)",
+							    object_path_tmp),
+					     &error);
+	if (!ret) {
+		g_warning ("failed to send signal %s", error->message);
+		g_error_free (error);
+	}
+	g_free (object_path_tmp);
+}
+
+/**
+ * cd_main_device_invalidate_cb:
+ **/
+static void
+cd_main_device_invalidate_cb (CdDevice *device,
+			      gpointer user_data)
+{
+	g_debug ("device '%s' invalidated",
+		 cd_device_get_id (device));
+	cd_main_device_removed (device);
+}
+
+/**
  * cd_main_create_profile:
  **/
 static CdProfile *
-cd_main_create_profile (const gchar *profile_id, GError **error)
+cd_main_create_profile (const gchar *sender,
+			const gchar *profile_id,
+			guint options,
+			GError **error)
 {
 	gboolean ret;
 	CdProfile *profile;
@@ -66,6 +155,25 @@ cd_main_create_profile (const gchar *profile_id, GError **error)
 	cd_profile_array_add (profiles_array, profile);
 	g_debug ("Adding profile %s", cd_profile_get_object_path (profile));
 
+	/* different persistent options */
+	if (options == CD_DBUS_OPTIONS_MASK_NORMAL) {
+		g_debug ("normal profile");
+	} else if ((options & CD_DBUS_OPTIONS_MASK_TEMP) > 0) {
+		g_debug ("temporary profile");
+		/* setup DBus watcher */
+		cd_profile_watch_sender (profile, sender);
+	} else if ((options & CD_DBUS_OPTIONS_MASK_DISK) > 0) {
+		g_debug ("persistant profile");
+		//FIXME: save to disk
+	} else {
+		g_warning ("Unsupported options kind: %i", options);
+	}
+
+	/* profile is no longer valid */
+	g_signal_connect (profile, "invalidate",
+			  G_CALLBACK (cd_main_profile_invalidate_cb),
+			  NULL);
+
 	/* emit signal */
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
@@ -85,7 +193,10 @@ out:
  * cd_main_create_device:
  **/
 static CdDevice *
-cd_main_create_device (const gchar *device_id, GError **error)
+cd_main_create_device (const gchar *sender,
+		       const gchar *device_id,
+		       guint options,
+		       GError **error)
 {
 	gboolean ret;
 	CdDevice *device;
@@ -105,6 +216,25 @@ cd_main_create_device (const gchar *device_id, GError **error)
 					 error);
 	if (!ret)
 		goto out;
+
+	/* different persistent options */
+	if (options == CD_DBUS_OPTIONS_MASK_NORMAL) {
+		g_debug ("normal device");
+	} else if ((options & CD_DBUS_OPTIONS_MASK_TEMP) > 0) {
+		g_debug ("temporary device");
+		/* setup DBus watcher */
+		cd_device_watch_sender (device, sender);
+	} else if ((options & CD_DBUS_OPTIONS_MASK_DISK) > 0) {
+		g_debug ("persistant device");
+		//FIXME: save to disk
+	} else {
+		g_warning ("Unsupported options kind: %i", options);
+	}
+
+	/* profile is no longer valid */
+	g_signal_connect (device, "invalidate",
+			  G_CALLBACK (cd_main_device_invalidate_cb),
+			  NULL);
 
 	/* emit signal */
 	ret = g_dbus_connection_emit_signal (connection,
@@ -136,6 +266,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	gchar *device_id = NULL;
 	gchar *object_path_tmp = NULL;
 	GError *error = NULL;
+	guint options;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 
@@ -208,17 +339,19 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(s)", &device_id);
+		g_variant_get (parameters, "(su)", &device_id, &options);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
-			device = cd_main_create_device (device_id, &error);
+			device = cd_main_create_device (sender,
+							device_id,
+							options,
+							&error);
 			if (device == NULL) {
 				g_dbus_method_invocation_return_gerror (invocation,
 									error);
 				goto out;
 			}
 		}
-
 		/* format the value */
 		value = g_variant_new_object_path (cd_device_get_object_path (device));
 		tuple = g_variant_new_tuple (&value, 1);
@@ -246,24 +379,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
-		/* remove from the array before emitting */
-		object_path_tmp = g_strdup (cd_device_get_object_path (device));
-		cd_device_array_remove (devices_array, device);
-		g_debug ("Removing device %s", cd_device_get_object_path (device));
-
-		/* emit signal */
-		ret = g_dbus_connection_emit_signal (connection,
-						     NULL,
-						     COLORD_DBUS_PATH,
-						     COLORD_DBUS_INTERFACE,
-						     "DeviceRemoved",
-						     g_variant_new ("(o)",
-								    object_path_tmp),
-						     &error);
-		if (!ret) {
-			g_warning ("failed to send signal %s", error->message);
-			g_error_free (error);
-		}
+		/* remove from the array, and emit */
+		cd_main_device_removed (device);
 
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
@@ -278,8 +395,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(s)", &device_id);
-		profile = cd_profile_array_get_by_id (profiles_array, device_id);
+		g_variant_get (parameters, "(su)", &device_id, &options);
+		profile = cd_profile_array_get_by_id (profiles_array,
+						      device_id);
 		if (profile != NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
@@ -290,7 +408,10 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* copy the device path */
-		profile = cd_main_create_profile (device_id, &error);
+		profile = cd_main_create_profile (sender,
+						  device_id,
+						  options,
+						  &error);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_gerror (invocation,
 								error);

@@ -1,6 +1,7 @@
-./colormgr create-device dave
+./colormgr create-device dave normal
 ./colormgr get-devices
-./colormgr create-profile norman
+./colormgr create-profile norman normal
+./colormgr create-profile victorian temp
 ./colormgr get-profiles
 ./colormgr device-add-profile /org/freedesktop/ColorManager/dave /org/freedesktop/ColorManager/norman
 ./colormgr find-device dave

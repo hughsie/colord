@@ -40,12 +40,18 @@ static void     cd_device_finalize	(GObject     *object);
  **/
 struct _CdDevicePrivate
 {
+	CdProfileArray			*profile_array;
 	gchar				*id;
 	gchar				*object_path;
+	GDBusConnection			*connection;
 	GPtrArray			*profiles;
 	guint				 registration_id;
-	GDBusConnection			*connection;
-	CdProfileArray			*profile_array;
+	guint				 watcher_id;
+};
+
+enum {
+	SIGNAL_INVALIDATE,
+	SIGNAL_LAST
 };
 
 enum {
@@ -55,6 +61,7 @@ enum {
 	PROP_LAST
 };
 
+static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdDevice, cd_device, G_TYPE_OBJECT)
 
 /**
@@ -361,6 +368,35 @@ out:
 }
 
 /**
+ * cd_device_name_vanished_cb:
+ **/
+static void
+cd_device_name_vanished_cb (GDBusConnection *connection,
+			    const gchar *name,
+			    gpointer user_data)
+{
+	CdDevice *device = CD_DEVICE (user_data);
+	g_debug ("emit 'invalidate'");
+	g_signal_emit (device, signals[SIGNAL_INVALIDATE], 0);
+}
+
+/**
+ * cd_device_watch_sender:
+ **/
+void
+cd_device_watch_sender (CdDevice *device, const gchar *sender)
+{
+	g_return_if_fail (CD_IS_DEVICE (device));
+	device->priv->watcher_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
+						     sender,
+						     G_BUS_NAME_WATCHER_FLAGS_NONE,
+						     NULL,
+						     cd_device_name_vanished_cb,
+						     device,
+						     NULL);
+}
+
+/**
  * cd_device_get_property:
  **/
 static void
@@ -434,6 +470,16 @@ cd_device_class_init (CdDeviceClass *klass)
 				     G_PARAM_READWRITE);
 	g_object_class_install_property (object_class, PROP_ID, pspec);
 
+	/**
+	 * CdDevice::invalidate:
+	 **/
+	signals[SIGNAL_INVALIDATE] =
+		g_signal_new ("invalidate",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdDeviceClass, invalidate),
+			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+
 	g_type_class_add_private (klass, sizeof (CdDevicePrivate));
 }
 
@@ -457,6 +503,8 @@ cd_device_finalize (GObject *object)
 	CdDevice *device = CD_DEVICE (object);
 	CdDevicePrivate *priv = device->priv;
 
+	if (priv->watcher_id > 0)
+		g_bus_unwatch_name (priv->watcher_id);
 	if (priv->registration_id > 0) {
 		g_dbus_connection_unregister_object (priv->connection,
 						     priv->registration_id);
