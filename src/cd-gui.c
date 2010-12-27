@@ -28,18 +28,20 @@
 
 #include "cd-common.h"
 
-static GtkBuilder *builder = NULL;
+static gchar *current_device = NULL;
 static GDBusConnection *connection = NULL;
 static GDBusProxy *proxy = NULL;
+static GtkBuilder *builder = NULL;
+static gboolean create_profile = FALSE;
 
 enum {
-	CD_COLUMN_DEVICES_ID,
+	CD_COLUMN_DEVICES_OBJECT_PATH,
 	CD_COLUMN_DEVICES_TEXT,
 	CD_COLUMN_DEVICES_LAST
 };
 
 enum {
-	CD_COLUMN_PROFILE_ID,
+	CD_COLUMN_PROFILE_OBJECT_PATH,
 	CD_COLUMN_PROFILE_TITLE,
 	CD_COLUMN_PROFILE_QUALIFIER,
 	CD_COLUMN_PROFILE_NAME,
@@ -48,12 +50,205 @@ enum {
 };
 
 /**
+ * cd_gui_create_device_cb:
+ **/
+static void
+cd_gui_create_device_cb (GObject *source_object,
+			 GAsyncResult *res,
+			 gpointer user_data)
+{
+	GVariant *result;
+	GError *error = NULL;
+	GtkWidget *widget;
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res, &error);
+	if (result == NULL) {
+		g_warning ("Error creating device: %s",
+			   error->message);
+		g_error_free (error);
+		return;
+	}
+
+	/* hide window */
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "dialog_create"));
+	gtk_widget_hide (widget);
+
+	g_variant_unref (result);
+}
+
+/**
+ * cd_gui_create_profile_cb:
+ **/
+static void
+cd_gui_create_profile_cb (GObject *source_object,
+			  GAsyncResult *res,
+			  gpointer user_data)
+{
+	GVariant *result;
+	GError *error = NULL;
+	GtkWidget *widget;
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res, &error);
+	if (result == NULL) {
+		g_warning ("Error creating profile: %s",
+			   error->message);
+		g_error_free (error);
+		return;
+	}
+
+	/* hide window */
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "dialog_create"));
+	gtk_widget_hide (widget);
+
+	g_variant_unref (result);
+}
+
+/**
  * cd_gui_button_device_add_cb:
  **/
 static void
 cd_gui_button_device_add_cb (GtkWidget *widget, gpointer user_data)
 {
 	g_debug ("add");
+
+	create_profile = FALSE;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "hbox_qualifier"));
+	gtk_widget_set_visible (widget, FALSE);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "dialog_create"));
+	gtk_window_present (GTK_WINDOW (widget));
+}
+
+/**
+ * cd_gui_button_profile_add_cb:
+ **/
+static void
+cd_gui_button_profile_add_cb (GtkWidget *widget, gpointer user_data)
+{
+	g_debug ("add");
+
+	create_profile = TRUE;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "hbox_qualifier"));
+	gtk_widget_set_visible (widget, TRUE);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "dialog_create"));
+	gtk_window_present (GTK_WINDOW (widget));
+}
+
+/**
+ * cd_gui_button_create_cancel_cb:
+ **/
+static void
+cd_gui_button_create_cancel_cb (GtkWidget *widget, gpointer user_data)
+{
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "dialog_create"));
+	gtk_widget_hide (widget);
+}
+
+/**
+ * cd_gui_button_create_cb:
+ **/
+static void
+cd_gui_button_create_cb (GtkWidget *widget, gpointer user_data)
+{
+	const gchar *id;
+	const gchar *qualifier;
+	guint options = G_MAXUINT;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "entry_id"));
+	id = gtk_entry_get_text (GTK_ENTRY (widget));
+
+	/* get radio options */
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "radiobutton_create_normal"));
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
+		options = CD_DBUS_OPTIONS_MASK_NORMAL;
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "radiobutton_create_temp"));
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
+		options = CD_DBUS_OPTIONS_MASK_TEMP;
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "radiobutton_create_disk"));
+	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
+		options = CD_DBUS_OPTIONS_MASK_DISK;
+
+	/* only valid for profiles */
+	if (create_profile) {
+		g_debug ("create profile");
+		widget = GTK_WIDGET (gtk_builder_get_object (builder, "entry_qualifier"));
+		qualifier = gtk_entry_get_text (GTK_ENTRY (widget));
+
+		g_dbus_proxy_call (proxy,
+				   "CreateProfile",
+				   g_variant_new ("(su)",
+						  id,
+						  options),
+				   G_DBUS_CALL_FLAGS_NONE,
+				   -1,
+				   NULL,
+				   cd_gui_create_profile_cb,
+				   NULL);
+
+	} else {
+		g_debug ("create device");
+		g_dbus_proxy_call (proxy,
+				   "CreateDevice",
+				   g_variant_new ("(su)",
+						  id,
+						  options),
+				   G_DBUS_CALL_FLAGS_NONE,
+				   -1,
+				   NULL,
+				   cd_gui_create_device_cb,
+				   NULL);
+	}
+}
+
+/**
+ * cd_gui_delete_device_cb:
+ **/
+static void
+cd_gui_delete_device_cb (GObject *source_object,
+			 GAsyncResult *res,
+			 gpointer user_data)
+{
+	GVariant *result;
+	GError *error = NULL;
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res, &error);
+	if (result == NULL) {
+		g_warning ("Error deleting device: %s",
+			   error->message);
+		g_error_free (error);
+		return;
+	}
+
+	g_variant_unref (result);
+}
+
+/**
+ * cd_gui_delete_profile_cb:
+ **/
+static void
+cd_gui_delete_profile_cb (GObject *source_object,
+			  GAsyncResult *res,
+			  gpointer user_data)
+{
+	GVariant *result;
+	GError *error = NULL;
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res, &error);
+	if (result == NULL) {
+		g_warning ("Error deleting profile: %s",
+			   error->message);
+		g_error_free (error);
+		return;
+	}
+
+	g_variant_unref (result);
 }
 
 /**
@@ -62,7 +257,38 @@ cd_gui_button_device_add_cb (GtkWidget *widget, gpointer user_data)
 static void
 cd_gui_button_device_remove_cb (GtkWidget *widget, gpointer user_data)
 {
-	g_debug ("remove");
+	if (current_device == NULL)
+		return;
+	g_debug ("remove %s", current_device);
+	g_dbus_proxy_call (proxy,
+			   "DeleteDevice",
+			   g_variant_new ("(s)",
+					  current_device), //FIXME: needs to be an ID
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   NULL,
+			   cd_gui_delete_device_cb,
+			   NULL);
+}
+
+/**
+ * cd_gui_button_profile_remove_cb:
+ **/
+static void
+cd_gui_button_profile_remove_cb (GtkWidget *widget, gpointer user_data)
+{
+	if (current_device == NULL)
+		return;
+	g_error ("remove %s", current_device);
+	g_dbus_proxy_call (proxy,
+			   "DeleteProfile",
+			   g_variant_new ("(s)",
+					  current_device), //FIXME: needs to be an ID
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   NULL,
+			   cd_gui_delete_profile_cb,
+			   NULL);
 }
 
 /**
@@ -180,7 +406,7 @@ cd_gui_got_profile_proxy_cb (GObject *source_object,
 			    CD_COLUMN_PROFILE_NAME, name,
 			    CD_COLUMN_PROFILE_QUALIFIER, qualifier,
 			    CD_COLUMN_PROFILE_FILENAME, filename,
-			    CD_COLUMN_PROFILE_ID, g_dbus_proxy_get_object_path (proxy_tmp),
+			    CD_COLUMN_PROFILE_OBJECT_PATH, g_dbus_proxy_get_object_path (proxy_tmp),
 			    -1);
 
 	if (variant_title != NULL)
@@ -287,19 +513,99 @@ cd_gui_got_device_proxy_cb (GObject *source_object, GAsyncResult *res, gpointer 
 }
 
 /**
+ * cd_gui_get_profiles_cb:
+ **/
+static void
+cd_gui_get_profiles_cb (GObject *source_object,
+			GAsyncResult *res,
+			gpointer user_data)
+{
+	gchar *object_path_tmp = NULL;
+	gsize len;
+	guint i;
+	GVariantIter iter;
+	GVariant *response_child = NULL;
+	GVariant *result;
+	GError *error = NULL;
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res, &error);
+	if (result == NULL) {
+		g_warning ("Error getting profiles: %s",
+			   error->message);
+		g_error_free (error);
+		return;
+	}
+
+	/* print each device */
+	response_child = g_variant_get_child_value (result, 0);
+	len = g_variant_iter_init (&iter, response_child);
+	for (i=0; i < len; i++) {
+		g_variant_get_child (response_child, i,
+				     "o", &object_path_tmp);
+		cd_gui_add_profile_to_listview (object_path_tmp);
+		g_free (object_path_tmp);
+	}
+
+	g_variant_unref (result);
+}
+
+/**
  * cd_gui_treeview_device_clicked_cb:
  **/
 static void
 cd_gui_treeview_device_clicked_cb (GtkTreeSelection *selection, gpointer data)
 {
-	GtkTreeModel *model;
-	GtkTreeIter iter;
 	gchar *id;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+	GtkWidget *widget;
 
 	/* This will only work in single or browse selection mode! */
 	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
-		gtk_tree_model_get (model, &iter, CD_COLUMN_DEVICES_ID, &id, -1);
+		gtk_tree_model_get (model, &iter,
+				    CD_COLUMN_DEVICES_OBJECT_PATH, &id,
+				    -1);
 		g_debug ("selected row is: %s", id);
+
+		/* save pointer */
+		g_free (current_device);
+		current_device = g_strdup (id);
+
+		/* all profiles? */
+		if (id == NULL) {
+			g_dbus_proxy_call (proxy,
+					   "GetProfiles",
+					   NULL,
+					   G_DBUS_CALL_FLAGS_NONE,
+					   -1,
+					   NULL,
+					   cd_gui_get_profiles_cb,
+					   NULL);
+
+			/* mark invalid */
+			widget = GTK_WIDGET (gtk_builder_get_object (builder,
+								     "hbox_deviceid"));
+			gtk_widget_set_visible (widget, FALSE);
+			widget = GTK_WIDGET (gtk_builder_get_object (builder,
+								     "hbox_created"));
+			gtk_widget_set_visible (widget, FALSE);
+			widget = GTK_WIDGET (gtk_builder_get_object (builder,
+								     "button_device_remove"));
+			gtk_widget_set_sensitive (widget, FALSE);
+			return;
+		}
+
+		/* we can operate on this */
+		widget = GTK_WIDGET (gtk_builder_get_object (builder,
+							     "button_device_remove"));
+		gtk_widget_set_sensitive (widget, TRUE);
+		widget = GTK_WIDGET (gtk_builder_get_object (builder,
+							     "hbox_deviceid"));
+		gtk_widget_set_visible (widget, TRUE);
+		widget = GTK_WIDGET (gtk_builder_get_object (builder,
+							     "hbox_created"));
+		gtk_widget_set_visible (widget, TRUE);
 
 		/* get initial icon state */
 		g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
@@ -351,7 +657,7 @@ cd_gui_add_device_to_listview (const gchar *object_path)
 
 	g_debug ("add %s", object_path);
 
-	/* make title a bit bigger */
+	/* TODO: need title */
 	title = g_path_get_basename (object_path);
 	liststore_devices = GTK_LIST_STORE (gtk_builder_get_object (builder,
 					    "liststore_devices"));
@@ -359,7 +665,7 @@ cd_gui_add_device_to_listview (const gchar *object_path)
 	gtk_list_store_set (liststore_devices,
 			    &iter,
 			    CD_COLUMN_DEVICES_TEXT, title,
-			    CD_COLUMN_DEVICES_ID, object_path,
+			    CD_COLUMN_DEVICES_OBJECT_PATH, object_path,
 			    -1);
 	g_free (title);
 }
@@ -382,7 +688,8 @@ cd_gui_get_devices_cb (GObject *source_object,
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
 	if (result == NULL) {
-		g_warning ("Error getting devices: %s\n", error->message);
+		g_warning ("Error getting devices: %s",
+			   error->message);
 		g_error_free (error);
 		return;
 	}
@@ -398,6 +705,37 @@ cd_gui_get_devices_cb (GObject *source_object,
 	}
 
 	g_variant_unref (result);
+}
+
+/**
+ * cd_gui_remove_device_from_listview:
+ **/
+static void
+cd_gui_remove_device_from_listview (const gchar *object_path)
+{
+	gboolean ret;
+	gchar *object_path_tmp;
+	GtkListStore *liststore_devices;
+	GtkTreeIter iter;
+
+	liststore_devices = GTK_LIST_STORE (gtk_builder_get_object (builder,
+					    "liststore_devices"));
+	ret = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (liststore_devices),
+					     &iter);
+	while (ret) {
+		/* Walk through the list, reading each row */
+		gtk_tree_model_get (GTK_TREE_MODEL (liststore_devices), &iter,
+				    CD_COLUMN_DEVICES_OBJECT_PATH, &object_path_tmp,
+				    -1);
+		if (g_strcmp0 (object_path,
+			       object_path_tmp) == 0) {
+			gtk_list_store_remove (liststore_devices, &iter);
+			break;
+		}
+		g_free (object_path_tmp);
+		ret = gtk_tree_model_iter_next (GTK_TREE_MODEL (liststore_devices),
+						&iter);
+	}
 }
 
 /**
@@ -419,10 +757,34 @@ cd_gui_dbus_signal_cb (GDBusProxy *_proxy,
 		g_variant_get (parameters, "(o)", &object_path_tmp);
 		cd_gui_add_device_to_listview (object_path_tmp);
 
+	} else if (g_strcmp0 (signal_name, "DeviceRemoved") == 0) {
+		g_variant_get (parameters, "(o)", &object_path_tmp);
+		cd_gui_remove_device_from_listview (object_path_tmp);
+
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
 	}
 	g_free (object_path_tmp);
+}
+
+/**
+ * cd_gui_add_all_profiles_device:
+ **/
+static void
+cd_gui_add_all_profiles_device (void)
+{
+	GtkListStore *liststore_devices;
+	GtkTreeIter iter;
+
+	/* TODO: need title */
+	liststore_devices = GTK_LIST_STORE (gtk_builder_get_object (builder,
+					    "liststore_devices"));
+	gtk_list_store_append (liststore_devices, &iter);
+	gtk_list_store_set (liststore_devices,
+			    &iter,
+			    CD_COLUMN_DEVICES_TEXT, _("All profiles"),
+			    CD_COLUMN_DEVICES_OBJECT_PATH, NULL,
+			    -1);
 }
 
 /**
@@ -454,6 +816,9 @@ cd_gui_got_proxy_cb (GObject *source_object, GAsyncResult *res, gpointer user_da
 			   NULL,
 			   cd_gui_get_devices_cb,
 			   NULL);
+
+	/* add all profiles device */
+	cd_gui_add_all_profiles_device ();
 }
 
 /**
@@ -513,6 +878,21 @@ main (int argc, char *argv[])
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "button_device_remove"));
 	g_signal_connect (widget, "clicked",
 			  G_CALLBACK (cd_gui_button_device_remove_cb), NULL);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "button_profile_add"));
+	g_signal_connect (widget, "clicked",
+			  G_CALLBACK (cd_gui_button_profile_add_cb), NULL);
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "button_profile_remove"));
+	g_signal_connect (widget, "clicked",
+			  G_CALLBACK (cd_gui_button_profile_remove_cb), NULL);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "button_create_add"));
+	g_signal_connect (widget, "clicked",
+			  G_CALLBACK (cd_gui_button_create_cb), NULL);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "button_create_cancel"));
+	g_signal_connect (widget, "clicked",
+			  G_CALLBACK (cd_gui_button_create_cancel_cb), NULL);
 
 	/* create tree view */
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "treeview_devices"));

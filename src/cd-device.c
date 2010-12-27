@@ -361,6 +361,8 @@ cd_device_register_object (CdDevice *device,
 		g_error_free (error_local);
 		goto out;
 	}
+	g_debug ("Register interface %i",
+		 device->priv->registration_id);
 
 	/* success */
 	ret = TRUE;
@@ -508,6 +510,8 @@ cd_device_finalize (GObject *object)
 	if (priv->watcher_id > 0)
 		g_bus_unwatch_name (priv->watcher_id);
 	if (priv->registration_id > 0) {
+		g_debug ("Unregister interface %i",
+			  priv->registration_id);
 		g_dbus_connection_unregister_object (priv->connection,
 						     priv->registration_id);
 	}

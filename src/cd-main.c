@@ -94,10 +94,11 @@ cd_main_device_removed (CdDevice *device)
 
 	/* remove from the array before emitting */
 	object_path_tmp = g_strdup (cd_device_get_object_path (device));
+	g_debug ("Removing device %s", object_path_tmp);
 	cd_device_array_remove (devices_array, device);
-	g_debug ("Removing device %s", cd_device_get_object_path (device));
 
 	/* emit signal */
+	g_debug ("Emitting DeviceRemoved(%s)", object_path_tmp);
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
 					     COLORD_DBUS_PATH,
@@ -200,6 +201,7 @@ cd_main_create_device (const gchar *sender,
 {
 	gboolean ret;
 	CdDevice *device;
+	CdDevice *device_actual = NULL;
 
 	g_assert (connection != NULL);
 
@@ -237,18 +239,24 @@ cd_main_create_device (const gchar *sender,
 			  NULL);
 
 	/* emit signal */
+	g_debug ("Emitting DeviceAdded(%s)",
+		 cd_device_get_object_path (device));
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
 					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE_DEVICE,
+					     COLORD_DBUS_INTERFACE,
 					     "DeviceAdded",
 					     g_variant_new ("(o)",
 							    cd_device_get_object_path (device)),
 					     error);
 	if (!ret)
 		goto out;
+
+	/* success */
+	device_actual = g_object_ref (device);
 out:
-	return device;
+	g_object_unref (device);
+	return device_actual;
 }
 
 /**
@@ -260,8 +268,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
-	CdDevice *device;
-	CdProfile *profile;
+	CdDevice *device = NULL;
+	CdProfile *profile = NULL;
 	gboolean ret;
 	gchar *device_id = NULL;
 	gchar *object_path_tmp = NULL;
@@ -347,6 +355,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 							options,
 							&error);
 			if (device == NULL) {
+				g_warning ("failed to create device: %s",
+					   error->message);
 				g_dbus_method_invocation_return_gerror (invocation,
 									error);
 				goto out;
@@ -371,12 +381,17 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(s)", &device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "device id '%s' not found",
-							       device_id);
-			goto out;
+			/* fall back to checking the object path */
+			device = cd_device_array_get_by_object_path (devices_array,
+								     device_id);
+			if (device == NULL) {
+				g_dbus_method_invocation_return_error (invocation,
+								       CD_MAIN_ERROR,
+								       CD_MAIN_ERROR_FAILED,
+								       "device id '%s' not found",
+								       device_id);
+				goto out;
+			}
 		}
 
 		/* remove from the array, and emit */
@@ -429,6 +444,10 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	g_critical ("failed to process method %s", method_name);
 out:
 	g_free (object_path_tmp);
+	if (device != NULL)
+		g_object_unref (device);
+	if (profile != NULL)
+		g_object_unref (profile);
 	if (tuple != NULL)
 		g_variant_unref (tuple);
 	if (value != NULL)
