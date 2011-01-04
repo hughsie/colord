@@ -52,9 +52,9 @@ cd_main_profile_removed (CdProfile *profile)
 	/* remove from the array before emitting */
 	object_path_tmp = g_strdup (cd_profile_get_object_path (profile));
 	cd_profile_array_remove (profiles_array, profile);
-	g_debug ("Removing profile %s", cd_profile_get_object_path (profile));
 
 	/* emit signal */
+	g_debug ("Emitting ProfileRemoved(%s)", object_path_tmp);
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
 					     COLORD_DBUS_PATH,
@@ -176,12 +176,14 @@ cd_main_create_profile (const gchar *sender,
 			  NULL);
 
 	/* emit signal */
+	g_debug ("Emitting ProfileAdded(%s)",
+		 cd_profile_get_object_path (profile));
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
 					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE_PROFILE,
+					     COLORD_DBUS_INTERFACE,
 					     "ProfileAdded",
-					     g_variant_new ("(s)",
+					     g_variant_new ("(o)",
 							    cd_profile_get_object_path (profile)),
 					     error);
 	if (!ret)
@@ -396,6 +398,38 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* remove from the array, and emit */
 		cd_main_device_removed (device);
+
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
+	/* return 's' */
+	if (g_strcmp0 (method_name, "DeleteProfile") == 0) {
+
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation, sender);
+		if (!ret)
+			goto out;
+
+		/* does already exist */
+		g_variant_get (parameters, "(s)", &device_id);
+		profile = cd_profile_array_get_by_id (profiles_array, device_id);
+		if (profile == NULL) {
+			/* fall back to checking the object path */
+			profile = cd_profile_array_get_by_object_path (profiles_array,
+								       device_id);
+			if (profile == NULL) {
+				g_dbus_method_invocation_return_error (invocation,
+								       CD_MAIN_ERROR,
+								       CD_MAIN_ERROR_FAILED,
+								       "profile id '%s' not found",
+								       device_id);
+				goto out;
+			}
+		}
+
+		/* remove from the array, and emit */
+		cd_main_profile_removed (profile);
 
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
