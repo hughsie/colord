@@ -123,6 +123,7 @@ data/Makefile
 policy/Makefile
 po/Makefile.in
 src/Makefile
+client/Makefile
 ])
 AC_OUTPUT
 

@@ -9,6 +9,7 @@ SUBDIRS = 						\
 	policy						\
 	data						\
 	man						\
+	client						\
 	src
 
 snapshot:
