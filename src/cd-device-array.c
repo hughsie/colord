@@ -67,7 +67,7 @@ cd_device_array_remove (CdDeviceArray *device_array, CdDevice *device)
 	g_return_if_fail (CD_IS_DEVICE (device));
 
 	g_ptr_array_remove (device_array->priv->array,
-			    g_object_ref (device));
+			    device);
 }
 
 /**
@@ -86,7 +86,7 @@ cd_device_array_get_by_id (CdDeviceArray *device_array,
 	for (i=0; i<priv->array->len; i++) {
 		device_tmp = g_ptr_array_index (priv->array, i);
 		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0) {
-			device = device_tmp;
+			device = g_object_ref (device_tmp);
 			break;
 		}
 	}
@@ -110,7 +110,7 @@ cd_device_array_get_by_object_path (CdDeviceArray *device_array,
 		device_tmp = g_ptr_array_index (priv->array, i);
 		if (g_strcmp0 (cd_device_get_object_path (device_tmp),
 			       object_path) == 0) {
-			device = device_tmp;
+			device = g_object_ref (device_tmp);
 			break;
 		}
 	}

@@ -67,7 +67,7 @@ cd_profile_array_remove (CdProfileArray *profile_array, CdProfile *profile)
 	g_return_if_fail (CD_IS_PROFILE (profile));
 
 	g_ptr_array_remove (profile_array->priv->array,
-			    g_object_ref (profile));
+			    profile);
 }
 
 /**
@@ -86,7 +86,7 @@ cd_profile_array_get_by_id (CdProfileArray *profile_array,
 	for (i=0; i<priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
 		if (g_strcmp0 (cd_profile_get_id (profile_tmp), id) == 0) {
-			profile = profile_tmp;
+			profile = g_object_ref (profile_tmp);
 			break;
 		}
 	}
@@ -110,7 +110,7 @@ cd_profile_array_get_by_object_path (CdProfileArray *profile_array,
 		profile_tmp = g_ptr_array_index (priv->array, i);
 		if (g_strcmp0 (cd_profile_get_object_path (profile_tmp),
 			       object_path) == 0) {
-			profile = profile_tmp;
+			profile = g_object_ref (profile_tmp);
 			break;
 		}
 	}
