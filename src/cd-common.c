@@ -42,6 +42,19 @@ cd_main_error_quark (void)
 }
 
 /**
+ * cd_main_ensure_dbus_path:
+ **/
+void
+cd_main_ensure_dbus_path (gchar *object_path)
+{
+	g_strcanon (object_path,
+		    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		    "abcdefghijklmnopqrstuvwxyz"
+		    "1234567890_/",
+		    '_');
+}
+
+/**
  * cd_main_sender_authenticated:
  **/
 gboolean

@@ -95,6 +95,9 @@ cd_device_set_id (CdDevice *device, const gchar *id)
 	g_free (device->priv->id);
 	device->priv->id = g_strdup (id);
 	device->priv->object_path = g_build_filename (COLORD_DBUS_PATH, id, NULL);
+
+	/* make sure object path is sane */
+	cd_main_ensure_dbus_path (device->priv->object_path);
 }
 
 /**
