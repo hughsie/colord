@@ -29,6 +29,7 @@
 #include "cd-common.h"
 
 static gchar *current_device = NULL;
+static gchar *current_profile = NULL;
 static GDBusConnection *connection = NULL;
 static GDBusProxy *proxy = NULL;
 static GtkBuilder *builder = NULL;
@@ -36,17 +37,20 @@ static gboolean create_profile = FALSE;
 
 enum {
 	CD_COLUMN_DEVICES_OBJECT_PATH,
-	CD_COLUMN_DEVICES_TEXT,
+	CD_COLUMN_DEVICES_TITLE,
 	CD_COLUMN_DEVICES_LAST
 };
 
 enum {
 	CD_COLUMN_PROFILE_OBJECT_PATH,
 	CD_COLUMN_PROFILE_TITLE,
-	CD_COLUMN_PROFILE_QUALIFIER,
-	CD_COLUMN_PROFILE_NAME,
-	CD_COLUMN_PROFILE_FILENAME,
 	CD_COLUMN_PROFILE_LAST
+};
+
+enum {
+	CD_COLUMN_DEVICE_PROFILES_OBJECT_PATH,
+	CD_COLUMN_DEVICE_PROFILES_TITLE,
+	CD_COLUMN_DEVICE_PROFILES_LAST
 };
 
 /**
@@ -111,7 +115,7 @@ cd_gui_create_profile_cb (GObject *source_object,
 static void
 cd_gui_button_device_add_cb (GtkWidget *widget, gpointer user_data)
 {
-	g_debug ("add");
+	g_debug ("device add button");
 
 	create_profile = FALSE;
 
@@ -128,7 +132,7 @@ cd_gui_button_device_add_cb (GtkWidget *widget, gpointer user_data)
 static void
 cd_gui_button_profile_add_cb (GtkWidget *widget, gpointer user_data)
 {
-	g_debug ("add");
+	g_debug ("profile add button");
 
 	create_profile = TRUE;
 
@@ -147,6 +151,88 @@ cd_gui_button_create_cancel_cb (GtkWidget *widget, gpointer user_data)
 {
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "dialog_create"));
 	gtk_widget_hide (widget);
+}
+
+/**
+ * cd_gui_button_device_profile_add_cb:
+ **/
+static void
+cd_gui_button_device_profile_add_cb (GtkWidget *widget, gpointer user_data)
+{
+//	GDBusProxy *proxy;
+//	GError *error = NULL;
+
+	g_debug ("Add %s to %s",
+		 current_profile, current_device);
+#if 0
+	proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+				  G_DBUS_PROXY_FLAGS_NONE,
+				  NULL,
+				  COLORD_DBUS_SERVICE,
+				  current_profile,
+				  COLORD_DBUS_INTERFACE_PROFILE,
+				  NULL,
+				  cd_gui_got_profile_proxy_full_cb2,
+				  NULL,
+				  &error);
+	if (proxy == NULL) {
+		g_warning ("failed to add profile: %s",
+			   error->message);
+		g_error_free (error);
+		return;
+	}
+#endif
+	g_object_unref (proxy);
+}
+
+/**
+ * cd_gui_button_device_profile_remove_cb:
+ **/
+static void
+cd_gui_button_device_profile_remove_cb (GtkWidget *widget, gpointer user_data)
+{
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	gboolean ret;
+	gchar *id;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "treeview_device_profiles"));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
+	ret = gtk_tree_selection_get_selected (selection, &model, &iter);
+	if (!ret)
+		return;
+	gtk_tree_model_get (model, &iter,
+			    CD_COLUMN_DEVICE_PROFILES_OBJECT_PATH, &id,
+			    -1);
+	g_debug ("Remove %s from %s",
+		 id, current_device);
+	g_free (id);
+}
+
+/**
+ * cd_gui_button_device_profile_make_default_cb:
+ **/
+static void
+cd_gui_button_device_profile_make_default_cb (GtkWidget *widget, gpointer user_data)
+{
+	GtkTreeIter iter;
+	GtkTreeSelection *selection;
+	GtkTreeModel *model;
+	gboolean ret;
+	gchar *id;
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "treeview_device_profiles"));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
+	ret = gtk_tree_selection_get_selected (selection, &model, &iter);
+	if (!ret)
+		return;
+	gtk_tree_model_get (model, &iter,
+			    CD_COLUMN_DEVICE_PROFILES_OBJECT_PATH, &id,
+			    -1);
+	g_debug ("Make %s default on %s",
+		 id, current_device);
+	g_free (id);
 }
 
 /**
@@ -277,13 +363,12 @@ cd_gui_button_device_remove_cb (GtkWidget *widget, gpointer user_data)
 static void
 cd_gui_button_profile_remove_cb (GtkWidget *widget, gpointer user_data)
 {
-	if (current_device == NULL)
+	if (current_profile == NULL)
 		return;
-	g_error ("remove %s", current_device);
 	g_dbus_proxy_call (proxy,
 			   "DeleteProfile",
 			   g_variant_new ("(s)",
-					  current_device), //FIXME: needs to be an ID
+					  current_profile),
 			   G_DBUS_CALL_FLAGS_NONE,
 			   -1,
 			   NULL,
@@ -304,8 +389,27 @@ cd_gui_treeview_add_device_columns (GtkTreeView *treeview)
 	renderer = gtk_cell_renderer_text_new ();
 	/* TRANSLATORS: column for the source description */
 	column = gtk_tree_view_column_new_with_attributes (_("Device"), renderer,
-							   "markup", CD_COLUMN_DEVICES_TEXT, NULL);
-	gtk_tree_view_column_set_sort_column_id (column, CD_COLUMN_DEVICES_TEXT);
+							   "markup", CD_COLUMN_DEVICES_TITLE, NULL);
+	gtk_tree_view_column_set_sort_column_id (column, CD_COLUMN_DEVICES_TITLE);
+	gtk_tree_view_append_column (treeview, column);
+}
+
+/**
+ * cd_gui_treeview_add_device_profile_columns:
+ **/
+static void
+cd_gui_treeview_add_device_profile_columns (GtkTreeView *treeview)
+{
+	GtkCellRenderer *renderer;
+	GtkTreeViewColumn *column;
+
+	/* column for text */
+	renderer = gtk_cell_renderer_text_new ();
+	/* TRANSLATORS: column for the source description */
+	column = gtk_tree_view_column_new_with_attributes (_("Profiles"), renderer,
+							   "markup", CD_COLUMN_DEVICE_PROFILES_TITLE, NULL);
+	gtk_tree_view_column_set_sort_column_id (column,
+						 CD_COLUMN_DEVICE_PROFILES_TITLE);
 	gtk_tree_view_append_column (treeview, column);
 }
 
@@ -321,52 +425,25 @@ cd_gui_treeview_add_profile_columns (GtkTreeView *treeview)
 	/* column for text */
 	renderer = gtk_cell_renderer_text_new ();
 	/* TRANSLATORS: column for the source description */
-	column = gtk_tree_view_column_new_with_attributes (_("Name"), renderer,
-							   "markup", CD_COLUMN_PROFILE_NAME, NULL);
-	gtk_tree_view_append_column (treeview, column);
-
-	/* column for text */
-	renderer = gtk_cell_renderer_text_new ();
-	/* TRANSLATORS: column for the source description */
 	column = gtk_tree_view_column_new_with_attributes (_("Title"), renderer,
 							   "markup", CD_COLUMN_PROFILE_TITLE, NULL);
 	gtk_tree_view_column_set_sort_column_id (column, CD_COLUMN_PROFILE_TITLE);
 	gtk_tree_view_append_column (treeview, column);
-
-	/* column for text */
-	renderer = gtk_cell_renderer_text_new ();
-	/* TRANSLATORS: column for the source description */
-	column = gtk_tree_view_column_new_with_attributes (_("Qualifier"), renderer,
-							   "markup", CD_COLUMN_PROFILE_QUALIFIER, NULL);
-	gtk_tree_view_append_column (treeview, column);
-
-	/* column for text */
-	renderer = gtk_cell_renderer_text_new ();
-	/* TRANSLATORS: column for the source description */
-	column = gtk_tree_view_column_new_with_attributes (_("Filename"), renderer,
-							   "markup", CD_COLUMN_PROFILE_FILENAME, NULL);
-	gtk_tree_view_append_column (treeview, column);
 }
 
 /**
- * cd_gui_got_profile_proxy_cb:
+ * cd_gui_got_profile_proxy_full_cb:
  **/
 static void
-cd_gui_got_profile_proxy_cb (GObject *source_object,
+cd_gui_got_profile_proxy_full_cb (GObject *source_object,
 			     GAsyncResult *res,
 			     gpointer user_data)
 {
-	const gchar *filename = NULL;
-	const gchar *name = NULL;
-	const gchar *qualifier = NULL;
 	const gchar *title = NULL;
 	GDBusProxy *proxy_tmp;
 	GError *error = NULL;
 	GtkListStore *liststore_profiles;
 	GtkTreeIter iter;
-	GVariant *variant_filename = NULL;
-	GVariant *variant_name = NULL;
-	GVariant *variant_qualifier = NULL;
 	GVariant *variant_title = NULL;
 
 	proxy_tmp = g_dbus_proxy_new_for_bus_finish (res, &error);
@@ -380,43 +457,20 @@ cd_gui_got_profile_proxy_cb (GObject *source_object,
 	variant_title = g_dbus_proxy_get_cached_property (proxy_tmp, "Title");
 	if (variant_title != NULL)
 		title = g_variant_get_string (variant_title, NULL);
+	if (title == NULL)
+		title = "Unassigned profile";
 
-	/* get qualifier */
-	variant_qualifier = g_dbus_proxy_get_cached_property (proxy_tmp, "Qualifier");
-	if (variant_qualifier != NULL)
-		qualifier = g_variant_get_string (variant_qualifier, NULL);
-
-	/* get name */
-	variant_name = g_dbus_proxy_get_cached_property (proxy_tmp, "ProfileId");
-	if (variant_name != NULL)
-		name = g_variant_get_string (variant_name, NULL);
-
-	/* get name */
-	variant_filename = g_dbus_proxy_get_cached_property (proxy_tmp, "Filename");
-	if (variant_filename != NULL)
-		filename = g_variant_get_string (variant_filename, NULL);
-
-	g_debug ("%s:%s:%s", title, name, qualifier);
 	liststore_profiles = GTK_LIST_STORE (gtk_builder_get_object (builder,
 					     "liststore_profiles"));
 	gtk_list_store_append (liststore_profiles, &iter);
 	gtk_list_store_set (liststore_profiles,
 			    &iter,
 			    CD_COLUMN_PROFILE_TITLE, title,
-			    CD_COLUMN_PROFILE_NAME, name,
-			    CD_COLUMN_PROFILE_QUALIFIER, qualifier,
-			    CD_COLUMN_PROFILE_FILENAME, filename,
 			    CD_COLUMN_PROFILE_OBJECT_PATH, g_dbus_proxy_get_object_path (proxy_tmp),
 			    -1);
 
 	if (variant_title != NULL)
 		g_variant_unref (variant_title);
-	if (variant_filename != NULL)
-		g_variant_unref (variant_filename);
-	if (variant_qualifier != NULL)
-		g_variant_unref (variant_qualifier);
-	if (variant_name != NULL)
-		g_variant_unref (variant_name);
 	g_object_unref (proxy_tmp);
 }
 
@@ -435,8 +489,34 @@ cd_gui_add_profile_to_listview (const gchar *object_path)
 				  object_path,
 				  COLORD_DBUS_INTERFACE_PROFILE,
 				  NULL,
-				  cd_gui_got_profile_proxy_cb,
+				  cd_gui_got_profile_proxy_full_cb,
 				  NULL);
+}
+
+/**
+ * cd_gui_add_profile_to_device_listview:
+ **/
+static void
+cd_gui_add_profile_to_device_listview (const gchar *object_path)
+{
+	/* get initial icon state */
+	GtkListStore *liststore;
+	GtkTreeIter iter;
+	gchar *title = NULL;
+
+	g_debug ("add %s", object_path);
+	title = g_path_get_basename (object_path);
+	liststore = GTK_LIST_STORE (gtk_builder_get_object (builder,
+				    "liststore_device_profiles"));
+	gtk_list_store_append (liststore, &iter);
+	gtk_list_store_set (liststore,
+			    &iter,
+			    CD_COLUMN_DEVICE_PROFILES_TITLE, title,
+			    CD_COLUMN_DEVICE_PROFILES_OBJECT_PATH, object_path,
+			    -1);
+	g_free (title);
+
+
 }
 
 /**
@@ -491,7 +571,7 @@ cd_gui_got_device_proxy_cb (GObject *source_object, GAsyncResult *res, gpointer 
 
 	/* print profiles */
 	liststore_profiles = GTK_LIST_STORE (gtk_builder_get_object (builder,
-					     "liststore_profiles"));
+					     "liststore_device_profiles"));
 	gtk_list_store_clear (liststore_profiles);
 	variant_profiles = g_dbus_proxy_get_cached_property (proxy_tmp, "Profiles");
 	len = g_variant_iter_init (&iter, variant_profiles);
@@ -500,7 +580,7 @@ cd_gui_got_device_proxy_cb (GObject *source_object, GAsyncResult *res, gpointer 
 	for (i=0; i<len; i++) {
 		g_variant_get_child (variant_profiles, i,
 				     "o", &profile_tmp);
-		cd_gui_add_profile_to_listview (profile_tmp);
+		cd_gui_add_profile_to_device_listview (profile_tmp);
 		g_free (profile_tmp);
 	}
 //out:
@@ -559,9 +639,8 @@ cd_gui_treeview_device_clicked_cb (GtkTreeSelection *selection, gpointer data)
 	gchar *id;
 	GtkTreeIter iter;
 	GtkTreeModel *model;
-	GtkWidget *widget;
 
-	/* This will only work in single or browse selection mode! */
+	/* get entry */
 	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
 		gtk_tree_model_get (model, &iter,
 				    CD_COLUMN_DEVICES_OBJECT_PATH, &id,
@@ -572,41 +651,6 @@ cd_gui_treeview_device_clicked_cb (GtkTreeSelection *selection, gpointer data)
 		g_free (current_device);
 		current_device = g_strdup (id);
 
-		/* all profiles? */
-		if (id == NULL) {
-			g_dbus_proxy_call (proxy,
-					   "GetProfiles",
-					   NULL,
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1,
-					   NULL,
-					   cd_gui_get_profiles_cb,
-					   NULL);
-
-			/* mark invalid */
-			widget = GTK_WIDGET (gtk_builder_get_object (builder,
-								     "hbox_deviceid"));
-			gtk_widget_set_visible (widget, FALSE);
-			widget = GTK_WIDGET (gtk_builder_get_object (builder,
-								     "hbox_created"));
-			gtk_widget_set_visible (widget, FALSE);
-			widget = GTK_WIDGET (gtk_builder_get_object (builder,
-								     "button_device_remove"));
-			gtk_widget_set_sensitive (widget, FALSE);
-			return;
-		}
-
-		/* we can operate on this */
-		widget = GTK_WIDGET (gtk_builder_get_object (builder,
-							     "button_device_remove"));
-		gtk_widget_set_sensitive (widget, TRUE);
-		widget = GTK_WIDGET (gtk_builder_get_object (builder,
-							     "hbox_deviceid"));
-		gtk_widget_set_visible (widget, TRUE);
-		widget = GTK_WIDGET (gtk_builder_get_object (builder,
-							     "hbox_created"));
-		gtk_widget_set_visible (widget, TRUE);
-
 		/* get initial icon state */
 		g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
 					  G_DBUS_PROXY_FLAGS_NONE,
@@ -616,6 +660,118 @@ cd_gui_treeview_device_clicked_cb (GtkTreeSelection *selection, gpointer data)
 					  COLORD_DBUS_INTERFACE_DEVICE,
 					  NULL,
 					  cd_gui_got_device_proxy_cb,
+					  NULL);
+
+		g_free (id);
+	} else {
+		g_debug ("no row selected");
+	}
+}
+
+
+/**
+ * cd_gui_got_profile_proxy_full_cb2:
+ **/
+static void
+cd_gui_got_profile_proxy_full_cb2 (GObject *source_object,
+				  GAsyncResult *res,
+				  gpointer user_data)
+{
+	GError *error = NULL;
+	GDBusProxy *proxy_tmp;
+	const gchar *profile_id = NULL;
+	const gchar *title;
+	const gchar *qualifier;
+	const gchar *filename;
+	GtkWidget *widget;
+	GVariant *variant_profile_id = NULL;
+	GVariant *variant_title = NULL;
+	GVariant *variant_qualifier = NULL;
+	GVariant *variant_filename = NULL;
+
+	proxy_tmp = g_dbus_proxy_new_for_bus_finish (res, &error);
+	if (proxy_tmp == NULL) {
+		g_warning ("Error creating proxy: %s", error->message);
+		g_error_free (error);
+		return;
+	}
+
+	/* print profile id */
+	variant_profile_id = g_dbus_proxy_get_cached_property (proxy_tmp, "ProfileId");
+	profile_id = g_variant_get_string (variant_profile_id, NULL);
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "label_profileid"));
+	gtk_label_set_label (GTK_LABEL (widget), profile_id);
+
+	/* print title */
+	variant_title = g_dbus_proxy_get_cached_property (proxy_tmp, "Title");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "label_profile_title"));
+	if (variant_title != NULL) {
+		title = g_variant_get_string (variant_title, NULL);
+		gtk_label_set_label (GTK_LABEL (widget), title);
+	} else {
+		gtk_label_set_label (GTK_LABEL (widget), "");
+	}
+
+	/* print filename */
+	variant_filename = g_dbus_proxy_get_cached_property (proxy_tmp, "Filename");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "entry_profile_filename"));
+	if (variant_filename != NULL) {
+		filename = g_variant_get_string (variant_filename, NULL);
+		gtk_entry_set_text (GTK_ENTRY (widget), filename);
+	} else {
+		gtk_entry_set_text (GTK_ENTRY (widget), "");
+	}
+
+	/* print qualifier */
+	variant_qualifier = g_dbus_proxy_get_cached_property (proxy_tmp, "Qualifier");
+	widget = GTK_WIDGET (gtk_builder_get_object (builder, "entry_profile_qualifier"));
+	if (variant_qualifier != NULL) {
+		qualifier = g_variant_get_string (variant_qualifier, NULL);
+		gtk_entry_set_text (GTK_ENTRY (widget), qualifier);
+	} else {
+		gtk_entry_set_text (GTK_ENTRY (widget), "");
+	}
+
+	g_variant_unref (variant_profile_id);
+	if (variant_title != NULL)
+		g_variant_unref (variant_title);
+	if (variant_qualifier != NULL)
+		g_variant_unref (variant_qualifier);
+	if (variant_filename != NULL)
+		g_variant_unref (variant_filename);
+	g_object_unref (proxy_tmp);
+}
+
+/**
+ * cd_gui_treeview_profile_clicked_cb:
+ **/
+static void
+cd_gui_treeview_profile_clicked_cb (GtkTreeSelection *selection, gpointer data)
+{
+	gchar *id;
+	GtkTreeIter iter;
+	GtkTreeModel *model;
+
+	/* get entry */
+	if (gtk_tree_selection_get_selected (selection, &model, &iter)) {
+		gtk_tree_model_get (model, &iter,
+				    CD_COLUMN_PROFILE_OBJECT_PATH, &id,
+				    -1);
+		g_debug ("selected row is: %s", id);
+
+		/* save pointer */
+		g_free (current_profile);
+		current_profile = g_strdup (id);
+
+		/* get initial icon state */
+		g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+					  G_DBUS_PROXY_FLAGS_NONE,
+					  NULL,
+					  COLORD_DBUS_SERVICE,
+					  id,
+					  COLORD_DBUS_INTERFACE_PROFILE,
+					  NULL,
+					  cd_gui_got_profile_proxy_full_cb2,
 					  NULL);
 
 		g_free (id);
@@ -664,7 +820,7 @@ cd_gui_add_device_to_listview (const gchar *object_path)
 	gtk_list_store_append (liststore_devices, &iter);
 	gtk_list_store_set (liststore_devices,
 			    &iter,
-			    CD_COLUMN_DEVICES_TEXT, title,
+			    CD_COLUMN_DEVICES_TITLE, title,
 			    CD_COLUMN_DEVICES_OBJECT_PATH, object_path,
 			    -1);
 	g_free (title);
@@ -686,7 +842,8 @@ cd_gui_get_devices_cb (GObject *source_object,
 	GVariant *result;
 	GError *error = NULL;
 
-	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object), res, &error);
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res, &error);
 	if (result == NULL) {
 		g_warning ("Error getting devices: %s",
 			   error->message);
@@ -739,6 +896,37 @@ cd_gui_remove_device_from_listview (const gchar *object_path)
 }
 
 /**
+ * cd_gui_remove_profile_from_listview:
+ **/
+static void
+cd_gui_remove_profile_from_listview (const gchar *object_path)
+{
+	gboolean ret;
+	gchar *object_path_tmp;
+	GtkListStore *liststore_profiles;
+	GtkTreeIter iter;
+
+	liststore_profiles = GTK_LIST_STORE (gtk_builder_get_object (builder,
+					     "liststore_profiles"));
+	ret = gtk_tree_model_get_iter_first (GTK_TREE_MODEL (liststore_profiles),
+					     &iter);
+	while (ret) {
+		/* Walk through the list, reading each row */
+		gtk_tree_model_get (GTK_TREE_MODEL (liststore_profiles), &iter,
+				    CD_COLUMN_PROFILE_OBJECT_PATH, &object_path_tmp,
+				    -1);
+		if (g_strcmp0 (object_path,
+			       object_path_tmp) == 0) {
+			gtk_list_store_remove (liststore_profiles, &iter);
+			break;
+		}
+		g_free (object_path_tmp);
+		ret = gtk_tree_model_iter_next (GTK_TREE_MODEL (liststore_profiles),
+						&iter);
+	}
+}
+
+/**
  * cd_gui_dbus_signal_cb:
  **/
 static void
@@ -761,30 +949,18 @@ cd_gui_dbus_signal_cb (GDBusProxy *_proxy,
 		g_variant_get (parameters, "(o)", &object_path_tmp);
 		cd_gui_remove_device_from_listview (object_path_tmp);
 
+	} else if (g_strcmp0 (signal_name, "ProfileAdded") == 0) {
+		g_variant_get (parameters, "(o)", &object_path_tmp);
+		cd_gui_add_profile_to_listview (object_path_tmp);
+
+	} else if (g_strcmp0 (signal_name, "ProfileRemoved") == 0) {
+		g_variant_get (parameters, "(o)", &object_path_tmp);
+		cd_gui_remove_profile_from_listview (object_path_tmp);
+
 	} else {
-		g_warning ("unhandled signal '%s'", signal_name);
+		g_error ("unhandled signal '%s'", signal_name);
 	}
 	g_free (object_path_tmp);
-}
-
-/**
- * cd_gui_add_all_profiles_device:
- **/
-static void
-cd_gui_add_all_profiles_device (void)
-{
-	GtkListStore *liststore_devices;
-	GtkTreeIter iter;
-
-	/* TODO: need title */
-	liststore_devices = GTK_LIST_STORE (gtk_builder_get_object (builder,
-					    "liststore_devices"));
-	gtk_list_store_append (liststore_devices, &iter);
-	gtk_list_store_set (liststore_devices,
-			    &iter,
-			    CD_COLUMN_DEVICES_TEXT, _("All profiles"),
-			    CD_COLUMN_DEVICES_OBJECT_PATH, NULL,
-			    -1);
 }
 
 /**
@@ -817,8 +993,14 @@ cd_gui_got_proxy_cb (GObject *source_object, GAsyncResult *res, gpointer user_da
 			   cd_gui_get_devices_cb,
 			   NULL);
 
-	/* add all profiles device */
-	cd_gui_add_all_profiles_device ();
+	g_dbus_proxy_call (proxy,
+			   "GetProfiles",
+			   NULL,
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   NULL,
+			   cd_gui_get_profiles_cb,
+			   NULL);
 }
 
 /**
@@ -894,6 +1076,21 @@ main (int argc, char *argv[])
 	g_signal_connect (widget, "clicked",
 			  G_CALLBACK (cd_gui_button_create_cancel_cb), NULL);
 
+	widget = GTK_WIDGET (gtk_builder_get_object (builder,
+						     "button_device_profile_add"));
+	g_signal_connect (widget, "clicked",
+			  G_CALLBACK (cd_gui_button_device_profile_add_cb), NULL);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder,
+						     "button_device_profile_remove"));
+	g_signal_connect (widget, "clicked",
+			  G_CALLBACK (cd_gui_button_device_profile_remove_cb), NULL);
+
+	widget = GTK_WIDGET (gtk_builder_get_object (builder,
+						     "button_profile_make_default"));
+	g_signal_connect (widget, "clicked",
+			  G_CALLBACK (cd_gui_button_device_profile_make_default_cb), NULL);
+
 	/* create tree view */
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "treeview_devices"));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
@@ -907,12 +1104,22 @@ main (int argc, char *argv[])
 	/* create tree view */
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "treeview_profiles"));
 	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
-//	g_signal_connect (selection, "changed",
-//			  G_CALLBACK (cd_gui_treeview_device_clicked_cb), NULL);
+	g_signal_connect (selection, "changed",
+			  G_CALLBACK (cd_gui_treeview_profile_clicked_cb), NULL);
 
 	/* add columns to the tree view */
 	cd_gui_treeview_add_profile_columns (GTK_TREE_VIEW (widget));
 	gtk_tree_view_columns_autosize (GTK_TREE_VIEW (widget));
+
+	/* create tree view */
+	widget = GTK_WIDGET (gtk_builder_get_object (builder,
+						     "treeview_device_profiles"));
+	selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (widget));
+//	g_signal_connect (selection, "changed",
+//			  G_CALLBACK (cd_gui_treeview_device_clicked_cb), NULL);
+
+	/* add columns to the tree view */
+	cd_gui_treeview_add_device_profile_columns (GTK_TREE_VIEW (widget));
 
 	/* get a session bus connection */
 	connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
