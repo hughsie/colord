@@ -11,8 +11,8 @@
       </doc:description>
     </doc:doc>
 
-    <!--*****************************************************************************************-->
-    <property name='Created' type='i' access='read'>
+    <!--***********************************************************-->
+    <property name='Created' type='t' access='read'>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -22,7 +22,7 @@
       </doc:doc>
     </property>
 
-    <!--*****************************************************************************************-->
+    <!--***********************************************************-->
     <property name='Model' type='s' access='read'>
       <doc:doc>
         <doc:description>
@@ -33,7 +33,7 @@
       </doc:doc>
     </property>
 
-    <!--*****************************************************************************************-->
+    <!--***********************************************************-->
     <property name='DeviceId' type='s' access='read'>
       <doc:doc>
         <doc:description>
@@ -44,7 +44,7 @@
       </doc:doc>
     </property>
 
-    <!--*****************************************************************************************-->
+    <!--***********************************************************-->
     <property name='Profiles' type='ao' access='read'>
       <doc:doc>
         <doc:description>
@@ -66,7 +66,7 @@
       </doc:doc>
     </signal>
 
-    <!--*****************************************************************************************-->
+    <!--***********************************************************-->
     <method name='AddProfile'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
@@ -76,7 +76,7 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='o' name='profile_path' direction='in'>
+      <arg type='o' name='object_path' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
@@ -87,7 +87,7 @@
       </arg>
     </method>
 
-    <!--*****************************************************************************************-->
+    <!--***********************************************************-->
     <method name='RemoveProfile'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
@@ -108,7 +108,7 @@
       </arg>
     </method>
 
-    <!--*****************************************************************************************-->
+    <!--***********************************************************-->
     <method name='MakeProfileDefault'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
@@ -129,7 +129,7 @@
       </arg>
     </method>
 
-    <!--*****************************************************************************************-->
+    <!--***********************************************************-->
     <method name='GetProfileForQualifier'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
