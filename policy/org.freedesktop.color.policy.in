@@ -13,12 +13,82 @@
   <vendor_url>http://www.freedesktop.org/projects/system-color-manager/</vendor_url>
   <icon_name>application-vnd.iccprofile</icon_name>
 
-  <action id="org.freedesktop.color-manager.add-device">
+  <action id="org.freedesktop.color-manager.create-device">
     <!-- SECURITY:
           - Normal users should not have to authenticate to add devices
      -->
-    <_description>Install color device</_description>
-    <_message>Authentication is required to add a color device</_message>
+    <_description>Create a color managed device</_description>
+    <_message>Authentication is required to create a color managed device</_message>
+    <icon_name>application-vnd.iccprofile</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+  <action id="org.freedesktop.color-manager.create-profile">
+    <!-- SECURITY:
+          - Normal users should not have to authenticate to add profiles
+     -->
+    <_description>Create a color profile</_description>
+    <_message>Authentication is required to create a color profile</_message>
+    <icon_name>application-vnd.iccprofile</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+  <action id="org.freedesktop.color-manager.delete-device">
+    <!-- SECURITY:
+          - Normal users should not have to authenticate to delete devices
+     -->
+    <_description>Remove a color managed device</_description>
+    <_message>Authentication is required to remove a color managed device</_message>
+    <icon_name>application-vnd.iccprofile</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+  <action id="org.freedesktop.color-manager.delete-profile">
+    <!-- SECURITY:
+          - Normal users should not have to authenticate to delete profiles
+     -->
+    <_description>Remove a color profile</_description>
+    <_message>Authentication is required to remove a color profile</_message>
+    <icon_name>application-vnd.iccprofile</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+  <action id="org.freedesktop.color-manager.modify-device">
+    <!-- SECURITY:
+          - Normal users should not have to authenticate to modify devices
+     -->
+    <_description>Modify color settings for a device</_description>
+    <_message>Authentication is required to modify the color settings for a device</_message>
+    <icon_name>application-vnd.iccprofile</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+  <action id="org.freedesktop.color-manager.modify-profile">
+    <!-- SECURITY:
+          - Normal users should not have to authenticate to modify profiles
+     -->
+    <_description>Modify a color profile</_description>
+    <_message>Authentication is required to modify a color profile</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>no</allow_any>

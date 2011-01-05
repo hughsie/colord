@@ -344,7 +344,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "CreateDevice") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.create-device");
 		if (!ret)
 			goto out;
 
@@ -375,7 +377,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "DeleteDevice") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.delete-device");
 		if (!ret)
 			goto out;
 
@@ -407,7 +411,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "DeleteProfile") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.create-profile");
 		if (!ret)
 			goto out;
 
@@ -439,7 +445,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "CreateProfile") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.create-profile");
 		if (!ret)
 			goto out;
 

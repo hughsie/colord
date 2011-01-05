@@ -196,7 +196,9 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "AddProfile") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.modify-device");
 		if (!ret)
 			goto out;
 
@@ -240,11 +242,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 	/* return 'o' */
 	if (g_strcmp0 (method_name, "GetProfileForQualifier") == 0) {
-
-		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
-		if (!ret)
-			goto out;
 
 		/* find the profile by the qualifier search string */
 		g_variant_get (parameters, "(s)", &regex);

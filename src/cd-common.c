@@ -58,7 +58,9 @@ cd_main_ensure_dbus_path (gchar *object_path)
  * cd_main_sender_authenticated:
  **/
 gboolean
-cd_main_sender_authenticated (GDBusMethodInvocation *invocation, const gchar *sender)
+cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
+			      const gchar *sender,
+			      const gchar *action_id)
 {
 	gboolean ret = FALSE;
 	GError *error = NULL;
@@ -77,7 +79,7 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation, const gchar *se
 	/* do authorization async */
 	subject = polkit_system_bus_name_new (sender);
 	result = polkit_authority_check_authorization_sync (authority, subject,
-			"org.freedesktop.color-manager.add-device",
+			action_id,
 			NULL,
 			POLKIT_CHECK_AUTHORIZATION_FLAGS_NONE,
 			NULL,

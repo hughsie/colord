@@ -158,7 +158,9 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "SetFilename") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.modify-profile");
 		if (!ret)
 			goto out;
 
@@ -184,7 +186,9 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "SetQualifier") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation, sender);
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.modify-profile");
 		if (!ret)
 			goto out;
 
