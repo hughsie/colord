@@ -108,7 +108,7 @@ AC_ARG_ENABLE(gui, AS_HELP_STRING([--enable-gui],[enable GUI gui]),
 	      enable_gui=$enableval,enable_gui=yes)
 AM_CONDITIONAL(CD_BUILD_GUI, test x$enable_gui = xyes)
 if test x$enable_gui = xyes; then
-	PKG_CHECK_MODULES(GTK, gtk+-3.0)
+	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.5)
 	AC_SUBST(GTK_CFLAGS)
 	AC_SUBST(GTK_LIBS)
 fi
