@@ -235,21 +235,29 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (property_name, "Title") == 0) {
 		if (profile->priv->title != NULL)
 			retval = g_variant_new_string (profile->priv->title);
+		else
+			retval = g_variant_new_string ("");
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "ProfileId") == 0) {
 		if (profile->priv->id != NULL)
 			retval = g_variant_new_string (profile->priv->id);
+		else
+			retval = g_variant_new_string ("");
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Qualifier") == 0) {
 		if (profile->priv->qualifier != NULL)
 			retval = g_variant_new_string (profile->priv->qualifier);
+		else
+			retval = g_variant_new_string ("");
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Filename") == 0) {
 		if (profile->priv->filename != NULL)
 			retval = g_variant_new_string (profile->priv->filename);
+		else
+			retval = g_variant_new_string ("");
 		goto out;
 	}
 
