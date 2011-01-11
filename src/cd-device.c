@@ -172,6 +172,31 @@ out:
 }
 
 /**
+ * cd_device_find_profile_by_id:
+ **/
+static CdProfile *
+cd_device_find_profile_by_id (GPtrArray *array, const gchar *object_path)
+{
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp;
+	guint i;
+	gboolean ret;
+
+	/* find using an object path */
+	for (i=0; i<array->len; i++) {
+		profile_tmp = g_ptr_array_index (array, i);
+		ret = (g_strcmp0 (object_path,
+				  cd_profile_get_id (profile_tmp)) == 0);
+		if (ret) {
+			profile = profile_tmp;
+			goto out;
+		}
+	}
+out:
+	return  profile;
+}
+
+/**
  * cd_device_dbus_method_call:
  **/
 static void
@@ -183,7 +208,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	CdDevice *device = CD_DEVICE (user_data);
 	CdDevicePrivate *priv = device->priv;
 	CdProfile *profile;
-	CdProfile *item_profile_tmp;
+	CdProfile *profile_tmp;
 	gboolean ret;
 	gchar **devices = NULL;
 	gchar *profile_object_path = NULL;
@@ -218,9 +243,9 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* check it does not already exist */
 		for (i=0; i<priv->profiles->len; i++) {
-			item_profile_tmp = g_ptr_array_index (priv->profiles, i);
+			profile_tmp = g_ptr_array_index (priv->profiles, i);
 			if (g_strcmp0 (cd_profile_get_object_path (profile),
-				       cd_profile_get_object_path (item_profile_tmp)) == 0) {
+				       cd_profile_get_object_path (profile_tmp)) == 0) {
 				g_dbus_method_invocation_return_error (invocation,
 								       CD_MAIN_ERROR,
 								       CD_MAIN_ERROR_FAILED,
@@ -235,7 +260,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* emit */
 		cd_device_dbus_emit_changed (device);
-
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}
@@ -262,8 +286,55 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
+	/* return '' */
+	if (g_strcmp0 (method_name, "MakeProfileDefault") == 0) {
+
+		/* check the profile_object_path exists */
+		g_variant_get (parameters, "(s)",
+			       &profile_object_path);
+		profile = cd_device_find_profile_by_id (priv->profiles,
+							profile_object_path);
+		if (profile == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "profile object path '%s' does not exist for this device",
+							       profile_object_path);
+			goto out;
+		}
+
+		/* if this profile already default */
+		if (g_ptr_array_index (priv->profiles, 0) == profile) {
+			g_debug ("%s is already the default on %s",
+				 profile_object_path,
+				 priv->object_path);
+			g_dbus_method_invocation_return_value (invocation, NULL);
+			goto out;
+		}
+
+		/* make the profile first in the array */
+		for (i=1; i<priv->profiles->len; i++) {
+			profile_tmp = g_ptr_array_index (priv->profiles, i);
+			if (profile_tmp == profile) {
+				/* swap [0] and [i] */
+				g_debug ("making %s the default on %s",
+					 profile_object_path,
+					 priv->object_path);
+				profile_tmp = priv->profiles->pdata[0];
+				priv->profiles->pdata[0] = profile;
+				priv->profiles->pdata[i] = profile_tmp;
+				break;
+			}
+		}
+
+		/* emit */
+		cd_device_dbus_emit_changed (device);
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
 	/* we suck */
-	g_critical ("failed to process method %s", method_name);
+	g_critical ("failed to process device method %s", method_name);
 out:
 	g_free (regex);
 	g_free (profile_object_path);
@@ -379,7 +450,7 @@ cd_device_name_vanished_cb (GDBusConnection *connection,
 			    gpointer user_data)
 {
 	CdDevice *device = CD_DEVICE (user_data);
-	g_debug ("emit 'invalidate'");
+	g_debug ("emit 'invalidate' as %s vanished", name);
 	g_signal_emit (device, signals[SIGNAL_INVALIDATE], 0);
 }
 

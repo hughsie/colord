@@ -413,7 +413,7 @@ cd_profile_name_vanished_cb (GDBusConnection *connection,
 			     gpointer user_data)
 {
 	CdProfile *profile = CD_PROFILE (user_data);
-	g_debug ("emit 'invalidate'");
+	g_debug ("emit 'invalidate' as %s vanished", name);
 	g_signal_emit (profile, signals[SIGNAL_INVALIDATE], 0);
 }
 
