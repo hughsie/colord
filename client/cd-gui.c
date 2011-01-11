@@ -439,7 +439,7 @@ cd_gui_got_profile_proxy_full_cb (GObject *source_object,
 			     GAsyncResult *res,
 			     gpointer user_data)
 {
-	const gchar *title = NULL;
+	gchar *title = NULL;
 	GDBusProxy *proxy_tmp;
 	GError *error = NULL;
 	GtkListStore *liststore_profiles;
@@ -456,9 +456,12 @@ cd_gui_got_profile_proxy_full_cb (GObject *source_object,
 	/* get title */
 	variant_title = g_dbus_proxy_get_cached_property (proxy_tmp, "Title");
 	if (variant_title != NULL)
-		title = g_variant_get_string (variant_title, NULL);
-	if (title == NULL)
-		title = "Unassigned profile";
+		title = g_variant_dup_string (variant_title, NULL);
+	if (title == NULL || title[0] == '\0') {
+		title = g_path_get_basename (g_dbus_proxy_get_object_path (proxy_tmp));
+		g_strdelimit (title, "_", ' ');
+		g_strchomp (title);
+	}
 
 	liststore_profiles = GTK_LIST_STORE (gtk_builder_get_object (builder,
 					     "liststore_profiles"));
@@ -472,6 +475,7 @@ cd_gui_got_profile_proxy_full_cb (GObject *source_object,
 	if (variant_title != NULL)
 		g_variant_unref (variant_title);
 	g_object_unref (proxy_tmp);
+	g_free (title);
 }
 
 /**
@@ -506,6 +510,8 @@ cd_gui_add_profile_to_device_listview (const gchar *object_path)
 
 	g_debug ("add %s", object_path);
 	title = g_path_get_basename (object_path);
+	g_strdelimit (title, "_", ' ');
+	g_strchomp (title);
 	liststore = GTK_LIST_STORE (gtk_builder_get_object (builder,
 				    "liststore_device_profiles"));
 	gtk_list_store_append (liststore, &iter);
@@ -815,6 +821,8 @@ cd_gui_add_device_to_listview (const gchar *object_path)
 
 	/* TODO: need title */
 	title = g_path_get_basename (object_path);
+	g_strdelimit (title, "_", ' ');
+	g_strchomp (title);
 	liststore_devices = GTK_LIST_STORE (gtk_builder_get_object (builder,
 					    "liststore_devices"));
 	gtk_list_store_append (liststore_devices, &iter);
