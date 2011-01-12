@@ -47,11 +47,28 @@ cd_main_profile_removed (CdProfile *profile)
 {
 	gboolean ret;
 	gchar *object_path_tmp;
+	CdDevice *device_tmp;
 	GError *error = NULL;
+	GPtrArray *devices;
+	guint i;
 
 	/* remove from the array before emitting */
 	object_path_tmp = g_strdup (cd_profile_get_object_path (profile));
 	cd_profile_array_remove (profiles_array, profile);
+
+	/* try to remove this profile from all devices */
+	devices = cd_device_array_get_array (devices_array);
+	for (i=0; i<devices->len; i++) {
+		device_tmp = g_ptr_array_index (devices, i);
+		ret = cd_device_remove_profile (device_tmp,
+						object_path_tmp,
+						NULL);
+		if (ret) {
+			g_debug ("automatically removing %s from %s as removed",
+				 object_path_tmp,
+				 cd_device_get_object_path (device_tmp));
+		}
+	}
 
 	/* emit signal */
 	g_debug ("Emitting ProfileRemoved(%s)", object_path_tmp);
@@ -68,6 +85,7 @@ cd_main_profile_removed (CdProfile *profile)
 		g_error_free (error);
 	}
 	g_free (object_path_tmp);
+	g_ptr_array_unref (devices);
 }
 
 /**
@@ -534,10 +552,6 @@ out:
 		g_object_unref (device);
 	if (profile != NULL)
 		g_object_unref (profile);
-	if (tuple != NULL)
-		g_variant_unref (tuple);
-	if (value != NULL)
-		g_variant_unref (value);
 	return;
 }
 

@@ -19,6 +19,13 @@ BuildRequires: polkit-devel
 colord is a low level system activated daemon that maps color devices
 to color profiles in the system context.
 
+%package devel
+Summary: Development package for %{name}
+Requires: %{name} = %{version}-%{release}
+
+%description devel
+Files for development with %{name}.
+
 %prep
 %setup -q
 
@@ -33,7 +40,15 @@ make %{?_smp_mflags}
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 
+# Remove static libs and libtool archives.
+find %{buildroot} -name '*.la' -exec rm -f {} ';'
+find %{buildroot} -name '*.a' -exec rm -f {} ';'
+
 %find_lang %{name}
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
@@ -45,6 +60,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/man/man1/colormgr.1.gz
+%{_libdir}/libcolord.so.*
+
+%files devel
+%defattr(-,root,root,-)
+%{_includedir}/libcolord/*.h
+%{_libdir}/libcolord.so
+%{_libdir}/pkgconfig/colord.pc
 
 %changelog
 * #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#

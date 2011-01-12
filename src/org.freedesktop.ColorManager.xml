@@ -24,48 +24,6 @@
 
     <!--***********************************************************-->
 <!--
-    <method name='GetProfilesForType'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
-      <doc:doc>
-        <doc:description>
-          <doc:para>
-            Gets the profiles for a device type.
-          </doc:para>
-        </doc:description>
-      </doc:doc>
-      <arg type='s' name='type' direction='in'>
-        <doc:doc>
-          <doc:summary>
-            <doc:para>
-              A device type, e.g. <doc:tt>scanner</doc:tt>, <doc:tt>display</doc:tt>,
-              <doc:tt>printer</doc:tt> or <doc:tt>camera</doc:tt>.
-            </doc:para>
-          </doc:summary>
-        </doc:doc>
-      </arg>
-      <arg type='s' name='options' direction='in'>
-        <doc:doc>
-          <doc:summary>
-            <doc:para>
-              Options to give hints about what profiles to choose. Currently unused.
-            </doc:para>
-          </doc:summary>
-        </doc:doc>
-      </arg>
-      <arg type='ao' name='profiles' direction='out'>
-        <doc:doc>
-          <doc:summary>
-            <doc:para>
-              An array of profile paths to use with this type of device.
-            </doc:para>
-          </doc:summary>
-        </doc:doc>
-      </arg>
-    </method>
--->
-
-    <!--***********************************************************-->
-<!--
     <method name='GetProfilesForFile'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
@@ -80,15 +38,6 @@
           <doc:summary>
             <doc:para>
               Fully qualified filename, e.g. <doc:tt>/home/hughsie/Photos/Hughsie.jpg</doc:tt>.
-            </doc:para>
-          </doc:summary>
-        </doc:doc>
-      </arg>
-      <arg type='s' name='options' direction='in'>
-        <doc:doc>
-          <doc:summary>
-            <doc:para>
-              Options to give hints about what profiles to choose. Currently unused.
             </doc:para>
           </doc:summary>
         </doc:doc>

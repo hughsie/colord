@@ -25,8 +25,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <locale.h>
-
-#include "cd-common.h"
+#include <colord.h>
 
 static gchar *current_device = NULL;
 static gchar *current_profile = NULL;

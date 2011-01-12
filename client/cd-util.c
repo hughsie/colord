@@ -24,164 +24,55 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <locale.h>
-
-#include "cd-common.h"
+#include <colord.h>
 
 /**
  * cd_util_show_profile:
  **/
 static void
-cd_util_show_profile (const gchar *object_path)
+cd_util_show_profile (CdProfile *profile)
 {
-	const gchar *filename = NULL;
-	const gchar *profile_id = NULL;
-	const gchar *qualifier = NULL;
-	const gchar *title = NULL;
-	GDBusProxy *proxy;
-	GError *error = NULL;
-	GVariant *variant_filename = NULL;
-	GVariant *variant_profile_id = NULL;
-	GVariant *variant_qualifier = NULL;
-	GVariant *variant_title = NULL;
-
-	g_print ("Object Path: %s\n", object_path);
-
-	/* get proxy */
-	proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-					       G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
-					       NULL,
-					       COLORD_DBUS_SERVICE,
-					       object_path,
-					       COLORD_DBUS_INTERFACE_PROFILE,
-					       NULL,
-					       &error);
-	if (proxy == NULL) {
-		g_print ("Failed to get profile properties: %s",
-			 error->message);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* print profile id */
-	variant_profile_id = g_dbus_proxy_get_cached_property (proxy, "ProfileId");
-	if (variant_profile_id != NULL)
-		profile_id = g_variant_get_string (variant_profile_id, NULL);
-	g_print ("ProfileId:\t\t%s\n", profile_id);
-
-	/* print title */
-	variant_title = g_dbus_proxy_get_cached_property (proxy, "Title");
-	if (variant_title != NULL)
-		title = g_variant_get_string (variant_title, NULL);
-	g_print ("Title:\t\t%s\n", title);
-
-	/* print qualifier */
-	variant_qualifier = g_dbus_proxy_get_cached_property (proxy, "Qualifier");
-	if (variant_qualifier != NULL)
-		qualifier = g_variant_get_string (variant_qualifier, NULL);
-	g_print ("Qualifier:\t\t%s\n", qualifier);
-
-	/* print filename */
-	variant_filename = g_dbus_proxy_get_cached_property (proxy, "Filename");
-	if (variant_filename != NULL)
-		filename = g_variant_get_string (variant_filename, NULL);
-	g_print ("Filename:\t\t%s\n", filename);
-out:
-	if (variant_profile_id != NULL)
-		g_variant_unref (variant_profile_id);
-	if (variant_title != NULL)
-		g_variant_unref (variant_title);
-	if (variant_qualifier != NULL)
-		g_variant_unref (variant_qualifier);
-	if (variant_filename != NULL)
-		g_variant_unref (variant_filename);
-	if (proxy != NULL)
-		g_object_unref (proxy);
+	g_print ("Object Path: %s\n",
+		 cd_profile_get_object_path (profile));
+	g_print ("Created:\t%" G_GUINT64_FORMAT "\n",
+		 cd_profile_get_created (profile));
+	g_print ("Qualifier:\t\t%s\n",
+		 cd_profile_get_qualifier (profile));
+	g_print ("Filename:\t\t%s\n",
+		 cd_profile_get_filename (profile));
+	g_print ("Profile ID:\t%s\n",
+		 cd_profile_get_id (profile));
 }
 
 /**
  * cd_util_show_device:
  **/
 static void
-cd_util_show_device (const gchar *object_path)
+cd_util_show_device (CdDevice *device)
 {
-	const gchar *device_id;
-	const gchar *kind;
-	const gchar *model;
-	gchar *profile_tmp;
-	GDBusProxy *proxy;
-	GError *error = NULL;
-	gsize len;
-	guint64 created;
+	CdProfile *profile_tmp;
+	GPtrArray *profiles;
 	guint i;
-	GVariantIter iter;
-	GVariant *variant_created = NULL;
-	GVariant *variant_device_id = NULL;
-	GVariant *variant_kind = NULL;
-	GVariant *variant_model = NULL;
-	GVariant *variant_profiles = NULL;
 
-	g_print ("Object Path: %s\n", object_path);
-
-	/* get proxy */
-	proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-					       G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS,
-					       NULL,
-					       COLORD_DBUS_SERVICE,
-					       object_path,
-					       COLORD_DBUS_INTERFACE_DEVICE,
-					       NULL,
-					       &error);
-	if (proxy == NULL) {
-		g_print ("Failed to get device properties: %s",
-			 error->message);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* print created date */
-	variant_created = g_dbus_proxy_get_cached_property (proxy, "Created");
-	created = g_variant_get_uint64 (variant_created);
-	g_print ("Created:\t%" G_GUINT64_FORMAT "\n", created);
-
-	/* print kind */
-	variant_kind = g_dbus_proxy_get_cached_property (proxy, "Kind");
-	if (variant_kind != NULL) {
-		kind = g_variant_get_string (variant_kind, NULL);
-		g_print ("Kind:\t\t%s\n", kind);
-	}
-
-	/* print model */
-	variant_model = g_dbus_proxy_get_cached_property (proxy, "Model");
-	model = g_variant_get_string (variant_model, NULL);
-	g_print ("Model:\t\t%s\n", model);
-
-	/* print device id */
-	variant_device_id = g_dbus_proxy_get_cached_property (proxy, "DeviceId");
-	device_id = g_variant_get_string (variant_device_id, NULL);
-	g_print ("Device ID:\t%s\n", device_id);
+	g_print ("Object Path: %s\n",
+		 cd_device_get_object_path (device));
+	g_print ("Created:\t%" G_GUINT64_FORMAT "\n",
+		 cd_device_get_created (device));
+	g_print ("Kind:\t\t%s\n",
+		 cd_device_kind_to_string (cd_device_get_kind (device)));
+	g_print ("Model:\t\t%s\n",
+		 cd_device_get_model (device));
+	g_print ("Device ID:\t%s\n",
+		 cd_device_get_id (device));
 
 	/* print profiles */
-	variant_profiles = g_dbus_proxy_get_cached_property (proxy, "Profiles");
-	len = g_variant_iter_init (&iter, variant_profiles);
-	if (len == 0)
-		g_print ("No assigned profiles!\n");
-	for (i=0; i<len; i++) {
-		g_variant_get_child (variant_profiles, i,
-				     "o", &profile_tmp);
-		g_print ("Profile %i:\t%s\n", i+1, profile_tmp);
-		g_free (profile_tmp);
+	profiles = cd_device_get_profiles (device);
+	for (i=0; i<profiles->len; i++) {
+		profile_tmp = g_ptr_array_index (profiles, i);
+		g_print ("Profile %i:\t%s\n",
+			 i+1,
+			 cd_profile_get_object_path (profile_tmp));
 	}
-out:
-	if (variant_created != NULL)
-		g_variant_unref (variant_created);
-	if (variant_model != NULL)
-		g_variant_unref (variant_model);
-	if (variant_device_id != NULL)
-		g_variant_unref (variant_device_id);
-	if (variant_profiles != NULL)
-		g_variant_unref (variant_profiles);
-	if (proxy != NULL)
-		g_object_unref (proxy);
 }
 
 /**
@@ -206,18 +97,18 @@ cd_util_mask_from_string (const gchar *value)
 int
 main (int argc, char *argv[])
 {
-	const gchar *object_path;
-	gchar *object_path_tmp = NULL;
-	GDBusConnection *connection;
+	CdClient *client = NULL;
+	CdDevice *device = NULL;
+	CdDevice *device_tmp;
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp;
+	gboolean ret;
 	GError *error = NULL;
 	GOptionContext *context;
-	gsize len;
+	GPtrArray *array = NULL;
 	guint i;
 	guint mask;
 	guint retval = 1;
-	GVariantIter iter;
-	GVariant *response_child = NULL;
-	GVariant *response = NULL;
 
 	setlocale (LC_ALL, "");
 
@@ -234,11 +125,12 @@ main (int argc, char *argv[])
 	g_option_context_parse (context, &argc, &argv, NULL);
 	g_option_context_free (context);
 
-	/* get a session bus connection */
-	connection = g_bus_get_sync (G_BUS_TYPE_SYSTEM, NULL, &error);
-	if (connection == NULL) {
-		/* TRANSLATORS: no DBus system bus */
-		g_print ("%s %s\n", _("Failed to connect to system bus:"), error->message);
+	/* get connection to colord */
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	if (!ret) {
+		/* TRANSLATORS: no colord available */
+		g_print ("%s %s\n", _("No connection to colord:"), error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -252,30 +144,16 @@ main (int argc, char *argv[])
 	if (g_strcmp0 (argv[1], "get-devices") == 0) {
 
 		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							COLORD_DBUS_PATH,
-							COLORD_DBUS_INTERFACE,
-							"GetDevices",
-							NULL,
-							G_VARIANT_TYPE ("(ao)"),
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		array = cd_client_get_devices_sync (client, NULL, &error);
+		if (array == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to get devices:"), error->message);
 			g_error_free (error);
 			goto out;
 		}
-
-		/* print each device */
-		response_child = g_variant_get_child_value (response, 0);
-		len = g_variant_iter_init (&iter, response_child);
-		for (i=0; i < len; i++) {
-			g_variant_get_child (response_child, i,
-					     "o", &object_path_tmp);
-			cd_util_show_device (object_path_tmp);
-			g_free (object_path_tmp);
+		for (i=0; i < array->len; i++) {
+			device_tmp = g_ptr_array_index (array, i);
+			cd_util_show_device (device_tmp);
 		}
 
 	} else if (g_strcmp0 (argv[1], "get-devices-by-kind") == 0) {
@@ -286,59 +164,34 @@ main (int argc, char *argv[])
 		}
 
 		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							COLORD_DBUS_PATH,
-							COLORD_DBUS_INTERFACE,
-							"GetDevicesByKind",
-							g_variant_new ("(s)", argv[2]),
-							NULL,
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		array = cd_client_get_devices_by_kind_sync (client,
+				cd_device_kind_from_string (argv[2]),
+				NULL,
+				&error);
+		if (array == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to get devices:"), error->message);
 			g_error_free (error);
 			goto out;
 		}
-
-		/* print each device */
-		response_child = g_variant_get_child_value (response, 0);
-		len = g_variant_iter_init (&iter, response_child);
-		for (i=0; i < len; i++) {
-			g_variant_get_child (response_child, i,
-					     "o", &object_path_tmp);
-			cd_util_show_device (object_path_tmp);
-			g_free (object_path_tmp);
+		for (i=0; i < array->len; i++) {
+			device_tmp = g_ptr_array_index (array, i);
+			cd_util_show_device (device_tmp);
 		}
 
 	} else if (g_strcmp0 (argv[1], "get-profiles") == 0) {
 
 		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							COLORD_DBUS_PATH,
-							COLORD_DBUS_INTERFACE,
-							"GetProfiles",
-							NULL,
-							G_VARIANT_TYPE ("(ao)"),
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		array = cd_client_get_profiles_sync (client, NULL, &error);
+		if (array == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to get profiles:"), error->message);
 			g_error_free (error);
 			goto out;
 		}
-
-		/* print each device */
-		response_child = g_variant_get_child_value (response, 0);
-		len = g_variant_iter_init (&iter, response_child);
-		for (i=0; i < len; i++) {
-			g_variant_get_child (response_child, i,
-					     "o", &object_path_tmp);
-			cd_util_show_profile (object_path_tmp);
-			g_free (object_path_tmp);
+		for (i=0; i < array->len; i++) {
+			profile_tmp = g_ptr_array_index (array, i);
+			cd_util_show_profile (profile_tmp);
 		}
 
 	} else if (g_strcmp0 (argv[1], "create-device") == 0) {
@@ -350,28 +203,16 @@ main (int argc, char *argv[])
 
 		/* execute sync method */
 		mask = cd_util_mask_from_string (argv[3]);
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							COLORD_DBUS_PATH,
-							COLORD_DBUS_INTERFACE,
-							"CreateDevice",
-							g_variant_new ("(su)",
-								       argv[2],
-								       mask),
-							G_VARIANT_TYPE ("(o)"),
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		device = cd_client_create_device_sync (client, argv[2],
+						       mask, NULL, &error);
+		if (device == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"), error->message);
 			g_error_free (error);
 			goto out;
 		}
-
-		/* print the device */
-		response_child = g_variant_get_child_value (response, 0);
-		object_path = g_variant_get_string (response_child, NULL);
-		g_print ("Created device %s\n", object_path);
+		g_print ("Created device:\n");
+		cd_util_show_device (device);
 
 	} else if (g_strcmp0 (argv[1], "find-device") == 0) {
 
@@ -381,27 +222,15 @@ main (int argc, char *argv[])
 		}
 
 		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							COLORD_DBUS_PATH,
-							COLORD_DBUS_INTERFACE,
-							"FindDeviceById",
-							g_variant_new ("(s)",
-								       argv[2]),
-							G_VARIANT_TYPE ("(o)"),
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		device = cd_client_find_device_sync (client, argv[2],
+						     NULL, &error);
+		if (device == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to find device:"), error->message);
 			g_error_free (error);
 			goto out;
 		}
-
-		/* print the device */
-		response_child = g_variant_get_child_value (response, 0);
-		object_path = g_variant_get_string (response_child, NULL);
-		g_print ("Got device %s\n", object_path);
+		cd_util_show_device (device);
 
 	} else if (g_strcmp0 (argv[1], "find-profile") == 0) {
 
@@ -411,26 +240,15 @@ main (int argc, char *argv[])
 		}
 
 		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							COLORD_DBUS_PATH,
-							COLORD_DBUS_INTERFACE,
-							"FindProfileById",
-							g_variant_new ("(s)", argv[2]),
-							G_VARIANT_TYPE ("(o)"),
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		profile = cd_client_find_profile_sync (client, argv[2],
+						       NULL, &error);
+		if (profile == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to find profile:"), error->message);
 			g_error_free (error);
 			goto out;
 		}
-
-		/* print the device */
-		response_child = g_variant_get_child_value (response, 0);
-		object_path = g_variant_get_string (response_child, NULL);
-		g_print ("Got profile %s\n", object_path);
+		cd_util_show_profile (profile);
 
 	} else if (g_strcmp0 (argv[1], "create-profile") == 0) {
 
@@ -441,52 +259,16 @@ main (int argc, char *argv[])
 
 		/* execute sync method */
 		mask = cd_util_mask_from_string (argv[3]);
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							COLORD_DBUS_PATH,
-							COLORD_DBUS_INTERFACE,
-							"CreateProfile",
-							g_variant_new ("(su)",
-								       argv[2],
-								       mask),
-							G_VARIANT_TYPE ("(o)"),
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		profile = cd_client_create_profile_sync (client, argv[2],
+							 mask, NULL, &error);
+		if (profile == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create profile:"), error->message);
 			g_error_free (error);
 			goto out;
 		}
-
-		/* print the device */
-		response_child = g_variant_get_child_value (response, 0);
-		object_path = g_variant_get_string (response_child, NULL);
-		g_print ("Created profile %s\n", object_path);
-
-	} else if (g_strcmp0 (argv[1], "delete-device") == 0) {
-
-		if (argc < 2) {
-			g_print ("Not enough arguments\n");
-			goto out;
-		}
-
-		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							COLORD_DBUS_PATH,
-							COLORD_DBUS_INTERFACE,
-							"DeleteDevice",
-							g_variant_new ("(s)", argv[2]),
-							NULL,
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
-			g_error_free (error);
-			goto out;
-		}
+		g_print ("Created profile:\n");
+		cd_util_show_profile (profile);
 
 	} else if (g_strcmp0 (argv[1], "device-add-profile") == 0) {
 
@@ -495,103 +277,285 @@ main (int argc, char *argv[])
 			goto out;
 		}
 
-		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							argv[2],
-							COLORD_DBUS_INTERFACE_DEVICE,
-							"AddProfile",
-							g_variant_new ("(o)", argv[3]),
-							NULL,
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		profile = cd_profile_new ();
+		ret = cd_profile_set_object_path_sync (profile,
+						       argv[3],
+						       NULL,
+						       &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_device_add_profile_sync (device, profile, NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to add profile to device:"),
+				 error->message);
 			g_error_free (error);
 			goto out;
 		}
 
-	} else if (g_strcmp0 (argv[1], "profile-set-property") == 0) {
+	} else if (g_strcmp0 (argv[1], "device-make-profile-default") == 0) {
 
-		if (argc < 5) {
+		if (argc < 3) {
 			g_print ("Not enough arguments\n");
 			goto out;
 		}
 
-		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							argv[2],
-							COLORD_DBUS_INTERFACE_PROFILE,
-							"SetProperty",
-							g_variant_new ("(ss)",
-								       argv[3],
-								       argv[4]),
-							NULL,
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		profile = cd_profile_new ();
+		ret = cd_profile_set_object_path_sync (profile,
+						       argv[3],
+						       NULL,
+						       &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_device_make_profile_default_sync (device, profile,
+							   NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to add profile to device:"),
+				 error->message);
 			g_error_free (error);
 			goto out;
 		}
 
-	} else if (g_strcmp0 (argv[1], "device-set-property") == 0) {
+	} else if (g_strcmp0 (argv[1], "delete-device") == 0) {
 
-		if (argc < 5) {
+		if (argc < 2) {
 			g_print ("Not enough arguments\n");
 			goto out;
 		}
 
-		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							argv[2],
-							COLORD_DBUS_INTERFACE_DEVICE,
-							"SetProperty",
-							g_variant_new ("(ss)",
-								       argv[3],
-								       argv[4]),
-							NULL,
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_client_delete_device_sync (client, device,
+						    NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to delete device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+	} else if (g_strcmp0 (argv[1], "delete-profile") == 0) {
+
+		if (argc < 2) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		profile = cd_profile_new ();
+		ret = cd_profile_set_object_path_sync (profile,
+						       argv[2],
+						       NULL,
+						       &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_client_delete_profile_sync (client, profile,
+						     NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to delete profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+	} else if (g_strcmp0 (argv[1], "profile-set-qualifier") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		profile = cd_profile_new ();
+		ret = cd_profile_set_object_path_sync (profile,
+						       argv[2],
+						       NULL,
+						       &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_profile_set_qualifier_sync (profile, argv[3],
+						     NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to set property on profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+	} else if (g_strcmp0 (argv[1], "profile-set-filename") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		profile = cd_profile_new ();
+		ret = cd_profile_set_object_path_sync (profile,
+						       argv[2],
+						       NULL,
+						       &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_profile_set_filename_sync (profile, argv[3],
+						    NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to set property on profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+	} else if (g_strcmp0 (argv[1], "device-set-model") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_device_set_model_sync (device, argv[3],
+						NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to set property on device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+	} else if (g_strcmp0 (argv[1], "device-set-kind") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_device_set_kind_sync (device, cd_device_kind_from_string (argv[3]),
+					       NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to set property on device:"),
+				 error->message);
 			g_error_free (error);
 			goto out;
 		}
 
 	} else if (g_strcmp0 (argv[1], "device-get-profile-for-qualifier") == 0) {
 
-		if (argc < 4) {
+		if (argc < 3) {
 			g_print ("Not enough arguments\n");
 			goto out;
 		}
 
-		/* execute sync method */
-		response = g_dbus_connection_call_sync (connection,
-							COLORD_DBUS_SERVICE,
-							argv[2],
-							COLORD_DBUS_INTERFACE_DEVICE,
-							"GetProfileForQualifier",
-							g_variant_new ("(s)", argv[3]),
-							G_VARIANT_TYPE ("(o)"),
-							G_DBUS_CALL_FLAGS_NONE,
-							-1, NULL, &error);
-		if (response == NULL) {
-			/* TRANSLATORS: the DBus method failed */
-			g_print ("%s %s\n", _("The request failed:"), error->message);
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
 			g_error_free (error);
 			goto out;
 		}
-
-		/* print the device */
-		response_child = g_variant_get_child_value (response, 0);
-		object_path = g_variant_get_string (response_child, NULL);
-		cd_util_show_profile (object_path);
+		profile = cd_device_get_profile_for_qualifier_sync (device,
+								    argv[3],
+								    NULL,
+								    &error);
+		if (profile == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to get a profile for the qualifier:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		cd_util_show_profile (profile);
 
 	} else {
 
@@ -602,8 +566,14 @@ main (int argc, char *argv[])
 	/* success */
 	retval = 0;
 out:
-	if (response != NULL)
-		g_variant_unref (response);
+	if (array != NULL)
+		g_ptr_array_unref (array);
+	if (client != NULL)
+		g_object_unref (client);
+	if (device != NULL)
+		g_object_unref (device);
+	if (profile != NULL)
+		g_object_unref (profile);
 	return retval;
 }
 

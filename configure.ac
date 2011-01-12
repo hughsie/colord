@@ -1,11 +1,41 @@
 # Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
 AC_PREREQ(2.63)
 
-AC_INIT([colord],0.1.0,[http://hughsie.com])
+m4_define([cd_major_version], [0])
+m4_define([cd_minor_version], [1])
+m4_define([cd_micro_version], [0])
+m4_define([cd_version],
+          [cd_major_version.cd_minor_version.cd_micro_version])
+
+AC_INIT([colord],[cd_version],[http://hughsie.com])
 AC_CONFIG_SRCDIR(src)
 AM_INIT_AUTOMAKE([1.9 tar-ustar dist-bzip2])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+
+# use this in cd-version.h
+CD_MAJOR_VERSION=cd_major_version
+CD_MINOR_VERSION=cd_minor_version
+CD_MICRO_VERSION=cd_micro_version
+AC_SUBST(VERSION)
+AC_SUBST(CD_MAJOR_VERSION)
+AC_SUBST(CD_MINOR_VERSION)
+AC_SUBST(CD_MICRO_VERSION)
+
+# libtool versioning - this applies to libcolord
+#
+# See http://sources.redhat.com/autobook/autobook/autobook_91.html#SEC91 for details
+#
+# increment;
+# CURRENT	If the API or ABI interface has changed (reset REVISION to 0)
+# REVISION	If the API and ABI remains the same, but bugs are fixed.
+# AGE		Don't use.
+LT_CURRENT=1
+LT_REVISION=0
+LT_AGE=0
+AC_SUBST(LT_CURRENT)
+AC_SUBST(LT_REVISION)
+AC_SUBST(LT_AGE)
 
 # enable nice build output on automake1.11
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
@@ -118,10 +148,14 @@ AC_CONFIG_FILES([
 Makefile
 man/Makefile
 data/Makefile
+data/tests/Makefile
 policy/Makefile
 po/Makefile.in
 src/Makefile
 client/Makefile
+libcolord/cd-version.h
+libcolord/colord.pc
+libcolord/Makefile
 ])
 AC_OUTPUT
 

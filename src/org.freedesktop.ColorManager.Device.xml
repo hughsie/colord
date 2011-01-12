@@ -68,7 +68,6 @@
       </doc:doc>
     </property>
 
-
     <!--***********************************************************-->
     <method name='SetProperty'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
@@ -141,7 +140,7 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='o' name='profile_id' direction='in'>
+      <arg type='o' name='object_path' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>

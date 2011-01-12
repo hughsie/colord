@@ -19,10 +19,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef __CD_COMMON_H__
-#define __CD_COMMON_H__
+#if !defined (__COLORD_H_INSIDE__) && !defined (CD_COMPILATION)
+#error "Only <colord.h> can be included directly."
+#endif
 
-#include "config.h"
+#ifndef __CD_TYPES_H
+#define __CD_TYPES_H
+
+#include <glib-object.h>
+
+G_BEGIN_DECLS
+
+/**
+ * CdDeviceKind:
+ *
+ * The device type.
+ **/
+typedef enum {
+	CD_DEVICE_KIND_UNKNOWN,
+	CD_DEVICE_KIND_DISPLAY,
+	CD_DEVICE_KIND_SCANNER,
+	CD_DEVICE_KIND_PRINTER,
+	CD_DEVICE_KIND_CAMERA,
+	CD_DEVICE_KIND_LAST
+} CdDeviceKind;
 
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
@@ -34,5 +54,10 @@
 #define	CD_DBUS_OPTIONS_MASK_TEMP	1
 #define	CD_DBUS_OPTIONS_MASK_DISK	2
 
-#endif /* __CD_COMMON_H__ */
+const gchar	*cd_device_kind_to_string	(CdDeviceKind	 kind_enum);
+CdDeviceKind	 cd_device_kind_from_string	(const gchar	*kind);
+
+G_END_DECLS
+
+#endif /* __CD_TYPES_H */
 

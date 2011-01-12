@@ -114,13 +114,36 @@ cd_profile_get_filename (CdProfile *profile)
 }
 
 /**
- * cd_profile_dbus_emit_changed:
+ * cd_profile_dbus_emit_property_changed:
  **/
 static void
-cd_profile_dbus_emit_changed (CdProfile *profile)
+cd_profile_dbus_emit_property_changed (CdProfile *profile,
+				       const gchar *property_name,
+				       GVariant *property_value)
 {
 	gboolean ret;
-	GError *error = NULL;
+	GError *error_local = NULL;
+	GVariantBuilder builder;
+	GVariantBuilder invalidated_builder;
+
+	/* build the dict */
+	g_variant_builder_init (&invalidated_builder, G_VARIANT_TYPE ("as"));
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	g_variant_builder_add (&builder,
+			       "{sv}",
+			       property_name,
+			       property_value);
+	g_dbus_connection_emit_signal (profile->priv->connection,
+				       NULL,
+				       profile->priv->object_path,
+				       "org.freedesktop.DBus.Properties",
+				       "PropertiesChanged",
+				       g_variant_new ("(sa{sv}as)",
+				       COLORD_DBUS_INTERFACE_PROFILE,
+				       &builder,
+				       &invalidated_builder),
+				       &error_local);
+	g_assert_no_error (error_local);
 
 	/* emit signal */
 	ret = g_dbus_connection_emit_signal (profile->priv->connection,
@@ -129,10 +152,10 @@ cd_profile_dbus_emit_changed (CdProfile *profile)
 					     COLORD_DBUS_INTERFACE_PROFILE,
 					     "Changed",
 					     NULL,
-					     &error);
+					     &error_local);
 	if (!ret) {
-		g_warning ("failed to send signal %s", error->message);
-		g_error_free (error);
+		g_warning ("failed to send signal %s", error_local->message);
+		g_error_free (error_local);
 	}
 }
 
@@ -165,6 +188,8 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(ss)",
 			       &property_name,
 			       &property_value);
+		g_debug ("Attempting to set %s to %s",
+			 property_name, property_value);
 		if (g_strcmp0 (property_name, "Filename") == 0) {
 			ret = cd_profile_set_filename (profile, property_value, &error);
 			if (!ret) {
@@ -173,13 +198,20 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 				g_error_free (error);
 				goto out;
 			}
-			cd_profile_dbus_emit_changed (profile);
+			cd_profile_dbus_emit_property_changed (profile,
+							       property_name,
+							       g_variant_new_string (property_value));
+			cd_profile_dbus_emit_property_changed (profile,
+							       "Title",
+							       g_variant_new_string (profile->priv->title));
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}
 		if (g_strcmp0 (property_name, "Qualifier") == 0) {
 			cd_profile_set_qualifier (profile, property_value);
-			cd_profile_dbus_emit_changed (profile);
+			cd_profile_dbus_emit_property_changed (profile,
+							       property_name,
+							       g_variant_new_string (property_value));
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}

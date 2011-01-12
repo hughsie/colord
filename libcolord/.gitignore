@@ -1,0 +1,8 @@
+.deps
+.libs
+*.o
+*.la
+*.lo
+*.pc
+cd-version.h
+cd-self-test

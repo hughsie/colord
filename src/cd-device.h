@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include "cd-profile.h"
+
 G_BEGIN_DECLS
 
 #define CD_TYPE_DEVICE		(cd_device_get_type ())
@@ -61,6 +63,9 @@ void		 cd_device_set_id			(CdDevice	*device,
 GPtrArray	*cd_device_get_profiles			(CdDevice	*device);
 void		 cd_device_set_profiles			(CdDevice	*device,
 							 GPtrArray	*profiles);
+gboolean	 cd_device_remove_profile		(CdDevice	*device,
+							 const gchar	*profile_object_path,
+							 GError		**error);
 const gchar	*cd_device_get_object_path		(CdDevice	*device);
 gboolean	 cd_device_register_object		(CdDevice	*device,
 							 GDBusConnection *connection,
