@@ -118,29 +118,38 @@ cd_device_array_get_by_object_path (CdDeviceArray *device_array,
 }
 
 /**
- * cd_device_array_class_init:
+ * cd_device_array_get_array:
  **/
-GVariant *
-cd_device_array_get_variant (CdDeviceArray *device_array)
+GPtrArray *
+cd_device_array_get_array (CdDeviceArray *device_array)
 {
 	CdDeviceArrayPrivate *priv = device_array->priv;
-	CdDevice *device;
-	guint i;
-	GVariant *variant;
-	GVariant **variant_array = NULL;
+	return g_ptr_array_ref (priv->array);
+}
 
-	/* copy the object paths */
-	variant_array = g_new0 (GVariant *, priv->array->len + 1);
+/**
+ * cd_device_array_get_by_kind:
+ **/
+GPtrArray *
+cd_device_array_get_by_kind (CdDeviceArray *device_array,
+			     const gchar   *kind)
+{
+	CdDeviceArrayPrivate *priv = device_array->priv;
+	CdDevice *device_tmp;
+	GPtrArray *array_tmp = NULL;
+	guint i;
+
+	/* return all that match kind */
+	array_tmp = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	for (i=0; i<priv->array->len; i++) {
-		device = g_ptr_array_index (priv->array, i);
-		variant_array[i] = g_variant_new_object_path (cd_device_get_object_path (device));
+		device_tmp = g_ptr_array_index (priv->array, i);
+		if (g_strcmp0 (cd_device_get_kind (device_tmp),
+			       kind) == 0) {
+			g_ptr_array_add (array_tmp, g_object_ref (device_tmp));
+		}
 	}
 
-	/* format the value */
-	variant = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
-				       variant_array,
-				       priv->array->len);
-	return variant;
+	return array_tmp;
 }
 
 /**

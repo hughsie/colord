@@ -262,6 +262,31 @@ out:
 }
 
 /**
+ * cd_main_object_path_array_to_variant:
+ **/
+static GVariant *
+cd_main_object_path_array_to_variant (GPtrArray *array)
+{
+	CdDevice *device;
+	guint i;
+	GVariant *variant;
+	GVariant **variant_array = NULL;
+
+	/* copy the object paths */
+	variant_array = g_new0 (GVariant *, array->len + 1);
+	for (i=0; i<array->len; i++) {
+		device = g_ptr_array_index (array, i);
+		variant_array[i] = g_variant_new_object_path (cd_device_get_object_path (device));
+	}
+
+	/* format the value */
+	variant = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
+				       variant_array,
+				       array->len);
+	return variant;
+}
+
+/**
  * cd_main_daemon_method_call:
  **/
 static void
@@ -276,6 +301,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	gchar *device_id = NULL;
 	gchar *object_path_tmp = NULL;
 	GError *error = NULL;
+	GPtrArray *array = NULL;
 	guint options;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
@@ -284,7 +310,23 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetDevices") == 0) {
 
 		/* format the value */
-		value = cd_device_array_get_variant (devices_array);
+		array = cd_device_array_get_array (devices_array);
+		value = cd_main_object_path_array_to_variant (array);
+		tuple = g_variant_new_tuple (&value, 1);
+		g_dbus_method_invocation_return_value (invocation, tuple);
+		goto out;
+	}
+
+	/* return 'as' */
+	if (g_strcmp0 (method_name, "GetDevicesByKind") == 0) {
+
+		/* get all the devices that match this type */
+		g_variant_get (parameters, "(s)", &device_id);
+		array = cd_device_array_get_by_kind (devices_array,
+						     device_id);
+
+		/* format the value */
+		value = cd_main_object_path_array_to_variant (array);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -486,6 +528,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	g_critical ("failed to process method %s", method_name);
 out:
 	g_free (object_path_tmp);
+	if (array != NULL)
+		g_ptr_array_unref (array);
 	if (device != NULL)
 		g_object_unref (device);
 	if (profile != NULL)

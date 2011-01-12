@@ -53,6 +53,8 @@ GType		 cd_device_get_type			(void);
 CdDevice	*cd_device_new				(void);
 
 /* accessors */
+const gchar	*cd_device_get_model			(CdDevice	*device);
+const gchar	*cd_device_get_kind			(CdDevice	*device);
 const gchar	*cd_device_get_id			(CdDevice	*device);
 void		 cd_device_set_id			(CdDevice	*device,
 							 const gchar	*id);

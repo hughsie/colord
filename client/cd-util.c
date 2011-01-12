@@ -105,6 +105,7 @@ static void
 cd_util_show_device (const gchar *object_path)
 {
 	const gchar *device_id;
+	const gchar *kind;
 	const gchar *model;
 	gchar *profile_tmp;
 	GDBusProxy *proxy;
@@ -115,6 +116,7 @@ cd_util_show_device (const gchar *object_path)
 	GVariantIter iter;
 	GVariant *variant_created = NULL;
 	GVariant *variant_device_id = NULL;
+	GVariant *variant_kind = NULL;
 	GVariant *variant_model = NULL;
 	GVariant *variant_profiles = NULL;
 
@@ -140,6 +142,13 @@ cd_util_show_device (const gchar *object_path)
 	variant_created = g_dbus_proxy_get_cached_property (proxy, "Created");
 	created = g_variant_get_uint64 (variant_created);
 	g_print ("Created:\t%" G_GUINT64_FORMAT "\n", created);
+
+	/* print kind */
+	variant_kind = g_dbus_proxy_get_cached_property (proxy, "Kind");
+	if (variant_kind != NULL) {
+		kind = g_variant_get_string (variant_kind, NULL);
+		g_print ("Kind:\t\t%s\n", kind);
+	}
 
 	/* print model */
 	variant_model = g_dbus_proxy_get_cached_property (proxy, "Model");
@@ -250,6 +259,40 @@ main (int argc, char *argv[])
 							"GetDevices",
 							NULL,
 							G_VARIANT_TYPE ("(ao)"),
+							G_DBUS_CALL_FLAGS_NONE,
+							-1, NULL, &error);
+		if (response == NULL) {
+			/* TRANSLATORS: the DBus method failed */
+			g_print ("%s %s\n", _("The request failed:"), error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+		/* print each device */
+		response_child = g_variant_get_child_value (response, 0);
+		len = g_variant_iter_init (&iter, response_child);
+		for (i=0; i < len; i++) {
+			g_variant_get_child (response_child, i,
+					     "o", &object_path_tmp);
+			cd_util_show_device (object_path_tmp);
+			g_free (object_path_tmp);
+		}
+
+	} else if (g_strcmp0 (argv[1], "get-devices-by-kind") == 0) {
+
+		if (argc < 2) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		/* execute sync method */
+		response = g_dbus_connection_call_sync (connection,
+							COLORD_DBUS_SERVICE,
+							COLORD_DBUS_PATH,
+							COLORD_DBUS_INTERFACE,
+							"GetDevicesByKind",
+							g_variant_new ("(s)", argv[2]),
+							NULL,
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);
 		if (response == NULL) {

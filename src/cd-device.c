@@ -43,6 +43,7 @@ struct _CdDevicePrivate
 	CdProfileArray			*profile_array;
 	gchar				*id;
 	gchar				*model;
+	gchar				*kind;
 	gchar				*object_path;
 	GDBusConnection			*connection;
 	GPtrArray			*profiles;
@@ -84,6 +85,26 @@ cd_device_get_id (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
 	return device->priv->id;
+}
+
+/**
+ * cd_device_get_model:
+ **/
+const gchar *
+cd_device_get_model (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	return device->priv->model;
+}
+
+/**
+ * cd_device_get_kind:
+ **/
+const gchar *
+cd_device_get_kind (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	return device->priv->kind;
 }
 
 /**
@@ -364,6 +385,13 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}
+		if (g_strcmp0 (property_name, "Kind") == 0) {
+			g_free (priv->kind);
+			priv->kind = g_strdup (property_value);
+			cd_device_dbus_emit_changed (device);
+			g_dbus_method_invocation_return_value (invocation, NULL);
+			goto out;
+		}
 		g_dbus_method_invocation_return_error (invocation,
 						       CD_MAIN_ERROR,
 						       CD_MAIN_ERROR_FAILED,
@@ -404,7 +432,14 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (property_name, "Model") == 0) {
 		if (priv->model != NULL)
 			retval = g_variant_new_string (priv->model);
-		else 
+		else
+			retval = g_variant_new_string ("");
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Kind") == 0) {
+		if (priv->kind != NULL)
+			retval = g_variant_new_string (priv->kind);
+		else
 			retval = g_variant_new_string ("");
 		goto out;
 	}
@@ -625,6 +660,7 @@ cd_device_finalize (GObject *object)
 	}
 	g_free (priv->id);
 	g_free (priv->model);
+	g_free (priv->kind);
 	g_free (priv->object_path);
 	if (priv->profiles != NULL)
 		g_ptr_array_unref (priv->profiles);

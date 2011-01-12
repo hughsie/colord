@@ -61,7 +61,9 @@ CdDevice	*cd_device_array_get_by_id		(CdDeviceArray	*device_array,
 							 const gchar	*id);
 CdDevice	*cd_device_array_get_by_object_path	(CdDeviceArray	*device_array,
 							 const gchar	*object_path);
-GVariant	*cd_device_array_get_variant		(CdDeviceArray	*device_array);
+GPtrArray	*cd_device_array_get_array		(CdDeviceArray	*device_array);
+GPtrArray	*cd_device_array_get_by_kind		(CdDeviceArray	*device_array,
+							 const gchar	*kind);
 
 G_END_DECLS
 
