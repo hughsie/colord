@@ -55,6 +55,37 @@
       </doc:doc>
     </property>
 
+
+    <!--***********************************************************-->
+    <method name='SetProperty'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Sets a property on the object.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='property_name' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The property name, e.g. "Model".
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='s' name='property_value' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The property value, e.g. "RGB.Plain."
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
     <!-- ************************************************************ -->
     <signal name='Changed'>
       <doc:doc>

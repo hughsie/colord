@@ -42,6 +42,7 @@ struct _CdDevicePrivate
 {
 	CdProfileArray			*profile_array;
 	gchar				*id;
+	gchar				*model;
 	gchar				*object_path;
 	GDBusConnection			*connection;
 	GPtrArray			*profiles;
@@ -212,6 +213,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	gboolean ret;
 	gchar **devices = NULL;
 	gchar *profile_object_path = NULL;
+	gchar *property_name = NULL;
+	gchar *property_value = NULL;
 	gchar *regex = NULL;
 	guint i;
 	GVariant *tuple = NULL;
@@ -289,6 +292,13 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return '' */
 	if (g_strcmp0 (method_name, "MakeProfileDefault") == 0) {
 
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.modify-device");
+		if (!ret)
+			goto out;
+
 		/* check the profile_object_path exists */
 		g_variant_get (parameters, "(s)",
 			       &profile_object_path);
@@ -333,19 +343,43 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
+	/* return '' */
+	if (g_strcmp0 (method_name, "SetProperty") == 0) {
+
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.modify-device");
+		if (!ret)
+			goto out;
+
+		/* set, and parse */
+		g_variant_get (parameters, "(ss)",
+			       &property_name,
+			       &property_value);
+		if (g_strcmp0 (property_name, "Model") == 0) {
+			g_free (priv->model);
+			priv->model = g_strdup (property_value);
+			cd_device_dbus_emit_changed (device);
+			g_dbus_method_invocation_return_value (invocation, NULL);
+			goto out;
+		}
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_MAIN_ERROR,
+						       CD_MAIN_ERROR_FAILED,
+						       "property %s not understood",
+						       property_name);
+		goto out;
+	}
+
 	/* we suck */
 	g_critical ("failed to process device method %s", method_name);
 out:
-	g_free (regex);
 	g_free (profile_object_path);
-#if 0
-	if (tuple != NULL)
-		g_variant_unref (tuple);
-	if (value != NULL)
-		g_variant_unref (value);
-#endif
+	g_free (property_name);
+	g_free (property_value);
+	g_free (regex);
 	g_strfreev (devices);
-	return;
 }
 
 /**
@@ -368,7 +402,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Model") == 0) {
-		retval = g_variant_new_string ("hello dave");
+		if (priv->model != NULL)
+			retval = g_variant_new_string (priv->model);
+		else 
+			retval = g_variant_new_string ("");
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "DeviceId") == 0) {
@@ -587,6 +624,7 @@ cd_device_finalize (GObject *object)
 						     priv->registration_id);
 	}
 	g_free (priv->id);
+	g_free (priv->model);
 	g_free (priv->object_path);
 	if (priv->profiles != NULL)
 		g_ptr_array_unref (priv->profiles);

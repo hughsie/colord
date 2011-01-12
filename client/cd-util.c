@@ -469,9 +469,9 @@ main (int argc, char *argv[])
 			goto out;
 		}
 
-	} else if (g_strcmp0 (argv[1], "profile-set-filename") == 0) {
+	} else if (g_strcmp0 (argv[1], "profile-set-property") == 0) {
 
-		if (argc < 3) {
+		if (argc < 5) {
 			g_print ("Not enough arguments\n");
 			goto out;
 		}
@@ -481,8 +481,10 @@ main (int argc, char *argv[])
 							COLORD_DBUS_SERVICE,
 							argv[2],
 							COLORD_DBUS_INTERFACE_PROFILE,
-							"SetFilename",
-							g_variant_new ("(s)", argv[3]),
+							"SetProperty",
+							g_variant_new ("(ss)",
+								       argv[3],
+								       argv[4]),
 							NULL,
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);
@@ -493,9 +495,9 @@ main (int argc, char *argv[])
 			goto out;
 		}
 
-	} else if (g_strcmp0 (argv[1], "profile-set-qualifier") == 0) {
+	} else if (g_strcmp0 (argv[1], "device-set-property") == 0) {
 
-		if (argc < 3) {
+		if (argc < 5) {
 			g_print ("Not enough arguments\n");
 			goto out;
 		}
@@ -504,9 +506,11 @@ main (int argc, char *argv[])
 		response = g_dbus_connection_call_sync (connection,
 							COLORD_DBUS_SERVICE,
 							argv[2],
-							COLORD_DBUS_INTERFACE_PROFILE,
-							"SetQualifier",
-							g_variant_new ("(s)", argv[3]),
+							COLORD_DBUS_INTERFACE_DEVICE,
+							"SetProperty",
+							g_variant_new ("(ss)",
+								       argv[3],
+								       argv[4]),
 							NULL,
 							G_DBUS_CALL_FLAGS_NONE,
 							-1, NULL, &error);

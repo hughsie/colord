@@ -666,7 +666,8 @@ main (int argc, char *argv[])
 	/* own the object */
 	owner_id = g_bus_own_name (G_BUS_TYPE_SYSTEM,
 				   COLORD_DBUS_SERVICE,
-				   G_BUS_NAME_OWNER_FLAGS_NONE,
+				   G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT |
+				    G_BUS_NAME_OWNER_FLAGS_REPLACE,
 				   cd_main_on_bus_acquired_cb,
 				   cd_main_on_name_acquired_cb,
 				   cd_main_on_name_lost_cb,

@@ -146,16 +146,13 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
 	gboolean ret;
-	gchar *filename = NULL;
-	gchar **profiles = NULL;
-	gchar *qualifier = NULL;
+	gchar *property_name = NULL;
+	gchar *property_value = NULL;
 	GError *error = NULL;
-	GVariant *tuple = NULL;
-	GVariant *value = NULL;
 	CdProfile *profile = CD_PROFILE (user_data);
 
 	/* return '' */
-	if (g_strcmp0 (method_name, "SetFilename") == 0) {
+	if (g_strcmp0 (method_name, "SetProperty") == 0) {
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
@@ -165,58 +162,40 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* set, and parse */
-		g_variant_get (parameters, "(s)",
-			       &filename);
-		ret = cd_profile_set_filename (profile, filename, &error);
-		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
-			g_error_free (error);
+		g_variant_get (parameters, "(ss)",
+			       &property_name,
+			       &property_value);
+		if (g_strcmp0 (property_name, "Filename") == 0) {
+			ret = cd_profile_set_filename (profile, property_value, &error);
+			if (!ret) {
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				g_error_free (error);
+				goto out;
+			}
+			cd_profile_dbus_emit_changed (profile);
+			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}
-
-		/* emit */
-		cd_profile_dbus_emit_changed (profile);
-
-		g_dbus_method_invocation_return_value (invocation, NULL);
-		goto out;
-	}
-
-	/* return '' */
-	if (g_strcmp0 (method_name, "SetQualifier") == 0) {
-
-		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    sender,
-						    "org.freedesktop.color-manager.modify-profile");
-		if (!ret)
+		if (g_strcmp0 (property_name, "Qualifier") == 0) {
+			cd_profile_set_qualifier (profile, property_value);
+			cd_profile_dbus_emit_changed (profile);
+			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
-
-		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(s)",
-			       &qualifier);
-
-		/* save in the struct */
-		cd_profile_set_qualifier (profile, qualifier);
-
-		/* emit */
-		cd_profile_dbus_emit_changed (profile);
-
-		g_dbus_method_invocation_return_value (invocation, NULL);
+		}
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_MAIN_ERROR,
+						       CD_MAIN_ERROR_FAILED,
+						       "property %s not understood",
+						       property_name);
 		goto out;
 	}
 
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
-	g_free (filename);
-	g_free (qualifier);
-	if (tuple != NULL)
-		g_variant_unref (tuple);
-	if (value != NULL)
-		g_variant_unref (value);
-	g_strfreev (profiles);
-	return;
+	g_free (property_name);
+	g_free (property_value);
 }
 
 /**
