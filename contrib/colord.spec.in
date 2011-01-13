@@ -14,6 +14,7 @@ BuildRequires: glib2-devel
 BuildRequires: intltool
 BuildRequires: lcms2-devel
 BuildRequires: polkit-devel
+BuildRequires: sqlite-devel
 
 %description
 colord is a low level system activated daemon that maps color devices

@@ -8,10 +8,12 @@ INCLUDES =						\
 	$(GLIB_CFLAGS)					\
 	$(POLKIT_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
+	$(SQLITE_CFLAGS)				\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DDATADIR=\"$(datadir)\"			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
+	-DLOCALSTATEDIR=\""$(localstatedir)"\"		\
 	-DVERSION="\"$(VERSION)\""			\
 	-DLOCALEDIR=\""$(localedir)"\"
 
@@ -31,12 +33,31 @@ colord_SOURCES =					\
 	cd-profile.h					\
 	cd-profile-store.c				\
 	cd-profile-store.h				\
+	cd-mapping-db.c					\
+	cd-mapping-db.h					\
 	cd-main.c
 
 colord_LDADD =						\
+	$(SQLITE_LIBS)					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(GLIB_LIBS)
 
 colord_CFLAGS =						\
 	$(WARNINGFLAGS_C)
+
+check_PROGRAMS =					\
+	cd-self-test
+
+cd_self_test_SOURCES =					\
+	cd-mapping-db.c					\
+	cd-mapping-db.h					\
+	cd-self-test.c
+
+cd_self_test_LDADD =					\
+	$(SQLITE_LIBS)					\
+	$(GLIB_LIBS)
+
+cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
+
+TESTS = cd-self-test

@@ -119,6 +119,7 @@ dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.14.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9)
 PKG_CHECK_MODULES(POLKIT, polkit-gobject-1 >= 0.97)
 PKG_CHECK_MODULES(LCMS, lcms2)
+PKG_CHECK_MODULES(SQLITE, sqlite3)
 
 dnl ---------------------------------------------------------------------------
 dnl - Is docbook2man available?

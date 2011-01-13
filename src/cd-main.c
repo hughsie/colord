@@ -31,6 +31,7 @@
 #include "cd-device-array.h"
 #include "cd-profile-array.h"
 #include "cd-profile-store.h"
+#include "cd-mapping-db.h"
 
 static GDBusConnection *connection = NULL;
 static GDBusNodeInfo *introspection_daemon = NULL;
@@ -40,6 +41,7 @@ static GMainLoop *loop = NULL;
 static CdDeviceArray *devices_array = NULL;
 static CdProfileArray *profiles_array = NULL;
 static CdProfileStore *profile_store = NULL;
+static CdMappingDb *mapping_db = NULL;
 
 /**
  * cd_main_profile_removed:
@@ -660,6 +662,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 			     const gchar *name,
 			     gpointer user_data)
 {
+
 	g_debug ("acquired name: %s", name);
 	connection = g_object_ref (connection_);
 
@@ -674,7 +677,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	cd_profile_store_search (profile_store,
 				 CD_PROFILE_STORE_SEARCH_SYSTEM |
 				  CD_PROFILE_STORE_SEARCH_VOLUMES |
-				  CD_PROFILE_STORE_SEARCH_MACHINE);
+				  CD_PROFILE_STORE_SEARCH_MACHINE);	
 }
 
 /**
@@ -726,6 +729,17 @@ main (int argc, char *argv[])
 	loop = g_main_loop_new (NULL, FALSE);
 	devices_array = cd_device_array_new ();
 	profiles_array = cd_profile_array_new ();
+
+	/* connect to the mapping db */
+	mapping_db = cd_mapping_db_new ();
+	ret = cd_mapping_db_load (mapping_db,
+				  LOCALSTATEDIR "/lib/colord/mapping.db",
+				  &error);
+	if (!ret) {
+		g_warning ("failed to load mapping database: %s", error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* load introspection from file */
 	file_daemon = g_file_new_for_path (DATADIR "/dbus-1/interfaces/"
@@ -806,6 +820,8 @@ out:
 	g_free (introspection_profile_data);
 	if (profile_store != NULL)
 		g_object_unref (profile_store);
+	if (mapping_db != NULL)
+		g_object_unref (mapping_db);
 	if (devices_array != NULL)
 		g_object_unref (devices_array);
 	if (profiles_array != NULL)

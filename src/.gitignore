@@ -1,3 +1,4 @@
 colord
 .deps
 *.o
+cd-self-test
