@@ -32,12 +32,14 @@
 static void
 cd_util_show_profile (CdProfile *profile)
 {
+	const gchar *tmp;
 	g_print ("Object Path: %s\n",
 		 cd_profile_get_object_path (profile));
 	g_print ("Created:\t%" G_GUINT64_FORMAT "\n",
 		 cd_profile_get_created (profile));
-	g_print ("Qualifier:\t\t%s\n",
-		 cd_profile_get_qualifier (profile));
+	tmp = cd_profile_get_qualifier (profile);
+	if (tmp != NULL && tmp[0] != '\0')
+		g_print ("Qualifier:\t\t%s\n", tmp);
 	g_print ("Filename:\t\t%s\n",
 		 cd_profile_get_filename (profile));
 	g_print ("Profile ID:\t%s\n",
