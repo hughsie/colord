@@ -41,3 +41,5 @@ colord is a system activated daemon that maps devices to color profiles.
 It is used by gnome-color-manager for system integration and use when
 there are no users logged in.
 
+Tarballs can be found here:
+http://people.freedesktop.org/~hughsient/releases/
