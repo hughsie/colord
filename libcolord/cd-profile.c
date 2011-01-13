@@ -57,12 +57,10 @@ struct _CdProfilePrivate
 	gchar			*qualifier;
 	gchar			*title;
 	GDBusProxy		*proxy;
-	guint64			 created;
 };
 
 enum {
 	PROP_0,
-	PROP_CREATED,
 	PROP_ID,
 	PROP_FILENAME,
 	PROP_QUALIFIER,
@@ -164,23 +162,6 @@ cd_profile_get_title (CdProfile *profile)
 }
 
 /**
- * cd_profile_get_created:
- * @profile: a #CdProfile instance.
- *
- * Gets the profile ID.
- *
- * Return value: A value in seconds, or 0 for invalid
- *
- * Since: 0.1.0
- **/
-guint64
-cd_profile_get_created (CdProfile *profile)
-{
-	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
-	return profile->priv->created;
-}
-
-/**
  * cd_profile_dbus_properties_changed:
  **/
 static void
@@ -259,7 +240,6 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 {
 	gboolean ret = TRUE;
 	GError *error_local = NULL;
-	GVariant *created = NULL;
 	GVariant *filename = NULL;
 	GVariant *id = NULL;
 	GVariant *profiles = NULL;
@@ -318,12 +298,6 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	if (title != NULL)
 		profile->priv->title = g_variant_dup_string (title, NULL);
 
-	/* get created */
-	created = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						    "Created");
-	if (created != NULL)
-		profile->priv->created = g_variant_get_uint64 (created);
-
 	/* get signals from DBus */
 	g_signal_connect (profile->priv->proxy,
 			  "g-signal",
@@ -344,8 +318,6 @@ out:
 		g_variant_unref (id);
 	if (filename != NULL)
 		g_variant_unref (filename);
-	if (created != NULL)
-		g_variant_unref (created);
 	if (qualifier != NULL)
 		g_variant_unref (qualifier);
 	if (title != NULL)
@@ -477,23 +449,13 @@ cd_profile_get_object_path (CdProfile *profile)
 gchar *
 cd_profile_to_string (CdProfile *profile)
 {
-	struct tm *time_tm;
-	time_t t;
-	gchar time_buf[256];
 	GString *string;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 
-	/* get a human readable time */
-	t = (time_t) profile->priv->created;
-	time_tm = localtime (&t);
-	strftime (time_buf, sizeof time_buf, "%c", time_tm);
-
 	string = g_string_new ("");
 	g_string_append_printf (string, "  object-path:          %s\n",
 				profile->priv->object_path);
-	g_string_append_printf (string, "  created:              %s\n",
-				time_buf);
 
 	return g_string_free (string, FALSE);
 }
@@ -523,9 +485,6 @@ cd_profile_set_property (GObject *object, guint prop_id, const GValue *value, GP
 		g_free (profile->priv->title);
 		profile->priv->title = g_strdup (g_value_get_string (value));
 		break;
-	case PROP_CREATED:
-		profile->priv->created = g_value_get_uint64 (value);
-		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -541,9 +500,6 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 	CdProfile *profile = CD_PROFILE (object);
 
 	switch (prop_id) {
-	case PROP_CREATED:
-		g_value_set_uint64 (value, profile->priv->created);
-		break;
 	case PROP_ID:
 		g_value_set_string (value, profile->priv->id);
 		break;
@@ -587,20 +543,6 @@ cd_profile_class_init (CdProfileClass *klass)
 			      G_STRUCT_OFFSET (CdProfileClass, changed),
 			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-
-	/**
-	 * CdProfile:created:
-	 *
-	 * The last time the profile was updated.
-	 *
-	 * Since: 0.1.0
-	 **/
-	g_object_class_install_property (object_class,
-					 PROP_CREATED,
-					 g_param_spec_uint64 ("created",
-							      NULL, NULL,
-							      0, G_MAXUINT64, 0,
-							      G_PARAM_READWRITE));
 	/**
 	 * CdProfile:id:
 	 *

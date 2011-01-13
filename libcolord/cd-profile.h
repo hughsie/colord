@@ -98,7 +98,6 @@ const gchar	*cd_profile_get_id			(CdProfile	*profile);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
 const gchar	*cd_profile_get_qualifier		(CdProfile	*profile);
 const gchar	*cd_profile_get_title			(CdProfile	*profile);
-guint64		 cd_profile_get_created			(CdProfile	*profile);
 const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 
 G_END_DECLS
