@@ -146,6 +146,7 @@ dnl - Makefiles, etc.
 dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
 Makefile
+etc/Makefile
 man/Makefile
 data/Makefile
 data/tests/Makefile

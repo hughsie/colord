@@ -5,6 +5,7 @@ ACLOCAL_AMFLAGS = -I m4
 NULL =
 
 SUBDIRS = 						\
+	etc						\
 	po						\
 	policy						\
 	data						\

@@ -5,6 +5,7 @@ ChangeLog
 colord-*.tar.bz2
 colord-*.tar.gz
 compile
+confdefs.h
 config.guess
 config.h
 config.h.in

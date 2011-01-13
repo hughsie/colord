@@ -61,6 +61,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/man/man1/colormgr.1.gz
 %{_libdir}/libcolord.so.*
+%config %{_sysconfdir}/colord.conf
 
 %files devel
 %defattr(-,root,root,-)
