@@ -96,7 +96,10 @@ cd_profile_set_id (CdProfile *profile, const gchar *id)
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_free (profile->priv->id);
 
-	profile->priv->object_path = g_build_filename (COLORD_DBUS_PATH, id, NULL);
+	profile->priv->object_path = g_build_filename (COLORD_DBUS_PATH,
+						       "profiles",
+						       id,
+						       NULL);
 	profile->priv->id = g_strdup (id);
 
 	/* make sure object path is sane */

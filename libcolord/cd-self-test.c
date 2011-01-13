@@ -109,7 +109,7 @@ colord_client_func (void)
 					       &error);
 
 	g_assert_cmpstr (cd_device_get_object_path (device), ==,
-			 "/org/freedesktop/ColorManager/device_self_test");
+			 "/org/freedesktop/ColorManager/devices/device_self_test");
 	g_assert_cmpstr (cd_device_get_id (device), ==, "device-self-test");
 
 	/* get new number of devices */
@@ -147,7 +147,7 @@ colord_client_func (void)
 						 &error);
 
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
-			 "/org/freedesktop/ColorManager/profile_self_test");
+			 "/org/freedesktop/ColorManager/profiles/profile_self_test");
 	g_assert_cmpstr (cd_profile_get_id (profile), ==, "profile-self-test");
 
 	/* get new number of profiles */
@@ -224,7 +224,7 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
-			 "/org/freedesktop/ColorManager/profile_self_test");
+			 "/org/freedesktop/ColorManager/profiles/profile_self_test");
 	g_object_unref (profile_tmp);
 
 	/* check matches wildcarded qualifier */
@@ -235,7 +235,7 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
-			 "/org/freedesktop/ColorManager/profile_self_test");
+			 "/org/freedesktop/ColorManager/profiles/profile_self_test");
 	g_object_unref (profile_tmp);
 
 	/* delete profile */
