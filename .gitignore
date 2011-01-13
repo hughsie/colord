@@ -25,3 +25,5 @@ Makefile
 Makefile.in
 missing
 stamp-h1
+*.patch
+NEWS.new

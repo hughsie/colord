@@ -1,0 +1,43 @@
+colord Release Notes
+
+1. Write NEWS entries for colord in the same format as usual.
+
+git shortlog COLORD_0_1_0.. | grep -i -v trivial | grep -v Merge > NEWS.new
+
+Version 0.1.0
+~~~~~~~~~~~~~
+Released: 2011-xx-xx
+
+Translations:
+New Features:
+Bugfixes:
+
+2. Commit changes to git:
+
+git commit -a -m "Release colord 0.1.0"
+git tag -s -f -m "Release colord 0.1.0" COLORD_0_1_0
+<wait>
+git push --tags
+git push
+
+3. Generate the tarball:
+
+make dist
+
+4. Upload tarball:
+
+scp *.tar.gz hughsient@people.freedesktop.org:public_html/releases/
+
+5. Do post release version bump in configure.ac
+
+6. Commit changes:
+
+git commit -a -m "trivial: post release version bump"
+git push
+
+7. Send an email to gnome-color-manager-list@gnome.org
+
+colord is a system activated daemon that maps devices to color profiles.
+It is used by gnome-color-manager for system integration and use when
+there are no users logged in.
+

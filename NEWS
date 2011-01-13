@@ -1,0 +1,38 @@
+Version 0.1.0
+~~~~~~~~~~~~~
+Released: 2011-01-13
+
+Notes:
+ - Colord is a simple system activated daemon that maps devices to color
+   profiles.
+ - It is used by gnome-color-manager for CUPS integration and is also
+   used when there are no users logged in.
+ - The only real user at the moment is CUPS, but GNOME Color Manager
+   will start depending on colord when it is included in most mainstream
+   distributions.
+ - The DBus interface is not set in stone, and the libcolord library
+   will have new API added to it as required. If colord needs to break
+   public API at this stage for a specific use case, it will.
+ - The persistent storage code is not written yet, but that will come
+   with the next colord version.
+
+New Features:
+ - Add a 'Kind' attribute to the device objects (Richard Hughes)
+ - Add a libcolord shared library that can be used in the client tools (Richard Hughes)
+ - Add an example spec file (Richard Hughes)
+ - Add a simple colormgr man page (Richard Hughes)
+ - Add a simple GTK test GUI for testing the DBus interfaces (Richard Hughes)
+ - Add a simple script to create a test device (Richard Hughes)
+ - Add basic DBus interface (Richard Hughes)
+ - Add code for the DeleteDevice method (Richard Hughes)
+ - Add DeleteProfile() on the main interface (Richard Hughes)
+ - Add GetProfileForQualifier() code (Richard Hughes)
+ - Add MakeProfileDefault() implementation to CdDevice (Richard Hughes)
+ - Add qualifiers to profiles (Richard Hughes)
+ - Allow clients to set properties on the objects using SetProperty (Richard Hughes)
+ - Expose the device created time (Richard Hughes)
+ - Fixed typo in ColorManager API description (Tim Waugh)
+ - Open the profile using lcms2 after we set the profile filename (Richard Hughes)
+ - Provide a method to assign an ICC profile to a profile object (Richard Hughes)
+ - Provide methods for mapping the device ID to the object path (Richard Hughes)
+ - Use seporate PolicyKit authorisations for each action type (Richard Hughes)
