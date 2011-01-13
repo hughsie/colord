@@ -43,6 +43,7 @@ struct _CdProfilePrivate
 	gchar				*id;
 	gchar				*object_path;
 	gchar				*qualifier;
+	gchar				*checksum;
 	gchar				*title;
 	GDBusConnection			*connection;
 	guint				 registration_id;
@@ -377,6 +378,12 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 				text, 1024);
 	profile->priv->title = g_strdup (text);
 
+	/* generate and set checksum */
+	profile->priv->checksum =
+		g_compute_checksum_for_data (G_CHECKSUM_MD5,
+					     (const guchar *) data,
+					    len);
+
 	/* success */
 	g_free (profile->priv->filename);
 	profile->priv->filename = g_strdup (filename);
@@ -416,6 +423,16 @@ cd_profile_get_title (CdProfile *profile)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 	return profile->priv->title;
+}
+
+/**
+ * cd_profile_get_checksum:
+ **/
+const gchar *
+cd_profile_get_checksum (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
+	return profile->priv->checksum;
 }
 
 /**
@@ -562,6 +579,7 @@ cd_profile_finalize (GObject *object)
 	g_free (priv->qualifier);
 	g_free (priv->title);
 	g_free (priv->id);
+	g_free (priv->checksum);
 	g_free (priv->object_path);
 
 	G_OBJECT_CLASS (cd_profile_parent_class)->finalize (object);
