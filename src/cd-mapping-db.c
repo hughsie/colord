@@ -42,6 +42,7 @@ enum {
 };
 
 static guint signals [SIGNAL_LAST] = { 0 };
+static gpointer cd_mapping_db_object = NULL;
 
 G_DEFINE_TYPE (CdMappingDb, cd_mapping_db, G_TYPE_OBJECT)
 
@@ -412,8 +413,12 @@ cd_mapping_db_finalize (GObject *object)
 CdMappingDb *
 cd_mapping_db_new (void)
 {
-	CdMappingDb *mdb;
-	mdb = g_object_new (CD_TYPE_MAPPING_DB, NULL);
-	return CD_MAPPING_DB (mdb);
+	if (cd_mapping_db_object != NULL) {
+		g_object_ref (cd_mapping_db_object);
+	} else {
+		cd_mapping_db_object = g_object_new (CD_TYPE_MAPPING_DB, NULL);
+		g_object_add_weak_pointer (cd_mapping_db_object, &cd_mapping_db_object);
+	}
+	return CD_MAPPING_DB (cd_mapping_db_object);
 }
 
