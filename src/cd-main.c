@@ -30,6 +30,7 @@
 #include "cd-profile.h"
 #include "cd-device-array.h"
 #include "cd-profile-array.h"
+#include "cd-profile-store.h"
 
 static GDBusConnection *connection = NULL;
 static GDBusNodeInfo *introspection_daemon = NULL;
@@ -38,6 +39,7 @@ static GDBusNodeInfo *introspection_profile = NULL;
 static GMainLoop *loop = NULL;
 static CdDeviceArray *devices_array = NULL;
 static CdProfileArray *profiles_array = NULL;
+static CdProfileStore *profile_store = NULL;
 
 /**
  * cd_main_profile_removed:
@@ -147,20 +149,11 @@ cd_main_device_invalidate_cb (CdDevice *device,
 /**
  * cd_main_create_profile:
  **/
-static CdProfile *
-cd_main_create_profile (const gchar *sender,
-			const gchar *profile_id,
-			guint options,
-			GError **error)
+static gboolean
+cd_main_add_profile (CdProfile *profile,
+		     GError **error)
 {
 	gboolean ret;
-	CdProfile *profile;
-
-	g_assert (connection != NULL);
-
-	/* create an object */
-	profile = cd_profile_new ();
-	cd_profile_set_id (profile, profile_id);
 
 	/* register object */
 	ret = cd_profile_register_object (profile,
@@ -173,20 +166,6 @@ cd_main_create_profile (const gchar *sender,
 	/* add */
 	cd_profile_array_add (profiles_array, profile);
 	g_debug ("Adding profile %s", cd_profile_get_object_path (profile));
-
-	/* different persistent options */
-	if (options == CD_DBUS_OPTIONS_MASK_NORMAL) {
-		g_debug ("normal profile");
-	} else if ((options & CD_DBUS_OPTIONS_MASK_TEMP) > 0) {
-		g_debug ("temporary profile");
-		/* setup DBus watcher */
-		cd_profile_watch_sender (profile, sender);
-	} else if ((options & CD_DBUS_OPTIONS_MASK_DISK) > 0) {
-		g_debug ("persistant profile");
-		//FIXME: save to disk
-	} else {
-		g_warning ("Unsupported options kind: %i", options);
-	}
 
 	/* profile is no longer valid */
 	g_signal_connect (profile, "invalidate",
@@ -206,6 +185,46 @@ cd_main_create_profile (const gchar *sender,
 					     error);
 	if (!ret)
 		goto out;
+out:
+	return ret;
+}
+
+/**
+ * cd_main_create_profile:
+ **/
+static CdProfile *
+cd_main_create_profile (const gchar *sender,
+			const gchar *profile_id,
+			guint options,
+			GError **error)
+{
+	gboolean ret;
+	CdProfile *profile;
+
+	g_assert (connection != NULL);
+
+	/* create an object */
+	profile = cd_profile_new ();
+	cd_profile_set_id (profile, profile_id);
+
+	/* add the profile */
+	ret = cd_main_add_profile (profile, error);
+	if (!ret)
+		goto out;
+
+	/* different persistent options */
+	if (options == CD_DBUS_OPTIONS_MASK_NORMAL) {
+		g_debug ("normal profile");
+	} else if ((options & CD_DBUS_OPTIONS_MASK_TEMP) > 0) {
+		g_debug ("temporary profile");
+		/* setup DBus watcher */
+		cd_profile_watch_sender (profile, sender);
+	} else if ((options & CD_DBUS_OPTIONS_MASK_DISK) > 0) {
+		g_debug ("persistant profile");
+		//FIXME: save to disk
+	} else {
+		g_warning ("Unsupported options kind: %i", options);
+	}
 out:
 	return profile;
 }
@@ -602,6 +621,38 @@ cd_main_on_bus_acquired_cb (GDBusConnection *connection_,
 }
 
 /**
+ * cd_main_profile_store_added_cb:
+ **/
+static void
+cd_main_profile_store_added_cb (CdProfileStore *_profile_store,
+				CdProfile *profile,
+				gpointer user_data)
+{
+	gboolean ret;
+	GError *error = NULL;
+
+	/* just add it to the bus with the title as the ID */
+	cd_profile_set_id (profile, cd_profile_get_title (profile));
+	ret = cd_main_add_profile (profile, &error);
+	if (!ret) {
+		g_warning ("failed to add profile: %s",
+			   error->message);
+		g_error_free (error);
+	}
+}
+
+/**
+ * cd_main_profile_store_removed_cb:
+ **/
+static void
+cd_main_profile_store_removed_cb (CdProfileStore *_profile_store,
+				  CdProfile *profile,
+				  gpointer user_data)
+{
+	/* check the profile should be invalidated automatically */
+}
+
+/**
  * cd_main_on_name_acquired_cb:
  **/
 static void
@@ -611,6 +662,19 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 {
 	g_debug ("acquired name: %s", name);
 	connection = g_object_ref (connection_);
+
+	/* add system profiles */
+	profile_store = cd_profile_store_new ();
+	g_signal_connect (profile_store, "added",
+			  G_CALLBACK (cd_main_profile_store_added_cb),
+			  user_data);
+	g_signal_connect (profile_store, "removed",
+			  G_CALLBACK (cd_main_profile_store_removed_cb),
+			  user_data);
+	cd_profile_store_search (profile_store,
+				 CD_PROFILE_STORE_SEARCH_SYSTEM |
+				  CD_PROFILE_STORE_SEARCH_VOLUMES |
+				  CD_PROFILE_STORE_SEARCH_MACHINE);
 }
 
 /**
@@ -740,6 +804,8 @@ out:
 	g_free (introspection_daemon_data);
 	g_free (introspection_device_data);
 	g_free (introspection_profile_data);
+	if (profile_store != NULL)
+		g_object_unref (profile_store);
 	if (devices_array != NULL)
 		g_object_unref (devices_array);
 	if (profiles_array != NULL)

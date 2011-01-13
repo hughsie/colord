@@ -67,6 +67,7 @@ gboolean	 cd_profile_register_object		(CdProfile	*profile,
 const gchar	*cd_profile_get_qualifier		(CdProfile	*profile);
 void		 cd_profile_set_qualifier		(CdProfile	*profile,
 							 const gchar	*qualifier);
+const gchar	*cd_profile_get_checksum		(CdProfile	*profile);
 const gchar	*cd_profile_get_title			(CdProfile	*profile);
 const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 void		 cd_profile_watch_sender		(CdProfile	*profile,

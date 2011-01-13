@@ -29,6 +29,8 @@ colord_SOURCES =					\
 	cd-profile-array.h				\
 	cd-profile.c					\
 	cd-profile.h					\
+	cd-profile-store.c				\
+	cd-profile-store.h				\
 	cd-main.c
 
 colord_LDADD =						\
