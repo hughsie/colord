@@ -76,11 +76,23 @@ colord_client_func (void)
 	CdProfile *profile;
 	CdProfile *profile_tmp;
 	gboolean ret;
+	gchar *device_id;
+	gchar *device_path;
 	gchar *filename;
+	gchar *profile_id;
+	gchar *profile_path;
 	GError *error = NULL;
 	GPtrArray *array;
 	GPtrArray *devices;
 	GPtrArray *profiles;
+	guint32 key;
+
+	key = g_random_int_range (0x00, 0xffff);
+	g_debug ("using random key %04x", key);
+	profile_id = g_strdup_printf ("profile-self-test-%04x", key);
+	device_id = g_strdup_printf ("device-self-test-%04x", key);
+	profile_path = g_strdup_printf ("/org/freedesktop/ColorManager/profiles/profile_self_test_%04x", key);
+	device_path = g_strdup_printf ("/org/freedesktop/ColorManager/devices/device_self_test_%04x", key);
 
 	/* create */
 	client = cd_client_new ();
@@ -103,14 +115,14 @@ colord_client_func (void)
 
 	/* create device */
 	device = cd_client_create_device_sync (client,
-					       "device-self-test",
+					       device_id,
 					       CD_DBUS_OPTIONS_MASK_TEMP,
 					       NULL,
 					       &error);
 
 	g_assert_cmpstr (cd_device_get_object_path (device), ==,
-			 "/org/freedesktop/ColorManager/devices/device_self_test");
-	g_assert_cmpstr (cd_device_get_id (device), ==, "device-self-test");
+			 device_path);
+	g_assert_cmpstr (cd_device_get_id (device), ==, device_id);
 
 	/* get new number of devices */
 	array = cd_client_get_devices_sync (client, NULL, &error);
@@ -141,14 +153,14 @@ colord_client_func (void)
 
 	/* create profile */
 	profile = cd_client_create_profile_sync (client,
-						 "profile-self-test",
+						 profile_id,
 						 CD_DBUS_OPTIONS_MASK_TEMP,
 						 NULL,
 						 &error);
 
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
-			 "/org/freedesktop/ColorManager/profiles/profile_self_test");
-	g_assert_cmpstr (cd_profile_get_id (profile), ==, "profile-self-test");
+			 profile_path);
+	g_assert_cmpstr (cd_profile_get_id (profile), ==, profile_id);
 
 	/* get new number of profiles */
 	array = cd_client_get_profiles_sync (client, NULL, &error);
@@ -224,7 +236,7 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
-			 "/org/freedesktop/ColorManager/profiles/profile_self_test");
+			 profile_path);
 	g_object_unref (profile_tmp);
 
 	/* check matches wildcarded qualifier */
@@ -235,7 +247,7 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
-			 "/org/freedesktop/ColorManager/profiles/profile_self_test");
+			 profile_path);
 	g_object_unref (profile_tmp);
 
 	/* delete profile */
@@ -271,6 +283,10 @@ colord_client_func (void)
 	g_assert_cmpint (devices->len, ==, array->len);
 	g_ptr_array_unref (array);
 
+	g_free (profile_id);
+	g_free (device_id);
+	g_free (profile_path);
+	g_free (device_path);
 	g_free (filename);
 	g_ptr_array_unref (devices);
 	g_ptr_array_unref (profiles);
