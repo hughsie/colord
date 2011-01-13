@@ -271,6 +271,29 @@ colord_client_func (void)
 	g_assert_cmpint (array->len, ==, 0);
 	g_ptr_array_unref (array);
 
+	/* add back profile, and ensure it's automatically added back
+	 * to the device thanks to the db */
+	g_object_unref (profile);
+	profile = cd_client_create_profile_sync (client,
+						 profile_id,
+						 CD_DBUS_OPTIONS_MASK_TEMP,
+						 NULL,
+						 &error);
+
+	/* wait for daemon */
+	_g_test_loop_run_with_timeout (50);
+
+	/* ensure device no longer lists deleted profile */
+	array = cd_device_get_profiles (device);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 1);
+	g_ptr_array_unref (array);
+
+	/* delete profile */
+	ret = cd_client_delete_profile_sync (client, profile, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	/* delete device */
 	ret = cd_client_delete_device_sync (client, device, NULL, &error);
 	g_assert_no_error (error);

@@ -326,6 +326,110 @@ cd_main_object_path_array_to_variant (GPtrArray *array)
 }
 
 /**
+ * cd_main_device_auto_add_profiles:
+ **/
+static void
+cd_main_device_auto_add_profiles (CdDevice *device)
+{
+	CdProfile *profile_tmp;
+	const gchar *object_path_tmp;
+	gboolean ret;
+	GError *error = NULL;
+	GPtrArray *array;
+	guint i;
+
+	/* get data */
+	array = cd_mapping_db_get_profiles (mapping_db,
+					    cd_device_get_object_path (device),
+					    &error);
+	if (array == NULL) {
+		g_warning ("failed to get profiles for device from db: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* try to add them */
+	for (i=0; i<array->len; i++) {
+		object_path_tmp = g_ptr_array_index (array, i);
+		profile_tmp = cd_profile_array_get_by_object_path (profiles_array,
+								   object_path_tmp);
+		if (profile_tmp != NULL) {
+			g_debug ("Automatically add %s to %s",
+				 object_path_tmp,
+				 cd_device_get_object_path (device));
+			ret = cd_device_add_profile (device,
+						     object_path_tmp,
+						     &error);
+			if (!ret) {
+				g_debug ("failed to assign, non-fatal: %s",
+					 error->message);
+				g_clear_error (&error);
+			}
+			g_object_unref (profile_tmp);
+		} else {
+			g_debug ("profile %s is not (yet) available",
+				 object_path_tmp);
+		}
+	}
+out:
+	if (array != NULL)
+		g_ptr_array_unref (array);
+}
+
+/**
+ * cd_main_profile_auto_add_to_device:
+ **/
+static void
+cd_main_profile_auto_add_to_device (CdProfile *profile)
+{
+	CdDevice *device_tmp;
+	const gchar *object_path_tmp;
+	gboolean ret;
+	GError *error = NULL;
+	GPtrArray *array;
+	guint i;
+
+	/* get data */
+	array = cd_mapping_db_get_devices (mapping_db,
+					   cd_profile_get_object_path (profile),
+					   &error);
+	if (array == NULL) {
+		g_warning ("failed to get profiles for device from db: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* try to add them */
+	for (i=0; i<array->len; i++) {
+		object_path_tmp = g_ptr_array_index (array, i);
+		device_tmp = cd_device_array_get_by_object_path (devices_array,
+								 object_path_tmp);
+		if (device_tmp != NULL) {
+			g_debug ("Automatically add %s to %s",
+				 cd_profile_get_object_path (profile),
+				 object_path_tmp);
+			ret = cd_device_add_profile (device_tmp,
+						     cd_profile_get_object_path (profile),
+						     &error);
+			if (!ret) {
+				g_debug ("failed to assign, non-fatal: %s",
+					 error->message);
+				g_clear_error (&error);
+			}
+			g_object_unref (device_tmp);
+		} else {
+			g_debug ("device %s is not (yet) available",
+				 object_path_tmp);
+		}
+	}
+out:
+	if (array != NULL)
+		g_ptr_array_unref (array);
+}
+
+/**
  * cd_main_daemon_method_call:
  **/
 static void
@@ -444,9 +548,14 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 					   error->message);
 				g_dbus_method_invocation_return_gerror (invocation,
 									error);
+				g_error_free (error);
 				goto out;
 			}
+
+			/* auto add profiles from the database */
+			cd_main_device_auto_add_profiles (device);
 		}
+
 		/* format the value */
 		value = g_variant_new_object_path (cd_device_get_object_path (device));
 		tuple = g_variant_new_tuple (&value, 1);
@@ -518,6 +627,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* remove from the array, and emit */
 		cd_main_profile_removed (profile);
 
+		/* profile unref'd when removed */
+		profile = NULL;
+
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}
@@ -555,6 +667,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 								error);
 			goto out;
 		}
+
+		/* auto add profiles from the database */
+		cd_main_profile_auto_add_to_device (profile);
 
 		/* format the value */
 		value = g_variant_new_object_path (cd_profile_get_object_path (profile));

@@ -26,6 +26,7 @@
 
 #include "cd-common.h"
 #include "cd-device.h"
+#include "cd-mapping-db.h"
 #include "cd-profile-array.h"
 #include "cd-profile.h"
 
@@ -41,6 +42,7 @@ static void     cd_device_finalize	(GObject     *object);
 struct _CdDevicePrivate
 {
 	CdProfileArray			*profile_array;
+	CdMappingDb			*mapping_db;
 	gchar				*id;
 	gchar				*model;
 	gchar				*kind;
@@ -315,6 +317,61 @@ out:
 }
 
 /**
+ * cd_device_add_profile:
+ **/
+gboolean
+cd_device_add_profile (CdDevice *device,
+		       const gchar *profile_object_path,
+		       GError **error)
+{
+	CdDevicePrivate *priv = device->priv;
+	CdProfile *profile;
+	CdProfile *profile_tmp;
+	gboolean ret = TRUE;
+	guint i;
+
+	/* is it available */
+	profile = cd_profile_array_get_by_object_path (priv->profile_array,
+						       profile_object_path);
+	if (profile == NULL) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "profile object path '%s' does not exist",
+			     profile_object_path);
+		goto out;
+	}
+
+	/* check it does not already exist */
+	for (i=0; i<priv->profiles->len; i++) {
+		profile_tmp = g_ptr_array_index (priv->profiles, i);
+		if (g_strcmp0 (cd_profile_get_object_path (profile),
+			       cd_profile_get_object_path (profile_tmp)) == 0) {
+			ret = FALSE;
+			g_set_error (error,
+				     CD_MAIN_ERROR,
+				     CD_MAIN_ERROR_FAILED,
+				     "profile object path '%s' has already been added",
+				     profile_object_path);
+			goto out;
+		}
+	}
+
+	/* add to the array */
+	g_ptr_array_add (priv->profiles, profile);
+
+	/* emit */
+	cd_device_dbus_emit_property_changed (device,
+					      "Profiles",
+					      cd_device_get_profiles_as_variant (device));
+out:
+	if (profile != NULL)
+		g_object_unref (profile);
+	return ret;
+}
+
+/**
  * cd_device_dbus_method_call:
  **/
 static void
@@ -351,38 +408,29 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* check the profile_object_path exists */
 		g_variant_get (parameters, "(o)",
 			       &profile_object_path);
-		profile = cd_profile_array_get_by_object_path (priv->profile_array,
-							       profile_object_path);
-		if (profile == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "profile object path '%s' does not exist",
-							       profile_object_path);
+
+		/* add it */
+		ret = cd_device_add_profile (device,
+					     profile_object_path,
+					     &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
 			goto out;
 		}
 
-		/* check it does not already exist */
-		for (i=0; i<priv->profiles->len; i++) {
-			profile_tmp = g_ptr_array_index (priv->profiles, i);
-			if (g_strcmp0 (cd_profile_get_object_path (profile),
-				       cd_profile_get_object_path (profile_tmp)) == 0) {
-				g_dbus_method_invocation_return_error (invocation,
-								       CD_MAIN_ERROR,
-								       CD_MAIN_ERROR_FAILED,
-								       "profile object path '%s' has already been added",
-								       profile_object_path);
-				goto out;
-			}
+		/* save this to the permanent database */
+		ret = cd_mapping_db_add (priv->mapping_db,
+					 priv->object_path,
+					 profile_object_path,
+					 &error);
+		if (!ret) {
+			g_warning ("failed to save mapping to database: %s",
+				   error->message);
+			g_error_free (error);
 		}
 
-		/* add to the array */
-		g_ptr_array_add (priv->profiles, profile);
-
-		/* emit */
-		cd_device_dbus_emit_property_changed (device,
-						      "Profiles",
-						      cd_device_get_profiles_as_variant (device));
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}
@@ -407,6 +455,17 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 								error);
 			g_error_free (error);
 			goto out;
+		}
+
+		/* save this to the permanent database */
+		ret = cd_mapping_db_remove (priv->mapping_db,
+					    priv->object_path,
+					    profile_object_path,
+					    &error);
+		if (!ret) {
+			g_warning ("failed to save mapping to database: %s",
+				   error->message);
+			g_error_free (error);
 		}
 
 		g_dbus_method_invocation_return_value (invocation, NULL);
@@ -759,6 +818,7 @@ cd_device_init (CdDevice *device)
 	device->priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	device->priv->profile_array = cd_profile_array_new ();
 	device->priv->created = g_get_real_time ();
+	device->priv->mapping_db = cd_mapping_db_new ();
 }
 
 /**
@@ -785,6 +845,7 @@ cd_device_finalize (GObject *object)
 	if (priv->profiles != NULL)
 		g_ptr_array_unref (priv->profiles);
 	g_object_unref (priv->profile_array);
+	g_object_unref (priv->mapping_db);
 
 	G_OBJECT_CLASS (cd_device_parent_class)->finalize (object);
 }
