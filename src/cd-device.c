@@ -185,6 +185,10 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 	GVariantBuilder builder;
 	GVariantBuilder invalidated_builder;
 
+	/* not yet connected */
+	if (device->priv->connection == NULL)
+		return;
+
 	/* build the dict */
 	g_variant_builder_init (&invalidated_builder, G_VARIANT_TYPE ("as"));
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
