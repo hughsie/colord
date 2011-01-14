@@ -26,6 +26,8 @@
 
 #include <gio/gio.h>
 
+#include "../libcolord/cd-enum.h"
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
@@ -38,12 +40,6 @@ typedef enum {
 	CD_MAIN_ERROR_FAILED,
 	CD_MAIN_ERROR_LAST
 } CdMainError;
-
-typedef enum {
-	CD_OBJECT_SCOPE_NORMAL		= 0,
-	CD_OBJECT_SCOPE_TEMPORARY	= 1,
-	CD_OBJECT_SCOPE_DISK		= 2
-} CdObjectScope;
 
 GQuark		 cd_main_error_quark		(void);
 gboolean	 cd_main_sender_authenticated	(GDBusMethodInvocation *invocation,
