@@ -50,12 +50,6 @@ struct _CdProfileStoreClass
 	GObjectClass	parent_class;
 	void		(* added)		(CdProfile		*profile);
 	void		(* removed)		(CdProfile		*profile);
-	/* padding for future expansion */
-	void (*_cd_reserved1) (void);
-	void (*_cd_reserved2) (void);
-	void (*_cd_reserved3) (void);
-	void (*_cd_reserved4) (void);
-	void (*_cd_reserved5) (void);
 };
 
 typedef enum {
