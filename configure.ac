@@ -117,7 +117,6 @@ dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.14.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9)
-PKG_CHECK_MODULES(POLKIT, polkit-gobject-1 >= 0.97)
 PKG_CHECK_MODULES(LCMS, lcms2)
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 
@@ -131,6 +130,17 @@ fi
 AM_CONDITIONAL(HAVE_DOCBOOK2MAN, [test "$DOCBOOK2MAN" != "no"])
 
 dnl ---------------------------------------------------------------------------
+dnl - Build PolicyKit code
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(polkit, AS_HELP_STRING([--enable-polkit],[enable PolicyKit]),
+	      enable_polkit=$enableval,enable_polkit=yes)
+AM_CONDITIONAL(CD_BUILD_POLKIT, test x$enable_polkit = xyes)
+if test x$enable_polkit = xyes; then
+	PKG_CHECK_MODULES(POLKIT, polkit-gobject-1 >= 0.97)
+	AC_DEFINE(USE_POLKIT, 1, [if we should use PolicyKit])
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl - Build GUI gui
 dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(gui, AS_HELP_STRING([--enable-gui],[enable GUI gui]),
@@ -138,8 +148,6 @@ AC_ARG_ENABLE(gui, AS_HELP_STRING([--enable-gui],[enable GUI gui]),
 AM_CONDITIONAL(CD_BUILD_GUI, test x$enable_gui = xyes)
 if test x$enable_gui = xyes; then
 	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.5)
-	AC_SUBST(GTK_CFLAGS)
-	AC_SUBST(GTK_LIBS)
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -172,3 +180,11 @@ echo "
         cflags:                    ${CFLAGS}
         cppflags:                  ${CPPFLAGS}
 "
+
+
+# warn that dummy is basically broken
+if test x$enable_polkit = xno; then
+	echo "*******************************************************************"
+	echo "** YOU ARE NOT USING A SECURE DAEMON. ALL USERS CAN DO ANYTHING! **"
+	echo "*******************************************************************"
+fi

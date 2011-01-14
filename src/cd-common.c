@@ -62,6 +62,7 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 			      const gchar *sender,
 			      const gchar *action_id)
 {
+#ifdef USE_POLKIT
 	gboolean ret = FALSE;
 	GError *error = NULL;
 	PolkitAuthorizationResult *result = NULL;
@@ -114,4 +115,9 @@ out:
 		g_object_unref (result);
 	g_object_unref (subject);
 	return ret;
+#else
+	g_warning ("not checking %s for %s as no PolicyKit support",
+		   action_id, sender);
+	return TRUE;
+#endif
 }
