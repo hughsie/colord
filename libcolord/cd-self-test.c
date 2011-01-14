@@ -119,7 +119,8 @@ colord_client_func (void)
 					       CD_DBUS_OPTIONS_MASK_TEMP,
 					       NULL,
 					       &error);
-
+	g_assert_no_error (error);
+	g_assert (device != NULL);
 	g_assert_cmpstr (cd_device_get_object_path (device), ==,
 			 device_path);
 	g_assert_cmpstr (cd_device_get_id (device), ==, device_id);
@@ -157,7 +158,8 @@ colord_client_func (void)
 						 CD_DBUS_OPTIONS_MASK_TEMP,
 						 NULL,
 						 &error);
-
+	g_assert_no_error (error);
+	g_assert (profile != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
 			 profile_path);
 	g_assert_cmpstr (cd_profile_get_id (profile), ==, profile_id);
@@ -279,6 +281,8 @@ colord_client_func (void)
 						 CD_DBUS_OPTIONS_MASK_TEMP,
 						 NULL,
 						 &error);
+	g_assert_no_error (error);
+	g_assert (profile != NULL);
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
@@ -304,6 +308,36 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (array != NULL);
 	g_assert_cmpint (devices->len, ==, array->len);
+	g_ptr_array_unref (array);
+
+	/* create profile then device and check profiles are
+	 * added to the device */
+	g_object_unref (profile);
+	profile = cd_client_create_profile_sync (client,
+						 profile_id,
+						 CD_DBUS_OPTIONS_MASK_TEMP,
+						 NULL,
+						 &error);
+	g_assert_no_error (error);
+	g_assert (profile != NULL);
+
+	/* create device */
+	g_object_unref (device);
+	device = cd_client_create_device_sync (client,
+					       device_id,
+					       CD_DBUS_OPTIONS_MASK_TEMP,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* wait for daemon */
+	_g_test_loop_run_with_timeout (50);
+
+	/* ensure device has profiles added */
+	array = cd_device_get_profiles (device);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 1);
 	g_ptr_array_unref (array);
 
 	g_free (profile_id);
