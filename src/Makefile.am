@@ -15,6 +15,7 @@ INCLUDES =						\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\"		\
 	-DVERSION="\"$(VERSION)\""			\
+	-DCD_COMPILATION				\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 libexec_PROGRAMS =					\

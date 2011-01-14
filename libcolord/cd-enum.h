@@ -45,6 +45,23 @@ typedef enum {
 } CdDeviceKind;
 
 /**
+ * CdProfileKind:
+ *
+ * The profile type.
+ **/
+typedef enum {
+	CD_PROFILE_KIND_UNKNOWN,
+	CD_PROFILE_KIND_INPUT_DEVICE,
+	CD_PROFILE_KIND_DISPLAY_DEVICE,
+	CD_PROFILE_KIND_OUTPUT_DEVICE,
+	CD_PROFILE_KIND_DEVICELINK,
+	CD_PROFILE_KIND_COLORSPACE_CONVERSION,
+	CD_PROFILE_KIND_ABSTRACT,
+	CD_PROFILE_KIND_NAMED_COLOR,
+	CD_PROFILE_KIND_LAST
+} CdProfileKind;
+
+/**
  * CdObjectScope:
  *
  * The options type.
@@ -63,6 +80,8 @@ typedef enum {
 
 const gchar	*cd_device_kind_to_string	(CdDeviceKind	 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string	(const gchar	*kind);
+const gchar	*cd_profile_kind_to_string	(CdProfileKind	 profile_kind);
+CdProfileKind	 cd_profile_kind_from_string	(const gchar	*profile_kind);
 
 G_END_DECLS
 

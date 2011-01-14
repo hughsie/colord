@@ -33,11 +33,15 @@ static void
 cd_util_show_profile (CdProfile *profile)
 {
 	const gchar *tmp;
+	CdProfileKind kind;
 	g_print ("Object Path: %s\n",
 		 cd_profile_get_object_path (profile));
 	tmp = cd_profile_get_qualifier (profile);
 	if (tmp != NULL && tmp[0] != '\0')
 		g_print ("Qualifier:\t\t%s\n", tmp);
+	kind = cd_profile_get_kind (profile);
+	if (kind != CD_PROFILE_KIND_UNKNOWN)
+		g_print ("Kind:\t\t%s\n", cd_profile_kind_to_string (kind));
 	g_print ("Filename:\t\t%s\n",
 		 cd_profile_get_filename (profile));
 	g_print ("Profile ID:\t%s\n",

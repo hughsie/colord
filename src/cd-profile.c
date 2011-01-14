@@ -49,6 +49,7 @@ struct _CdProfilePrivate
 	GDBusConnection			*connection;
 	guint				 registration_id;
 	guint				 watcher_id;
+	CdProfileKind			 kind;
 };
 
 enum {
@@ -229,6 +230,9 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			cd_profile_dbus_emit_property_changed (profile,
 							       "Title",
 							       g_variant_new_string (profile->priv->title));
+			cd_profile_dbus_emit_property_changed (profile,
+							       "Kind",
+							       g_variant_new_uint32 (profile->priv->kind));
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}
@@ -294,6 +298,10 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 			retval = g_variant_new_string (profile->priv->filename);
 		else
 			retval = g_variant_new_string ("");
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Kind") == 0) {
+		retval = g_variant_new_uint32 (profile->priv->kind);
 		goto out;
 	}
 
@@ -398,6 +406,33 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 				"en", "US",
 				text, 1024);
 	profile->priv->title = g_strdup (text);
+
+	/* get the profile kind */
+	switch (cmsGetDeviceClass (lcms_profile)) {
+	case cmsSigInputClass:
+		profile->priv->kind = CD_PROFILE_KIND_INPUT_DEVICE;
+		break;
+	case cmsSigDisplayClass:
+		profile->priv->kind = CD_PROFILE_KIND_DISPLAY_DEVICE;
+		break;
+	case cmsSigOutputClass:
+		profile->priv->kind = CD_PROFILE_KIND_OUTPUT_DEVICE;
+		break;
+	case cmsSigLinkClass:
+		profile->priv->kind = CD_PROFILE_KIND_DEVICELINK;
+		break;
+	case cmsSigColorSpaceClass:
+		profile->priv->kind = CD_PROFILE_KIND_COLORSPACE_CONVERSION;
+		break;
+	case cmsSigAbstractClass:
+		profile->priv->kind = CD_PROFILE_KIND_ABSTRACT;
+		break;
+	case cmsSigNamedColorClass:
+		profile->priv->kind = CD_PROFILE_KIND_NAMED_COLOR;
+		break;
+	default:
+		profile->priv->kind = CD_PROFILE_KIND_UNKNOWN;
+	}
 
 	/* generate and set checksum */
 	profile->priv->checksum =

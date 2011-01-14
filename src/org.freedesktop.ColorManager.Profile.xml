@@ -49,6 +49,18 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Kind' type='u' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The profile kind, e.g. <doc:tt>colorspace-conversion</doc:tt>,
+            <doc:tt>abstract</doc:tt> or <doc:tt>display-device</doc:tt>.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Filename' type='s' access='read'>
       <doc:doc>
         <doc:description>

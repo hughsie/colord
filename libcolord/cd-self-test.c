@@ -186,8 +186,13 @@ colord_client_func (void)
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
 
+	/* check profile kind */
+	g_assert_cmpint (cd_profile_get_kind (profile), ==,
+			 CD_PROFILE_KIND_DISPLAY_DEVICE);
+
 	/* check profile filename */
-	g_assert (g_str_has_suffix (cd_profile_get_filename (profile), "data/tests/ibm-t61.icc"));
+	g_assert (g_str_has_suffix (cd_profile_get_filename (profile),
+				    "data/tests/ibm-t61.icc"));
 
 	/* check profile qualifier */
 	g_assert_cmpstr (cd_profile_get_qualifier (profile), ==, "Epson.RGB.300dpi");

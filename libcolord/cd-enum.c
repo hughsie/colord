@@ -92,3 +92,53 @@ cd_device_kind_from_string (const gchar *type)
 		return CD_DEVICE_KIND_CAMERA;
 	return CD_DEVICE_KIND_UNKNOWN;
 }
+
+/**
+ * cd_profile_kind_to_string:
+ *
+ * Since: 2.91.1
+ **/
+const gchar *
+cd_profile_kind_to_string (CdProfileKind kind)
+{
+	if (kind == CD_PROFILE_KIND_INPUT_DEVICE)
+		return "input-device";
+	if (kind == CD_PROFILE_KIND_DISPLAY_DEVICE)
+		return "display-device";
+	if (kind == CD_PROFILE_KIND_OUTPUT_DEVICE)
+		return "output-device";
+	if (kind == CD_PROFILE_KIND_DEVICELINK)
+		return "devicelink";
+	if (kind == CD_PROFILE_KIND_COLORSPACE_CONVERSION)
+		return "colorspace-conversion";
+	if (kind == CD_PROFILE_KIND_ABSTRACT)
+		return "abstract";
+	if (kind == CD_PROFILE_KIND_NAMED_COLOR)
+		return "named-color";
+	return "unknown";
+}
+
+/**
+ * cd_profile_kind_from_string:
+ *
+ * Since: 2.91.1
+ **/
+CdProfileKind
+cd_profile_kind_from_string (const gchar *profile_kind)
+{
+	if (g_strcmp0 (profile_kind, "input-device") == 0)
+		return CD_PROFILE_KIND_INPUT_DEVICE;
+	if (g_strcmp0 (profile_kind, "display-device") == 0)
+		return CD_PROFILE_KIND_DISPLAY_DEVICE;
+	if (g_strcmp0 (profile_kind, "output-device") == 0)
+		return CD_PROFILE_KIND_OUTPUT_DEVICE;
+	if (g_strcmp0 (profile_kind, "devicelink") == 0)
+		return CD_PROFILE_KIND_DEVICELINK;
+	if (g_strcmp0 (profile_kind, "colorspace-conversion") == 0)
+		return CD_PROFILE_KIND_COLORSPACE_CONVERSION;
+	if (g_strcmp0 (profile_kind, "abstract") == 0)
+		return CD_PROFILE_KIND_ABSTRACT;
+	if (g_strcmp0 (profile_kind, "named-color") == 0)
+		return CD_PROFILE_KIND_NAMED_COLOR;
+	return CD_PROFILE_KIND_UNKNOWN;
+}

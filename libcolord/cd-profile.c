@@ -57,6 +57,7 @@ struct _CdProfilePrivate
 	gchar			*qualifier;
 	gchar			*title;
 	GDBusProxy		*proxy;
+	CdProfileKind		 kind;
 };
 
 enum {
@@ -65,6 +66,7 @@ enum {
 	PROP_FILENAME,
 	PROP_QUALIFIER,
 	PROP_TITLE,
+	PROP_KIND,
 	PROP_LAST
 };
 
@@ -162,6 +164,23 @@ cd_profile_get_title (CdProfile *profile)
 }
 
 /**
+ * cd_profile_get_kind:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets the profile kind.
+ *
+ * Return value: A #CdProfileKind, e.g. %CD_PROFILE_KIND_DISPLAY_DEVICE
+ *
+ * Since: 0.1.1
+ **/
+CdProfileKind
+cd_profile_get_kind (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+	return profile->priv->kind;
+}
+
+/**
  * cd_profile_dbus_properties_changed:
  **/
 static void
@@ -191,6 +210,8 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, "Title") == 0) {
 			g_free (profile->priv->title);
 			profile->priv->title = g_variant_dup_string (property_value, NULL);
+		} else if (g_strcmp0 (property_name, "Kind") == 0) {
+			profile->priv->kind = g_variant_get_uint32 (property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
@@ -245,6 +266,7 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	GVariant *profiles = NULL;
 	GVariant *qualifier = NULL;
 	GVariant *title = NULL;
+	GVariant *kind = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 	g_return_val_if_fail (profile->priv->proxy == NULL, FALSE);
@@ -298,6 +320,12 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	if (title != NULL)
 		profile->priv->title = g_variant_dup_string (title, NULL);
 
+	/* get kind */
+	kind = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+						 "Kind");
+	if (kind != NULL)
+		profile->priv->kind = g_variant_get_uint32 (kind);
+
 	/* get signals from DBus */
 	g_signal_connect (profile->priv->proxy,
 			  "g-signal",
@@ -316,6 +344,8 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 out:
 	if (id != NULL)
 		g_variant_unref (id);
+	if (kind != NULL)
+		g_variant_unref (kind);
 	if (filename != NULL)
 		g_variant_unref (filename);
 	if (qualifier != NULL)
@@ -485,6 +515,9 @@ cd_profile_set_property (GObject *object, guint prop_id, const GValue *value, GP
 		g_free (profile->priv->title);
 		profile->priv->title = g_strdup (g_value_get_string (value));
 		break;
+	case PROP_KIND:
+		profile->priv->kind = g_value_get_uint (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -511,6 +544,9 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 		break;
 	case PROP_TITLE:
 		g_value_set_string (value, profile->priv->title);
+		break;
+	case PROP_KIND:
+		g_value_set_uint (value, profile->priv->kind);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -593,6 +629,19 @@ cd_profile_class_init (CdProfileClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_TITLE,
 					 g_param_spec_string ("title",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE));
+	/**
+	 * CdProfile:kind:
+	 *
+	 * The profile kind.
+	 *
+	 * Since: 0.1.1
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_KIND,
+					 g_param_spec_string ("kind",
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE));
