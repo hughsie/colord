@@ -15,6 +15,7 @@ BuildRequires: intltool
 BuildRequires: lcms2-devel
 BuildRequires: polkit-devel
 BuildRequires: sqlite-devel
+BuildRequires: libgudev1-devel
 
 %description
 colord is a low level system activated daemon that maps color devices
@@ -63,6 +64,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{_datadir}/man/man1/colormgr.1.gz
 %{_libdir}/libcolord.so.*
 %config %{_sysconfdir}/colord.conf
+/lib/udev/rules.d/*.rules
 
 %files devel
 %defattr(-,root,root,-)

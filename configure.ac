@@ -119,6 +119,7 @@ dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.14.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9)
 PKG_CHECK_MODULES(LCMS, lcms2)
 PKG_CHECK_MODULES(SQLITE, sqlite3)
+PKG_CHECK_MODULES(GUDEV, gudev-1.0)
 
 dnl ---------------------------------------------------------------------------
 dnl - Is docbook2man available?
@@ -150,6 +151,14 @@ if test x$enable_gui = xyes; then
 	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.5)
 fi
 
+# udev rules go in /lib, not /usr/lib
+if test "$prefix" = "/usr" -o "$prefix" = "/usr/local" ; then
+  slashlibdir=/lib
+else
+  slashlibdir=$prefix/lib
+fi
+AC_SUBST(slashlibdir)
+
 dnl ---------------------------------------------------------------------------
 dnl - Makefiles, etc.
 dnl ---------------------------------------------------------------------------
@@ -160,6 +169,7 @@ man/Makefile
 data/Makefile
 data/tests/Makefile
 policy/Makefile
+rules/Makefile
 po/Makefile.in
 src/Makefile
 client/Makefile

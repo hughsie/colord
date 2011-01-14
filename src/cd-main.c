@@ -33,6 +33,7 @@
 #include "cd-profile-store.h"
 #include "cd-device-db.h"
 #include "cd-mapping-db.h"
+#include "cd-udev-client.h"
 
 static GDBusConnection *connection = NULL;
 static GDBusNodeInfo *introspection_daemon = NULL;
@@ -44,6 +45,7 @@ static CdProfileArray *profiles_array = NULL;
 static CdProfileStore *profile_store = NULL;
 static CdMappingDb *mapping_db = NULL;
 static CdDeviceDb *device_db = NULL;
+static CdUdevClient *udev_client = NULL;
 
 /**
  * cd_main_profile_removed:
@@ -910,6 +912,9 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 		device_id = g_ptr_array_index (array_devices, i);
 		cd_main_add_disk_device (device_id);
 	}
+
+	/* add GUdev devices */
+	cd_udev_client_coldplug (udev_client);
 out:
 	if (array_devices != NULL)
 		g_ptr_array_unref (array_devices);
@@ -964,6 +969,7 @@ main (int argc, char *argv[])
 	loop = g_main_loop_new (NULL, FALSE);
 	devices_array = cd_device_array_new ();
 	profiles_array = cd_profile_array_new ();
+	udev_client = cd_udev_client_new ();
 
 	/* connect to the mapping db */
 	mapping_db = cd_mapping_db_new ();
@@ -1066,6 +1072,8 @@ out:
 	g_free (introspection_daemon_data);
 	g_free (introspection_device_data);
 	g_free (introspection_profile_data);
+	if (udev_client != NULL)
+		g_object_unref (udev_client);
 	if (profile_store != NULL)
 		g_object_unref (profile_store);
 	if (mapping_db != NULL)
