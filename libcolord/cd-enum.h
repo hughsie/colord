@@ -44,15 +44,22 @@ typedef enum {
 	CD_DEVICE_KIND_LAST
 } CdDeviceKind;
 
+/**
+ * CdObjectScope:
+ *
+ * The options type.
+ **/
+typedef enum {
+	CD_OBJECT_SCOPE_NORMAL		= 0,
+	CD_OBJECT_SCOPE_TEMPORARY	= 1,
+	CD_OBJECT_SCOPE_DISK		= 2
+} CdObjectScope;
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
-
-#define	CD_DBUS_OPTIONS_MASK_NORMAL	0
-#define	CD_DBUS_OPTIONS_MASK_TEMP	1
-#define	CD_DBUS_OPTIONS_MASK_DISK	2
 
 const gchar	*cd_device_kind_to_string	(CdDeviceKind	 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string	(const gchar	*kind);

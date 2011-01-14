@@ -208,6 +208,7 @@ cd_main_create_profile (const gchar *sender,
 	/* create an object */
 	profile = cd_profile_new ();
 	cd_profile_set_id (profile, profile_id);
+	cd_profile_set_scope (profile, options);
 
 	/* add the profile */
 	ret = cd_main_add_profile (profile, error);
@@ -215,13 +216,13 @@ cd_main_create_profile (const gchar *sender,
 		goto out;
 
 	/* different persistent options */
-	if (options == CD_DBUS_OPTIONS_MASK_NORMAL) {
+	if (options == CD_OBJECT_SCOPE_NORMAL) {
 		g_debug ("normal profile");
-	} else if ((options & CD_DBUS_OPTIONS_MASK_TEMP) > 0) {
+	} else if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
 		g_debug ("temporary profile");
 		/* setup DBus watcher */
 		cd_profile_watch_sender (profile, sender);
-	} else if ((options & CD_DBUS_OPTIONS_MASK_DISK) > 0) {
+	} else if ((options & CD_OBJECT_SCOPE_DISK) > 0) {
 		g_debug ("persistant profile");
 		//FIXME: save to disk
 	} else {
@@ -249,6 +250,7 @@ cd_main_create_device (const gchar *sender,
 	/* create an object */
 	device = cd_device_new ();
 	cd_device_set_id (device, device_id);
+	cd_device_set_scope (device, options);
 	cd_device_array_add (devices_array, device);
 	g_debug ("Adding device %s", cd_device_get_object_path (device));
 
@@ -261,13 +263,13 @@ cd_main_create_device (const gchar *sender,
 		goto out;
 
 	/* different persistent options */
-	if (options == CD_DBUS_OPTIONS_MASK_NORMAL) {
+	if (options == CD_OBJECT_SCOPE_NORMAL) {
 		g_debug ("normal device");
-	} else if ((options & CD_DBUS_OPTIONS_MASK_TEMP) > 0) {
+	} else if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
 		g_debug ("temporary device");
 		/* setup DBus watcher */
 		cd_device_watch_sender (device, sender);
-	} else if ((options & CD_DBUS_OPTIONS_MASK_DISK) > 0) {
+	} else if ((options & CD_OBJECT_SCOPE_DISK) > 0) {
 		g_debug ("persistant device");
 		//FIXME: save to disk
 	} else {

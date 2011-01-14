@@ -24,6 +24,8 @@
 
 #include <glib-object.h>
 
+#include "cd-common.h"
+
 G_BEGIN_DECLS
 
 #define CD_TYPE_PROFILE		(cd_profile_get_type ())
@@ -56,6 +58,9 @@ CdProfile	*cd_profile_new				(void);
 const gchar	*cd_profile_get_id			(CdProfile	*profile);
 void		 cd_profile_set_id			(CdProfile	*profile,
 							 const gchar	*id);
+CdObjectScope	 cd_profile_get_scope			(CdProfile	*profile);
+void		 cd_profile_set_scope			(CdProfile	*profile,
+							 CdObjectScope	 object_scope);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
 gboolean	 cd_profile_set_filename		(CdProfile	*profile,
 							 const gchar	*filename,

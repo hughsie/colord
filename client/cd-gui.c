@@ -250,13 +250,13 @@ cd_gui_button_create_cb (GtkWidget *widget, gpointer user_data)
 	/* get radio options */
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "radiobutton_create_normal"));
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-		options = CD_DBUS_OPTIONS_MASK_NORMAL;
+		options = CD_OBJECT_SCOPE_NORMAL;
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "radiobutton_create_temp"));
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-		options = CD_DBUS_OPTIONS_MASK_TEMP;
+		options = CD_OBJECT_SCOPE_TEMPORARY;
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "radiobutton_create_disk"));
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-		options = CD_DBUS_OPTIONS_MASK_DISK;
+		options = CD_OBJECT_SCOPE_DISK;
 
 	/* only valid for profiles */
 	if (create_profile) {

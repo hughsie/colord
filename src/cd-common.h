@@ -32,16 +32,18 @@
 #define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
 
-#define	CD_DBUS_OPTIONS_MASK_NORMAL	0
-#define	CD_DBUS_OPTIONS_MASK_TEMP	1
-#define	CD_DBUS_OPTIONS_MASK_DISK	2
-
 #define CD_MAIN_ERROR			cd_main_error_quark()
 
 typedef enum {
 	CD_MAIN_ERROR_FAILED,
 	CD_MAIN_ERROR_LAST
 } CdMainError;
+
+typedef enum {
+	CD_OBJECT_SCOPE_NORMAL		= 0,
+	CD_OBJECT_SCOPE_TEMPORARY	= 1,
+	CD_OBJECT_SCOPE_DISK		= 2
+} CdObjectScope;
 
 GQuark		 cd_main_error_quark		(void);
 gboolean	 cd_main_sender_authenticated	(GDBusMethodInvocation *invocation,
@@ -50,6 +52,8 @@ gboolean	 cd_main_sender_authenticated	(GDBusMethodInvocation *invocation,
 void		 cd_main_ensure_dbus_path	(gchar		*object_path);
 gboolean	 cd_main_mkdir_with_parents	(const gchar	*filename,
 						 GError		**error);
+const gchar	*cd_object_scope_to_string	(CdObjectScope	 kind_enum);
+CdObjectScope	 cd_object_scope_from_string	(const gchar	*kind);
 
 #endif /* __CD_COMMON_H__ */
 

@@ -82,13 +82,13 @@ static guint
 cd_util_mask_from_string (const gchar *value)
 {
 	if (g_strcmp0 (value, "normal") == 0)
-		return CD_DBUS_OPTIONS_MASK_NORMAL;
+		return CD_OBJECT_SCOPE_NORMAL;
 	if (g_strcmp0 (value, "temp") == 0)
-		return CD_DBUS_OPTIONS_MASK_TEMP;
+		return CD_OBJECT_SCOPE_TEMPORARY;
 	if (g_strcmp0 (value, "disk") == 0)
-		return CD_DBUS_OPTIONS_MASK_DISK;
+		return CD_OBJECT_SCOPE_DISK;
 	g_warning ("mask string '%s' unknown", value);
-	return CD_DBUS_OPTIONS_MASK_NORMAL;
+	return CD_OBJECT_SCOPE_NORMAL;
 }
 
 /**

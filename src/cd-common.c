@@ -145,3 +145,56 @@ out:
 		g_object_unref (file);
 	return ret;
 }
+
+/**
+ * cd_object_scope_to_string:
+ *
+ * Converts a #CdObjectScope to a string.
+ *
+ * Return value: identifier string
+ *
+ * Since: 0.1.0
+ **/
+const gchar *
+cd_object_scope_to_string (CdObjectScope kind_enum)
+{
+	const gchar *kind = NULL;
+	switch (kind_enum) {
+	case CD_OBJECT_SCOPE_NORMAL:
+		kind = "normal";
+		break;
+	case CD_OBJECT_SCOPE_TEMPORARY:
+		kind = "temp";
+		break;
+	case CD_OBJECT_SCOPE_DISK:
+		kind = "disk";
+		break;
+	default:
+		kind = "unknown";
+		break;
+	}
+	return kind;
+}
+
+/**
+ * cd_object_scope_from_string:
+ *
+ * Converts a string to a #CdObjectScope.
+ *
+ * Return value: enumerated value
+ *
+ * Since: 0.1.0
+ **/
+CdObjectScope
+cd_object_scope_from_string (const gchar *type)
+{
+	if (type == NULL)
+		return CD_OBJECT_SCOPE_NORMAL;
+	if (g_strcmp0 (type, "display") == 0)
+		return CD_OBJECT_SCOPE_TEMPORARY;
+	if (g_strcmp0 (type, "scanner") == 0)
+		return CD_OBJECT_SCOPE_DISK;
+	if (g_strcmp0 (type, "normal") == 0)
+		return CD_OBJECT_SCOPE_NORMAL;
+	return CD_OBJECT_SCOPE_NORMAL;
+}

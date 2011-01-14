@@ -41,6 +41,7 @@ static void     cd_device_finalize	(GObject     *object);
  **/
 struct _CdDevicePrivate
 {
+	CdObjectScope			 object_scope;
 	CdProfileArray			*profile_array;
 	CdMappingDb			*mapping_db;
 	gchar				*id;
@@ -68,6 +69,26 @@ enum {
 
 static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdDevice, cd_device, G_TYPE_OBJECT)
+
+/**
+ * cd_device_get_scope:
+ **/
+CdObjectScope
+cd_device_get_scope (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), 0);
+	return device->priv->object_scope;
+}
+
+/**
+ * cd_device_set_scope:
+ **/
+void
+cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
+{
+	g_return_if_fail (CD_IS_DEVICE (device));
+	device->priv->object_scope = object_scope;
+}
 
 /**
  * cd_device_get_object_path:

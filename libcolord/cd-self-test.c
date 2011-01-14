@@ -116,7 +116,7 @@ colord_client_func (void)
 	/* create device */
 	device = cd_client_create_device_sync (client,
 					       device_id,
-					       CD_DBUS_OPTIONS_MASK_TEMP,
+					       CD_OBJECT_SCOPE_TEMPORARY,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -155,7 +155,7 @@ colord_client_func (void)
 	/* create profile */
 	profile = cd_client_create_profile_sync (client,
 						 profile_id,
-						 CD_DBUS_OPTIONS_MASK_TEMP,
+						 CD_OBJECT_SCOPE_TEMPORARY,
 						 NULL,
 						 &error);
 	g_assert_no_error (error);
@@ -278,7 +278,7 @@ colord_client_func (void)
 	g_object_unref (profile);
 	profile = cd_client_create_profile_sync (client,
 						 profile_id,
-						 CD_DBUS_OPTIONS_MASK_TEMP,
+						 CD_OBJECT_SCOPE_TEMPORARY,
 						 NULL,
 						 &error);
 	g_assert_no_error (error);
@@ -315,7 +315,7 @@ colord_client_func (void)
 	g_object_unref (profile);
 	profile = cd_client_create_profile_sync (client,
 						 profile_id,
-						 CD_DBUS_OPTIONS_MASK_TEMP,
+						 CD_OBJECT_SCOPE_TEMPORARY,
 						 NULL,
 						 &error);
 	g_assert_no_error (error);
@@ -325,7 +325,7 @@ colord_client_func (void)
 	g_object_unref (device);
 	device = cd_client_create_device_sync (client,
 					       device_id,
-					       CD_DBUS_OPTIONS_MASK_TEMP,
+					       CD_OBJECT_SCOPE_TEMPORARY,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);

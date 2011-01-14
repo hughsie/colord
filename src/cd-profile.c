@@ -39,6 +39,7 @@ static void     cd_profile_finalize	(GObject     *object);
  **/
 struct _CdProfilePrivate
 {
+	CdObjectScope			 object_scope;
 	gchar				*filename;
 	gchar				*id;
 	gchar				*object_path;
@@ -67,6 +68,26 @@ enum {
 
 static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdProfile, cd_profile, G_TYPE_OBJECT)
+
+/**
+ * cd_profile_get_scope:
+ **/
+CdObjectScope
+cd_profile_get_scope (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+	return profile->priv->object_scope;
+}
+
+/**
+ * cd_profile_set_scope:
+ **/
+void
+cd_profile_set_scope (CdProfile *profile, CdObjectScope object_scope)
+{
+	g_return_if_fail (CD_IS_PROFILE (profile));
+	profile->priv->object_scope = object_scope;
+}
 
 /**
  * cd_profile_get_object_path:
