@@ -50,6 +50,8 @@ check_PROGRAMS =					\
 	cd-self-test
 
 cd_self_test_SOURCES =					\
+	cd-common.c					\
+	cd-common.h					\
 	cd-mapping-db.c					\
 	cd-mapping-db.h					\
 	cd-self-test.c

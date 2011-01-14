@@ -27,10 +27,11 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "cd-common.h"
 #include "cd-mapping-db.h"
 
 static void
-colord_mapping_db_func (void)
+cd_mapping_db_func (void)
 {
 	CdMappingDb *mdb;
 	GError *error = NULL;
@@ -98,7 +99,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
-	g_test_add_func ("/colord/mapping-db", colord_mapping_db_func);
+	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);
 	return g_test_run ();
 }
 

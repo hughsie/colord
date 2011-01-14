@@ -121,3 +121,27 @@ out:
 	return TRUE;
 #endif
 }
+
+
+/**
+ * cd_main_mkdir_with_parents:
+ **/
+gboolean
+cd_main_mkdir_with_parents (const gchar *filename, GError **error)
+{
+	gboolean ret;
+	GFile *file = NULL;
+
+	/* ensure desination exists */
+	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
+	if (!ret) {
+		file = g_file_new_for_path (filename);
+		ret = g_file_make_directory_with_parents (file, NULL, error);
+		if (!ret)
+			goto out;
+	}
+out:
+	if (file != NULL)
+		g_object_unref (file);
+	return ret;
+}

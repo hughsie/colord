@@ -48,5 +48,8 @@ gboolean	 cd_main_sender_authenticated	(GDBusMethodInvocation *invocation,
 						 const gchar	*sender,
 						 const gchar	*action_id);
 void		 cd_main_ensure_dbus_path	(gchar		*object_path);
+gboolean	 cd_main_mkdir_with_parents	(const gchar	*filename,
+						 GError		**error);
+
 #endif /* __CD_COMMON_H__ */
 

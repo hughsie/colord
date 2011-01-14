@@ -25,6 +25,7 @@
 #include <glib-object.h>
 #include <sqlite3.h>
 
+#include "cd-common.h"
 #include "cd-mapping-db.h"
 
 static void     cd_mapping_db_finalize	(GObject        *object);
@@ -36,38 +37,9 @@ struct CdMappingDbPrivate
 	sqlite3			*db;
 };
 
-enum {
-	SIGNAL_MAPPING,
-	SIGNAL_LAST
-};
-
-static guint signals [SIGNAL_LAST] = { 0 };
 static gpointer cd_mapping_db_object = NULL;
 
 G_DEFINE_TYPE (CdMappingDb, cd_mapping_db, G_TYPE_OBJECT)
-
-/**
- * cd_mapping_db_mkdir_with_parents:
- **/
-static gboolean
-cd_mapping_db_mkdir_with_parents (const gchar *filename, GError **error)
-{
-	gboolean ret;
-	GFile *file = NULL;
-
-	/* ensure desination exists */
-	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
-	if (!ret) {
-		file = g_file_new_for_path (filename);
-		ret = g_file_make_directory_with_parents (file, NULL, error);
-		if (!ret)
-			goto out;
-	}
-out:
-	if (file != NULL)
-		g_object_unref (file);
-	return ret;
-}
 
 /**
  * cd_mapping_db_load:
@@ -88,7 +60,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 
 	/* ensure the path exists */
 	path = g_path_get_dirname (filename);
-	ret = cd_mapping_db_mkdir_with_parents (path, error);
+	ret = cd_main_mkdir_with_parents (path, error);
 	if (!ret)
 		goto out;
 
@@ -97,7 +69,8 @@ cd_mapping_db_load (CdMappingDb *mdb,
 	if (rc != SQLITE_OK) {
 		ret = FALSE;
 		g_set_error (error,
-			     1, 0,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
 			     "Can't open database: %s\n",
 			     sqlite3_errmsg (mdb->priv->db));
 		sqlite3_close (mdb->priv->db);
@@ -159,8 +132,9 @@ cd_mapping_db_empty (CdMappingDb *mdb,
 	if (rc != SQLITE_OK) {
 		ret = FALSE;
 		g_set_error (error,
-			     1, 0,
-			     "SQL error: %s\n",
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
 		goto out;
@@ -202,8 +176,9 @@ cd_mapping_db_add (CdMappingDb *mdb,
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     1, 0,
-			     "SQL error: %s\n",
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
 		ret = FALSE;
@@ -242,8 +217,9 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     1, 0,
-			     "SQL error: %s\n",
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
 		ret = FALSE;
@@ -301,8 +277,9 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 			   &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     1, 0,
-			     "SQL error: %s\n",
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
 		goto out;
@@ -346,8 +323,9 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 			   &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     1, 0,
-			     "SQL error: %s\n",
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
 		goto out;
@@ -370,11 +348,6 @@ cd_mapping_db_class_init (CdMappingDbClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_mapping_db_finalize;
-	signals [SIGNAL_MAPPING] =
-		g_signal_new ("mapping",
-			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL, g_cclosure_marshal_VOID__POINTER,
-			      G_TYPE_NONE, 1, G_TYPE_POINTER);
 	g_type_class_add_private (klass, sizeof (CdMappingDbPrivate));
 }
 
