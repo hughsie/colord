@@ -35,6 +35,8 @@ colord_SOURCES =					\
 	cd-profile-store.h				\
 	cd-mapping-db.c					\
 	cd-mapping-db.h					\
+	cd-device-db.c					\
+	cd-device-db.h					\
 	cd-main.c
 
 colord_LDADD =						\
@@ -54,9 +56,12 @@ cd_self_test_SOURCES =					\
 	cd-common.h					\
 	cd-mapping-db.c					\
 	cd-mapping-db.h					\
+	cd-device-db.c					\
+	cd-device-db.h					\
 	cd-self-test.c
 
 cd_self_test_LDADD =					\
+	$(POLKIT_LIBS)					\
 	$(SQLITE_LIBS)					\
 	$(GLIB_LIBS)
 

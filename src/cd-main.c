@@ -31,6 +31,7 @@
 #include "cd-device-array.h"
 #include "cd-profile-array.h"
 #include "cd-profile-store.h"
+#include "cd-device-db.h"
 #include "cd-mapping-db.h"
 
 static GDBusConnection *connection = NULL;
@@ -42,6 +43,7 @@ static CdDeviceArray *devices_array = NULL;
 static CdProfileArray *profiles_array = NULL;
 static CdProfileStore *profile_store = NULL;
 static CdMappingDb *mapping_db = NULL;
+static CdDeviceDb *device_db = NULL;
 
 /**
  * cd_main_profile_removed:
@@ -118,6 +120,19 @@ cd_main_device_removed (CdDevice *device)
 	object_path_tmp = g_strdup (cd_device_get_object_path (device));
 	g_debug ("Removing device %s", object_path_tmp);
 	cd_device_array_remove (devices_array, device);
+
+	/* remove from the device database */
+	if (cd_device_get_scope (device) == CD_OBJECT_SCOPE_DISK) {
+		ret = cd_device_db_remove (device_db,
+					   cd_device_get_id (device),
+					   &error);
+		if (!ret) {
+			g_warning ("failed to remove device %s from db: %s",
+				   cd_device_get_object_path (device),
+				   error->message);
+			g_clear_error (&error);
+		}
+	}
 
 	/* emit signal */
 	g_debug ("Emitting DeviceRemoved(%s)", object_path_tmp);
@@ -233,101 +248,6 @@ out:
 }
 
 /**
- * cd_main_create_device:
- **/
-static CdDevice *
-cd_main_create_device (const gchar *sender,
-		       const gchar *device_id,
-		       guint options,
-		       GError **error)
-{
-	gboolean ret;
-	CdDevice *device;
-	CdDevice *device_actual = NULL;
-
-	g_assert (connection != NULL);
-
-	/* create an object */
-	device = cd_device_new ();
-	cd_device_set_id (device, device_id);
-	cd_device_set_scope (device, options);
-	cd_device_array_add (devices_array, device);
-	g_debug ("Adding device %s", cd_device_get_object_path (device));
-
-	/* register object */
-	ret = cd_device_register_object (device,
-					 connection,
-					 introspection_device->interfaces[0],
-					 error);
-	if (!ret)
-		goto out;
-
-	/* different persistent options */
-	if (options == CD_OBJECT_SCOPE_NORMAL) {
-		g_debug ("normal device");
-	} else if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
-		g_debug ("temporary device");
-		/* setup DBus watcher */
-		cd_device_watch_sender (device, sender);
-	} else if ((options & CD_OBJECT_SCOPE_DISK) > 0) {
-		g_debug ("persistant device");
-		//FIXME: save to disk
-	} else {
-		g_warning ("Unsupported options kind: %i", options);
-	}
-
-	/* profile is no longer valid */
-	g_signal_connect (device, "invalidate",
-			  G_CALLBACK (cd_main_device_invalidate_cb),
-			  NULL);
-
-	/* emit signal */
-	g_debug ("Emitting DeviceAdded(%s)",
-		 cd_device_get_object_path (device));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "DeviceAdded",
-					     g_variant_new ("(o)",
-							    cd_device_get_object_path (device)),
-					     error);
-	if (!ret)
-		goto out;
-
-	/* success */
-	device_actual = g_object_ref (device);
-out:
-	g_object_unref (device);
-	return device_actual;
-}
-
-/**
- * cd_main_object_path_array_to_variant:
- **/
-static GVariant *
-cd_main_object_path_array_to_variant (GPtrArray *array)
-{
-	CdDevice *device;
-	guint i;
-	GVariant *variant;
-	GVariant **variant_array = NULL;
-
-	/* copy the object paths */
-	variant_array = g_new0 (GVariant *, array->len + 1);
-	for (i=0; i<array->len; i++) {
-		device = g_ptr_array_index (array, i);
-		variant_array[i] = g_variant_new_object_path (cd_device_get_object_path (device));
-	}
-
-	/* format the value */
-	variant = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
-				       variant_array,
-				       array->len);
-	return variant;
-}
-
-/**
  * cd_main_device_auto_add_profiles:
  **/
 static void
@@ -377,6 +297,117 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 out:
 	if (array != NULL)
 		g_ptr_array_unref (array);
+}
+
+/**
+ * cd_main_create_device:
+ **/
+static CdDevice *
+cd_main_create_device (const gchar *sender,
+		       const gchar *device_id,
+		       guint options,
+		       GError **error)
+{
+	gboolean ret;
+	CdDevice *device;
+	CdDevice *device_actual = NULL;
+	GError *error_local = NULL;
+
+	g_assert (connection != NULL);
+
+	/* create an object */
+	device = cd_device_new ();
+	cd_device_set_id (device, device_id);
+	cd_device_set_scope (device, options);
+	cd_device_array_add (devices_array, device);
+	g_debug ("Adding device %s", cd_device_get_object_path (device));
+
+	/* register object */
+	ret = cd_device_register_object (device,
+					 connection,
+					 introspection_device->interfaces[0],
+					 error);
+	if (!ret)
+		goto out;
+
+	/* different persistent options */
+	if (options == CD_OBJECT_SCOPE_NORMAL) {
+		g_debug ("normal device");
+	} else if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
+		g_debug ("temporary device");
+		/* setup DBus watcher */
+		cd_device_watch_sender (device, sender);
+	} else if ((options & CD_OBJECT_SCOPE_DISK) > 0) {
+		g_debug ("persistant device");
+
+		/* add to the device database */
+		if (sender != NULL) {
+			ret = cd_device_db_add (device_db,
+						device_id,
+						&error_local);
+			if (!ret) {
+				g_warning ("failed to add device %s to db: %s",
+					   cd_device_get_object_path (device),
+					   error_local->message);
+				g_clear_error (&error_local);
+			}
+		}
+	} else {
+		g_warning ("Unsupported options kind: %i", options);
+	}
+
+	/* profile is no longer valid */
+	g_signal_connect (device, "invalidate",
+			  G_CALLBACK (cd_main_device_invalidate_cb),
+			  NULL);
+
+	/* emit signal */
+	g_debug ("Emitting DeviceAdded(%s)",
+		 cd_device_get_object_path (device));
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "DeviceAdded",
+					     g_variant_new ("(o)",
+							    cd_device_get_object_path (device)),
+					     error);
+	if (!ret)
+		goto out;
+
+	/* auto add profiles from the database */
+	cd_main_device_auto_add_profiles (device);
+
+	/* success */
+	device_actual = g_object_ref (device);
+out:
+	g_object_unref (device);
+	return device_actual;
+}
+
+/**
+ * cd_main_object_path_array_to_variant:
+ **/
+static GVariant *
+cd_main_object_path_array_to_variant (GPtrArray *array)
+{
+	CdDevice *device;
+	guint i;
+	GVariant *variant;
+	GVariant **variant_array = NULL;
+
+	/* copy the object paths */
+	variant_array = g_new0 (GVariant *, array->len + 1);
+	for (i=0; i<array->len; i++) {
+		device = g_ptr_array_index (array, i);
+		variant_array[i] = g_variant_new_object_path (cd_device_get_object_path (device));
+	}
+
+	/* format the value */
+	variant = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
+				       variant_array,
+				       array->len);
+	return variant;
 }
 
 /**
@@ -553,9 +584,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 				g_error_free (error);
 				goto out;
 			}
-
-			/* auto add profiles from the database */
-			cd_main_device_auto_add_profiles (device);
 		}
 
 		/* format the value */
@@ -772,6 +800,76 @@ cd_main_profile_store_removed_cb (CdProfileStore *_profile_store,
 }
 
 /**
+ * cd_main_add_disk_device:
+ **/
+static void
+cd_main_add_disk_device (const gchar *device_id)
+{
+	CdDevice *device;
+	const gchar *property;
+	gboolean ret;
+	gchar *value;
+	GError *error = NULL;
+	GPtrArray *array_properties;
+	guint i;
+
+	device = cd_main_create_device (NULL,
+					device_id,
+					CD_OBJECT_SCOPE_DISK,
+					&error);
+	if (device == NULL) {
+		g_warning ("failed to create disk device: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	g_debug ("created permanent device %s",
+		 cd_device_get_object_path (device));
+
+	/* set properties on the device */
+	array_properties = cd_device_db_get_properties (device_db,
+							device_id,
+							&error);
+	if (array_properties == NULL) {
+		g_warning ("failed to get props for device %s: %s",
+			   device_id, error->message);
+		g_error_free (error);
+		goto out;
+	}
+	for (i=0; i<array_properties->len; i++) {
+		property = g_ptr_array_index (array_properties, i);
+		value = cd_device_db_get_property (device_db,
+						   device_id,
+						   property,
+						   &error);
+		if (value == NULL) {
+			g_warning ("failed to get value: %s",
+				   error->message);
+			g_clear_error (&error);
+			goto out;
+		}
+		ret = cd_device_set_property_internal (device,
+						       property,
+						       value,
+						       FALSE,
+						       &error);
+		if (value == NULL) {
+			g_warning ("failed to set internal prop: %s",
+				   error->message);
+			g_clear_error (&error);
+			goto out;
+		}
+		g_free (value);
+	}
+out:
+	if (device != NULL)
+		g_object_unref (device);
+	if (array_properties != NULL)
+		g_ptr_array_unref (array_properties);
+}
+
+/**
  * cd_main_on_name_acquired_cb:
  **/
 static void
@@ -779,6 +877,10 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 			     const gchar *name,
 			     gpointer user_data)
 {
+	const gchar *device_id;
+	GError *error = NULL;
+	GPtrArray *array_devices = NULL;
+	guint i;
 
 	g_debug ("acquired name: %s", name);
 	connection = g_object_ref (connection_);
@@ -795,6 +897,22 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 				 CD_PROFILE_STORE_SEARCH_SYSTEM |
 				  CD_PROFILE_STORE_SEARCH_VOLUMES |
 				  CD_PROFILE_STORE_SEARCH_MACHINE);	
+
+	/* add disk devices */
+	array_devices = cd_device_db_get_devices (device_db, &error);
+	if (array_devices == NULL) {
+		g_warning ("failed to get the disk devices: %s",
+			    error->message);
+		g_error_free (error);
+		goto out;
+	}
+	for (i=0; i < array_devices->len; i++) {
+		device_id = g_ptr_array_index (array_devices, i);
+		cd_main_add_disk_device (device_id);
+	}
+out:
+	if (array_devices != NULL)
+		g_ptr_array_unref (array_devices);
 }
 
 /**
@@ -853,7 +971,20 @@ main (int argc, char *argv[])
 				  LOCALSTATEDIR "/lib/colord/mapping.db",
 				  &error);
 	if (!ret) {
-		g_warning ("failed to load mapping database: %s", error->message);
+		g_warning ("failed to load mapping database: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* connect to the device db */
+	device_db = cd_device_db_new ();
+	ret = cd_device_db_load (device_db,
+				 LOCALSTATEDIR "/lib/colord/storage.db",
+				 &error);
+	if (!ret) {
+		g_warning ("failed to load device database: %s",
+			   error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -939,6 +1070,8 @@ out:
 		g_object_unref (profile_store);
 	if (mapping_db != NULL)
 		g_object_unref (mapping_db);
+	if (device_db != NULL)
+		g_object_unref (device_db);
 	if (devices_array != NULL)
 		g_object_unref (devices_array);
 	if (profiles_array != NULL)

@@ -29,6 +29,7 @@
 
 #include "cd-common.h"
 #include "cd-mapping-db.h"
+#include "cd-device-db.h"
 
 static void
 cd_mapping_db_func (void)
@@ -88,6 +89,117 @@ cd_mapping_db_func (void)
 	g_object_unref (mdb);
 }
 
+static void
+cd_device_db_func (void)
+{
+	CdDeviceDb *ddb;
+	GError *error = NULL;
+	gboolean ret;
+	GPtrArray *array;
+	gchar *value;
+
+	/* create */
+	ddb = cd_device_db_new ();
+	g_assert (ddb != NULL);
+
+	/* connect, which should create it for us */
+	ret = cd_device_db_load (ddb, "/tmp/device.db", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* ensure empty */
+	ret = cd_device_db_empty (ddb, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* add a few entries */
+	ret = cd_device_db_add (ddb, "device1", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	ret = cd_device_db_add (ddb, "device2", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	ret = cd_device_db_add (ddb, "device3", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* remove one */
+	ret = cd_device_db_remove (ddb, "device1", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get all the devices */
+	array = cd_device_db_get_devices (ddb, &error);
+	g_assert_no_error (error);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 2);
+	g_assert_cmpstr (g_ptr_array_index (array, 0), ==, "device2");
+	g_assert_cmpstr (g_ptr_array_index (array, 1), ==, "device3");
+	g_ptr_array_unref (array);
+
+	/* set a property */
+	ret = cd_device_db_set_property (ddb,
+					 "device2",
+					 "kind",
+					 "display",
+					 &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get a property that does not exist */
+	value = cd_device_db_get_property (ddb,
+					   "device2",
+					   "xxx",
+					   &error);
+	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
+	g_assert (value == NULL);
+	g_clear_error (&error);
+	g_free (value);
+
+	/* get a property that does exist */
+	value = cd_device_db_get_property (ddb,
+					   "device2",
+					   "kind",
+					   &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (value, ==, "display");
+	g_free (value);
+
+	/* check the correct number of properties are stored */
+	array = cd_device_db_get_properties (ddb, "device2", &error);
+	g_assert_no_error (error);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 1);
+	g_ptr_array_unref (array);
+
+	/* remove devices */
+	ret = cd_device_db_remove (ddb, "device2", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	ret = cd_device_db_remove (ddb, "device3", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get all the devices */
+	array = cd_device_db_get_devices (ddb, &error);
+	g_assert_no_error (error);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 0);
+	g_ptr_array_unref (array);
+
+	/* get a property that should be deleted */
+	value = cd_device_db_get_property (ddb,
+					   "device2",
+					   "kind",
+					   &error);
+	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
+	g_assert (value == NULL);
+	g_clear_error (&error);
+	g_free (value);
+
+	g_object_unref (ddb);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -100,6 +212,7 @@ main (int argc, char **argv)
 
 	/* tests go here */
 	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);
+	g_test_add_func ("/colord/device-db", cd_device_db_func);
 	return g_test_run ();
 }
 

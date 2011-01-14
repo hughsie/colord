@@ -80,6 +80,11 @@ gboolean	 cd_device_register_object		(CdDevice	*device,
 							 GError		**error);
 void		 cd_device_watch_sender			(CdDevice	*device,
 							 const gchar	*sender);
+gboolean	 cd_device_set_property_internal	(CdDevice	*device,
+							 const gchar	*property,
+							 const gchar	*value,
+							 gboolean	 save_in_db,
+							 GError		**error);
 
 G_END_DECLS
 

@@ -27,6 +27,7 @@
 #include "cd-common.h"
 #include "cd-device.h"
 #include "cd-mapping-db.h"
+#include "cd-device-db.h"
 #include "cd-profile-array.h"
 #include "cd-profile.h"
 
@@ -44,6 +45,7 @@ struct _CdDevicePrivate
 	CdObjectScope			 object_scope;
 	CdProfileArray			*profile_array;
 	CdMappingDb			*mapping_db;
+	CdDeviceDb			*device_db;
 	gchar				*id;
 	gchar				*model;
 	gchar				*kind;
@@ -393,6 +395,77 @@ out:
 }
 
 /**
+ * cd_device_set_property_to_db:
+ **/
+static void
+cd_device_set_property_to_db (CdDevice *device,
+			      const gchar *property,
+			      const gchar *value)
+{
+	gboolean ret;
+	GError *error = NULL;
+
+	if (device->priv->object_scope != CD_OBJECT_SCOPE_DISK)
+		return;
+
+	ret = cd_device_db_set_property (device->priv->device_db,
+					 device->priv->id,
+					 property,
+					 value,
+					 &error);
+	if (!ret) {
+		g_warning ("failed to save property to database: %s",
+			   error->message);
+		g_error_free (error);
+	}
+}
+
+/**
+ * cd_device_set_property_internal:
+ **/
+gboolean
+cd_device_set_property_internal (CdDevice *device,
+				 const gchar *property,
+				 const gchar *value,
+				 gboolean save_in_db,
+				 GError **error)
+{
+	gboolean ret = TRUE;
+	CdDevicePrivate *priv = device->priv;
+
+	g_debug ("Attempting to set %s to %s",
+		 property, value);
+	if (g_strcmp0 (property, "Model") == 0) {
+		g_free (priv->model);
+		priv->model = g_strdup (value);
+	} else if (g_strcmp0 (property, "Kind") == 0) {
+		g_free (priv->kind);
+		priv->kind = g_strdup (value);
+	} else {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "property %s not understood",
+			     property);
+		goto out;
+	}
+
+	/* set this externally so we can add disk devices at startup
+	 * without re-adding */
+	if (save_in_db) {
+		cd_device_set_property_to_db (device,
+					      property,
+					      value);
+	}
+	cd_device_dbus_emit_property_changed (device,
+					      property,
+					      g_variant_new_string (value));
+out:
+	return ret;
+}
+
+/**
  * cd_device_dbus_method_call:
  **/
 static void
@@ -585,31 +658,18 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(ss)",
 			       &property_name,
 			       &property_value);
-		g_debug ("Attempting to set %s to %s",
-			 property_name, property_value);
-		if (g_strcmp0 (property_name, "Model") == 0) {
-			g_free (priv->model);
-			priv->model = g_strdup (property_value);
-			cd_device_dbus_emit_property_changed (device,
-							      property_name,
-							      g_variant_new_string (priv->model));
-			g_dbus_method_invocation_return_value (invocation, NULL);
+		ret = cd_device_set_property_internal (device,
+						       property_name,
+						       property_value,
+						       (priv->object_scope == CD_OBJECT_SCOPE_DISK),
+						       &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
 			goto out;
 		}
-		if (g_strcmp0 (property_name, "Kind") == 0) {
-			g_free (priv->kind);
-			priv->kind = g_strdup (property_value);
-			cd_device_dbus_emit_property_changed (device,
-							      property_name,
-							      g_variant_new_string (priv->kind));
-			g_dbus_method_invocation_return_value (invocation, NULL);
-			goto out;
-		}
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
-						       "property %s not understood",
-						       property_name);
+		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}
 
@@ -840,6 +900,7 @@ cd_device_init (CdDevice *device)
 	device->priv->profile_array = cd_profile_array_new ();
 	device->priv->created = g_get_real_time ();
 	device->priv->mapping_db = cd_mapping_db_new ();
+	device->priv->device_db = cd_device_db_new ();
 }
 
 /**
@@ -867,6 +928,7 @@ cd_device_finalize (GObject *object)
 		g_ptr_array_unref (priv->profiles);
 	g_object_unref (priv->profile_array);
 	g_object_unref (priv->mapping_db);
+	g_object_unref (priv->device_db);
 
 	G_OBJECT_CLASS (cd_device_parent_class)->finalize (object);
 }
