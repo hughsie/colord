@@ -40,8 +40,9 @@
           <doc:para>
             The qualifier for the profile.
             A qualifier is used as a way to select a profile for a device.
-            This might be something free text like "High quality studio' or
-            something more programmable like "RGB.Plain.300dpi"
+            This might be something free text like
+            <doc:tt>High quality studio</doc:tt>doc:tt> or something more
+            programmable like <doc:tt>RGB.Plain.300dpi</doc:tt>doc:tt>.
           </doc:para>
         </doc:description>
       </doc:doc>
@@ -72,7 +73,8 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The property name, e.g. "Filename", or "Qualifier".
+              The property name, e.g. <doc:tt>Filename</doc:tt>doc:tt>,
+              or <doc:tt>Qualifier</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>
@@ -81,7 +83,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The property value, e.g. "RGB.Plain."
+              The property value, e.g. <doc:tt>RGB.Plain.<doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>

@@ -199,6 +199,14 @@
           <doc:para>
             Creates a profile.
           </doc:para>
+          <doc:para>
+            If the profile has been added to a device in the past, and
+            that device exists already, then the new profile will be
+            automatically added to the device.
+            To prevent this from happening, remove the assignment by
+            doing <doc:tt>RemoveProfile</doc:tt>doc:tt> on the relevant
+            device object.
+          </doc:para>
         </doc:description>
       </doc:doc>
       <arg type='s' name='profile_id' direction='in'>
@@ -261,6 +269,14 @@
         <doc:description>
           <doc:para>
             Creates a device.
+          </doc:para>
+          <doc:para>
+            If the device has profiles added to it in the past, and
+            that profiles exists already, then the new device will be
+            automatically have profiles added to the device.
+            To prevent this from happening, remove the assignment by
+            doing <doc:tt>RemoveProfile</doc:tt>doc:tt> on the relevant
+            device object.
           </doc:para>
         </doc:description>
       </doc:doc>
