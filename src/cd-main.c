@@ -842,7 +842,7 @@ cd_main_add_disk_device (const gchar *device_id)
 	gboolean ret;
 	gchar *value;
 	GError *error = NULL;
-	GPtrArray *array_properties;
+	GPtrArray *array_properties = NULL;
 	guint i;
 
 	device = cd_main_create_device (NULL,
@@ -886,7 +886,7 @@ cd_main_add_disk_device (const gchar *device_id)
 						       value,
 						       FALSE,
 						       &error);
-		if (value == NULL) {
+		if (!ret) {
 			g_warning ("CdMain: failed to set internal prop: %s",
 				   error->message);
 			g_clear_error (&error);

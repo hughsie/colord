@@ -125,7 +125,6 @@ cd_mapping_db_empty (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	statement = "TRUNCATE TABLE mappings;";
 	statement = "DELETE FROM mappings;";
 	rc = sqlite3_exec (mdb->priv->db, statement,
 			   NULL, NULL, &error_msg);
