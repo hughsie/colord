@@ -82,7 +82,7 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 	result = polkit_authority_check_authorization_sync (authority, subject,
 			action_id,
 			NULL,
-			POLKIT_CHECK_AUTHORIZATION_FLAGS_NONE,
+			POLKIT_CHECK_AUTHORIZATION_FLAGS_ALLOW_USER_INTERACTION,
 			NULL,
 			&error);
 
@@ -91,7 +91,8 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 		g_dbus_method_invocation_return_error (invocation,
 						       CD_MAIN_ERROR,
 						       CD_MAIN_ERROR_FAILED,
-						       "could not check for auth: %s",
+						       "could not check %s for auth: %s",
+						       action_id,
 						       error->message);
 		g_error_free (error);
 		goto out;
@@ -102,7 +103,8 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 		g_dbus_method_invocation_return_error (invocation,
 						       CD_MAIN_ERROR,
 						       CD_MAIN_ERROR_FAILED,
-						       "failed to obtain auth");
+						       "failed to obtain %s auth",
+						       action_id);
 		goto out;
 	}
 

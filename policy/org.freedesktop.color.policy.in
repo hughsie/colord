@@ -97,5 +97,24 @@
     </defaults>
   </action>
 
+  <action id="org.freedesktop.color-manager.install-system-wide">
+    <!-- SECURITY:
+          - Normal users require admin authentication to install files system
+            wide to apply color profiles for sessions that have not explicitly
+            chosen profiles to apply.
+          - This should not be set to 'yes' as unprivileged users could then
+            set a profile set to all-white or all-black and thus make the
+            other sessions unusable.
+     -->
+    <_description>Install system color profiles</_description>
+    <_message>Authentication is required to install the color profile for all users</_message>
+    <icon_name>application-vnd.iccprofile</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+  </action>
+
 </policyconfig>
 

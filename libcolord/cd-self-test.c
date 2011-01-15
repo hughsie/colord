@@ -177,6 +177,11 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	/* set profile filename */
+	ret = cd_profile_install_system_wide_sync (profile, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	/* set profile qualifier */
 	ret = cd_profile_set_qualifier_sync (profile, "Epson.RGB.300dpi",
 					     NULL, &error);

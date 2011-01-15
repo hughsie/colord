@@ -186,6 +186,83 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 }
 
 /**
+ * cd_profile_install_system_wide:
+ **/
+static gboolean
+cd_profile_install_system_wide (CdProfile *profile, GError **error)
+{
+	gboolean ret = TRUE;
+	gchar *basename = NULL;
+	gchar *filename = NULL;
+	GError *error_local = NULL;
+	GFile *file_dest = NULL;
+	GFile *file = NULL;
+
+	/* is icc filename set? */
+	if (profile->priv->filename == NULL) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "icc filename not set");
+		goto out;
+	}
+
+	/* is profile already installed in /var/lib/color */
+	if (g_str_has_prefix (profile->priv->filename,
+			      CD_SYSTEM_PROFILES_DIR)) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "file %s already installed in /var",
+			     profile->priv->filename);
+		goto out;
+	}
+
+	/* is profile already installed in /usr/share/color */
+	if (g_str_has_prefix (profile->priv->filename,
+			      DATADIR "/color")) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "file %s already installed in /usr",
+			     profile->priv->filename);
+		goto out;
+	}
+
+	/* copy */
+	basename = g_path_get_basename (profile->priv->filename);
+	filename = g_build_filename (CD_SYSTEM_PROFILES_DIR,
+				     basename, NULL);
+	file = g_file_new_for_path (profile->priv->filename);
+	file_dest = g_file_new_for_path (filename);
+
+	/* do the copy */
+	ret = g_file_copy (file, file_dest, G_FILE_COPY_OVERWRITE,
+			   NULL, NULL, NULL, &error_local);
+	if (!ret) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "failed to copy: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+out:
+	g_free (filename);
+	g_free (basename);
+	if (file != NULL)
+		g_object_unref (file);
+	if (file_dest != NULL)
+		g_object_unref (file_dest);
+	return ret;
+}
+
+/**
  * cd_profile_dbus_method_call:
  **/
 static void
@@ -251,6 +328,32 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 						       property_name);
 		goto out;
 	}
+
+	/* return '' */
+	if (g_strcmp0 (method_name, "InstallSystemWide") == 0) {
+
+		/* require auth */
+		g_debug ("CdProfile %s:InstallSystemWide() on %s",
+			 sender, profile->priv->object_path);
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.install-system-wide");
+		if (!ret)
+			goto out;
+
+		/* copy systemwide */
+		ret = cd_profile_install_system_wide (profile, &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
+		}
+
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
 
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);

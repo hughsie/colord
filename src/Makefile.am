@@ -17,6 +17,7 @@ INCLUDES =						\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\"		\
 	-DVERSION="\"$(VERSION)\""			\
 	-DCD_COMPILATION				\
+	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DLOCALEDIR=\""$(localedir)"\"
 
 libexec_PROGRAMS =					\
@@ -80,5 +81,10 @@ cd_self_test_LDADD =					\
 	$(GLIB_LIBS)
 
 cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
+
+install-data-hook:
+	if test -w $(DESTDIR)$(prefix)/; then \
+		mkdir -p $(DESTDIR)$(CD_SYSTEM_PROFILES_DIR); \
+	fi
 
 TESTS = cd-self-test

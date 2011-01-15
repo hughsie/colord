@@ -102,6 +102,19 @@
       </arg>
     </method>
 
+    <!--***********************************************************-->
+    <method name='InstallSystemWide'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Copies the profile system-wide so it can be used by all
+            users on the system or when no users are logged-in.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </method>
+
     <!-- ************************************************************ -->
     <signal name='Changed'>
       <doc:doc>
