@@ -307,26 +307,18 @@ out:
 }
 
 /**
- * cd_main_create_device:
+ * cd_main_device_add:
  **/
-static CdDevice *
-cd_main_create_device (const gchar *sender,
-		       const gchar *device_id,
-		       guint options,
-		       GError **error)
+static gboolean
+cd_main_device_add (CdDevice *device,
+		    const gchar *sender,
+		    GError **error)
 {
 	gboolean ret;
-	CdDevice *device;
-	CdDevice *device_actual = NULL;
 	GError *error_local = NULL;
-
-	g_assert (connection != NULL);
+	CdObjectScope scope;
 
 	/* create an object */
-	device = cd_device_new ();
-	cd_device_set_id (device, device_id);
-	cd_device_set_scope (device, options);
-	cd_device_array_add (devices_array, device);
 	g_debug ("CdMain: Adding device %s", cd_device_get_object_path (device));
 
 	/* register object */
@@ -338,35 +330,32 @@ cd_main_create_device (const gchar *sender,
 		goto out;
 
 	/* different persistent options */
-	if (options == CD_OBJECT_SCOPE_NORMAL) {
-		g_debug ("CdMain: normal device");
-	} else if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
-		g_debug ("CdMain: temporary device");
-		/* setup DBus watcher */
-		cd_device_watch_sender (device, sender);
-	} else if ((options & CD_OBJECT_SCOPE_DISK) > 0) {
+	scope = cd_device_get_scope (device);
+	if (scope == CD_OBJECT_SCOPE_DISK && sender != NULL) {
 		g_debug ("CdMain: persistant device");
 
 		/* add to the device database */
-		if (sender != NULL) {
-			ret = cd_device_db_add (device_db,
-						device_id,
-						&error_local);
-			if (!ret) {
-				g_warning ("CdMain: failed to add device %s to db: %s",
-					   cd_device_get_object_path (device),
-					   error_local->message);
-				g_clear_error (&error_local);
-			}
+		ret = cd_device_db_add (device_db,
+					cd_device_get_id (device),
+					&error_local);
+		if (!ret) {
+			g_warning ("CdMain: failed to add device %s to db: %s",
+				   cd_device_get_object_path (device),
+				   error_local->message);
+			g_clear_error (&error_local);
 		}
-	} else {
-		g_warning ("CdMain: Unsupported options kind: %i", options);
 	}
 
 	/* profile is no longer valid */
 	g_signal_connect (device, "invalidate",
 			  G_CALLBACK (cd_main_device_invalidate_cb),
 			  NULL);
+
+	/* add to array */
+	cd_device_array_add (devices_array, device);
+
+	/* auto add profiles from the database */
+	cd_main_device_auto_add_profiles (device);
 
 	/* emit signal */
 	g_debug ("CdMain: Emitting DeviceAdded(%s)",
@@ -381,15 +370,44 @@ cd_main_create_device (const gchar *sender,
 					     error);
 	if (!ret)
 		goto out;
+out:
+	return ret;
+}
 
-	/* auto add profiles from the database */
-	cd_main_device_auto_add_profiles (device);
+/**
+ * cd_main_create_device:
+ **/
+static CdDevice *
+cd_main_create_device (const gchar *sender,
+		       const gchar *device_id,
+		       guint options,
+		       GError **error)
+{
+	gboolean ret;
+	CdDevice *device_tmp;
+	CdDevice *device = NULL;
+
+	g_assert (connection != NULL);
+
+	/* create an object */
+	device_tmp = cd_device_new ();
+	cd_device_set_id (device_tmp, device_id);
+	cd_device_set_scope (device_tmp, options);
+	ret = cd_main_device_add (device_tmp, sender, error);
+	if (!ret)
+		goto out;
+
+	/* setup DBus watcher */
+	if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
+		g_debug ("temporary device");
+		cd_device_watch_sender (device_tmp, sender);
+	}
 
 	/* success */
-	device_actual = g_object_ref (device);
+	device = g_object_ref (device_tmp);
 out:
-	g_object_unref (device);
-	return device_actual;
+	g_object_unref (device_tmp);
+	return device;
 }
 
 /**
@@ -945,6 +963,36 @@ cd_main_on_name_lost_cb (GDBusConnection *connection_,
 }
 
 /**
+ * cd_main_udev_client_added_cb:
+ **/
+static void
+cd_main_udev_client_added_cb (CdUdevClient *udev_client_,
+			      CdDevice *device,
+			      gpointer user_data)
+{
+	gboolean ret;
+	GError *error = NULL;
+	ret = cd_main_device_add (device, NULL, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to add udev device: %s",
+			   error->message);
+		g_error_free (error);
+	}
+}
+
+/**
+ * cd_main_udev_client_removed_cb:
+ **/
+static void
+cd_main_udev_client_removed_cb (CdUdevClient *udev_client_,
+				CdDevice *device,
+				gpointer user_data)
+{
+	g_debug ("CdMain: remove udev device: %s", cd_device_get_id (device));
+	cd_main_device_removed (device);
+}
+
+/**
  * main:
  **/
 int
@@ -982,6 +1030,12 @@ main (int argc, char *argv[])
 	devices_array = cd_device_array_new ();
 	profiles_array = cd_profile_array_new ();
 	udev_client = cd_udev_client_new ();
+	g_signal_connect (udev_client, "added",
+			  G_CALLBACK (cd_main_udev_client_added_cb),
+			  NULL);
+	g_signal_connect (udev_client, "removed",
+			  G_CALLBACK (cd_main_udev_client_removed_cb),
+			  NULL);
 
 	/* connect to the mapping db */
 	mapping_db = cd_mapping_db_new ();
