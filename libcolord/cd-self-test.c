@@ -292,7 +292,7 @@ colord_client_func (void)
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
 
-	/* ensure device no longer lists deleted profile */
+	/* ensure device has profile auto-added */
 	array = cd_device_get_profiles (device);
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 1);
