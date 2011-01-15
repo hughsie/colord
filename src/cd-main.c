@@ -160,13 +160,13 @@ static void
 cd_main_device_invalidate_cb (CdDevice *device,
 			      gpointer user_data)
 {
-	g_debug ("device '%s' invalidated",
+	g_debug ("CdMain: device '%s' invalidated",
 		 cd_device_get_id (device));
 	cd_main_device_removed (device);
 }
 
 /**
- * cd_main_create_profile:
+ * cd_main_add_profile:
  **/
 static gboolean
 cd_main_add_profile (CdProfile *profile,
@@ -218,17 +218,18 @@ cd_main_create_profile (const gchar *sender,
 			GError **error)
 {
 	gboolean ret;
-	CdProfile *profile;
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp;
 
 	g_assert (connection != NULL);
 
 	/* create an object */
-	profile = cd_profile_new ();
-	cd_profile_set_id (profile, profile_id);
-	cd_profile_set_scope (profile, options);
+	profile_tmp = cd_profile_new ();
+	cd_profile_set_id (profile_tmp, profile_id);
+	cd_profile_set_scope (profile_tmp, options);
 
 	/* add the profile */
-	ret = cd_main_add_profile (profile, error);
+	ret = cd_main_add_profile (profile_tmp, error);
 	if (!ret)
 		goto out;
 
@@ -245,7 +246,11 @@ cd_main_create_profile (const gchar *sender,
 	} else {
 		g_warning ("Unsupported options kind: %i", options);
 	}
+
+	/* success */
+	profile = g_object_ref (profile_tmp);
 out:
+	g_object_unref (profile_tmp);
 	return profile;
 }
 
