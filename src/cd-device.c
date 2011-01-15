@@ -386,7 +386,7 @@ cd_device_add_profile (CdDevice *device,
 	}
 
 	/* add to the array */
-	g_ptr_array_add (priv->profiles, profile);
+	g_ptr_array_add (priv->profiles, g_object_ref (profile));
 
 	/* emit */
 	cd_device_dbus_emit_property_changed (device,

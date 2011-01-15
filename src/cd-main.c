@@ -664,9 +664,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* remove from the array, and emit */
 		cd_main_profile_removed (profile);
 
-		/* profile unref'd when removed */
-		profile = NULL;
-
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}
