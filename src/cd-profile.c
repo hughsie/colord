@@ -585,6 +585,16 @@ cd_profile_get_title (CdProfile *profile)
 }
 
 /**
+ * cd_profile_get_kind:
+ **/
+CdProfileKind
+cd_profile_get_kind (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+	return profile->priv->kind;
+}
+
+/**
  * cd_profile_get_checksum:
  **/
 const gchar *

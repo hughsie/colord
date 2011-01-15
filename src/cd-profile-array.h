@@ -61,6 +61,8 @@ CdProfile	*cd_profile_array_get_by_id		(CdProfileArray	*profile_array,
 							 const gchar	*id);
 CdProfile	*cd_profile_array_get_by_object_path	(CdProfileArray	*profile_array,
 							 const gchar	*object_path);
+GPtrArray	*cd_profile_array_get_by_kind		(CdProfileArray	*profile_array,
+							 CdProfileKind	 kind);
 GVariant	*cd_profile_array_get_variant		(CdProfileArray	*profile_array);
 
 G_END_DECLS

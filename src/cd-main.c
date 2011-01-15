@@ -536,6 +536,23 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
+	/* return 'as' */
+	if (g_strcmp0 (method_name, "GetProfilesByKind") == 0) {
+
+		/* get all the devices that match this type */
+		g_variant_get (parameters, "(u)", &options);
+		g_debug ("CdMain: %s:GetProfilesByKind(%u)",
+			 sender, options);
+		array = cd_profile_array_get_by_kind (profiles_array,
+						      options);
+
+		/* format the value */
+		value = cd_main_object_path_array_to_variant (array);
+		tuple = g_variant_new_tuple (&value, 1);
+		g_dbus_method_invocation_return_value (invocation, tuple);
+		goto out;
+	}
+
 	/* return 's' */
 	if (g_strcmp0 (method_name, "FindDeviceById") == 0) {
 
