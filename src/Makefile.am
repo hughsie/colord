@@ -63,10 +63,19 @@ cd_self_test_SOURCES =					\
 	cd-mapping-db.h					\
 	cd-device-db.c					\
 	cd-device-db.h					\
+	cd-device-array.c				\
+	cd-device-array.h				\
+	cd-device.c					\
+	cd-device.h					\
+	cd-profile.c					\
+	cd-profile.h					\
+	cd-profile-array.c				\
+	cd-profile-array.h				\
 	cd-self-test.c
 
 cd_self_test_LDADD =					\
 	$(POLKIT_LIBS)					\
+	$(LCMS_LIBS)					\
 	$(SQLITE_LIBS)					\
 	$(GLIB_LIBS)
 

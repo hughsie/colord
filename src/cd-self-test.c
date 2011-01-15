@@ -30,6 +30,103 @@
 #include "cd-common.h"
 #include "cd-mapping-db.h"
 #include "cd-device-db.h"
+#include "cd-device.h"
+#include "cd-profile.h"
+#include "cd-device-array.h"
+#include "cd-profile-array.h"
+
+static void
+colord_profile_func (void)
+{
+	CdProfile *profile;
+
+	profile = cd_profile_new ();
+	g_assert (profile != NULL);
+
+	cd_profile_set_id (profile, "dave");
+	g_assert_cmpstr (cd_profile_get_id (profile), ==, "dave");
+
+	g_object_unref (profile);
+}
+
+static void
+colord_device_func (void)
+{
+	CdDevice *device;
+	CdProfile *profile;
+	CdProfileArray *profile_array;
+	gboolean ret;
+	GError *error = NULL;
+
+	profile_array = cd_profile_array_new ();
+	device = cd_device_new ();
+	g_assert (device != NULL);
+
+	cd_device_set_id (device, "dave");
+	g_assert_cmpstr (cd_device_get_id (device), ==, "dave");
+
+	profile = cd_profile_new ();
+	cd_profile_set_id (profile, "dave");
+	cd_profile_array_add (profile_array, profile);
+
+	/* add profile */
+	ret = cd_device_add_profile (device,
+				     cd_profile_get_object_path (profile),
+				     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* add profile again */
+	ret = cd_device_add_profile (device,
+				     cd_profile_get_object_path (profile),
+				     &error);
+	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
+	g_assert (!ret);
+	g_clear_error (&error);
+
+	/* add profile that does not exist */
+	ret = cd_device_add_profile (device,
+				     "/dave",
+				     &error);
+	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
+	g_assert (!ret);
+	g_clear_error (&error);
+
+	g_object_unref (device);
+	g_object_unref (profile);
+	g_object_unref (profile_array);
+}
+
+static void
+colord_device_array_func (void)
+{
+	CdDevice *device;
+	CdDeviceArray *device_array;
+
+	device_array = cd_device_array_new ();
+	g_assert (device_array != NULL);
+
+	device = cd_device_new ();
+	cd_device_set_id (device, "dave");
+	cd_device_array_add (device_array, device);
+	g_object_unref (device);
+
+	device = cd_device_array_get_by_id (device_array, "does not exist");
+	g_assert (device == NULL);
+
+	device = cd_device_array_get_by_id (device_array, "dave");
+	g_assert (device != NULL);
+	g_assert_cmpstr (cd_device_get_id (device), ==, "dave");
+	g_object_unref (device);
+
+	device = cd_device_array_get_by_object_path (device_array,
+						     "/org/freedesktop/ColorManager/devices/dave");
+	g_assert (device != NULL);
+	g_assert_cmpstr (cd_device_get_id (device), ==, "dave");
+	g_object_unref (device);
+
+	g_object_unref (device_array);
+}
 
 static void
 cd_mapping_db_func (void)
@@ -213,6 +310,9 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);
 	g_test_add_func ("/colord/device-db", cd_device_db_func);
+	g_test_add_func ("/colord/profile", colord_profile_func);
+	g_test_add_func ("/colord/device", colord_device_func);
+	g_test_add_func ("/colord/device-array", colord_device_array_func);
 	return g_test_run ();
 }
 
