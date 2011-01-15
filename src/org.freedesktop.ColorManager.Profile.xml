@@ -85,7 +85,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The property name, e.g. <doc:tt>Filename</doc:tt>doc:tt>,
+              The property name, e.g. <doc:tt>Filename</doc:tt>,
               or <doc:tt>Qualifier</doc:tt>.
             </doc:para>
           </doc:summary>
@@ -95,7 +95,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The property value, e.g. <doc:tt>RGB.Plain.<doc:tt>.
+              The property value, e.g. <doc:tt>RGB.Plain.</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>

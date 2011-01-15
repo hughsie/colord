@@ -91,7 +91,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The property value, e.g. <doc:tt>RGB.Plain.<doc:tt>.
+              The property value, e.g. <doc:tt>RGB.Plain.</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>
