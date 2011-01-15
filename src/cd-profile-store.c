@@ -86,12 +86,14 @@ cd_profile_store_remove_profile (CdProfileStore *profile_store,
 	/* remove from list */
 	ret = g_ptr_array_remove (priv->profile_array, profile);
 	if (!ret) {
-		g_warning ("failed to remove %s", cd_profile_get_filename (profile));
+		g_warning ("CdProfileStore: failed to remove %s",
+			   cd_profile_get_filename (profile));
 		goto out;
 	}
 
 	/* emit a signal */
-	g_debug ("emit removed (and changed): %s", cd_profile_get_checksum (profile));
+	g_debug ("CdProfileStore: emit removed (and changed): %s",
+		 cd_profile_get_checksum (profile));
 	g_signal_emit (profile_store, signals[SIGNAL_REMOVED], 0, profile);
 out:
 	g_object_unref (profile);
@@ -192,7 +194,8 @@ cd_profile_store_add_profile (CdProfileStore *profile_store,
 	profile = cd_profile_new ();
 	ret = cd_profile_set_filename (profile, filename, &error);
 	if (!ret) {
-		g_warning ("failed to add profile '%s': %s", filename, error->message);
+		g_warning ("CdProfileStore: failed to add profile '%s': %s",
+			   filename, error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -206,12 +209,14 @@ cd_profile_store_add_profile (CdProfileStore *profile_store,
 	}
 
 	/* add to array */
-	g_debug ("parsed new profile '%s'", filename);
+	g_debug ("CdProfileStore: parsed new profile '%s'", filename);
 	g_ptr_array_add (priv->profile_array, g_object_ref (profile));
-	g_signal_connect (profile, "notify::file", G_CALLBACK(cd_profile_store_notify_filename_cb), profile_store);
+	g_signal_connect (profile, "notify::file",
+			  G_CALLBACK(cd_profile_store_notify_filename_cb),
+			  profile_store);
 
 	/* emit a signal */
-	g_debug ("emit added (and changed): %s", filename);
+	g_debug ("CdProfileStore: emit added (and changed): %s", filename);
 	g_signal_emit (profile_store, signals[SIGNAL_ADDED], 0, profile);
 out:
 	g_free (filename);
@@ -242,14 +247,14 @@ cd_profile_store_file_monitor_changed_cb (GFileMonitor *monitor,
 	/* ignore temp files */
 	path = g_file_get_path (file);
 	if (g_strrstr (path, ".goutputstream") != NULL) {
-		g_debug ("ignoring gvfs temporary file");
+		g_debug ("CdProfileStore: ignoring gvfs temporary file");
 		goto out;
 	}
 
 	/* just rescan the correct directory */
 	parent = g_file_get_parent (file);
 	parent_path = g_file_get_path (parent);
-	g_debug ("%s was added, rescanning %s", path, parent_path);
+	g_debug ("CdProfileStore: %s was added, rescanning %s", path, parent_path);
 	cd_profile_store_search_path (profile_store, parent_path);
 out:
 	if (parent != NULL)
@@ -287,7 +292,7 @@ cd_profile_store_search_path (CdProfileStore *profile_store,
 	/* get contents */
 	dir = g_dir_open (path, 0, &error);
 	if (dir == NULL) {
-		g_debug ("failed to open: %s", error->message);
+		g_debug ("CdProfileStore: failed to open: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -301,7 +306,8 @@ cd_profile_store_search_path (CdProfileStore *profile_store,
 						    NULL,
 						    &error);
 		if (monitor == NULL) {
-			g_debug ("failed to monitor path: %s", error->message);
+			g_debug ("CdProfileStore: failed to monitor path: %s",
+				 error->message);
 			g_error_free (error);
 			goto out;
 		}
@@ -365,12 +371,15 @@ cd_profile_store_add_profiles_from_mounted_volume (CdProfileStore *profile_store
 					     G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
 					     NULL, &error);
 	if (info == NULL) {
-		g_warning ("failed to get filesystem type: %s", error->message);
+		g_warning ("CdProfileStore: failed to get filesystem type: %s",
+			   error->message);
 		g_error_free (error);
 		goto out;
 	}
-	type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
-	g_debug ("filesystem mounted on %s has type %s", path_root, type);
+	type = g_file_info_get_attribute_string (info,
+						 G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+	g_debug ("CdProfileStore: filesystem mounted on %s has type %s",
+		 path_root, type);
 
 	/* only scan hfs volumes for OSX */
 	if (g_strcmp0 (type, "hfs") == 0) {

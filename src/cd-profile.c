@@ -180,7 +180,7 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 					     NULL,
 					     &error_local);
 	if (!ret) {
-		g_warning ("failed to send signal %s", error_local->message);
+		g_warning ("CdProfile: failed to send signal %s", error_local->message);
 		g_error_free (error_local);
 	}
 }
@@ -214,8 +214,8 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(ss)",
 			       &property_name,
 			       &property_value);
-		g_debug ("Attempting to set %s to %s",
-			 property_name, property_value);
+		g_debug ("CdProfile %s:SetProperty(%s,%s)",
+			 sender, property_name, property_value);
 		if (g_strcmp0 (property_name, "Filename") == 0) {
 			ret = cd_profile_set_filename (profile, property_value, &error);
 			if (!ret) {
@@ -500,7 +500,7 @@ cd_profile_name_vanished_cb (GDBusConnection *connection,
 			     gpointer user_data)
 {
 	CdProfile *profile = CD_PROFILE (user_data);
-	g_debug ("emit 'invalidate' as %s vanished", name);
+	g_debug ("CdProfile: emit 'invalidate' as %s vanished", name);
 	g_signal_emit (profile, signals[SIGNAL_INVALIDATE], 0);
 }
 

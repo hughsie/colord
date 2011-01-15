@@ -64,7 +64,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 	if (!ret)
 		goto out;
 
-	g_debug ("trying to open database '%s'", filename);
+	g_debug ("CdMappingDb: trying to open database '%s'", filename);
 	rc = sqlite3_open (filename, &mdb->priv->db);
 	if (rc != SQLITE_OK) {
 		ret = FALSE;
@@ -85,7 +85,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 	rc = sqlite3_exec (mdb->priv->db, "SELECT * FROM mappings LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
-		g_debug ("creating table to repair: %s", error_msg);
+		g_debug ("CdMappingDb: creating table to repair: %s", error_msg);
 		sqlite3_free (error_msg);
 		statement = "CREATE TABLE mappings ("
 			    "id TEXT PRIMARY KEY,"
@@ -99,7 +99,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 			   "SELECT default FROM mappings LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
-		g_debug ("altering table to repair: %s", error_msg);
+		g_debug ("CdMappingDb: altering table to repair: %s", error_msg);
 		sqlite3_free (error_msg);
 		statement = "ALTER TABLE mappings ADD COLUMN default INTEGER DEFAULT 0;";
 		sqlite3_exec (mdb->priv->db, statement, NULL, NULL, NULL);
@@ -164,7 +164,7 @@ cd_mapping_db_add (CdMappingDb *mdb,
 
 	device_id = g_path_get_basename (device);
 	profile_id = g_path_get_basename (profile);
-	g_debug ("add %s<->%s with id %s-%s",
+	g_debug ("CdMappingDb: add %s<->%s with id %s-%s",
 		 device, profile,
 		 device_id, profile_id);
 	statement = g_strdup_printf ("INSERT INTO mappings (id, device, profile) "
@@ -208,7 +208,7 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	g_debug ("remove %s<->%s", device, profile);
+	g_debug ("CdMappingDb: remove %s<->%s", device, profile);
 	statement = g_strdup_printf ("DELETE FROM mappings WHERE "
 				     "device = '%s' AND profile = '%s';",
 				     device, profile);
@@ -242,7 +242,7 @@ cd_mapping_db_sqlite_cb (void *data,
 	GPtrArray *array = (GPtrArray *) data;
 
 	/* should only be one entry */
-	g_debug ("adding %s", argv[0]);
+	g_debug ("CdMappingDb: got sql entry %s", argv[0]);
 	g_ptr_array_add (array, g_strdup (argv[0]));
 	return 0;
 }
@@ -264,7 +264,7 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	g_debug ("get profiles for %s", device);
+	g_debug ("CdMappingDb: get profiles for %s", device);
 	statement = g_strdup_printf ("SELECT profile FROM mappings WHERE "
 				     "device = '%s';", device);
 
@@ -310,7 +310,7 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	g_debug ("get devices for %s", profile);
+	g_debug ("CdMappingDb: get devices for %s", profile);
 	statement = g_strdup_printf ("SELECT device FROM mappings WHERE "
 				     "profile = '%s';", profile);
 

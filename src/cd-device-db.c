@@ -64,7 +64,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 	if (!ret)
 		goto out;
 
-	g_debug ("trying to open database '%s'", filename);
+	g_debug ("CdDeviceDb: trying to open database '%s'", filename);
 	rc = sqlite3_open (filename, &ddb->priv->db);
 	if (rc != SQLITE_OK) {
 		ret = FALSE;
@@ -85,7 +85,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 	rc = sqlite3_exec (ddb->priv->db, "SELECT * FROM devices LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
-		g_debug ("creating table to repair: %s", error_msg);
+		g_debug ("CdDeviceDb: creating table to repair: %s", error_msg);
 		sqlite3_free (error_msg);
 		statement = "CREATE TABLE devices ("
 			    "device_id TEXT PRIMARY KEY,"
@@ -150,7 +150,7 @@ cd_device_db_add (CdDeviceDb *ddb,
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
-	g_debug ("add device %s", device_id);
+	g_debug ("CdDeviceDb: add device %s", device_id);
 	statement = g_strdup_printf ("INSERT INTO devices (device_id) "
 				     "VALUES ('%s')",
 				     device_id);
@@ -190,7 +190,7 @@ cd_device_db_set_property (CdDeviceDb *ddb,
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
-	g_debug ("add device %s [%s=%s]", device_id, property, value);
+	g_debug ("CdDeviceDb: add device %s [%s=%s]", device_id, property, value);
 	statement = g_strdup_printf ("INSERT INTO properties (device_id, "
 				     "property, value) "
 				     "VALUES ('%s', '%s', '%s')",
@@ -278,7 +278,7 @@ cd_device_db_sqlite_cb (void *data,
 	GPtrArray *array = (GPtrArray *) data;
 
 	/* should only be one entry */
-	g_debug ("adding %s", argv[0]);
+	g_debug ("CdDeviceDb: got sql result %s", argv[0]);
 	g_ptr_array_add (array, g_strdup (argv[0]));
 	return 0;
 }
@@ -301,7 +301,7 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
-	g_debug ("get property %s for %s", property, device_id);
+	g_debug ("CdDeviceDb: get property %s for %s", property, device_id);
 	statement = g_strdup_printf ("SELECT value FROM properties WHERE "
 				     "device_id = '%s' AND "
 				     "property = '%s' LIMIT 1;",
@@ -359,7 +359,7 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
 	/* get all the devices */
-	g_debug ("get devices");
+	g_debug ("CdDeviceDb: get devices");
 	statement = g_strdup_printf ("SELECT device_id FROM devices;");
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
 	rc = sqlite3_exec (ddb->priv->db,
@@ -403,7 +403,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
 	/* get all the devices */
-	g_debug ("get properties for device %s", device_id);
+	g_debug ("CdDeviceDb: get properties for device %s", device_id);
 	statement = g_strdup_printf ("SELECT property FROM properties "
 				     "WHERE device_id = '%s';",
 				     device_id);

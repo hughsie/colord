@@ -209,6 +209,8 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 	g_assert_no_error (error_local);
 
 	/* emit signal */
+	g_debug ("CdDevice: emit Changed on %s",
+		 cd_device_get_object_path (device));
 	ret = g_dbus_connection_emit_signal (device->priv->connection,
 					     NULL,
 					     cd_device_get_object_path (device),
@@ -217,7 +219,7 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 					     NULL,
 					     &error_local);
 	if (!ret) {
-		g_warning ("failed to send signal %s", error_local->message);
+		g_warning ("CdDevice: failed to send signal %s", error_local->message);
 		g_error_free (error_local);
 	}
 }
@@ -418,7 +420,7 @@ cd_device_set_property_to_db (CdDevice *device,
 					 value,
 					 &error);
 	if (!ret) {
-		g_warning ("failed to save property to database: %s",
+		g_warning ("CdDevice: failed to save property to database: %s",
 			   error->message);
 		g_error_free (error);
 	}
@@ -437,8 +439,8 @@ cd_device_set_property_internal (CdDevice *device,
 	gboolean ret = TRUE;
 	CdDevicePrivate *priv = device->priv;
 
-	g_debug ("Attempting to set %s to %s",
-		 property, value);
+	g_debug ("CdDevice: Attempting to set %s to %s on %s",
+		 property, value, device->priv->id);
 	if (g_strcmp0 (property, "Model") == 0) {
 		g_free (priv->model);
 		priv->model = g_strdup (value);
@@ -506,6 +508,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* check the profile_object_path exists */
 		g_variant_get (parameters, "(o)",
 			       &profile_object_path);
+		g_debug ("CdDevice %s:AddProfile(%s)",
+			 sender, profile_object_path);
 
 		/* add it */
 		ret = cd_device_add_profile (device,
@@ -524,7 +528,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 					 profile_object_path,
 					 &error);
 		if (!ret) {
-			g_warning ("failed to save mapping to database: %s",
+			g_warning ("CdDevice: failed to save mapping to database: %s",
 				   error->message);
 			g_error_free (error);
 		}
@@ -545,6 +549,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* try to remove */
 		g_variant_get (parameters, "(o)",
 			       &profile_object_path);
+		g_debug ("CdDevice %s:RemoveProfile(%s)",
+			 sender, profile_object_path);
 		ret = cd_device_remove_profile (device,
 						profile_object_path,
 						&error);
@@ -561,7 +567,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 					    profile_object_path,
 					    &error);
 		if (!ret) {
-			g_warning ("failed to save mapping to database: %s",
+			g_warning ("CdDevice: failed to save mapping to database: %s",
 				   error->message);
 			g_error_free (error);
 		}
@@ -575,6 +581,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* find the profile by the qualifier search string */
 		g_variant_get (parameters, "(s)", &regex);
+		g_debug ("CdDevice %s:GetProfileForQualifier(%s)",
+			 sender, regex);
 		profile = cd_device_find_by_qualifier (regex,
 						       priv->profiles);
 		if (profile == NULL) {
@@ -605,6 +613,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* check the profile_object_path exists */
 		g_variant_get (parameters, "(s)",
 			       &profile_object_path);
+		g_debug ("CdDevice %s:MakeProfileDefault(%s)",
+			 sender, profile_object_path);
 		profile = cd_device_find_profile_by_id (priv->profiles,
 							profile_object_path);
 		if (profile == NULL) {
@@ -618,7 +628,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* if this profile already default */
 		if (g_ptr_array_index (priv->profiles, 0) == profile) {
-			g_debug ("%s is already the default on %s",
+			g_debug ("CdDevice: %s is already the default on %s",
 				 profile_object_path,
 				 priv->object_path);
 			g_dbus_method_invocation_return_value (invocation, NULL);
@@ -630,7 +640,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			profile_tmp = g_ptr_array_index (priv->profiles, i);
 			if (profile_tmp == profile) {
 				/* swap [0] and [i] */
-				g_debug ("making %s the default on %s",
+				g_debug ("CdDevice: making %s the default on %s",
 					 profile_object_path,
 					 priv->object_path);
 				profile_tmp = priv->profiles->pdata[0];
@@ -662,6 +672,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(ss)",
 			       &property_name,
 			       &property_value);
+		g_debug ("CdDevice %s:SetProperty(%s,%s)",
+			 sender, property_name, property_value);
 		ret = cd_device_set_property_internal (device,
 						       property_name,
 						       property_value,
@@ -768,8 +780,9 @@ cd_device_register_object (CdDevice *device,
 		g_error_free (error_local);
 		goto out;
 	}
-	g_debug ("Register interface %i",
-		 device->priv->registration_id);
+	g_debug ("CdDevice: Register interface %i on %s",
+		 device->priv->registration_id,
+		 device->priv->object_path);
 
 	/* success */
 	ret = TRUE;
@@ -786,7 +799,7 @@ cd_device_name_vanished_cb (GDBusConnection *connection,
 			    gpointer user_data)
 {
 	CdDevice *device = CD_DEVICE (user_data);
-	g_debug ("emit 'invalidate' as %s vanished", name);
+	g_debug ("CdDevice: emit 'invalidate' as %s vanished", name);
 	g_signal_emit (device, signals[SIGNAL_INVALIDATE], 0);
 }
 
@@ -919,8 +932,9 @@ cd_device_finalize (GObject *object)
 	if (priv->watcher_id > 0)
 		g_bus_unwatch_name (priv->watcher_id);
 	if (priv->registration_id > 0) {
-		g_debug ("Unregister interface %i",
-			  priv->registration_id);
+		g_debug ("CdDevice: Unregister interface %i on %s",
+			  priv->registration_id,
+			  priv->object_path);
 		g_dbus_connection_unregister_object (priv->connection,
 						     priv->registration_id);
 	}

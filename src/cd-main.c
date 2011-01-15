@@ -72,14 +72,14 @@ cd_main_profile_removed (CdProfile *profile)
 						object_path_tmp,
 						NULL);
 		if (ret) {
-			g_debug ("automatically removing %s from %s as removed",
+			g_debug ("CdMain: automatically removing %s from %s as removed",
 				 object_path_tmp,
 				 cd_device_get_object_path (device_tmp));
 		}
 	}
 
 	/* emit signal */
-	g_debug ("Emitting ProfileRemoved(%s)", object_path_tmp);
+	g_debug ("CdMain: Emitting ProfileRemoved(%s)", object_path_tmp);
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
 					     COLORD_DBUS_PATH,
@@ -89,7 +89,7 @@ cd_main_profile_removed (CdProfile *profile)
 							    object_path_tmp),
 					     &error);
 	if (!ret) {
-		g_warning ("failed to send signal %s", error->message);
+		g_warning ("CdMain: failed to send signal %s", error->message);
 		g_error_free (error);
 	}
 	g_free (object_path_tmp);
@@ -103,7 +103,7 @@ static void
 cd_main_profile_invalidate_cb (CdProfile *profile,
 			       gpointer user_data)
 {
-	g_debug ("profile '%s' invalidated",
+	g_debug ("CdMain: profile '%s' invalidated",
 		 cd_profile_get_id (profile));
 	cd_main_profile_removed (profile);
 }
@@ -120,7 +120,7 @@ cd_main_device_removed (CdDevice *device)
 
 	/* remove from the array before emitting */
 	object_path_tmp = g_strdup (cd_device_get_object_path (device));
-	g_debug ("Removing device %s", object_path_tmp);
+	g_debug ("CdMain: Removing device %s", object_path_tmp);
 	cd_device_array_remove (devices_array, device);
 
 	/* remove from the device database */
@@ -129,7 +129,7 @@ cd_main_device_removed (CdDevice *device)
 					   cd_device_get_id (device),
 					   &error);
 		if (!ret) {
-			g_warning ("failed to remove device %s from db: %s",
+			g_warning ("CdMain: failed to remove device %s from db: %s",
 				   cd_device_get_object_path (device),
 				   error->message);
 			g_clear_error (&error);
@@ -137,7 +137,7 @@ cd_main_device_removed (CdDevice *device)
 	}
 
 	/* emit signal */
-	g_debug ("Emitting DeviceRemoved(%s)", object_path_tmp);
+	g_debug ("CdMain: Emitting DeviceRemoved(%s)", object_path_tmp);
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
 					     COLORD_DBUS_PATH,
@@ -147,7 +147,7 @@ cd_main_device_removed (CdDevice *device)
 							    object_path_tmp),
 					     &error);
 	if (!ret) {
-		g_warning ("failed to send signal %s", error->message);
+		g_warning ("CdMain: failed to send signal %s", error->message);
 		g_error_free (error);
 	}
 	g_free (object_path_tmp);
@@ -184,7 +184,7 @@ cd_main_add_profile (CdProfile *profile,
 
 	/* add */
 	cd_profile_array_add (profiles_array, profile);
-	g_debug ("Adding profile %s", cd_profile_get_object_path (profile));
+	g_debug ("CdMain: Adding profile %s", cd_profile_get_object_path (profile));
 
 	/* profile is no longer valid */
 	g_signal_connect (profile, "invalidate",
@@ -192,7 +192,7 @@ cd_main_add_profile (CdProfile *profile,
 			  NULL);
 
 	/* emit signal */
-	g_debug ("Emitting ProfileAdded(%s)",
+	g_debug ("CdMain: Emitting ProfileAdded(%s)",
 		 cd_profile_get_object_path (profile));
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
@@ -235,16 +235,16 @@ cd_main_create_profile (const gchar *sender,
 
 	/* different persistent options */
 	if (options == CD_OBJECT_SCOPE_NORMAL) {
-		g_debug ("normal profile");
+		g_debug ("CdMain: normal profile");
 	} else if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
-		g_debug ("temporary profile");
+		g_debug ("CdMain: temporary profile");
 		/* setup DBus watcher */
-		cd_profile_watch_sender (profile, sender);
+		cd_profile_watch_sender (profile_tmp, sender);
 	} else if ((options & CD_OBJECT_SCOPE_DISK) > 0) {
-		g_debug ("persistant profile");
+		g_debug ("CdMain: persistant profile");
 		//FIXME: save to disk
 	} else {
-		g_warning ("Unsupported options kind: %i", options);
+		g_warning ("CdMain: Unsupported options kind: %i", options);
 	}
 
 	/* success */
@@ -272,7 +272,7 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 					    cd_device_get_object_path (device),
 					    &error);
 	if (array == NULL) {
-		g_warning ("failed to get profiles for device from db: %s",
+		g_warning ("CdMain: failed to get profiles for device from db: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
@@ -284,20 +284,20 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 		profile_tmp = cd_profile_array_get_by_object_path (profiles_array,
 								   object_path_tmp);
 		if (profile_tmp != NULL) {
-			g_debug ("Automatically add %s to %s",
+			g_debug ("CdMain: Automatically add %s to %s",
 				 object_path_tmp,
 				 cd_device_get_object_path (device));
 			ret = cd_device_add_profile (device,
 						     object_path_tmp,
 						     &error);
 			if (!ret) {
-				g_debug ("failed to assign, non-fatal: %s",
+				g_debug ("CdMain: failed to assign, non-fatal: %s",
 					 error->message);
 				g_clear_error (&error);
 			}
 			g_object_unref (profile_tmp);
 		} else {
-			g_debug ("profile %s is not (yet) available",
+			g_debug ("CdMain: profile %s is not (yet) available",
 				 object_path_tmp);
 		}
 	}
@@ -327,7 +327,7 @@ cd_main_create_device (const gchar *sender,
 	cd_device_set_id (device, device_id);
 	cd_device_set_scope (device, options);
 	cd_device_array_add (devices_array, device);
-	g_debug ("Adding device %s", cd_device_get_object_path (device));
+	g_debug ("CdMain: Adding device %s", cd_device_get_object_path (device));
 
 	/* register object */
 	ret = cd_device_register_object (device,
@@ -339,13 +339,13 @@ cd_main_create_device (const gchar *sender,
 
 	/* different persistent options */
 	if (options == CD_OBJECT_SCOPE_NORMAL) {
-		g_debug ("normal device");
+		g_debug ("CdMain: normal device");
 	} else if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
-		g_debug ("temporary device");
+		g_debug ("CdMain: temporary device");
 		/* setup DBus watcher */
 		cd_device_watch_sender (device, sender);
 	} else if ((options & CD_OBJECT_SCOPE_DISK) > 0) {
-		g_debug ("persistant device");
+		g_debug ("CdMain: persistant device");
 
 		/* add to the device database */
 		if (sender != NULL) {
@@ -353,14 +353,14 @@ cd_main_create_device (const gchar *sender,
 						device_id,
 						&error_local);
 			if (!ret) {
-				g_warning ("failed to add device %s to db: %s",
+				g_warning ("CdMain: failed to add device %s to db: %s",
 					   cd_device_get_object_path (device),
 					   error_local->message);
 				g_clear_error (&error_local);
 			}
 		}
 	} else {
-		g_warning ("Unsupported options kind: %i", options);
+		g_warning ("CdMain: Unsupported options kind: %i", options);
 	}
 
 	/* profile is no longer valid */
@@ -369,7 +369,7 @@ cd_main_create_device (const gchar *sender,
 			  NULL);
 
 	/* emit signal */
-	g_debug ("Emitting DeviceAdded(%s)",
+	g_debug ("CdMain: Emitting DeviceAdded(%s)",
 		 cd_device_get_object_path (device));
 	ret = g_dbus_connection_emit_signal (connection,
 					     NULL,
@@ -435,7 +435,7 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 					   cd_profile_get_object_path (profile),
 					   &error);
 	if (array == NULL) {
-		g_warning ("failed to get profiles for device from db: %s",
+		g_warning ("CdMain: failed to get profiles for device from db: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
@@ -447,20 +447,20 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 		device_tmp = cd_device_array_get_by_object_path (devices_array,
 								 object_path_tmp);
 		if (device_tmp != NULL) {
-			g_debug ("Automatically add %s to %s",
+			g_debug ("CdMain: Automatically add %s to %s",
 				 cd_profile_get_object_path (profile),
 				 object_path_tmp);
 			ret = cd_device_add_profile (device_tmp,
 						     cd_profile_get_object_path (profile),
 						     &error);
 			if (!ret) {
-				g_debug ("failed to assign, non-fatal: %s",
+				g_debug ("CdMain: failed to assign, non-fatal: %s",
 					 error->message);
 				g_clear_error (&error);
 			}
 			g_object_unref (device_tmp);
 		} else {
-			g_debug ("device %s is not (yet) available",
+			g_debug ("CdMain: device %s is not (yet) available",
 				 object_path_tmp);
 		}
 	}
@@ -492,6 +492,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 'as' */
 	if (g_strcmp0 (method_name, "GetDevices") == 0) {
 
+		g_debug ("CdMain: %s:GetDevices()", sender);
+
 		/* format the value */
 		array = cd_device_array_get_array (devices_array);
 		value = cd_main_object_path_array_to_variant (array);
@@ -505,6 +507,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* get all the devices that match this type */
 		g_variant_get (parameters, "(s)", &device_id);
+		g_debug ("CdMain: %s:GetDevicesByKind(%s)", sender, device_id);
 		array = cd_device_array_get_by_kind (devices_array,
 						     device_id);
 
@@ -519,6 +522,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "FindDeviceById") == 0) {
 
 		g_variant_get (parameters, "(s)", &device_id);
+		g_debug ("CdMain: %s:FindDeviceById(%s)", sender, device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -539,6 +543,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "FindProfileById") == 0) {
 
 		g_variant_get (parameters, "(s)", &device_id);
+		g_debug ("CdMain: %s:FindProfileById(%s)", sender, device_id);
 		profile = cd_profile_array_get_by_id (profiles_array, device_id);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -559,6 +564,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetProfiles") == 0) {
 
 		/* format the value */
+		g_debug ("CdMain: %s:GetProfiles()", sender);
 		value = cd_profile_array_get_variant (profiles_array);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
@@ -577,6 +583,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* does already exist */
 		g_variant_get (parameters, "(su)", &device_id, &options);
+		g_debug ("CdMain: %s:CreateDevice(%s)", sender, device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
 			device = cd_main_create_device (sender,
@@ -584,7 +591,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 							options,
 							&error);
 			if (device == NULL) {
-				g_warning ("failed to create device: %s",
+				g_warning ("CdMain: failed to create device: %s",
 					   error->message);
 				g_dbus_method_invocation_return_gerror (invocation,
 									error);
@@ -612,6 +619,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* does already exist */
 		g_variant_get (parameters, "(s)", &device_id);
+		g_debug ("CdMain: %s:DeleteDevice(%s)", sender, device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
 			/* fall back to checking the object path */
@@ -646,6 +654,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* does already exist */
 		g_variant_get (parameters, "(s)", &device_id);
+		g_debug ("CdMain: %s:DeleteProfile(%s)", sender, device_id);
 		profile = cd_profile_array_get_by_id (profiles_array, device_id);
 		if (profile == NULL) {
 			/* fall back to checking the object path */
@@ -680,6 +689,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* does already exist */
 		g_variant_get (parameters, "(su)", &device_id, &options);
+		g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
 		profile = cd_profile_array_get_by_id (profiles_array,
 						      device_id);
 		if (profile != NULL) {
@@ -786,7 +796,7 @@ cd_main_profile_store_added_cb (CdProfileStore *_profile_store,
 	cd_profile_set_id (profile, cd_profile_get_title (profile));
 	ret = cd_main_add_profile (profile, &error);
 	if (!ret) {
-		g_warning ("failed to add profile: %s",
+		g_warning ("CdMain: failed to add profile: %s",
 			   error->message);
 		g_error_free (error);
 	}
@@ -822,13 +832,13 @@ cd_main_add_disk_device (const gchar *device_id)
 					CD_OBJECT_SCOPE_DISK,
 					&error);
 	if (device == NULL) {
-		g_warning ("failed to create disk device: %s",
+		g_warning ("CdMain: failed to create disk device: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
 	}
 
-	g_debug ("created permanent device %s",
+	g_debug ("CdMain: created permanent device %s",
 		 cd_device_get_object_path (device));
 
 	/* set properties on the device */
@@ -836,7 +846,7 @@ cd_main_add_disk_device (const gchar *device_id)
 							device_id,
 							&error);
 	if (array_properties == NULL) {
-		g_warning ("failed to get props for device %s: %s",
+		g_warning ("CdMain: failed to get props for device %s: %s",
 			   device_id, error->message);
 		g_error_free (error);
 		goto out;
@@ -848,7 +858,7 @@ cd_main_add_disk_device (const gchar *device_id)
 						   property,
 						   &error);
 		if (value == NULL) {
-			g_warning ("failed to get value: %s",
+			g_warning ("CdMain: failed to get value: %s",
 				   error->message);
 			g_clear_error (&error);
 			goto out;
@@ -859,7 +869,7 @@ cd_main_add_disk_device (const gchar *device_id)
 						       FALSE,
 						       &error);
 		if (value == NULL) {
-			g_warning ("failed to set internal prop: %s",
+			g_warning ("CdMain: failed to set internal prop: %s",
 				   error->message);
 			g_clear_error (&error);
 			goto out;
@@ -886,7 +896,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	GPtrArray *array_devices = NULL;
 	guint i;
 
-	g_debug ("acquired name: %s", name);
+	g_debug ("CdMain: acquired name: %s", name);
 	connection = g_object_ref (connection_);
 
 	/* add system profiles */
@@ -905,7 +915,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	/* add disk devices */
 	array_devices = cd_device_db_get_devices (device_db, &error);
 	if (array_devices == NULL) {
-		g_warning ("failed to get the disk devices: %s",
+		g_warning ("CdMain: failed to get the disk devices: %s",
 			    error->message);
 		g_error_free (error);
 		goto out;
@@ -930,7 +940,7 @@ cd_main_on_name_lost_cb (GDBusConnection *connection_,
 			 const gchar *name,
 			 gpointer user_data)
 {
-	g_debug ("lost name: %s", name);
+	g_debug ("CdMain: lost name: %s", name);
 	g_main_loop_quit (loop);
 }
 
@@ -979,7 +989,7 @@ main (int argc, char *argv[])
 				  LOCALSTATEDIR "/lib/colord/mapping.db",
 				  &error);
 	if (!ret) {
-		g_warning ("failed to load mapping database: %s",
+		g_warning ("CdMain: failed to load mapping database: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
@@ -991,7 +1001,7 @@ main (int argc, char *argv[])
 				 LOCALSTATEDIR "/lib/colord/storage.db",
 				 &error);
 	if (!ret) {
-		g_warning ("failed to load device database: %s",
+		g_warning ("CdMain: failed to load device database: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
@@ -1004,7 +1014,7 @@ main (int argc, char *argv[])
 				    &introspection_daemon_data,
 				    NULL, NULL, &error);
 	if (!ret) {
-		g_warning ("failed to load introspection: %s", error->message);
+		g_warning ("CdMain: failed to load introspection: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -1014,7 +1024,7 @@ main (int argc, char *argv[])
 				    &introspection_device_data,
 				    NULL, NULL, &error);
 	if (!ret) {
-		g_warning ("failed to load introspection: %s", error->message);
+		g_warning ("CdMain: failed to load introspection: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -1024,7 +1034,7 @@ main (int argc, char *argv[])
 				    &introspection_profile_data,
 				    NULL, NULL, &error);
 	if (!ret) {
-		g_warning ("failed to load introspection: %s", error->message);
+		g_warning ("CdMain: failed to load introspection: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -1033,7 +1043,7 @@ main (int argc, char *argv[])
 	introspection_daemon = g_dbus_node_info_new_for_xml (introspection_daemon_data,
 							     &error);
 	if (introspection_daemon == NULL) {
-		g_warning ("failed to load daemon introspection: %s",
+		g_warning ("CdMain: failed to load daemon introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
@@ -1041,7 +1051,7 @@ main (int argc, char *argv[])
 	introspection_device = g_dbus_node_info_new_for_xml (introspection_device_data,
 							     &error);
 	if (introspection_device == NULL) {
-		g_warning ("failed to load device introspection: %s",
+		g_warning ("CdMain: failed to load device introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
@@ -1049,7 +1059,7 @@ main (int argc, char *argv[])
 	introspection_profile = g_dbus_node_info_new_for_xml (introspection_profile_data,
 							     &error);
 	if (introspection_profile == NULL) {
-		g_warning ("failed to load profile introspection: %s",
+		g_warning ("CdMain: failed to load profile introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;

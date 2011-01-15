@@ -116,7 +116,7 @@ out:
 	g_object_unref (subject);
 	return ret;
 #else
-	g_warning ("not checking %s for %s as no PolicyKit support",
+	g_warning ("CdCommon: not checking %s for %s as no PolicyKit support",
 		   action_id, sender);
 	return TRUE;
 #endif

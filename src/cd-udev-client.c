@@ -128,7 +128,7 @@ cd_udev_client_add (CdUdevClient *udev_client,
 					 "FIXME",
 					 FALSE,
 					 NULL);
-	g_debug ("UDEV: emit add: %s", id);
+	g_debug ("CdUdevClient: emit add: %s", id);
 	g_signal_emit (udev_client, signals[SIGNAL_ADDED], 0, device);
 
 	/* keep track so we can remove with the same device */
@@ -150,7 +150,7 @@ cd_udev_client_remove (CdUdevClient *udev_client,
 	id = gcm_client_get_id_for_udev_device (udev_device);
 	device = cd_udev_client_get_by_id (udev_client, id);
 	g_assert (device != NULL);
-	g_debug ("UDEV: emit remove: %s", id);
+	g_debug ("CdUdevClient: emit remove: %s", id);
 	g_signal_emit (udev_client, signals[SIGNAL_REMOVED], 0, device);
 
 	/* we don't care anymore */
