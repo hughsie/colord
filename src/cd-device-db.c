@@ -223,18 +223,19 @@ cd_device_db_remove (CdDeviceDb *ddb,
 {
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
-	gchar *statement;
+	gchar *statement1 = NULL;
+	gchar *statement2 = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
 	/* remove the entry */
-	g_debug ("remove device %s", device_id);
-	statement = g_strdup_printf ("DELETE FROM devices WHERE "
+	g_debug ("CdDeviceDb: remove device %s", device_id);
+	statement1 = g_strdup_printf ("DELETE FROM devices WHERE "
 				     "device_id = '%s';",
 				     device_id);
-	rc = sqlite3_exec (ddb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (ddb->priv->db, statement1, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_MAIN_ERROR,
@@ -245,10 +246,10 @@ cd_device_db_remove (CdDeviceDb *ddb,
 		ret = FALSE;
 		goto out;
 	}
-	statement = g_strdup_printf ("DELETE FROM properties WHERE "
+	statement2 = g_strdup_printf ("DELETE FROM properties WHERE "
 				     "device_id = '%s';",
 				     device_id);
-	rc = sqlite3_exec (ddb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (ddb->priv->db, statement2, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_MAIN_ERROR,
@@ -260,7 +261,8 @@ cd_device_db_remove (CdDeviceDb *ddb,
 		goto out;
 	}
 out:
-	g_free (statement);
+	g_free (statement1);
+	g_free (statement2);
 	return ret;
 }
 
