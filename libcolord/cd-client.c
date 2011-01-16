@@ -359,7 +359,7 @@ out:
  **/
 gboolean
 cd_client_delete_device_sync (CdClient *client,
-			      CdDevice *device,
+			      const gchar *id,
 			      GCancellable *cancellable,
 			      GError **error)
 {
@@ -368,13 +368,11 @@ cd_client_delete_device_sync (CdClient *client,
 	GVariant *result;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (client->priv->proxy != NULL, FALSE);
 
 	result = g_dbus_proxy_call_sync (client->priv->proxy,
 					 "DeleteDevice",
-					 g_variant_new ("(s)",
-						        cd_device_get_object_path (device)),
+					 g_variant_new ("(s)", id),
 					 G_DBUS_CALL_FLAGS_NONE,
 					 -1,
 					 cancellable,
@@ -410,7 +408,7 @@ out:
  **/
 gboolean
 cd_client_delete_profile_sync (CdClient *client,
-			       CdProfile *profile,
+			       const gchar *id,
 			       GCancellable *cancellable,
 			       GError **error)
 {
@@ -419,13 +417,11 @@ cd_client_delete_profile_sync (CdClient *client,
 	GVariant *result;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 	g_return_val_if_fail (client->priv->proxy != NULL, FALSE);
 
 	result = g_dbus_proxy_call_sync (client->priv->proxy,
 					 "DeleteProfile",
-					 g_variant_new ("(s)",
-						        cd_profile_get_object_path (profile)),
+					 g_variant_new ("(s)", id),
 					 G_DBUS_CALL_FLAGS_NONE,
 					 -1,
 					 cancellable,

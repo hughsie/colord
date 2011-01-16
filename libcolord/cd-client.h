@@ -98,11 +98,11 @@ CdProfile	*cd_client_create_profile_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_client_delete_device_sync		(CdClient	*client,
-							 CdDevice	*device,
+							 const gchar	*id,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_client_delete_profile_sync		(CdClient	*client,
-							 CdProfile	*profile,
+							 const gchar	*id,
 							 GCancellable	*cancellable,
 							 GError		**error);
 CdDevice	*cd_client_find_device_sync		(CdClient	*client,

@@ -362,19 +362,7 @@ main (int argc, char *argv[])
 			goto out;
 		}
 
-		device = cd_device_new ();
-		ret = cd_device_set_object_path_sync (device,
-						      argv[2],
-						      NULL,
-						      &error);
-		if (!ret) {
-			/* TRANSLATORS: no colord available */
-			g_print ("%s %s\n", _("Failed to create device:"),
-				 error->message);
-			g_error_free (error);
-			goto out;
-		}
-		ret = cd_client_delete_device_sync (client, device,
+		ret = cd_client_delete_device_sync (client, argv[2],
 						    NULL, &error);
 		if (!ret) {
 			/* TRANSLATORS: no colord available */
@@ -391,19 +379,7 @@ main (int argc, char *argv[])
 			goto out;
 		}
 
-		profile = cd_profile_new ();
-		ret = cd_profile_set_object_path_sync (profile,
-						       argv[2],
-						       NULL,
-						       &error);
-		if (!ret) {
-			/* TRANSLATORS: no colord available */
-			g_print ("%s %s\n", _("Failed to create profile:"),
-				 error->message);
-			g_error_free (error);
-			goto out;
-		}
-		ret = cd_client_delete_profile_sync (client, profile,
+		ret = cd_client_delete_profile_sync (client, argv[2],
 						     NULL, &error);
 		if (!ret) {
 			/* TRANSLATORS: no colord available */
