@@ -72,16 +72,32 @@ typedef enum {
 	CD_OBJECT_SCOPE_DISK		= 2
 } CdObjectScope;
 
+/**
+ * CdRenderingIntent:
+ *
+ * The rendering intent.
+ **/
+typedef enum {
+	CD_RENDERING_INTENT_UNKNOWN,
+	CD_RENDERING_INTENT_PERCEPTUAL,
+	CD_RENDERING_INTENT_RELATIVE_COLORMETRIC,
+	CD_RENDERING_INTENT_SATURATION,
+	CD_RENDERING_INTENT_ABSOLUTE_COLORMETRIC,
+	CD_RENDERING_INTENT_LAST
+} CdRenderingIntent;
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
 
-const gchar	*cd_device_kind_to_string	(CdDeviceKind	 kind_enum);
-CdDeviceKind	 cd_device_kind_from_string	(const gchar	*kind);
-const gchar	*cd_profile_kind_to_string	(CdProfileKind	 profile_kind);
-CdProfileKind	 cd_profile_kind_from_string	(const gchar	*profile_kind);
+const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);
+CdDeviceKind	 cd_device_kind_from_string		(const gchar		*kind);
+const gchar	*cd_profile_kind_to_string		(CdProfileKind		 profile_kind);
+CdProfileKind	 cd_profile_kind_from_string		(const gchar		*profile_kind);
+CdRenderingIntent cd_rendering_intent_from_string	(const gchar		*rendering_intent);
+const gchar	*cd_rendering_intent_to_string		(CdRenderingIntent	 rendering_intent);
 
 G_END_DECLS
 

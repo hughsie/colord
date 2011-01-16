@@ -142,3 +142,37 @@ cd_profile_kind_from_string (const gchar *profile_kind)
 		return CD_PROFILE_KIND_NAMED_COLOR;
 	return CD_PROFILE_KIND_UNKNOWN;
 }
+
+/**
+ * cd_rendering_intent_to_string:
+ **/
+const gchar *
+cd_rendering_intent_to_string (CdRenderingIntent rendering_intent)
+{
+	if (rendering_intent == CD_RENDERING_INTENT_PERCEPTUAL)
+		return "perceptual";
+	if (rendering_intent == CD_RENDERING_INTENT_RELATIVE_COLORMETRIC)
+		return "relative-colormetric";
+	if (rendering_intent == CD_RENDERING_INTENT_SATURATION)
+		return "saturation";
+	if (rendering_intent == CD_RENDERING_INTENT_ABSOLUTE_COLORMETRIC)
+		return "absolute-colormetric";
+	return "unknown";
+}
+
+/**
+ * cd_rendering_intent_from_string:
+ **/
+CdRenderingIntent
+cd_rendering_intent_from_string (const gchar *rendering_intent)
+{
+	if (g_strcmp0 (rendering_intent, "perceptual") == 0)
+		return CD_RENDERING_INTENT_PERCEPTUAL;
+	if (g_strcmp0 (rendering_intent, "relative-colormetric") == 0)
+		return CD_RENDERING_INTENT_RELATIVE_COLORMETRIC;
+	if (g_strcmp0 (rendering_intent, "saturation") == 0)
+		return CD_RENDERING_INTENT_SATURATION;
+	if (g_strcmp0 (rendering_intent, "absolute-colormetric") == 0)
+		return CD_RENDERING_INTENT_ABSOLUTE_COLORMETRIC;
+	return CD_RENDERING_INTENT_UNKNOWN;
+}
