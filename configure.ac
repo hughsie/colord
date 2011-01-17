@@ -151,6 +151,27 @@ if test x$enable_gui = xyes; then
 	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.5)
 fi
 
+dnl **** Check for SANE ****
+AC_ARG_ENABLE(sane, AS_HELP_STRING([--enable-sane],[Enable SANE support]),
+	      enable_sane=$enableval, enable_sane=yes)
+if test x$enable_sane != xno; then
+	PKG_CHECK_MODULES(SANE, sane-backends, has_sane=yes, has_sane=no)
+	if test $has_sane = "no"; then
+		AC_CHECK_HEADER(sane/sane.h, has_sane=yes, has_sane=no)
+		if test $has_sane = "no"; then
+			AC_MSG_ERROR([Cannot fine SANE])
+		fi
+		SANE_CFLAGS=""
+		SANE_LIBS="-lsane"
+		AC_SUBST(SANE_CFLAGS)
+		AC_SUBST(SANE_LIBS)
+	fi
+fi
+AM_CONDITIONAL(HAVE_SANE, test x$enable_sane = xyes)
+if test x$enable_sane = xyes; then
+	AC_DEFINE(HAVE_SANE,1,[Use SANE support for detecting scanners])
+fi
+
 # udev rules go in /lib, not /usr/lib
 if test "$prefix" = "/usr" -o "$prefix" = "/usr/local" ; then
   slashlibdir=/lib
@@ -192,6 +213,9 @@ echo "
         compiler:                  ${CC}
         cflags:                    ${CFLAGS}
         cppflags:                  ${CPPFLAGS}
+        PolicyKit support:         ${enable_polkit}
+        GUI support:               ${enable_gui}
+        SANE support:              ${enable_sane}
 "
 
 

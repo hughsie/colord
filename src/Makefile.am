@@ -9,6 +9,7 @@ INCLUDES =						\
 	$(POLKIT_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
 	$(GUDEV_CFLAGS)					\
+	$(SANE_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
@@ -34,6 +35,8 @@ colord_SOURCES =					\
 	cd-profile-array.h				\
 	cd-udev-client.c				\
 	cd-udev-client.h				\
+	cd-sane-client.c				\
+	cd-sane-client.h				\
 	cd-profile.c					\
 	cd-profile.h					\
 	cd-profile-store.c				\
@@ -49,6 +52,7 @@ colord_LDADD =						\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(GUDEV_LIBS)					\
+	$(SANE_LIBS)					\
 	$(GLIB_LIBS)
 
 colord_CFLAGS =						\

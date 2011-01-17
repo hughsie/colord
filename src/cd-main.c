@@ -26,13 +26,14 @@
 #include <locale.h>
 
 #include "cd-common.h"
-#include "cd-device.h"
-#include "cd-profile.h"
 #include "cd-device-array.h"
-#include "cd-profile-array.h"
-#include "cd-profile-store.h"
 #include "cd-device-db.h"
+#include "cd-device.h"
 #include "cd-mapping-db.h"
+#include "cd-profile-array.h"
+#include "cd-profile.h"
+#include "cd-profile-store.h"
+#include "cd-sane-client.h"
 #include "cd-udev-client.h"
 
 static GDBusConnection *connection = NULL;
@@ -46,6 +47,7 @@ static CdProfileStore *profile_store = NULL;
 static CdMappingDb *mapping_db = NULL;
 static CdDeviceDb *device_db = NULL;
 static CdUdevClient *udev_client = NULL;
+static CdSaneClient *sane_client = NULL;
 
 /**
  * cd_main_profile_removed:
@@ -927,6 +929,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 			     gpointer user_data)
 {
 	const gchar *device_id;
+	gboolean ret;
 	GError *error = NULL;
 	GPtrArray *array_devices = NULL;
 	guint i;
@@ -962,6 +965,14 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 
 	/* add GUdev devices */
 	cd_udev_client_coldplug (udev_client);
+
+	/* add SANE devices */
+	ret = cd_sane_client_refresh (sane_client, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to refresh SANE devices: %s",
+			    error->message);
+		g_error_free (error);
+	}
 out:
 	if (array_devices != NULL)
 		g_ptr_array_unref (array_devices);
@@ -980,10 +991,10 @@ cd_main_on_name_lost_cb (GDBusConnection *connection_,
 }
 
 /**
- * cd_main_udev_client_added_cb:
+ * cd_main_client_added_cb:
  **/
 static void
-cd_main_udev_client_added_cb (CdUdevClient *udev_client_,
+cd_main_client_added_cb (CdUdevClient *udev_client_,
 			      CdDevice *device,
 			      gpointer user_data)
 {
@@ -991,21 +1002,22 @@ cd_main_udev_client_added_cb (CdUdevClient *udev_client_,
 	GError *error = NULL;
 	ret = cd_main_device_add (device, NULL, &error);
 	if (!ret) {
-		g_warning ("CdMain: failed to add udev device: %s",
+		g_warning ("CdMain: failed to add device: %s",
 			   error->message);
 		g_error_free (error);
 	}
 }
 
 /**
- * cd_main_udev_client_removed_cb:
+ * cd_main_client_removed_cb:
  **/
 static void
-cd_main_udev_client_removed_cb (CdUdevClient *udev_client_,
+cd_main_client_removed_cb (CdUdevClient *udev_client_,
 				CdDevice *device,
 				gpointer user_data)
 {
-	g_debug ("CdMain: remove udev device: %s", cd_device_get_id (device));
+	g_debug ("CdMain: remove device: %s",
+		 cd_device_get_id (device));
 	cd_main_device_removed (device);
 }
 
@@ -1046,12 +1058,19 @@ main (int argc, char *argv[])
 	loop = g_main_loop_new (NULL, FALSE);
 	devices_array = cd_device_array_new ();
 	profiles_array = cd_profile_array_new ();
+	sane_client = cd_sane_client_new ();
+	g_signal_connect (sane_client, "added",
+			  G_CALLBACK (cd_main_client_added_cb),
+			  NULL);
+	g_signal_connect (sane_client, "removed",
+			  G_CALLBACK (cd_main_client_removed_cb),
+			  NULL);
 	udev_client = cd_udev_client_new ();
 	g_signal_connect (udev_client, "added",
-			  G_CALLBACK (cd_main_udev_client_added_cb),
+			  G_CALLBACK (cd_main_client_added_cb),
 			  NULL);
 	g_signal_connect (udev_client, "removed",
-			  G_CALLBACK (cd_main_udev_client_removed_cb),
+			  G_CALLBACK (cd_main_client_removed_cb),
 			  NULL);
 
 	/* connect to the mapping db */
@@ -1157,6 +1176,8 @@ out:
 	g_free (introspection_profile_data);
 	if (udev_client != NULL)
 		g_object_unref (udev_client);
+	if (sane_client != NULL)
+		g_object_unref (sane_client);
 	if (profile_store != NULL)
 		g_object_unref (profile_store);
 	if (mapping_db != NULL)
