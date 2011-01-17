@@ -113,8 +113,15 @@ static void
 cd_sane_client_add (CdSaneClient *sane_client,
 		    const SANE_Device *sane_device)
 {
-	gchar *id;
+	gchar *id = NULL;
 	CdDevice *device;
+
+	/* ignore noname, no support devices */
+	if (g_strcmp0 (sane_device->vendor, "Noname") == 0) {
+		g_debug ("CdSaneClient: Ignoring sane device %s",
+			 sane_device->name);
+		goto out;
+	}
 
 	/* convert device_id 'plustek:libusb:004:002' to suitable id */
 	id = gcm_client_get_id_for_sane_device (sane_device);
@@ -142,6 +149,7 @@ cd_sane_client_add (CdSaneClient *sane_client,
 
 	/* keep track so we can remove with the same device */
 	g_ptr_array_add (sane_client->priv->array, device);
+out:
 	g_free (id);
 }
 
