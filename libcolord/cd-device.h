@@ -91,8 +91,20 @@ gboolean	 cd_device_set_model_sync		(CdDevice	*device,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
 							 GError		**error);
+gboolean	 cd_device_set_serial_sync		(CdDevice	*device,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_device_set_vendor_sync		(CdDevice	*device,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
 gboolean	 cd_device_set_kind_sync		(CdDevice	*device,
 							 CdDeviceKind	 kind,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_device_set_colorspace_sync		(CdDevice	*device,
+							 CdColorspace	 colorspace,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_device_add_profile_sync		(CdDevice	*device,
@@ -109,8 +121,11 @@ gboolean	 cd_device_make_profile_default_sync	(CdDevice	*device,
 							 GError		**error);
 const gchar	*cd_device_get_id			(CdDevice	*device);
 const gchar	*cd_device_get_model			(CdDevice	*device);
+const gchar	*cd_device_get_vendor			(CdDevice	*device);
+const gchar	*cd_device_get_serial			(CdDevice	*device);
 guint64		 cd_device_get_created			(CdDevice	*device);
 CdDeviceKind	 cd_device_get_kind			(CdDevice	*device);
+CdColorspace	 cd_device_get_colorspace		(CdDevice	*device);
 GPtrArray	*cd_device_get_profiles			(CdDevice	*device);
 const gchar	*cd_device_get_object_path		(CdDevice	*device);
 

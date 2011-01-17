@@ -34,6 +34,39 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Serial' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The device serial string.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
+    <property name='Vendor' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The device vendor string.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
+    <property name='Colorspace' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The device supported colorspace string, e.g. <doc:tt>RGB</doc:tt>.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Kind' type='s' access='read'>
       <doc:doc>
         <doc:description>

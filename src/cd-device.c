@@ -48,6 +48,9 @@ struct _CdDevicePrivate
 	CdDeviceDb			*device_db;
 	gchar				*id;
 	gchar				*model;
+	gchar				*serial;
+	gchar				*vendor;
+	gchar				*colorspace;
 	gchar				*kind;
 	gchar				*object_path;
 	GDBusConnection			*connection;
@@ -447,6 +450,15 @@ cd_device_set_property_internal (CdDevice *device,
 	} else if (g_strcmp0 (property, "Kind") == 0) {
 		g_free (priv->kind);
 		priv->kind = g_strdup (value);
+	} else if (g_strcmp0 (property, "Vendor") == 0) {
+		g_free (priv->vendor);
+		priv->vendor = g_strdup (value);
+	} else if (g_strcmp0 (property, "Serial") == 0) {
+		g_free (priv->serial);
+		priv->serial = g_strdup (value);
+	} else if (g_strcmp0 (property, "Colorspace") == 0) {
+		g_free (priv->colorspace);
+		priv->colorspace = g_strdup (value);
 	} else {
 		ret = FALSE;
 		g_set_error (error,
@@ -700,6 +712,17 @@ out:
 }
 
 /**
+ * cd_device_get_nullable_for_string:
+ **/
+static GVariant *
+cd_device_get_nullable_for_string (const gchar *value)
+{
+	if (value == NULL)
+		return g_variant_new_string ("");
+	return g_variant_new_string (value);
+}
+
+/**
  * cd_device_dbus_get_property:
  **/
 static GVariant *
@@ -717,17 +740,23 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Model") == 0) {
-		if (priv->model != NULL)
-			retval = g_variant_new_string (priv->model);
-		else
-			retval = g_variant_new_string ("");
+		retval = cd_device_get_nullable_for_string (priv->model);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Vendor") == 0) {
+		retval = cd_device_get_nullable_for_string (priv->vendor);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Serial") == 0) {
+		retval = cd_device_get_nullable_for_string (priv->serial);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Colorspace") == 0) {
+		retval = cd_device_get_nullable_for_string (priv->colorspace);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Kind") == 0) {
-		if (priv->kind != NULL)
-			retval = g_variant_new_string (priv->kind);
-		else
-			retval = g_variant_new_string ("");
+		retval = cd_device_get_nullable_for_string (priv->kind);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "DeviceId") == 0) {
@@ -940,6 +969,9 @@ cd_device_finalize (GObject *object)
 	}
 	g_free (priv->id);
 	g_free (priv->model);
+	g_free (priv->vendor);
+	g_free (priv->colorspace);
+	g_free (priv->serial);
 	g_free (priv->kind);
 	g_free (priv->object_path);
 	if (priv->profiles != NULL)

@@ -124,8 +124,20 @@ cd_udev_client_add (CdUdevClient *udev_client,
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
 	cd_device_set_property_internal (device,
+					 "Kind",
+					 "camera",
+					 FALSE,
+					 NULL);
+	cd_device_set_property_internal (device,
 					 "Model",
-					 "FIXME",
+					 g_udev_device_get_property (udev_device,
+								     "ID_MODEL"),
+					 FALSE,
+					 NULL);
+	cd_device_set_property_internal (device,
+					 "Vendor",
+					 g_udev_device_get_property (udev_device,
+								     "ID_VENDOR"),
 					 FALSE,
 					 NULL);
 	g_debug ("CdUdevClient: emit add: %s", id);

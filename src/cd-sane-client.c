@@ -135,6 +135,11 @@ cd_sane_client_add (CdSaneClient *sane_client,
 					 FALSE,
 					 NULL);
 	cd_device_set_property_internal (device,
+					 "Colorspace",
+					 "rgb",
+					 FALSE,
+					 NULL);
+	cd_device_set_property_internal (device,
 					 "Model",
 					 sane_device->model,
 					 FALSE,
@@ -142,6 +147,11 @@ cd_sane_client_add (CdSaneClient *sane_client,
 	cd_device_set_property_internal (device,
 					 "Vendor",
 					 sane_device->vendor,
+					 FALSE,
+					 NULL);
+	cd_device_set_property_internal (device,
+					 "Serial",
+					 sane_device->name,
 					 FALSE,
 					 NULL);
 	g_debug ("CdSaneClient: emit add: %s", id);

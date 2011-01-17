@@ -56,9 +56,12 @@ struct _CdDevicePrivate
 	gchar			*object_path;
 	gchar			*id;
 	gchar			*model;
+	gchar			*serial;
+	gchar			*vendor;
 	guint64			 created;
 	GPtrArray		*profiles;
 	CdDeviceKind		 kind;
+	CdColorspace		 colorspace;
 };
 
 enum {
@@ -66,7 +69,10 @@ enum {
 	PROP_CREATED,
 	PROP_ID,
 	PROP_MODEL,
+	PROP_VENDOR,
+	PROP_SERIAL,
 	PROP_KIND,
+	PROP_COLORSPACE,
 	PROP_LAST
 };
 
@@ -130,6 +136,40 @@ cd_device_get_model (CdDevice *device)
 }
 
 /**
+ * cd_device_get_vendor:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device vendor.
+ *
+ * Return value: A string, or %NULL for invalid
+ *
+ * Since: 0.1.1
+ **/
+const gchar *
+cd_device_get_vendor (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	return device->priv->vendor;
+}
+
+/**
+ * cd_device_get_serial:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device serial number.
+ *
+ * Return value: A string, or %NULL for invalid
+ *
+ * Since: 0.1.0
+ **/
+const gchar *
+cd_device_get_serial (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	return device->priv->serial;
+}
+
+/**
  * cd_device_get_created:
  * @device: a #CdDevice instance.
  *
@@ -161,6 +201,23 @@ cd_device_get_kind (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_KIND_UNKNOWN);
 	return device->priv->kind;
+}
+
+/**
+ * cd_device_get_colorspace:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device colorspace.
+ *
+ * Return value: A colorspace, e.g. %CD_COLORSPACE_RGB
+ *
+ * Since: 0.1.1
+ **/
+CdColorspace
+cd_device_get_colorspace (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), CD_COLORSPACE_UNKNOWN);
+	return device->priv->colorspace;
 }
 
 /**
@@ -250,9 +307,18 @@ cd_device_dbus_properties_changed (GDBusProxy  *proxy,
 		if (g_strcmp0 (property_name, "Model") == 0) {
 			g_free (device->priv->model);
 			device->priv->model = g_variant_dup_string (property_value, NULL);
+		} else if (g_strcmp0 (property_name, "Serial") == 0) {
+			g_free (device->priv->serial);
+			device->priv->serial = g_variant_dup_string (property_value, NULL);
+		} else if (g_strcmp0 (property_name, "Vendor") == 0) {
+			g_free (device->priv->vendor);
+			device->priv->vendor = g_variant_dup_string (property_value, NULL);
 		} else if (g_strcmp0 (property_name, "Kind") == 0) {
 			device->priv->kind =
 				cd_device_kind_from_string (g_variant_get_string (property_value, NULL));
+		} else if (g_strcmp0 (property_name, "Colorspace") == 0) {
+			device->priv->colorspace =
+				cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, "Profiles") == 0) {
 			cd_device_set_profiles_array_from_variant (device,
 								   property_value,
@@ -311,6 +377,9 @@ cd_device_set_object_path_sync (CdDevice *device,
 	GVariant *id = NULL;
 	GVariant *kind = NULL;
 	GVariant *model = NULL;
+	GVariant *serial = NULL;
+	GVariant *vendor = NULL;
+	GVariant *colorspace = NULL;
 	GVariant *profiles = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
@@ -354,11 +423,30 @@ cd_device_set_object_path_sync (CdDevice *device,
 		device->priv->kind =
 			cd_device_kind_from_string (g_variant_get_string (kind, NULL));
 
+	/* get colorspace */
+	colorspace = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						       "Colorspace");
+	if (colorspace != NULL)
+		device->priv->colorspace =
+			cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
+
 	/* get model */
 	model = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						  "Model");
 	if (model != NULL)
 		device->priv->model = g_variant_dup_string (model, NULL);
+
+	/* get serial */
+	serial = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						   "Serial");
+	if (serial != NULL)
+		device->priv->serial = g_variant_dup_string (serial, NULL);
+
+	/* get vendor */
+	vendor = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						   "Vendor");
+	if (vendor != NULL)
+		device->priv->vendor = g_variant_dup_string (vendor, NULL);
 
 	/* get created */
 	created = g_dbus_proxy_get_cached_property (device->priv->proxy,
@@ -396,6 +484,12 @@ out:
 		g_variant_unref (id);
 	if (model != NULL)
 		g_variant_unref (model);
+	if (vendor != NULL)
+		g_variant_unref (vendor);
+	if (serial != NULL)
+		g_variant_unref (serial);
+	if (colorspace != NULL)
+		g_variant_unref (colorspace);
 	if (created != NULL)
 		g_variant_unref (created);
 	if (kind != NULL)
@@ -471,6 +565,60 @@ cd_device_set_model_sync (CdDevice *device,
 }
 
 /**
+ * cd_device_set_serial_sync:
+ * @device: a #CdDevice instance.
+ * @value: The string value.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Sets the device serial number.
+ *
+ * Return value: #TRUE for success, else #FALSE and @error is used
+ *
+ * Since: 0.1.1
+ **/
+gboolean
+cd_device_set_serial_sync (CdDevice *device,
+			   const gchar *value,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+
+	/* execute sync helper */
+	return cd_device_set_property_sync (device, "Serial", value,
+					    cancellable, error);
+}
+
+/**
+ * cd_device_set_vendor_sync:
+ * @device: a #CdDevice instance.
+ * @value: The string value.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Sets the device vendor.
+ *
+ * Return value: #TRUE for success, else #FALSE and @error is used
+ *
+ * Since: 0.1.1
+ **/
+gboolean
+cd_device_set_vendor_sync (CdDevice *device,
+			   const gchar *value,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+
+	/* execute sync helper */
+	return cd_device_set_property_sync (device, "Vendor", value,
+					    cancellable, error);
+}
+
+/**
  * cd_device_set_kind_sync:
  * @device: a #CdDevice instance.
  * @kind: The device kind, e.g. #CD_DEVICE_KIND_DISPLAY
@@ -495,6 +643,34 @@ cd_device_set_kind_sync (CdDevice *device,
 	/* execute sync helper */
 	return cd_device_set_property_sync (device, "Kind",
 					    cd_device_kind_to_string (kind),
+					    cancellable, error);
+}
+
+/**
+ * cd_device_set_colorspace_sync:
+ * @device: a #CdDevice instance.
+ * @kind: The device kind, e.g. #CD_DEVICE_KIND_DISPLAY
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Sets the device kind.
+ *
+ * Return value: #TRUE for success, else #FALSE and @error is used
+ *
+ * Since: 0.1.1
+ **/
+gboolean
+cd_device_set_colorspace_sync (CdDevice *device,
+			       CdColorspace colorspace,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+
+	/* execute sync helper */
+	return cd_device_set_property_sync (device, "Colorspace",
+					    cd_colorspace_to_string (colorspace),
 					    cancellable, error);
 }
 
@@ -765,8 +941,17 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_MODEL:
 		g_value_set_string (value, device->priv->model);
 		break;
+	case PROP_SERIAL:
+		g_value_set_string (value, device->priv->serial);
+		break;
+	case PROP_VENDOR:
+		g_value_set_string (value, device->priv->vendor);
+		break;
 	case PROP_KIND:
 		g_value_set_uint (value, device->priv->kind);
+		break;
+	case PROP_COLORSPACE:
+		g_value_set_uint (value, device->priv->colorspace);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -840,6 +1025,32 @@ cd_device_class_init (CdDeviceClass *klass)
 							      NULL,
 							      G_PARAM_READWRITE));
 	/**
+	 * CdDevice:serial:
+	 *
+	 * The device serial number.
+	 *
+	 * Since: 0.1.1
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_SERIAL,
+					 g_param_spec_string ("serial",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE));
+	/**
+	 * CdDevice:vendor:
+	 *
+	 * The device vendor.
+	 *
+	 * Since: 0.1.1
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_VENDOR,
+					 g_param_spec_string ("vendor",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE));
+	/**
 	 * CdDevice:kind:
 	 *
 	 * The device kind, e.g. %CD_DEVICE_KIND_KEYBOARD.
@@ -853,6 +1064,21 @@ cd_device_class_init (CdDeviceClass *klass)
 							    CD_DEVICE_KIND_UNKNOWN,
 							    CD_DEVICE_KIND_LAST,
 							    CD_DEVICE_KIND_UNKNOWN,
+							    G_PARAM_READWRITE));
+	/**
+	 * CdDevice:colorspace:
+	 *
+	 * The device colorspace, e.g. %CD_COLORSPACE_RGB.
+	 *
+	 * Since: 0.1.1
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_COLORSPACE,
+					 g_param_spec_uint ("colorspace",
+							    NULL, NULL,
+							    0,
+							    G_MAXUINT,
+							    0,
 							    G_PARAM_READWRITE));
 
 	g_type_class_add_private (klass, sizeof (CdDevicePrivate));

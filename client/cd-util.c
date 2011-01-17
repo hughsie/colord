@@ -66,6 +66,12 @@ cd_util_show_device (CdDevice *device)
 		 cd_device_kind_to_string (cd_device_get_kind (device)));
 	g_print ("Model:\t\t%s\n",
 		 cd_device_get_model (device));
+	g_print ("Vendor:\t\t%s\n",
+		 cd_device_get_vendor (device));
+	g_print ("Serial:\t\t%s\n",
+		 cd_device_get_serial (device));
+	g_print ("Colorspace:\t%s\n",
+		 cd_colorspace_to_string (cd_device_get_colorspace (device)));
 	g_print ("Device ID:\t%s\n",
 		 cd_device_get_id (device));
 
@@ -468,6 +474,64 @@ main (int argc, char *argv[])
 		}
 		ret = cd_device_set_model_sync (device, argv[3],
 						NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to set property on device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+	} else if (g_strcmp0 (argv[1], "device-set-vendor") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_device_set_vendor_sync (device, argv[3],
+						 NULL, &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to set property on device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+	} else if (g_strcmp0 (argv[1], "device-set-serial") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		ret = cd_device_set_serial_sync (device, argv[3],
+						 NULL, &error);
 		if (!ret) {
 			/* TRANSLATORS: no colord available */
 			g_print ("%s %s\n", _("Failed to set property on device:"),

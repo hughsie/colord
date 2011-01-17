@@ -132,8 +132,26 @@ colord_client_func (void)
 	g_assert_cmpint (devices->len + 1, ==, array->len);
 	g_ptr_array_unref (array);
 
+	/* set device vendor */
+	ret = cd_device_set_vendor_sync (device, "CRAY", NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	/* set device model */
-	ret = cd_device_set_model_sync (device, "CRAY 3000", NULL, &error);
+	ret = cd_device_set_model_sync (device, "3000", NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* set device serial */
+	ret = cd_device_set_serial_sync (device, "0001", NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* set device colorspace */
+	ret = cd_device_set_colorspace_sync (device,
+					     CD_COLORSPACE_LAB,
+					     NULL,
+					     &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -147,10 +165,19 @@ colord_client_func (void)
 	_g_test_loop_run_with_timeout (50);
 
 	/* check device model */
-	g_assert_cmpstr (cd_device_get_model (device), ==, "CRAY 3000");
+	g_assert_cmpstr (cd_device_get_model (device), ==, "3000");
+
+	/* check device vendor */
+	g_assert_cmpstr (cd_device_get_vendor (device), ==, "CRAY");
+
+	/* check device serial */
+	g_assert_cmpstr (cd_device_get_serial (device), ==, "0001");
 
 	/* check device kind */
 	g_assert_cmpint (cd_device_get_kind (device), ==, CD_DEVICE_KIND_DISPLAY);
+
+	/* check device colorspace */
+	g_assert_cmpint (cd_device_get_colorspace (device), ==, CD_COLORSPACE_LAB);
 
 	/* create profile */
 	profile = cd_client_create_profile_sync (client,
@@ -263,7 +290,10 @@ colord_client_func (void)
 	g_object_unref (profile_tmp);
 
 	/* delete profile */
-	ret = cd_client_delete_profile_sync (client, profile, NULL, &error);
+	ret = cd_client_delete_profile_sync (client,
+					     cd_profile_get_id (profile),
+					     NULL,
+					     &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -304,12 +334,18 @@ colord_client_func (void)
 	g_ptr_array_unref (array);
 
 	/* delete profile */
-	ret = cd_client_delete_profile_sync (client, profile, NULL, &error);
+	ret = cd_client_delete_profile_sync (client,
+					     cd_profile_get_id (profile),
+					     NULL,
+					     &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* delete device */
-	ret = cd_client_delete_device_sync (client, device, NULL, &error);
+	ret = cd_client_delete_device_sync (client,
+					    cd_device_get_id (device),
+					    NULL,
+					    &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
