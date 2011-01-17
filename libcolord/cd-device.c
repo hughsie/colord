@@ -240,6 +240,27 @@ cd_device_get_profiles (CdDevice *device)
 }
 
 /**
+ * cd_device_get_default_profile:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the default device profile.
+ *
+ * Return value: A #CdProfile's or NULL, free with g_object_unref()
+ *
+ * Since: 0.1.1
+ **/
+CdProfile *
+cd_device_get_default_profile (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	if (device->priv->profiles == NULL)
+		return NULL;
+	if (device->priv->profiles->len == 0)
+		return NULL;
+	return g_object_ref (g_ptr_array_index (device->priv->profiles, 0));
+}
+
+/**
  * cd_device_set_profiles_array_from_variant:
  **/
 static gboolean

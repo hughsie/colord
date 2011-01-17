@@ -127,6 +127,7 @@ guint64		 cd_device_get_created			(CdDevice	*device);
 CdDeviceKind	 cd_device_get_kind			(CdDevice	*device);
 CdColorspace	 cd_device_get_colorspace		(CdDevice	*device);
 GPtrArray	*cd_device_get_profiles			(CdDevice	*device);
+CdProfile	*cd_device_get_default_profile		(CdDevice	*device);
 const gchar	*cd_device_get_object_path		(CdDevice	*device);
 
 G_END_DECLS
