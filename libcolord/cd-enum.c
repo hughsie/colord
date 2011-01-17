@@ -176,3 +176,61 @@ cd_rendering_intent_from_string (const gchar *rendering_intent)
 		return CD_RENDERING_INTENT_ABSOLUTE_COLORMETRIC;
 	return CD_RENDERING_INTENT_UNKNOWN;
 }
+
+/**
+ * cd_colorspace_to_string:
+ **/
+const gchar *
+cd_colorspace_to_string (CdColorspace colorspace)
+{
+	if (colorspace == CD_COLORSPACE_XYZ)
+		return "xyz";
+	if (colorspace == CD_COLORSPACE_LAB)
+		return "lab";
+	if (colorspace == CD_COLORSPACE_LUV)
+		return "luv";
+	if (colorspace == CD_COLORSPACE_YCBCR)
+		return "ycbcr";
+	if (colorspace == CD_COLORSPACE_YXY)
+		return "yxy";
+	if (colorspace == CD_COLORSPACE_RGB)
+		return "rgb";
+	if (colorspace == CD_COLORSPACE_GRAY)
+		return "gray";
+	if (colorspace == CD_COLORSPACE_HSV)
+		return "hsv";
+	if (colorspace == CD_COLORSPACE_CMYK)
+		return "cmyk";
+	if (colorspace == CD_COLORSPACE_CMY)
+		return "cmy";
+	return "unknown";
+}
+
+/**
+ * cd_colorspace_from_string:
+ **/
+CdColorspace
+cd_colorspace_from_string (const gchar *colorspace)
+{
+	if (g_strcmp0 (colorspace, "xyz") == 0)
+		return CD_COLORSPACE_XYZ;
+	if (g_strcmp0 (colorspace, "lab") == 0)
+		return CD_COLORSPACE_LAB;
+	if (g_strcmp0 (colorspace, "luv") == 0)
+		return CD_COLORSPACE_LUV;
+	if (g_strcmp0 (colorspace, "ycbcr") == 0)
+		return CD_COLORSPACE_YCBCR;
+	if (g_strcmp0 (colorspace, "yxy") == 0)
+		return CD_COLORSPACE_YXY;
+	if (g_strcmp0 (colorspace, "rgb") == 0)
+		return CD_COLORSPACE_RGB;
+	if (g_strcmp0 (colorspace, "gray") == 0)
+		return CD_COLORSPACE_GRAY;
+	if (g_strcmp0 (colorspace, "hsv") == 0)
+		return CD_COLORSPACE_HSV;
+	if (g_strcmp0 (colorspace, "cmyk") == 0)
+		return CD_COLORSPACE_CMYK;
+	if (g_strcmp0 (colorspace, "cmy") == 0)
+		return CD_COLORSPACE_CMY;
+	return CD_COLORSPACE_UNKNOWN;
+}

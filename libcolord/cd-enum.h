@@ -86,6 +86,26 @@ typedef enum {
 	CD_RENDERING_INTENT_LAST
 } CdRenderingIntent;
 
+/**
+ * CdColorspace:
+ *
+ * The known colorspace.
+ **/
+typedef enum {
+	CD_COLORSPACE_UNKNOWN,
+	CD_COLORSPACE_XYZ,
+	CD_COLORSPACE_LAB,
+	CD_COLORSPACE_LUV,
+	CD_COLORSPACE_YCBCR,
+	CD_COLORSPACE_YXY,
+	CD_COLORSPACE_RGB,
+	CD_COLORSPACE_GRAY,
+	CD_COLORSPACE_HSV,
+	CD_COLORSPACE_CMYK,
+	CD_COLORSPACE_CMY,
+	CD_COLORSPACE_LAST
+} CdColorspace;
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
@@ -98,6 +118,8 @@ const gchar	*cd_profile_kind_to_string		(CdProfileKind		 profile_kind);
 CdProfileKind	 cd_profile_kind_from_string		(const gchar		*profile_kind);
 CdRenderingIntent cd_rendering_intent_from_string	(const gchar		*rendering_intent);
 const gchar	*cd_rendering_intent_to_string		(CdRenderingIntent	 rendering_intent);
+const gchar	*cd_colorspace_to_string		(CdColorspace		 colorspace);
+CdColorspace	 cd_colorspace_from_string		(const gchar		*colorspace);
 
 G_END_DECLS
 
