@@ -944,7 +944,9 @@ cd_device_init (CdDevice *device)
 	device->priv = CD_DEVICE_GET_PRIVATE (device);
 	device->priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	device->priv->profile_array = cd_profile_array_new ();
+#if !GLIB_CHECK_VERSION (2, 25, 0)
 	device->priv->created = g_get_real_time ();
+#endif
 	device->priv->mapping_db = cd_mapping_db_new ();
 	device->priv->device_db = cd_device_db_new ();
 }
