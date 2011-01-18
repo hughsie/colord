@@ -54,6 +54,7 @@ struct _CdClientPrivate
 {
 	GDBusProxy		*proxy;
 	gchar			*daemon_version;
+	GPtrArray		*device_cache;
 };
 
 enum {
@@ -91,17 +92,79 @@ cd_client_error_quark (void)
 }
 
 /**
+ * cd_client_get_cache_device:
+ **/
+static CdDevice *
+cd_client_get_cache_device (CdClient *client,
+			    const gchar *object_path)
+{
+	CdDevice *device = NULL;
+	CdDevice *device_tmp;
+	guint i;
+
+	/* try and find existing */
+	for (i=0; i<client->priv->device_cache->len; i++) {
+		device_tmp = g_ptr_array_index (client->priv->device_cache, i);
+		if (g_strcmp0 (cd_device_get_object_path (device_tmp),
+			       object_path) == 0) {
+			device = g_object_ref (device_tmp);
+			break;
+		}
+	}
+	return device;
+}
+
+
+/**
+ * cd_client_get_cache_device_create:
+ **/
+static CdDevice *
+cd_client_get_cache_device_create (CdClient *client,
+				   const gchar *object_path,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	CdDevice *device = NULL;
+	gboolean ret;
+	GError *error_local = NULL;
+
+	/* try and find existing, else create */
+	device = cd_client_get_cache_device (client, object_path);
+	if (device == NULL) {
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      object_path,
+						      cancellable,
+						      &error_local);
+		if (!ret) {
+			g_set_error (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_FAILED,
+				     "Failed to set device object path: %s",
+				     error_local->message);
+			g_error_free (error_local);
+			g_object_unref (device);
+			device = NULL;
+			goto out;
+		}
+		g_ptr_array_add (client->priv->device_cache,
+				 g_object_ref (device));
+	}
+out:
+	return device;
+}
+
+/**
  * cd_client_get_device_array_from_variant:
  **/
 static GPtrArray *
-cd_client_get_device_array_from_variant (GVariant *result,
+cd_client_get_device_array_from_variant (CdClient *client,
+					 GVariant *result,
 					 GCancellable *cancellable,
 					 GError **error)
 {
 	CdDevice *device;
-	gboolean ret;
 	gchar *object_path_tmp;
-	GError *error_local = NULL;
 	GPtrArray *array = NULL;
 	GPtrArray *array_tmp = NULL;
 	guint i;
@@ -118,22 +181,13 @@ cd_client_get_device_array_from_variant (GVariant *result,
 				     "o", &object_path_tmp);
 		g_debug ("%s", object_path_tmp);
 
-		/* create device and add to the array */
-		device = cd_device_new ();
-		ret = cd_device_set_object_path_sync (device,
-						      object_path_tmp,
-						      cancellable,
-						      &error_local);
-		if (!ret) {
-			g_set_error (error,
-				     CD_CLIENT_ERROR,
-				     CD_CLIENT_ERROR_FAILED,
-				     "Failed to set device object path: %s",
-				     error_local->message);
-			g_error_free (error_local);
-			g_object_unref (device);
+		/* try to get from device cache, else create */
+		device = cd_client_get_cache_device_create (client,
+							   object_path_tmp,
+							   cancellable,
+							   error);
+		if (device == NULL)
 			goto out;
-		}
 		g_ptr_array_add (array_tmp, device);
 		g_free (object_path_tmp);
 	}
@@ -191,7 +245,8 @@ cd_client_get_devices_sync (CdClient *client,
 	}
 
 	/* convert to array of CdDevice's */
-	array = cd_client_get_device_array_from_variant (result,
+	array = cd_client_get_device_array_from_variant (client,
+							 result,
 							 cancellable,
 							 error);
 	if (array == NULL)
@@ -261,6 +316,10 @@ cd_client_create_device_sync (CdClient *client,
 					      error);
 	if (!ret)
 		goto out;
+
+	/* add to cache */
+	g_ptr_array_add (client->priv->device_cache,
+			 g_object_ref (device_tmp));
 
 	/* success */
 	device = g_object_ref (device_tmp);
@@ -624,7 +683,8 @@ cd_client_get_devices_by_kind_sync (CdClient *client,
 	}
 
 	/* convert to array of CdDevice's */
-	array = cd_client_get_device_array_from_variant (result,
+	array = cd_client_get_device_array_from_variant (client,
+							 result,
 							 cancellable,
 							 error);
 	if (array == NULL)
@@ -758,7 +818,6 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			  CdClient   *client)
 {
 	CdDevice *device = NULL;
-	gboolean ret;
 	gchar *object_path_tmp = NULL;
 	GError *error = NULL;
 
@@ -766,12 +825,13 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 		g_warning ("changed");
 	} else if (g_strcmp0 (signal_name, "DeviceAdded") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
-		device = cd_device_new ();
-		ret = cd_device_set_object_path_sync (device,
-						      object_path_tmp,
-						      NULL,
-						      &error);
-		if (!ret) {
+
+		/* try to get from device cache, else create */
+		device = cd_client_get_cache_device_create (client,
+							    object_path_tmp,
+							    NULL,
+							    &error);
+		if (device == NULL) {
 			g_warning ("failed to get cached device %s: %s",
 				   object_path_tmp, error->message);
 			g_error_free (error);
@@ -782,13 +842,25 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			       device);
 	} else if (g_strcmp0 (signal_name, "DeviceRemoved") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
-		//EMIT
+
+		/* if the device isn't in the cache, we don't care
+		 * as the process isn't aware of it's existance */
+		device = cd_client_get_cache_device (client,
+						     object_path_tmp);
+		if (device == NULL) {
+			g_debug ("failed to get cached device %s",
+				 object_path_tmp);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s'", signal_name);
+		g_signal_emit (client, signals[SIGNAL_DEVICE_REMOVED], 0,
+			       device);
 	} else if (g_strcmp0 (signal_name, "ProfileAdded") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
-		//EMIT
+		//TODO: EMIT
 	} else if (g_strcmp0 (signal_name, "ProfileRemoved") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
-		//EMIT
+		//TODO: EMIT
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
 	}
@@ -984,6 +1056,7 @@ static void
 cd_client_init (CdClient *client)
 {
 	client->priv = CD_CLIENT_GET_PRIVATE (client);
+	client->priv->device_cache = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 }
 
 /*
@@ -997,6 +1070,7 @@ cd_client_finalize (GObject *object)
 	g_return_if_fail (CD_IS_CLIENT (object));
 
 	g_free (client->priv->daemon_version);
+	g_ptr_array_unref (client->priv->device_cache);
 	if (client->priv->proxy != NULL)
 		g_object_unref (client->priv->proxy);
 
