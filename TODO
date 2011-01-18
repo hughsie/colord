@@ -1,0 +1,3 @@
+* device.Created has to be saved in the database
+* device.Modified has to be saved in the database (even for temp devices)
+* Test device.Modified gets changed on profile changes
