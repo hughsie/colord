@@ -130,6 +130,7 @@ const gchar	*cd_device_get_model			(CdDevice	*device);
 const gchar	*cd_device_get_vendor			(CdDevice	*device);
 const gchar	*cd_device_get_serial			(CdDevice	*device);
 guint64		 cd_device_get_created			(CdDevice	*device);
+guint64		 cd_device_get_modified			(CdDevice	*device);
 CdDeviceKind	 cd_device_get_kind			(CdDevice	*device);
 CdColorspace	 cd_device_get_colorspace		(CdDevice	*device);
 GPtrArray	*cd_device_get_profiles			(CdDevice	*device);

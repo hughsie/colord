@@ -164,6 +164,12 @@ colord_client_func (void)
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
 
+	/* check device created */
+	g_assert_cmpuint (cd_device_get_created (device), >, 1295354162);
+
+	/* check device modified */
+	g_assert_cmpuint (cd_device_get_modified (device), >, 1295354162);
+
 	/* check device model */
 	g_assert_cmpstr (cd_device_get_model (device), ==, "3000");
 

@@ -59,6 +59,7 @@ struct _CdDevicePrivate
 	gchar			*serial;
 	gchar			*vendor;
 	guint64			 created;
+	guint64			 modified;
 	GPtrArray		*profiles;
 	CdDeviceKind		 kind;
 	CdColorspace		 colorspace;
@@ -67,6 +68,7 @@ struct _CdDevicePrivate
 enum {
 	PROP_0,
 	PROP_CREATED,
+	PROP_MODIFIED,
 	PROP_ID,
 	PROP_MODEL,
 	PROP_VENDOR,
@@ -173,7 +175,7 @@ cd_device_get_serial (CdDevice *device)
  * cd_device_get_created:
  * @device: a #CdDevice instance.
  *
- * Gets the device ID.
+ * Gets the device creation date.
  *
  * Return value: A value in seconds, or 0 for invalid
  *
@@ -184,6 +186,23 @@ cd_device_get_created (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), 0);
 	return device->priv->created;
+}
+
+/**
+ * cd_device_get_modified:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device modified date.
+ *
+ * Return value: A value in seconds, or 0 for invalid
+ *
+ * Since: 0.1.1
+ **/
+guint64
+cd_device_get_modified (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), 0);
+	return device->priv->modified;
 }
 
 /**
@@ -345,6 +364,10 @@ cd_device_dbus_properties_changed (GDBusProxy  *proxy,
 								   property_value,
 								   NULL,
 								   NULL);
+		} else if (g_strcmp0 (property_name, "Created") == 0) {
+			device->priv->created = g_variant_get_uint64 (property_value);
+		} else if (g_strcmp0 (property_name, "Modified") == 0) {
+			device->priv->modified = g_variant_get_uint64 (property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
@@ -395,6 +418,7 @@ cd_device_set_object_path_sync (CdDevice *device,
 	gboolean ret = TRUE;
 	GError *error_local = NULL;
 	GVariant *created = NULL;
+	GVariant *modified = NULL;
 	GVariant *id = NULL;
 	GVariant *kind = NULL;
 	GVariant *model = NULL;
@@ -475,6 +499,12 @@ cd_device_set_object_path_sync (CdDevice *device,
 	if (created != NULL)
 		device->priv->created = g_variant_get_uint64 (created);
 
+	/* get modified */
+	modified = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						     "Modified");
+	if (modified != NULL)
+		device->priv->modified = g_variant_get_uint64 (modified);
+
 	/* get profiles */
 	profiles = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						     "Profiles");
@@ -513,6 +543,8 @@ out:
 		g_variant_unref (colorspace);
 	if (created != NULL)
 		g_variant_unref (created);
+	if (modified != NULL)
+		g_variant_unref (modified);
 	if (kind != NULL)
 		g_variant_unref (kind);
 	if (profiles != NULL)
@@ -1029,6 +1061,9 @@ cd_device_set_property (GObject *object, guint prop_id, const GValue *value, GPa
 	case PROP_CREATED:
 		device->priv->created = g_value_get_uint64 (value);
 		break;
+	case PROP_MODIFIED:
+		device->priv->modified = g_value_get_uint64 (value);
+		break;
 	case PROP_KIND:
 		device->priv->kind = g_value_get_uint (value);
 		break;
@@ -1049,6 +1084,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	switch (prop_id) {
 	case PROP_CREATED:
 		g_value_set_uint64 (value, device->priv->created);
+		break;
+	case PROP_MODIFIED:
+		g_value_set_uint64 (value, device->priv->modified);
 		break;
 	case PROP_ID:
 		g_value_set_string (value, device->priv->id);
@@ -1103,13 +1141,26 @@ cd_device_class_init (CdDeviceClass *klass)
 	/**
 	 * CdDevice:created:
 	 *
-	 * The last time the device was updated.
+	 * The time the device was created.
 	 *
 	 * Since: 0.1.0
 	 **/
 	g_object_class_install_property (object_class,
 					 PROP_CREATED,
 					 g_param_spec_uint64 ("created",
+							      NULL, NULL,
+							      0, G_MAXUINT64, 0,
+							      G_PARAM_READWRITE));
+	/**
+	 * CdDevice:modified:
+	 *
+	 * The last time the device was modified.
+	 *
+	 * Since: 0.1.1
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_MODIFIED,
+					 g_param_spec_uint64 ("modified",
 							      NULL, NULL,
 							      0, G_MAXUINT64, 0,
 							      G_PARAM_READWRITE));

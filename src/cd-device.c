@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -23,6 +23,7 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
+#include <sys/time.h>
 
 #include "cd-common.h"
 #include "cd-device.h"
@@ -32,7 +33,10 @@
 #include "cd-profile.h"
 #include "cd-inhibit.h"
 
-static void     cd_device_finalize	(GObject     *object);
+static void cd_device_finalize			 (GObject *object);
+static void cd_device_dbus_emit_property_changed (CdDevice *device,
+						  const gchar *property_name,
+						  GVariant *property_value);
 
 #define CD_DEVICE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_DEVICE, CdDevicePrivate))
 
@@ -59,7 +63,8 @@ struct _CdDevicePrivate
 	GPtrArray			*profiles;
 	guint				 registration_id;
 	guint				 watcher_id;
-	guint				 created;
+	guint64				 created;
+	guint64				 modified;
 };
 
 enum {
@@ -156,6 +161,21 @@ cd_device_set_id (CdDevice *device, const gchar *id)
 }
 
 /**
+ * cd_device_reset_modified:
+ **/
+static void
+cd_device_reset_modified (CdDevice *device)
+{
+	g_debug ("CdDevice: set device Modified");
+#if !GLIB_CHECK_VERSION (2, 25, 0)
+	device->priv->modified = g_get_real_time ();
+#endif
+	cd_device_dbus_emit_property_changed (device,
+					      "Modified",
+					      g_variant_new_uint64 (device->priv->modified));
+}
+
+/**
  * cd_device_get_profiles:
  **/
 GPtrArray *
@@ -175,6 +195,9 @@ cd_device_set_profiles (CdDevice *device, GPtrArray *profiles)
 	if (device->priv->profiles != NULL)
 		g_ptr_array_unref (device->priv->profiles);
 	device->priv->profiles = g_ptr_array_ref (profiles);
+
+	/* reset modification time */
+	cd_device_reset_modified (device);
 }
 
 /**
@@ -346,6 +369,9 @@ cd_device_remove_profile (CdDevice *device,
 	cd_device_dbus_emit_property_changed (device,
 					      "Profiles",
 					      cd_device_get_profiles_as_variant (device));
+
+	/* reset modification time */
+	cd_device_reset_modified (device);
 out:
 	return ret;
 }
@@ -399,6 +425,9 @@ cd_device_add_profile (CdDevice *device,
 	cd_device_dbus_emit_property_changed (device,
 					      "Profiles",
 					      cd_device_get_profiles_as_variant (device));
+
+	/* reset modification time */
+	cd_device_reset_modified (device);
 out:
 	if (profile != NULL)
 		g_object_unref (profile);
@@ -681,6 +710,10 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		cd_device_dbus_emit_property_changed (device,
 						      "Profiles",
 						      cd_device_get_profiles_as_variant (device));
+
+		/* reset modification time */
+		cd_device_reset_modified (device);
+
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}
@@ -797,6 +830,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 
 	if (g_strcmp0 (property_name, "Created") == 0) {
 		retval = g_variant_new_uint64 (priv->created);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Modified") == 0) {
+		retval = g_variant_new_uint64 (priv->modified);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Model") == 0) {
@@ -1006,6 +1043,14 @@ cd_device_init (CdDevice *device)
 	device->priv->profile_array = cd_profile_array_new ();
 #if !GLIB_CHECK_VERSION (2, 25, 0)
 	device->priv->created = g_get_real_time ();
+	device->priv->modified = g_get_real_time ();
+#else
+	{
+		struct timeval tm;
+		gettimeofday (&tm, NULL);
+		device->priv->created = tm.tv_sec;
+		device->priv->modified = tm.tv_sec;
+	}
 #endif
 	device->priv->mapping_db = cd_mapping_db_new ();
 	device->priv->device_db = cd_device_db_new ();

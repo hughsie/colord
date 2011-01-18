@@ -139,8 +139,8 @@ out:
  **/
 gboolean  
 cd_device_db_add (CdDeviceDb *ddb,
-		   const gchar *device_id,
-		   GError  **error)
+		  const gchar *device_id,
+		  GError  **error)
 {
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;

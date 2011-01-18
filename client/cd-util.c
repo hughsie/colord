@@ -62,6 +62,8 @@ cd_util_show_device (CdDevice *device)
 		 cd_device_get_object_path (device));
 	g_print ("Created:\t%" G_GUINT64_FORMAT "\n",
 		 cd_device_get_created (device));
+	g_print ("Modified:\t%" G_GUINT64_FORMAT "\n",
+		 cd_device_get_modified (device));
 	g_print ("Kind:\t\t%s\n",
 		 cd_device_kind_to_string (cd_device_get_kind (device)));
 	g_print ("Model:\t\t%s\n",

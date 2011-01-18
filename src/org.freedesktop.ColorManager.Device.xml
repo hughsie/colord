@@ -23,6 +23,19 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Modified' type='t' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The date the device was last modified, which in this
+            instance means having a profile added or removed, or a
+            different profile set as default.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Model' type='s' access='read'>
       <doc:doc>
         <doc:description>
