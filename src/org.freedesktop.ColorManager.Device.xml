@@ -249,5 +249,44 @@
       </arg>
     </method>
 
+    <!--***********************************************************-->
+    <method name='ProfilingInhibit'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Adds an inhibit on all profiles for this device. This means
+            that any calls to <doc:tt>GetProfileForQualifier</doc:tt>
+            will always match no profiles.
+          </doc:para>
+          <doc:para>
+            This method will be used when creating profiles for devices,
+            where the session color manager wants to be very sure that
+            no profiles are being applied wen displaying color samples
+            or printing color swatches.
+          </doc:para>
+          <doc:para>
+            If the calling program exits without calling
+            <doc:tt>ProfilingUninhibit</doc:tt> then the inhibit is
+            automatically removed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </method>
+
+    <!--***********************************************************-->
+    <method name='ProfilingUninhibit'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Removes an inhibit on the device.
+            This method should be used when profiling has finished and
+            normal device matching behaviour should resume.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </method>
+
   </interface>
 </node>

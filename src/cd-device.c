@@ -30,6 +30,7 @@
 #include "cd-device-db.h"
 #include "cd-profile-array.h"
 #include "cd-profile.h"
+#include "cd-inhibit.h"
 
 static void     cd_device_finalize	(GObject     *object);
 
@@ -46,6 +47,7 @@ struct _CdDevicePrivate
 	CdProfileArray			*profile_array;
 	CdMappingDb			*mapping_db;
 	CdDeviceDb			*device_db;
+	CdInhibit			*inhibit;
 	gchar				*id;
 	gchar				*model;
 	gchar				*serial;
@@ -595,6 +597,19 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(s)", &regex);
 		g_debug ("CdDevice %s:GetProfileForQualifier(%s)",
 			 sender, regex);
+
+		/* are we profiling? */
+		ret = cd_inhibit_valid (priv->inhibit);
+		if (!ret) {
+			g_debug ("CdDevice: returning no results for profiling");
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "profiling, so ignoring '%s'",
+							       regex);
+			goto out;
+		}
+
 		profile = cd_device_find_by_qualifier (regex,
 						       priv->profiles);
 		if (profile == NULL) {
@@ -691,6 +706,51 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 						       property_value,
 						       (priv->object_scope == CD_OBJECT_SCOPE_DISK),
 						       &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
+		}
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
+	/* return '' */
+	if (g_strcmp0 (method_name, "ProfilingInhibit") == 0) {
+
+		/* require auth */
+		ret = cd_main_sender_authenticated (invocation,
+						    sender,
+						    "org.freedesktop.color-manager.device-inhibit");
+		if (!ret)
+			goto out;
+
+		/* inhbit all profiles */
+		g_debug ("CdDevice %s:ProfilingInhibit()",
+			 sender);
+		ret = cd_inhibit_add (priv->inhibit,
+				      sender,
+				      &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
+		}
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
+	/* return '' */
+	if (g_strcmp0 (method_name, "ProfilingUninhibit") == 0) {
+
+		/* perhaps uninhibit all profiles */
+		g_debug ("CdDevice %s:ProfilingUninhibit()",
+			 sender);
+		ret = cd_inhibit_remove (priv->inhibit,
+					 sender,
+					 &error);
 		if (!ret) {
 			g_dbus_method_invocation_return_gerror (invocation,
 								error);
@@ -949,6 +1009,7 @@ cd_device_init (CdDevice *device)
 #endif
 	device->priv->mapping_db = cd_mapping_db_new ();
 	device->priv->device_db = cd_device_db_new ();
+	device->priv->inhibit = cd_inhibit_new ();
 }
 
 /**
@@ -981,6 +1042,7 @@ cd_device_finalize (GObject *object)
 	g_object_unref (priv->profile_array);
 	g_object_unref (priv->mapping_db);
 	g_object_unref (priv->device_db);
+	g_object_unref (priv->inhibit);
 
 	G_OBJECT_CLASS (cd_device_parent_class)->finalize (object);
 }

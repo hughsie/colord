@@ -39,6 +39,8 @@ colord_SOURCES =					\
 	cd-sane-client.h				\
 	cd-profile.c					\
 	cd-profile.h					\
+	cd-inhibit.c					\
+	cd-inhibit.h					\
 	cd-profile-store.c				\
 	cd-profile-store.h				\
 	cd-mapping-db.c					\

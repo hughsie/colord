@@ -289,6 +289,37 @@ colord_client_func (void)
 			 profile_path);
 	g_object_unref (profile_tmp);
 
+	/* uninhibit device (should fail) */
+	ret = cd_device_profiling_uninhibit_sync (device,
+						  NULL,
+						  &error);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert (!ret);
+	g_clear_error (&error);
+
+	/* inhibit device */
+	ret = cd_device_profiling_inhibit_sync (device,
+						NULL,
+						&error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check matches nothing */
+	profile_tmp = cd_device_get_profile_for_qualifier_sync (device,
+								"Epson.RGB.*",
+								NULL,
+								&error);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert (profile_tmp == NULL);
+	g_clear_error (&error);
+
+	/* uninhibit device */
+	ret = cd_device_profiling_uninhibit_sync (device,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	/* delete profile */
 	ret = cd_client_delete_profile_sync (client,
 					     cd_profile_get_id (profile),
