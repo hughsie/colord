@@ -57,10 +57,10 @@ struct _CdClientPrivate
 };
 
 enum {
-	CD_CLIENT_CHANGED,
-	CD_CLIENT_DEVICE_ADDED,
-	CD_CLIENT_DEVICE_REMOVED,
-	CD_CLIENT_LAST_SIGNAL
+	SIGNAL_CHANGED,
+	SIGNAL_DEVICE_ADDED,
+	SIGNAL_DEVICE_REMOVED,
+	SIGNAL_LAST
 };
 
 enum {
@@ -69,7 +69,7 @@ enum {
 	PROP_LAST
 };
 
-static guint signals [CD_CLIENT_LAST_SIGNAL] = { 0 };
+static guint signals [SIGNAL_LAST] = { 0 };
 static gpointer cd_client_object = NULL;
 
 G_DEFINE_TYPE (CdClient, cd_client, G_TYPE_OBJECT)
@@ -757,13 +757,29 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			  GVariant   *parameters,
 			  CdClient   *client)
 {
+	CdDevice *device = NULL;
+	gboolean ret;
 	gchar *object_path_tmp = NULL;
+	GError *error = NULL;
 
 	if (g_strcmp0 (signal_name, "Changed") == 0) {
 		g_warning ("changed");
 	} else if (g_strcmp0 (signal_name, "DeviceAdded") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
-		//EMIT
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      object_path_tmp,
+						      NULL,
+						      &error);
+		if (!ret) {
+			g_warning ("failed to get cached device %s: %s",
+				   object_path_tmp, error->message);
+			g_error_free (error);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s'", signal_name);
+		g_signal_emit (client, signals[SIGNAL_DEVICE_ADDED], 0,
+			       device);
 	} else if (g_strcmp0 (signal_name, "DeviceRemoved") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
 		//EMIT
@@ -776,7 +792,10 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
 	}
+out:
 	g_free (object_path_tmp);
+	if (device != NULL)
+		g_object_unref (device);
 }
 
 /**
@@ -917,7 +936,7 @@ cd_client_class_init (CdClientClass *klass)
 	 *
 	 * Since: 0.1.0
 	 **/
-	signals [CD_CLIENT_DEVICE_ADDED] =
+	signals [SIGNAL_DEVICE_ADDED] =
 		g_signal_new ("device-added",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (CdClientClass, device_added),
@@ -933,7 +952,7 @@ cd_client_class_init (CdClientClass *klass)
 	 *
 	 * Since: 0.1.0
 	 **/
-	signals [CD_CLIENT_DEVICE_REMOVED] =
+	signals [SIGNAL_DEVICE_REMOVED] =
 		g_signal_new ("device-removed",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (CdClientClass, device_removed),
@@ -948,7 +967,7 @@ cd_client_class_init (CdClientClass *klass)
 	 *
 	 * Since: 0.1.0
 	 **/
-	signals [CD_CLIENT_CHANGED] =
+	signals [SIGNAL_CHANGED] =
 		g_signal_new ("changed",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (CdClientClass, changed),
