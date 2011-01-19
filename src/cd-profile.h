@@ -49,6 +49,7 @@ struct _CdProfileClass
 {
 	GObjectClass		 parent_class;
 	void			(* invalidate)		(CdProfile	*profile);
+	void			(* commit)		(CdProfile	*profile);
 };
 
 GType		 cd_profile_get_type			(void);
@@ -62,6 +63,7 @@ CdObjectScope	 cd_profile_get_scope			(CdProfile	*profile);
 void		 cd_profile_set_scope			(CdProfile	*profile,
 							 CdObjectScope	 object_scope);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
+gboolean	 cd_profile_is_committed		(CdProfile	*profile);
 gboolean	 cd_profile_set_filename		(CdProfile	*profile,
 							 const gchar	*filename,
 							 GError		**error);

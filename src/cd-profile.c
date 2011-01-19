@@ -50,10 +50,12 @@ struct _CdProfilePrivate
 	guint				 registration_id;
 	guint				 watcher_id;
 	CdProfileKind			 kind;
+	gboolean			 is_committed;
 };
 
 enum {
 	SIGNAL_INVALIDATE,
+	SIGNAL_COMMIT,
 	SIGNAL_LAST
 };
 
@@ -78,6 +80,16 @@ cd_profile_get_scope (CdProfile *profile)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
 	return profile->priv->object_scope;
+}
+
+/**
+ * cd_profile_is_committed:
+ **/
+gboolean
+cd_profile_is_committed (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	return profile->priv->is_committed;
 }
 
 /**
@@ -276,6 +288,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	gchar *property_value = NULL;
 	GError *error = NULL;
 	CdProfile *profile = CD_PROFILE (user_data);
+	CdProfilePrivate *priv = profile->priv;
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "SetProperty") == 0) {
@@ -354,6 +367,24 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
+	/* return '' */
+	if (g_strcmp0 (method_name, "Commit") == 0) {
+		g_debug ("CdProfile %s:Commit()", sender);
+		if (priv->is_committed) {
+			g_debug ("CdProfile: already committed");
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "already committed '%s'",
+							       priv->id);
+			goto out;
+		}
+		g_debug ("CdProfile: emit commit");
+		g_signal_emit (profile, signals[SIGNAL_COMMIT], 0);
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		priv->is_committed = TRUE;
+		goto out;
+	}
 
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
@@ -714,6 +745,16 @@ cd_profile_class_init (CdProfileClass *klass)
 		g_signal_new ("invalidate",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (CdProfileClass, invalidate),
+			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
+
+	/**
+	 * CdProfile::commit:
+	 **/
+	signals[SIGNAL_COMMIT] =
+		g_signal_new ("commit",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdProfileClass, commit),
 			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 

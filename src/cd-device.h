@@ -50,6 +50,7 @@ struct _CdDeviceClass
 {
 	GObjectClass		 parent_class;
 	void			(* invalidate)		(CdDevice	*device);
+	void			(* commit)		(CdDevice	*device);
 };
 
 GType		 cd_device_get_type			(void);
@@ -64,6 +65,7 @@ const gchar	*cd_device_get_kind			(CdDevice	*device);
 const gchar	*cd_device_get_id			(CdDevice	*device);
 void		 cd_device_set_id			(CdDevice	*device,
 							 const gchar	*id);
+gboolean	 cd_device_is_committed			(CdDevice	*device);
 GPtrArray	*cd_device_get_profiles			(CdDevice	*device);
 void		 cd_device_set_profiles			(CdDevice	*device,
 							 GPtrArray	*profiles);

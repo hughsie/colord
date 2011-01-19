@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -95,6 +95,9 @@ gboolean	 cd_profile_install_system_wide_sync	(CdProfile	*profile,
 							 GError		**error);
 gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
 							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_profile_commit_sync			(CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GError		**error);
 const gchar	*cd_profile_get_id			(CdProfile	*profile);
