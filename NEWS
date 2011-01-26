@@ -1,3 +1,42 @@
+Version 0.1.1
+~~~~~~~~~~~~~
+Released: 2011-01-26
+
+Notes:
+ - A small break in the DBus API this release: Commit() has been added.
+ - Many new properties are available on the interfaces.
+ - SANE and v4linux UDEV devices are now added as colord devices.
+ - The persistent storage code has been written so device and profiles
+   get auto-assigned when they appear.
+ - Be sure to rebuild the 'icc' branches of CUPS and gnome-color-manager
+   if you're trying out the new functionality.
+
+New Features:
+ - Add a commit method to the device and profile objects (Richard Hughes)
+ - Add a database for storing the device to profile mappings (Richard Hughes)
+ - Add a /etc/colord.conf file for future usage (Richard Hughes)
+ - Add a GetProfilesByKind() DBus method (Richard Hughes)
+ - Add a method to set a profile system-wide for all users (Richard Hughes)
+ - Add a modification time to the remote Device object (Richard Hughes)
+ - Add and remove UDEV devices as colord devices (Richard Hughes)
+ - Add a simple architecture plan of colord (Richard Hughes)
+ - Add cd_device_get_default_profile() client side method (Richard Hughes)
+ - Add devices and profiles prefixes to the DBus paths (Richard Hughes)
+ - Add methods to the daemon to allow device profiling (Richard Hughes)
+ - Add SANE devices as color managed devices (Richard Hughes)
+ - Add three more device properties: Serial, Vendor and Colorspace (Richard Hughes)
+ - Calculate the checksum of the parsed ICC file (Richard Hughes)
+ - Save 'disk' scope devices to a system-wide database (Richard Hughes)
+ - Track per-system profile stores (Richard Hughes)
+
+Bugfixes:
+ - Actually emit the CdClient::DeviceAdded signal (Richard Hughes)
+ - Actually emit the CdClient::DeviceRemoved signal (Richard Hughes)
+ - Don't print a blank line in colormgr if there is no qualifier (Richard Hughes)
+ - Make DeleteDevice take an ID, not an object (Richard Hughes)
+ - Make PolicyKit support optional to fix the build on Windows (Richard Hughes)
+ - Profiles do not have a created property, so don't try to display one (Richard Hughes)
+
 Version 0.1.0
 ~~~~~~~~~~~~~
 Released: 2011-01-13
