@@ -50,6 +50,7 @@ struct _CdProfilePrivate
 	guint				 registration_id;
 	guint				 watcher_id;
 	CdProfileKind			 kind;
+	CdColorspace			 colorspace;
 	gboolean			 is_committed;
 };
 
@@ -323,6 +324,9 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			cd_profile_dbus_emit_property_changed (profile,
 							       "Kind",
 							       g_variant_new_uint32 (profile->priv->kind));
+			cd_profile_dbus_emit_property_changed (profile,
+							       "Colorspace",
+							       g_variant_new_uint32 (profile->priv->colorspace));
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}
@@ -438,6 +442,10 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = g_variant_new_uint32 (profile->priv->kind);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, "Colorspace") == 0) {
+		retval = g_variant_new_uint32 (profile->priv->colorspace);
+		goto out;
+	}
 
 	g_critical ("failed to set property %s", property_name);
 out:
@@ -500,6 +508,7 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 	gsize len;
 	GError *error_local = NULL;
 	cmsHPROFILE lcms_profile = NULL;
+	cmsColorSpaceSignature color_space;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
@@ -568,6 +577,43 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 		profile->priv->kind = CD_PROFILE_KIND_UNKNOWN;
 	}
 
+	/* get colorspace */
+	color_space = cmsGetColorSpace (lcms_profile);
+	switch (color_space) {
+	case cmsSigXYZData:
+		profile->priv->colorspace = CD_COLORSPACE_XYZ;
+		break;
+	case cmsSigLabData:
+		profile->priv->colorspace = CD_COLORSPACE_LAB;
+		break;
+	case cmsSigLuvData:
+		profile->priv->colorspace = CD_COLORSPACE_LUV;
+		break;
+	case cmsSigYCbCrData:
+		profile->priv->colorspace = CD_COLORSPACE_YCBCR;
+		break;
+	case cmsSigYxyData:
+		profile->priv->colorspace = CD_COLORSPACE_YXY;
+		break;
+	case cmsSigRgbData:
+		profile->priv->colorspace = CD_COLORSPACE_RGB;
+		break;
+	case cmsSigGrayData:
+		profile->priv->colorspace = CD_COLORSPACE_GRAY;
+		break;
+	case cmsSigHsvData:
+		profile->priv->colorspace = CD_COLORSPACE_HSV;
+		break;
+	case cmsSigCmykData:
+		profile->priv->colorspace = CD_COLORSPACE_CMYK;
+		break;
+	case cmsSigCmyData:
+		profile->priv->colorspace = CD_COLORSPACE_CMY;
+		break;
+	default:
+		profile->priv->colorspace = CD_COLORSPACE_UNKNOWN;
+	}
+
 	/* generate and set checksum */
 	profile->priv->checksum =
 		g_compute_checksum_for_data (G_CHECKSUM_MD5,
@@ -623,6 +669,16 @@ cd_profile_get_kind (CdProfile *profile)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
 	return profile->priv->kind;
+}
+
+/**
+ * cd_profile_get_colorspace:
+ **/
+CdColorspace
+cd_profile_get_colorspace (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+	return profile->priv->colorspace;
 }
 
 /**

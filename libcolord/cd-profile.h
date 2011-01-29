@@ -106,6 +106,7 @@ const gchar	*cd_profile_get_qualifier		(CdProfile	*profile);
 const gchar	*cd_profile_get_title			(CdProfile	*profile);
 const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);
+CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 
 G_END_DECLS
 

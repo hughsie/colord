@@ -58,6 +58,7 @@ struct _CdProfilePrivate
 	gchar			*title;
 	GDBusProxy		*proxy;
 	CdProfileKind		 kind;
+	CdColorspace		 colorspace;
 };
 
 enum {
@@ -67,6 +68,7 @@ enum {
 	PROP_QUALIFIER,
 	PROP_TITLE,
 	PROP_KIND,
+	PROP_COLORSPACE,
 	PROP_LAST
 };
 
@@ -181,6 +183,23 @@ cd_profile_get_kind (CdProfile *profile)
 }
 
 /**
+ * cd_profile_get_colorspace:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets the profile colorspace.
+ *
+ * Return value: A #CdColorspace, e.g. %CD_COLORSPACE_RGB
+ *
+ * Since: 0.1.2
+ **/
+CdColorspace
+cd_profile_get_colorspace (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+	return profile->priv->colorspace;
+}
+
+/**
  * cd_profile_dbus_properties_changed:
  **/
 static void
@@ -212,6 +231,8 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 			profile->priv->title = g_variant_dup_string (property_value, NULL);
 		} else if (g_strcmp0 (property_name, "Kind") == 0) {
 			profile->priv->kind = g_variant_get_uint32 (property_value);
+		} else if (g_strcmp0 (property_name, "Colorspace") == 0) {
+			profile->priv->colorspace = g_variant_get_uint32 (property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
@@ -267,6 +288,7 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	GVariant *qualifier = NULL;
 	GVariant *title = NULL;
 	GVariant *kind = NULL;
+	GVariant *colorspace = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 	g_return_val_if_fail (profile->priv->proxy == NULL, FALSE);
@@ -326,6 +348,12 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	if (kind != NULL)
 		profile->priv->kind = g_variant_get_uint32 (kind);
 
+	/* get colorspace */
+	colorspace = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+						       "Colorspace");
+	if (colorspace != NULL)
+		profile->priv->colorspace = g_variant_get_uint32 (colorspace);
+
 	/* get signals from DBus */
 	g_signal_connect (profile->priv->proxy,
 			  "g-signal",
@@ -346,6 +374,8 @@ out:
 		g_variant_unref (id);
 	if (kind != NULL)
 		g_variant_unref (kind);
+	if (colorspace != NULL)
+		g_variant_unref (colorspace);
 	if (filename != NULL)
 		g_variant_unref (filename);
 	if (qualifier != NULL)
@@ -610,6 +640,9 @@ cd_profile_set_property (GObject *object, guint prop_id, const GValue *value, GP
 	case PROP_KIND:
 		profile->priv->kind = g_value_get_uint (value);
 		break;
+	case PROP_COLORSPACE:
+		profile->priv->colorspace = g_value_get_uint (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -639,6 +672,9 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 		break;
 	case PROP_KIND:
 		g_value_set_uint (value, profile->priv->kind);
+		break;
+	case PROP_COLORSPACE:
+		g_value_set_uint (value, profile->priv->colorspace);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -734,6 +770,20 @@ cd_profile_class_init (CdProfileClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_KIND,
 					 g_param_spec_string ("kind",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE));
+
+	/**
+	 * CdProfile:colorspace:
+	 *
+	 * The profile colorspace.
+	 *
+	 * Since: 0.1.2
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_COLORSPACE,
+					 g_param_spec_string ("colorspace",
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE));

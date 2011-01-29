@@ -78,6 +78,7 @@ const gchar	*cd_profile_get_checksum		(CdProfile	*profile);
 const gchar	*cd_profile_get_title			(CdProfile	*profile);
 const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);
+CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 void		 cd_profile_watch_sender		(CdProfile	*profile,
 							 const gchar	*sender);
 

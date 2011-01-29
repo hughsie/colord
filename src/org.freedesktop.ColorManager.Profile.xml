@@ -61,6 +61,17 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Colorspace' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The profile colorspace string, e.g. <doc:tt>RGB</doc:tt>.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Filename' type='s' access='read'>
       <doc:doc>
         <doc:description>

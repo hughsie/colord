@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -34,14 +34,22 @@ cd_util_show_profile (CdProfile *profile)
 {
 	const gchar *tmp;
 	CdProfileKind kind;
+	CdColorspace colorspace;
 	g_print ("Object Path: %s\n",
 		 cd_profile_get_object_path (profile));
 	tmp = cd_profile_get_qualifier (profile);
 	if (tmp != NULL && tmp[0] != '\0')
 		g_print ("Qualifier:\t\t%s\n", tmp);
 	kind = cd_profile_get_kind (profile);
-	if (kind != CD_PROFILE_KIND_UNKNOWN)
-		g_print ("Kind:\t\t%s\n", cd_profile_kind_to_string (kind));
+	if (kind != CD_PROFILE_KIND_UNKNOWN) {
+		g_print ("Kind:\t\t%s\n",
+			 cd_profile_kind_to_string (kind));
+	}
+	colorspace = cd_profile_get_colorspace (profile);
+	if (colorspace != CD_COLORSPACE_UNKNOWN) {
+		g_print ("Colorspace:\t\t%s\n",
+			 cd_colorspace_to_string (colorspace));
+	}
 	g_print ("Filename:\t\t%s\n",
 		 cd_profile_get_filename (profile));
 	g_print ("Profile ID:\t%s\n",
