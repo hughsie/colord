@@ -72,6 +72,17 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='HasVcgt' type='b' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            If the profile has a VCGT entry.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Filename' type='s' access='read'>
       <doc:doc>
         <doc:description>

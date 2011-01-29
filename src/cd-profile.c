@@ -51,6 +51,7 @@ struct _CdProfilePrivate
 	guint				 watcher_id;
 	CdProfileKind			 kind;
 	CdColorspace			 colorspace;
+	gboolean			 has_vcgt;
 	gboolean			 is_committed;
 };
 
@@ -327,6 +328,9 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			cd_profile_dbus_emit_property_changed (profile,
 							       "Colorspace",
 							       g_variant_new_uint32 (profile->priv->colorspace));
+			cd_profile_dbus_emit_property_changed (profile,
+							       "HasVcgt",
+							       g_variant_new_boolean (profile->priv->has_vcgt));
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}
@@ -444,6 +448,10 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, "Colorspace") == 0) {
 		retval = g_variant_new_uint32 (profile->priv->colorspace);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "HasVcgt") == 0) {
+		retval = g_variant_new_boolean (profile->priv->has_vcgt);
 		goto out;
 	}
 
@@ -614,6 +622,9 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 		profile->priv->colorspace = CD_COLORSPACE_UNKNOWN;
 	}
 
+	/* do we have vcgt */
+	profile->priv->has_vcgt = cmsIsTag (lcms_profile, cmsSigVcgtTag);
+
 	/* generate and set checksum */
 	profile->priv->checksum =
 		g_compute_checksum_for_data (G_CHECKSUM_MD5,
@@ -679,6 +690,16 @@ cd_profile_get_colorspace (CdProfile *profile)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
 	return profile->priv->colorspace;
+}
+
+/**
+ * cd_profile_get_has_vcgt:
+ **/
+gboolean
+cd_profile_get_has_vcgt (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	return profile->priv->has_vcgt;
 }
 
 /**

@@ -50,6 +50,8 @@ cd_util_show_profile (CdProfile *profile)
 		g_print ("Colorspace:\t\t%s\n",
 			 cd_colorspace_to_string (colorspace));
 	}
+	g_print ("Has VCGT:\t\t%s\n",
+		 cd_profile_get_has_vcgt (profile) ? "Yes" : "No");
 	g_print ("Filename:\t\t%s\n",
 		 cd_profile_get_filename (profile));
 	g_print ("Profile ID:\t%s\n",
