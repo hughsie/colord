@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -55,12 +55,15 @@ struct _CdClientPrivate
 	GDBusProxy		*proxy;
 	gchar			*daemon_version;
 	GPtrArray		*device_cache;
+	GPtrArray		*profile_cache;
 };
 
 enum {
 	SIGNAL_CHANGED,
 	SIGNAL_DEVICE_ADDED,
 	SIGNAL_DEVICE_REMOVED,
+	SIGNAL_PROFILE_ADDED,
+	SIGNAL_PROFILE_REMOVED,
 	SIGNAL_LAST
 };
 
@@ -114,7 +117,6 @@ cd_client_get_cache_device (CdClient *client,
 	return device;
 }
 
-
 /**
  * cd_client_get_cache_device_create:
  **/
@@ -152,6 +154,68 @@ cd_client_get_cache_device_create (CdClient *client,
 	}
 out:
 	return device;
+}
+
+/**
+ * cd_client_get_cache_profile:
+ **/
+static CdProfile *
+cd_client_get_cache_profile (CdClient *client,
+			    const gchar *object_path)
+{
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp;
+	guint i;
+
+	/* try and find existing */
+	for (i=0; i<client->priv->profile_cache->len; i++) {
+		profile_tmp = g_ptr_array_index (client->priv->profile_cache, i);
+		if (g_strcmp0 (cd_profile_get_object_path (profile_tmp),
+			       object_path) == 0) {
+			profile = g_object_ref (profile_tmp);
+			break;
+		}
+	}
+	return profile;
+}
+
+/**
+ * cd_client_get_cache_profile_create:
+ **/
+static CdProfile *
+cd_client_get_cache_profile_create (CdClient *client,
+				   const gchar *object_path,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	CdProfile *profile = NULL;
+	gboolean ret;
+	GError *error_local = NULL;
+
+	/* try and find existing, else create */
+	profile = cd_client_get_cache_profile (client, object_path);
+	if (profile == NULL) {
+		profile = cd_profile_new ();
+		ret = cd_profile_set_object_path_sync (profile,
+						      object_path,
+						      cancellable,
+						      &error_local);
+		if (!ret) {
+			g_set_error (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_FAILED,
+				     "Failed to set profile object path: %s",
+				     error_local->message);
+			g_error_free (error_local);
+			g_object_unref (profile);
+			profile = NULL;
+			goto out;
+		}
+		g_ptr_array_add (client->priv->profile_cache,
+				 g_object_ref (profile));
+	}
+out:
+	return profile;
 }
 
 /**
@@ -818,6 +882,7 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			  CdClient   *client)
 {
 	CdDevice *device = NULL;
+	CdProfile *profile = NULL;
 	gchar *object_path_tmp = NULL;
 	GError *error = NULL;
 
@@ -857,10 +922,36 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			       device);
 	} else if (g_strcmp0 (signal_name, "ProfileAdded") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
-		//TODO: EMIT
+
+		/* try to get from device cache, else create */
+		profile = cd_client_get_cache_profile_create (client,
+							      object_path_tmp,
+							      NULL,
+							      &error);
+		if (profile == NULL) {
+			g_warning ("failed to get cached device %s: %s",
+				   object_path_tmp, error->message);
+			g_error_free (error);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s'", signal_name);
+		g_signal_emit (client, signals[SIGNAL_PROFILE_ADDED], 0,
+			       profile);
 	} else if (g_strcmp0 (signal_name, "ProfileRemoved") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
-		//TODO: EMIT
+
+		/* if the profile isn't in the cache, we don't care
+		 * as the process isn't aware of it's existance */
+		profile = cd_client_get_cache_profile (client,
+						       object_path_tmp);
+		if (profile == NULL) {
+			g_debug ("failed to get cached profile %s",
+				 object_path_tmp);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s'", signal_name);
+		g_signal_emit (client, signals[SIGNAL_PROFILE_REMOVED], 0,
+			       profile);
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
 	}
@@ -868,6 +959,8 @@ out:
 	g_free (object_path_tmp);
 	if (device != NULL)
 		g_object_unref (device);
+	if (profile != NULL)
+		g_object_unref (profile);
 }
 
 /**
@@ -1030,6 +1123,37 @@ cd_client_class_init (CdClientClass *klass)
 			      G_STRUCT_OFFSET (CdClientClass, device_removed),
 			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1, CD_TYPE_DEVICE);
+	/**
+	 * CdClient::profile-added:
+	 * @client: the #CdClient instance that emitted the signal
+	 * @profile: the #CdProfile that was added.
+	 *
+	 * The ::profile-added signal is emitted when a profile is added.
+	 *
+	 * Since: 0.1.2
+	 **/
+	signals [SIGNAL_DEVICE_ADDED] =
+		g_signal_new ("profile-added",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdClientClass, profile_added),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_PROFILE);
+
+	/**
+	 * CdClient::profile-removed:
+	 * @client: the #CdClient instance that emitted the signal
+	 * @profile: the #CdProfile that was removed.
+	 *
+	 * The ::profile-added signal is emitted when a device is removed.
+	 *
+	 * Since: 0.1.2
+	 **/
+	signals [SIGNAL_PROFILE_REMOVED] =
+		g_signal_new ("profile-removed",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdClientClass, profile_removed),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_PROFILE);
 
 	/**
 	 * CdClient::changed:
@@ -1057,6 +1181,7 @@ cd_client_init (CdClient *client)
 {
 	client->priv = CD_CLIENT_GET_PRIVATE (client);
 	client->priv->device_cache = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	client->priv->profile_cache = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 }
 
 /*
@@ -1071,6 +1196,7 @@ cd_client_finalize (GObject *object)
 
 	g_free (client->priv->daemon_version);
 	g_ptr_array_unref (client->priv->device_cache);
+	g_ptr_array_unref (client->priv->profile_cache);
 	if (client->priv->proxy != NULL)
 		g_object_unref (client->priv->proxy);
 

@@ -56,8 +56,12 @@ typedef struct
 	GObjectClass		 parent_class;
 	void			(*device_added)		(CdClient		*client,
 							 CdDevice		*device);
-	void			(*device_removed)      	(CdClient		*client,
+	void			(*device_removed)	(CdClient		*client,
 							 CdDevice		*device);
+	void			(*profile_added)	(CdClient		*client,
+							 CdProfile		*profile);
+	void			(*profile_removed)	(CdClient		*client,
+							 CdProfile		*profile);
 	void			(*changed)              (CdClient		*client);
 	/*< private >*/
 	/* Padding for future expansion */
