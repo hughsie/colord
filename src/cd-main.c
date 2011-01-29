@@ -904,11 +904,15 @@ cd_main_profile_store_added_cb (CdProfileStore *_profile_store,
 				CdProfile *profile,
 				gpointer user_data)
 {
+	const gchar *id;
 	gboolean ret;
 	GError *error = NULL;
 
 	/* just add it to the bus with the title as the ID */
-	cd_profile_set_id (profile, cd_profile_get_title (profile));
+	id = cd_profile_get_checksum (profile);
+	if (id == NULL)
+		id = cd_profile_get_title (profile);
+	cd_profile_set_id (profile, id);
 	ret = cd_main_add_profile (profile, &error);
 	if (!ret) {
 		g_warning ("CdMain: failed to add profile: %s",
