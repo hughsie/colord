@@ -74,6 +74,7 @@ colord_client_func (void)
 	CdClient *client;
 	CdDevice *device;
 	CdProfile *profile;
+	CdProfile *profile2;
 	CdProfile *profile_tmp;
 	gboolean ret;
 	gchar *device_id;
@@ -81,6 +82,8 @@ colord_client_func (void)
 	gchar *filename;
 	gchar *profile_id;
 	gchar *profile_path;
+	gchar *profile2_id;
+	gchar *profile2_path;
 	GError *error = NULL;
 	GPtrArray *array;
 	GPtrArray *devices;
@@ -90,8 +93,10 @@ colord_client_func (void)
 	key = g_random_int_range (0x00, 0xffff);
 	g_debug ("using random key %04x", key);
 	profile_id = g_strdup_printf ("profile-self-test-%04x", key);
+	profile2_id = g_strdup_printf ("profile-self-test-%04x-extra", key);
 	device_id = g_strdup_printf ("device-self-test-%04x", key);
 	profile_path = g_strdup_printf ("/org/freedesktop/ColorManager/profiles/profile_self_test_%04x", key);
+	profile2_path = g_strdup_printf ("/org/freedesktop/ColorManager/profiles/profile_self_test_%04x_extra", key);
 	device_path = g_strdup_printf ("/org/freedesktop/ColorManager/devices/device_self_test_%04x", key);
 
 	/* create */
@@ -204,11 +209,23 @@ colord_client_func (void)
 			 profile_path);
 	g_assert_cmpstr (cd_profile_get_id (profile), ==, profile_id);
 
+	/* create extra profile */
+	profile2 = cd_client_create_profile_sync (client,
+						  profile2_id,
+						  CD_OBJECT_SCOPE_TEMPORARY,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert (profile2 != NULL);
+	g_assert_cmpstr (cd_profile_get_object_path (profile2), ==,
+			 profile2_path);
+	g_assert_cmpstr (cd_profile_get_id (profile2), ==, profile2_id);
+
 	/* get new number of profiles */
 	array = cd_client_get_profiles_sync (client, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (array != NULL);
-	g_assert_cmpint (profiles->len + 1, ==, array->len);
+	g_assert_cmpint (profiles->len + 2, ==, array->len);
 	g_ptr_array_unref (array);
 
 	/* set profile filename */
@@ -264,13 +281,18 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	/* assign extra profile to device */
+	ret = cd_device_add_profile_sync (device, profile2, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
 
 	/* check profile assigned */
 	array = cd_device_get_profiles (device);
 	g_assert (array != NULL);
-	g_assert_cmpint (array->len, ==, 1);
+	g_assert_cmpint (array->len, ==, 2);
 	profile_tmp = g_ptr_array_index (array, 0);
 	g_assert_cmpstr (cd_profile_get_qualifier (profile_tmp), ==, "Epson.RGB.300dpi");
 	g_ptr_array_unref (array);
@@ -279,6 +301,33 @@ colord_client_func (void)
 	ret = cd_device_make_profile_default_sync (device, profile, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+
+	/* wait for daemon */
+	_g_test_loop_run_with_timeout (50);
+
+	/* ensure profile is default */
+	array = cd_device_get_profiles (device);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 2);
+	profile_tmp = g_ptr_array_index (array, 0);
+	g_assert_cmpstr (cd_profile_get_id (profile_tmp), ==, profile_id);
+	g_ptr_array_unref (array);
+
+	/* make extra profile default */
+	ret = cd_device_make_profile_default_sync (device, profile2, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* wait for daemon */
+	_g_test_loop_run_with_timeout (50);
+
+	/* ensure profile is default */
+	array = cd_device_get_profiles (device);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 2);
+	profile_tmp = g_ptr_array_index (array, 0);
+	g_assert_cmpstr (cd_profile_get_id (profile_tmp), ==, profile2_id);
+	g_ptr_array_unref (array);
 
 	/* check matches exact qualifier */
 	profile_tmp = cd_device_get_profile_for_qualifier_sync (device,
@@ -336,6 +385,14 @@ colord_client_func (void)
 	/* delete profile */
 	ret = cd_client_delete_profile_sync (client,
 					     cd_profile_get_id (profile),
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* delete extra profile */
+	ret = cd_client_delete_profile_sync (client,
+					     cd_profile_get_id (profile2),
 					     NULL,
 					     &error);
 	g_assert_no_error (error);
@@ -431,14 +488,17 @@ colord_client_func (void)
 	g_ptr_array_unref (array);
 
 	g_free (profile_id);
+	g_free (profile2_id);
 	g_free (device_id);
 	g_free (profile_path);
+	g_free (profile2_path);
 	g_free (device_path);
 	g_free (filename);
 	g_ptr_array_unref (devices);
 	g_ptr_array_unref (profiles);
 	g_object_unref (device);
 	g_object_unref (profile);
+	g_object_unref (profile2);
 	g_object_unref (client);
 }
 
