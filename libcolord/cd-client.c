@@ -1132,7 +1132,7 @@ cd_client_class_init (CdClientClass *klass)
 	 *
 	 * Since: 0.1.2
 	 **/
-	signals [SIGNAL_DEVICE_ADDED] =
+	signals [SIGNAL_PROFILE_ADDED] =
 		g_signal_new ("profile-added",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (CdClientClass, profile_added),
