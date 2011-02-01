@@ -494,6 +494,35 @@ main (int argc, char *argv[])
 			goto out;
 		}
 
+	} else if (g_strcmp0 (argv[1], "device-get-default-profile") == 0) {
+
+		if (argc < 3) {
+			g_print ("Not enough arguments\n");
+			goto out;
+		}
+
+		device = cd_device_new ();
+		ret = cd_device_set_object_path_sync (device,
+						      argv[2],
+						      NULL,
+						      &error);
+		if (!ret) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to create device:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		profile = cd_device_get_default_profile (device);
+		if (profile == NULL) {
+			/* TRANSLATORS: no colord available */
+			g_print ("%s %s\n", _("Failed to get default profile:"),
+				 error->message);
+			g_error_free (error);
+			goto out;
+		}
+		cd_util_show_profile (profile);
+
 	} else if (g_strcmp0 (argv[1], "device-set-vendor") == 0) {
 
 		if (argc < 3) {
