@@ -62,6 +62,7 @@ enum {
 	SIGNAL_CHANGED,
 	SIGNAL_DEVICE_ADDED,
 	SIGNAL_DEVICE_REMOVED,
+	SIGNAL_DEVICE_CHANGED,
 	SIGNAL_PROFILE_ADDED,
 	SIGNAL_PROFILE_REMOVED,
 	SIGNAL_LAST
@@ -920,6 +921,20 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 		g_debug ("CdClient: emit '%s'", signal_name);
 		g_signal_emit (client, signals[SIGNAL_DEVICE_REMOVED], 0,
 			       device);
+	} else if (g_strcmp0 (signal_name, "DeviceChanged") == 0) {
+		g_variant_get (parameters, "(o)", &object_path_tmp);
+
+		/* is device in the cache? */
+		device = cd_client_get_cache_device (client,
+						     object_path_tmp);
+		if (device == NULL) {
+			g_debug ("failed to get cached device %s",
+				 object_path_tmp);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s'", signal_name);
+		g_signal_emit (client, signals[SIGNAL_DEVICE_CHANGED], 0,
+			       device);
 	} else if (g_strcmp0 (signal_name, "ProfileAdded") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
 
@@ -1121,6 +1136,21 @@ cd_client_class_init (CdClientClass *klass)
 		g_signal_new ("device-removed",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (CdClientClass, device_removed),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_DEVICE);
+	/**
+	 * CdClient::device-changed:
+	 * @client: the #CdClient instance that emitted the signal
+	 * @device: the #CdDevice that was changed.
+	 *
+	 * The ::device-changed signal is emitted when a device is changed.
+	 *
+	 * Since: 0.1.2
+	 **/
+	signals [SIGNAL_DEVICE_CHANGED] =
+		g_signal_new ("device-changed",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdClientClass, device_changed),
 			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1, CD_TYPE_DEVICE);
 	/**

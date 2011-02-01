@@ -58,6 +58,8 @@ typedef struct
 							 CdDevice		*device);
 	void			(*device_removed)	(CdClient		*client,
 							 CdDevice		*device);
+	void			(*device_changed)	(CdClient		*client,
+							 CdDevice		*device);
 	void			(*profile_added)	(CdClient		*client,
 							 CdProfile		*profile);
 	void			(*profile_removed)	(CdClient		*client,

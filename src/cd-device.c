@@ -262,6 +262,21 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 		g_warning ("CdDevice: failed to send signal %s", error_local->message);
 		g_error_free (error_local);
 	}
+
+	/* emit signal */
+	g_debug ("CdDevice: emit Changed");
+	ret = g_dbus_connection_emit_signal (device->priv->connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "DeviceChanged",
+					     g_variant_new ("(o)",
+							    cd_device_get_object_path (device)),
+					     &error_local);
+	if (!ret) {
+		g_warning ("CdDevice: failed to send signal %s", error_local->message);
+		g_error_free (error_local);
+	}
 }
 
 /**

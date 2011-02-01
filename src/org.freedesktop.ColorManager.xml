@@ -460,6 +460,26 @@
     </signal>
 
     <!--***********************************************************-->
+    <signal name='DeviceChanged'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            A device has changed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='o' name='object_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The device path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </signal>
+
+    <!--***********************************************************-->
     <signal name='ProfileAdded'>
       <doc:doc>
         <doc:description>
