@@ -64,6 +64,8 @@ typedef struct
 							 CdProfile		*profile);
 	void			(*profile_removed)	(CdClient		*client,
 							 CdProfile		*profile);
+	void			(*profile_changed)	(CdClient		*client,
+							 CdProfile		*profile);
 	void			(*changed)              (CdClient		*client);
 	/*< private >*/
 	/* Padding for future expansion */

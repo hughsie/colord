@@ -161,7 +161,6 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 				       const gchar *property_name,
 				       GVariant *property_value)
 {
-	gboolean ret;
 	GError *error_local = NULL;
 	GVariantBuilder builder;
 	GVariantBuilder invalidated_builder;
@@ -184,14 +183,45 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 				       &invalidated_builder),
 				       &error_local);
 	g_assert_no_error (error_local);
+}
+
+/**
+ * cd_profile_dbus_emit_profile_changed:
+ **/
+static void
+cd_profile_dbus_emit_profile_changed (CdProfile *profile)
+{
+	gboolean ret;
+	GError *error_local = NULL;
+
+	/* not yet connected */
+	if (profile->priv->connection == NULL)
+		return;
 
 	/* emit signal */
+	g_debug ("CdProfile: emit Changed on %s",
+		 cd_profile_get_object_path (profile));
 	ret = g_dbus_connection_emit_signal (profile->priv->connection,
 					     NULL,
 					     cd_profile_get_object_path (profile),
 					     COLORD_DBUS_INTERFACE_PROFILE,
 					     "Changed",
 					     NULL,
+					     &error_local);
+	if (!ret) {
+		g_warning ("CdProfile: failed to send signal %s", error_local->message);
+		g_error_free (error_local);
+	}
+
+	/* emit signal */
+	g_debug ("CdProfile: emit Changed");
+	ret = g_dbus_connection_emit_signal (profile->priv->connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "ProfileChanged",
+					     g_variant_new ("(o)",
+							    cd_profile_get_object_path (profile)),
 					     &error_local);
 	if (!ret) {
 		g_warning ("CdProfile: failed to send signal %s", error_local->message);
@@ -331,6 +361,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			cd_profile_dbus_emit_property_changed (profile,
 							       "HasVcgt",
 							       g_variant_new_boolean (profile->priv->has_vcgt));
+			cd_profile_dbus_emit_profile_changed (profile);
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}
@@ -339,6 +370,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			cd_profile_dbus_emit_property_changed (profile,
 							       property_name,
 							       g_variant_new_string (property_value));
+			cd_profile_dbus_emit_profile_changed (profile);
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
 		}

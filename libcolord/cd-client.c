@@ -65,6 +65,7 @@ enum {
 	SIGNAL_DEVICE_CHANGED,
 	SIGNAL_PROFILE_ADDED,
 	SIGNAL_PROFILE_REMOVED,
+	SIGNAL_PROFILE_CHANGED,
 	SIGNAL_LAST
 };
 
@@ -967,6 +968,20 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 		g_debug ("CdClient: emit '%s'", signal_name);
 		g_signal_emit (client, signals[SIGNAL_PROFILE_REMOVED], 0,
 			       profile);
+	} else if (g_strcmp0 (signal_name, "ProfileChanged") == 0) {
+		g_variant_get (parameters, "(o)", &object_path_tmp);
+
+		/* is device in the cache? */
+		profile = cd_client_get_cache_profile (client,
+						       object_path_tmp);
+		if (profile == NULL) {
+			g_debug ("failed to get cached profile %s",
+				 object_path_tmp);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s'", signal_name);
+		g_signal_emit (client, signals[SIGNAL_PROFILE_CHANGED], 0,
+			       profile);
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
 	}
@@ -1174,7 +1189,7 @@ cd_client_class_init (CdClientClass *klass)
 	 * @client: the #CdClient instance that emitted the signal
 	 * @profile: the #CdProfile that was removed.
 	 *
-	 * The ::profile-added signal is emitted when a device is removed.
+	 * The ::profile-added signal is emitted when a profile is removed.
 	 *
 	 * Since: 0.1.2
 	 **/
@@ -1182,6 +1197,21 @@ cd_client_class_init (CdClientClass *klass)
 		g_signal_new ("profile-removed",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (CdClientClass, profile_removed),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_PROFILE);
+	/**
+	 * CdClient::profile-changed:
+	 * @client: the #CdClient instance that emitted the signal
+	 * @profile: the #CdProfile that was removed.
+	 *
+	 * The ::profile-changed signal is emitted when a profile is changed.
+	 *
+	 * Since: 0.1.2
+	 **/
+	signals [SIGNAL_PROFILE_CHANGED] =
+		g_signal_new ("profile-changed",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdClientClass, profile_changed),
 			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1, CD_TYPE_PROFILE);
 
