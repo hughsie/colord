@@ -107,6 +107,10 @@ gboolean	 cd_device_set_colorspace_sync		(CdDevice	*device,
 							 CdColorspace	 colorspace,
 							 GCancellable	*cancellable,
 							 GError		**error);
+gboolean	 cd_device_set_mode_sync		(CdDevice	*device,
+							 CdDeviceMode	 mode,
+							 GCancellable	*cancellable,
+							 GError		**error);
 gboolean	 cd_device_add_profile_sync		(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
@@ -140,6 +144,7 @@ guint64		 cd_device_get_created			(CdDevice	*device);
 guint64		 cd_device_get_modified			(CdDevice	*device);
 CdDeviceKind	 cd_device_get_kind			(CdDevice	*device);
 CdColorspace	 cd_device_get_colorspace		(CdDevice	*device);
+CdDeviceMode	 cd_device_get_mode			(CdDevice	*device);
 GPtrArray	*cd_device_get_profiles			(CdDevice	*device);
 CdProfile	*cd_device_get_default_profile		(CdDevice	*device);
 const gchar	*cd_device_get_object_path		(CdDevice	*device);

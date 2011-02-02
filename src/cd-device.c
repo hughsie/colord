@@ -58,6 +58,7 @@ struct _CdDevicePrivate
 	gchar				*serial;
 	gchar				*vendor;
 	gchar				*colorspace;
+	gchar				*mode;
 	gchar				*kind;
 	gchar				*object_path;
 	GDBusConnection			*connection;
@@ -67,6 +68,7 @@ struct _CdDevicePrivate
 	guint64				 created;
 	guint64				 modified;
 	gboolean			 is_committed;
+	gboolean			 is_virtual;
 };
 
 enum {
@@ -113,6 +115,31 @@ cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
 {
 	g_return_if_fail (CD_IS_DEVICE (device));
 	device->priv->object_scope = object_scope;
+}
+
+
+/**
+ * cd_device_mode_to_string:
+ **/
+static const gchar *
+_cd_device_mode_to_string (CdDeviceMode device_mode)
+{
+	if (device_mode == CD_DEVICE_MODE_PHYSICAL)
+		return "physical";
+	if (device_mode == CD_DEVICE_MODE_VIRTUAL)
+		return "virtual";
+	return "unknown";
+}
+
+/**
+ * cd_device_set_mode:
+ **/
+void
+cd_device_set_mode (CdDevice *device, CdDeviceMode mode)
+{
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_free (device->priv->mode);
+	device->priv->mode = g_strdup (_cd_device_mode_to_string (mode));
 }
 
 /**
@@ -540,6 +567,9 @@ cd_device_set_property_internal (CdDevice *device,
 	} else if (g_strcmp0 (property, "Colorspace") == 0) {
 		g_free (priv->colorspace);
 		priv->colorspace = g_strdup (value);
+	} else if (g_strcmp0 (property, "Mode") == 0) {
+		g_free (priv->mode);
+		priv->mode = g_strdup (value);
 	} else {
 		ret = FALSE;
 		g_set_error (error,
@@ -927,6 +957,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = cd_device_get_nullable_for_string (priv->colorspace);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, "Mode") == 0) {
+		retval = cd_device_get_nullable_for_string (priv->mode);
+		goto out;
+	}
 	if (g_strcmp0 (property_name, "Kind") == 0) {
 		retval = cd_device_get_nullable_for_string (priv->kind);
 		goto out;
@@ -1164,6 +1198,7 @@ cd_device_finalize (GObject *object)
 	g_free (priv->model);
 	g_free (priv->vendor);
 	g_free (priv->colorspace);
+	g_free (priv->mode);
 	g_free (priv->serial);
 	g_free (priv->kind);
 	g_free (priv->object_path);

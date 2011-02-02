@@ -115,6 +115,26 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Mode' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The mode of the device, e.g. <doc:tt>virtual</doc:tt>,
+            <doc:tt>physical</doc:tt> or <doc:tt>unknown</doc:tt>.
+          </doc:para>
+          <doc:para>
+            Virtual devices are not tied to a specific item of hardware
+            and can represent abstract devices such as "Boots Photo Lab".
+          </doc:para>
+          <doc:para>
+            Physical devices correspond to a connected device that
+            cannot be removed by client software.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <method name='SetProperty'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>

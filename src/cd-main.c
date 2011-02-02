@@ -423,7 +423,8 @@ out:
 static CdDevice *
 cd_main_create_device (const gchar *sender,
 		       const gchar *device_id,
-		       guint options,
+		       CdObjectScope scope,
+		       CdDeviceMode mode,
 		       GError **error)
 {
 	gboolean ret;
@@ -435,13 +436,14 @@ cd_main_create_device (const gchar *sender,
 	/* create an object */
 	device_tmp = cd_device_new ();
 	cd_device_set_id (device_tmp, device_id);
-	cd_device_set_scope (device_tmp, options);
+	cd_device_set_scope (device_tmp, scope);
+	cd_device_set_mode (device_tmp, mode);
 	ret = cd_main_device_add (device_tmp, sender, error);
 	if (!ret)
 		goto out;
 
 	/* setup DBus watcher */
-	if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
+	if ((scope & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
 		g_debug ("temporary device");
 		cd_device_watch_sender (device_tmp, sender);
 	}
@@ -704,6 +706,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			device = cd_main_create_device (sender,
 							device_id,
 							options,
+							CD_DEVICE_MODE_UNKNOWN,
 							&error);
 			if (device == NULL) {
 				g_warning ("CdMain: failed to create device: %s",
@@ -950,6 +953,7 @@ cd_main_add_disk_device (const gchar *device_id)
 	device = cd_main_create_device (NULL,
 					device_id,
 					CD_OBJECT_SCOPE_DISK,
+					CD_DEVICE_MODE_VIRTUAL,
 					&error);
 	if (device == NULL) {
 		g_warning ("CdMain: failed to create disk device: %s",
@@ -1078,11 +1082,12 @@ cd_main_on_name_lost_cb (GDBusConnection *connection_,
  **/
 static void
 cd_main_client_added_cb (CdUdevClient *udev_client_,
-			      CdDevice *device,
-			      gpointer user_data)
+			 CdDevice *device,
+			 gpointer user_data)
 {
 	gboolean ret;
 	GError *error = NULL;
+	cd_device_set_mode (device, CD_DEVICE_MODE_PHYSICAL);
 	ret = cd_main_device_add (device, NULL, &error);
 	if (!ret) {
 		g_warning ("CdMain: failed to add device: %s",

@@ -63,6 +63,7 @@ struct _CdDevicePrivate
 	GPtrArray		*profiles;
 	CdDeviceKind		 kind;
 	CdColorspace		 colorspace;
+	CdDeviceMode		 mode;
 };
 
 enum {
@@ -75,6 +76,7 @@ enum {
 	PROP_SERIAL,
 	PROP_KIND,
 	PROP_COLORSPACE,
+	PROP_MODE,
 	PROP_LAST
 };
 
@@ -240,6 +242,23 @@ cd_device_get_colorspace (CdDevice *device)
 }
 
 /**
+ * cd_device_get_mode:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device mode.
+ *
+ * Return value: A colorspace, e.g. %CD_DEVICE_MODE_VIRTUAL
+ *
+ * Since: 0.1.2
+ **/
+CdDeviceMode
+cd_device_get_mode (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_MODE_UNKNOWN);
+	return device->priv->mode;
+}
+
+/**
  * cd_device_get_profiles:
  * @device: a #CdDevice instance.
  *
@@ -361,6 +380,9 @@ cd_device_dbus_properties_changed (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, "Colorspace") == 0) {
 			device->priv->colorspace =
 				cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
+		} else if (g_strcmp0 (property_name, "Mode") == 0) {
+			device->priv->mode =
+				cd_device_mode_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, "Profiles") == 0) {
 			cd_device_set_profiles_array_from_variant (device,
 								   property_value,
@@ -427,6 +449,7 @@ cd_device_set_object_path_sync (CdDevice *device,
 	GVariant *serial = NULL;
 	GVariant *vendor = NULL;
 	GVariant *colorspace = NULL;
+	GVariant *mode = NULL;
 	GVariant *profiles = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
@@ -476,6 +499,13 @@ cd_device_set_object_path_sync (CdDevice *device,
 	if (colorspace != NULL)
 		device->priv->colorspace =
 			cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
+
+	/* get mode */
+	mode = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						 "Mode");
+	if (mode != NULL)
+		device->priv->mode =
+			cd_device_mode_from_string (g_variant_get_string (mode, NULL));
 
 	/* get model */
 	model = g_dbus_proxy_get_cached_property (device->priv->proxy,
@@ -543,6 +573,8 @@ out:
 		g_variant_unref (serial);
 	if (colorspace != NULL)
 		g_variant_unref (colorspace);
+	if (mode != NULL)
+		g_variant_unref (mode);
 	if (created != NULL)
 		g_variant_unref (created);
 	if (modified != NULL)
@@ -726,6 +758,34 @@ cd_device_set_colorspace_sync (CdDevice *device,
 	/* execute sync helper */
 	return cd_device_set_property_sync (device, "Colorspace",
 					    cd_colorspace_to_string (colorspace),
+					    cancellable, error);
+}
+
+/**
+ * cd_device_set_mode_sync:
+ * @device: a #CdDevice instance.
+ * @mode: The device kind, e.g. #CD_DEVICE_MODE_VIRTUAL
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Sets the device mode.
+ *
+ * Return value: #TRUE for success, else #FALSE and @error is used
+ *
+ * Since: 0.1.2
+ **/
+gboolean
+cd_device_set_mode_sync (CdDevice *device,
+			 CdDeviceMode mode,
+			 GCancellable *cancellable,
+			 GError **error)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+
+	/* execute sync helper */
+	return cd_device_set_property_sync (device, "Mode",
+					    cd_device_mode_to_string (mode),
 					    cancellable, error);
 }
 
@@ -1204,6 +1264,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_COLORSPACE:
 		g_value_set_uint (value, device->priv->colorspace);
 		break;
+	case PROP_MODE:
+		g_value_set_uint (value, device->priv->mode);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1339,6 +1402,22 @@ cd_device_class_init (CdDeviceClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_COLORSPACE,
 					 g_param_spec_uint ("colorspace",
+							    NULL, NULL,
+							    0,
+							    G_MAXUINT,
+							    0,
+							    G_PARAM_READWRITE));
+
+	/**
+	 * CdDevice:mode:
+	 *
+	 * The device colorspace, e.g. %CD_DEVICE_MODE_VIRTUAL.
+	 *
+	 * Since: 0.1.2
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_MODE,
+					 g_param_spec_uint ("mode",
 							    NULL, NULL,
 							    0,
 							    G_MAXUINT,

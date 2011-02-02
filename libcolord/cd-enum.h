@@ -106,6 +106,18 @@ typedef enum {
 	CD_COLORSPACE_LAST
 } CdColorspace;
 
+/**
+ * CdDeviceMode:
+ *
+ * The device mode.
+ **/
+typedef enum {
+	CD_DEVICE_MODE_UNKNOWN,
+	CD_DEVICE_MODE_PHYSICAL,
+	CD_DEVICE_MODE_VIRTUAL,
+	CD_DEVICE_MODE_LAST
+} CdDeviceMode;
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
@@ -120,6 +132,8 @@ CdRenderingIntent cd_rendering_intent_from_string	(const gchar		*rendering_inten
 const gchar	*cd_rendering_intent_to_string		(CdRenderingIntent	 rendering_intent);
 const gchar	*cd_colorspace_to_string		(CdColorspace		 colorspace);
 CdColorspace	 cd_colorspace_from_string		(const gchar		*colorspace);
+const gchar	*cd_device_mode_to_string		(CdDeviceMode		 device_mode);
+CdDeviceMode	 cd_device_mode_from_string		(const gchar		*device_mode);
 
 G_END_DECLS
 

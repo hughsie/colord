@@ -234,3 +234,29 @@ cd_colorspace_from_string (const gchar *colorspace)
 		return CD_COLORSPACE_CMY;
 	return CD_COLORSPACE_UNKNOWN;
 }
+
+/**
+ * cd_device_mode_to_string:
+ **/
+const gchar *
+cd_device_mode_to_string (CdDeviceMode device_mode)
+{
+	if (device_mode == CD_DEVICE_MODE_PHYSICAL)
+		return "physical";
+	if (device_mode == CD_DEVICE_MODE_VIRTUAL)
+		return "virtual";
+	return "unknown";
+}
+
+/**
+ * cd_device_mode_from_string:
+ **/
+CdDeviceMode
+cd_device_mode_from_string (const gchar *device_mode)
+{
+	if (g_strcmp0 (device_mode, "physical") == 0)
+		return CD_DEVICE_MODE_PHYSICAL;
+	if (g_strcmp0 (device_mode, "virtual") == 0)
+		return CD_DEVICE_MODE_VIRTUAL;
+	return CD_DEVICE_MODE_UNKNOWN;
+}
