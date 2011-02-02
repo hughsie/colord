@@ -116,8 +116,20 @@ static void
 cd_udev_client_add (CdUdevClient *udev_client,
 		    GUdevDevice *udev_device)
 {
-	gchar *id;
 	CdDevice *device;
+	gchar *id;
+	gchar *model;
+	gchar *vendor;
+
+	/* replace underscores with spaces */
+	model = g_strdup (g_udev_device_get_property (udev_device,
+						      "ID_MODEL"));
+	vendor = g_strdup (g_udev_device_get_property (udev_device,
+						       "ID_VENDOR"));
+	g_strdelimit (model, "_\r\n", ' ');
+	g_strdelimit (vendor, "_\r\n", ' ');
+	g_strchomp (model);
+	g_strchomp (vendor);
 
 	/* create new device */
 	id = gcm_client_get_id_for_udev_device (udev_device);
@@ -130,14 +142,12 @@ cd_udev_client_add (CdUdevClient *udev_client,
 					 NULL);
 	cd_device_set_property_internal (device,
 					 "Model",
-					 g_udev_device_get_property (udev_device,
-								     "ID_MODEL"),
+					 model,
 					 FALSE,
 					 NULL);
 	cd_device_set_property_internal (device,
 					 "Vendor",
-					 g_udev_device_get_property (udev_device,
-								     "ID_VENDOR"),
+					 vendor,
 					 FALSE,
 					 NULL);
 	g_debug ("CdUdevClient: emit add: %s", id);
@@ -146,6 +156,8 @@ cd_udev_client_add (CdUdevClient *udev_client,
 	/* keep track so we can remove with the same device */
 	g_ptr_array_add (udev_client->priv->array, device);
 	g_free (id);
+	g_free (model);
+	g_free (vendor);
 }
 
 /**
