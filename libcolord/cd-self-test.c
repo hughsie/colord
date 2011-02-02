@@ -115,11 +115,13 @@ colord_client_func (void)
 	gchar *device_id;
 	gchar *device_path;
 	gchar *filename;
-	gchar *profile_id;
-	gchar *profile_path;
 	gchar *profile2_id;
 	gchar *profile2_path;
+	gchar *profile_id;
+	gchar *profile_path;
 	GError *error = NULL;
+	GHashTable *device_props;
+	GHashTable *profile_props;
 	GPtrArray *array;
 	GPtrArray *devices;
 	GPtrArray *profiles;
@@ -154,9 +156,18 @@ colord_client_func (void)
 	g_assert (profiles != NULL);
 
 	/* create device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup ("Vendor"),
+			     g_strdup ("CRAY"));
+	g_hash_table_insert (device_props,
+			     g_strdup ("Model"),
+			     g_strdup ("3000"));
 	device = cd_client_create_device_sync (client,
 					       device_id,
 					       CD_OBJECT_SCOPE_TEMPORARY,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -185,16 +196,6 @@ colord_client_func (void)
 			       colord_client_get_devices_cb,
 			       NULL);
 	_g_test_loop_run_with_timeout (5000);
-
-	/* set device vendor */
-	ret = cd_device_set_vendor_sync (device, "CRAY", NULL, &error);
-	g_assert_no_error (error);
-	g_assert (ret);
-
-	/* set device model */
-	ret = cd_device_set_model_sync (device, "3000", NULL, &error);
-	g_assert_no_error (error);
-	g_assert (ret);
 
 	/* set device serial */
 	ret = cd_device_set_serial_sync (device, "0001", NULL, &error);
@@ -244,6 +245,7 @@ colord_client_func (void)
 						 profile_id,
 						 CD_OBJECT_SCOPE_TEMPORARY,
 						 NULL,
+						 NULL,
 						 &error);
 	g_assert_no_error (error);
 	g_assert (profile != NULL);
@@ -253,9 +255,15 @@ colord_client_func (void)
 	g_assert (!cd_profile_get_is_system_wide (profile));
 
 	/* create extra profile */
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (profile_props,
+			     g_strdup ("Qualifier"),
+			     g_strdup ("Epson.RGB.1200dpi"));
 	profile2 = cd_client_create_profile_sync (client,
 						  profile2_id,
 						  CD_OBJECT_SCOPE_TEMPORARY,
+						  profile_props,
 						  NULL,
 						  &error);
 	g_assert_no_error (error);
@@ -263,6 +271,7 @@ colord_client_func (void)
 	g_assert_cmpstr (cd_profile_get_object_path (profile2), ==,
 			 profile2_path);
 	g_assert_cmpstr (cd_profile_get_id (profile2), ==, profile2_id);
+	g_assert_cmpstr (cd_profile_get_qualifier (profile2), ==, "Epson.RGB.1200dpi");
 
 	/* get new number of profiles */
 	array = cd_client_get_profiles_sync (client, NULL, &error);
@@ -464,6 +473,7 @@ colord_client_func (void)
 						 profile_id,
 						 CD_OBJECT_SCOPE_TEMPORARY,
 						 NULL,
+						 NULL,
 						 &error);
 	g_assert_no_error (error);
 	g_assert (profile != NULL);
@@ -507,6 +517,7 @@ colord_client_func (void)
 						 profile_id,
 						 CD_OBJECT_SCOPE_TEMPORARY,
 						 NULL,
+						 NULL,
 						 &error);
 	g_assert_no_error (error);
 	g_assert (profile != NULL);
@@ -516,6 +527,7 @@ colord_client_func (void)
 	device = cd_client_create_device_sync (client,
 					       device_id,
 					       CD_OBJECT_SCOPE_TEMPORARY,
+					       NULL,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -539,6 +551,8 @@ colord_client_func (void)
 	g_free (filename);
 	g_ptr_array_unref (devices);
 	g_ptr_array_unref (profiles);
+	g_hash_table_unref (profile_props);
+	g_hash_table_unref (device_props);
 	g_object_unref (device);
 	g_object_unref (profile);
 	g_object_unref (profile2);

@@ -318,6 +318,60 @@ out:
 }
 
 /**
+ * cd_profile_set_property_internal:
+ **/
+gboolean
+cd_profile_set_property_internal (CdProfile *profile,
+				  const gchar *property,
+				  const gchar *value,
+				  GError **error)
+{
+	gboolean ret = TRUE;
+	CdProfilePrivate *priv = profile->priv;
+
+	if (g_strcmp0 (property, "Filename") == 0) {
+		ret = cd_profile_set_filename (profile,
+					       value,
+					       error);
+		if (!ret)
+			goto out;
+		cd_profile_dbus_emit_property_changed (profile,
+						       property,
+						       g_variant_new_string (value));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Title",
+						       g_variant_new_string (priv->title));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Kind",
+						       g_variant_new_uint32 (priv->kind));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Colorspace",
+						       g_variant_new_uint32 (priv->colorspace));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "HasVcgt",
+						       g_variant_new_boolean (priv->has_vcgt));
+	} else if (g_strcmp0 (property, "Qualifier") == 0) {
+		cd_profile_set_qualifier (profile, value);
+		cd_profile_dbus_emit_property_changed (profile,
+						       property,
+						       g_variant_new_string (value));
+	} else {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "property %s not understood on CdProfile",
+			     property);
+		goto out;
+	}
+
+	/* emit global signal */
+	cd_profile_dbus_emit_profile_changed (profile);
+out:
+	return ret;
+}
+
+/**
  * cd_profile_dbus_method_call:
  **/
 static void
@@ -349,47 +403,17 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			       &property_value);
 		g_debug ("CdProfile %s:SetProperty(%s,%s)",
 			 sender, property_name, property_value);
-		if (g_strcmp0 (property_name, "Filename") == 0) {
-			ret = cd_profile_set_filename (profile, property_value, &error);
-			if (!ret) {
-				g_dbus_method_invocation_return_gerror (invocation,
-									error);
-				g_error_free (error);
-				goto out;
-			}
-			cd_profile_dbus_emit_property_changed (profile,
-							       property_name,
-							       g_variant_new_string (property_value));
-			cd_profile_dbus_emit_property_changed (profile,
-							       "Title",
-							       g_variant_new_string (profile->priv->title));
-			cd_profile_dbus_emit_property_changed (profile,
-							       "Kind",
-							       g_variant_new_uint32 (profile->priv->kind));
-			cd_profile_dbus_emit_property_changed (profile,
-							       "Colorspace",
-							       g_variant_new_uint32 (profile->priv->colorspace));
-			cd_profile_dbus_emit_property_changed (profile,
-							       "HasVcgt",
-							       g_variant_new_boolean (profile->priv->has_vcgt));
-			cd_profile_dbus_emit_profile_changed (profile);
-			g_dbus_method_invocation_return_value (invocation, NULL);
+		ret = cd_profile_set_property_internal (profile,
+							property_name,
+							property_value,
+							&error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
 			goto out;
 		}
-		if (g_strcmp0 (property_name, "Qualifier") == 0) {
-			cd_profile_set_qualifier (profile, property_value);
-			cd_profile_dbus_emit_property_changed (profile,
-							       property_name,
-							       g_variant_new_string (property_value));
-			cd_profile_dbus_emit_profile_changed (profile);
-			g_dbus_method_invocation_return_value (invocation, NULL);
-			goto out;
-		}
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
-						       "property %s not understood",
-						       property_name);
+		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}
 

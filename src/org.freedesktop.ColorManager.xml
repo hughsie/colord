@@ -283,6 +283,20 @@
           </doc:list>
         </doc:doc>
       </arg>
+      <arg type='a{ss}' name='properties' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              Properties to be used when constructing the profile.
+            </doc:para>
+            <doc:para>
+              This optional value allows the profile to be created with
+              the latency of one bus round-trip, rather than doing
+              a few <doc:tt>SetProperty</doc:tt> methods indervidually.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
       <arg type='o' name='object_path' direction='out'>
         <doc:doc>
           <doc:summary>
@@ -307,7 +321,7 @@
             that profiles exists already, then the new device will be
             automatically have profiles added to the device.
             To prevent this from happening, remove the assignment by
-            doing <doc:tt>RemoveProfile</doc:tt>doc:tt> on the relevant
+            doing <doc:tt>RemoveProfile</doc:tt> on the relevant
             device object.
           </doc:para>
         </doc:description>
@@ -352,6 +366,20 @@
               </doc:definition>
             </doc:item>
           </doc:list>
+        </doc:doc>
+      </arg>
+      <arg type='a{ss}' name='properties' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              Properties to be used when constructing the device.
+            </doc:para>
+            <doc:para>
+              This optional value allows the device to be created with
+              the latency of one bus round-trip, rather than doing
+              a few <doc:tt>SetProperty</doc:tt> methods indervidually.
+            </doc:para>
+          </doc:summary>
         </doc:doc>
       </arg>
       <arg type='o' name='object_path' direction='out'>

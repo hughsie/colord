@@ -226,7 +226,7 @@ main (int argc, char *argv[])
 		/* execute sync method */
 		mask = cd_util_mask_from_string (argv[3]);
 		device = cd_client_create_device_sync (client, argv[2],
-						       mask, NULL, &error);
+						       mask, NULL, NULL, &error);
 		if (device == NULL) {
 			/* TRANSLATORS: no colord available */
 			g_print ("%s %s\n", _("Failed to create device:"), error->message);
@@ -282,7 +282,7 @@ main (int argc, char *argv[])
 		/* execute sync method */
 		mask = cd_util_mask_from_string (argv[3]);
 		profile = cd_client_create_profile_sync (client, argv[2],
-							 mask, NULL, &error);
+							 mask, NULL, NULL, &error);
 		if (profile == NULL) {
 			/* TRANSLATORS: no colord available */
 			g_print ("%s %s\n", _("Failed to create profile:"), error->message);

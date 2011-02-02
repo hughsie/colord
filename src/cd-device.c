@@ -575,7 +575,7 @@ cd_device_set_property_internal (CdDevice *device,
 		g_set_error (error,
 			     CD_MAIN_ERROR,
 			     CD_MAIN_ERROR_FAILED,
-			     "property %s not understood",
+			     "property %s not understood on CdDevice",
 			     property);
 		goto out;
 	}

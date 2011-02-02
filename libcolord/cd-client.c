@@ -498,6 +498,8 @@ cd_client_get_devices_finish (CdClient *client,
  * cd_client_create_device_sync:
  * @client: a #CdClient instance.
  * @id: identifier for the device
+ * @options: the scope of the device
+ * @properties: properties to set on the device, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -505,12 +507,13 @@ cd_client_get_devices_finish (CdClient *client,
  *
  * Return value: A #CdDevice object, or %NULL for error
  *
- * Since: 0.1.0
+ * Since: 0.1.2
  **/
 CdDevice *
 cd_client_create_device_sync (CdClient *client,
 			      const gchar *id,
 			      guint options,
+			      GHashTable *properties,
 			      GCancellable *cancellable,
 			      GError **error)
 {
@@ -519,16 +522,41 @@ cd_client_create_device_sync (CdClient *client,
 	gboolean ret;
 	gchar *object_path = NULL;
 	GError *error_local = NULL;
+	GList *list, *l;
+	GVariantBuilder builder;
 	GVariant *result;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
 
+	/* add properties */
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	if (properties != NULL) {
+		list = g_hash_table_get_keys (properties);
+		for (l = list; l != NULL; l = l->next) {
+			g_debug ("adding property %s",
+				 (const gchar*) l->data);
+			g_variant_builder_add (&builder,
+					       "{ss}",
+					       l->data,
+					       g_hash_table_lookup (properties,
+								    l->data));
+		}
+		g_list_free (list);
+	} else {
+		/* just fake something here */
+		g_variant_builder_add (&builder,
+				       "{ss}",
+				       "Kind",
+				       "unknown");
+	}
+
 	result = g_dbus_proxy_call_sync (client->priv->proxy,
 					 "CreateDevice",
-					 g_variant_new ("(su)",
+					 g_variant_new ("(sua{ss})",
 						        id,
-						        options),
+						        options,
+						        &builder),
 					 G_DBUS_CALL_FLAGS_NONE,
 					 -1,
 					 cancellable,
@@ -573,6 +601,8 @@ out:
  * cd_client_create_profile_sync:
  * @client: a #CdClient instance.
  * @id: identifier for the device
+ * @options: the scope of the profile
+ * @properties: properties to set on the profile, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -580,12 +610,13 @@ out:
  *
  * Return value: A #CdProfile object, or %NULL for error
  *
- * Since: 0.1.0
+ * Since: 0.1.2
  **/
 CdProfile *
 cd_client_create_profile_sync (CdClient *client,
 			       const gchar *id,
 			       guint options,
+			       GHashTable *properties,
 			       GCancellable *cancellable,
 			       GError **error)
 {
@@ -594,16 +625,41 @@ cd_client_create_profile_sync (CdClient *client,
 	gboolean ret;
 	gchar *object_path = NULL;
 	GError *error_local = NULL;
+	GList *list, *l;
+	GVariantBuilder builder;
 	GVariant *result;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
 
+	/* add properties */
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	if (properties != NULL) {
+		list = g_hash_table_get_keys (properties);
+		for (l = list; l != NULL; l = l->next) {
+			g_debug ("adding property %s",
+				 (const gchar*) l->data);
+			g_variant_builder_add (&builder,
+					       "{ss}",
+					       l->data,
+					       g_hash_table_lookup (properties,
+								    l->data));
+		}
+		g_list_free (list);
+	} else {
+		/* just fake something here */
+		g_variant_builder_add (&builder,
+				       "{ss}",
+				       "Qualifier",
+				       "");
+	}
+
 	result = g_dbus_proxy_call_sync (client->priv->proxy,
 					 "CreateProfile",
-					 g_variant_new ("(su)",
+					 g_variant_new ("(sua{ss})",
 						        id,
-						        options),
+						        options,
+						        &builder),
 					 G_DBUS_CALL_FLAGS_NONE,
 					 -1,
 					 cancellable,

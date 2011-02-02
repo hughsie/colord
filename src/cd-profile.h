@@ -84,6 +84,10 @@ CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);
 void		 cd_profile_watch_sender		(CdProfile	*profile,
 							 const gchar	*sender);
+gboolean	 cd_profile_set_property_internal	(CdProfile	*profile,
+							 const gchar	*property,
+							 const gchar	*value,
+							 GError		**error);
 
 G_END_DECLS
 

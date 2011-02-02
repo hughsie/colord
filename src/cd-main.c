@@ -580,12 +580,15 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 {
 	CdDevice *device = NULL;
 	CdProfile *profile = NULL;
+	const gchar *prop_key;
+	const gchar *prop_value;
 	gboolean ret;
 	gchar *device_id = NULL;
 	gchar *object_path_tmp = NULL;
 	GError *error = NULL;
 	GPtrArray *array = NULL;
 	guint options;
+	GVariantIter *iter = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 
@@ -699,7 +702,11 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(su)", &device_id, &options);
+		g_variant_get (parameters, "(sua{ss})",
+			       &device_id,
+			       &options,
+			       &iter);
+
 		g_debug ("CdMain: %s:CreateDevice(%s)", sender, device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
@@ -710,6 +717,25 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 							&error);
 			if (device == NULL) {
 				g_warning ("CdMain: failed to create device: %s",
+					   error->message);
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				g_error_free (error);
+				goto out;
+			}
+		}
+
+		/* set the properties */
+		while (g_variant_iter_loop (iter, "{ss}",
+					    &prop_key, &prop_value)) {
+			g_debug ("%s=%s", prop_key, prop_value);
+			ret = cd_device_set_property_internal (device,
+							       prop_key,
+							       prop_value,
+							       (options == CD_OBJECT_SCOPE_DISK),
+							       &error);
+			if (!ret) {
+				g_warning ("CdMain: failed to set property on device: %s",
 					   error->message);
 				g_dbus_method_invocation_return_gerror (invocation,
 									error);
@@ -806,7 +832,10 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(su)", &device_id, &options);
+		g_variant_get (parameters, "(sua{ss})",
+			       &device_id,
+			       &options,
+			       &iter);
 		g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
 		profile = cd_profile_array_get_by_id (profiles_array,
 						      device_id);
@@ -833,6 +862,24 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* auto add profiles from the database */
 		cd_main_profile_auto_add_to_device (profile);
 
+		/* set the properties */
+		while (g_variant_iter_loop (iter, "{ss}",
+					    &prop_key, &prop_value)) {
+			g_debug ("%s=%s", prop_key, prop_value);
+			ret = cd_profile_set_property_internal (profile,
+								prop_key,
+								prop_value,
+								&error);
+			if (!ret) {
+				g_warning ("CdMain: failed to set property on profile: %s",
+					   error->message);
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				g_error_free (error);
+				goto out;
+			}
+		}
+
 		/* format the value */
 		value = g_variant_new_object_path (cd_profile_get_object_path (profile));
 		tuple = g_variant_new_tuple (&value, 1);
@@ -844,6 +891,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	g_critical ("failed to process method %s", method_name);
 out:
 	g_free (object_path_tmp);
+	if (iter != NULL)
+		g_variant_iter_free (iter);
 	if (array != NULL)
 		g_ptr_array_unref (array);
 	if (device != NULL)
