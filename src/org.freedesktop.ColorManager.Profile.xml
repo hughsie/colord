@@ -149,30 +149,6 @@
       </doc:doc>
     </method>
 
-    <!--***********************************************************-->
-    <method name='Commit'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
-      <doc:doc>
-        <doc:description>
-          <doc:para>
-            Adds the new profile to the list of available profiles.
-            This method must be called before the profile will be
-            available for use by session programs.
-          </doc:para>
-          <doc:para>
-            The action of committing a profile ensures that the
-            <doc:tt>ProfileAdded</doc:tt> signal is sent with a profile
-            where all the initial properties have been set.
-          </doc:para>
-          <doc:para>
-            Note: is it still valid to change the profile after
-            <doc:tt>Commit</doc:tt> has been called as the
-            <doc:tt>PropertyModified</doc:tt> signal will be sent.
-          </doc:para>
-        </doc:description>
-      </doc:doc>
-    </method>
-
     <!-- ************************************************************ -->
     <signal name='Changed'>
       <doc:doc>

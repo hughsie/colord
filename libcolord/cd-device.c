@@ -1034,52 +1034,6 @@ out:
 }
 
 /**
- * cd_device_commit_sync:
- * @device: a #CdDevice instance.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Commits a device that is ready to be used.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.1
- **/
-gboolean
-cd_device_commit_sync (CdDevice *device,
-		       GCancellable *cancellable,
-		       GError **error)
-{
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
-
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
-
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "Commit",
-					   NULL,
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to commit device: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
-}
-
-/**
  * cd_device_get_profile_for_qualifier_sync:
  * @device: a #CdDevice instance.
  * @qualifier: a qualifier that can included wildcards

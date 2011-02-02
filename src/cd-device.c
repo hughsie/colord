@@ -67,13 +67,11 @@ struct _CdDevicePrivate
 	guint				 watcher_id;
 	guint64				 created;
 	guint64				 modified;
-	gboolean			 is_committed;
 	gboolean			 is_virtual;
 };
 
 enum {
 	SIGNAL_INVALIDATE,
-	SIGNAL_COMMIT,
 	SIGNAL_LAST
 };
 
@@ -86,16 +84,6 @@ enum {
 
 static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdDevice, cd_device, G_TYPE_OBJECT)
-
-/**
- * cd_device_is_committed:
- **/
-gboolean
-cd_device_is_committed (CdDevice *device)
-{
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	return device->priv->is_committed;
-}
 
 /**
  * cd_device_get_scope:
@@ -880,25 +868,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
-	/* return '' */
-	if (g_strcmp0 (method_name, "Commit") == 0) {
-		g_debug ("CdDevice %s:Commit()", sender);
-		if (priv->is_committed) {
-			g_debug ("CdDevice: already committed");
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "already committed '%s'",
-							       priv->id);
-			goto out;
-		}
-		g_debug ("CdDevice: emit commit");
-		g_signal_emit (device, signals[SIGNAL_COMMIT], 0);
-		g_dbus_method_invocation_return_value (invocation, NULL);
-		priv->is_committed = TRUE;
-		goto out;
-	}
-
 	/* we suck */
 	g_critical ("failed to process device method %s", method_name);
 out:
@@ -1135,16 +1104,6 @@ cd_device_class_init (CdDeviceClass *klass)
 		g_signal_new ("invalidate",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
 			      G_STRUCT_OFFSET (CdDeviceClass, invalidate),
-			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE, 0);
-
-	/**
-	 * CdDevice::commit:
-	 **/
-	signals[SIGNAL_COMMIT] =
-		g_signal_new ("commit",
-			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (CdDeviceClass, commit),
 			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
 

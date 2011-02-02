@@ -97,9 +97,6 @@ gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
 							 GError		**error);
-gboolean	 cd_profile_commit_sync			(CdProfile	*profile,
-							 GCancellable	*cancellable,
-							 GError		**error);
 const gchar	*cd_profile_get_id			(CdProfile	*profile);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
 const gchar	*cd_profile_get_qualifier		(CdProfile	*profile);

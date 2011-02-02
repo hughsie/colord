@@ -174,13 +174,6 @@ colord_client_func (void)
 	g_assert (device != NULL);
 	g_assert_cmpstr (cd_device_get_object_path (device), ==,
 			 device_path);
-
-	/* commit it early */
-	ret = cd_device_commit_sync (device, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (ret);
-
-	/* now the ID is valid */
 	g_assert_cmpstr (cd_device_get_id (device), ==, device_id);
 
 	/* get new number of devices */

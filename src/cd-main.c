@@ -111,34 +111,6 @@ cd_main_profile_invalidate_cb (CdProfile *profile,
 }
 
 /**
- * cd_main_profile_commit_cb:
- **/
-static void
-cd_main_profile_commit_cb (CdProfile *profile,
-			   gpointer user_data)
-{
-	gboolean ret;
-	GError *error = NULL;
-
-	/* emit signal */
-	g_debug ("CdMain: Emitting ProfileAdded(%s)",
-		 cd_profile_get_object_path (profile));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "ProfileAdded",
-					     g_variant_new ("(o)",
-							    cd_profile_get_object_path (profile)),
-					     &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to emit DeviceAdded: %s",
-			   error->message);
-		g_error_free (error);
-	}
-}
-
-/**
  * cd_main_device_removed:
  **/
 static void
@@ -196,34 +168,6 @@ cd_main_device_invalidate_cb (CdDevice *device,
 }
 
 /**
- * cd_main_device_commit_cb:
- **/
-static void
-cd_main_device_commit_cb (CdDevice *device,
-			  gpointer user_data)
-{
-	gboolean ret;
-	GError *error = NULL;
-
-	/* emit signal */
-	g_debug ("CdMain: Emitting DeviceAdded(%s)",
-		 cd_device_get_object_path (device));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "DeviceAdded",
-					     g_variant_new ("(o)",
-							    cd_device_get_object_path (device)),
-					     &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to emit DeviceAdded: %s",
-			   error->message);
-		g_error_free (error);
-	}
-}
-
-/**
  * cd_main_add_profile:
  **/
 static gboolean
@@ -241,6 +185,7 @@ cd_main_add_profile (CdProfile *profile,
 		goto out;
 
 	/* add */
+	cd_profile_array_add (profiles_array, profile);
 	g_debug ("CdMain: Adding profile %s", cd_profile_get_object_path (profile));
 
 	/* profile is no longer valid */
@@ -248,14 +193,19 @@ cd_main_add_profile (CdProfile *profile,
 			  G_CALLBACK (cd_main_profile_invalidate_cb),
 			  NULL);
 
-
-	/* profile should be added */
-	g_signal_connect (profile, "commit",
-			  G_CALLBACK (cd_main_profile_commit_cb),
-			  NULL);
-
-	/* add to array */
-	cd_profile_array_add (profiles_array, profile);
+	/* emit signal */
+	g_debug ("CdMain: Emitting ProfileAdded(%s)",
+		 cd_profile_get_object_path (profile));
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "ProfileAdded",
+					     g_variant_new ("(o)",
+							    cd_profile_get_object_path (profile)),
+					     error);
+	if (!ret)
+		goto out;
 out:
 	return ret;
 }
@@ -403,16 +353,25 @@ cd_main_device_add (CdDevice *device,
 			  G_CALLBACK (cd_main_device_invalidate_cb),
 			  NULL);
 
-	/* device should be added */
-	g_signal_connect (device, "commit",
-			  G_CALLBACK (cd_main_device_commit_cb),
-			  NULL);
+	/* add to array */
+	cd_device_array_add (devices_array, device);
 
 	/* auto add profiles from the database */
 	cd_main_device_auto_add_profiles (device);
 
-	/* add to array */
-	cd_device_array_add (devices_array, device);
+	/* emit signal */
+	g_debug ("CdMain: Emitting DeviceAdded(%s)",
+		 cd_device_get_object_path (device));
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "DeviceAdded",
+					     g_variant_new ("(o)",
+							    cd_device_get_object_path (device)),
+					     error);
+	if (!ret)
+		goto out;
 out:
 	return ret;
 }
@@ -471,8 +430,6 @@ cd_main_device_array_to_variant (GPtrArray *array)
 	variant_array = g_new0 (GVariant *, array->len + 1);
 	for (i=0; i<array->len; i++) {
 		device = g_ptr_array_index (array, i);
-		if (!cd_device_is_committed (device))
-			continue;
 		variant_array[length] = g_variant_new_object_path (
 			cd_device_get_object_path (device));
 		length++;
@@ -502,8 +459,6 @@ cd_main_profile_array_to_variant (GPtrArray *array)
 	variant_array = g_new0 (GVariant *, array->len + 1);
 	for (i=0; i<array->len; i++) {
 		profile = g_ptr_array_index (array, i);
-		if (!cd_profile_is_committed (profile))
-			continue;
 		variant_array[length] = g_variant_new_object_path (
 			cd_profile_get_object_path (profile));
 		length++;

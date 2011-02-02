@@ -563,52 +563,6 @@ out:
 }
 
 /**
- * cd_profile_commit_sync:
- * @profile: a #CdProfile instance.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Commits the profile ready for use by other applications.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.1
- **/
-gboolean
-cd_profile_commit_sync (CdProfile *profile,
-			GCancellable *cancellable,
-			GError **error)
-{
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
-
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (profile->priv->proxy != NULL, FALSE);
-
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (profile->priv->proxy,
-					   "Commit",
-					   NULL,
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_PROFILE_ERROR,
-			     CD_PROFILE_ERROR_FAILED,
-			     "Failed to commit: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
-}
-
-/**
  * cd_profile_set_qualifier_sync:
  * @profile: a #CdProfile instance.
  * @value: The qualifier.
