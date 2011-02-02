@@ -37,6 +37,7 @@ static void cd_device_finalize			 (GObject *object);
 static void cd_device_dbus_emit_property_changed (CdDevice *device,
 						  const gchar *property_name,
 						  GVariant *property_value);
+static void cd_device_dbus_emit_device_changed	 (CdDevice *device);
 
 #define CD_DEVICE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_DEVICE, CdDevicePrivate))
 
@@ -210,6 +211,9 @@ cd_device_set_profiles (CdDevice *device, GPtrArray *profiles)
 
 	/* reset modification time */
 	cd_device_reset_modified (device);
+
+	/* emit global signal */
+	cd_device_dbus_emit_device_changed (device);
 }
 
 /**
@@ -220,7 +224,6 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 				      const gchar *property_name,
 				      GVariant *property_value)
 {
-	gboolean ret;
 	GError *error_local = NULL;
 	GVariantBuilder builder;
 	GVariantBuilder invalidated_builder;
@@ -247,6 +250,20 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 				       &invalidated_builder),
 				       &error_local);
 	g_assert_no_error (error_local);
+}
+
+/**
+ * cd_device_dbus_emit_device_changed:
+ **/
+static void
+cd_device_dbus_emit_device_changed (CdDevice *device)
+{
+	gboolean ret;
+	GError *error_local = NULL;
+
+	/* not yet connected */
+	if (device->priv->connection == NULL)
+		return;
 
 	/* emit signal */
 	g_debug ("CdDevice: emit Changed on %s",
@@ -399,6 +416,9 @@ cd_device_remove_profile (CdDevice *device,
 
 	/* reset modification time */
 	cd_device_reset_modified (device);
+
+	/* emit global signal */
+	cd_device_dbus_emit_device_changed (device);
 out:
 	return ret;
 }
@@ -455,6 +475,9 @@ cd_device_add_profile (CdDevice *device,
 
 	/* reset modification time */
 	cd_device_reset_modified (device);
+
+	/* emit global signal */
+	cd_device_dbus_emit_device_changed (device);
 out:
 	if (profile != NULL)
 		g_object_unref (profile);
@@ -537,6 +560,9 @@ cd_device_set_property_internal (CdDevice *device,
 	cd_device_dbus_emit_property_changed (device,
 					      property,
 					      g_variant_new_string (value));
+
+	/* emit global signal */
+	cd_device_dbus_emit_device_changed (device);
 out:
 	return ret;
 }
@@ -740,6 +766,9 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* reset modification time */
 		cd_device_reset_modified (device);
+
+		/* emit global signal */
+		cd_device_dbus_emit_device_changed (device);
 
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
