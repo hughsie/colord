@@ -245,6 +245,9 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, "Filename") == 0) {
 			g_free (profile->priv->filename);
 			profile->priv->filename = g_variant_dup_string (property_value, NULL);
+		} else if (g_strcmp0 (property_name, "ProfileId") == 0) {
+			g_free (profile->priv->id);
+			profile->priv->id = g_variant_dup_string (property_value, NULL);
 		} else if (g_strcmp0 (property_name, "Title") == 0) {
 			g_free (profile->priv->title);
 			profile->priv->title = g_variant_dup_string (property_value, NULL);
