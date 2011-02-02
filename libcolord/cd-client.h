@@ -124,9 +124,23 @@ CdProfile	*cd_client_find_profile_sync		(CdClient	*client,
 GPtrArray	*cd_client_get_devices_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GError		**error);
+void		 cd_client_get_devices			(CdClient		*client,
+							 GCancellable		*cancellable,
+							 GAsyncReadyCallback	 callback,
+							 gpointer		 user_data);
+GPtrArray	*cd_client_get_devices_finish		(CdClient		*client,
+							 GAsyncResult		*res,
+							 GError			**error);
 GPtrArray	*cd_client_get_profiles_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GError		**error);
+void		 cd_client_get_profiles			(CdClient		*client,
+							 GCancellable		*cancellable,
+							 GAsyncReadyCallback	 callback,
+							 gpointer		 user_data);
+GPtrArray	*cd_client_get_profiles_finish		(CdClient		*client,
+							 GAsyncResult		*res,
+							 GError			**error);
 GPtrArray	*cd_client_get_devices_by_kind_sync	(CdClient	*client,
 							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,

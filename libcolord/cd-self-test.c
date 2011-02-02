@@ -54,6 +54,23 @@ _g_test_loop_run_with_timeout (guint timeout_ms)
 }
 
 /**
+ * _g_test_loop_quit:
+ **/
+static void
+_g_test_loop_quit (void)
+{
+	if (_test_loop_timeout_id > 0) {
+		g_source_remove (_test_loop_timeout_id);
+		_test_loop_timeout_id = 0;
+	}
+	if (_test_loop != NULL) {
+		g_main_loop_quit (_test_loop);
+		g_main_loop_unref (_test_loop);
+		_test_loop = NULL;
+	}
+}
+
+/**
  * _g_test_realpath:
  **/
 static gchar *
@@ -67,6 +84,24 @@ _g_test_realpath (const gchar *relpath)
 }
 
 /**********************************************************************/
+
+static void
+colord_client_get_devices_cb (GObject *object,
+			      GAsyncResult *res,
+			      gpointer user_data)
+{
+	CdClient *client = CD_CLIENT (object);
+	GError *error = NULL;
+	GPtrArray *devices;
+
+	/* get the result */
+	devices = cd_client_get_devices_finish (client, res, &error);
+	g_assert_no_error (error);
+	g_assert (devices != NULL);
+	g_assert_cmpint (devices->len, >=, 1);
+	g_ptr_array_unref (devices);
+	_g_test_loop_quit ();
+}
 
 static void
 colord_client_func (void)
@@ -143,6 +178,13 @@ colord_client_func (void)
 	g_assert (array != NULL);
 	g_assert_cmpint (devices->len + 1, ==, array->len);
 	g_ptr_array_unref (array);
+
+	/* get same data async */
+	cd_client_get_devices (client,
+			       NULL,
+			       colord_client_get_devices_cb,
+			       NULL);
+	_g_test_loop_run_with_timeout (5000);
 
 	/* set device vendor */
 	ret = cd_device_set_vendor_sync (device, "CRAY", NULL, &error);

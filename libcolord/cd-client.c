@@ -58,6 +58,13 @@ struct _CdClientPrivate
 	GPtrArray		*profile_cache;
 };
 
+typedef struct {
+	CdClient		*client;
+	GCancellable		*cancellable;
+	GPtrArray		*array;
+	GSimpleAsyncResult	*res;
+} CdClientState;
+
 enum {
 	SIGNAL_CHANGED,
 	SIGNAL_DEVICE_ADDED,
@@ -322,6 +329,170 @@ out:
 		g_variant_unref (result);
 	return array;
 }
+
+/**
+ * cd_client_get_devices_state_finish:
+ **/
+static void
+cd_client_get_devices_state_finish (CdClientState *state,
+				    const GError *error)
+{
+	/* get result */
+	if (state->array != NULL) {
+		g_simple_async_result_set_op_res_gpointer (state->res,
+							   g_ptr_array_ref (state->array),
+							   (GDestroyNotify) g_ptr_array_unref);
+	} else {
+		g_simple_async_result_set_from_error (state->res,
+						      error);
+	}
+
+	/* complete */
+	g_simple_async_result_complete_in_idle (state->res);
+
+	/* deallocate */
+	if (state->cancellable != NULL)
+		g_object_unref (state->cancellable);
+	if (state->array != NULL)
+		g_ptr_array_unref (state->array);
+	g_object_unref (state->res);
+	g_object_unref (state->client);
+	g_slice_free (CdClientState, state);
+}
+
+/**
+ * cd_client_get_devices_cb:
+ **/
+static void
+cd_client_get_devices_cb (GObject *source_object,
+			  GAsyncResult *res,
+			  gpointer user_data)
+{
+	CdClientState *state = (CdClientState *) user_data;
+	GDBusProxy *proxy = G_DBUS_PROXY (source_object);
+	GError *error = NULL;
+	GVariant *result;
+
+	/* get result */
+	result = g_dbus_proxy_call_finish (proxy, res, &error);
+	if (result == NULL) {
+		cd_client_get_devices_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* convert to array of CdDevice's */
+	state->array = cd_client_get_device_array_from_variant (state->client,
+								result,
+								state->cancellable,
+								&error);
+	if (state->array == NULL) {
+		cd_client_get_devices_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* we're done */
+	cd_client_get_devices_state_finish (state, NULL);
+out:
+	if (result != NULL)
+		g_variant_unref (result);
+}
+
+/**
+ * cd_client_get_devices:
+ * @client: a #CdClient instance
+ * @cancellable: a #GCancellable or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Gets a transacton ID from the daemon.
+ *
+ * Since: 0.1.2
+ **/
+void
+cd_client_get_devices (CdClient *client,
+		       GCancellable *cancellable,
+		       GAsyncReadyCallback callback,
+		       gpointer user_data)
+{
+	CdClientState *state;
+	GError *error = NULL;
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	res = g_simple_async_result_new (G_OBJECT (client),
+					 callback,
+					 user_data,
+					 cd_client_get_devices);
+
+	/* save state */
+	state = g_slice_new0 (CdClientState);
+	state->res = g_object_ref (res);
+	state->client = g_object_ref (client);
+	if (cancellable != NULL)
+		state->cancellable = g_object_ref (cancellable);
+
+	/* check not already cancelled */
+	if (cancellable != NULL &&
+	     g_cancellable_set_error_if_cancelled (cancellable, &error)) {
+		cd_client_get_devices_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* call D-Bus method async */
+	g_dbus_proxy_call (client->priv->proxy,
+			   "GetDevices",
+			   NULL,
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_client_get_devices_cb,
+			   state);
+out:
+	g_object_unref (res);
+}
+
+/**
+ * cd_client_get_devices_finish:
+ * @client: a #CdClient instance
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: the devices, or %NULL if unset, free with g_ptr_array_unref()
+ *
+ * Since: 0.1.2
+ **/
+GPtrArray *
+cd_client_get_devices_finish (CdClient *client,
+			      GAsyncResult *res,
+			      GError **error)
+{
+	gpointer source_tag;
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	source_tag = g_simple_async_result_get_source_tag (simple);
+
+	g_return_val_if_fail (source_tag == cd_client_get_devices, NULL);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_ptr_array_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+/***************************************************************************************************/
 
 /**
  * cd_client_create_device_sync:
@@ -765,9 +936,10 @@ out:
  * cd_client_get_profile_array_from_variant:
  **/
 static GPtrArray *
-cd_client_get_profile_array_from_variant (GVariant *result,
-					 GCancellable *cancellable,
-					 GError **error)
+cd_client_get_profile_array_from_variant (CdClient *client,
+					  GVariant *result,
+					  GCancellable *cancellable,
+					  GError **error)
 {
 	CdProfile *profile;
 	gboolean ret;
@@ -862,9 +1034,10 @@ cd_client_get_profiles_sync (CdClient *client,
 	}
 
 	/* convert to array of CdProfile's */
-	array = cd_client_get_profile_array_from_variant (result,
-							 cancellable,
-							 error);
+	array = cd_client_get_profile_array_from_variant (client,
+							  result,
+							  cancellable,
+							  error);
 	if (array == NULL)
 		goto out;
 out:
@@ -872,6 +1045,170 @@ out:
 		g_variant_unref (result);
 	return array;
 }
+
+/**
+ * cd_client_get_profiles_state_finish:
+ **/
+static void
+cd_client_get_profiles_state_finish (CdClientState *state,
+				    const GError *error)
+{
+	/* get result */
+	if (state->array != NULL) {
+		g_simple_async_result_set_op_res_gpointer (state->res,
+							   g_ptr_array_ref (state->array),
+							   (GDestroyNotify) g_ptr_array_unref);
+	} else {
+		g_simple_async_result_set_from_error (state->res,
+						      error);
+	}
+
+	/* complete */
+	g_simple_async_result_complete_in_idle (state->res);
+
+	/* deallocate */
+	if (state->cancellable != NULL)
+		g_object_unref (state->cancellable);
+	if (state->array != NULL)
+		g_ptr_array_unref (state->array);
+	g_object_unref (state->res);
+	g_object_unref (state->client);
+	g_slice_free (CdClientState, state);
+}
+
+/**
+ * cd_client_get_profiles_cb:
+ **/
+static void
+cd_client_get_profiles_cb (GObject *source_object,
+			   GAsyncResult *res,
+			   gpointer user_data)
+{
+	CdClientState *state = (CdClientState *) user_data;
+	GDBusProxy *proxy = G_DBUS_PROXY (source_object);
+	GError *error = NULL;
+	GVariant *result;
+
+	/* get result */
+	result = g_dbus_proxy_call_finish (proxy, res, &error);
+	if (result == NULL) {
+		cd_client_get_profiles_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* convert to array of CdProfile's */
+	state->array = cd_client_get_profile_array_from_variant (state->client,
+								 result,
+								 state->cancellable,
+								 &error);
+	if (state->array == NULL) {
+		cd_client_get_profiles_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* we're done */
+	cd_client_get_profiles_state_finish (state, NULL);
+out:
+	if (result != NULL)
+		g_variant_unref (result);
+}
+
+/**
+ * cd_client_get_profiles:
+ * @client: a #CdClient instance
+ * @cancellable: a #GCancellable or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Gets a transacton ID from the daemon.
+ *
+ * Since: 0.1.2
+ **/
+void
+cd_client_get_profiles (CdClient *client,
+		        GCancellable *cancellable,
+		        GAsyncReadyCallback callback,
+		        gpointer user_data)
+{
+	CdClientState *state;
+	GError *error = NULL;
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	res = g_simple_async_result_new (G_OBJECT (client),
+					 callback,
+					 user_data,
+					 cd_client_get_profiles);
+
+	/* save state */
+	state = g_slice_new0 (CdClientState);
+	state->res = g_object_ref (res);
+	state->client = g_object_ref (client);
+	if (cancellable != NULL)
+		state->cancellable = g_object_ref (cancellable);
+
+	/* check not already cancelled */
+	if (cancellable != NULL &&
+	     g_cancellable_set_error_if_cancelled (cancellable, &error)) {
+		cd_client_get_profiles_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* call D-Bus method async */
+	g_dbus_proxy_call (client->priv->proxy,
+			   "GetProfiles",
+			   NULL,
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_client_get_profiles_cb,
+			   state);
+out:
+	g_object_unref (res);
+}
+
+/**
+ * cd_client_get_profiles_finish:
+ * @client: a #CdClient instance
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: the profiles, or %NULL if unset, free with g_ptr_array_unref()
+ *
+ * Since: 0.1.2
+ **/
+GPtrArray *
+cd_client_get_profiles_finish (CdClient *client,
+			      GAsyncResult *res,
+			      GError **error)
+{
+	gpointer source_tag;
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	source_tag = g_simple_async_result_get_source_tag (simple);
+
+	g_return_val_if_fail (source_tag == cd_client_get_profiles, NULL);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_ptr_array_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+/***************************************************************************************************/
 
 /**
  * cd_client_dbus_signal_cb:
