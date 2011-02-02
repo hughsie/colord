@@ -111,6 +111,10 @@ gboolean	 cd_device_add_profile_sync		(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GError		**error);
+gboolean	 cd_device_remove_profile_sync		(CdDevice	*device,
+							 CdProfile	*profile,
+							 GCancellable	*cancellable,
+							 GError		**error);
 CdProfile	*cd_device_get_profile_for_qualifier_sync (CdDevice	*device,
 							 const gchar	*qualifier,
 							 GCancellable	*cancellable,

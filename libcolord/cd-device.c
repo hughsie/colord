@@ -780,6 +780,56 @@ out:
 }
 
 /**
+ * cd_device_remove_profile_sync:
+ * @device: a #CdDevice instance.
+ * @profile: a #CdProfile instance
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Removes a profile from a device.
+ *
+ * Return value: #TRUE for success, else #FALSE and @error is used
+ *
+ * Since: 0.1.2
+ **/
+gboolean
+cd_device_remove_profile_sync (CdDevice *device,
+			       CdProfile *profile,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	gboolean ret = TRUE;
+	GError *error_local = NULL;
+	GVariant *response = NULL;
+
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+
+	/* execute sync method */
+	response = g_dbus_proxy_call_sync (device->priv->proxy,
+					   "RemoveProfile",
+					   g_variant_new ("(o)",
+							  cd_profile_get_object_path (profile)),
+					   G_DBUS_CALL_FLAGS_NONE,
+					   -1, NULL, &error_local);
+	if (response == NULL) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_DEVICE_ERROR,
+			     CD_DEVICE_ERROR_FAILED,
+			     "Failed to remove profile from device: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+out:
+	if (response != NULL)
+		g_variant_unref (response);
+	return ret;
+}
+
+/**
  * cd_device_make_profile_default_sync:
  * @device: a #CdDevice instance.
  * @profile: a #CdProfile instance
