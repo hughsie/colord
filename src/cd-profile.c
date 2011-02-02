@@ -52,6 +52,7 @@ struct _CdProfilePrivate
 	CdProfileKind			 kind;
 	CdColorspace			 colorspace;
 	gboolean			 has_vcgt;
+	gboolean			 is_system_wide;
 	gboolean			 is_committed;
 };
 
@@ -102,6 +103,16 @@ cd_profile_set_scope (CdProfile *profile, CdObjectScope object_scope)
 {
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	profile->priv->object_scope = object_scope;
+}
+
+/**
+ * cd_profile_set_is_system_wide:
+ **/
+void
+cd_profile_set_is_system_wide (CdProfile *profile, gboolean is_system_wide)
+{
+	g_return_if_fail (CD_IS_PROFILE (profile));
+	profile->priv->is_system_wide = is_system_wide;
 }
 
 /**
@@ -484,6 +495,10 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, "HasVcgt") == 0) {
 		retval = g_variant_new_boolean (profile->priv->has_vcgt);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "IsSystemWide") == 0) {
+		retval = g_variant_new_boolean (profile->priv->is_system_wide);
 		goto out;
 	}
 

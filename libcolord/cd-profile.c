@@ -60,6 +60,7 @@ struct _CdProfilePrivate
 	CdProfileKind		 kind;
 	CdColorspace		 colorspace;
 	gboolean		 has_vcgt;
+	gboolean		 is_system_wide;
 };
 
 enum {
@@ -71,6 +72,7 @@ enum {
 	PROP_KIND,
 	PROP_COLORSPACE,
 	PROP_HAS_VCGT,
+	PROP_IS_SYSTEM_WIDE,
 	PROP_LAST
 };
 
@@ -219,6 +221,24 @@ cd_profile_get_has_vcgt (CdProfile *profile)
 }
 
 /**
+ * cd_profile_get_is_system_wide:
+ * @profile: a #CdProfile instance.
+ *
+ * Returns if the profile is installed system wide and available for all
+ * users.
+ *
+ * Return value: %TRUE if system wide.
+ *
+ * Since: 0.1.2
+ **/
+gboolean
+cd_profile_get_is_system_wide (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	return profile->priv->is_system_wide;
+}
+
+/**
  * cd_profile_dbus_properties_changed:
  **/
 static void
@@ -257,6 +277,8 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 			profile->priv->colorspace = g_variant_get_uint32 (property_value);
 		} else if (g_strcmp0 (property_name, "HasVcgt") == 0) {
 			profile->priv->has_vcgt = g_variant_get_boolean (property_value);
+		} else if (g_strcmp0 (property_name, "IsSystemWide") == 0) {
+			profile->priv->is_system_wide = g_variant_get_boolean (property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
@@ -314,6 +336,7 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	GVariant *kind = NULL;
 	GVariant *colorspace = NULL;
 	GVariant *has_vcgt = NULL;
+	GVariant *is_system_wide = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 	g_return_val_if_fail (profile->priv->proxy == NULL, FALSE);
@@ -385,6 +408,12 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	if (has_vcgt != NULL)
 		profile->priv->has_vcgt = g_variant_get_boolean (has_vcgt);
 
+	/* get if system wide */
+	is_system_wide = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+							   "IsSystemWide");
+	if (is_system_wide != NULL)
+		profile->priv->is_system_wide = g_variant_get_boolean (is_system_wide);
+
 	/* get signals from DBus */
 	g_signal_connect (profile->priv->proxy,
 			  "g-signal",
@@ -409,6 +438,8 @@ out:
 		g_variant_unref (colorspace);
 	if (has_vcgt != NULL)
 		g_variant_unref (has_vcgt);
+	if (is_system_wide != NULL)
+		g_variant_unref (is_system_wide);
 	if (filename != NULL)
 		g_variant_unref (filename);
 	if (qualifier != NULL)
@@ -679,6 +710,9 @@ cd_profile_set_property (GObject *object, guint prop_id, const GValue *value, GP
 	case PROP_HAS_VCGT:
 		profile->priv->has_vcgt = g_value_get_boolean (value);
 		break;
+	case PROP_IS_SYSTEM_WIDE:
+		profile->priv->is_system_wide = g_value_get_boolean (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -714,6 +748,9 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 		break;
 	case PROP_HAS_VCGT:
 		g_value_set_boolean (value, profile->priv->has_vcgt);
+		break;
+	case PROP_IS_SYSTEM_WIDE:
+		g_value_set_boolean (value, profile->priv->is_system_wide);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -837,6 +874,20 @@ cd_profile_class_init (CdProfileClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_HAS_VCGT,
 					 g_param_spec_string ("has-vcgt",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE));
+
+	/**
+	 * CdProfile:is-system-wide:
+	 *
+	 * If the profile is installed system wide for all users.
+	 *
+	 * Since: 0.1.2
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_IS_SYSTEM_WIDE,
+					 g_param_spec_string ("is-system-wide",
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE));

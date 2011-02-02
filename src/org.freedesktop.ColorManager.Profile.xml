@@ -83,6 +83,18 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='IsSystemWide' type='b' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            If the profile is installed system wide and available
+            for all users.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Filename' type='s' access='read'>
       <doc:doc>
         <doc:description>

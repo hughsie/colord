@@ -108,6 +108,7 @@ const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);
 CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);
+gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
 
 G_END_DECLS
 

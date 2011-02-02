@@ -250,6 +250,7 @@ colord_client_func (void)
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
 			 profile_path);
 	g_assert_cmpstr (cd_profile_get_id (profile), ==, profile_id);
+	g_assert (!cd_profile_get_is_system_wide (profile));
 
 	/* create extra profile */
 	profile2 = cd_client_create_profile_sync (client,
