@@ -46,6 +46,184 @@
     </para>
   </refsect1>
   <refsect1>
+    <title>OPTIONS</title>
+    <para>
+      This program follows the usual &gnu; command line syntax,
+      with long options starting with two dashes (`-').  A summary of
+      options is included below.
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term>
+          <option>--help</option>
+        </term>
+        <listitem>
+          <para>Show summary of options.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>COMMANDS</title>
+    <para>
+      This program takes commands with a variable number of arguments.
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term>
+          <option>create-device</option>
+        </term>
+        <listitem>
+          <para>Creates a color managed device</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>create-profile</option>
+        </term>
+        <listitem>
+          <para>Create a color profile</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>delete-device</option>
+        </term>
+        <listitem>
+          <para>Deletes a color managed device</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>delete-profile</option>
+        </term>
+        <listitem>
+          <para>Deletes a color profile</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-add-profile</option>
+        </term>
+        <listitem>
+          <para>Add a profile to a device that already exists</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-get-default-profile</option>
+        </term>
+        <listitem>
+          <para>Gets the default color profile for a device</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-get-profile-for-qualifier</option>
+        </term>
+        <listitem>
+          <para>Returns all the profiles that match a given qualifier</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-make-profile-default</option>
+        </term>
+        <listitem>
+          <para>Makes a profile default for a specific device</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-set-kind</option>
+        </term>
+        <listitem>
+          <para>Sets the device kind</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-set-model</option>
+        </term>
+        <listitem>
+          <para>Sets the device model</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-set-serial</option>
+        </term>
+        <listitem>
+          <para>Sets the device serial</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-set-vendor</option>
+        </term>
+        <listitem>
+          <para>Sets the device vendor</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>find-device</option>
+        </term>
+        <listitem>
+          <para>Find a device from the device ID</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>find-profile</option>
+        </term>
+        <listitem>
+          <para>Find a profile from the profile ID</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>get-devices</option>
+        </term>
+        <listitem>
+          <para>Gets all the color managed devices</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>get-devices-by-kind</option>
+        </term>
+        <listitem>
+          <para>Gets all the color managed devices of a specific kind</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>get-profiles</option>
+        </term>
+        <listitem>
+          <para>Gets all the available color profiles</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>profile-set-filename</option>
+        </term>
+        <listitem>
+          <para>Sets the profile filename</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>profile-set-qualifier</option>
+        </term>
+        <listitem>
+          <para>Sets the profile qualifier</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
     <title>AUTHOR</title>
     <para>This manual page was written by Richard Hughes <email>richard@hughsie.com</email>.
     </para>
