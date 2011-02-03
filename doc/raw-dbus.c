@@ -62,8 +62,10 @@ main (int argc, char **argv)
 
 	/* connect to system bus */
 	con = dbus_bus_get(DBUS_BUS_SYSTEM, NULL);
-	if (!con)
-		return 1;
+	if (con == NULL) {
+		g_warning("failed to connect to system bus");
+		goto out;
+	}
 
 	/* this is unique to the device */
 	device_id = "hello-dave";
@@ -112,6 +114,8 @@ main (int argc, char **argv)
 	loop = g_main_loop_new(NULL, TRUE);
 	g_main_loop_unref(loop);
 out:
+	if (con != NULL)
+		dbus_connection_unref(con);
 	if (message != NULL)
 		dbus_message_unref(message);
 	if (reply != NULL)
