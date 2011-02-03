@@ -61,6 +61,7 @@ struct _CdProfilePrivate
 	CdColorspace		 colorspace;
 	gboolean		 has_vcgt;
 	gboolean		 is_system_wide;
+	GHashTable		*metadata;
 };
 
 enum {
@@ -239,6 +240,49 @@ cd_profile_get_is_system_wide (CdProfile *profile)
 }
 
 /**
+ * cd_profile_get_metadata:
+ * @profile: a #CdProfile instance.
+ *
+ * Returns the profile metadata.
+ *
+ * Return value: a #GHashTable, free with g_hash_table_unref().
+ *
+ * Since: 0.1.2
+ **/
+GHashTable *
+cd_profile_get_metadata (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
+	return g_hash_table_ref (profile->priv->metadata);
+}
+
+
+/**
+ * cd_profile_set_metadata_from_variant:
+ **/
+static void
+cd_profile_set_metadata_from_variant (CdProfile *profile, GVariant *variant)
+{
+	GVariantIter *iter = NULL;
+	const gchar *prop_key;
+	const gchar *prop_value;
+
+	/* remove old entries */
+	g_hash_table_remove_all (profile->priv->metadata);
+
+	/* insert the new metadata */
+	g_variant_get (variant, "a{ss}",
+		       &iter);
+	while (g_variant_iter_loop (iter, "{ss}",
+				    &prop_key, &prop_value)) {
+		g_hash_table_insert (profile->priv->metadata,
+				     g_strdup (prop_key),
+				     g_strdup (prop_value));
+
+	}
+}
+
+/**
  * cd_profile_dbus_properties_changed:
  **/
 static void
@@ -279,6 +323,8 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 			profile->priv->has_vcgt = g_variant_get_boolean (property_value);
 		} else if (g_strcmp0 (property_name, "IsSystemWide") == 0) {
 			profile->priv->is_system_wide = g_variant_get_boolean (property_value);
+		} else if (g_strcmp0 (property_name, "Metadata") == 0) {
+			cd_profile_set_metadata_from_variant (profile, property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
@@ -337,6 +383,7 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	GVariant *colorspace = NULL;
 	GVariant *has_vcgt = NULL;
 	GVariant *is_system_wide = NULL;
+	GVariant *metadata = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 	g_return_val_if_fail (profile->priv->proxy == NULL, FALSE);
@@ -414,6 +461,12 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	if (is_system_wide != NULL)
 		profile->priv->is_system_wide = g_variant_get_boolean (is_system_wide);
 
+	/* get if system wide */
+	metadata = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+						     "Metadata");
+	if (metadata != NULL)
+		cd_profile_set_metadata_from_variant (profile, metadata);
+
 	/* get signals from DBus */
 	g_signal_connect (profile->priv->proxy,
 			  "g-signal",
@@ -440,6 +493,8 @@ out:
 		g_variant_unref (has_vcgt);
 	if (is_system_wide != NULL)
 		g_variant_unref (is_system_wide);
+	if (metadata != NULL)
+		g_variant_unref (metadata);
 	if (filename != NULL)
 		g_variant_unref (filename);
 	if (qualifier != NULL)
@@ -856,6 +911,10 @@ static void
 cd_profile_init (CdProfile *profile)
 {
 	profile->priv = CD_PROFILE_GET_PRIVATE (profile);
+	profile->priv->metadata = g_hash_table_new_full (g_str_hash,
+							 g_str_equal,
+							 g_free,
+							 g_free);
 }
 
 /*
@@ -870,6 +929,7 @@ cd_profile_finalize (GObject *object)
 
 	profile = CD_PROFILE (object);
 
+	g_hash_table_unref (profile->priv->metadata);
 	g_free (profile->priv->object_path);
 	g_free (profile->priv->id);
 	g_free (profile->priv->filename);

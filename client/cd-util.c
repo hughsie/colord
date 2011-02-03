@@ -48,10 +48,13 @@ typedef struct {
 static void
 cd_util_show_profile (CdProfile *profile)
 {
-	const gchar *tmp;
-	CdProfileKind kind;
 	CdColorspace colorspace;
-	g_print ("Object Path: %s\n",
+	CdProfileKind kind;
+	const gchar *tmp;
+	GHashTable *metadata;
+	GList *list, *l;
+
+	g_print ("Object Path:\t%s\n",
 		 cd_profile_get_object_path (profile));
 	tmp = cd_profile_get_qualifier (profile);
 	if (tmp != NULL && tmp[0] != '\0')
@@ -63,15 +66,29 @@ cd_util_show_profile (CdProfile *profile)
 	}
 	colorspace = cd_profile_get_colorspace (profile);
 	if (colorspace != CD_COLORSPACE_UNKNOWN) {
-		g_print ("Colorspace:\t\t%s\n",
+		g_print ("Colorspace:\t%s\n",
 			 cd_colorspace_to_string (colorspace));
 	}
-	g_print ("Has VCGT:\t\t%s\n",
+	g_print ("Has VCGT:\t%s\n",
 		 cd_profile_get_has_vcgt (profile) ? "Yes" : "No");
-	g_print ("Filename:\t\t%s\n",
+	g_print ("Filename:\t%s\n",
 		 cd_profile_get_filename (profile));
 	g_print ("Profile ID:\t%s\n",
 		 cd_profile_get_id (profile));
+
+	/* list all the items of metadata */
+	metadata = cd_profile_get_metadata (profile);
+	list = g_hash_table_get_keys (metadata);
+	for (l = list; l != NULL; l = l->next) {
+		if (g_strcmp0 (l->data, "CMS") == 0)
+			continue;
+		g_print ("Metadata:\t%s=%s\n",
+			 (const gchar *) l->data,
+			 (const gchar *) g_hash_table_lookup (metadata,
+							      l->data));
+	}
+	g_list_free (list);
+	g_hash_table_unref (metadata);
 }
 
 /**

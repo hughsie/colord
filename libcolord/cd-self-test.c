@@ -126,6 +126,7 @@ colord_client_func (void)
 	GPtrArray *devices;
 	GPtrArray *profiles;
 	guint32 key;
+	GHashTable *metadata;
 
 	key = g_random_int_range (0x00, 0xffff);
 	g_debug ("using random key %04x", key);
@@ -278,6 +279,15 @@ colord_client_func (void)
 	ret = cd_profile_set_filename_sync (profile, filename, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+
+	/* wait for daemon */
+	_g_test_loop_run_with_timeout (50);
+
+	/* check metadata */
+	metadata = cd_profile_get_metadata (profile);
+	g_assert_cmpint (g_hash_table_size (metadata), ==, 2);
+	g_assert_cmpstr (g_hash_table_lookup (metadata, "EDID_md5"), ==, "FIXME");
+	g_hash_table_unref (metadata);
 
 	/* set profile filename */
 	ret = cd_profile_install_system_wide_sync (profile, NULL, &error);

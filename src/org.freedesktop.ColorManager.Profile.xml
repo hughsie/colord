@@ -34,6 +34,20 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Metadata' type='a{ss}' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The metadata for the profile, which may include optional
+            keys like <doc:tt>EDID_md5</doc:tt> and
+            <doc:tt>EDID_manufacturer</doc:tt> that are set by several
+            CMS frameworks.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Qualifier' type='s' access='read'>
       <doc:doc>
         <doc:description>
@@ -42,7 +56,7 @@
             A qualifier is used as a way to select a profile for a device.
             This might be something free text like
             <doc:tt>High quality studio</doc:tt>doc:tt> or something more
-            programmable like <doc:tt>RGB.Plain.300dpi</doc:tt>doc:tt>.
+            programmable like <doc:tt>RGB.Plain.300dpi</doc:tt>.
           </doc:para>
         </doc:description>
       </doc:doc>

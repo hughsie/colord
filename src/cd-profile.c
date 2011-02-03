@@ -51,6 +51,7 @@ struct _CdProfilePrivate
 	guint				 watcher_id;
 	CdProfileKind			 kind;
 	CdColorspace			 colorspace;
+	GHashTable			*metadata;
 	gboolean			 has_vcgt;
 	gboolean			 is_system_wide;
 };
@@ -306,6 +307,36 @@ out:
 }
 
 /**
+ * cd_profile_get_metadata_as_variant:
+ **/
+static GVariant *
+cd_profile_get_metadata_as_variant (CdProfile *profile)
+{
+	GList *list, *l;
+	GVariantBuilder builder;
+
+	/* we always must have at least one bit of metadata */
+	if (g_hash_table_size (profile->priv->metadata) == 0) {
+		g_debug ("no metadata, so faking something");
+		g_hash_table_insert (profile->priv->metadata,
+				     g_strdup ("CMS"),
+				     g_strdup ("colord"));
+	}
+	/* add all the keys in the dictionary to the variant builder */
+	list = g_hash_table_get_keys (profile->priv->metadata);
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	for (l = list; l != NULL; l = l->next) {
+		g_variant_builder_add (&builder,
+				       "{ss}",
+				       l->data,
+				       g_hash_table_lookup (profile->priv->metadata,
+							    l->data));
+	}
+	g_list_free (list);
+	return g_variant_builder_end (&builder);
+}
+
+/**
  * cd_profile_set_property_internal:
  **/
 gboolean
@@ -338,6 +369,9 @@ cd_profile_set_property_internal (CdProfile *profile,
 		cd_profile_dbus_emit_property_changed (profile,
 						       "HasVcgt",
 						       g_variant_new_boolean (priv->has_vcgt));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Metadata",
+						       cd_profile_get_metadata_as_variant (profile));
 	} else if (g_strcmp0 (property, "Qualifier") == 0) {
 		cd_profile_set_qualifier (profile, value);
 		cd_profile_dbus_emit_property_changed (profile,
@@ -492,6 +526,10 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, "IsSystemWide") == 0) {
 		retval = g_variant_new_boolean (profile->priv->is_system_wide);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Metadata") == 0) {
+		retval = cd_profile_get_metadata_as_variant (profile);
 		goto out;
 	}
 
@@ -664,6 +702,13 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 
 	/* do we have vcgt */
 	profile->priv->has_vcgt = cmsIsTag (lcms_profile, cmsSigVcgtTag);
+
+	/* TODO: actually extract metadata from the DICT tag */
+	if (profile->priv->has_vcgt) {
+		g_hash_table_insert (profile->priv->metadata,
+				     g_strdup ("EDID_md5"),
+				     g_strdup ("FIXME"));
+	}
 
 	/* generate and set checksum */
 	profile->priv->checksum =
@@ -875,6 +920,10 @@ static void
 cd_profile_init (CdProfile *profile)
 {
 	profile->priv = CD_PROFILE_GET_PRIVATE (profile);
+	profile->priv->metadata = g_hash_table_new_full (g_str_hash,
+							 g_str_equal,
+							 g_free,
+							 g_free);
 }
 
 /**
@@ -898,6 +947,7 @@ cd_profile_finalize (GObject *object)
 	g_free (priv->id);
 	g_free (priv->checksum);
 	g_free (priv->object_path);
+	g_hash_table_unref (priv->metadata);
 
 	G_OBJECT_CLASS (cd_profile_parent_class)->finalize (object);
 }
