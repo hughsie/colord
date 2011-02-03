@@ -241,7 +241,7 @@ static void
 cd_gui_button_create_cb (GtkWidget *widget, gpointer user_data)
 {
 	const gchar *id;
-	const gchar *qualifier;
+//	const gchar *qualifier;
 	guint options = G_MAXUINT;
 
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "entry_id"));
@@ -262,7 +262,7 @@ cd_gui_button_create_cb (GtkWidget *widget, gpointer user_data)
 	if (create_profile) {
 		g_debug ("create profile");
 		widget = GTK_WIDGET (gtk_builder_get_object (builder, "entry_qualifier"));
-		qualifier = gtk_entry_get_text (GTK_ENTRY (widget));
+//		qualifier = gtk_entry_get_text (GTK_ENTRY (widget));
 
 		g_dbus_proxy_call (proxy,
 				   "CreateProfile",
