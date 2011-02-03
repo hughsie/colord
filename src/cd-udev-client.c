@@ -150,6 +150,11 @@ cd_udev_client_add (CdUdevClient *udev_client,
 					 vendor,
 					 FALSE,
 					 NULL);
+	cd_device_set_property_internal (device,
+					 "Colorspace",
+					 "rgb",
+					 FALSE,
+					 NULL);
 	g_debug ("CdUdevClient: emit add: %s", id);
 	g_signal_emit (udev_client, signals[SIGNAL_ADDED], 0, device);
 
