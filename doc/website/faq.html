@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>colord - Frequently Asked Questions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+</head>
+<body>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<h1>Frequently asked questions</h1>
+
+<h2>Table Of Contents</h2>
+<ul>
+<li><a href="#spelling">Can I type colord with leading upper case 'C'?</a></li>
+<li><a href="#gcm">How does this work with gnome-color-manager?</a></li>
+<li><a href="#daemon">How do system daemons add devices and profiles?</a></li>
+<li><a href="#cups">How would a system daemon like CUPS use colord?</a></li>
+<!--
+<li><a href="#xxx">xxx</a></li>
+-->
+<li><a href="#translation">How do I translate gnome-color-manager?</a></li>
+<li><a href="#corporate-sponsor">Is there an organization sponsoring development of colord?</a></li>
+</ul>
+
+<!--
+<hr/>
+<h3><a name="xxxxxxxxxxxxxxxxxxxxxxxxxxx">ccccccccccccccccccccccccccccccc</a></h3>
+<p>
+ccccccccccccccccccccccccccccccccccccccccccccccccccccc.
+</p>
+-->
+
+<hr/>
+<h3><a name="spelling">Can I type colord with leading upper case 'C'</a></h3>
+<p>
+No.
+</p>
+
+<hr/>
+<h3><a name="gcm">How does this work with gnome-color-manager?</a></h3>
+<p>
+At startup GCM sends it's per-session database and virtual devices to
+colord, and the session devices are removed when the user logs off..
+</p>
+
+<hr/>
+<h3><a name="daemon">How do system daemons add devices and profiles?</a></h3>
+<p>
+Like this:
+<pre>
+    for device in self.devices:
+        o = CreateDevice(device.name)
+        for profile in device.profiles:
+            p = AddProfile(profile.id)
+            if profile.icc_filename:
+                p.SetFilename(profile.icc_filename)
+            p.SetQualifier(profile.qualifier)
+            o.AddProfile(p)
+</pre>
+</p>
+
+<hr/>
+<h3><a name="cups">How would a system daemon like CUPS use colord?</a></h3>
+<p>
+Like this:
+<pre>
+    d = FindDeviceById(device.name)
+    if d:
+        p = d.GetProfileForQualifier(qualifier)
+        if p:
+            p.Use()
+</pre>
+</p>
+
+<hr/>
+<h3><a name="translation">How do I translate gnome-color-manager?</a></h3>
+<p>
+See the <a href="http://l10n.gnome.org/teams">GNOME Translation Team</a>
+web pages for how to contribute to GNOME localisation.
+</p>
+
+<hr/>
+<h3><a name="corporate-sponsor">Is there an organization or corporation sponsoring development of colord?</a></h3>
+<p>
+Colord is not sponsored by anyone, although Red Hat gives me the time to
+work on random open source projects. Thanks!
+</p>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<!-- space for the links to be at the top -->
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+
+<p class="footer">
+ Copyright <a href="mailto:richard@hughsie.com">Richard Hughes 2011</a><br/>
+ <a href="http://validator.w3.org/check/referer">Optimized</a>
+ for <a href="http://www.w3.org/">standards</a>.
+</p>
+
+</body>
+</html>
+

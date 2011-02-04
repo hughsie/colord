@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>colord - What is colord?</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+</head>
+<body>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<h1>Introduction</h2>
+<p>
+colord is a system service that makes it easy to manage, install and
+generate color profiles to accuratly color manage input and output devices.
+</p>
+
+<h2>What colord does:</h2>
+<ul>
+<li>
+  Provides a DBus API for system frameworks to query, e.g.
+  <i>Get me the profiles for device $foo</i> or
+  <i>Create a device and assign it profile $bar</i>.
+</li>
+<li>
+  Provides a persistant database backed store that is preserved accross
+  reboots.
+</li>
+<li>
+  Provides the session for a way to set system settings, for instance
+  setting the display profile for all users and all sessions.
+</li>
+</ul>
+</p>
+
+<!--
+<table class="noteinformation">
+<tr>
+ <td><img src="img/dialog-information.png" alt="[NOTE]"/></td>
+ <td>
+  <p>If you're easily bored, checkout the
+   <a href="http://www.hughsie.com/public/introduction-to-colord.pdf">presentation</a>
+   or the
+   <a href="http://video.fosdem.org/2008/maintracks/FOSDEM2008-colord.ogg">video</a>
+   I prepared for FOSDEM 2008 and skip the rest of this page.
+  </p>
+ </td>
+</tr>
+</table>
+-->
+
+<p>
+colord itself is a system activated daemon called
+<code>colord</code>.
+Being system activated means that it's only started when the user is
+using a text mode or graphical tool.
+</p>
+
+<p>
+GNOME Color Manager is the name of the graphical tools for
+colord to be used in the GNOME desktop.
+GNOME Color Manager acts as a client to colord.
+</p>
+
+<table class="noteinformation">
+<tr>
+ <td><img src="img/dialog-information.png" alt="[NOTE]"/></td>
+ <td>
+  <p>
+   By default, colord uses PolicyKit for user authentication.
+   This means that you, as an admin, can specify with fine-grained control
+   what your users can and cannot do.
+  </p>
+  <p>
+   For instance, an admin could specify that unprivileged users can create
+   color devices but not delete them.
+   For home users it's typical to ask the user for their own, or the
+   administrator's <code>root</code> password.
+  </p>
+ </td>
+</tr>
+</table>
+
+<h2>Use cases:</h2>
+<p>
+colord and GNOME Color Manager was designed to solve a few discrete use cases.
+The DBus interface was designed to fulfil the following scenarios.
+</p>
+
+<ul>
+<li>An image viewer wants to show an image with an embedded color profile to the screen, where the screen also has an assigned profile. The image has to be transformed from the embedded profile to the current display profile.</li>
+<li>A scanner application wants to get the correct color profile for a device so it can be embedded in the output file.</li>
+<li>An image viewer wants to show a photograph without an embedded profile, but where a virtual device profile has been assigned. This needs to be fast as there are many similar photos in the same directory.</li>
+<li>An application wants to softproof for a printer device to show the user how the colors are going to be clipped when the file is printed.</li>
+<li>A photo editor wants to know the default RGB space to use for new image canvasses.</li>
+<li>A photo viewer wants to know what color space to use for untagged content with no embedded profile.</li>
+<li>A print preview application wants to know what installed profiles are suitable for printer devices.</li>
+<li>A user wants to have two profiles for a digital SLR, one for the studio and one for outside with full sun.</li>
+<li>A user has two different monitors attached and the desktop is spanned across each one. Each one has a different profile, and applications can be dragged from one window to another.</li>
+<li>One user may want to assign color profiles to devices and set these as the system default for all users</li>
+</ul>
+
+<h2>Features:</h2>
+<p>
+This project has the following features:
+</p>
+<ul>
+<li>Deep integration into the GNOME and free software stack.</li>
+<li>Setting output gamma tables (with local brightness and adjustments) to any Xrandr output.</li>
+<li>Setting of per-user and system settings at session start, and when monitors are hotplugged.</li>
+<li>Easy install of vendor supplied .ICC or .ICM files, just by double clicking on the file.</li>
+<li>Easy display calibration using an external calibration device, and scanner calibration using a inexpensive IT 8.7 target. For calibration, the ArgyllCMS package is currently required.</li>
+<li>Spot color reading using dozens of supported spectrophotometers.</li>
+<li>Integration X11 by setting the per-screen and per-output _ICC_PROFILE atom, which makes applications such as the GIMP use a color managed output.</li>
+<li>Easy to use DBus interface for applications to query what ICC profiles should be used for a specific device or device type.</li>
+</ul>
+
+<h2>Subsystems:</h2>
+<p>
+colord and GNOME Color Manager supports the following subsystems:
+</p>
+<ul>
+<li>XRandR (monitors)</li>
+<li>SANE (scanners)</li>
+<li>UDEV (cameras)</li>
+<li>CUPS (printers)</li>
+<li>Virtual (scanners, cameras, printers)</li>
+</ul>
+<p>
+Virtual devices are not backed by a physical device, and so can be things like ''Snapfish Processing Lab'' or ''Tommys Camera''.
+</p>
+
+<h2>Licensing:</h2>
+<p>
+colord and gnome-color-manager are (L)GPLv2+ licensed.  This means that
+you can redistribute and/or modify colord and gnome-color-manager
+under the terms of the GNU General Public License as published by the
+Free Software foundation; either version 2 of the License, or (at your
+option) any later version.  See the license information included with
+the software for more details.
+</p>
+
+<p>
+What colord is not:
+</p>
+<ul>
+ <li>A huge daemon with lots of dependencies.</li>
+ <li>100% API stable. The API may change a little until we ship
+1.0.0</li>
+ <li>Targeted to a particular architecture or platform.</li>
+<!--
+ <li>Produced by any one vendor. There are many contributors helping to
+get this done.</li>
+-->
+</ul>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<p class="footer">
+ Copyright <a href="mailto:richard@hughsie.com">Richard Hughes 2011</a><br/>
+ <a href="http://validator.w3.org/check/referer">Optimized</a>
+ for <a href="http://www.w3.org/">standards</a>.
+</p>
+
+</body>
+</html>

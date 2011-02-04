@@ -9,5 +9,3 @@ to ensure hard work is not duplicated.
 * device.Modified has to be saved in the database (even for temp devices)
 
 * Test device.Modified gets changed on profile changes
-
-* CUPS needs to call commit

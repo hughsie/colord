@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>colord - How do I use colord?</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+</head>
+<body>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<h1>How do I use colord?</h1>
+
+<h2>Using the command line</h2>
+<p>
+The <code>colormgr</code> text-mode program allows you to interact with
+colord on the command line. For example:
+</p>
+<pre>
+[hughsie@hughsie-work ~]$ colormgr get-devices
+Object Path: /org/freedesktop/ColorManager/devices/sysfs_chicony_electronics_co___ltd__integrated_camera
+Created:	1296825093
+Modified:	1296825093
+Kind:		camera
+Model:		Integrated Camera
+Vendor:		Chicony Electronics Co.  Ltd.
+Serial:		
+Colorspace:	rgb
+Device ID:	sysfs_chicony_electronics_co___ltd__integrated_camera
+Object Path: /org/freedesktop/ColorManager/devices/Photosmart_B109a_m
+Created:	1296825095
+Modified:	1296825095
+Kind:		printer
+Model:		HP Photosmart b109a-m, hpcups 3.10.9
+Vendor:		
+Serial:		
+Colorspace:	unknown
+Device ID:	Photosmart-B109a-m
+Profile 1:	/org/freedesktop/ColorManager/profiles/Photosmart_B109a_m_DeviceN__
+Profile 2:	/org/freedesktop/ColorManager/profiles/Photosmart_B109a_m_RGB__
+</pre>
+<p>or</p>
+<pre>
+[hughsie@hughsie-work ~]$ colormgr --help
+Usage:
+  colormgr [OPTION...]
+
+  create-device                      Create a device
+  create-profile                     Create a profile
+  delete-device                      Deletes a device
+  delete-profile                     Deletes a profile
+  device-add-profile                 Add a profile to a device
+  device-get-default-profile         Gets the default profile for a device
+  device-get-profile-for-qualifier   Returns all the profiles that match a qualifier
+  device-make-profile-default        Makes a profile default for a device
+  device-set-kind                    Sets the device kind
+  device-set-model                   Sets the device model
+  device-set-serial                  Sets the device serial
+  device-set-vendor                  Sets the device vendor
+  find-device                        Find a device
+  find-profile                       Find a profile
+  get-devices                        Gets all the color managed devices
+  get-devices-by-kind                Gets all the color managed devices of a specific kind
+  get-profiles                       Gets all the available color profiles
+  profile-set-filename               Sets the profile filename
+  profile-set-qualifier              Sets the profile qualifier
+
+Help Options:
+  -h, --help       Show help options
+</pre>
+
+<h2>Using graphical tools:</h2>
+<p>
+<code>gnome-color-manager</code> provides a rich set of GTK tools for
+automatically managing color devices and profiles.
+See the <a href="screenshots.html">screenshots page</a> for more details.
+</p>
+
+<h2>Using libcolord:</h2>
+<p>
+The <a href="gtk-doc/CdClient.html">libcolord gobject library</a>
+wraps the DBUS interface in a nice glib-style API.
+This makes designing programs that use libcolord can concentrate on
+core functionality rather that the DBUS and colord internals.
+CdClient in libcolord can be used as easily as:
+</p>
+<pre>
+CdClient *client;
+GError *error;
+GPtrArray *devices;
+client = cd_client_new ();
+devices = cd_client_get_devices_sync (client, cancellable, &amp;error);
+g_object_unref (client);
+g_ptr_array_unref (devices);
+</pre>
+
+<h2>Using the raw DBUS API:</h2>
+<p>
+Using the DBUS methods and signals directly means that no glib or
+gobject dependency is needed.
+This is not difficult, although does require more code than just using
+libcolord.
+The latest interface is available in the source tree or <a href="http://gitweb.freedesktop.org/?p=colord.git;a=blob;f=src/org.freedesktop.colord.xml">on-line</a>.
+</p>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<p class="footer">
+ Copyright <a href="mailto:richard@hughsie.com">Richard Hughes 2011</a><br/>
+ <a href="http://validator.w3.org/check/referer">Optimized</a>
+ for <a href="http://www.w3.org/">standards</a>.
+</p>
+
+</body>
+</html>

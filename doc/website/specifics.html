@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>colord - What is colord?</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+</head>
+<body>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<h1>How it works:</h1>
+
+<h2>Mapping the device to the profile</h2>
+
+<p>
+Preferences are per-user and are stored in GConf in GNOME 2-30, or GSettings in newer versions.
+There is need for configuration of devices to profiles, and to store metadata about each device.
+This is stored in the colord mapping database, which is
+<code>/var/lib/colord/mapping.db</code> by default.
+The schema is really simple, and as follows:
+</p>
+<pre>
+CREATE TABLE mappings (id TEXT PRIMARY KEY,device TEXT,profile TEXT);
+</pre>
+
+<p>
+Multiple profiles can of course be assigned to the same device.
+Persistent devices and profiles can also be saved to the storage database, which is
+<code>/var/lib/colord/storage.db</code> by default.
+The schema is really simple, and as follows:
+</p>
+<pre>
+CREATE TABLE devices (device_id TEXT PRIMARY KEY,device TEXT);
+CREATE TABLE properties (device_id TEXT,property TEXT,value TEXT);
+</pre>
+
+<h3>Comparison to UCMM</h3>
+<p>
+<a href="http://www.argyllcms.com/doc/ucmm.html">ucmm</a> (Unix micro Color Management Module) is a color management config file designed just to handle the necessary configuration needed to track the installation and association of ICC profiles with X11 displays.
+</p>
+<pre>
+{
+  "devices": {
+    "display": {
+      "1": {
+        "EDID": "0x00FFFFFFFFFFFF0034A1731751720000150901010C1F17CDE8A11E9E554A982712474FA4CE0045598180315961590101010101010101000000FE004D6F6E69746F720A2020202020000000FE004D6F6E69746F720A2020202020000000FE004D6F6E69746F720A2020202020000000FE004D6F6E69746F720A2020202020003D",
+        "ICC_PROFILE": "/home/graeme/.local/share/color/devices/display/mon1.icc"
+      },
+      "2": {
+        "NAME": ":0.1",
+        "ICC_PROFILE": "/home/graeme/.local/share/color/devices/display/mon2.icc"
+      }
+    }
+  }
+}
+</pre>
+
+The colord database differs from UCMM in the following ways:
+
+<ul>
+<li>UCMM is a <a href="http://www.json.org/">JSON</a> (!JavaScript Object Notation) file format, whilst colord is a ''key=value'' style store</li>
+<li>UCMM allows mapping from a monitor EDID or display name to a device profile, where colord maps <i>device IDs</i> to <i>profile IDs</i>.</li>
+<li>UCMM stores the EDID in the file as a huge hex number, but colord stores other "junk" details such as a the device colorspace and device serial number which are useful to some GUI tools.</li>
+<li>UCMM is a well documented standard used for a long time by ArgyllCMS whilst colord has only ever been used by GCM.</li>
+<li>UCMM has to be parsed using a parser such as JNCF, whilst colord queried by any client that spaeks <code>DBus</code>.</li>
+<li>UCMM only supports one profile per device, unlike colord which supports an ordered list of profiles.</li>
+</ul>
+
+<p>
+All that said, UCMM is already used by ArgyllCMS and we should probably
+import the existing files on the first run of GCM.
+</p>
+
+<h3>Using Elektra</h3>
+<p>
+Oyranos puts device settings in the session and system
+<a href="http://elektra.g4ii.com/Main_Page">Elektra</a> database.
+Elektra is not a supported library in any mainstream distribution and is
+not used by any modern open source projects or frameworks.
+GCM will not import settings from Elektra (as this would make GCM itself
+depend on Elektra) nor can it propagate settings back into the Oyranos
+configuration system.
+</p>
+<p>
+Until Oyranos moves away from Elektra there is no way it can work alongside GCM.
+The GCM author would be willing to work with the Oyranos developers to
+define a standard compatible with both systems, but Elektra is simply
+not a viable option for GCM.
+</p>
+
+<h2>Setting the system default</h2>
+<p>
+One user may want to set the default for all users.
+We cannot reference files in <code>/home/foo/.icc/</code> when logged in
+as user bar, as the user will not have access permissions, or in the
+worst case, <code>/home/foo</code> may be encrypted and inaccessible even as root.
+For this reason, colord copies the ICC profiles to a systemwide directory,
+<code>/usr/lib/color</code> that is per-machine and accessible to all users.
+</p>
+<p>
+It is <a href="http://lists.freedesktop.org/archives/openicc/2010q2/002167.html">encouraged</a> that other CMS implementations also read ICC profiles from the per-machine
+<code>/usr/lib/color</code> directory.
+</p>
+
+<h2>What the binaries do</h2>
+
+<p>
+GCM ships quite a few data files and binary files. Most users will interact with ICC files by double clicking on them, and with color management using ''System->Preferences->Color Profiles''. It's not expected that users should need to run any command line programs at all.
+</p>
+
+For interest, the different binaries are listed here.
+
+<h3>GTK programs</h3>
+
+<ul>
+<li><code>gcm-import</code> - Helper to import an ICC file. This is normally run by the <code>gcm-import.desktop</code> file.
+<li><code>gcm-picker</code> - Simple program to pick a spot color using a photospectrometer.
+</ul>
+
+<h3>Command line tools</h3>
+<ul>
+<li><code>gcm-inspect</code> - Command line tool to inspect settings and test the DBus API.</li>
+<li><code>gcm-fix-profile</code> - Tries to fix a corrupted or invalid ICC profile file.</li>
+<li><code>gcm-session</code> - DBus session service that is started on demand.</li>
+<li><code>gcm-dump-edid</code> - Debugging program that dumps the EDID to a file.</li>
+<li><code>gcm-dump-profile</code> - Debugging program that dumps all details about a profile.</li>
+</ul>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<p class="footer">
+ Copyright <a href="mailto:richard@hughsie.com">Richard Hughes 2011</a><br/>
+ <a href="http://validator.w3.org/check/referer">Optimized</a>
+ for <a href="http://www.w3.org/">standards</a>.
+</p>
+
+</body>
+</html>

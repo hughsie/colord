@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>colord - Where can I download it?</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen"/>
+</head>
+<body>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<h1>Where do I download it?</h1>
+
+<h2>Precompiled Packages</h2>
+<p>
+Your distribution may already have compiled packages that are much
+easier to install.  Refer to the <a href="users.html">users</a> page for
+more details or use the instructions provided below to get you going using
+your native package manager.
+</p>
+<ul>
+<!--
+  <li>
+   Conary: Yes, just run: <code>sudo conary update colord gnome-color-manager</code>
+  </li>
+-->
+  <li>
+   Fedora: Just run: <code>yum install colord gnome-color-manager</code> (as root)
+  </li>
+<!--
+  <li>
+   Debian: Yes, packages are available for Debian Sid.
+   Just install <code>colord</code> via APT.
+  </li>
+-->
+<!--
+  <li>
+   Ubuntu: Yes, starting with Hardy Heron (8.04).
+   Newer versions are used by more recent releases, but you can find the latest versions of colord for all releases in this <a href="https://edge.launchpad.net/~colord/+archive">Personal Package Archive</a>.
+   <a href="https://help.ubuntu.com/8.04/add-applications/C/extra-repositories-adding.html">Add</a>
+   the repository and <a href="https://help.ubuntu.com/8.04/add-applications/C/advanced.html">
+   install</a> the packages <code>colord</code> and <code>gnome-color-manager</code>.
+  </li>
+-->
+<!--
+  <li>
+   openSUSE: Yes, starting with 11.0, add <a href="http://download.opensuse.org/distribution/11.0/repo/oss/">this</a>
+   repository file and run: <code>zypper install colord gnome-color-manager</code> (as root)
+  </li>
+-->
+<!--
+  <li>
+   Mandriva: Yes, starting with 2009, just run: <code>urpmi colord gnome-color-manager</code> (as root)
+  </li>
+-->
+  <li>
+   Others: Probably not, although you can compile from source. See below for more details.
+  </li>
+</ul>
+
+<h2>Released Versions</h2>
+<p>
+Released versions are found on
+<a href="http://colord.freedesktop.org/releases/">http://colord.freedesktop.org/releases/</a>.
+</p>
+<p>
+These are versions which have new features for each release.
+We are also willing to break ABI and API to fix bugs and will merge new or
+modified translations as required or suggested.
+</p>
+<table>
+<tr><td><b>Version</b></td><td>&nbsp;&nbsp;</td><td><b>Date</b></td></tr>
+<tr><td>0.1.1</td><td></td><td>2011-01-26</td></tr>
+<tr><td>0.1.0</td><td></td><td>2011-01-13</td></tr>
+</table>
+
+<h2>Dependencies</h2>
+<p>
+The actual colord daemon requires:
+</p>
+<ul>
+<li><code>glib</code> 2.14.0</li>
+<li><code>polkit</code> 0.9</li>
+</ul>
+
+<p>
+gnome-color-manager will need all the usual GNOME libs as well.
+Just make sure you install colord before gnome-color-manager!
+</p>
+
+<h2>Compiling the latest code</h2>
+<p>
+You can get the latest colord daemon and GNOME frontend from the
+<a href="http://gitorious.org/colord/colord">public git repositories</a>
+on <a href="http://gitorious.org/">gitorious.org</a>:
+</p>
+<pre>
+git clone git://gitorious.org/colord/master.git
+git clone git://git.gnome.org/gnome-color-manager
+</pre>
+
+<p>
+If you want to help with an item on the TODO or fix known bugs, file bugs in [[https://bugzilla.gnome.org/enter_bug.cgi?product=gnome-color-manager|GNOME Bugzilla]].
+If color doesn't compile for you, send patches! Thanks.
+</p>
+
+<p>Back to the <a href="index.html">main page</a></p>
+
+<p class="footer">
+ Copyright <a href="mailto:richard@hughsie.com">Richard Hughes 2011</a><br/>
+ <a href="http://validator.w3.org/check/referer">Optimized</a>
+ for <a href="http://www.w3.org/">standards</a>.
+</p>
+
+</body>
+</html>
