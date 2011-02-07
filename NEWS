@@ -1,3 +1,28 @@
+Version 0.1.2
+~~~~~~~~~~~~~
+Released: 2011-02-07
+
+New Features:
+ - Add a 'Colorspace' property to all profile devices (Richard Hughes)
+ - Add a dictionary of properties to the CreateX() methods (Richard Hughes)
+ - Add a 'HasVcgt' property to all profile devices (Richard Hughes)
+ - Add a 'IsSystemWide' property to the profile interface (Richard Hughes)
+ - Add a 'Metadata' property to the profile object for the DICT ICC tag (Richard Hughes)
+ - Add a 'Mode' property to each device (Richard Hughes)
+ - Add an example to show how to use colord without using libcolord (Richard Hughes)
+ - Add async helpers to get the device and profile arrays (Richard Hughes)
+ - Add CdClient ::profile-added and ::profile-removed signals (Richard Hughes)
+ - Add cd_device_remove_profile_sync() (Richard Hughes)
+ - Add the website to revision control (Richard Hughes)
+ - Refactor out colormgr into a useful command line tool (Richard Hughes)
+ - Remove the 'Commit' API -- with properties we don't need this (Richard Hughes)
+ - When a device or profile changes, emit a signal on the base interface (Richard Hughes)
+
+Bugfixes:
+ - If available, use the profile file checksum in the DBus object (Richard Hughes)
+ - Replace underscores with spaces for the UDev model and vendor properties (Richard Hughes)
+ - Set the colorspace on V4L devices (Richard Hughes)
+
 Version 0.1.1
 ~~~~~~~~~~~~~
 Released: 2011-01-26

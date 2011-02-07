@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-11 12:30+0000\n"
+"POT-Creation-Date: 2011-02-07 11:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,44 +18,131 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. TRANSLATORS: column for the source description
-#: ../client/cd-gui.c:391
+#: ../client/cd-gui.c:390
 msgid "Device"
 msgstr ""
 
 #. TRANSLATORS: column for the source description
-#: ../client/cd-gui.c:409
+#: ../client/cd-gui.c:408
 msgid "Profiles"
 msgstr ""
 
 #. TRANSLATORS: column for the source description
-#: ../client/cd-gui.c:428
+#: ../client/cd-gui.c:427
 msgid "Title"
 msgstr ""
 
-#: ../client/cd-gui.c:1045
+#: ../client/cd-gui.c:1044
 msgid "Color GUI Tool"
 msgstr ""
 
+#: ../client/cd-util.c:267
+msgid "Command not found, valid commands are:"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:984
+msgid "Gets all the color managed devices"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:989
+msgid "Gets all the color managed devices of a specific kind"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:994
+msgid "Gets all the available color profiles"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:999
+msgid "Create a device"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1004
+msgid "Find a device"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1009
+msgid "Find a profile"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1014
+msgid "Create a profile"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1019
+msgid "Add a profile to a device"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1024
+msgid "Makes a profile default for a device"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1029
+msgid "Deletes a device"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1034
+msgid "Deletes a profile"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1039
+msgid "Sets the profile qualifier"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1044
+msgid "Sets the profile filename"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1049
+msgid "Sets the device model"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1054
+msgid "Gets the default profile for a device"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1059
+msgid "Sets the device vendor"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1064
+msgid "Sets the device serial"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1069
+msgid "Sets the device kind"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1074
+msgid "Returns all the profiles that match a qualifier"
+msgstr ""
+
 #. TRANSLATORS: program name
-#: ../client/cd-util.c:222 ../src/cd-main.c:597
+#: ../client/cd-util.c:1087 ../src/cd-main.c:1143
 msgid "Color Management"
 msgstr ""
 
-#: ../client/cd-util.c:224
-msgid "Color Management Utility"
-msgstr ""
-
-#. TRANSLATORS: no DBus system bus
-#: ../client/cd-util.c:232
-msgid "Failed to connect to system bus:"
-msgstr ""
-
-#. TRANSLATORS: the DBus method failed
-#: ../client/cd-util.c:257 ../client/cd-util.c:286 ../client/cd-util.c:323
-#: ../client/cd-util.c:353 ../client/cd-util.c:382 ../client/cd-util.c:414
-#: ../client/cd-util.c:443 ../client/cd-util.c:467 ../client/cd-util.c:491
-#: ../client/cd-util.c:515 ../client/cd-util.c:539
-msgid "The request failed:"
+#. TRANSLATORS: no colord available
+#: ../client/cd-util.c:1095
+msgid "No connection to colord:"
 msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.h:1
@@ -67,63 +154,91 @@ msgid "Authentication is required to create a color profile"
 msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.h:3
-msgid "Authentication is required to modify a color profile"
+msgid "Authentication is required to disable profile matching for a device"
 msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.h:4
-msgid "Authentication is required to modify the color settings for a device"
+msgid "Authentication is required to install the color profile for all users"
 msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.h:5
-msgid "Authentication is required to remove a color managed device"
+msgid "Authentication is required to modify a color profile"
 msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.h:6
+msgid "Authentication is required to modify the color settings for a device"
+msgstr ""
+
+#: ../policy/org.freedesktop.color.policy.in.h:7
+msgid "Authentication is required to remove a color managed device"
+msgstr ""
+
+#: ../policy/org.freedesktop.color.policy.in.h:8
 msgid "Authentication is required to remove a color profile"
 msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #.
-#: ../policy/org.freedesktop.color.policy.in.h:10
+#: ../policy/org.freedesktop.color.policy.in.h:12
 msgid "Create a color managed device"
 msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #.
-#: ../policy/org.freedesktop.color.policy.in.h:14
+#: ../policy/org.freedesktop.color.policy.in.h:16
 msgid "Create a color profile"
+msgstr ""
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to profile
+#. devices.
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:21
+msgid "Inhibit color profile selection"
+msgstr ""
+
+#. SECURITY:
+#. - Normal users require admin authentication to install files system
+#. wide to apply color profiles for sessions that have not explicitly
+#. chosen profiles to apply.
+#. - This should not be set to 'yes' as unprivileged users could then
+#. set a profile set to all-white or all-black and thus make the
+#. other sessions unusable.
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:30
+msgid "Install system color profiles"
 msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #.
-#: ../policy/org.freedesktop.color.policy.in.h:18
+#: ../policy/org.freedesktop.color.policy.in.h:34
 msgid "Modify a color profile"
 msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #.
-#: ../policy/org.freedesktop.color.policy.in.h:22
+#: ../policy/org.freedesktop.color.policy.in.h:38
 msgid "Modify color settings for a device"
 msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 #.
-#: ../policy/org.freedesktop.color.policy.in.h:26
+#: ../policy/org.freedesktop.color.policy.in.h:42
 msgid "Remove a color managed device"
 msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
 #.
-#: ../policy/org.freedesktop.color.policy.in.h:30
+#: ../policy/org.freedesktop.color.policy.in.h:46
 msgid "Remove a color profile"
 msgstr ""
 
-#: ../src/cd-main.c:599
+#: ../src/cd-main.c:1145
 msgid "Color Management D-Bus Service"
 msgstr ""

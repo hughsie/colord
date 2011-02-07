@@ -30,23 +30,23 @@ colord_SOURCES =					\
 	cd-device-array.c				\
 	cd-device-array.h				\
 	cd-device.c					\
-	cd-device.h					\
-	cd-profile-array.c				\
-	cd-profile-array.h				\
-	cd-udev-client.c				\
-	cd-udev-client.h				\
-	cd-sane-client.c				\
-	cd-sane-client.h				\
-	cd-profile.c					\
-	cd-profile.h					\
-	cd-inhibit.c					\
-	cd-inhibit.h					\
-	cd-profile-store.c				\
-	cd-profile-store.h				\
-	cd-mapping-db.c					\
-	cd-mapping-db.h					\
 	cd-device-db.c					\
 	cd-device-db.h					\
+	cd-device.h					\
+	cd-inhibit.c					\
+	cd-inhibit.h					\
+	cd-mapping-db.c					\
+	cd-mapping-db.h					\
+	cd-profile-array.c				\
+	cd-profile-array.h				\
+	cd-profile.c					\
+	cd-profile.h					\
+	cd-profile-store.c				\
+	cd-profile-store.h				\
+	cd-sane-client.c				\
+	cd-sane-client.h				\
+	cd-udev-client.c				\
+	cd-udev-client.h				\
 	cd-main.c
 
 colord_LDADD =						\
@@ -66,18 +66,20 @@ check_PROGRAMS =					\
 cd_self_test_SOURCES =					\
 	cd-common.c					\
 	cd-common.h					\
-	cd-mapping-db.c					\
-	cd-mapping-db.h					\
-	cd-device-db.c					\
-	cd-device-db.h					\
 	cd-device-array.c				\
 	cd-device-array.h				\
 	cd-device.c					\
+	cd-device-db.c					\
+	cd-device-db.h					\
 	cd-device.h					\
-	cd-profile.c					\
-	cd-profile.h					\
+	cd-inhibit.c					\
+	cd-inhibit.h					\
+	cd-mapping-db.c					\
+	cd-mapping-db.h					\
 	cd-profile-array.c				\
 	cd-profile-array.h				\
+	cd-profile.c					\
+	cd-profile.h					\
 	cd-self-test.c
 
 cd_self_test_LDADD =					\
