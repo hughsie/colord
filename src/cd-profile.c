@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
+	/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
  *
@@ -21,9 +21,10 @@
 
 #include "config.h"
 
-#include <glib-object.h>
 #include <gio/gio.h>
+#include <glib-object.h>
 #include <lcms2.h>
+#include <string.h>
 
 #include "cd-common.h"
 #include "cd-profile.h"
@@ -585,6 +586,32 @@ out:
 }
 
 /**
+ * cd_profile_get_fake_md5:
+ *
+ * this is a complete hack to work around the lack of DICT
+ * support, and to give gnome-color-manager something to key on
+ **/
+static gchar *
+cd_profile_get_fake_md5 (const gchar *filename)
+{
+	gchar *basename;
+	gchar *md5 = NULL;
+
+	basename = g_path_get_basename (filename);
+	if (!g_str_has_prefix (basename, "edid-"))
+		goto out;
+	if (strlen (basename) != 41)
+		goto out;
+
+	/* parse edid-f467c2e85a0abdef9415d5028e240631.icc */
+	basename[37] = '\0';
+	md5 = g_strdup (&basename[5]);
+out:
+	g_free (basename);
+	return md5;
+}
+
+/**
  * cd_profile_set_filename:
  **/
 gboolean
@@ -592,6 +619,7 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 {
 	gboolean ret = FALSE;
 	gchar *data = NULL;
+	gchar *fake_md5 = NULL;
 	gchar text[1024];
 	gsize len;
 	GError *error_local = NULL;
@@ -706,10 +734,11 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 	profile->priv->has_vcgt = cmsIsTag (lcms_profile, cmsSigVcgtTag);
 
 	/* TODO: actually extract metadata from the DICT tag */
-	if (profile->priv->has_vcgt) {
+	fake_md5 = cd_profile_get_fake_md5 (filename);
+	if (fake_md5 != NULL) {
 		g_hash_table_insert (profile->priv->metadata,
-				     g_strdup ("EDID_md5"),
-				     g_strdup ("FIXME"));
+			     g_strdup ("EDID_md5"),
+			     g_strdup (fake_md5));
 	}
 
 	/* generate and set checksum */
@@ -725,6 +754,7 @@ out:
 	if (lcms_profile != NULL)
 		cmsCloseProfile (lcms_profile);
 	g_free (data);
+	g_free (fake_md5);
 	return ret;
 }
 
