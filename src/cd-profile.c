@@ -130,17 +130,19 @@ cd_profile_get_id (CdProfile *profile)
 void
 cd_profile_set_id (CdProfile *profile, const gchar *id)
 {
+	gchar *id_tmp;
+
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_free (profile->priv->id);
 
+	/* make sure object path is sane */
+	id_tmp = cd_main_ensure_dbus_path (id);
 	profile->priv->object_path = g_build_filename (COLORD_DBUS_PATH,
 						       "profiles",
-						       id,
+						       id_tmp,
 						       NULL);
 	profile->priv->id = g_strdup (id);
-
-	/* make sure object path is sane */
-	cd_main_ensure_dbus_path (profile->priv->object_path);
+	g_free (id_tmp);
 }
 
 /**

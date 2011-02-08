@@ -45,7 +45,7 @@ GQuark		 cd_main_error_quark		(void);
 gboolean	 cd_main_sender_authenticated	(GDBusMethodInvocation *invocation,
 						 const gchar	*sender,
 						 const gchar	*action_id);
-void		 cd_main_ensure_dbus_path	(gchar		*object_path);
+gchar		*cd_main_ensure_dbus_path	(const gchar	*object_path);
 gboolean	 cd_main_mkdir_with_parents	(const gchar	*filename,
 						 GError		**error);
 const gchar	*cd_object_scope_to_string	(CdObjectScope	 kind_enum);

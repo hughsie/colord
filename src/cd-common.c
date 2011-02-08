@@ -44,14 +44,17 @@ cd_main_error_quark (void)
 /**
  * cd_main_ensure_dbus_path:
  **/
-void
-cd_main_ensure_dbus_path (gchar *object_path)
+gchar *
+cd_main_ensure_dbus_path (const gchar *object_path)
 {
-	g_strcanon (object_path,
+	gchar *object_path_tmp;
+	object_path_tmp = g_strdup (object_path);
+	g_strcanon (object_path_tmp,
 		    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		    "abcdefghijklmnopqrstuvwxyz"
-		    "1234567890_/",
+		    "1234567890_",
 		    '_');
+	return object_path_tmp;
 }
 
 /**
