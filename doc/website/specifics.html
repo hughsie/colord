@@ -59,12 +59,32 @@ CREATE TABLE properties (device_id TEXT,property TEXT,value TEXT);
 The colord database differs from UCMM in the following ways:
 
 <ul>
-<li>UCMM is a <a href="http://www.json.org/">JSON</a> (!JavaScript Object Notation) file format, whilst colord is a ''key=value'' style store</li>
-<li>UCMM allows mapping from a monitor EDID or display name to a device profile, where colord maps <i>device IDs</i> to <i>profile IDs</i>.</li>
-<li>UCMM stores the EDID in the file as a huge hex number, but colord stores other "junk" details such as a the device colorspace and device serial number which are useful to some GUI tools.</li>
-<li>UCMM is a well documented standard used for a long time by ArgyllCMS whilst colord has only ever been used by GCM.</li>
-<li>UCMM has to be parsed using a parser such as JNCF, whilst colord queried by any client that spaeks <code>DBus</code>.</li>
-<li>UCMM only supports one profile per device, unlike colord which supports an ordered list of profiles.</li>
+ <li>
+  UCMM is a <a href="http://www.json.org/">JSON</a>
+  (JavaScript Object Notation) file format, whilst colord is a
+  <i>key=value</i> style store
+ </li>
+ <li>
+  UCMM allows mapping from a monitor EDID or display name to a device
+  profile, where colord maps <i>device IDs</i> to <i>profile IDs</i>.
+ </li>
+ <li>
+  UCMM stores the EDID in the file as a huge hex number, but colord
+  stores other "junk" details such as a the device colorspace and
+  device serial number which are useful to some GUI tools.
+ </li>
+ <li>
+  UCMM is a well documented standard used for a long time by ArgyllCMS
+  whilst colord has only ever been used by GCM for a short time.
+ </li>
+ <li>
+  UCMM has to be parsed using a parser such as JNCF, whilst colord can
+  bequeried by any client that speaks <code>DBus</code>.
+ </li>
+ <li>
+  UCMM only supports one profile per device, unlike colord which
+  supports an ordered list of profiles with optional qualifiers.
+ </li>
 </ul>
 
 <p>
@@ -76,17 +96,14 @@ import the existing files on the first run of GCM.
 <p>
 Oyranos puts device settings in the session and system
 <a href="http://elektra.g4ii.com/Main_Page">Elektra</a> database.
-Elektra is not a supported library in any mainstream distribution and is
-not used by any modern open source projects or frameworks.
-GCM will not import settings from Elektra (as this would make GCM itself
-depend on Elektra) nor can it propagate settings back into the Oyranos
-configuration system.
+Elektra is not a well supported library in any mainstream distribution
+and is not used by many open source projects.
+colord will not import settings from Elektra nor can it propagate
+settings back into the Oyranos configuration system.
 </p>
 <p>
-Until Oyranos moves away from Elektra there is no way it can work alongside GCM.
-The GCM author would be willing to work with the Oyranos developers to
-define a standard compatible with both systems, but Elektra is simply
-not a viable option for GCM.
+The colord author is willing to work with the Oyranos developers to
+define a standard compatible with both systems.
 </p>
 
 <h2>Setting the system default</h2>
@@ -114,8 +131,8 @@ For interest, the different binaries are listed here.
 <h3>GTK programs</h3>
 
 <ul>
-<li><code>gcm-import</code> - Helper to import an ICC file. This is normally run by the <code>gcm-import.desktop</code> file.
-<li><code>gcm-picker</code> - Simple program to pick a spot color using a photospectrometer.
+<li><code>gcm-import</code> - Helper to import an ICC file. This is normally run by the <code>gcm-import.desktop</code> file.</li>
+<li><code>gcm-picker</code> - Simple program to pick a spot color using a photospectrometer.</li>
 </ul>
 
 <h3>Command line tools</h3>

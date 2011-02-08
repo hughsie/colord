@@ -34,7 +34,7 @@ Two other CMS solutions were evaluated before starting development, Oyranos and 
 
 <h3>Negatives:</h3>
 <ul>
-<li>Hard dependency of <a href="http://elektra.g4ii.com/Main_Page">elektra</a>, which is dead upstream. Elektra ''could'' be replaced by an other configuration engine, although the maintainer is unwilling to do so.</li>
+<li>Hard dependency of <a href="http://elektra.g4ii.com/Main_Page">elektra</a>, which is dead upstream. Elektra <i>could</i> be replaced by an other configuration engine.</li>
 <li>Requiring <a href="http://www.fltk.org/">FLTK</a> for UI.</li>
 <li>Mixing the presentation with the mechanism, for instance, see oyranos_xml.c, oyXFORMsFromModelAndUi().</li>
 <li>Configuration, UI and modules are separated through complex APIs</li>
@@ -68,7 +68,7 @@ customization of a variety of display output and color sensor scenarios.
 <h3>Negatives:</h3>
 <ul>
 <li>Does not conform to any existing standard, relies on ucal.xml files for configuration.</li>
-<li>Only supports the HP !DreamColor LP2480zx Professional Display and the HP !DreamColor colorimeter.</li>
+<li>Only supports the HP DreamColor LP2480zx Professional Display and the HP DreamColor colorimeter.</li>
 <li>Uses <a href="http://www.wxwidgets.org/">wxWidgets</a> (although plans for additional DE's).</li>
 <li>Requires proprietary <a href="http://www.xrite.com/">X-Rite SDK</a>.</li>
 <li>Unclear copyright and licence.</li>
@@ -121,10 +121,24 @@ GNOME Color Manager is a ''thin solution'' where it defers to the application th
 I think most of the CMS functionality can be (and should be) integrated into the platform, e.g. <a href="http://www.gtk.org/">GTK</a> and Cairo.
 </p>
 <p>
-It's my opinion that it's best to have two different applications for something that share a common spec, rather than trying to be a jack-of-all-trades. It's a cliché, but KDE users do want options, and GNOME users do want things to 'just work'. You can't design a library, or even an application for those different user types. This is why I developed '''GNOME''' color manager, not !ColorManager.
+It's my opinion that it's best to have two different applications for
+something that share a common spec, rather than trying to be a jack-of-all-trades.
+It's a cliché, but KDE users do want options, and GNOME users do want
+things to 'just work'.
+You can't design a library, or even an application for those different
+user types.
+This is why I developed <b>GNOME</b> Color Manager, not ColorManager.
 </p>
 <p>
-I do think the concept of a ''monolithic CMS'' is flawed. Color management has to be integral to the stack, so Xorg, GTK, Cairo, etc. all have to play their part. You can't really push a monolithic library when you need to interface with so many parts of the stack. I see GCM as a the cherry on a cake, with all the heavy lifting being done by cairo, lcms and argyll. GCM just provides the configuration widgets in the session and makes the data available to applications.
+I do think the concept of a <i>monolithic CMS</i> is flawed.
+Color management has to be integral to the stack, so Xorg, GTK, Cairo,
+etc. all have to play their part.
+You can't really push a monolithic library when you need to interface
+with so many parts of the stack.
+I see GCM as a the cherry on colord, with all the heavy lifting being
+done by cairo, lcms and argyll.
+GCM just provides the configuration widgets in the session and makes the
+data available to applications.
 </p>
 
 <h2>References</h2>
