@@ -16,22 +16,17 @@
 <ul>
 <li><a href="#spelling">Can I type colord with leading upper case 'C'?</a></li>
 <li><a href="#gcm">How does this work with gnome-color-manager?</a></li>
-<li><a href="#daemon">How do system daemons add devices and profiles?</a></li>
-<li><a href="#cups">How would a system daemon like CUPS use colord?</a></li>
+<li><a href="#xrandr13">Are XRandr 1.2 devices still supported?</a></li>
+<li><a href="#imageloading">Does colord or GNOME Color Manager convert my image?</a></li>
+<li><a href="#whydbnotxml">Why are the mappings stored in a database, not readable XML files?</a></li>
 <!--
 <li><a href="#xxx">xxx</a></li>
 -->
+<li><a href="#daemon">How do system daemons add devices and profiles?</a></li>
+<li><a href="#cups">How would a system daemon like CUPS use colord?</a></li>
 <li><a href="#translation">How do I translate gnome-color-manager?</a></li>
 <li><a href="#corporate-sponsor">Is there an organization sponsoring development of colord?</a></li>
 </ul>
-
-<!--
-<hr/>
-<h3><a name="xxxxxxxxxxxxxxxxxxxxxxxxxxx">ccccccccccccccccccccccccccccccc</a></h3>
-<p>
-ccccccccccccccccccccccccccccccccccccccccccccccccccccc.
-</p>
--->
 
 <hr/>
 <h3><a name="spelling">Can I type colord with leading upper case 'C'</a></h3>
@@ -42,9 +37,93 @@ No.
 <hr/>
 <h3><a name="gcm">How does this work with gnome-color-manager?</a></h3>
 <p>
-At startup GCM sends it's per-session database and virtual devices to
-colord, and the session devices are removed when the user logs off..
+At startup GCM has to create profiles, devices and otherwise act as the
+helper agent for colord in that user session.
+GNOME Color Manager basically has to do the following 6 things:
 </p>
+<ul>
+<li>
+ Call <code>CreateDevice</code> for each connected XRandr screen and
+ watch for changes to the screen.
+</li>
+<li>
+ Create an ICC profile file for each Xrandr device using the EDID
+ primary information and store it in the home directory.
+</li>
+<li>
+ Call <code>CreateProfile</code> for each profile found in the home
+ directory.</li>
+<li>
+ For each <code>::profile-added</code> event check if the
+ <code>EDID_md5</code> metadata matches any Xrandr devices.
+ If it does, then it needs to call <code>Device.AddProfile()</code>
+</li>
+<li>
+ For each <code>::device-added</code> event check if the device
+ <code>modified</code> property is beyong a set threshold.
+ If it is, show a notification that the user should calibrate the device.
+</li>
+<li>
+ For each <code>::device-added</code> event from a Xrandr device,
+ get the default profile and push the gamma ramp to the X output.
+</li>
+</ul>
+
+
+<hr/>
+<h3><a name="xrandr13">Are XRandr 1.2 devices still supported?</a></h3>
+<p>
+No. Xrandr 1.3 is required to do per-output gamma correction.
+</p>
+
+<hr/>
+<h3><a name="imageloading">Does colord or GNOME Color Manager convert my image?</a></h3>
+<p>
+No. You need to use a pixel conversion library, for instance
+<a href="http://www.littlecms.com/">lcms2</a>.
+</p>
+
+<hr/>
+<h3><a name="whydbnotxml">Why are the mappings stored in a database, not readable XML files?</a></h3>
+<p>
+If you have a registry that more than one program is changing, you
+<b>need</b> locking.
+Locking with plain files is neither fun nor reliable.
+From a raw performance point of view, it's two order of magnitudes
+faster to mmap a single 20k sqlite .db file than it is to read 200
+small XML files from the filesystem.
+</p>
+<p>
+The session needs to <b>query</b> things like <i>give me all the
+profiles for device $foo</i> and <i>find all the devices that use
+profile $bar</i> which is why we should be using a database, rather than
+searching discrete files on the filesystem every time the session asks
+for data.
+</p>
+<p>
+If we're <i>exchanging</i> files between users, then single files do
+start to make sense.
+I don't personally see a use case where I want to exchange low level
+device->profile settings data with somebody else.
+A chain of settings from document to printer would be a very useful
+thing, but this is what you generate for a process and ship, rather
+than copy from the filesystem unchanged.
+</p>
+<p>
+Having power users <i>tweaking</i> the mapping is something that does
+not make good design.
+These people can use the <code>colormgr</code> command line client to
+add and remove mappings, and to append qualifiers to certain profiles in
+a safe abstracted way.
+</p>
+
+<!--
+<hr/>
+<h3><a name="xxxxxxxxxxxxxxxxxxxxxxxxxxx">ccccccccccccccccccccccccccccccc</a></h3>
+<p>
+ccccccccccccccccccccccccccccccccccccccccccccccccccccc.
+</p>
+-->
 
 <hr/>
 <h3><a name="daemon">How do system daemons add devices and profiles?</a></h3>
