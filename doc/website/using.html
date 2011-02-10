@@ -78,7 +78,7 @@ See the <a href="screenshots.html">screenshots page</a> for more details.
 
 <h2>Using libcolord:</h2>
 <p>
-The <a href="gtk-doc/CdClient.html">libcolord gobject library</a>
+The <a href="api/libcolord.html">libcolord gobject library</a>
 wraps the DBUS interface in a nice glib-style API.
 This makes designing programs that use libcolord can concentrate on
 core functionality rather that the DBUS and colord internals.
@@ -93,6 +93,9 @@ devices = cd_client_get_devices_sync (client, cancellable, &amp;error);
 g_object_unref (client);
 g_ptr_array_unref (devices);
 </pre>
+<p>
+The latest documentation for libcolord is available <a href="api/">here</a>.
+</p>
 
 <h2>Using the raw DBUS API:</h2>
 <p>
@@ -101,7 +104,8 @@ gobject dependency is needed.
 This is not difficult, although does require more code than just using
 libcolord.
 See this file for an example <a href="http://gitorious.org/colord/master/blobs/master/doc/raw-dbus.c">raw-dbus.c</a>.
-The latest interface is available in the source tree or <a href="http://gitweb.freedesktop.org/?p=colord.git;a=blob;f=src/org.freedesktop.colord.xml">on-line</a>.
+The latest interface description is available <a href="http://gitweb.freedesktop.org/?p=colord.git;a=blob;f=src/org.freedesktop.colord.xml">on-line</a>
+or viewable in the <a href="api/">generated help</a> pages.
 </p>
 
 <p>Back to the <a href="index.html">main page</a></p>

@@ -13,6 +13,9 @@ AM_INIT_AUTOMAKE([1.9 tar-ustar dist-bzip2])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
+# set up gtk-doc
+GTK_DOC_CHECK(1.9)
+
 # use this in cd-version.h
 CD_MAJOR_VERSION=cd_major_version
 CD_MINOR_VERSION=cd_minor_version
@@ -45,6 +48,7 @@ AC_PROG_INSTALL
 LT_INIT
 AM_PROG_CC_C_O
 IT_PROG_INTLTOOL([0.35.0])
+AC_PATH_PROG(XSLTPROC, xsltproc)
 
 dnl ---------------------------------------------------------------------------
 dnl - Use strict options (default enabled for devs, disabled in releases)
@@ -190,6 +194,10 @@ AC_CONFIG_FILES([
 Makefile
 etc/Makefile
 man/Makefile
+doc/Makefile
+doc/api/Makefile
+doc/api/dbus/Makefile
+doc/api/version.xml
 data/Makefile
 data/tests/Makefile
 policy/Makefile

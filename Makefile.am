@@ -13,6 +13,7 @@ SUBDIRS = 						\
 	libcolord					\
 	client						\
 	rules						\
+	doc						\
 	src
 
 snapshot:

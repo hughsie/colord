@@ -28,3 +28,4 @@ missing
 stamp-h1
 *.patch
 NEWS.new
+gtk-doc.make

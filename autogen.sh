@@ -25,6 +25,7 @@ if ([ -z "$*" ] && [ "x$NOCONFIGURE" = "x" ]) ; then
   echo
 fi
 
+(cd $srcdir && gtkdocize) || exit 1
 (cd $srcdir && autoreconf --force --install) || exit 1
 (cd $srcdir && intltoolize) || exit 1
 
