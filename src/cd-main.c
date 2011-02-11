@@ -614,7 +614,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
-	/* return 's' */
+	/* return 'o' */
 	if (g_strcmp0 (method_name, "FindProfileById") == 0) {
 
 		g_variant_get (parameters, "(s)", &device_id);
@@ -624,7 +624,30 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
-							       "profile id '%s' does not exists",
+							       "profile id '%s' does not exist",
+							       device_id);
+			goto out;
+		}
+
+		/* format the value */
+		value = g_variant_new ("(o)", cd_profile_get_object_path (profile));
+		g_dbus_method_invocation_return_value (invocation, value);
+		goto out;
+	}
+
+	/* return 'o' */
+	if (g_strcmp0 (method_name, "FindProfileByFilename") == 0) {
+
+		g_variant_get (parameters, "(s)", &device_id);
+		g_debug ("CdMain: %s:FindProfileByFilename(%s)",
+			 sender, device_id);
+		profile = cd_profile_array_get_by_filename (profiles_array,
+							    device_id);
+		if (profile == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "profile filename '%s' does not exist",
 							       device_id);
 			goto out;
 		}

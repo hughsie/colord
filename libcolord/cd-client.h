@@ -123,6 +123,10 @@ CdProfile	*cd_client_find_profile_sync		(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
 							 GError		**error);
+CdProfile	*cd_client_find_profile_by_filename_sync (CdClient	*client,
+							 const gchar	*filename,
+							 GCancellable	*cancellable,
+							 GError		**error);
 GPtrArray	*cd_client_get_devices_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GError		**error);

@@ -94,6 +94,30 @@ cd_profile_array_get_by_id (CdProfileArray *profile_array,
 }
 
 /**
+ * cd_profile_array_get_by_filename:
+ **/
+CdProfile *
+cd_profile_array_get_by_filename (CdProfileArray *profile_array,
+				  const gchar *filename)
+{
+	CdProfileArrayPrivate *priv = profile_array->priv;
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp;
+	guint i;
+
+	/* find profile */
+	for (i=0; i<priv->array->len; i++) {
+		profile_tmp = g_ptr_array_index (priv->array, i);
+		if (g_strcmp0 (cd_profile_get_filename (profile_tmp),
+			       filename) == 0) {
+			profile = g_object_ref (profile_tmp);
+			break;
+		}
+	}
+	return profile;
+}
+
+/**
  * cd_profile_array_get_by_kind:
  **/
 GPtrArray *

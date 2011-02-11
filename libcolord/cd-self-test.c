@@ -283,6 +283,17 @@ colord_client_func (void)
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
 
+	/* check we can find profile based on filename */
+	profile_tmp = cd_client_find_profile_by_filename_sync (client,
+							       filename,
+							       NULL,
+							       &error);
+	g_assert_no_error (error);
+	g_assert (profile_tmp != NULL);
+	g_assert_cmpstr (cd_profile_get_id (profile), ==,
+			 profile_id);
+	g_object_unref (profile_tmp);
+
 	/* check metadata */
 	metadata = cd_profile_get_metadata (profile);
 	g_assert_cmpint (g_hash_table_size (metadata), ==, 1);

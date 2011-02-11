@@ -865,7 +865,7 @@ out:
 /**
  * cd_client_find_profile_sync:
  * @client: a #CdClient instance.
- * @id: identifier for the device
+ * @id: identifier for the filename
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -903,6 +903,74 @@ cd_client_find_profile_sync (CdClient *client,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_FAILED,
 			     "Failed to FindProfileById: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+
+	/* create GObject CdDevice object */
+	g_variant_get (result, "(o)",
+		       &object_path);
+	profile_tmp = cd_profile_new ();
+	ret = cd_profile_set_object_path_sync (profile_tmp,
+					       object_path,
+					       cancellable,
+					       error);
+	if (!ret)
+		goto out;
+
+	/* success */
+	profile = g_object_ref (profile_tmp);
+out:
+	g_free (object_path);
+	if (profile_tmp != NULL)
+		g_object_unref (profile_tmp);
+	if (result != NULL)
+		g_variant_unref (result);
+	return profile;
+}
+
+/**
+ * cd_client_find_profile_by_filename_sync:
+ * @client: a #CdClient instance.
+ * @filename: filename for the profile
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Finds a color profile from its filename.
+ *
+ * Return value: A #CdProfile object, or %NULL for error
+ *
+ * Since: 0.1.3
+ **/
+CdProfile *
+cd_client_find_profile_by_filename_sync (CdClient *client,
+					 const gchar *filename,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp = NULL;
+	gboolean ret;
+	gchar *object_path = NULL;
+	GError *error_local = NULL;
+	GVariant *result;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
+
+	result = g_dbus_proxy_call_sync (client->priv->proxy,
+					 "FindProfileByFilename",
+					 g_variant_new ("(s)", filename),
+					 G_DBUS_CALL_FLAGS_NONE,
+					 -1,
+					 cancellable,
+					 &error_local);
+	if (result == NULL) {
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_FAILED,
+			     "Failed to FindProfileByFilename: %s",
 			     error_local->message);
 		g_error_free (error_local);
 		goto out;

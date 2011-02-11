@@ -59,6 +59,8 @@ void		 cd_profile_array_remove		(CdProfileArray	*profile_array,
 							 CdProfile	*profile);
 CdProfile	*cd_profile_array_get_by_id		(CdProfileArray	*profile_array,
 							 const gchar	*id);
+CdProfile	*cd_profile_array_get_by_filename	(CdProfileArray	*profile_array,
+							 const gchar	*filename);
 CdProfile	*cd_profile_array_get_by_object_path	(CdProfileArray	*profile_array,
 							 const gchar	*object_path);
 GPtrArray	*cd_profile_array_get_by_kind		(CdProfileArray	*profile_array,
