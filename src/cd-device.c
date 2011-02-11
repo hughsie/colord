@@ -581,9 +581,6 @@ cd_device_set_property_internal (CdDevice *device,
 	cd_device_dbus_emit_property_changed (device,
 					      property,
 					      g_variant_new_string (value));
-
-	/* emit global signal */
-	cd_device_dbus_emit_device_changed (device);
 out:
 	return ret;
 }
@@ -891,6 +888,7 @@ cd_device_inhibit_changed_cb (CdInhibit *inhibit,
 	CdDevice *device = CD_DEVICE (user_data);
 
 	/* emit */
+	g_debug ("Emitting Device.Profiles as inhibit changed");
 	cd_device_dbus_emit_property_changed (device,
 					      "Profiles",
 					      cd_device_get_profiles_as_variant (device));
@@ -924,6 +922,8 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	gboolean ret;
 	GVariant *retval = NULL;
 
+	g_debug ("CdDevice %s:GetProperty '%s'",
+		 sender, property_name);
 	if (g_strcmp0 (property_name, "Created") == 0) {
 		retval = g_variant_new_uint64 (priv->created);
 		goto out;

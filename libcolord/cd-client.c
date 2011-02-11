@@ -1365,7 +1365,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			g_error_free (error);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s'", signal_name);
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_DEVICE_ADDED], 0,
 			       device);
 	} else if (g_strcmp0 (signal_name, "DeviceRemoved") == 0) {
@@ -1380,7 +1381,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 				 object_path_tmp);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s'", signal_name);
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_DEVICE_REMOVED], 0,
 			       device);
 	} else if (g_strcmp0 (signal_name, "DeviceChanged") == 0) {
@@ -1394,7 +1396,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 				 object_path_tmp);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s'", signal_name);
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_DEVICE_CHANGED], 0,
 			       device);
 	} else if (g_strcmp0 (signal_name, "ProfileAdded") == 0) {
@@ -1411,7 +1414,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			g_error_free (error);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s'", signal_name);
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_PROFILE_ADDED], 0,
 			       profile);
 	} else if (g_strcmp0 (signal_name, "ProfileRemoved") == 0) {
@@ -1426,7 +1430,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 				 object_path_tmp);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s'", signal_name);
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_PROFILE_REMOVED], 0,
 			       profile);
 	} else if (g_strcmp0 (signal_name, "ProfileChanged") == 0) {
@@ -1440,7 +1445,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 				 object_path_tmp);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s'", signal_name);
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_PROFILE_CHANGED], 0,
 			       profile);
 	} else {

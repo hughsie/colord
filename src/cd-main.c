@@ -174,15 +174,7 @@ static gboolean
 cd_main_add_profile (CdProfile *profile,
 		     GError **error)
 {
-	gboolean ret;
-
-	/* register object */
-	ret = cd_profile_register_object (profile,
-					  connection,
-					  introspection_profile->interfaces[0],
-					  error);
-	if (!ret)
-		goto out;
+	gboolean ret = TRUE;
 
 	/* add */
 	cd_profile_array_add (profiles_array, profile);
@@ -193,20 +185,6 @@ cd_main_add_profile (CdProfile *profile,
 			  G_CALLBACK (cd_main_profile_invalidate_cb),
 			  NULL);
 
-	/* emit signal */
-	g_debug ("CdMain: Emitting ProfileAdded(%s)",
-		 cd_profile_get_object_path (profile));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "ProfileAdded",
-					     g_variant_new ("(o)",
-							    cd_profile_get_object_path (profile)),
-					     error);
-	if (!ret)
-		goto out;
-out:
 	return ret;
 }
 
@@ -309,19 +287,13 @@ out:
 }
 
 /**
- * cd_main_device_add:
+ * cd_main_device_register_on_bus:
  **/
 static gboolean
-cd_main_device_add (CdDevice *device,
-		    const gchar *sender,
-		    GError **error)
+cd_main_device_register_on_bus (CdDevice *device,
+				GError **error)
 {
 	gboolean ret;
-	GError *error_local = NULL;
-	CdObjectScope scope;
-
-	/* create an object */
-	g_debug ("CdMain: Adding device %s", cd_device_get_object_path (device));
 
 	/* register object */
 	ret = cd_device_register_object (device,
@@ -330,6 +302,36 @@ cd_main_device_add (CdDevice *device,
 					 error);
 	if (!ret)
 		goto out;
+
+	/* emit signal */
+	g_debug ("CdMain: Emitting DeviceAdded(%s)",
+		 cd_device_get_object_path (device));
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "DeviceAdded",
+					     g_variant_new ("(o)",
+							    cd_device_get_object_path (device)),
+					     error);
+out:
+	return ret;
+}
+
+/**
+ * cd_main_device_add:
+ **/
+static gboolean
+cd_main_device_add (CdDevice *device,
+		    const gchar *sender,
+		    GError **error)
+{
+	gboolean ret = TRUE;
+	GError *error_local = NULL;
+	CdObjectScope scope;
+
+	/* create an object */
+	g_debug ("CdMain: Adding device %s", cd_device_get_object_path (device));
 
 	/* different persistent options */
 	scope = cd_device_get_scope (device);
@@ -359,20 +361,6 @@ cd_main_device_add (CdDevice *device,
 	/* auto add profiles from the database */
 	cd_main_device_auto_add_profiles (device);
 
-	/* emit signal */
-	g_debug ("CdMain: Emitting DeviceAdded(%s)",
-		 cd_device_get_object_path (device));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "DeviceAdded",
-					     g_variant_new ("(o)",
-							    cd_device_get_object_path (device)),
-					     error);
-	if (!ret)
-		goto out;
-out:
 	return ret;
 }
 
@@ -522,6 +510,38 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 out:
 	if (array != NULL)
 		g_ptr_array_unref (array);
+}
+
+/**
+ * cd_main_profile_register_on_bus:
+ **/
+static gboolean
+cd_main_profile_register_on_bus (CdProfile *profile,
+				 GError **error)
+{
+	gboolean ret;
+
+	/* register object */
+	ret = cd_profile_register_object (profile,
+					  connection,
+					  introspection_profile->interfaces[0],
+					  error);
+	if (!ret)
+		goto out;
+
+	/* emit signal */
+	g_debug ("CdMain: Emitting ProfileAdded(%s)",
+		 cd_profile_get_object_path (profile));
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "ProfileAdded",
+					     g_variant_new ("(o)",
+							    cd_profile_get_object_path (profile)),
+					     error);
+out:
+	return ret;
 }
 
 /**
@@ -722,6 +742,15 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			}
 		}
 
+		/* register on bus */
+		ret = cd_main_device_register_on_bus (device, &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
+		}
+
 		/* format the value */
 		value = g_variant_new_object_path (cd_device_get_object_path (device));
 		tuple = g_variant_new_tuple (&value, 1);
@@ -858,6 +887,15 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			}
 		}
 
+		/* register on bus */
+		ret = cd_main_profile_register_on_bus (profile, &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
+		}
+
 		/* format the value */
 		value = g_variant_new_object_path (cd_profile_get_object_path (profile));
 		tuple = g_variant_new_tuple (&value, 1);
@@ -949,7 +987,19 @@ cd_main_profile_store_added_cb (CdProfileStore *_profile_store,
 		g_warning ("CdMain: failed to add profile: %s",
 			   error->message);
 		g_error_free (error);
+		goto out;
 	}
+
+	/* register on bus */
+	ret = cd_main_profile_register_on_bus (profile, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to emit ProfileAdded: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	return;
 }
 
 /**
@@ -1026,6 +1076,15 @@ cd_main_add_disk_device (const gchar *device_id)
 			goto out;
 		}
 		g_free (value);
+	}
+
+	/* register on bus */
+	ret = cd_main_device_register_on_bus (device, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to emit DeviceAdded: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
 	}
 out:
 	if (device != NULL)
@@ -1120,7 +1179,19 @@ cd_main_client_added_cb (CdUdevClient *udev_client_,
 		g_warning ("CdMain: failed to add device: %s",
 			   error->message);
 		g_error_free (error);
+		goto out;
 	}
+
+	/* register on bus */
+	ret = cd_main_device_register_on_bus (device, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to emit DeviceAdded: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	return;
 }
 
 /**
