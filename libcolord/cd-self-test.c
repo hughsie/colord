@@ -285,8 +285,8 @@ colord_client_func (void)
 
 	/* check metadata */
 	metadata = cd_profile_get_metadata (profile);
-	g_assert_cmpint (g_hash_table_size (metadata), ==, 2);
-	g_assert_cmpstr (g_hash_table_lookup (metadata, "EDID_md5"), ==, "FIXME");
+	g_assert_cmpint (g_hash_table_size (metadata), ==, 1);
+	g_assert_cmpstr (g_hash_table_lookup (metadata, "CMS"), ==, "colord");
 	g_hash_table_unref (metadata);
 
 	/* set profile filename */
