@@ -262,12 +262,15 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='s' name='search_term' direction='in'>
+      <arg type='s' name='qualifier' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The search term, e.g. <doc:tt>RGB.*.300dpi</doc:tt>
+              The qualifier, e.g. <doc:tt>RGB.*.300dpi</doc:tt>.
             </doc:para>
+            <doc:para>
+              If the qualifier <doc:tt>*</doc:tt> is specified then
+              the default profile is returned.
           </doc:summary>
         </doc:doc>
       </arg>

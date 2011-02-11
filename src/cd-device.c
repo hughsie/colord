@@ -322,14 +322,26 @@ cd_device_find_by_qualifier (const gchar *regex, GPtrArray *array)
 {
 	CdProfile *profile = NULL;
 	CdProfile *profile_tmp;
-	guint i;
+	const gchar *qualifier;
 	gboolean ret;
+	guint i;
 
 	/* find using a wildcard */
 	for (i=0; i<array->len; i++) {
 		profile_tmp = g_ptr_array_index (array, i);
+
+		/* '*' matches anything, including a blank qualifier */
+		if (g_strcmp0 (regex, "*") == 0) {
+			profile = profile_tmp;
+			goto out;
+		}
+
+		/* match with a regex */
+		qualifier = cd_profile_get_qualifier (profile_tmp);
+		if (qualifier == NULL)
+			continue;
 		ret = g_regex_match_simple (regex,
-					    cd_profile_get_qualifier (profile_tmp),
+					    qualifier,
 					    0, 0);
 		if (ret) {
 			profile = profile_tmp;
