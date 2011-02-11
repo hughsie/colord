@@ -317,14 +317,15 @@ cd_profile_get_metadata_as_variant (CdProfile *profile)
 {
 	GList *list, *l;
 	GVariantBuilder builder;
+	GVariant *value;
 
-	/* we always must have at least one bit of metadata */
+	/* do not try to build an empty array */
 	if (g_hash_table_size (profile->priv->metadata) == 0) {
-		g_debug ("no metadata, so faking something");
-		g_hash_table_insert (profile->priv->metadata,
-				     g_strdup ("CMS"),
-				     g_strdup ("colord"));
+		value = g_variant_new_array (G_VARIANT_TYPE ("{ss}"),
+					     NULL, 0);
+		goto out;
 	}
+
 	/* add all the keys in the dictionary to the variant builder */
 	list = g_hash_table_get_keys (profile->priv->metadata);
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
@@ -336,7 +337,9 @@ cd_profile_get_metadata_as_variant (CdProfile *profile)
 							    l->data));
 	}
 	g_list_free (list);
-	return g_variant_builder_end (&builder);
+	value = g_variant_builder_end (&builder);
+out:
+	return value;
 }
 
 /**

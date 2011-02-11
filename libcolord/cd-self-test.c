@@ -296,8 +296,7 @@ colord_client_func (void)
 
 	/* check metadata */
 	metadata = cd_profile_get_metadata (profile);
-	g_assert_cmpint (g_hash_table_size (metadata), ==, 1);
-	g_assert_cmpstr (g_hash_table_lookup (metadata, "CMS"), ==, "colord");
+	g_assert_cmpint (g_hash_table_size (metadata), ==, 0);
 	g_hash_table_unref (metadata);
 
 	/* set profile filename */
