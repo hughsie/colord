@@ -903,6 +903,7 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 {
 	CdDevice *device = CD_DEVICE (user_data);
 	CdDevicePrivate *priv = device->priv;
+	gboolean ret;
 	GVariant *retval = NULL;
 
 	if (g_strcmp0 (property_name, "Created") == 0) {
@@ -942,11 +943,23 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Profiles") == 0) {
-		retval = cd_device_get_profiles_as_variant (device);
+
+		/* are we profiling? */
+		ret = cd_inhibit_valid (priv->inhibit);
+		if (!ret) {
+			const char *list = NULL;
+			g_debug ("CdDevice: returning no profiles for profiling");
+			/* work around a GVariant bug:
+			 * Ideally we want to do g_variant_new("(ao)", NULL);
+			 * but this explodes in an ugly ball of fire */
+			retval = g_variant_new ("(^as)", &list);
+		} else {
+			retval = cd_device_get_profiles_as_variant (device);
+		}
 		goto out;
 	}
 
-	g_critical ("failed to set property %s", property_name);
+	g_critical ("failed to get property %s", property_name);
 out:
 	return retval;
 }
