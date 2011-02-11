@@ -45,6 +45,14 @@ typedef struct {
 	guint				 watcher_id;
 } CdInhibitItem;
 
+
+enum {
+	SIGNAL_CHANGED,
+	SIGNAL_LAST
+};
+
+static guint signals [SIGNAL_LAST] = { 0 };
+
 G_DEFINE_TYPE (CdInhibit, cd_inhibit, G_TYPE_OBJECT)
 
 /**
@@ -116,6 +124,13 @@ cd_inhibit_remove (CdInhibit *inhibit, const gchar *sender, GError **error)
  
 	/* remove */
 	ret = g_ptr_array_remove (inhibit->priv->array, item);
+	if (!ret)
+		goto out;
+
+	/* emit signal */
+	g_debug ("CdInhibit: emit changed");
+	g_signal_emit (inhibit, signals[SIGNAL_CHANGED], 0);
+
 out:
 	return ret;
 }
@@ -177,6 +192,11 @@ cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 					     inhibit,
 					     NULL);
 	g_ptr_array_add (inhibit->priv->array, item);
+
+	/* emit signal */
+	g_debug ("CdInhibit: emit changed");
+	g_signal_emit (inhibit, signals[SIGNAL_CHANGED], 0);
+
 out:
 	return ret;
 }
@@ -189,6 +209,13 @@ cd_inhibit_class_init (CdInhibitClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_inhibit_finalize;
+
+	signals [SIGNAL_CHANGED] =
+		g_signal_new ("changed",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdInhibitClass, changed),
+			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 
 	g_type_class_add_private (klass, sizeof (CdInhibitPrivate));
 }

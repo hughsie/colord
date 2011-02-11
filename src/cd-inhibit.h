@@ -46,6 +46,7 @@ struct _CdInhibit
 struct _CdInhibitClass
 {
 	GObjectClass		 parent_class;
+	void			(*changed)	(CdInhibit	*inhibit);
 };
 
 GType		 cd_inhibit_get_type		(void);

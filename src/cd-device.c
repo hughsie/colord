@@ -882,6 +882,24 @@ out:
 }
 
 /**
+ * cd_device_inhibit_changed_cb:
+ **/
+static void
+cd_device_inhibit_changed_cb (CdInhibit *inhibit,
+			      gpointer user_data)
+{
+	CdDevice *device = CD_DEVICE (user_data);
+
+	/* emit */
+	cd_device_dbus_emit_property_changed (device,
+					      "Profiles",
+					      cd_device_get_profiles_as_variant (device));
+
+	/* emit global signal */
+	cd_device_dbus_emit_device_changed (device);
+}
+
+/**
  * cd_device_get_nullable_for_string:
  **/
 static GVariant *
@@ -1149,6 +1167,10 @@ cd_device_init (CdDevice *device)
 	device->priv->mapping_db = cd_mapping_db_new ();
 	device->priv->device_db = cd_device_db_new ();
 	device->priv->inhibit = cd_inhibit_new ();
+	g_signal_connect (device->priv->inhibit,
+			  "changed",
+			  G_CALLBACK (cd_device_inhibit_changed_cb),
+			  device);
 }
 
 /**
