@@ -271,6 +271,7 @@
             <doc:para>
               If the qualifier <doc:tt>*</doc:tt> is specified then
               the default profile is returned.
+            </doc:para>
           </doc:summary>
         </doc:doc>
       </arg>
