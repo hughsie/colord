@@ -18,6 +18,7 @@ INCLUDES =						\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\"		\
 	-DVERSION="\"$(VERSION)\""			\
 	-DCD_COMPILATION				\
+	-DG_UDEV_API_IS_SUBJECT_TO_CHANGE		\
 	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DLOCALEDIR=\""$(localedir)"\"
 
