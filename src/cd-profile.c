@@ -168,6 +168,10 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 	GVariantBuilder builder;
 	GVariantBuilder invalidated_builder;
 
+	/* not yet connected */
+	if (profile->priv->connection == NULL)
+		return;
+
 	/* build the dict */
 	g_variant_builder_init (&invalidated_builder, G_VARIANT_TYPE ("as"));
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
