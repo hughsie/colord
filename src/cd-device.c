@@ -608,16 +608,17 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 {
 	CdDevice *device = CD_DEVICE (user_data);
 	CdDevicePrivate *priv = device->priv;
-	CdProfile *profile;
+	CdProfile *profile = NULL;
 	CdProfile *profile_tmp;
 	gboolean ret;
 	gchar **devices = NULL;
 	gchar *profile_object_path = NULL;
 	gchar *property_name = NULL;
 	gchar *property_value = NULL;
-	gchar *regex = NULL;
+	gchar **regexes = NULL;
 	GError *error = NULL;
-	guint i;
+	guint i = 0;
+	GVariantIter *iter = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 
@@ -703,12 +704,21 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	}
 
 	/* return 'o' */
-	if (g_strcmp0 (method_name, "GetProfileForQualifier") == 0) {
+	if (g_strcmp0 (method_name, "GetProfileForQualifiers") == 0) {
 
 		/* find the profile by the qualifier search string */
-		g_variant_get (parameters, "(s)", &regex);
-		g_debug ("CdDevice %s:GetProfileForQualifier(%s)",
-			 sender, regex);
+		g_variant_get (parameters, "(as)", &iter);
+		regexes = g_new0 (gchar *,
+				  g_variant_iter_n_children (iter) + 1);
+		while (g_variant_iter_loop (iter, "s",
+					    &property_value)) {
+			regexes[i++] = g_strdup (property_value);
+		}
+
+		/* show all the qualifiers */
+		property_name = g_strjoinv (",", regexes);
+		g_debug ("CdDevice %s:GetProfileForQualifiers(%s)",
+			 sender, property_name);
 
 		/* are we profiling? */
 		ret = cd_inhibit_valid (priv->inhibit);
@@ -718,18 +728,23 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
 							       "profiling, so ignoring '%s'",
-							       regex);
+							       property_name);
 			goto out;
 		}
 
-		profile = cd_device_find_by_qualifier (regex,
-						       priv->profiles);
+		/* search each regex against the profiles for this device */
+		for (i=0; regexes[i] != NULL; i++) {
+			profile = cd_device_find_by_qualifier (regexes[i],
+							       priv->profiles);
+			if (profile != NULL)
+				break;
+		}
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
 							       "nothing matched expression '%s'",
-							       regex);
+							       property_name);
 			goto out;
 		}
 
@@ -883,10 +898,12 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process device method %s", method_name);
 out:
+	if (iter != NULL)
+		g_variant_iter_free (iter);
 	g_free (profile_object_path);
 	g_free (property_name);
 	g_free (property_value);
-	g_free (regex);
+	g_strfreev (regexes);
 	g_strfreev (devices);
 }
 

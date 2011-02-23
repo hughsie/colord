@@ -908,12 +908,12 @@ out:
 }
 
 /**
- * cd_util_device_get_profile_for_qualifier:
+ * cd_util_device_get_profile_for_qualifiers:
  **/
 static gboolean
-cd_util_device_get_profile_for_qualifier (CdUtilPrivate *priv,
-					  gchar **values,
-					  GError **error)
+cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
+					   gchar **values,
+					   GError **error)
 {
 	CdDevice *device = NULL;
 	CdProfile *profile = NULL;
@@ -936,10 +936,10 @@ cd_util_device_get_profile_for_qualifier (CdUtilPrivate *priv,
 					      error);
 	if (!ret)
 		goto out;
-	profile = cd_device_get_profile_for_qualifier_sync (device,
-							    values[1],
-							    NULL,
-							    error);
+	profile = cd_device_get_profile_for_qualifiers_sync (device,
+							     values,
+							     NULL,
+							     error);
 	if (profile == NULL) {
 		ret = FALSE;
 		goto out;
@@ -1072,7 +1072,7 @@ main (int argc, char *argv[])
 		     "device-get-profile-for-qualifier",
 		     /* TRANSLATORS: command description */
 		     _("Returns all the profiles that match a qualifier"),
-		     cd_util_device_get_profile_for_qualifier);
+		     cd_util_device_get_profile_for_qualifiers);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,

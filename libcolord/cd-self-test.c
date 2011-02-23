@@ -127,6 +127,13 @@ colord_client_func (void)
 	GPtrArray *profiles;
 	guint32 key;
 	GHashTable *metadata;
+	const gchar *qualifier1[] = {"Lexmark.RGB.300dpi",
+				     "Epson.RGB.300dpi",
+				     "HP.RGB.300dpi",
+				     NULL};
+	const gchar *qualifier2[] = {"Lexmark.RGB.*",
+				     "Epson.RGB.*",
+				     NULL};
 
 	key = g_random_int_range (0x00, 0xffff);
 	g_debug ("using random key %04x", key);
@@ -333,10 +340,10 @@ colord_client_func (void)
 	g_ptr_array_unref (array);
 
 	/* check nothing matches qualifier */
-	profile_tmp = cd_device_get_profile_for_qualifier_sync (device,
-								"Epson.RGB.300dpi",
-								NULL,
-								&error);
+	profile_tmp = cd_device_get_profile_for_qualifiers_sync (device,
+								 qualifier1,
+								 NULL,
+								 &error);
 	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
 	g_assert (profile_tmp == NULL);
 	g_clear_error (&error);
@@ -395,10 +402,10 @@ colord_client_func (void)
 	g_ptr_array_unref (array);
 
 	/* check matches exact qualifier */
-	profile_tmp = cd_device_get_profile_for_qualifier_sync (device,
-								"Epson.RGB.300dpi",
-								NULL,
-								&error);
+	profile_tmp = cd_device_get_profile_for_qualifiers_sync (device,
+								 qualifier1,
+								 NULL,
+								 &error);
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
@@ -406,10 +413,10 @@ colord_client_func (void)
 	g_object_unref (profile_tmp);
 
 	/* check matches wildcarded qualifier */
-	profile_tmp = cd_device_get_profile_for_qualifier_sync (device,
-								"Epson.RGB.*",
-								NULL,
-								&error);
+	profile_tmp = cd_device_get_profile_for_qualifiers_sync (device,
+								 qualifier2,
+								 NULL,
+								 &error);
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
@@ -432,10 +439,10 @@ colord_client_func (void)
 	g_assert (ret);
 
 	/* check matches nothing */
-	profile_tmp = cd_device_get_profile_for_qualifier_sync (device,
-								"Epson.RGB.*",
-								NULL,
-								&error);
+	profile_tmp = cd_device_get_profile_for_qualifiers_sync (device,
+								 qualifier2,
+								 NULL,
+								 &error);
 	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
 	g_assert (profile_tmp == NULL);
 	g_clear_error (&error);

@@ -946,7 +946,7 @@ out:
  * @error: a #GError, or %NULL.
  *
  * Sets up the device for profiling and causes no profiles to be
- * returned if cd_device_get_profile_for_qualifier_sync() is used.
+ * returned if cd_device_get_profile_for_qualifiers_sync() is used.
  *
  * Return value: #TRUE for success, else #FALSE and @error is used
  *
@@ -993,7 +993,7 @@ out:
  * @error: a #GError, or %NULL.
  *
  * Restores the device after profiling and causes normal profiles to be
- * returned if cd_device_get_profile_for_qualifier_sync() is used.
+ * returned if cd_device_get_profile_for_qualifiers_sync() is used.
  *
  * Return value: #TRUE for success, else #FALSE and @error is used
  *
@@ -1034,40 +1034,47 @@ out:
 }
 
 /**
- * cd_device_get_profile_for_qualifier_sync:
+ * cd_device_get_profile_for_qualifiers_sync:
  * @device: a #CdDevice instance.
  * @qualifier: a qualifier that can included wildcards
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
- * Gets the prefered profile for a qualifier.
+ * Gets the prefered profile for some qualifiers.
  *
  * Return value: a #CdProfile, free with g_object_unref()
  *
- * Since: 0.1.0
+ * Since: 0.1.3
  **/
 CdProfile *
-cd_device_get_profile_for_qualifier_sync (CdDevice *device,
-					  const gchar *qualifier,
-					  GCancellable *cancellable,
-					  GError **error)
+cd_device_get_profile_for_qualifiers_sync (CdDevice *device,
+					   const gchar **qualifiers,
+					   GCancellable *cancellable,
+					   GError **error)
 {
 	CdProfile *profile = NULL;
 	CdProfile *profile_tmp = NULL;
 	gboolean ret;
 	gchar *object_path = NULL;
 	GError *error_local = NULL;
+	guint i;
+	GVariantBuilder builder;
 	GVariant *response = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
-	g_return_val_if_fail (qualifier != NULL, NULL);
+	g_return_val_if_fail (qualifiers != NULL, NULL);
 	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
+
+	/* squash char** into an array of strings */
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
+	for (i=0; qualifiers[i] != NULL; i++)
+		g_variant_builder_add (&builder, "s", qualifiers[i]);
 
 	/* execute sync method */
 	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "GetProfileForQualifier",
-					   g_variant_new ("(s)",
-							  qualifier),
+					   "GetProfileForQualifiers",
+					   g_variant_new ("(as)",
+							  &builder),
 					   G_DBUS_CALL_FLAGS_NONE,
 					   -1, NULL, &error_local);
 	if (response == NULL) {

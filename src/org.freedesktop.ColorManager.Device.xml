@@ -252,7 +252,7 @@
     </method>
 
     <!--***********************************************************-->
-    <method name='GetProfileForQualifier'>
+    <method name='GetProfileForQualifiers'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
@@ -262,11 +262,11 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='s' name='qualifier' direction='in'>
+      <arg type='as' name='qualifiers' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The qualifier, e.g. <doc:tt>RGB.*.300dpi</doc:tt>.
+              An array of qualifiers, e.g. <doc:tt>['RGB.*.300dpi', 'RGB.*.*', '*.*.*']</doc:tt>.
             </doc:para>
             <doc:para>
               If the qualifier <doc:tt>*</doc:tt> is specified then
@@ -279,7 +279,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The profile path for the search term.
+              The profile path for the search terms.
             </doc:para>
           </doc:summary>
         </doc:doc>
