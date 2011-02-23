@@ -146,13 +146,23 @@ if test x$enable_polkit = xyes; then
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl - Build GUI gui
+dnl - Build GUI tool
 dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(gui, AS_HELP_STRING([--enable-gui],[enable GUI gui]),
+AC_ARG_ENABLE(gui, AS_HELP_STRING([--enable-gui],[enable GUI tool]),
 	      enable_gui=$enableval,enable_gui=yes)
 AM_CONDITIONAL(CD_BUILD_GUI, test x$enable_gui = xyes)
 if test x$enable_gui = xyes; then
 	PKG_CHECK_MODULES(GTK, gtk+-3.0 >= 2.91.5)
+fi
+
+dnl ---------------------------------------------------------------------------
+dnl - Build DBus examples
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(examples, AS_HELP_STRING([--enable-examples],[enable DBus example code]),
+	      enable_examples=$enableval,enable_examples=yes)
+AM_CONDITIONAL(CD_BUILD_EXAMPLES, test x$enable_examples = xyes)
+if test x$enable_examples = xyes; then
+	PKG_CHECK_MODULES(DBUS, dbus-1)
 fi
 
 dnl **** Check for SANE ****
@@ -193,6 +203,7 @@ dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
 Makefile
 etc/Makefile
+examples/Makefile
 man/Makefile
 doc/Makefile
 doc/api/Makefile

@@ -19,18 +19,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-//gcc -o raw-dbus raw-dbus.c `pkg-config --cflags --libs dbus-1 glib-2.0` -Wall -Wuninitialized -lm -Werror -g -fexceptions && ./raw-dbus
-
-#include <glib.h>
 #include <dbus/dbus.h>
+#include <glib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-/**
- * helper_dict_add_property:
- **/
 static void
 helper_dict_add_property (DBusMessageIter *dict,
-			  const gchar *key,
-			  const gchar *value)
+			  const char *key,
+			  const char *value)
 {
 
 	DBusMessageIter entry;
@@ -43,14 +41,11 @@ helper_dict_add_property (DBusMessageIter *dict,
 	dbus_message_iter_close_container(dict, &entry);
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char **argv)
 {
-	const gchar *device_id;
-	const gchar *device_path_tmp;
+	const char *device_id;
+	const char *device_path_tmp;
 	DBusConnection *con;
 	DBusError error;
 	DBusMessageIter args;
@@ -58,12 +53,12 @@ main (int argc, char **argv)
 	DBusMessage *message = NULL;
 	DBusMessage *reply = NULL;
 	GMainLoop *loop;
-	guint options = 1;
+	int options = 1;
 
 	/* connect to system bus */
 	con = dbus_bus_get(DBUS_BUS_SYSTEM, NULL);
 	if (con == NULL) {
-		g_warning("failed to connect to system bus");
+		printf("failed to connect to system bus\n");
 		goto out;
 	}
 
@@ -88,14 +83,14 @@ main (int argc, char **argv)
 
 	/* send syncronous */
 	dbus_error_init(&error);
-	g_debug("Calling CreateDevice(%s,%d)",
+	printf("Calling CreateDevice(%s,%d)\n",
 		device_id, options);
 	reply = dbus_connection_send_with_reply_and_block(con,
 							  message,
 							  -1,
 							  &error);
 	if (reply == NULL) {
-		g_warning("failed to send: %s:%s",
+		printf("failed to send: %s:%s\n",
 			  error.name, error.message);
 		dbus_error_free(&error);
 		goto out;
@@ -104,14 +99,15 @@ main (int argc, char **argv)
 	/* get reply data */
         dbus_message_iter_init(reply, &args);
 	if (dbus_message_iter_get_arg_type(&args) != DBUS_TYPE_OBJECT_PATH) {
-		g_warning("incorrect reply type");
+		printf("incorrect reply type\n");
 		goto out;
 	}
         dbus_message_iter_get_basic(&args, &device_path_tmp);
-	g_debug("created device %s", device_path_tmp);
+	printf("created device %s\n", device_path_tmp);
 
 	/* just spin in a main loop */
 	loop = g_main_loop_new(NULL, TRUE);
+	g_main_loop_run(loop);
 	g_main_loop_unref(loop);
 out:
 	if (con != NULL)

@@ -12,6 +12,7 @@ SUBDIRS = 						\
 	man						\
 	libcolord					\
 	client						\
+	examples					\
 	rules						\
 	doc						\
 	src
