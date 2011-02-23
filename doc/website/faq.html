@@ -22,6 +22,7 @@
 <!--
 <li><a href="#xxx">xxx</a></li>
 -->
+<li><a href="#qualifiers">What is a qualifier used for?</a></li>
 <li><a href="#daemon">How do system daemons add devices and profiles?</a></li>
 <li><a href="#cups">How would a system daemon like CUPS use colord?</a></li>
 <li><a href="#translation">How do I translate gnome-color-manager?</a></li>
@@ -124,6 +125,39 @@ a safe abstracted way.
 ccccccccccccccccccccccccccccccccccccccccccccccccccccc.
 </p>
 -->
+
+<hr/>
+<h3><a name="qualifiers">What is a qualifier used for?</a></h3>
+<p>
+A qualifier is a single string with three substrings joined with dots.
+For example, <code>RGB.Glossy.300dpi</code> would be the qualifier on
+a profile for a RGB device, printing on glossy paper and at 300 dots-per-inch.
+</p>
+<p>
+Qualifiers are assigned to a profile either by CUPS itself or by the user
+and this allows CUPS to choose the correct profile for a given print job.
+The substrings are tried in preference order, so that for a print job
+of type <code>RGB.Glossy.300dpi</code> the following fallbacks would be
+used:
+</p>
+<ol>
+<li><code>RGB.Glossy.300dpi</code></li>
+<li><code>RGB.Glossy.*</code></li>
+<li><code>RGB.*.300dpi</code></li>
+<li><code>RGB.*.*</code></li>
+<li><code>*</code></li>
+</ol>
+<p>
+The fallback scheme allows one profile to potentially match lots of
+different print conditions, as very few users will have more than
+a couple of different printer profiles.
+</p>
+<p>
+The tri-dotted notation was chosen in preference to JSOn or XML as it
+is <a href="http://www.cups.org/documentation.php/doc-1.4/spec-ppd.html#cupsICCProfile">
+already being used by CUPS</a> in the cupsICCProfile PPD Extensions
+format.
+</p>
 
 <hr/>
 <h3><a name="daemon">How do system daemons add devices and profiles?</a></h3>
