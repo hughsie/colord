@@ -937,7 +937,7 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 	if (!ret)
 		goto out;
 	profile = cd_device_get_profile_for_qualifiers_sync (device,
-							     values,
+							     (const gchar **) values,
 							     NULL,
 							     error);
 	if (profile == NULL) {
