@@ -419,7 +419,7 @@ colord_client_func (void)
 								 &error);
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
-	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
+	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp), ==,
 			 profile_path);
 	g_object_unref (profile_tmp);
 
