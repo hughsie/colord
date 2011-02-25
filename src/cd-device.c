@@ -428,14 +428,19 @@ cd_device_get_profiles_as_variant (CdDevice *device)
 {
 	CdProfile *profile;
 	guint i;
+	guint idx = 0;
 	GVariant **profiles = NULL;
 	GVariant *value;
 
-	/* copy the object paths */
+	/* copy the object paths, hard then soft */
 	profiles = g_new0 (GVariant *, device->priv->profiles->len + 1);
-	for (i=0; i<device->priv->profiles->len; i++) {
-		profile = g_ptr_array_index (device->priv->profiles, i);
-		profiles[i] = g_variant_new_object_path (cd_profile_get_object_path (profile));
+	for (i=0; i<device->priv->profiles_hard->len; i++) {
+		profile = g_ptr_array_index (device->priv->profiles_hard, i);
+		profiles[idx++] = g_variant_new_object_path (cd_profile_get_object_path (profile));
+	}
+	for (i=0; i<device->priv->profiles_soft->len; i++) {
+		profile = g_ptr_array_index (device->priv->profiles_soft, i);
+		profiles[idx++] = g_variant_new_object_path (cd_profile_get_object_path (profile));
 	}
 
 	/* format the value */
