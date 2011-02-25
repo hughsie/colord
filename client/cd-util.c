@@ -541,7 +541,11 @@ cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 					       error);
 	if (!ret)
 		goto out;
-	ret = cd_device_add_profile_sync (device, profile, NULL, error);
+	ret = cd_device_add_profile_sync (device,
+					  CD_DEVICE_RELATION_HARD,
+					  profile,
+					  NULL,
+					  error);
 	if (!ret)
 		goto out;
 out:

@@ -192,6 +192,29 @@
           </doc:para>
         </doc:description>
       </doc:doc>
+      <arg type='s' name='relation' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The strength of the relationship from profile to device.
+              This can be <doc:tt>soft</doc:tt> to indicate that the
+              mapping is not important, or that the profile is assumed
+              from a device and not in response to user action.
+            <doc:para>
+            </doc:para>
+              The default option is <doc:tt>hard</doc:tt>, and this
+              means that the user has explicitly mapped a profile to
+              a device, and this should take precidence over any
+              <doc:tt>soft</doc:tt> profiles.
+            </doc:para>
+            <doc:para>
+              If the user makes a <doc:tt>soft</doc:tt> profile default,
+              then it is explicitly promoted to a <doc:tt>hard</doc:tt>
+              relationship.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
       <arg type='o' name='object_path' direction='in'>
         <doc:doc>
           <doc:summary>

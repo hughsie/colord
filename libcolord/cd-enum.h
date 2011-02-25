@@ -118,6 +118,18 @@ typedef enum {
 	CD_DEVICE_MODE_LAST
 } CdDeviceMode;
 
+/**
+ * CdDeviceRelation:
+ *
+ * The device to profile relationship.
+ **/
+typedef enum {
+	CD_DEVICE_RELATION_UNKNOWN,
+	CD_DEVICE_RELATION_SOFT,
+	CD_DEVICE_RELATION_HARD,
+	CD_DEVICE_RELATION_LAST,
+} CdDeviceRelation;
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
@@ -134,6 +146,8 @@ const gchar	*cd_colorspace_to_string		(CdColorspace		 colorspace);
 CdColorspace	 cd_colorspace_from_string		(const gchar		*colorspace);
 const gchar	*cd_device_mode_to_string		(CdDeviceMode		 device_mode);
 CdDeviceMode	 cd_device_mode_from_string		(const gchar		*device_mode);
+const gchar	*cd_device_relation_to_string		(CdDeviceRelation	 device_relation);
+CdDeviceRelation cd_device_relation_from_string		(const gchar		*device_relation);
 
 G_END_DECLS
 

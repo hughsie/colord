@@ -792,6 +792,7 @@ cd_device_set_mode_sync (CdDevice *device,
 /**
  * cd_device_add_profile_sync:
  * @device: a #CdDevice instance.
+ * @relation: a #CdDeviceRelation, e.g. #CD_DEVICE_RELATION_HARD
  * @profile: a #CdProfile instance
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
@@ -800,10 +801,11 @@ cd_device_set_mode_sync (CdDevice *device,
  *
  * Return value: #TRUE for success, else #FALSE and @error is used
  *
- * Since: 0.1.0
+ * Since: 0.1.3
  **/
 gboolean
 cd_device_add_profile_sync (CdDevice *device,
+			    CdDeviceRelation relation,
 			    CdProfile *profile,
 			    GCancellable *cancellable,
 			    GError **error)
@@ -814,12 +816,14 @@ cd_device_add_profile_sync (CdDevice *device,
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	g_return_val_if_fail (relation != CD_DEVICE_RELATION_UNKNOWN, FALSE);
 	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
 
 	/* execute sync method */
 	response = g_dbus_proxy_call_sync (device->priv->proxy,
 					   "AddProfile",
-					   g_variant_new ("(o)",
+					   g_variant_new ("(so)",
+							  cd_device_relation_to_string (relation),
 							  cd_profile_get_object_path (profile)),
 					   G_DBUS_CALL_FLAGS_NONE,
 					   -1, NULL, &error_local);

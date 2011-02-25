@@ -71,6 +71,7 @@ colord_device_func (void)
 
 	/* add profile */
 	ret = cd_device_add_profile (device,
+				     CD_DEVICE_RELATION_SOFT,
 				     cd_profile_get_object_path (profile),
 				     &error);
 	g_assert_no_error (error);
@@ -78,6 +79,7 @@ colord_device_func (void)
 
 	/* add profile again */
 	ret = cd_device_add_profile (device,
+				     CD_DEVICE_RELATION_HARD,
 				     cd_profile_get_object_path (profile),
 				     &error);
 	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
@@ -86,6 +88,7 @@ colord_device_func (void)
 
 	/* add profile that does not exist */
 	ret = cd_device_add_profile (device,
+				     CD_DEVICE_RELATION_SOFT,
 				     "/dave",
 				     &error);
 	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);

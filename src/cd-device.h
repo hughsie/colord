@@ -70,6 +70,7 @@ GPtrArray	*cd_device_get_profiles			(CdDevice	*device);
 void		 cd_device_set_profiles			(CdDevice	*device,
 							 GPtrArray	*profiles);
 gboolean	 cd_device_add_profile			(CdDevice	*device,
+							 CdDeviceRelation relation,
 							 const gchar	*profile_object_path,
 							 GError		**error);
 gboolean	 cd_device_remove_profile		(CdDevice	*device,

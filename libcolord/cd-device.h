@@ -112,6 +112,7 @@ gboolean	 cd_device_set_mode_sync		(CdDevice	*device,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_device_add_profile_sync		(CdDevice	*device,
+							 CdDeviceRelation relation,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GError		**error);

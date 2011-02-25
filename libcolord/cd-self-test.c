@@ -134,6 +134,8 @@ colord_client_func (void)
 	const gchar *qualifier2[] = {"Lexmark.RGB.*",
 				     "Epson.RGB.*",
 				     NULL};
+	const gchar *qualifier3[] = {"*.*.*",
+				     NULL};
 
 	key = g_random_int_range (0x00, 0xffff);
 	g_debug ("using random key %04x", key);
@@ -317,6 +319,12 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	/* set profile qualifier */
+	ret = cd_profile_set_qualifier_sync (profile2, "Epson.CMYK.300dpi",
+					     NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
 
@@ -349,12 +357,12 @@ colord_client_func (void)
 	g_clear_error (&error);
 
 	/* assign profile to device */
-	ret = cd_device_add_profile_sync (device, profile, NULL, &error);
+	ret = cd_device_add_profile_sync (device, CD_DEVICE_RELATION_SOFT, profile, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* assign extra profile to device */
-	ret = cd_device_add_profile_sync (device, profile2, NULL, &error);
+	ret = cd_device_add_profile_sync (device, CD_DEVICE_RELATION_HARD, profile2, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -421,6 +429,17 @@ colord_client_func (void)
 	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp), ==,
 			 profile_path);
+	g_object_unref (profile_tmp);
+
+	/* check hard profiles beat soft profiles */
+	profile_tmp = cd_device_get_profile_for_qualifiers_sync (device,
+								 qualifier3,
+								 NULL,
+								 &error);
+	g_assert_no_error (error);
+	g_assert (profile_tmp != NULL);
+	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp), ==,
+			 profile2_path);
 	g_object_unref (profile_tmp);
 
 	/* uninhibit device (should fail) */

@@ -268,6 +268,7 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 				 object_path_tmp,
 				 cd_device_get_object_path (device));
 			ret = cd_device_add_profile (device,
+						     CD_DEVICE_RELATION_HARD,
 						     object_path_tmp,
 						     &error);
 			if (!ret) {
@@ -494,6 +495,7 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 				 cd_profile_get_object_path (profile),
 				 object_path_tmp);
 			ret = cd_device_add_profile (device_tmp,
+						     CD_DEVICE_RELATION_HARD,
 						     cd_profile_get_object_path (profile),
 						     &error);
 			if (!ret) {

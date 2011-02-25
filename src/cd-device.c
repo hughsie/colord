@@ -63,6 +63,8 @@ struct _CdDevicePrivate
 	gchar				*object_path;
 	GDBusConnection			*connection;
 	GPtrArray			*profiles;
+	GPtrArray			*profiles_soft;
+	GPtrArray			*profiles_hard;
 	guint				 registration_id;
 	guint				 watcher_id;
 	guint64				 created;
@@ -476,7 +478,9 @@ cd_device_remove_profile (CdDevice *device,
 		goto out;
 	}
 
-	/* remove from the array */
+	/* remove from the arrays */
+	g_ptr_array_remove (priv->profiles_soft, profile_tmp);
+	g_ptr_array_remove (priv->profiles_hard, profile_tmp);
 	ret = g_ptr_array_remove (priv->profiles, profile_tmp);
 	g_assert (ret);
 
@@ -499,6 +503,7 @@ out:
  **/
 gboolean
 cd_device_add_profile (CdDevice *device,
+		       CdDeviceRelation relation,
 		       const gchar *profile_object_path,
 		       GError **error)
 {
@@ -538,6 +543,10 @@ cd_device_add_profile (CdDevice *device,
 
 	/* add to the array */
 	g_ptr_array_add (priv->profiles, g_object_ref (profile));
+	if (relation == CD_DEVICE_RELATION_SOFT)
+		g_ptr_array_add (priv->profiles_soft, g_object_ref (profile));
+	if (relation == CD_DEVICE_RELATION_HARD)
+		g_ptr_array_add (priv->profiles_hard, g_object_ref (profile));
 
 	/* emit */
 	cd_device_dbus_emit_property_changed (device,
@@ -662,6 +671,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	GVariantIter *iter = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
+	CdDeviceRelation relation = CD_DEVICE_RELATION_UNKNOWN;
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "AddProfile") == 0) {
@@ -674,13 +684,31 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(o)",
+		g_variant_get (parameters, "(so)",
+			       &property_value,
 			       &profile_object_path);
 		g_debug ("CdDevice %s:AddProfile(%s)",
 			 sender, profile_object_path);
 
+		/* convert the device->profile relationship into an enum */
+		if (g_strcmp0 (property_value, "soft") == 0)
+			relation = CD_DEVICE_RELATION_SOFT;
+		else if (g_strcmp0 (property_value, "hard") == 0)
+			relation = CD_DEVICE_RELATION_HARD;
+
+		/* nothing valid */
+		if (relation == CD_DEVICE_RELATION_UNKNOWN) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "relation '%s' unknown, expected 'hard' or 'soft'",
+							       property_value);
+			goto out;
+		}
+
 		/* add it */
 		ret = cd_device_add_profile (device,
+					     relation,
 					     profile_object_path,
 					     &error);
 		if (!ret) {
@@ -774,11 +802,13 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* search each regex against the profiles for this device */
-		for (i=0; regexes[i] != NULL; i++) {
+		for (i=0; profile == NULL && regexes[i] != NULL; i++) {
 			profile = cd_device_find_by_qualifier (regexes[i],
-							       priv->profiles);
-			if (profile != NULL)
-				break;
+							       priv->profiles_hard);
+		}
+		for (i=0; profile == NULL && regexes[i] != NULL; i++) {
+			profile = cd_device_find_by_qualifier (regexes[i],
+							       priv->profiles_soft);
 		}
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -844,6 +874,11 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 				break;
 			}
 		}
+
+		/* ensure profile is in the 'hard' relation array */
+		ret = g_ptr_array_remove (priv->profiles_soft, profile);
+		if (ret)
+			g_ptr_array_add (priv->profiles_hard, g_object_ref (profile));
 
 		/* emit */
 		cd_device_dbus_emit_property_changed (device,
@@ -1222,6 +1257,8 @@ cd_device_init (CdDevice *device)
 {
 	device->priv = CD_DEVICE_GET_PRIVATE (device);
 	device->priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	device->priv->profiles_soft = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	device->priv->profiles_hard = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	device->priv->profile_array = cd_profile_array_new ();
 #if !GLIB_CHECK_VERSION (2, 25, 0)
 	device->priv->created = g_get_real_time ();
@@ -1269,8 +1306,9 @@ cd_device_finalize (GObject *object)
 	g_free (priv->serial);
 	g_free (priv->kind);
 	g_free (priv->object_path);
-	if (priv->profiles != NULL)
-		g_ptr_array_unref (priv->profiles);
+	g_ptr_array_unref (priv->profiles);
+	g_ptr_array_unref (priv->profiles_soft);
+	g_ptr_array_unref (priv->profiles_hard);
 	g_object_unref (priv->profile_array);
 	g_object_unref (priv->mapping_db);
 	g_object_unref (priv->device_db);

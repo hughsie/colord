@@ -260,3 +260,29 @@ cd_device_mode_from_string (const gchar *device_mode)
 		return CD_DEVICE_MODE_VIRTUAL;
 	return CD_DEVICE_MODE_UNKNOWN;
 }
+
+/**
+ * cd_device_relation_to_string:
+ **/
+const gchar *
+cd_device_relation_to_string (CdDeviceRelation device_relation)
+{
+	if (device_relation == CD_DEVICE_RELATION_HARD)
+		return "hard";
+	if (device_relation == CD_DEVICE_RELATION_SOFT)
+		return "soft";
+	return "unknown";
+}
+
+/**
+ * cd_device_relation_from_string:
+ **/
+CdDeviceRelation
+cd_device_relation_from_string (const gchar *device_relation)
+{
+	if (g_strcmp0 (device_relation, "hard") == 0)
+		return CD_DEVICE_RELATION_HARD;
+	if (g_strcmp0 (device_relation, "soft") == 0)
+		return CD_DEVICE_RELATION_SOFT;
+	return CD_DEVICE_MODE_UNKNOWN;
+}
