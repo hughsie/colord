@@ -375,16 +375,25 @@ cd_device_find_by_qualifier (const gchar *regex, GPtrArray *array)
 
 		/* '*' matches anything, including a blank qualifier */
 		if (g_strcmp0 (regex, "*") == 0) {
+			g_debug ("anything matches, returning %s",
+				 cd_profile_get_id (profile_tmp));
 			profile = profile_tmp;
 			goto out;
 		}
 
 		/* match with a regex */
 		qualifier = cd_profile_get_qualifier (profile_tmp);
-		if (qualifier == NULL)
+		if (qualifier == NULL) {
+			g_debug ("no qualifier for %s, skipping",
+				 cd_profile_get_id (profile_tmp));
 			continue;
+		}
 		ret = cd_device_match_qualifier (regex,
 						 qualifier);
+		g_debug ("%s regex '%s' for '%s'",
+			 ret ? "matched" : "unmatched",
+			 regex,
+			 qualifier);
 		if (ret) {
 			profile = profile_tmp;
 			goto out;
@@ -826,10 +835,14 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* search each regex against the profiles for this device */
 		for (i=0; profile == NULL && regexes[i] != NULL; i++) {
+			if (i == 0)
+				g_debug ("searching [hard]");
 			profile = cd_device_find_by_qualifier (regexes[i],
 							       priv->profiles_hard);
 		}
 		for (i=0; profile == NULL && regexes[i] != NULL; i++) {
+			if (i == 0)
+				g_debug ("searching [soft]");
 			profile = cd_device_find_by_qualifier (regexes[i],
 							       priv->profiles_soft);
 		}
@@ -874,15 +887,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
-		/* if this profile already default */
-		if (g_ptr_array_index (priv->profiles, 0) == profile) {
-			g_debug ("CdDevice: %s is already the default on %s",
-				 profile_object_path,
-				 priv->object_path);
-			g_dbus_method_invocation_return_value (invocation, NULL);
-			goto out;
-		}
-
 		/* make the profile first in the array */
 		for (i=1; i<priv->profiles->len; i++) {
 			profile_tmp = g_ptr_array_index (priv->profiles, i);
@@ -902,6 +906,18 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		ret = g_ptr_array_remove (priv->profiles_soft, profile);
 		if (ret)
 			g_ptr_array_add (priv->profiles_hard, g_object_ref (profile));
+
+		/* make the profile first in the hard array */
+		for (i=1; i<priv->profiles_hard->len; i++) {
+			profile_tmp = g_ptr_array_index (priv->profiles_hard, i);
+			if (profile_tmp == profile) {
+				/* swap [0] and [i] */
+				profile_tmp = priv->profiles_hard->pdata[0];
+				priv->profiles_hard->pdata[0] = profile;
+				priv->profiles_hard->pdata[i] = profile_tmp;
+				break;
+			}
+		}
 
 		/* emit */
 		cd_device_dbus_emit_property_changed (device,
