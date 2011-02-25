@@ -25,7 +25,7 @@
 #include <string.h>
 
 #define QUAL_COLORSPACE		0
-#define QUAL_PAPER		1
+#define QUAL_MEDIA		1
 #define QUAL_RESOLUTION		2
 #define QUAL_SIZE		3
 
@@ -35,12 +35,9 @@ split_qualifier (const char *qualifier)
 	char *qualifier_copy;
 	char **split = NULL;
 	char *tmp;
-	int i;
 
 	/* allocate enough for a null termination */
-	split = malloc(sizeof(char*) * (QUAL_SIZE + 1));
-	for (i=0; i<4; i++)
-		split[i] = NULL;
+	split = calloc(QUAL_SIZE + 1, sizeof(char*));
 
 	/* work on a copy as we muller the string */
 	qualifier_copy = strdup(qualifier);
@@ -53,8 +50,8 @@ split_qualifier (const char *qualifier)
 	split[QUAL_COLORSPACE] = strdup(qualifier_copy);
 
 	/* get paper type */
-	split[QUAL_PAPER] = strdup(tmp + 1);
-	tmp = strstr(split[QUAL_PAPER], ".");
+	split[QUAL_MEDIA] = strdup(tmp + 1);
+	tmp = strstr(split[QUAL_MEDIA], ".");
 	if (tmp == NULL)
 		goto out;
 	tmp[0] = '\0';
@@ -148,17 +145,17 @@ get_profile_for_device_path (DBusConnection *con,
 	split = split_qualifier(qualifier);
 
 	/* create the fallbacks */
-	key = malloc(sizeof(char*) * 6);
+	key = calloc(6, sizeof(char*));
 
 	/* exact match */
 	snprintf(str, 256, "%s.%s.%s",
 		 split[QUAL_COLORSPACE],
-		 split[QUAL_PAPER],
+		 split[QUAL_MEDIA],
 		 split[QUAL_RESOLUTION]);
 	key[i++] = strdup(str);
 	snprintf(str, 256, "%s.%s.*",
 		 split[QUAL_COLORSPACE],
-		 split[QUAL_PAPER]);
+		 split[QUAL_MEDIA]);
 	key[i++] = strdup(str);
 	snprintf(str, 256, "%s.*.%s",
 		 split[QUAL_COLORSPACE],
