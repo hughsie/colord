@@ -127,12 +127,12 @@ colord_client_func (void)
 	GPtrArray *profiles;
 	guint32 key;
 	GHashTable *metadata;
-	const gchar *qualifier1[] = {"Lexmark.RGB.300dpi",
-				     "Epson.RGB.300dpi",
-				     "HP.RGB.300dpi",
+	const gchar *qualifier1[] = {"RGB.Plain.300dpi",
+				     "RGB.Glossy.300dpi",
+				     "RGB.Matte.300dpi",
 				     NULL};
-	const gchar *qualifier2[] = {"Lexmark.RGB.*",
-				     "Epson.RGB.*",
+	const gchar *qualifier2[] = {"RGB.Transparency.*",
+				     "RGB.Glossy.*",
 				     NULL};
 	const gchar *qualifier3[] = {"*.*.*",
 				     NULL};
@@ -262,7 +262,7 @@ colord_client_func (void)
 					       g_free, g_free);
 	g_hash_table_insert (profile_props,
 			     g_strdup ("Qualifier"),
-			     g_strdup ("Epson.RGB.1200dpi"));
+			     g_strdup ("RGB.Glossy.1200dpi"));
 	profile2 = cd_client_create_profile_sync (client,
 						  profile2_id,
 						  CD_OBJECT_SCOPE_TEMPORARY,
@@ -274,7 +274,7 @@ colord_client_func (void)
 	g_assert_cmpstr (cd_profile_get_object_path (profile2), ==,
 			 profile2_path);
 	g_assert_cmpstr (cd_profile_get_id (profile2), ==, profile2_id);
-	g_assert_cmpstr (cd_profile_get_qualifier (profile2), ==, "Epson.RGB.1200dpi");
+	g_assert_cmpstr (cd_profile_get_qualifier (profile2), ==, "RGB.Glossy.1200dpi");
 
 	/* get new number of profiles */
 	array = cd_client_get_profiles_sync (client, NULL, &error);
@@ -314,13 +314,13 @@ colord_client_func (void)
 	g_assert (ret);
 
 	/* set profile qualifier */
-	ret = cd_profile_set_qualifier_sync (profile, "Epson.RGB.300dpi",
+	ret = cd_profile_set_qualifier_sync (profile, "RGB.Glossy.300dpi",
 					     NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* set profile qualifier */
-	ret = cd_profile_set_qualifier_sync (profile2, "Epson.CMYK.300dpi",
+	ret = cd_profile_set_qualifier_sync (profile2, "RGB.Matte.300dpi",
 					     NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -337,7 +337,7 @@ colord_client_func (void)
 				    "data/tests/ibm-t61.icc"));
 
 	/* check profile qualifier */
-	g_assert_cmpstr (cd_profile_get_qualifier (profile), ==, "Epson.RGB.300dpi");
+	g_assert_cmpstr (cd_profile_get_qualifier (profile), ==, "RGB.Glossy.300dpi");
 
 	/* check profile title set from ICC profile */
 	g_assert_cmpstr (cd_profile_get_title (profile), ==, "Huey, LENOVO - 6464Y1H - 15\" (2009-12-23)");
@@ -374,7 +374,7 @@ colord_client_func (void)
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 2);
 	profile_tmp = g_ptr_array_index (array, 0);
-	g_assert_cmpstr (cd_profile_get_qualifier (profile_tmp), ==, "Epson.RGB.300dpi");
+	g_assert_cmpstr (cd_profile_get_qualifier (profile_tmp), ==, "RGB.Glossy.300dpi");
 	g_ptr_array_unref (array);
 
 	/* make profile default */
