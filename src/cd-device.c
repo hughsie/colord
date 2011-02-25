@@ -107,7 +107,6 @@ cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
 	device->priv->object_scope = object_scope;
 }
 
-
 /**
  * cd_device_mode_to_string:
  **/
@@ -504,6 +503,19 @@ out:
 }
 
 /**
+ * _cd_device_relation_to_string:
+ **/
+static const gchar *
+_cd_device_relation_to_string (CdDeviceRelation device_relation)
+{
+	if (device_relation == CD_DEVICE_RELATION_HARD)
+		return "hard";
+	if (device_relation == CD_DEVICE_RELATION_SOFT)
+		return "soft";
+	return "unknown";
+}
+
+/**
  * cd_device_add_profile:
  **/
 gboolean
@@ -547,6 +559,10 @@ cd_device_add_profile (CdDevice *device,
 	}
 
 	/* add to the array */
+	g_debug ("Adding %s [%s] to %s",
+		 cd_profile_get_id (profile),
+		 _cd_device_relation_to_string (relation),
+		 device->priv->id);
 	g_ptr_array_add (priv->profiles, g_object_ref (profile));
 	if (relation == CD_DEVICE_RELATION_SOFT)
 		g_ptr_array_add (priv->profiles_soft, g_object_ref (profile));
@@ -724,14 +740,16 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* save this to the permanent database */
-		ret = cd_mapping_db_add (priv->mapping_db,
-					 priv->object_path,
-					 profile_object_path,
-					 &error);
-		if (!ret) {
-			g_warning ("CdDevice: failed to save mapping to database: %s",
-				   error->message);
-			g_error_free (error);
+		if (relation == CD_DEVICE_RELATION_HARD) {
+			ret = cd_mapping_db_add (priv->mapping_db,
+						 priv->object_path,
+						 profile_object_path,
+						 &error);
+			if (!ret) {
+				g_warning ("CdDevice: failed to save mapping to database: %s",
+					   error->message);
+				g_error_free (error);
+			}
 		}
 
 		g_dbus_method_invocation_return_value (invocation, NULL);
