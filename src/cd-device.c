@@ -315,6 +315,48 @@ cd_device_dbus_emit_device_changed (CdDevice *device)
 }
 
 /**
+ * cd_device_match_qualifier:
+ **/
+static gboolean
+cd_device_match_qualifier (const gchar *qual1, const gchar *qual2)
+{
+	gboolean ret = FALSE;
+	gchar **split1 = NULL;
+	gchar **split2 = NULL;
+	guint i;
+
+	/* split into substring */
+	split1 = g_strsplit (qual1, ".", 3);
+	split2 = g_strsplit (qual2, ".", 3);
+
+	/* ensure all substrings match */
+	for (i=0; i<3; i++) {
+
+		/* wildcard in query */
+		if (g_strcmp0 (split1[i], "*") == 0)
+			continue;
+
+		/* wildcard in qualifier */
+		if (g_strcmp0 (split2[i], "*") == 0)
+			continue;
+
+		/* exact match */
+		if (g_strcmp0 (split1[i], split2[i]) == 0)
+			continue;
+
+		/* failed to match substring */
+		goto out;
+	}
+
+	/* success */
+	ret = TRUE;
+out:
+	g_strfreev (split1);
+	g_strfreev (split2);
+	return ret;
+}
+
+/**
  * cd_device_find_by_qualifier:
  **/
 static CdProfile *
@@ -340,9 +382,8 @@ cd_device_find_by_qualifier (const gchar *regex, GPtrArray *array)
 		qualifier = cd_profile_get_qualifier (profile_tmp);
 		if (qualifier == NULL)
 			continue;
-		ret = g_regex_match_simple (regex,
-					    qualifier,
-					    0, 0);
+		ret = cd_device_match_qualifier (regex,
+						 qualifier);
 		if (ret) {
 			profile = profile_tmp;
 			goto out;
