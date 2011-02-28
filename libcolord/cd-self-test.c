@@ -374,7 +374,7 @@ colord_client_func (void)
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 2);
 	profile_tmp = g_ptr_array_index (array, 0);
-	g_assert_cmpstr (cd_profile_get_qualifier (profile_tmp), ==, "RGB.Glossy.300dpi");
+	g_assert_cmpstr (cd_profile_get_qualifier (profile_tmp), ==, "RGB.Matte.300dpi");
 	g_ptr_array_unref (array);
 
 	/* make profile default */
@@ -509,7 +509,7 @@ colord_client_func (void)
 	 * to the device thanks to the db */
 	g_object_unref (profile);
 	profile = cd_client_create_profile_sync (client,
-						 profile_id,
+						 profile2_id,
 						 CD_OBJECT_SCOPE_TEMPORARY,
 						 NULL,
 						 NULL,
@@ -553,7 +553,7 @@ colord_client_func (void)
 	 * added to the device */
 	g_object_unref (profile);
 	profile = cd_client_create_profile_sync (client,
-						 profile_id,
+						 profile2_id,
 						 CD_OBJECT_SCOPE_TEMPORARY,
 						 NULL,
 						 NULL,
