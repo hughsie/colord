@@ -1,3 +1,28 @@
+Version 0.1.3
+~~~~~~~~~~~~~
+Released: 2011-02-28
+
+New Features:
+ - Add a architecture diagram how colord is going to work with printing (Richard Hughes)
+ - Add a 'relation' parameter to Device.AddProfile() (Richard Hughes)
+ - Add cd-dbus-use-qualifier as an example of how to use a qualifier using DBus (Richard Hughes)
+ - Add FindProfileByFilename() to the main DBus interface (Richard Hughes)
+ - Add gtk-doc support to libcolord (Richard Hughes)
+ - Add the EDID_md5 metadata from profiles created by GCM with lcms (Richard Hughes)
+
+Bugfixes:
+ - Do not emit PropertyChanged on a profile when not yet added (Richard Hughes)
+ - Do not return dummy data if an ICC file has no metadata (Richard Hughes)
+ - Ensure profile IDs with slashes are escaped (Richard Hughes)
+ - Ensure the Device.Profiles property returns no results when profiling (Richard Hughes)
+ - Logically, GetProfileForQualifier(*) matches anything (Richard Hughes)
+ - Modify GetProfileForQualifiers() so we can send multiple requests (Richard Hughes)
+ - Never call DeviceChanged before DeviceAdded when adding properties (Richard Hughes)
+ - Only add 'hard' devices to the mapping database (Richard Hughes)
+ - Return the 'hard' profiles before the 'soft' profiles  (Richard Hughes)
+ - Send a Device::Changed signal when a device is being calibrated (Richard Hughes)
+ - Use a custom qualifier matcher, as g_regex_match_simple() is expensive (Richard Hughes)
+
 Version 0.1.2
 ~~~~~~~~~~~~~
 Released: 2011-02-07
