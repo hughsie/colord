@@ -12,6 +12,26 @@
 
 <h1>How it works:</h1>
 
+<img src="img/architecture-plan.png" alt="[logo]"/>
+<p>
+<i>General architecture plan</i>
+</p>
+<br/>
+<br/>
+<br/>
+<img src="img/cups-plan.png" alt="[logo]"/>
+<p>
+<i>CUPS query architecture plan</i>
+</p>
+<br/>
+<br/>
+<img src="img/cups-detailed-plan.png" alt="[logo]"/>
+<p>
+<i>Detailed CUPS integration plan</i>
+</p>
+<br/>
+<br/>
+
 <h2>Mapping the device to the profile</h2>
 
 <p>
@@ -36,77 +56,6 @@ CREATE TABLE devices (device_id TEXT PRIMARY KEY,device TEXT);
 CREATE TABLE properties (device_id TEXT,property TEXT,value TEXT);
 </pre>
 
-<h3>Comparison to UCMM</h3>
-<p>
-<a href="http://www.argyllcms.com/doc/ucmm.html">ucmm</a> (Unix micro Color Management Module) is a color management config file designed just to handle the necessary configuration needed to track the installation and association of ICC profiles with X11 displays.
-</p>
-<pre>
-{
-  "devices": {
-    "display": {
-      "1": {
-        "EDID": "0x00FFFFFFFFFFFF0034A1731751720000150901010C1F17CDE8A11E9E554A982712474FA4CE0045598180315961590101010101010101000000FE004D6F6E69746F720A2020202020000000FE004D6F6E69746F720A2020202020000000FE004D6F6E69746F720A2020202020000000FE004D6F6E69746F720A2020202020003D",
-        "ICC_PROFILE": "/home/graeme/.local/share/color/devices/display/mon1.icc"
-      },
-      "2": {
-        "NAME": ":0.1",
-        "ICC_PROFILE": "/home/graeme/.local/share/color/devices/display/mon2.icc"
-      }
-    }
-  }
-}
-</pre>
-
-The colord database differs from UCMM in the following ways:
-
-<ul>
- <li>
-  UCMM is a <a href="http://www.json.org/">JSON</a>
-  (JavaScript Object Notation) file format, whilst colord is a
-  <i>key=value</i> style store
- </li>
- <li>
-  UCMM allows mapping from a monitor EDID or display name to a device
-  profile, where colord maps <i>device IDs</i> to <i>profile IDs</i>.
- </li>
- <li>
-  UCMM stores the EDID in the file as a huge hex number, but colord
-  stores other "junk" details such as a the device colorspace and
-  device serial number which are useful to some GUI tools.
- </li>
- <li>
-  UCMM is a well documented standard used for a long time by ArgyllCMS
-  whilst colord has only ever been used by GCM for a short time.
- </li>
- <li>
-  UCMM has to be parsed using a parser such as JNCF, whilst colord can
-  bequeried by any client that speaks <code>DBus</code>.
- </li>
- <li>
-  UCMM only supports one profile per device, unlike colord which
-  supports an ordered list of profiles with optional qualifiers.
- </li>
-</ul>
-
-<p>
-All that said, UCMM is already used by ArgyllCMS and we should probably
-import the existing files on the first run of GCM.
-</p>
-
-<h3>Using Elektra</h3>
-<p>
-Oyranos puts device settings in the session and system
-<a href="http://elektra.g4ii.com/Main_Page">Elektra</a> database.
-Elektra is not a well supported library in any mainstream distribution
-and is not used by many open source projects.
-colord will not import settings from Elektra nor can it propagate
-settings back into the Oyranos configuration system.
-</p>
-<p>
-The colord author is willing to work with the Oyranos developers to
-define a standard compatible with both systems.
-</p>
-
 <h2>Setting the system default</h2>
 <p>
 One user may want to set the default for all users.
@@ -116,6 +65,7 @@ worst case, <code>/home/foo</code> may be encrypted and inaccessible even as roo
 For this reason, colord copies the ICC profiles to a systemwide directory,
 <code>/usr/lib/color</code> that is per-machine and accessible to all users.
 </p>
+<img src="img/polkit.png" alt="[logo]"/>
 <p>
 It is <a href="http://lists.freedesktop.org/archives/openicc/2010q2/002167.html">encouraged</a> that other CMS implementations also read ICC profiles from the per-machine
 <code>/usr/lib/color</code> directory.
