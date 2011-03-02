@@ -232,7 +232,7 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='u' name='kind' direction='in'>
+      <arg type='s' name='kind' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
@@ -281,7 +281,7 @@
           </doc:summary>
         </doc:doc>
       </arg>
-      <arg type='u' name='options' direction='in'>
+      <arg type='s' name='scope' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
@@ -293,19 +293,19 @@
           </doc:summary>
           <doc:list>
             <doc:item>
-              <doc:term>0</doc:term>
+              <doc:term>normal</doc:term>
               <doc:definition>
                 Normal profile.
               </doc:definition>
             </doc:item>
             <doc:item>
-              <doc:term>1</doc:term>
+              <doc:term>temp</doc:term>
               <doc:definition>
                 Profile is removed if the user logs out.
               </doc:definition>
             </doc:item>
             <doc:item>
-              <doc:term>2</doc:term>
+              <doc:term>disk</doc:term>
               <doc:definition>
                 Profile that is saved to disk and restored on next startup.
               </doc:definition>
@@ -365,7 +365,7 @@
           </doc:summary>
         </doc:doc>
       </arg>
-      <arg type='u' name='options' direction='in'>
+      <arg type='s' name='scope' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
@@ -377,19 +377,19 @@
           </doc:summary>
           <doc:list>
             <doc:item>
-              <doc:term>0</doc:term>
+              <doc:term>normal</doc:term>
               <doc:definition>
                 Normal device.
               </doc:definition>
             </doc:item>
             <doc:item>
-              <doc:term>1</doc:term>
+              <doc:term>temp</doc:term>
               <doc:definition>
                 Device that is removed if the user logs out.
               </doc:definition>
             </doc:item>
             <doc:item>
-              <doc:term>2</doc:term>
+              <doc:term>disk</doc:term>
               <doc:definition>
                 Device that is saved to disk, and restored if the
                 computer is restarted.

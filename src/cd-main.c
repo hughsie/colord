@@ -194,7 +194,7 @@ cd_main_add_profile (CdProfile *profile,
 static CdProfile *
 cd_main_create_profile (const gchar *sender,
 			const gchar *profile_id,
-			guint options,
+			CdObjectScope scope,
 			GError **error)
 {
 	gboolean ret;
@@ -206,25 +206,25 @@ cd_main_create_profile (const gchar *sender,
 	/* create an object */
 	profile_tmp = cd_profile_new ();
 	cd_profile_set_id (profile_tmp, profile_id);
-	cd_profile_set_scope (profile_tmp, options);
+	cd_profile_set_scope (profile_tmp, scope);
 
 	/* add the profile */
 	ret = cd_main_add_profile (profile_tmp, error);
 	if (!ret)
 		goto out;
 
-	/* different persistent options */
-	if (options == CD_OBJECT_SCOPE_NORMAL) {
+	/* different persistent scope */
+	if (scope == CD_OBJECT_SCOPE_NORMAL) {
 		g_debug ("CdMain: normal profile");
-	} else if ((options & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
+	} else if ((scope & CD_OBJECT_SCOPE_TEMP) > 0) {
 		g_debug ("CdMain: temporary profile");
 		/* setup DBus watcher */
 		cd_profile_watch_sender (profile_tmp, sender);
-	} else if ((options & CD_OBJECT_SCOPE_DISK) > 0) {
+	} else if ((scope & CD_OBJECT_SCOPE_DISK) > 0) {
 		g_debug ("CdMain: persistant profile");
 		//FIXME: save to disk
 	} else {
-		g_warning ("CdMain: Unsupported options kind: %i", options);
+		g_warning ("CdMain: Unsupported scope kind: %i", scope);
 	}
 
 	/* success */
@@ -334,7 +334,7 @@ cd_main_device_add (CdDevice *device,
 	/* create an object */
 	g_debug ("CdMain: Adding device %s", cd_device_get_object_path (device));
 
-	/* different persistent options */
+	/* different persistent scope */
 	scope = cd_device_get_scope (device);
 	if (scope == CD_OBJECT_SCOPE_DISK && sender != NULL) {
 		g_debug ("CdMain: persistant device");
@@ -391,7 +391,7 @@ cd_main_create_device (const gchar *sender,
 		goto out;
 
 	/* setup DBus watcher */
-	if ((scope & CD_OBJECT_SCOPE_TEMPORARY) > 0) {
+	if ((scope & CD_OBJECT_SCOPE_TEMP) > 0) {
 		g_debug ("temporary device");
 		cd_device_watch_sender (device_tmp, sender);
 	}
@@ -556,15 +556,16 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
 	CdDevice *device = NULL;
+	CdObjectScope scope;
 	CdProfile *profile = NULL;
 	const gchar *prop_key;
 	const gchar *prop_value;
 	gboolean ret;
 	gchar *device_id = NULL;
 	gchar *object_path_tmp = NULL;
+	gchar *scope_tmp = NULL;
 	GError *error = NULL;
 	GPtrArray *array = NULL;
-	guint options;
 	GVariantIter *iter = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
@@ -602,11 +603,11 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetProfilesByKind") == 0) {
 
 		/* get all the devices that match this type */
-		g_variant_get (parameters, "(u)", &options);
-		g_debug ("CdMain: %s:GetProfilesByKind(%u)",
-			 sender, options);
+		g_variant_get (parameters, "(s)", &scope_tmp);
+		g_debug ("CdMain: %s:GetProfilesByKind(%s)",
+			 sender, scope_tmp);
 		array = cd_profile_array_get_by_kind (profiles_array,
-						      options);
+						      cd_profile_kind_from_string (scope_tmp));
 
 		/* format the value */
 		value = cd_main_profile_array_to_variant (array);
@@ -702,17 +703,18 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(sua{ss})",
+		g_variant_get (parameters, "(ssa{ss})",
 			       &device_id,
-			       &options,
+			       &scope_tmp,
 			       &iter);
 
 		g_debug ("CdMain: %s:CreateDevice(%s)", sender, device_id);
+		scope = cd_object_scope_from_string (scope_tmp);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
 			device = cd_main_create_device (sender,
 							device_id,
-							options,
+							scope,
 							CD_DEVICE_MODE_UNKNOWN,
 							&error);
 			if (device == NULL) {
@@ -732,7 +734,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			ret = cd_device_set_property_internal (device,
 							       prop_key,
 							       prop_value,
-							       (options == CD_OBJECT_SCOPE_DISK),
+							       (scope == CD_OBJECT_SCOPE_DISK),
 							       &error);
 			if (!ret) {
 				g_warning ("CdMain: failed to set property on device: %s",
@@ -841,9 +843,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(sua{ss})",
+		g_variant_get (parameters, "(ssa{ss})",
 			       &device_id,
-			       &options,
+			       &scope_tmp,
 			       &iter);
 		g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
 		profile = cd_profile_array_get_by_id (profiles_array,
@@ -858,9 +860,10 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* copy the device path */
+		scope = cd_object_scope_from_string (scope_tmp);
 		profile = cd_main_create_profile (sender,
 						  device_id,
-						  options,
+						  scope,
 						  &error);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_gerror (invocation,
@@ -908,6 +911,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
+	g_free (scope_tmp);
 	g_free (object_path_tmp);
 	if (iter != NULL)
 		g_variant_iter_free (iter);

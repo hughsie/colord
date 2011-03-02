@@ -176,7 +176,7 @@ colord_client_func (void)
 			     g_strdup ("3000"));
 	device = cd_client_create_device_sync (client,
 					       device_id,
-					       CD_OBJECT_SCOPE_TEMPORARY,
+					       CD_OBJECT_SCOPE_TEMP,
 					       device_props,
 					       NULL,
 					       &error);
@@ -246,7 +246,7 @@ colord_client_func (void)
 	/* create profile */
 	profile = cd_client_create_profile_sync (client,
 						 profile_id,
-						 CD_OBJECT_SCOPE_TEMPORARY,
+						 CD_OBJECT_SCOPE_TEMP,
 						 NULL,
 						 NULL,
 						 &error);
@@ -265,7 +265,7 @@ colord_client_func (void)
 			     g_strdup ("RGB.Glossy.1200dpi"));
 	profile2 = cd_client_create_profile_sync (client,
 						  profile2_id,
-						  CD_OBJECT_SCOPE_TEMPORARY,
+						  CD_OBJECT_SCOPE_TEMP,
 						  profile_props,
 						  NULL,
 						  &error);
@@ -510,7 +510,7 @@ colord_client_func (void)
 	g_object_unref (profile);
 	profile = cd_client_create_profile_sync (client,
 						 profile2_id,
-						 CD_OBJECT_SCOPE_TEMPORARY,
+						 CD_OBJECT_SCOPE_TEMP,
 						 NULL,
 						 NULL,
 						 &error);
@@ -554,7 +554,7 @@ colord_client_func (void)
 	g_object_unref (profile);
 	profile = cd_client_create_profile_sync (client,
 						 profile2_id,
-						 CD_OBJECT_SCOPE_TEMPORARY,
+						 CD_OBJECT_SCOPE_TEMP,
 						 NULL,
 						 NULL,
 						 &error);
@@ -565,7 +565,7 @@ colord_client_func (void)
 	g_object_unref (device);
 	device = cd_client_create_device_sync (client,
 					       device_id,
-					       CD_OBJECT_SCOPE_TEMPORARY,
+					       CD_OBJECT_SCOPE_TEMP,
 					       NULL,
 					       NULL,
 					       &error);

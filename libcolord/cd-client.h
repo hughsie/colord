@@ -97,13 +97,13 @@ CdClient	*cd_client_new				(void);
 
 CdDevice	*cd_client_create_device_sync		(CdClient	*client,
 							 const gchar	*id,
-							 guint		 options,
+							 CdObjectScope	 scope,
 							 GHashTable	*properties,
 							 GCancellable	*cancellable,
 							 GError		**error);
 CdProfile	*cd_client_create_profile_sync		(CdClient	*client,
 							 const gchar	*id,
-							 guint		 options,
+							 CdObjectScope	 scope,
 							 GHashTable	*properties,
 							 GCancellable	*cancellable,
 							 GError		**error);

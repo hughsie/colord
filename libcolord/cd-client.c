@@ -498,7 +498,7 @@ cd_client_get_devices_finish (CdClient *client,
  * cd_client_create_device_sync:
  * @client: a #CdClient instance.
  * @id: identifier for the device
- * @options: the scope of the device
+ * @scope: the scope of the device
  * @properties: properties to set on the device, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
@@ -512,7 +512,7 @@ cd_client_get_devices_finish (CdClient *client,
 CdDevice *
 cd_client_create_device_sync (CdClient *client,
 			      const gchar *id,
-			      guint options,
+			      CdObjectScope scope,
 			      GHashTable *properties,
 			      GCancellable *cancellable,
 			      GError **error)
@@ -553,9 +553,9 @@ cd_client_create_device_sync (CdClient *client,
 
 	result = g_dbus_proxy_call_sync (client->priv->proxy,
 					 "CreateDevice",
-					 g_variant_new ("(sua{ss})",
+					 g_variant_new ("(ssa{ss})",
 						        id,
-						        options,
+						        cd_object_scope_to_string (scope),
 						        &builder),
 					 G_DBUS_CALL_FLAGS_NONE,
 					 -1,
@@ -601,7 +601,7 @@ out:
  * cd_client_create_profile_sync:
  * @client: a #CdClient instance.
  * @id: identifier for the device
- * @options: the scope of the profile
+ * @scope: the scope of the profile
  * @properties: properties to set on the profile, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
@@ -615,7 +615,7 @@ out:
 CdProfile *
 cd_client_create_profile_sync (CdClient *client,
 			       const gchar *id,
-			       guint options,
+			       CdObjectScope scope,
 			       GHashTable *properties,
 			       GCancellable *cancellable,
 			       GError **error)
@@ -656,9 +656,9 @@ cd_client_create_profile_sync (CdClient *client,
 
 	result = g_dbus_proxy_call_sync (client->priv->proxy,
 					 "CreateProfile",
-					 g_variant_new ("(sua{ss})",
+					 g_variant_new ("(ssa{ss})",
 						        id,
-						        options,
+						        cd_object_scope_to_string (scope),
 						        &builder),
 					 G_DBUS_CALL_FLAGS_NONE,
 					 -1,

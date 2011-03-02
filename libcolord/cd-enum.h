@@ -67,9 +67,11 @@ typedef enum {
  * The options type.
  **/
 typedef enum {
-	CD_OBJECT_SCOPE_NORMAL		= 0,
-	CD_OBJECT_SCOPE_TEMPORARY	= 1,
-	CD_OBJECT_SCOPE_DISK		= 2
+	CD_OBJECT_SCOPE_UNKNOWN,
+	CD_OBJECT_SCOPE_NORMAL,
+	CD_OBJECT_SCOPE_TEMP,
+	CD_OBJECT_SCOPE_DISK,
+	CD_OBJECT_SCOPE_LAST
 } CdObjectScope;
 
 /**
@@ -148,6 +150,8 @@ const gchar	*cd_device_mode_to_string		(CdDeviceMode		 device_mode);
 CdDeviceMode	 cd_device_mode_from_string		(const gchar		*device_mode);
 const gchar	*cd_device_relation_to_string		(CdDeviceRelation	 device_relation);
 CdDeviceRelation cd_device_relation_from_string		(const gchar		*device_relation);
+const gchar	*cd_object_scope_to_string		(CdObjectScope		 object_scope);
+CdObjectScope	 cd_object_scope_from_string		(const gchar		*object_scope);
 
 G_END_DECLS
 

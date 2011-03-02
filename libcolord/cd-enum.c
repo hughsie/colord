@@ -286,3 +286,33 @@ cd_device_relation_from_string (const gchar *device_relation)
 		return CD_DEVICE_RELATION_SOFT;
 	return CD_DEVICE_MODE_UNKNOWN;
 }
+
+/**
+ * cd_object_scope_to_string:
+ **/
+const gchar *
+cd_object_scope_to_string (CdObjectScope object_scope)
+{
+	if (object_scope == CD_OBJECT_SCOPE_NORMAL)
+		return "normal";
+	if (object_scope == CD_OBJECT_SCOPE_TEMP)
+		return "temp";
+	if (object_scope == CD_OBJECT_SCOPE_DISK)
+		return "disk";
+	return "unknown";
+}
+
+/**
+ * cd_object_scope_from_string:
+ **/
+CdObjectScope
+cd_object_scope_from_string (const gchar *object_scope)
+{
+	if (g_strcmp0 (object_scope, "normal") == 0)
+		return CD_OBJECT_SCOPE_NORMAL;
+	if (g_strcmp0 (object_scope, "temp") == 0)
+		return CD_OBJECT_SCOPE_TEMP;
+	if (g_strcmp0 (object_scope, "disk") == 0)
+		return CD_OBJECT_SCOPE_DISK;
+	return CD_OBJECT_SCOPE_UNKNOWN;
+}

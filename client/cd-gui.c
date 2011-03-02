@@ -253,7 +253,7 @@ cd_gui_button_create_cb (GtkWidget *widget, gpointer user_data)
 		options = CD_OBJECT_SCOPE_NORMAL;
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "radiobutton_create_temp"));
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
-		options = CD_OBJECT_SCOPE_TEMPORARY;
+		options = CD_OBJECT_SCOPE_TEMP;
 	widget = GTK_WIDGET (gtk_builder_get_object (builder, "radiobutton_create_disk"));
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget)))
 		options = CD_OBJECT_SCOPE_DISK;

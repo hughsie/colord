@@ -48,6 +48,7 @@ colord_SOURCES =					\
 	cd-sane-client.h				\
 	cd-udev-client.c				\
 	cd-udev-client.h				\
+	../libcolord/cd-enum.c				\
 	cd-main.c
 
 colord_LDADD =						\

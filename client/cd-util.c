@@ -139,7 +139,7 @@ cd_util_mask_from_string (const gchar *value)
 	if (g_strcmp0 (value, "normal") == 0)
 		return CD_OBJECT_SCOPE_NORMAL;
 	if (g_strcmp0 (value, "temp") == 0)
-		return CD_OBJECT_SCOPE_TEMPORARY;
+		return CD_OBJECT_SCOPE_TEMP;
 	if (g_strcmp0 (value, "disk") == 0)
 		return CD_OBJECT_SCOPE_DISK;
 	g_warning ("mask string '%s' unknown", value);
