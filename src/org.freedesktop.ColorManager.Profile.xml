@@ -63,6 +63,17 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Format' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The qualifier format for the profile.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Kind' type='u' access='read'>
       <doc:doc>
         <doc:description>

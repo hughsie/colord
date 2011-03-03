@@ -45,6 +45,7 @@ struct _CdProfilePrivate
 	gchar				*id;
 	gchar				*object_path;
 	gchar				*qualifier;
+	gchar				*format;
 	gchar				*checksum;
 	gchar				*title;
 	GDBusConnection			*connection;
@@ -387,6 +388,11 @@ cd_profile_set_property_internal (CdProfile *profile,
 		cd_profile_dbus_emit_property_changed (profile,
 						       property,
 						       g_variant_new_string (value));
+	} else if (g_strcmp0 (property, "Format") == 0) {
+		cd_profile_set_format (profile, value);
+		cd_profile_dbus_emit_property_changed (profile,
+						       property,
+						       g_variant_new_string (value));
 	} else {
 		ret = FALSE;
 		g_set_error (error,
@@ -511,6 +517,13 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (property_name, "Qualifier") == 0) {
 		if (profile->priv->qualifier != NULL)
 			retval = g_variant_new_string (profile->priv->qualifier);
+		else
+			retval = g_variant_new_string ("");
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Format") == 0) {
+		if (profile->priv->format != NULL)
+			retval = g_variant_new_string (profile->priv->format);
 		else
 			retval = g_variant_new_string ("");
 		goto out;
@@ -787,6 +800,17 @@ cd_profile_set_qualifier (CdProfile *profile, const gchar *qualifier)
 }
 
 /**
+ * cd_profile_set_format:
+ **/
+void
+cd_profile_set_format (CdProfile *profile, const gchar *format)
+{
+	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_free (profile->priv->format);
+	profile->priv->format = g_strdup (format);
+}
+
+/**
  * cd_profile_get_title:
  **/
 const gchar *
@@ -982,6 +1006,7 @@ cd_profile_finalize (GObject *object)
 	}
 	g_free (priv->filename);
 	g_free (priv->qualifier);
+	g_free (priv->format);
 	g_free (priv->title);
 	g_free (priv->id);
 	g_free (priv->checksum);
