@@ -100,6 +100,7 @@ gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
 const gchar	*cd_profile_get_id			(CdProfile	*profile);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
 const gchar	*cd_profile_get_qualifier		(CdProfile	*profile);
+const gchar	*cd_profile_get_format			(CdProfile	*profile);
 const gchar	*cd_profile_get_title			(CdProfile	*profile);
 const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);

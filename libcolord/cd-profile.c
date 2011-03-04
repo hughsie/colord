@@ -55,6 +55,7 @@ struct _CdProfilePrivate
 	gchar			*id;
 	gchar			*object_path;
 	gchar			*qualifier;
+	gchar			*format;
 	gchar			*title;
 	GDBusProxy		*proxy;
 	CdProfileKind		 kind;
@@ -69,6 +70,7 @@ enum {
 	PROP_ID,
 	PROP_FILENAME,
 	PROP_QUALIFIER,
+	PROP_FORMAT,
 	PROP_TITLE,
 	PROP_KIND,
 	PROP_COLORSPACE,
@@ -151,6 +153,23 @@ cd_profile_get_qualifier (CdProfile *profile)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 	return profile->priv->qualifier;
+}
+
+/**
+ * cd_profile_get_format:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets the profile format.
+ *
+ * Return value: A string, or %NULL for invalid
+ *
+ * Since: 0.1.4
+ **/
+const gchar *
+cd_profile_get_format (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
+	return profile->priv->format;
 }
 
 /**
@@ -306,6 +325,9 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 		if (g_strcmp0 (property_name, "Qualifier") == 0) {
 			g_free (profile->priv->qualifier);
 			profile->priv->qualifier = g_variant_dup_string (property_value, NULL);
+		} else if (g_strcmp0 (property_name, "Format") == 0) {
+			g_free (profile->priv->format);
+			profile->priv->format = g_variant_dup_string (property_value, NULL);
 		} else if (g_strcmp0 (property_name, "Filename") == 0) {
 			g_free (profile->priv->filename);
 			profile->priv->filename = g_variant_dup_string (property_value, NULL);
@@ -378,6 +400,7 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	GVariant *id = NULL;
 	GVariant *profiles = NULL;
 	GVariant *qualifier = NULL;
+	GVariant *format = NULL;
 	GVariant *title = NULL;
 	GVariant *kind = NULL;
 	GVariant *colorspace = NULL;
@@ -430,6 +453,12 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 						      "Qualifier");
 	if (qualifier != NULL)
 		profile->priv->qualifier = g_variant_dup_string (qualifier, NULL);
+
+	/* get format */
+	format = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+						   "Format");
+	if (format != NULL)
+		profile->priv->format = g_variant_dup_string (format, NULL);
 
 	/* get title */
 	title = g_dbus_proxy_get_cached_property (profile->priv->proxy,
@@ -499,6 +528,8 @@ out:
 		g_variant_unref (filename);
 	if (qualifier != NULL)
 		g_variant_unref (qualifier);
+	if (format != NULL)
+		g_variant_unref (format);
 	if (title != NULL)
 		g_variant_unref (title);
 	if (profiles != NULL)
@@ -746,6 +777,9 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 	case PROP_QUALIFIER:
 		g_value_set_string (value, profile->priv->qualifier);
 		break;
+	case PROP_FORMAT:
+		g_value_set_string (value, profile->priv->format);
+		break;
 	case PROP_TITLE:
 		g_value_set_string (value, profile->priv->title);
 		break;
@@ -831,6 +865,20 @@ cd_profile_class_init (CdProfileClass *klass)
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE));
+
+	/**
+	 * CdProfile:format:
+	 *
+	 * The profile format.
+	 *
+	 * Since: 0.1.4
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_FORMAT,
+					 g_param_spec_string ("format",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READABLE));
 
 	/**
 	 * CdProfile:title:
@@ -934,6 +982,7 @@ cd_profile_finalize (GObject *object)
 	g_free (profile->priv->id);
 	g_free (profile->priv->filename);
 	g_free (profile->priv->qualifier);
+	g_free (profile->priv->format);
 	g_free (profile->priv->title);
 	if (profile->priv->proxy != NULL)
 		g_object_unref (profile->priv->proxy);
