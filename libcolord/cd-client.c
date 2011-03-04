@@ -1461,6 +1461,19 @@ out:
 }
 
 /**
+ * cd_client_owner_notify_cb:
+ **/
+static void
+cd_client_owner_notify_cb (GObject *object,
+			   GParamSpec *pspec,
+			   CdClient *client)
+{
+	g_debug ("daemon has quit, clearing caches");
+	g_ptr_array_set_size (client->priv->device_cache, 0);
+	g_ptr_array_set_size (client->priv->profile_cache, 0);
+}
+
+/**
  * cd_client_connect_sync:
  * @client: a #CdClient instance.
  * @cancellable: a #GCancellable or %NULL
@@ -1514,6 +1527,12 @@ cd_client_connect_sync (CdClient *client, GCancellable *cancellable, GError **er
 			  "g-signal",
 			  G_CALLBACK (cd_client_dbus_signal_cb),
 			  client);
+
+	/* watch to see if it's fallen off the bus */
+	g_signal_connect (client->priv->proxy,
+			 "notify::g-name-owner",
+			 G_CALLBACK (cd_client_owner_notify_cb),
+			 client);
 
 	/* success */
 	g_debug ("Connected to colord daemon version %s",
