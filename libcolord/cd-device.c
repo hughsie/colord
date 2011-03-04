@@ -392,6 +392,8 @@ cd_device_dbus_properties_changed (GDBusProxy  *proxy,
 			device->priv->created = g_variant_get_uint64 (property_value);
 		} else if (g_strcmp0 (property_name, "Modified") == 0) {
 			device->priv->modified = g_variant_get_uint64 (property_value);
+		} else if (g_strcmp0 (property_name, "DeviceId") == 0) {
+			/* ignore this, we don't support it changing */;
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
