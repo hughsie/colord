@@ -383,6 +383,12 @@ cd_profile_set_property_internal (CdProfile *profile,
 		cd_profile_dbus_emit_property_changed (profile,
 						       "Metadata",
 						       cd_profile_get_metadata_as_variant (profile));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Qualifier",
+						       cd_profile_get_metadata_as_variant (profile));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Format",
+						       cd_profile_get_metadata_as_variant (profile));
 	} else if (g_strcmp0 (property, "Qualifier") == 0) {
 		cd_profile_set_qualifier (profile, value);
 		cd_profile_dbus_emit_property_changed (profile,
@@ -748,6 +754,13 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 		break;
 	default:
 		profile->priv->colorspace = CD_COLORSPACE_UNKNOWN;
+	}
+
+	/* set a generic qualifier if there was nothing set before */
+	if (profile->priv->colorspace == CD_COLORSPACE_RGB &&
+	    profile->priv->qualifier == NULL) {
+		cd_profile_set_format (profile, "ColorSpace..");
+		cd_profile_set_qualifier (profile, "RGB..");
 	}
 
 	/* do we have vcgt */
