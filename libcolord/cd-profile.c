@@ -338,9 +338,9 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 			g_free (profile->priv->title);
 			profile->priv->title = g_variant_dup_string (property_value, NULL);
 		} else if (g_strcmp0 (property_name, "Kind") == 0) {
-			profile->priv->kind = g_variant_get_uint32 (property_value);
+			profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, "Colorspace") == 0) {
-			profile->priv->colorspace = g_variant_get_uint32 (property_value);
+			profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, "HasVcgt") == 0) {
 			profile->priv->has_vcgt = g_variant_get_boolean (property_value);
 		} else if (g_strcmp0 (property_name, "IsSystemWide") == 0) {
@@ -470,13 +470,13 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	kind = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						 "Kind");
 	if (kind != NULL)
-		profile->priv->kind = g_variant_get_uint32 (kind);
+		profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (kind, NULL));
 
 	/* get colorspace */
 	colorspace = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						       "Colorspace");
 	if (colorspace != NULL)
-		profile->priv->colorspace = g_variant_get_uint32 (colorspace);
+		profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
 
 	/* get VCGT */
 	has_vcgt = g_dbus_proxy_get_cached_property (profile->priv->proxy,

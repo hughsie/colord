@@ -348,6 +348,17 @@ out:
 }
 
 /**
+ * cd_profile_get_nullable_for_string:
+ **/
+static GVariant *
+cd_profile_get_nullable_for_string (const gchar *value)
+{
+	if (value == NULL)
+		return g_variant_new_string ("");
+	return g_variant_new_string (value);
+}
+
+/**
  * cd_profile_set_property_internal:
  **/
 gboolean
@@ -370,13 +381,13 @@ cd_profile_set_property_internal (CdProfile *profile,
 						       g_variant_new_string (value));
 		cd_profile_dbus_emit_property_changed (profile,
 						       "Title",
-						       g_variant_new_string (priv->title));
+						       cd_profile_get_nullable_for_string (priv->title));
 		cd_profile_dbus_emit_property_changed (profile,
 						       "Kind",
-						       g_variant_new_uint32 (priv->kind));
+						       g_variant_new_string (cd_profile_kind_to_string (priv->kind)));
 		cd_profile_dbus_emit_property_changed (profile,
 						       "Colorspace",
-						       g_variant_new_uint32 (priv->colorspace));
+						       g_variant_new_string (cd_colorspace_to_string (priv->colorspace)));
 		cd_profile_dbus_emit_property_changed (profile,
 						       "HasVcgt",
 						       g_variant_new_boolean (priv->has_vcgt));
@@ -385,10 +396,10 @@ cd_profile_set_property_internal (CdProfile *profile,
 						       cd_profile_get_metadata_as_variant (profile));
 		cd_profile_dbus_emit_property_changed (profile,
 						       "Qualifier",
-						       cd_profile_get_metadata_as_variant (profile));
+						       cd_profile_get_nullable_for_string (priv->qualifier));
 		cd_profile_dbus_emit_property_changed (profile,
 						       "Format",
-						       cd_profile_get_metadata_as_variant (profile));
+						       cd_profile_get_nullable_for_string (priv->format));
 	} else if (g_strcmp0 (property, "Qualifier") == 0) {
 		cd_profile_set_qualifier (profile, value);
 		cd_profile_dbus_emit_property_changed (profile,
@@ -507,46 +518,31 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	CdProfile *profile = CD_PROFILE (user_data);
 
 	if (g_strcmp0 (property_name, "Title") == 0) {
-		if (profile->priv->title != NULL)
-			retval = g_variant_new_string (profile->priv->title);
-		else
-			retval = g_variant_new_string ("");
+		retval = cd_profile_get_nullable_for_string (profile->priv->title);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "ProfileId") == 0) {
-		if (profile->priv->id != NULL)
-			retval = g_variant_new_string (profile->priv->id);
-		else
-			retval = g_variant_new_string ("");
+		retval = cd_profile_get_nullable_for_string (profile->priv->id);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Qualifier") == 0) {
-		if (profile->priv->qualifier != NULL)
-			retval = g_variant_new_string (profile->priv->qualifier);
-		else
-			retval = g_variant_new_string ("");
+		retval = cd_profile_get_nullable_for_string (profile->priv->qualifier);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Format") == 0) {
-		if (profile->priv->format != NULL)
-			retval = g_variant_new_string (profile->priv->format);
-		else
-			retval = g_variant_new_string ("");
+		retval = cd_profile_get_nullable_for_string (profile->priv->format);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Filename") == 0) {
-		if (profile->priv->filename != NULL)
-			retval = g_variant_new_string (profile->priv->filename);
-		else
-			retval = g_variant_new_string ("");
+		retval = cd_profile_get_nullable_for_string (profile->priv->filename);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Kind") == 0) {
-		retval = g_variant_new_uint32 (profile->priv->kind);
+		retval = g_variant_new_string (cd_profile_kind_to_string (profile->priv->kind));
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Colorspace") == 0) {
-		retval = g_variant_new_uint32 (profile->priv->colorspace);
+		retval = g_variant_new_string (cd_colorspace_to_string (profile->priv->colorspace));
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "HasVcgt") == 0) {

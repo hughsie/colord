@@ -74,7 +74,7 @@
     </property>
 
     <!--***********************************************************-->
-    <property name='Kind' type='u' access='read'>
+    <property name='Kind' type='s' access='read'>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -90,7 +90,7 @@
       <doc:doc>
         <doc:description>
           <doc:para>
-            The profile colorspace string, e.g. <doc:tt>RGB</doc:tt>.
+            The profile colorspace, e.g. <doc:tt>rgb</doc:tt>.
           </doc:para>
         </doc:description>
       </doc:doc>
