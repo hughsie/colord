@@ -114,6 +114,8 @@ cd_sane_client_add (CdSaneClient *sane_client,
 		    const SANE_Device *sane_device)
 {
 	gchar *id = NULL;
+	gchar *model = NULL;
+	gchar *vendor = NULL;
 	CdDevice *device;
 
 	/* ignore noname, no support devices */
@@ -128,6 +130,12 @@ cd_sane_client_add (CdSaneClient *sane_client,
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
 
+	/* Make human readable */
+	model = g_strdup (sane_device->model);
+	g_strdelimit (model, "_", ' ');
+	vendor = g_strdup (sane_device->vendor);
+	g_strdelimit (vendor, "_", ' ');
+
 	/* set known properties */
 	cd_device_set_property_internal (device,
 					 "Kind",
@@ -141,12 +149,12 @@ cd_sane_client_add (CdSaneClient *sane_client,
 					 NULL);
 	cd_device_set_property_internal (device,
 					 "Model",
-					 sane_device->model,
+					 model,
 					 FALSE,
 					 NULL);
 	cd_device_set_property_internal (device,
 					 "Vendor",
-					 sane_device->vendor,
+					 vendor,
 					 FALSE,
 					 NULL);
 	cd_device_set_property_internal (device,
@@ -161,6 +169,8 @@ cd_sane_client_add (CdSaneClient *sane_client,
 	g_ptr_array_add (sane_client->priv->array, device);
 out:
 	g_free (id);
+	g_free (model);
+	g_free (vendor);
 }
 
 /**
