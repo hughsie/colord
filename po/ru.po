@@ -1,0 +1,251 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Александр Прокудин <alexandre.prokoudine@gmail.com>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: colord 0.1.3\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-03-06 10:44+0300\n"
+"PO-Revision-Date: 2011-03-07 05:57+0300\n"
+"Last-Translator: Александр Прокудин <alexandre.prokoudine@gmail.com>\n"
+"Language-Team: Russian <gnome-cyr@lists.gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); 10<=4 && (n%100<10 || n%"
+"100>=20) ? 1 : 2);\n"
+
+#. TRANSLATORS: column for the source description
+#: ../client/cd-gui.c:390
+msgid "Device"
+msgstr "Устройство"
+
+#. TRANSLATORS: column for the source description
+#: ../client/cd-gui.c:408
+msgid "Profiles"
+msgstr "Профили"
+
+#. TRANSLATORS: column for the source description
+#: ../client/cd-gui.c:427
+msgid "Title"
+msgstr "Название"
+
+#: ../client/cd-gui.c:1044
+msgid "Color GUI Tool"
+msgstr "Управление colord"
+
+#: ../client/cd-util.c:267
+msgid "Command not found, valid commands are:"
+msgstr "Команда не найдена, доступны следующие команды:"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:988
+msgid "Gets all the color managed devices"
+msgstr "Получить все цветоуправляемые устройства"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:993
+msgid "Gets all the color managed devices of a specific kind"
+msgstr "Получить все цветоуправляемые устройства некоторого типа"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:998
+msgid "Gets all the available color profiles"
+msgstr "Получить все доступные цветовые профили"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1003
+msgid "Create a device"
+msgstr "Создать устройство"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1008
+msgid "Find a device"
+msgstr "Найти устройство"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1013
+msgid "Find a profile"
+msgstr "Найти профиль"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1018
+msgid "Create a profile"
+msgstr "Создать профиль"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1023
+#, fuzzy
+msgid "Add a profile to a device"
+msgstr "Добавить профиль в устройство"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1028
+msgid "Makes a profile default for a device"
+msgstr "Сделать профиль используемым устройством по умолчанию"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1033
+msgid "Deletes a device"
+msgstr "Удалить устройство"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1038
+msgid "Deletes a profile"
+msgstr "Удалить профиль"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1043
+msgid "Sets the profile qualifier"
+msgstr "Установить определитель профиля"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1048
+msgid "Sets the profile filename"
+msgstr "Установить имя файла профиля"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1053
+msgid "Sets the device model"
+msgstr "Установить модель устройства"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1058
+msgid "Gets the default profile for a device"
+msgstr "Получить используемый по умолчанию профиль для устройства"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1063
+msgid "Sets the device vendor"
+msgstr "Установить производителя устройства"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1068
+msgid "Sets the device serial"
+msgstr "Установить серийный номер устройства"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1073
+msgid "Sets the device kind"
+msgstr "Установить тип устройства"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1078
+msgid "Returns all the profiles that match a qualifier"
+msgstr "Перечислить все профили, совпадающие с определением"
+
+#. TRANSLATORS: program name
+#: ../client/cd-util.c:1091 ../src/cd-main.c:1243
+msgid "Color Management"
+msgstr "Управление цветом"
+
+#. TRANSLATORS: no colord available
+#: ../client/cd-util.c:1099
+msgid "No connection to colord:"
+msgstr "Нет соединения с colord:"
+
+#: ../policy/org.freedesktop.color.policy.in.h:1
+msgid "Authentication is required to create a color managed device"
+msgstr "Необходима авторизация для создания цветоуправляемого устройства"
+
+#: ../policy/org.freedesktop.color.policy.in.h:2
+msgid "Authentication is required to create a color profile"
+msgstr "Необходима авторизация для создания цветового профиля"
+
+#: ../policy/org.freedesktop.color.policy.in.h:3
+msgid "Authentication is required to disable profile matching for a device"
+msgstr "Необходима авторизация для отключения подбора профилей для устройства"
+
+#: ../policy/org.freedesktop.color.policy.in.h:4
+msgid "Authentication is required to install the color profile for all users"
+msgstr ""
+"Необходима авторизация для установки цветового профиля для всех пользователей"
+
+#: ../policy/org.freedesktop.color.policy.in.h:5
+msgid "Authentication is required to modify a color profile"
+msgstr "Необходима авторизация для изменения цветового профиля"
+
+#: ../policy/org.freedesktop.color.policy.in.h:6
+msgid "Authentication is required to modify the color settings for a device"
+msgstr "Необходима авторизация для изменения цветовых параметров устройства"
+
+#: ../policy/org.freedesktop.color.policy.in.h:7
+msgid "Authentication is required to remove a color managed device"
+msgstr "Необходима авторизация для удаления цветоуправляемого устройства"
+
+#: ../policy/org.freedesktop.color.policy.in.h:8
+msgid "Authentication is required to remove a color profile"
+msgstr "Необходима авторизация для удаления цветового профиля"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to add devices
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:12
+msgid "Create a color managed device"
+msgstr "Создать цветоуправляемое устройство"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to add profiles
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:16
+msgid "Create a color profile"
+msgstr "Создать виртуальный профиль"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to profile
+#. devices.
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:21
+msgid "Inhibit color profile selection"
+msgstr ""
+
+#. SECURITY:
+#. - Normal users require admin authentication to install files system
+#. wide to apply color profiles for sessions that have not explicitly
+#. chosen profiles to apply.
+#. - This should not be set to 'yes' as unprivileged users could then
+#. set a profile set to all-white or all-black and thus make the
+#. other sessions unusable.
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:30
+msgid "Install system color profiles"
+msgstr "Установить цветовые профили в системный каталог"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to modify profiles
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:34
+msgid "Modify a color profile"
+msgstr "Изменить виртуальный профиль"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to modify devices
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:38
+msgid "Modify color settings for a device"
+msgstr "Изменить цветовые параметры для устройства"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to delete devices
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:42
+msgid "Remove a color managed device"
+msgstr "Удалить цветоуправляемое устройство"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to delete profiles
+#.
+#: ../policy/org.freedesktop.color.policy.in.h:46
+msgid "Remove a color profile"
+msgstr "Удалить цветовой профиль"
+
+#: ../src/cd-main.c:1245
+msgid "Color Management D-Bus Service"
+msgstr "Служба D-для управления цветом"
+
+#~ msgid "The request failed:"
+#~ msgstr "Не удалось выполнить запрос:"
