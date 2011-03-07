@@ -46,6 +46,7 @@ main (int argc, char **argv)
 {
 	const char *device_id;
 	const char *device_path_tmp;
+	const gchar *scope = "temp";
 	DBusConnection *con;
 	DBusError error;
 	DBusMessageIter args;
@@ -53,7 +54,6 @@ main (int argc, char **argv)
 	DBusMessage *message = NULL;
 	DBusMessage *reply = NULL;
 	GMainLoop *loop;
-	int options = 1;
 
 	/* connect to system bus */
 	con = dbus_bus_get(DBUS_BUS_SYSTEM, NULL);
@@ -70,7 +70,7 @@ main (int argc, char **argv)
 					       "CreateDevice");
 	dbus_message_iter_init_append(message, &args);
 	dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &device_id);
-	dbus_message_iter_append_basic(&args, DBUS_TYPE_UINT32, &options);
+	dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &scope);
 
 	/* set initial properties */
 	dbus_message_iter_open_container(&args,
@@ -83,8 +83,8 @@ main (int argc, char **argv)
 
 	/* send syncronous */
 	dbus_error_init(&error);
-	printf("Calling CreateDevice(%s,%d)\n",
-		device_id, options);
+	printf("Calling CreateDevice(%s,%s)\n",
+		device_id, scope);
 	reply = dbus_connection_send_with_reply_and_block(con,
 							  message,
 							  -1,
