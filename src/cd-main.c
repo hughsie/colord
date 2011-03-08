@@ -1153,11 +1153,14 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	cd_udev_client_coldplug (udev_client);
 
 	/* add SANE devices */
-	ret = cd_sane_client_refresh (sane_client, &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to refresh SANE devices: %s",
-			    error->message);
-		g_error_free (error);
+	ret = cd_config_get_boolean (config, "UseSANE");
+	if (ret) {
+		ret = cd_sane_client_refresh (sane_client, &error);
+		if (!ret) {
+			g_warning ("CdMain: failed to refresh SANE devices: %s",
+				    error->message);
+			g_error_free (error);
+		}
 	}
 out:
 	if (array_devices != NULL)
