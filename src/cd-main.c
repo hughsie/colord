@@ -26,6 +26,7 @@
 #include <locale.h>
 
 #include "cd-common.h"
+#include "cd-config.h"
 #include "cd-device-array.h"
 #include "cd-device-db.h"
 #include "cd-device.h"
@@ -48,6 +49,7 @@ static CdMappingDb *mapping_db = NULL;
 static CdDeviceDb *device_db = NULL;
 static CdUdevClient *udev_client = NULL;
 static CdSaneClient *sane_client = NULL;
+static CdConfig *config = NULL;
 
 /**
  * cd_main_profile_removed:
@@ -1112,6 +1114,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	GError *error = NULL;
 	GPtrArray *array_devices = NULL;
 	guint i;
+	CdProfileSearchFlags flags;
 
 	g_debug ("CdMain: acquired name: %s", name);
 	connection = g_object_ref (connection_);
@@ -1124,10 +1127,14 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	g_signal_connect (profile_store, "removed",
 			  G_CALLBACK (cd_main_profile_store_removed_cb),
 			  user_data);
-	cd_profile_store_search (profile_store,
-				 CD_PROFILE_STORE_SEARCH_SYSTEM |
-				  CD_PROFILE_STORE_SEARCH_VOLUMES |
-				  CD_PROFILE_STORE_SEARCH_MACHINE);	
+
+	/* search locations specified in the config file */
+	flags = CD_PROFILE_STORE_SEARCH_SYSTEM |
+		CD_PROFILE_STORE_SEARCH_MACHINE;
+	ret = cd_config_get_boolean (config, "SearchVolumes");
+	if (ret)
+		flags |= CD_PROFILE_STORE_SEARCH_VOLUMES;
+	cd_profile_store_search (profile_store, flags);
 
 	/* add disk devices */
 	array_devices = cd_device_db_get_devices (device_db, &error);
@@ -1245,6 +1252,9 @@ main (int argc, char *argv[])
 	g_option_context_set_summary (context, _("Color Management D-Bus Service"));
 	g_option_context_parse (context, &argc, &argv, NULL);
 	g_option_context_free (context);
+
+	/* get from config */
+	config = cd_config_new ();
 
 	/* create new objects */
 	loop = g_main_loop_new (NULL, FALSE);
@@ -1368,6 +1378,8 @@ out:
 	g_free (introspection_profile_data);
 	if (udev_client != NULL)
 		g_object_unref (udev_client);
+	if (config != NULL)
+		g_object_unref (config);
 	if (sane_client != NULL)
 		g_object_unref (sane_client);
 	if (profile_store != NULL)

@@ -28,6 +28,8 @@ libexec_PROGRAMS =					\
 colord_SOURCES =					\
 	cd-common.c					\
 	cd-common.h					\
+	cd-config.c					\
+	cd-config.h					\
 	cd-device-array.c				\
 	cd-device-array.h				\
 	cd-device.c					\
