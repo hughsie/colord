@@ -66,9 +66,6 @@ const gchar	*cd_device_get_kind			(CdDevice	*device);
 const gchar	*cd_device_get_id			(CdDevice	*device);
 void		 cd_device_set_id			(CdDevice	*device,
 							 const gchar	*id);
-GPtrArray	*cd_device_get_profiles			(CdDevice	*device);
-void		 cd_device_set_profiles			(CdDevice	*device,
-							 GPtrArray	*profiles);
 gboolean	 cd_device_add_profile			(CdDevice	*device,
 							 CdDeviceRelation relation,
 							 const gchar	*profile_object_path,

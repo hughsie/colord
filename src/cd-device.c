@@ -208,34 +208,6 @@ cd_device_reset_modified (CdDevice *device)
 }
 
 /**
- * cd_device_get_profiles:
- **/
-GPtrArray *
-cd_device_get_profiles (CdDevice *device)
-{
-	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
-	return device->priv->profiles;
-}
-
-/**
- * cd_device_set_profiles:
- **/
-void
-cd_device_set_profiles (CdDevice *device, GPtrArray *profiles)
-{
-	g_return_if_fail (CD_IS_DEVICE (device));
-	if (device->priv->profiles != NULL)
-		g_ptr_array_unref (device->priv->profiles);
-	device->priv->profiles = g_ptr_array_ref (profiles);
-
-	/* reset modification time */
-	cd_device_reset_modified (device);
-
-	/* emit global signal */
-	cd_device_dbus_emit_device_changed (device);
-}
-
-/**
  * cd_device_dbus_emit_property_changed:
  **/
 static void
