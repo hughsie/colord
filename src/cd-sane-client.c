@@ -206,7 +206,7 @@ cd_sane_client_refresh (CdSaneClient *sane_client, GError **error)
 #ifdef HAVE_SANE
 	gint i;
 	SANE_Status status;
-	const SANE_Device **device_list;
+	const SANE_Device **device_list = NULL;
 
 	/* force sane to drop it's cache of devices -- yes, it is that crap */
 	if (sane_client->priv->init_sane) {
@@ -224,7 +224,7 @@ cd_sane_client_refresh (CdSaneClient *sane_client, GError **error)
 	sane_client->priv->init_sane = TRUE;
 
 	/* get scanners on the local server */
-	status = sane_get_devices (&device_list, FALSE);
+	status = sane_get_devices (&device_list, TRUE);
 	if (status != SANE_STATUS_GOOD) {
 		ret = FALSE;
 		g_set_error (error, 1, 0,
