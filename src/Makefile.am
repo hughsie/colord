@@ -82,6 +82,7 @@ cd_self_test_SOURCES =					\
 	cd-profile-array.h				\
 	cd-profile.c					\
 	cd-profile.h					\
+	../libcolord/cd-enum.c				\
 	cd-self-test.c
 
 cd_self_test_LDADD =					\
