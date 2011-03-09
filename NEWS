@@ -1,3 +1,24 @@
+Version 0.1.4
+~~~~~~~~~~~~~
+Released: 2011-03-09
+
+Translations:
+ - Added Russian translation (Alexandre Prokoudine)
+
+New Features:
+ - Add Device.GetProfileRelation() so we can get the profile to device relationship type (Richard Hughes)
+ - Add Profile.Format so CUPS can tell us the qualifier format (Richard Hughes)
+ - Do not coldplug SANE devices unless UseSANE=true (Richard Hughes)
+ - Do not search external volumes unless SearchVolumes=true (Richard Hughes)
+
+Bugfixes:
+ - Clear the cached profiles and devices if the daemon is restarted (Richard Hughes)
+ - Only add local SANE devices to colord (Richard Hughes)
+ - Remove the 'Other CMS frameworks' from the website sources (Richard Hughes)
+ - Replace underscores with spaces when getting the model and vendor from SANE (Richard Hughes)
+ - Set a generic RGB profile qualifier if there is nothing already set (Richard Hughes)
+ - Use plain text enumerated values in CreateDevice and CreateProfile (Richard Hughes)
+
 Version 0.1.3
 ~~~~~~~~~~~~~
 Released: 2011-02-28
