@@ -484,6 +484,41 @@ out:
 }
 
 /**
+ * cd_device_find_profile_relation:
+ **/
+static CdDeviceRelation
+cd_device_find_profile_relation (CdDevice *device,
+				 const gchar *profile_object_path)
+{
+	CdDevicePrivate *priv = device->priv;
+	CdDeviceRelation relation = CD_DEVICE_RELATION_UNKNOWN;
+	CdProfile *profile_tmp;
+	guint i;
+
+	/* search hard */
+	for (i=0; i<priv->profiles_hard->len; i++) {
+		profile_tmp = g_ptr_array_index (priv->profiles_hard, i);
+		if (g_strcmp0 (profile_object_path,
+			       cd_profile_get_object_path (profile_tmp)) == 0) {
+			relation = CD_DEVICE_RELATION_HARD;
+			goto out;
+		}
+	}
+
+	/* search soft */
+	for (i=0; i<priv->profiles_soft->len; i++) {
+		profile_tmp = g_ptr_array_index (priv->profiles_soft, i);
+		if (g_strcmp0 (profile_object_path,
+			       cd_profile_get_object_path (profile_tmp)) == 0) {
+			relation = CD_DEVICE_RELATION_SOFT;
+			goto out;
+		}
+	}
+out:
+	return relation;
+}
+
+/**
  * _cd_device_relation_to_string:
  **/
 static const gchar *
@@ -773,6 +808,31 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
+	/* return 's' */
+	if (g_strcmp0 (method_name, "GetProfileRelation") == 0) {
+
+		/* find the profile relation */
+		g_variant_get (parameters, "(o)", &property_value);
+		g_debug ("CdDevice %s:GetProfileRelation(%s)",
+			 sender, property_name);
+
+		relation = cd_device_find_profile_relation (device,
+							    property_value);
+		if (relation == CD_DEVICE_RELATION_UNKNOWN) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "no profile '%s' found",
+							       property_name);
+			goto out;
+		}
+
+		tuple = g_variant_new ("(s)",
+				       cd_device_relation_to_string (relation));
+		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
 	}
 

@@ -1116,6 +1116,62 @@ out:
 }
 
 /**
+ * cd_device_get_profile_relation:
+ * @device: a #CdDevice instance.
+ * @profile: a #CdProfile instance.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Gets the property relationship to the device.
+ *
+ * Return value: a #CdDeviceRelation
+ *
+ * Since: 0.1.4
+ **/
+CdDeviceRelation
+cd_device_get_profile_relation (CdDevice *device,
+				CdProfile *profile,
+				GCancellable *cancellable,
+				GError **error)
+{
+	CdDeviceRelation relation = CD_DEVICE_RELATION_UNKNOWN;
+	gchar *relation_string = NULL;
+	GError *error_local = NULL;
+	GVariant *response = NULL;
+
+	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_RELATION_UNKNOWN);
+	g_return_val_if_fail (CD_IS_PROFILE (profile), CD_DEVICE_RELATION_UNKNOWN);
+	g_return_val_if_fail (device->priv->proxy != NULL, CD_DEVICE_RELATION_UNKNOWN);
+
+	/* execute sync method */
+	response = g_dbus_proxy_call_sync (device->priv->proxy,
+					   "GetProfileRelation",
+					   g_variant_new ("(o)",
+							  cd_profile_get_object_path (profile)),
+					   G_DBUS_CALL_FLAGS_NONE,
+					   -1, NULL, &error_local);
+	if (response == NULL) {
+		g_set_error (error,
+			     CD_DEVICE_ERROR,
+			     CD_DEVICE_ERROR_FAILED,
+			     "Failed to get relationship: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+
+	/* get the relationship */
+	g_variant_get (response, "(s)",
+		       &relation_string);
+	relation = cd_device_relation_from_string (relation_string);
+out:
+	g_free (relation_string);
+	if (response != NULL)
+		g_variant_unref (response);
+	return relation;
+}
+
+/**
  * cd_device_get_object_path:
  * @device: a #CdDevice instance.
  *

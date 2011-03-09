@@ -134,6 +134,10 @@ gboolean	 cd_device_profiling_inhibit_sync	(CdDevice	*device,
 gboolean	 cd_device_profiling_uninhibit_sync	(CdDevice	*device,
 							 GCancellable	*cancellable,
 							 GError		**error);
+CdDeviceRelation cd_device_get_profile_relation		(CdDevice	*device,
+							 CdProfile	*profile,
+							 GCancellable	*cancellable,
+							 GError		**error);
 const gchar	*cd_device_get_id			(CdDevice	*device);
 const gchar	*cd_device_get_model			(CdDevice	*device);
 const gchar	*cd_device_get_vendor			(CdDevice	*device);

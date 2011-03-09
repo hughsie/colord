@@ -108,6 +108,7 @@ colord_client_func (void)
 {
 	CdClient *client;
 	CdDevice *device;
+	CdDeviceRelation relation;
 	CdProfile *profile;
 	CdProfile *profile2;
 	CdProfile *profile_tmp;
@@ -356,10 +357,27 @@ colord_client_func (void)
 	g_assert (profile_tmp == NULL);
 	g_clear_error (&error);
 
+	/* check there is no relation */
+	relation = cd_device_get_profile_relation (device,
+						   profile,
+						   NULL,
+						   &error);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert (relation == CD_DEVICE_RELATION_UNKNOWN);
+	g_clear_error (&error);
+
 	/* assign profile to device */
 	ret = cd_device_add_profile_sync (device, CD_DEVICE_RELATION_SOFT, profile, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+
+	/* check there is now a relation */
+	relation = cd_device_get_profile_relation (device,
+						   profile,
+						   NULL,
+						   &error);
+	g_assert_no_error (error);
+	g_assert (relation == CD_DEVICE_RELATION_SOFT);
 
 	/* assign extra profile to device */
 	ret = cd_device_add_profile_sync (device, CD_DEVICE_RELATION_HARD, profile2, NULL, &error);
