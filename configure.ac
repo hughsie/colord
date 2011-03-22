@@ -12,6 +12,7 @@ AC_CONFIG_SRCDIR(src)
 AM_INIT_AUTOMAKE([1.9 tar-ustar dist-bzip2])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+AC_PROG_LIBTOOL
 
 # set up gtk-doc
 GTK_DOC_CHECK(1.9)
