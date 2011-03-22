@@ -54,26 +54,45 @@ cd_util_show_profile (CdProfile *profile)
 	GHashTable *metadata;
 	GList *list, *l;
 
-	g_print ("Object Path:\t%s\n",
+	/* TRANSLATORS: the internal DBus path */
+	g_print ("%s:\t%s\n",
+		 _("Object Path"),
 		 cd_profile_get_object_path (profile));
 	tmp = cd_profile_get_qualifier (profile);
-	if (tmp != NULL && tmp[0] != '\0')
-		g_print ("Qualifier:\t\t%s\n", tmp);
+	if (tmp != NULL && tmp[0] != '\0') {
+		/* TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi */
+		g_print ("%s:\t%s\n",
+			 _("Qualifier"),
+			  tmp);
+	}
 	kind = cd_profile_get_kind (profile);
 	if (kind != CD_PROFILE_KIND_UNKNOWN) {
-		g_print ("Kind:\t\t%s\n",
+		/* TRANSLATORS: the profile kind, e.g. 'output' */
+		g_print ("%s:\t%s\n",
+			 _("Kind"),
 			 cd_profile_kind_to_string (kind));
 	}
 	colorspace = cd_profile_get_colorspace (profile);
 	if (colorspace != CD_COLORSPACE_UNKNOWN) {
-		g_print ("Colorspace:\t%s\n",
+		/* TRANSLATORS: the profile colorspace, e.g. 'rgb' */
+		g_print ("%s:\t%s\n",
+			 _("Colorspace"),
 			 cd_colorspace_to_string (colorspace));
 	}
-	g_print ("Has VCGT:\t%s\n",
+
+	/* TRANSLATORS: if the profile has a Video Card Gamma Table lookup */
+	g_print ("%s:\t%s\n",
+		 _("Has video gamma table"),
 		 cd_profile_get_has_vcgt (profile) ? "Yes" : "No");
-	g_print ("Filename:\t%s\n",
+
+	/* TRANSLATORS: profile filename */
+	g_print ("%s:\t%s\n",
+		 _("Filename"),
 		 cd_profile_get_filename (profile));
-	g_print ("Profile ID:\t%s\n",
+
+	/* TRANSLATORS: profile identifier */
+	g_print ("%s:\t%s\n",
+		 _("Profile ID"),
 		 cd_profile_get_id (profile));
 
 	/* list all the items of metadata */
@@ -82,7 +101,9 @@ cd_util_show_profile (CdProfile *profile)
 	for (l = list; l != NULL; l = l->next) {
 		if (g_strcmp0 (l->data, "CMS") == 0)
 			continue;
-		g_print ("Metadata:\t%s=%s\n",
+		/* TRANSLATORS: the metadata contiained in the profile */
+		g_print ("%s:\t%s=%s\n",
+			 _("Metadata"),
 			 (const gchar *) l->data,
 			 (const gchar *) g_hash_table_lookup (metadata,
 							      l->data));
@@ -101,51 +122,62 @@ cd_util_show_device (CdDevice *device)
 	GPtrArray *profiles;
 	guint i;
 
-	g_print ("Object Path: %s\n",
+	/* TRANSLATORS: the internal DBus path */
+	g_print ("%s: %s\n",
+		 _("Object Path"),
 		 cd_device_get_object_path (device));
-	g_print ("Created:\t%" G_GUINT64_FORMAT "\n",
+
+	/* TRANSLATORS: when the device was created */
+	g_print ("%s:\t%" G_GUINT64_FORMAT "\n",
+		 _("Created"),
 		 cd_device_get_created (device));
-	g_print ("Modified:\t%" G_GUINT64_FORMAT "\n",
+
+	/* TRANSLATORS: when the device was modified */
+	g_print ("%s:\t%" G_GUINT64_FORMAT "\n",
+		 _("Modified"),
 		 cd_device_get_modified (device));
-	g_print ("Kind:\t\t%s\n",
+
+	/* TRANSLATORS: the device kind, e.g. "printer" */
+	g_print ("%s:\t%s\n",
+		 _("Kind"),
 		 cd_device_kind_to_string (cd_device_get_kind (device)));
-	g_print ("Model:\t\t%s\n",
+
+	/* TRANSLATORS: the device model */
+	g_print ("%s:\t%s\n",
+		 _("Model"),
 		 cd_device_get_model (device));
-	g_print ("Vendor:\t\t%s\n",
+
+	/* TRANSLATORS: the device vendor */
+	g_print ("%s:\t%s\n",
+		 _("Vendor"),
 		 cd_device_get_vendor (device));
-	g_print ("Serial:\t\t%s\n",
+
+	/* TRANSLATORS: the device serial number */
+	g_print ("%s:\t%s\n",
+		 _("Serial"),
 		 cd_device_get_serial (device));
-	g_print ("Colorspace:\t%s\n",
+
+	/* TRANSLATORS: the device colorspace, e.g. "rgb" */
+	g_print ("%s:\t%s\n",
+		 _("Colorspace"),
 		 cd_colorspace_to_string (cd_device_get_colorspace (device)));
-	g_print ("Device ID:\t%s\n",
+
+	/* TRANSLATORS: the device identifier */
+	g_print ("%s:\t%s\n",
+		 _("Device ID"),
 		 cd_device_get_id (device));
 
 	/* print profiles */
 	profiles = cd_device_get_profiles (device);
 	for (i=0; i<profiles->len; i++) {
 		profile_tmp = g_ptr_array_index (profiles, i);
-		g_print ("Profile %i:\t%s\n",
+		/* TRANSLATORS: the profile for the device */
+		g_print ("%s %i:\t%s\n",
+			 _("Profile"),
 			 i+1,
 			 cd_profile_get_object_path (profile_tmp));
 	}
 }
-
-/**
- * cd_util_mask_from_string:
- **/
-static guint
-cd_util_mask_from_string (const gchar *value)
-{
-	if (g_strcmp0 (value, "normal") == 0)
-		return CD_OBJECT_SCOPE_NORMAL;
-	if (g_strcmp0 (value, "temp") == 0)
-		return CD_OBJECT_SCOPE_TEMP;
-	if (g_strcmp0 (value, "disk") == 0)
-		return CD_OBJECT_SCOPE_DISK;
-	g_warning ("mask string '%s' unknown", value);
-	return CD_OBJECT_SCOPE_NORMAL;
-}
-
 
 /**
  * cd_util_item_free:
@@ -186,7 +218,7 @@ cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUt
 			item->description = g_strdup (description);
 		} else {
 			/* TRANSLATORS: this is a command alias */
-			item->description = g_strdup_printf ("Alias to %s",
+			item->description = g_strdup_printf (_("Alias to %s"),
 							     names[0]);
 		}
 		item->callback = callback;
@@ -390,7 +422,7 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* execute sync method */
-	mask = cd_util_mask_from_string (values[1]);
+	mask = cd_object_scope_from_string (values[1]);
 	device = cd_client_create_device_sync (priv->client, values[0],
 					       mask, NULL, NULL, error);
 	if (device == NULL) {
@@ -492,7 +524,7 @@ cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* execute sync method */
-	mask = cd_util_mask_from_string (values[1]);
+	mask = cd_object_scope_from_string (values[1]);
 	profile = cd_client_create_profile_sync (priv->client, values[0],
 						 mask, NULL, NULL, error);
 	if (profile == NULL) {
