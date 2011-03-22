@@ -36,7 +36,6 @@ Files for development with %{name}.
 %configure \
         --disable-static \
         --disable-rpath \
-        --disable-gui \
         --disable-dependency-tracking
 
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool

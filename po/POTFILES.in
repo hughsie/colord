@@ -1,5 +1,3 @@
-client/cd-gui.c
-client/cd-gui.ui
 client/cd-util.c
 policy/org.freedesktop.color.policy.in
 src/cd-main.c

@@ -24,18 +24,3 @@ colormgr_LDADD =					\
 
 colormgr_CFLAGS =					\
 	$(WARNINGFLAGS_C)
-
-if CD_BUILD_GUI
-noinst_PROGRAMS = colorgui
-
-colorgui_SOURCES =					\
-	cd-gui.c
-colorgui_LDADD =					\
-	$(COLORD_LIBS)					\
-	$(GLIB_LIBS)					\
-	$(GTK_LIBS)
-colorgui_CFLAGS = $(WARNINGFLAGS_C)
-endif
-
-EXTRA_DIST =						\
-	cd-gui.ui
