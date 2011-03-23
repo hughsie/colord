@@ -84,35 +84,96 @@ GNOME Color Manager acts as a client to colord.
 <h2>Use cases:</h2>
 <p>
 colord and GNOME Color Manager was designed to solve a few discrete use cases.
-The DBus interface was designed to fulfil the following scenarios.
+The DBus interface was designed to fulfil the following scenarios:
 </p>
 
 <ul>
-<li>An image viewer wants to show an image with an embedded color profile to the screen, where the screen also has an assigned profile. The image has to be transformed from the embedded profile to the current display profile.</li>
-<li>A scanner application wants to get the correct color profile for a device so it can be embedded in the output file.</li>
-<li>An image viewer wants to show a photograph without an embedded profile, but where a virtual device profile has been assigned. This needs to be fast as there are many similar photos in the same directory.</li>
-<li>An application wants to softproof for a printer device to show the user how the colors are going to be clipped when the file is printed.</li>
-<li>A photo editor wants to know the default RGB space to use for new image canvasses.</li>
-<li>A photo viewer wants to know what color space to use for untagged content with no embedded profile.</li>
-<li>A print preview application wants to know what installed profiles are suitable for printer devices.</li>
-<li>A user wants to have two profiles for a digital SLR, one for the studio and one for outside with full sun.</li>
-<li>A user has two different monitors attached and the desktop is spanned across each one. Each one has a different profile, and applications can be dragged from one window to another.</li>
-<li>One user may want to assign color profiles to devices and set these as the system default for all users</li>
+<li>
+ An image viewer wants to show an image with an embedded color profile
+ to the screen, where the screen also has an assigned profile.
+ The image has to be transformed from the embedded profile to the
+ current display profile.
+</li>
+<li>
+ A scanner application wants to get the correct color profile for a
+ device so it can be embedded in the output file.
+</li>
+<li>
+ An image viewer wants to show a photograph without an embedded profile,
+ but where a virtual device profile has been assigned.
+ This needs to be fast as there are many similar photos in the same
+ directory.
+</li>
+<li>
+ An application wants to softproof for a printer device to show the user
+ how the colors are going to be clipped when the file is printed.
+</li>
+<li>
+ A photo editor wants to know the default RGB space to use for new image
+ canvasses.
+</li>
+<li>
+ A photo viewer wants to know what color space to use for untagged
+ content with no embedded profile.
+</li>
+<li>
+ A print preview application wants to know what installed profiles are
+ suitable for printer devices.
+</li>
+<li>
+ A user wants to have two profiles for a digital SLR, one for the studio
+ and one for outside with full sun.
+</li>
+<li>
+ A user has two different monitors attached and the desktop is spanned
+ across each one.
+ Each one has a different profile, and applications can be dragged from
+ one window to another.
+</li>
+<li>
+ One user may want to assign color profiles to devices and set these as
+ the system default for all users.
+</li>
 </ul>
 
 <h2>Features:</h2>
 <p>
-This project has the following features:
+The GNOME Color Manager project has the following features:
 </p>
 <ul>
-<li>Deep integration into the GNOME and free software stack.</li>
-<li>Setting output gamma tables (with local brightness and adjustments) to any Xrandr output.</li>
-<li>Setting of per-user and system settings at session start, and when monitors are hotplugged.</li>
-<li>Easy install of vendor supplied .ICC or .ICM files, just by double clicking on the file.</li>
-<li>Easy display calibration using an external calibration device, and scanner calibration using a inexpensive IT 8.7 target. For calibration, the ArgyllCMS package is currently required.</li>
-<li>Spot color reading using dozens of supported spectrophotometers.</li>
-<li>Integration X11 by setting the per-screen and per-output _ICC_PROFILE atom, which makes applications such as the GIMP use a color managed output.</li>
-<li>Easy to use DBus interface for applications to query what ICC profiles should be used for a specific device or device type.</li>
+<li>
+ Deep integration into the <a href="http://www.gnome.org/">GNOME</a> and
+ free software stack.
+</li>
+<li>
+ Setting output gamma tables (with local brightness and adjustments) to
+ any Xrandr output.
+</li>
+<li>
+ Setting of per-user and system settings at session start, and when
+ monitors are hotplugged.
+</li>
+<li>
+ Easy install of vendor supplied .ICC or .ICM files, just by double
+ clicking on the file
+</li>
+<li>
+ Easy display calibration using an external calibration device, and
+ scanner calibration using a inexpensive IT 8.7 target.
+ For calibration, the ArgyllCMS package is currently required.
+</li>
+<li>
+ Spot color reading using dozens of supported spectrophotometers.
+</li>
+<li>
+ Integration X11 by setting the per-screen and per-output
+ <code>_ICC_PROFILE</code> atom, which makes applications such as the
+ GIMP use a color managed output.
+</li>
+<li>
+ Easy to use DBus interface for applications to query what ICC profiles
+ should be used for a specific device or device type.
+</li>
 </ul>
 
 <h2>Subsystems:</h2>
@@ -127,7 +188,8 @@ colord and GNOME Color Manager supports the following subsystems:
 <li>Virtual (scanners, cameras, printers)</li>
 </ul>
 <p>
-Virtual devices are not backed by a physical device, and so can be things like ''Snapfish Processing Lab'' or ''Tommys Camera''.
+Virtual devices are not backed by a physical device, and so can be
+things like <i>Snapfish Processing Lab</i> or <i>Tommys Camera</i>.
 </p>
 
 <h2>Licensing:</h2>

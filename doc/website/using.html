@@ -33,12 +33,13 @@ Created:	1296825095
 Modified:	1296825095
 Kind:		printer
 Model:		HP Photosmart b109a-m, hpcups 3.10.9
-Vendor:		
+Vendor:		HP
 Serial:		
-Colorspace:	unknown
+Colorspace:	rgb
 Device ID:	Photosmart-B109a-m
 Profile 1:	/org/freedesktop/ColorManager/profiles/Photosmart_B109a_m_DeviceN__
 Profile 2:	/org/freedesktop/ColorManager/profiles/Photosmart_B109a_m_RGB__
+Profile 3:	/org/freedesktop/ColorManager/profiles/GCM_HP_HP_Deskjet_d1300_Series_2010_02_25__
 </pre>
 <p>or</p>
 <pre>
@@ -104,7 +105,7 @@ Using the DBUS methods and signals directly means that no glib or
 gobject dependency is needed.
 This is not difficult, although does require more code than just using
 libcolord.
-See this file for an example <a href="http://gitorious.org/colord/master/blobs/master/doc/raw-dbus.c">raw-dbus.c</a>.
+See these files for examples <a href="http://gitorious.org/colord/master/blobs/master/examples/cd-dbus-create-device.c">cd-dbus-create-device.c</a> and <a href="http://gitorious.org/colord/master/blobs/master/examples/cd-dbus-use-qualifier.c">cd-dbus-use-qualifier.c</a>.
 The latest interface description is available <a href="http://gitweb.freedesktop.org/?p=colord.git;a=blob;f=src/org.freedesktop.colord.xml">on-line</a>
 or viewable in the <a href="api/">generated help</a> pages.
 </p>
