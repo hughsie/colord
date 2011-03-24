@@ -1,7 +1,7 @@
 = Introduction =
 
 This document will explain the device and profile ID schemes used by
-gnome-color-manager and colord in the hope that other CMS solutions
+GNOME Color Manager and colord in the hope that other CMS solutions
 will hopefully interoperate with this specification.
 
 Also, by codifying the device and profile identifiers it is expected
@@ -71,6 +71,9 @@ In this case, the fallback scheme is used using the XRandR device name.
 Format:		xrandr-{%xrandr_name}
 Example:	xrandr-LVDS1
 
+Projects already using this format:
+ * GNOME Color Manager
+
 == CUPS printer ==
 
 A CUPS printer is a single physical printing device with queue in CUPS.
@@ -83,12 +86,21 @@ The device ID is constructed using
 Format:		cups-{%printer_name}
 Example:	cups-Photosmart-B109a-m
 
+Projects already using this format:
+ * GNOME Color Manager
+ * CUPS
+ * ghostscript
+ * foomatic
+
 == SANE scanner ==
 
 A SANE scanner consists of a single physical scanning device.
 
 Format:		sane-{%sane_model}
 Example:	sane_Photosmart_B109a-m
+
+Projects already using this format:
+ * GNOME Color Manager
 
 == Video4Linux devices ==
 
@@ -102,6 +114,9 @@ In this case, the fallback scheme is used using the device file.
 
 Format:		sysfs-{%sysfs_device_file}
 Example:	sysfs-/dev/video0
+
+Projects already using this format:
+ * GNOME Color Manager
 
 = Profile ID format =
 
@@ -128,3 +143,7 @@ Format:		{%printer_name}[-{%qualifier}]
 Example:	Photosmart-B109a-m-Gray..
 
 Other fallbacks can be defined privately by applications if required.
+
+Projects already using this format:
+ * GNOME Color Manager
+ * CUPS
