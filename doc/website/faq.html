@@ -22,6 +22,7 @@
 <!--
 <li><a href="#xxx">xxx</a></li>
 -->
+<li><a href="#application">How would an application like Simple Scan use colord?</a></li>
 <li><a href="#qualifiers">What is a qualifier used for?</a></li>
 <li><a href="#daemon">How do system daemons add devices and profiles?</a></li>
 <li><a href="#cups">How would a system daemon like CUPS use colord?</a></li>
@@ -157,6 +158,62 @@ The tri-dotted notation was chosen in preference to JSOn or XML as it
 is <a href="http://www.cups.org/documentation.php/doc-1.4/spec-ppd.html#cupsICCProfile">
 already being used by CUPS</a> in the cupsICCProfile PPD Extensions
 format.
+</p>
+
+<hr/>
+<h3><a name="application">How would an application like Simple Scan use colord?</a></h3>
+<p>
+It's actually really easy.
+Simple Scan already knows the <code>SANE_Device</code> object of the
+scanner that it wants to use.
+From the <code>SANE_Device</code> object we can easily get the
+<i>device_id</i> for the color managed device in colord.
+To do this, refer to the <a href="http://gitorious.org/colord/master/blobs/master/doc/device-and-profile-naming-spec.txt">
+device and profile specification</a> for scanner devices.
+This specifies the <i>device_id</i> for a sane device is made up from
+<code>"sane_" + sane_device->model</code>.
+</p>
+<p>
+We can now query colord using <a href="http://colord.hughsie.com/api/">
+libcolord</a> for the device that matches this ID:
+</p>
+<pre>
+    CdClient *client = NULL;
+    CdDevice *device = NULL;
+    CdProfile *profile = NULL;
+    GError *error = NULL;
+
+    /* create a connection to colord */
+    client = cd_client_new ();
+
+    /* find the device for a specific ID */
+    device = cd_client_find_device_sync (client, device_id, NULL, &amp;error);
+    if (device == NULL) {
+        g_warning ("failed to find a device in colord: %s,
+                   error->message);
+        g_error_free (error);
+        goto out;
+    }
+
+    /* get the default profile for this device */
+    profile = cd_device_get_default_profile (device);
+    if (profile == NULL)
+        goto out;
+
+    /* TODO: use lcms to convert the scanned image */
+    g_message ("need to use: %s", cd_profile_get_filename (profile));
+out:
+    if (profile != NULL)
+        g_object_unref (profile);
+    if (device != NULL)
+        g_object_unref (device);
+    g_object_unref (client);
+</pre>
+<p>
+If you're not happy gaining an additional dependency of libcolord, then
+it's also pretty easy to use raw DBus calls to do the same thing.
+See the <a href="http://gitorious.org/colord/master/trees/master/examples">
+examples</a> folder for some code samples.
 </p>
 
 <hr/>
