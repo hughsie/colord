@@ -1,0 +1,130 @@
+= Introduction =
+
+This document will explain the device and profile ID schemes used by
+gnome-color-manager and colord in the hope that other CMS solutions
+will hopefully interoperate with this specification.
+
+Also, by codifying the device and profile identifiers it is expected
+that applications can directly query colord.
+This would allow, for instance, a scanning application that has a
+libsane SANE_Device object to easily get the device ID for the colord
+device that corresponds to that physical device.
+
+It also means that the CMS does not have to understand concepts like
+the EDID vendor or the printer name, and can match and apply policy to
+devices just by comparing simple strings.
+This also allows applications to create new types of devices and
+profiles in the CMS without the CMS being aware of all the nuances of
+what the application is trying to do.
+
+This is illustrated well, with gcm-session creating xrandr devices for
+colord and also auto-creating profiles based on the device EDID.
+When this happens, colord saves the device->profile mapping and on next
+session start re-maps the devices which causes the session policy the
+be applied in gcm-session.
+
+In this way, the CMS knows nothing about XRandR and everything works
+transparently and correctly.
+
+NOTE: This is a working document, and may change based on feedback.
+
+Notations used in this document:
+
+ * {%varible}
+     A variable substitution is performed.
+ * [-{%varible}]
+     if the variable is non-NULL then the clause is used, else ignored.
+
+= Device ID Format =
+
+A device ID is designed to be able to represent a physical device on the
+local machine. A device ID is not supposed to be unique across multiple
+workstations with identical hardware.
+
+The device ID is also color management specific. For instance, a CRT or
+LCD screen may vary a great deal from unit to unit, and so the serial
+number is used in the device ID. A webcam however, does not typically
+vary unit-to-unit by much at all, and so the device serial number is not
+used in video4linux device IDs.
+
+A device ID is a valid UTF-8 string. This means it can contain slashes
+and spaces and does not have to be escaped.
+
+== XRANDR Display Device ==
+
+A XRandR device consists of a single physical display device.
+A colord device should not be created for a display interface that does
+not have a physical device attached to it.
+
+A XRandR device typically has the device EDID data available, and this
+is the prefered way of identifying the device. Using the EDID ensures
+the device ID remains constant if the physical display connection is
+moved from VGA to DVI1 for instance.
+
+Format:		xrandr[-{%edid_vendor}][-{%edid_model][-{%edid_serial}]
+Example:	xrandr-Hewlett Packard-HP LP2480zx-3CM82200KV
+Example:	xrandr-3CM82200KV
+
+For some displays, the EDID may be corrupt or not available.
+In this case, the fallback scheme is used using the XRandR device name.
+
+Format:		xrandr-{%xrandr_name}
+Example:	xrandr-LVDS1
+
+== CUPS printer ==
+
+A CUPS printer is a single physical printing device with queue in CUPS.
+
+A colord device should not be created for an printer that does not
+have a suitable driver yet installed.
+
+The device ID is constructed using
+
+Format:		cups-{%printer_name}
+Example:	cups-Photosmart-B109a-m
+
+== SANE scanner ==
+
+A SANE scanner consists of a single physical scanning device.
+
+Format:		sane-{%sane_model}
+Example:	sane_Photosmart_B109a-m
+
+== Video4Linux devices ==
+
+A video4linux device is typically a single physical web camera.
+
+Format:		sysfs[-{%sysfs_vendor}][-{%sysfs_model]
+Example:	sysfs-Chicony_Electronics_Co.__Ltd.-Integrated_Camera
+
+For some hardware, the vendor and the model may not be available.
+In this case, the fallback scheme is used using the device file.
+
+Format:		sysfs-{%sysfs_device_file}
+Example:	sysfs-/dev/video0
+
+= Profile ID format =
+
+The profile ID is a single string that identifies a specific profile
+on a machine.
+
+A profile ID is a valid UTF-8 string. This means it can contain slashes
+and spaces and does not have to be escaped.
+
+A profile ID is the same for binary identical profiles, even if
+duplicated on the filesystem.
+
+In line with other ICC reccomendations, the complete MD5 file checksum
+is used for the profile ID, e.g.
+
+Format:		icc-{%checksum}
+Example:	icc-bd847723f676e2b846daaf6759330624
+
+If a physical profile does not exist (for instance, for embedded printer
+profiles) then a fallback is used, which is typically the printer name
+and qualifier for the profile.
+
+Format:		{%printer_name}[-{%qualifier}]
+Example:	Photosmart-B109a-m-Gray..
+
+Other fallbacks can be defined privately by applications if required.

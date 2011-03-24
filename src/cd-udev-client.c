@@ -51,39 +51,30 @@ static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdUdevClient, cd_udev_client, G_TYPE_OBJECT)
 
 /**
- * gcm_utils_alphanum_lcase:
- **/
-static void
-gcm_utils_alphanum_lcase (gchar *data)
-{
-	guint i;
-
-	g_return_if_fail (data != NULL);
-
-	/* replace unsafe chars, and make lowercase */
-	for (i=0; data[i] != '\0'; i++) {
-		if (!g_ascii_isalnum (data[i]))
-			data[i] = '_';
-		data[i] = g_ascii_tolower (data[i]);
-	}
-}
-
-/**
  * gcm_client_get_id_for_udev_device:
  **/
 static gchar *
 gcm_client_get_id_for_udev_device (GUdevDevice *udev_device)
 {
-	gchar *id;
+	GString *string;
+	const gchar *tmp;
 
 	/* get id */
-	id = g_strdup_printf ("sysfs_%s_%s",
-			      g_udev_device_get_property (udev_device, "ID_VENDOR"),
-			      g_udev_device_get_property (udev_device, "ID_MODEL"));
+	string = g_string_new ("sysfs");
+	tmp = g_udev_device_get_property (udev_device, "ID_VENDOR");
+	if (tmp != NULL)
+		g_string_append_printf (string, "-%s", tmp);
+	tmp = g_udev_device_get_property (udev_device, "ID_MODEL");
+	if (tmp != NULL)
+		g_string_append_printf (string, "-%s", tmp);
 
-	/* replace unsafe chars */
-	gcm_utils_alphanum_lcase (id);
-	return id;
+	/* fallback */
+	if (string->len == 5) {
+		tmp = g_udev_device_get_device_file (udev_device);
+		g_string_append_printf (string, "-%s", tmp);
+	}
+
+	return g_string_free (string, FALSE);
 }
 
 /**
@@ -153,6 +144,11 @@ cd_udev_client_add (CdUdevClient *udev_client,
 	cd_device_set_property_internal (device,
 					 "Colorspace",
 					 "rgb",
+					 FALSE,
+					 NULL);
+	cd_device_set_property_internal (device,
+					 "Serial",
+					 g_udev_device_get_sysfs_path (udev_device),
 					 FALSE,
 					 NULL);
 	g_debug ("CdUdevClient: emit add: %s", id);

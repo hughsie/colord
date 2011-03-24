@@ -980,15 +980,14 @@ cd_main_profile_store_added_cb (CdProfileStore *_profile_store,
 				CdProfile *profile,
 				gpointer user_data)
 {
-	const gchar *id;
 	gboolean ret;
+	gchar *profile_id;
 	GError *error = NULL;
 
 	/* just add it to the bus with the title as the ID */
-	id = cd_profile_get_checksum (profile);
-	if (id == NULL)
-		id = cd_profile_get_title (profile);
-	cd_profile_set_id (profile, id);
+	profile_id = g_strdup_printf ("icc-%s",
+				      cd_profile_get_checksum (profile));
+	cd_profile_set_id (profile, profile_id);
 	cd_profile_set_is_system_wide (profile, TRUE);
 	ret = cd_main_add_profile (profile, &error);
 	if (!ret) {
@@ -1007,7 +1006,7 @@ cd_main_profile_store_added_cb (CdProfileStore *_profile_store,
 		goto out;
 	}
 out:
-	return;
+	g_free (profile_id);
 }
 
 /**

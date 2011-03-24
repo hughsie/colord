@@ -53,23 +53,6 @@ static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdSaneClient, cd_sane_client, G_TYPE_OBJECT)
 
 #ifdef HAVE_SANE
-/**
- * gcm_utils_alphanum_lcase:
- **/
-static void
-gcm_utils_alphanum_lcase (gchar *data)
-{
-	guint i;
-
-	g_return_if_fail (data != NULL);
-
-	/* replace unsafe chars, and make lowercase */
-	for (i=0; data[i] != '\0'; i++) {
-		if (!g_ascii_isalnum (data[i]))
-			data[i] = '_';
-		data[i] = g_ascii_tolower (data[i]);
-	}
-}
 
 /**
  * gcm_client_get_id_for_sane_device:
@@ -78,8 +61,7 @@ static gchar *
 gcm_client_get_id_for_sane_device (const SANE_Device *sane_device)
 {
 	gchar *id;
-	id = g_strdup_printf ("sane_%s", sane_device->model);
-	gcm_utils_alphanum_lcase (id);
+	id = g_strdup_printf ("sane-%s", sane_device->model);
 	return id;
 }
 
