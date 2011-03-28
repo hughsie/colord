@@ -151,12 +151,12 @@ cd_rendering_intent_to_string (CdRenderingIntent rendering_intent)
 {
 	if (rendering_intent == CD_RENDERING_INTENT_PERCEPTUAL)
 		return "perceptual";
-	if (rendering_intent == CD_RENDERING_INTENT_RELATIVE_COLORMETRIC)
-		return "relative-colormetric";
+	if (rendering_intent == CD_RENDERING_INTENT_RELATIVE_COLORIMETRIC)
+		return "relative-colorimetric";
 	if (rendering_intent == CD_RENDERING_INTENT_SATURATION)
 		return "saturation";
-	if (rendering_intent == CD_RENDERING_INTENT_ABSOLUTE_COLORMETRIC)
-		return "absolute-colormetric";
+	if (rendering_intent == CD_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC)
+		return "absolute-colorimetric";
 	return "unknown";
 }
 
@@ -168,12 +168,12 @@ cd_rendering_intent_from_string (const gchar *rendering_intent)
 {
 	if (g_strcmp0 (rendering_intent, "perceptual") == 0)
 		return CD_RENDERING_INTENT_PERCEPTUAL;
-	if (g_strcmp0 (rendering_intent, "relative-colormetric") == 0)
-		return CD_RENDERING_INTENT_RELATIVE_COLORMETRIC;
+	if (g_strcmp0 (rendering_intent, "relative-colorimetric") == 0)
+		return CD_RENDERING_INTENT_RELATIVE_COLORIMETRIC;
 	if (g_strcmp0 (rendering_intent, "saturation") == 0)
 		return CD_RENDERING_INTENT_SATURATION;
-	if (g_strcmp0 (rendering_intent, "absolute-colormetric") == 0)
-		return CD_RENDERING_INTENT_ABSOLUTE_COLORMETRIC;
+	if (g_strcmp0 (rendering_intent, "absolute-colorimetric") == 0)
+		return CD_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC;
 	return CD_RENDERING_INTENT_UNKNOWN;
 }
 
