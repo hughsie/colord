@@ -411,12 +411,13 @@ cd_profile_set_property_internal (CdProfile *profile,
 						       property,
 						       g_variant_new_string (value));
 	} else {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
-			     "property %s not understood on CdProfile",
-			     property);
+		/* add to metadata */
+		g_hash_table_insert (profile->priv->metadata,
+				     g_strdup (property),
+				     g_strdup (value));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Metadata",
+						       cd_profile_get_metadata_as_variant (profile));
 		goto out;
 	}
 

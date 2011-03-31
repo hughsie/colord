@@ -324,6 +324,11 @@
               the latency of one bus round-trip, rather than doing
               a few <doc:tt>SetProperty</doc:tt> methods indervidually.
             </doc:para>
+            <doc:para>
+              Any properties not interstood by colord will be added as
+              dictionary values to the <doc:tt>Metadata</doc:tt>
+              property.
+            </doc:para>
           </doc:summary>
         </doc:doc>
       </arg>
