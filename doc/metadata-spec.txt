@@ -1,0 +1,28 @@
+= Introduction =
+
+This document will explain the metadata keys used by GNOME Color Manager
+and colord in the hope that other CMS solutions will hopefully
+interoperate with this specification.
+
+The specific metadata is usually added to the colord devices and
+profiles for the CMS internal use, and to aid the automatic matching of
+devices to profiles.
+
+== Profile Metadata ==
+
+EDID_md5		the EDID md5 checksum
+EDID_model		the EDID monitor name
+EDID_serial		the EDID serial number
+EDID_mnft		the EDID PNP ID
+EDID_manufacturer	the EDID vendor name
+
+
+Projects already using this format:
+ * GNOME Color Manager
+
+== Device Metadata ==
+
+XRANDR_name		the XRandR name, e.g. "lvds1"
+
+Projects already using this format:
+ * GNOME Color Manager
