@@ -275,6 +275,23 @@ cd_profile_get_metadata (CdProfile *profile)
 	return g_hash_table_ref (profile->priv->metadata);
 }
 
+/**
+ * cd_profile_get_metadata_item:
+ * @profile: a #CdProfile instance.
+ * @key: a key for the metadata dictionary
+ *
+ * Returns the profile metadata for a specific key.
+ *
+ * Return value: the metadata value, or %NULL if not set.
+ *
+ * Since: 0.1.5
+ **/
+const gchar *
+cd_profile_get_metadata_item (CdProfile *profile, const gchar *key)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
+	return g_hash_table_lookup (profile->priv->metadata, key);
+}
 
 /**
  * cd_profile_set_metadata_from_variant:

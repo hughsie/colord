@@ -108,6 +108,8 @@ CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);
 gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
 GHashTable	*cd_profile_get_metadata		(CdProfile	*profile);
+const gchar	*cd_profile_get_metadata_item		(CdProfile	*profile,
+							 const gchar	*key);
 
 G_END_DECLS
 
