@@ -1,3 +1,20 @@
+Version 0.1.5
+~~~~~~~~~~~~~
+Released: 2011-03-31
+
+New Features:
+ - Add a 'Metadata' property to the device object
+ - Draft a specification document for device and profile IDs
+ - Draft specification document explaining the metadata keys we're using
+ - Remove colorgui as gnome-color-manager and kolord will be sufficient
+
+Bugfixes:
+ - Add AC_PROG_LIBTOOL to configure.ac to prevent a warning in jhbuild
+ - Correct the spelling of colorimetric in the public API
+ - Enable the sane support by default, Simple Scan needs this
+ - Make any properties not understood by colord to be saved as metadata keys
+ - Mark some more strings as translatable in colormgr
+
 Version 0.1.4
 ~~~~~~~~~~~~~
 Released: 2011-03-09
