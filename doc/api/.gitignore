@@ -5,6 +5,7 @@ Makefile.libs
 *.gcno
 *.out
 *.txt
+*.stamp
 tmpl
 xml
 html
