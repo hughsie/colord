@@ -150,6 +150,9 @@ CdDeviceMode	 cd_device_get_mode			(CdDevice	*device);
 GPtrArray	*cd_device_get_profiles			(CdDevice	*device);
 CdProfile	*cd_device_get_default_profile		(CdDevice	*device);
 const gchar	*cd_device_get_object_path		(CdDevice	*device);
+GHashTable	*cd_device_get_metadata			(CdDevice	*device);
+const gchar	*cd_device_get_metadata_item		(CdDevice	*device,
+							 const gchar	*key);
 
 G_END_DECLS
 

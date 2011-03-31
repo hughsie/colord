@@ -175,6 +175,9 @@ colord_client_func (void)
 	g_hash_table_insert (device_props,
 			     g_strdup ("Model"),
 			     g_strdup ("3000"));
+	g_hash_table_insert (device_props,
+			     g_strdup ("XRANDR_name"),
+			     g_strdup ("lvds1"));
 	device = cd_client_create_device_sync (client,
 					       device_id,
 					       CD_OBJECT_SCOPE_TEMP,
@@ -237,6 +240,9 @@ colord_client_func (void)
 
 	/* check device serial */
 	g_assert_cmpstr (cd_device_get_serial (device), ==, "0001");
+
+	/* check device metadata item */
+	g_assert_cmpstr (cd_device_get_metadata_item (device, "XRANDR_name"), ==, "lvds1");
 
 	/* check device kind */
 	g_assert_cmpint (cd_device_get_kind (device), ==, CD_DEVICE_KIND_DISPLAY);

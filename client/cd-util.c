@@ -119,6 +119,8 @@ static void
 cd_util_show_device (CdDevice *device)
 {
 	CdProfile *profile_tmp;
+	GHashTable *metadata;
+	GList *list, *l;
 	GPtrArray *profiles;
 	guint i;
 
@@ -177,6 +179,20 @@ cd_util_show_device (CdDevice *device)
 			 i+1,
 			 cd_profile_get_object_path (profile_tmp));
 	}
+
+	/* list all the items of metadata */
+	metadata = cd_device_get_metadata (device);
+	list = g_hash_table_get_keys (metadata);
+	for (l = list; l != NULL; l = l->next) {
+		/* TRANSLATORS: the metadata for the device */
+		g_print ("%s:\t%s=%s\n",
+			 _("Metadata"),
+			 (const gchar *) l->data,
+			 (const gchar *) g_hash_table_lookup (metadata,
+							      l->data));
+	}
+	g_list_free (list);
+	g_hash_table_unref (metadata);
 }
 
 /**

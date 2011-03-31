@@ -135,6 +135,18 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Metadata' type='a{ss}' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The metadata for the device, which may include optional
+            keys like <doc:tt>XRANDR_name</doc:tt>.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <method name='SetProperty'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>

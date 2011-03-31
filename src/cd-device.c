@@ -70,6 +70,7 @@ struct _CdDevicePrivate
 	guint64				 created;
 	guint64				 modified;
 	gboolean			 is_virtual;
+	GHashTable			*metadata;
 };
 
 enum {
@@ -628,6 +629,36 @@ cd_device_set_property_to_db (CdDevice *device,
 }
 
 /**
+ * cd_device_get_metadata_as_variant:
+ **/
+static GVariant *
+cd_device_get_metadata_as_variant (CdDevice *device)
+{
+	GList *list, *l;
+	GVariantBuilder builder;
+
+	/* we always must have at least one bit of metadata */
+	if (g_hash_table_size (device->priv->metadata) == 0) {
+		g_debug ("no metadata, so faking something");
+		g_hash_table_insert (device->priv->metadata,
+				     g_strdup ("CMS"),
+				     g_strdup ("colord"));
+	}
+	/* add all the keys in the dictionary to the variant builder */
+	list = g_hash_table_get_keys (device->priv->metadata);
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	for (l = list; l != NULL; l = l->next) {
+		g_variant_builder_add (&builder,
+				       "{ss}",
+				       l->data,
+				       g_hash_table_lookup (device->priv->metadata,
+							    l->data));
+	}
+	g_list_free (list);
+	return g_variant_builder_end (&builder);
+}
+
+/**
  * cd_device_set_property_internal:
  **/
 gboolean
@@ -661,12 +692,13 @@ cd_device_set_property_internal (CdDevice *device,
 		g_free (priv->mode);
 		priv->mode = g_strdup (value);
 	} else {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
-			     "property %s not understood on CdDevice",
-			     property);
+		/* add to metadata */
+		g_hash_table_insert (device->priv->metadata,
+				     g_strdup (property),
+				     g_strdup (value));
+		cd_device_dbus_emit_property_changed (device,
+						       "Metadata",
+						       cd_device_get_metadata_as_variant (device));
 		goto out;
 	}
 
@@ -1152,6 +1184,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		}
 		goto out;
 	}
+	if (g_strcmp0 (property_name, "Metadata") == 0) {
+		retval = cd_device_get_metadata_as_variant (device);
+		goto out;
+	}
 
 	g_critical ("failed to get property %s", property_name);
 out:
@@ -1349,6 +1385,10 @@ cd_device_init (CdDevice *device)
 			  "changed",
 			  G_CALLBACK (cd_device_inhibit_changed_cb),
 			  device);
+	device->priv->metadata = g_hash_table_new_full (g_str_hash,
+							 g_str_equal,
+							 g_free,
+							 g_free);
 }
 
 /**
@@ -1384,6 +1424,7 @@ cd_device_finalize (GObject *object)
 	g_object_unref (priv->mapping_db);
 	g_object_unref (priv->device_db);
 	g_object_unref (priv->inhibit);
+	g_hash_table_unref (priv->metadata);
 
 	G_OBJECT_CLASS (cd_device_parent_class)->finalize (object);
 }

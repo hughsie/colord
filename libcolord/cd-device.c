@@ -64,6 +64,7 @@ struct _CdDevicePrivate
 	CdDeviceKind		 kind;
 	CdColorspace		 colorspace;
 	CdDeviceMode		 mode;
+	GHashTable		*metadata;
 };
 
 enum {
@@ -345,6 +346,66 @@ out:
 }
 
 /**
+ * cd_device_get_metadata:
+ * @device: a #CdDevice instance.
+ *
+ * Returns the device metadata.
+ *
+ * Return value: a #GHashTable, free with g_hash_table_unref().
+ *
+ * Since: 0.1.5
+ **/
+GHashTable *
+cd_device_get_metadata (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	return g_hash_table_ref (device->priv->metadata);
+}
+
+/**
+ * cd_device_get_metadata_item:
+ * @device: a #CdDevice instance.
+ * @key: a key for the metadata dictionary
+ *
+ * Returns the device metadata for a specific key.
+ *
+ * Return value: the metadata value, or %NULL if not set.
+ *
+ * Since: 0.1.5
+ **/
+const gchar *
+cd_device_get_metadata_item (CdDevice *device, const gchar *key)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	return g_hash_table_lookup (device->priv->metadata, key);
+}
+
+/**
+ * cd_device_set_metadata_from_variant:
+ **/
+static void
+cd_device_set_metadata_from_variant (CdDevice *device, GVariant *variant)
+{
+	GVariantIter *iter = NULL;
+	const gchar *prop_key;
+	const gchar *prop_value;
+
+	/* remove old entries */
+	g_hash_table_remove_all (device->priv->metadata);
+
+	/* insert the new metadata */
+	g_variant_get (variant, "a{ss}",
+		       &iter);
+	while (g_variant_iter_loop (iter, "{ss}",
+				    &prop_key, &prop_value)) {
+		g_hash_table_insert (device->priv->metadata,
+				     g_strdup (prop_key),
+				     g_strdup (prop_value));
+
+	}
+}
+
+/**
  * cd_device_dbus_properties_changed:
  **/
 static void
@@ -392,6 +453,8 @@ cd_device_dbus_properties_changed (GDBusProxy  *proxy,
 			device->priv->created = g_variant_get_uint64 (property_value);
 		} else if (g_strcmp0 (property_name, "Modified") == 0) {
 			device->priv->modified = g_variant_get_uint64 (property_value);
+		} else if (g_strcmp0 (property_name, "Metadata") == 0) {
+			cd_device_set_metadata_from_variant (device, property_value);
 		} else if (g_strcmp0 (property_name, "DeviceId") == 0) {
 			/* ignore this, we don't support it changing */;
 		} else {
@@ -453,6 +516,7 @@ cd_device_set_object_path_sync (CdDevice *device,
 	GVariant *colorspace = NULL;
 	GVariant *mode = NULL;
 	GVariant *profiles = NULL;
+	GVariant *metadata = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (device->priv->proxy == NULL, FALSE);
@@ -549,6 +613,12 @@ cd_device_set_object_path_sync (CdDevice *device,
 	if (!ret)
 		goto out;
 
+	/* get metadata */
+	metadata = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						     "Metadata");
+	if (metadata != NULL)
+		cd_device_set_metadata_from_variant (device, metadata);
+
 	/* get signals from DBus */
 	g_signal_connect (device->priv->proxy,
 			  "g-signal",
@@ -585,6 +655,8 @@ out:
 		g_variant_unref (kind);
 	if (profiles != NULL)
 		g_variant_unref (profiles);
+	if (metadata != NULL)
+		g_variant_unref (metadata);
 	return ret;
 }
 
@@ -1458,6 +1530,10 @@ cd_device_init (CdDevice *device)
 {
 	device->priv = CD_DEVICE_GET_PRIVATE (device);
 	device->priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	device->priv->metadata = g_hash_table_new_full (g_str_hash,
+							g_str_equal,
+							g_free,
+							g_free);
 }
 
 /*
