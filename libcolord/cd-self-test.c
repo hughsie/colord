@@ -28,6 +28,7 @@
 #include <glib-object.h>
 
 #include "cd-client.h"
+#include "cd-sensor.h"
 
 /** ver:1.0 ***********************************************************/
 static GMainLoop *_test_loop = NULL;
@@ -622,6 +623,109 @@ colord_client_func (void)
 	g_object_unref (client);
 }
 
+#if 0
+static void
+colord_sensor_get_sample_cb (GObject *object,
+			     GAsyncResult *res,
+			     gpointer user_data)
+{
+	CdSensor *sensor = CD_SENSOR (object);
+	GError *error = NULL;
+	gboolean ret;
+
+	/* get the result */
+	ret = cd_sensor_get_sample_finished (sensor, res, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	_g_test_loop_quit ();
+}
+#endif
+
+static int _refcount = 0;
+
+static void
+colord_sensor_state_notify_cb (GObject *object,
+			       GParamSpec *pspec,
+			       CdClient *client)
+{
+	CdSensor *sensor = CD_SENSOR (object);
+	g_debug ("notify::state(%s)", cd_sensor_state_to_string (cd_sensor_get_state (sensor)));
+	_refcount++;
+}
+
+static void
+colord_sensor_func (void)
+{
+	CdSensor *sensor;
+	CdClient *client;
+	gboolean ret;
+	GError *error = NULL;
+	GPtrArray *array;
+	gdouble values[3] = { -2.0f, -2.0f, -2.0f };
+	gdouble ambient = -2.0f;
+
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	array = cd_client_get_sensors_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 1);
+
+	sensor = g_ptr_array_index (array, 0);
+	g_assert_cmpint (cd_sensor_get_kind (sensor), ==, CD_SENSOR_KIND_DUMMY);
+	g_assert_cmpint (cd_sensor_get_state (sensor), ==, CD_SENSOR_STATE_UNKNOWN);
+	g_assert_cmpstr (cd_sensor_get_serial (sensor), ==, "0123456789a");
+	g_assert_cmpstr (cd_sensor_get_vendor (sensor), ==, "Acme Corp");
+	g_assert_cmpstr (cd_sensor_get_model (sensor), ==, "Dummy Sensor #1");
+	g_assert_cmpstr (cd_sensor_get_object_path (sensor), ==, "/org/freedesktop/ColorManager/sensors/dummy");
+	g_assert_cmpint (cd_sensor_get_caps (sensor), ==, 30);
+	g_assert (cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PROJECTOR));
+
+#if 0
+	/* get a sample async */
+	ret = cd_sensor_get_sample (sensor,
+				    CD_SENSOR_CAP_PROJECTOR,
+				    NULL,
+				    colord_sensor_get_sample_cb,
+				    NULL);
+	_g_test_loop_run_with_timeout (5000);
+#endif
+
+	g_signal_connect (sensor,
+			  "notify::state",
+			  G_CALLBACK (colord_sensor_state_notify_cb),
+			  NULL);
+
+	/* get a sample sync */
+	ret = cd_sensor_get_sample_sync (sensor,
+					 CD_SENSOR_CAP_DISPLAY,
+					 (gdouble **) &values,
+					 &ambient,
+					 NULL,
+					 &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get async events */
+	_g_test_loop_run_with_timeout (5);
+	g_assert_cmpint (_refcount, ==, 2);
+
+	g_assert_cmpfloat (values[0] - 0.1f, >, -0.01);
+	g_assert_cmpfloat (values[0] - 0.1f, <, 0.01);
+	g_assert_cmpfloat (values[1] - 0.2f, >, -0.01);
+	g_assert_cmpfloat (values[1] - 0.2f, <, 0.01);
+	g_assert_cmpfloat (values[2] - 0.3f, >, -0.01);
+	g_assert_cmpfloat (values[2] - 0.3f, <, 0.01);
+	g_assert_cmpfloat (ambient + 1.0f, >, -0.01);
+	g_assert_cmpfloat (ambient + 1.0f, <, 0.01);
+
+	g_ptr_array_unref (array);
+	g_object_unref (client);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -633,6 +737,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/client", colord_client_func);
 	return g_test_run ();
 }
