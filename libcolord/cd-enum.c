@@ -316,3 +316,163 @@ cd_object_scope_from_string (const gchar *object_scope)
 		return CD_OBJECT_SCOPE_DISK;
 	return CD_OBJECT_SCOPE_UNKNOWN;
 }
+
+/**
+ * cd_sensor_kind_to_string:
+ * @sensor_kind: a #CdSensorKind
+ *
+ * Gets the sensor kind as a string.
+ *
+ * Return value: the sensor kind, e.g. 'huey'.
+ **/
+const gchar *
+cd_sensor_kind_to_string (CdSensorKind sensor_kind)
+{
+	if (sensor_kind == CD_SENSOR_KIND_DUMMY)
+		return "dummy";
+	if (sensor_kind == CD_SENSOR_KIND_HUEY)
+		return "huey";
+	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI)
+		return "color-munki";
+	if (sensor_kind == CD_SENSOR_KIND_SPYDER)
+		return "spyder";
+	if (sensor_kind == CD_SENSOR_KIND_DTP20)
+		return "dtp20";
+	if (sensor_kind == CD_SENSOR_KIND_DTP22)
+		return "dtp22";
+	if (sensor_kind == CD_SENSOR_KIND_DTP41)
+		return "dtp41";
+	if (sensor_kind == CD_SENSOR_KIND_DTP51)
+		return "dtp51";
+	if (sensor_kind == CD_SENSOR_KIND_DTP94)
+		return "dtp94";
+	if (sensor_kind == CD_SENSOR_KIND_SPECTRO_SCAN)
+		return "spectro-scan";
+	if (sensor_kind == CD_SENSOR_KIND_I1_PRO)
+		return "i1-pro";
+	if (sensor_kind == CD_SENSOR_KIND_COLORIMTRE_HCFR)
+		return "colorimtre-hcfr";
+	return "unknown";
+}
+
+/**
+ * cd_sensor_kind_from_string:
+ * @sensor_kind: the sensor kind, e.g. 'huey'.
+ *
+ * Gets the sensor kind as a enumerated value.
+ *
+ * Return value: a #CdSensorKind
+ **/
+CdSensorKind
+cd_sensor_kind_from_string (const gchar *sensor_kind)
+{
+	if (g_strcmp0 (sensor_kind, "dummy") == 0)
+		return CD_SENSOR_KIND_DUMMY;
+	if (g_strcmp0 (sensor_kind, "huey") == 0)
+		return CD_SENSOR_KIND_HUEY;
+	if (g_strcmp0 (sensor_kind, "color-munki") == 0)
+		return CD_SENSOR_KIND_COLOR_MUNKI;
+	if (g_strcmp0 (sensor_kind, "spyder") == 0)
+		return CD_SENSOR_KIND_SPYDER;
+	if (g_strcmp0 (sensor_kind, "dtp20") == 0)
+		return CD_SENSOR_KIND_DTP20;
+	if (g_strcmp0 (sensor_kind, "dtp22") == 0)
+		return CD_SENSOR_KIND_DTP22;
+	if (g_strcmp0 (sensor_kind, "dtp41") == 0)
+		return CD_SENSOR_KIND_DTP41;
+	if (g_strcmp0 (sensor_kind, "dtp51") == 0)
+		return CD_SENSOR_KIND_DTP51;
+	if (g_strcmp0 (sensor_kind, "dtp94") == 0)
+		return CD_SENSOR_KIND_DTP94;
+	if (g_strcmp0 (sensor_kind, "spectro-scan") == 0)
+		return CD_SENSOR_KIND_SPECTRO_SCAN;
+	if (g_strcmp0 (sensor_kind, "i1-pro") == 0)
+		return CD_SENSOR_KIND_I1_PRO;
+	if (g_strcmp0 (sensor_kind, "colorimtre-hcfr") == 0)
+		return CD_SENSOR_KIND_COLORIMTRE_HCFR;
+	return CD_SENSOR_KIND_UNKNOWN;
+}
+
+/**
+ * cd_sensor_state_to_string:
+ * @sensor_state: a #CdSensorState
+ *
+ * Gets the sensor stateability as a string.
+ *
+ * Return value: the sensor stateability, e.g. 'measuring'.
+ **/
+const gchar *
+cd_sensor_state_to_string (CdSensorState sensor_state)
+{
+	if (sensor_state == CD_SENSOR_STATE_STARTING)
+		return "starting";
+	if (sensor_state == CD_SENSOR_STATE_IDLE)
+		return "idle";
+	if (sensor_state == CD_SENSOR_STATE_MEASURING)
+		return "measuring";
+	return "unknown";
+}
+
+/**
+ * cd_sensor_state_from_string:
+ * @sensor_state: the sensor stateability, e.g. 'measuring'.
+ *
+ * Gets the sensor stateability as a enumerated value.
+ *
+ * Return value: a #CdSensorState
+ **/
+CdSensorState
+cd_sensor_state_from_string (const gchar *sensor_state)
+{
+	if (g_strcmp0 (sensor_state, "starting") == 0)
+		return CD_SENSOR_STATE_STARTING;
+	if (g_strcmp0 (sensor_state, "idle") == 0)
+		return CD_SENSOR_STATE_IDLE;
+	if (g_strcmp0 (sensor_state, "measuring") == 0)
+		return CD_SENSOR_STATE_MEASURING;
+	return CD_SENSOR_STATE_UNKNOWN;
+}
+
+/**
+ * cd_sensor_cap_to_string:
+ * @sensor_cap: a #CdSensorCap
+ *
+ * Gets the sensor capability as a string.
+ *
+ * Return value: the sensor capability, e.g. 'projector'.
+ **/
+const gchar *
+cd_sensor_cap_to_string (CdSensorCap sensor_cap)
+{
+	if (sensor_cap == CD_SENSOR_CAP_DISPLAY)
+		return "display";
+	if (sensor_cap == CD_SENSOR_CAP_PRINTER)
+		return "printer";
+	if (sensor_cap == CD_SENSOR_CAP_PROJECTOR)
+		return "projector";
+	if (sensor_cap == CD_SENSOR_CAP_SPOT)
+		return "spot";
+	return "unknown";
+}
+
+/**
+ * cd_sensor_cap_from_string:
+ * @sensor_cap: the sensor capability, e.g. 'projector'.
+ *
+ * Gets the sensor capability as a enumerated value.
+ *
+ * Return value: a #CdSensorCap
+ **/
+CdSensorCap
+cd_sensor_cap_from_string (const gchar *sensor_cap)
+{
+	if (g_strcmp0 (sensor_cap, "display") == 0)
+		return CD_SENSOR_CAP_DISPLAY;
+	if (g_strcmp0 (sensor_cap, "printer") == 0)
+		return CD_SENSOR_CAP_PRINTER;
+	if (g_strcmp0 (sensor_cap, "projector") == 0)
+		return CD_SENSOR_CAP_PROJECTOR;
+	if (g_strcmp0 (sensor_cap, "spot") == 0)
+		return CD_SENSOR_CAP_SPOT;
+	return CD_SENSOR_CAP_UNKNOWN;
+}

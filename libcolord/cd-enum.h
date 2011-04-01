@@ -140,6 +140,58 @@ typedef enum {
 	CD_DEVICE_RELATION_LAST,
 } CdDeviceRelation;
 
+/**
+ * CdSensorKind:
+ *
+ * The sensor type.
+ **/
+typedef enum {
+	CD_SENSOR_KIND_UNKNOWN,
+	CD_SENSOR_KIND_DUMMY,
+	CD_SENSOR_KIND_HUEY,
+	CD_SENSOR_KIND_COLOR_MUNKI,
+	CD_SENSOR_KIND_SPYDER,
+	CD_SENSOR_KIND_DTP20,
+	CD_SENSOR_KIND_DTP22,
+	CD_SENSOR_KIND_DTP41,
+	CD_SENSOR_KIND_DTP51,
+	CD_SENSOR_KIND_DTP94,
+	CD_SENSOR_KIND_SPECTRO_SCAN,
+	CD_SENSOR_KIND_I1_PRO,
+	CD_SENSOR_KIND_COLORIMTRE_HCFR,
+	CD_SENSOR_KIND_LAST
+} CdSensorKind;
+
+/**
+ * CdSensorCap:
+ *
+ * The sensor capabilities.
+ **/
+typedef enum {
+	CD_SENSOR_CAP_UNKNOWN,
+	CD_SENSOR_CAP_DISPLAY,
+	/* TODO: CD_SENSOR_CAP_LCD? */
+	/* TODO: CD_SENSOR_CAP_CRT? */
+	CD_SENSOR_CAP_PRINTER,
+	CD_SENSOR_CAP_SPOT,
+	CD_SENSOR_CAP_PROJECTOR,
+	/* TODO: CD_SENSOR_CAP_AMBIENT? */
+	CD_SENSOR_CAP_LAST
+} CdSensorCap;
+
+/**
+ * CdSensorState:
+ *
+ * The state of the sensor.
+ **/
+typedef enum {
+	CD_SENSOR_STATE_UNKNOWN,
+	CD_SENSOR_STATE_STARTING,
+	CD_SENSOR_STATE_IDLE,
+	CD_SENSOR_STATE_MEASURING,
+	CD_SENSOR_STATE_LAST
+} CdSensorState;
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
@@ -160,6 +212,12 @@ const gchar	*cd_device_relation_to_string		(CdDeviceRelation	 device_relation);
 CdDeviceRelation cd_device_relation_from_string		(const gchar		*device_relation);
 const gchar	*cd_object_scope_to_string		(CdObjectScope		 object_scope);
 CdObjectScope	 cd_object_scope_from_string		(const gchar		*object_scope);
+const gchar	*cd_sensor_kind_to_string		(CdSensorKind		 sensor_kind);
+CdSensorKind	 cd_sensor_kind_from_string		(const gchar		*sensor_kind);
+const gchar	*cd_sensor_state_to_string		(CdSensorState		 sensor_state);
+CdSensorState	 cd_sensor_state_from_string		(const gchar		*sensor_state);
+const gchar	*cd_sensor_cap_to_string		(CdSensorCap		 sensor_cap);
+CdSensorCap	 cd_sensor_cap_from_string		(const gchar		*sensor_cap);
 
 G_END_DECLS
 
