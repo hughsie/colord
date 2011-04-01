@@ -41,6 +41,7 @@ static GDBusConnection *connection = NULL;
 static GDBusNodeInfo *introspection_daemon = NULL;
 static GDBusNodeInfo *introspection_device = NULL;
 static GDBusNodeInfo *introspection_profile = NULL;
+static GDBusNodeInfo *introspection_sensor = NULL;
 static GMainLoop *loop = NULL;
 static CdDeviceArray *devices_array = NULL;
 static CdProfileArray *profiles_array = NULL;
@@ -1236,9 +1237,11 @@ main (int argc, char *argv[])
 	GFile *file_daemon = NULL;
 	GFile *file_device = NULL;
 	GFile *file_profile = NULL;
+	GFile *file_sensor = NULL;
 	gchar *introspection_daemon_data = NULL;
 	gchar *introspection_device_data = NULL;
 	gchar *introspection_profile_data = NULL;
+	gchar *introspection_sensor_data = NULL;
 
 	setlocale (LC_ALL, "");
 
@@ -1332,6 +1335,16 @@ main (int argc, char *argv[])
 		g_error_free (error);
 		goto out;
 	}
+	file_sensor = g_file_new_for_path (DATADIR "/dbus-1/interfaces/"
+					    COLORD_DBUS_INTERFACE_SENSOR ".xml");
+	ret = g_file_load_contents (file_sensor, NULL,
+				    &introspection_sensor_data,
+				    NULL, NULL, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to load introspection: %s", error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* build introspection from XML */
 	introspection_daemon = g_dbus_node_info_new_for_xml (introspection_daemon_data,
@@ -1358,6 +1371,14 @@ main (int argc, char *argv[])
 		g_error_free (error);
 		goto out;
 	}
+	introspection_sensor = g_dbus_node_info_new_for_xml (introspection_sensor_data,
+							     &error);
+	if (introspection_sensor == NULL) {
+		g_warning ("CdMain: failed to load sensor introspection: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* own the object */
 	owner_id = g_bus_own_name (G_BUS_TYPE_SYSTEM,
@@ -1378,6 +1399,7 @@ out:
 	g_free (introspection_daemon_data);
 	g_free (introspection_device_data);
 	g_free (introspection_profile_data);
+	g_free (introspection_sensor_data);
 	if (udev_client != NULL)
 		g_object_unref (udev_client);
 	if (config != NULL)
@@ -1400,6 +1422,8 @@ out:
 		g_object_unref (file_device);
 	if (file_profile != NULL)
 		g_object_unref (file_profile);
+	if (file_sensor != NULL)
+		g_object_unref (file_sensor);
 	if (owner_id > 0)
 		g_bus_unown_name (owner_id);
 	if (connection != NULL)
@@ -1410,6 +1434,8 @@ out:
 		g_dbus_node_info_unref (introspection_device);
 	if (introspection_profile != NULL)
 		g_dbus_node_info_unref (introspection_profile);
+	if (introspection_sensor != NULL)
+		g_dbus_node_info_unref (introspection_sensor);
 	g_main_loop_unref (loop);
 	return retval;
 }
