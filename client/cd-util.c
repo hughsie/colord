@@ -196,6 +196,87 @@ cd_util_show_device (CdDevice *device)
 }
 
 /**
+ * cd_util_show_sensor:
+ **/
+static void
+cd_util_show_sensor (CdSensor *sensor)
+{
+	CdSensorKind kind;
+	CdSensorState state;
+	const gchar *tmp;
+
+	/* TRANSLATORS: the internal DBus path */
+	g_print ("%s:\t%s\n",
+		 _("Object Path"),
+		 cd_sensor_get_object_path (sensor));
+
+	kind = cd_sensor_get_kind (sensor);
+	if (kind != CD_SENSOR_KIND_UNKNOWN) {
+		/* TRANSLATORS: the sensor kind, e.g. 'output' */
+		g_print ("%s:\t%s\n",
+			 _("Kind"),
+			 cd_sensor_kind_to_string (kind));
+	}
+
+	state = cd_sensor_get_state (sensor);
+	if (state != CD_SENSOR_STATE_UNKNOWN) {
+		/* TRANSLATORS: the sensor state, e.g. 'idle' */
+		g_print ("%s:\t%s\n",
+			 _("State"),
+			 cd_sensor_state_to_string (state));
+	}
+
+	tmp = cd_sensor_get_serial (sensor);
+	if (tmp != NULL) {
+		/* TRANSLATORS: sensor serial */
+		g_print ("%s:\t%s\n",
+			 _("Serial number"),
+			 tmp);
+	}
+
+	tmp = cd_sensor_get_model (sensor);
+	if (tmp != NULL) {
+		/* TRANSLATORS: sensor model */
+		g_print ("%s:\t%s\n",
+			 _("Model"),
+			 tmp);
+	}
+
+	tmp = cd_sensor_get_vendor (sensor);
+	if (tmp != NULL) {
+		/* TRANSLATORS: sensor vendor */
+		g_print ("%s:\t%s\n",
+			 _("Vendor"),
+			 tmp);
+	}
+
+	/* TRANSLATORS: if the sensor has a colord native driver */
+	g_print ("%s:\t%s\n",
+		 _("Native"),
+		 cd_sensor_get_native (sensor) ? "Yes" : "No");
+
+	/* TRANSLATORS: if the sensor supports calibrating a display */
+	g_print ("%s:\t%s\n",
+		 _("Display"),
+		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_DISPLAY) ? "Yes" : "No");
+
+	/* TRANSLATORS: if the sensor supports calibrating a printer */
+	g_print ("%s:\t%s\n",
+		 _("Printer"),
+		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PRINTER) ? "Yes" : "No");
+
+	/* TRANSLATORS: if the sensor supports spot measurements */
+	g_print ("%s:\t%s\n",
+		 _("Spot"),
+		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_SPOT) ? "Yes" : "No");
+
+	/* TRANSLATORS: if the sensor supports calibrating a projector */
+	g_print ("%s:\t%s\n",
+		 _("Projector"),
+		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PROJECTOR) ? "Yes" : "No");
+}
+
+/**
  * cd_util_item_free:
  **/
 static void
@@ -410,6 +491,40 @@ cd_util_get_profiles (CdUtilPrivate *priv, gchar **values, GError **error)
 	for (i=0; i < array->len; i++) {
 		profile = g_ptr_array_index (array, i);
 		cd_util_show_profile (profile);
+	}
+out:
+	if (array != NULL)
+		g_ptr_array_unref (array);
+	return ret;
+}
+
+/**
+ * cd_util_get_sensors:
+ **/
+static gboolean
+cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdSensor *sensor;
+	gboolean ret = TRUE;
+	GPtrArray *array = NULL;
+	guint i;
+
+	/* execute sync method */
+	array = cd_client_get_sensors_sync (priv->client, NULL, error);
+	if (array == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	if (array->len == 0) {
+		ret = FALSE;
+		/* TRANSLATORS: the user does not have a colorimeter attached */
+		g_set_error_literal (error, 1, 0,
+				     _("There are no supported sensors attached"));
+		goto out;
+	}
+	for (i=0; i < array->len; i++) {
+		sensor = g_ptr_array_index (array, i);
+		cd_util_show_sensor (sensor);
 	}
 out:
 	if (array != NULL)
@@ -1045,6 +1160,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Gets all the available color profiles"),
 		     cd_util_get_profiles);
+	cd_util_add (priv->cmd_array,
+		     "get-sensors",
+		     /* TRANSLATORS: command description */
+		     _("Gets all the available color sensors"),
+		     cd_util_get_sensors);
 	cd_util_add (priv->cmd_array,
 		     "create-device",
 		     /* TRANSLATORS: command description */
