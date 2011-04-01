@@ -27,6 +27,8 @@ libexec_PROGRAMS =					\
 	colord
 
 colord_SOURCES =					\
+	cd-buffer.c					\
+	cd-buffer.h					\
 	cd-common.c					\
 	cd-common.h					\
 	cd-config.c					\
@@ -72,6 +74,8 @@ check_PROGRAMS =					\
 	cd-self-test
 
 cd_self_test_SOURCES =					\
+	cd-buffer.c					\
+	cd-buffer.h					\
 	cd-common.c					\
 	cd-common.h					\
 	cd-device-array.c				\

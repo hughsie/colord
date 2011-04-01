@@ -27,6 +27,7 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include "cd-buffer.h"
 #include "cd-common.h"
 #include "cd-device-array.h"
 #include "cd-device-db.h"
@@ -302,6 +303,22 @@ cd_device_db_func (void)
 }
 
 static void
+cd_test_buffer_func (void)
+{
+	guchar buffer[4];
+
+	cd_buffer_write_uint16_be (buffer, 255);
+	g_assert_cmpint (buffer[0], ==, 0x00);
+	g_assert_cmpint (buffer[1], ==, 0xff);
+	g_assert_cmpint (cd_buffer_read_uint16_be (buffer), ==, 255);
+
+	cd_buffer_write_uint16_le (buffer, 8192);
+	g_assert_cmpint (buffer[0], ==, 0x00);
+	g_assert_cmpint (buffer[1], ==, 0x20);
+	g_assert_cmpint (cd_buffer_read_uint16_le (buffer), ==, 8192);
+}
+
+static void
 cd_test_usb_func (void)
 {
 	CdUsb *usb;
@@ -342,6 +359,7 @@ main (int argc, char **argv)
 
 	/* tests go here */
 	g_test_add_func ("/colord/usb", cd_test_usb_func);
+	g_test_add_func ("/colord/buffer", cd_test_buffer_func);
 	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);
 	g_test_add_func ("/colord/device-db", cd_device_db_func);
 	g_test_add_func ("/colord/profile", colord_profile_func);
