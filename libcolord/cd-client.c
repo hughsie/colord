@@ -38,6 +38,7 @@
 
 #include "cd-client.h"
 #include "cd-device.h"
+#include "cd-sensor.h"
 
 static void	cd_client_class_init	(CdClientClass	*klass);
 static void	cd_client_init		(CdClient	*client);
@@ -56,6 +57,7 @@ struct _CdClientPrivate
 	gchar			*daemon_version;
 	GPtrArray		*device_cache;
 	GPtrArray		*profile_cache;
+	GPtrArray		*sensor_cache;
 };
 
 typedef struct {
@@ -73,6 +75,9 @@ enum {
 	SIGNAL_PROFILE_ADDED,
 	SIGNAL_PROFILE_REMOVED,
 	SIGNAL_PROFILE_CHANGED,
+	SIGNAL_SENSOR_ADDED,
+	SIGNAL_SENSOR_REMOVED,
+	SIGNAL_SENSOR_CHANGED,
 	SIGNAL_LAST
 };
 
@@ -225,6 +230,68 @@ cd_client_get_cache_profile_create (CdClient *client,
 	}
 out:
 	return profile;
+}
+
+/**
+ * cd_client_get_cache_sensor:
+ **/
+static CdSensor *
+cd_client_get_cache_sensor (CdClient *client,
+			    const gchar *object_path)
+{
+	CdSensor *sensor = NULL;
+	CdSensor *sensor_tmp;
+	guint i;
+
+	/* try and find existing */
+	for (i=0; i<client->priv->sensor_cache->len; i++) {
+		sensor_tmp = g_ptr_array_index (client->priv->sensor_cache, i);
+		if (g_strcmp0 (cd_sensor_get_object_path (sensor_tmp),
+			       object_path) == 0) {
+			sensor = g_object_ref (sensor_tmp);
+			break;
+		}
+	}
+	return sensor;
+}
+
+/**
+ * cd_client_get_cache_sensor_create:
+ **/
+static CdSensor *
+cd_client_get_cache_sensor_create (CdClient *client,
+				   const gchar *object_path,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	CdSensor *sensor = NULL;
+	gboolean ret;
+	GError *error_local = NULL;
+
+	/* try and find existing, else create */
+	sensor = cd_client_get_cache_sensor (client, object_path);
+	if (sensor == NULL) {
+		sensor = cd_sensor_new ();
+		ret = cd_sensor_set_object_path_sync (sensor,
+						      object_path,
+						      cancellable,
+						      &error_local);
+		if (!ret) {
+			g_set_error (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_FAILED,
+				     "Failed to set sensor object path: %s",
+				     error_local->message);
+			g_error_free (error_local);
+			g_object_unref (sensor);
+			sensor = NULL;
+			goto out;
+		}
+		g_ptr_array_add (client->priv->sensor_cache,
+				 g_object_ref (sensor));
+	}
+out:
+	return sensor;
 }
 
 /**
@@ -1335,6 +1402,284 @@ cd_client_get_profiles_finish (CdClient *client,
 /***************************************************************************************************/
 
 /**
+ * cd_client_get_sensor_array_from_variant:
+ **/
+static GPtrArray *
+cd_client_get_sensor_array_from_variant (CdClient *client,
+					 GVariant *result,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	CdSensor *sensor;
+	gboolean ret;
+	gchar *object_path_tmp;
+	GError *error_local = NULL;
+	GPtrArray *array = NULL;
+	GPtrArray *array_tmp = NULL;
+	guint i;
+	guint len;
+	GVariant *child = NULL;
+	GVariantIter iter;
+
+	/* add each sensor */
+	array_tmp = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	child = g_variant_get_child_value (result, 0);
+	len = g_variant_iter_init (&iter, child);
+	for (i=0; i < len; i++) {
+		g_variant_get_child (child, i,
+				     "o", &object_path_tmp);
+		g_debug ("%s", object_path_tmp);
+
+		/* create sensor and add to the array */
+		sensor = cd_sensor_new ();
+		ret = cd_sensor_set_object_path_sync (sensor,
+						      object_path_tmp,
+						      cancellable,
+						      &error_local);
+		if (!ret) {
+			g_set_error (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_FAILED,
+				     "Failed to set sensor object path: %s",
+				     error_local->message);
+			g_error_free (error_local);
+			g_object_unref (sensor);
+			goto out;
+		}
+		g_ptr_array_add (array_tmp, sensor);
+		g_free (object_path_tmp);
+	}
+
+	/* success */
+	array = g_ptr_array_ref (array_tmp);
+out:
+	if (child != NULL)
+		g_variant_unref (child);
+	if (array_tmp != NULL)
+		g_ptr_array_unref (array_tmp);
+	return array;
+}
+
+/**
+ * cd_client_get_sensors_sync:
+ * @client: a #CdClient instance.
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Get an array of the sensor objects.
+ *
+ * Return value: (transfer full): an array of #CdSensor objects,
+ *		 free with g_ptr_array_unref()
+ *
+ * Since: 0.1.0
+ **/
+GPtrArray *
+cd_client_get_sensors_sync (CdClient *client,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	GError *error_local = NULL;
+	GPtrArray *array = NULL;
+	GVariant *result;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
+
+	result = g_dbus_proxy_call_sync (client->priv->proxy,
+					 "GetSensors",
+					 NULL,
+					 G_DBUS_CALL_FLAGS_NONE,
+					 -1,
+					 cancellable,
+					 &error_local);
+	if (result == NULL) {
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_FAILED,
+			     "Failed to GetSensors: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+
+	/* convert to array of CdSensor's */
+	array = cd_client_get_sensor_array_from_variant (client,
+							 result,
+							 cancellable,
+							 error);
+	if (array == NULL)
+		goto out;
+out:
+	if (result != NULL)
+		g_variant_unref (result);
+	return array;
+}
+
+/**
+ * cd_client_get_sensors_state_finish:
+ **/
+static void
+cd_client_get_sensors_state_finish (CdClientState *state,
+				    const GError *error)
+{
+	/* get result */
+	if (state->array != NULL) {
+		g_simple_async_result_set_op_res_gpointer (state->res,
+							   g_ptr_array_ref (state->array),
+							   (GDestroyNotify) g_ptr_array_unref);
+	} else {
+		g_simple_async_result_set_from_error (state->res,
+						      error);
+	}
+
+	/* complete */
+	g_simple_async_result_complete_in_idle (state->res);
+
+	/* deallocate */
+	if (state->cancellable != NULL)
+		g_object_unref (state->cancellable);
+	if (state->array != NULL)
+		g_ptr_array_unref (state->array);
+	g_object_unref (state->res);
+	g_object_unref (state->client);
+	g_slice_free (CdClientState, state);
+}
+
+/**
+ * cd_client_get_sensors_cb:
+ **/
+static void
+cd_client_get_sensors_cb (GObject *source_object,
+			   GAsyncResult *res,
+			   gpointer user_data)
+{
+	CdClientState *state = (CdClientState *) user_data;
+	GDBusProxy *proxy = G_DBUS_PROXY (source_object);
+	GError *error = NULL;
+	GVariant *result;
+
+	/* get result */
+	result = g_dbus_proxy_call_finish (proxy, res, &error);
+	if (result == NULL) {
+		cd_client_get_sensors_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* convert to array of CdSensor's */
+	state->array = cd_client_get_sensor_array_from_variant (state->client,
+								 result,
+								 state->cancellable,
+								 &error);
+	if (state->array == NULL) {
+		cd_client_get_sensors_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* we're done */
+	cd_client_get_sensors_state_finish (state, NULL);
+out:
+	if (result != NULL)
+		g_variant_unref (result);
+}
+
+/**
+ * cd_client_get_sensors:
+ * @client: a #CdClient instance
+ * @cancellable: a #GCancellable or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Gets a transacton ID from the daemon.
+ *
+ * Since: 0.1.2
+ **/
+void
+cd_client_get_sensors (CdClient *client,
+		        GCancellable *cancellable,
+		        GAsyncReadyCallback callback,
+		        gpointer user_data)
+{
+	CdClientState *state;
+	GError *error = NULL;
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	res = g_simple_async_result_new (G_OBJECT (client),
+					 callback,
+					 user_data,
+					 cd_client_get_sensors);
+
+	/* save state */
+	state = g_slice_new0 (CdClientState);
+	state->res = g_object_ref (res);
+	state->client = g_object_ref (client);
+	if (cancellable != NULL)
+		state->cancellable = g_object_ref (cancellable);
+
+	/* check not already cancelled */
+	if (cancellable != NULL &&
+	     g_cancellable_set_error_if_cancelled (cancellable, &error)) {
+		cd_client_get_sensors_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* call D-Bus method async */
+	g_dbus_proxy_call (client->priv->proxy,
+			   "GetSensors",
+			   NULL,
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_client_get_sensors_cb,
+			   state);
+out:
+	g_object_unref (res);
+}
+
+/**
+ * cd_client_get_sensors_finish:
+ * @client: a #CdClient instance
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: the sensors, or %NULL if unset, free with g_ptr_array_unref()
+ *
+ * Since: 0.1.2
+ **/
+GPtrArray *
+cd_client_get_sensors_finish (CdClient *client,
+			      GAsyncResult *res,
+			      GError **error)
+{
+	gpointer source_tag;
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	source_tag = g_simple_async_result_get_source_tag (simple);
+
+	g_return_val_if_fail (source_tag == cd_client_get_sensors, NULL);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_ptr_array_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+/***************************************************************************************************/
+
+/**
  * cd_client_dbus_signal_cb:
  **/
 static void
@@ -1346,6 +1691,7 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 {
 	CdDevice *device = NULL;
 	CdProfile *profile = NULL;
+	CdSensor *sensor = NULL;
 	gchar *object_path_tmp = NULL;
 	GError *error = NULL;
 
@@ -1449,6 +1795,55 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_PROFILE_CHANGED], 0,
 			       profile);
+	} else if (g_strcmp0 (signal_name, "SensorAdded") == 0) {
+		g_variant_get (parameters, "(o)", &object_path_tmp);
+
+		/* try to get from device cache, else create */
+		sensor = cd_client_get_cache_sensor_create (client,
+							    object_path_tmp,
+							    NULL,
+							    &error);
+		if (sensor == NULL) {
+			g_warning ("failed to get cached device %s: %s",
+				   object_path_tmp, error->message);
+			g_error_free (error);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
+		g_signal_emit (client, signals[SIGNAL_SENSOR_ADDED], 0,
+			       sensor);
+	} else if (g_strcmp0 (signal_name, "SensorRemoved") == 0) {
+		g_variant_get (parameters, "(o)", &object_path_tmp);
+
+		/* if the sensor isn't in the cache, we don't care
+		 * as the process isn't aware of it's existance */
+		sensor = cd_client_get_cache_sensor (client,
+						     object_path_tmp);
+		if (sensor == NULL) {
+			g_debug ("failed to get cached sensor %s",
+				 object_path_tmp);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
+		g_signal_emit (client, signals[SIGNAL_SENSOR_REMOVED], 0,
+			       sensor);
+	} else if (g_strcmp0 (signal_name, "SensorChanged") == 0) {
+		g_variant_get (parameters, "(o)", &object_path_tmp);
+
+		/* is device in the cache? */
+		sensor = cd_client_get_cache_sensor (client,
+						     object_path_tmp);
+		if (sensor == NULL) {
+			g_debug ("failed to get cached sensor %s",
+				 object_path_tmp);
+			goto out;
+		}
+		g_debug ("CdClient: emit '%s' on %s",
+			 signal_name, object_path_tmp);
+		g_signal_emit (client, signals[SIGNAL_SENSOR_CHANGED], 0,
+			       sensor);
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
 	}
@@ -1456,6 +1851,8 @@ out:
 	g_free (object_path_tmp);
 	if (device != NULL)
 		g_object_unref (device);
+	if (sensor != NULL)
+		g_object_unref (sensor);
 	if (profile != NULL)
 		g_object_unref (profile);
 }
@@ -1471,6 +1868,7 @@ cd_client_owner_notify_cb (GObject *object,
 	g_debug ("daemon has quit, clearing caches");
 	g_ptr_array_set_size (client->priv->device_cache, 0);
 	g_ptr_array_set_size (client->priv->profile_cache, 0);
+	g_ptr_array_set_size (client->priv->sensor_cache, 0);
 }
 
 /**
@@ -1702,6 +2100,53 @@ cd_client_class_init (CdClientClass *klass)
 			      G_TYPE_NONE, 1, CD_TYPE_PROFILE);
 
 	/**
+	 * CdClient::sensor-added:
+	 * @client: the #CdClient instance that emitted the signal
+	 * @sensor: the #CdSensor that was added.
+	 *
+	 * The ::sensor-added signal is emitted when a sensor is added.
+	 *
+	 * Since: 0.1.6
+	 **/
+	signals [SIGNAL_SENSOR_ADDED] =
+		g_signal_new ("sensor-added",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdClientClass, sensor_added),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
+
+	/**
+	 * CdClient::sensor-removed:
+	 * @client: the #CdClient instance that emitted the signal
+	 * @sensor: the #CdSensor that was removed.
+	 *
+	 * The ::sensor-added signal is emitted when a sensor is removed.
+	 *
+	 * Since: 0.1.6
+	 **/
+	signals [SIGNAL_SENSOR_REMOVED] =
+		g_signal_new ("sensor-removed",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdClientClass, sensor_removed),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
+	/**
+	 * CdClient::sensor-changed:
+	 * @client: the #CdClient instance that emitted the signal
+	 * @sensor: the #CdSensor that was removed.
+	 *
+	 * The ::sensor-changed signal is emitted when a sensor is changed.
+	 *
+	 * Since: 0.1.6
+	 **/
+	signals [SIGNAL_SENSOR_CHANGED] =
+		g_signal_new ("sensor-changed",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdClientClass, sensor_changed),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
+
+	/**
 	 * CdClient::changed:
 	 * @client: the #CdDevice instance that emitted the signal
 	 *
@@ -1728,6 +2173,7 @@ cd_client_init (CdClient *client)
 	client->priv = CD_CLIENT_GET_PRIVATE (client);
 	client->priv->device_cache = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	client->priv->profile_cache = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	client->priv->sensor_cache = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 }
 
 /*
@@ -1743,6 +2189,7 @@ cd_client_finalize (GObject *object)
 	g_free (client->priv->daemon_version);
 	g_ptr_array_unref (client->priv->device_cache);
 	g_ptr_array_unref (client->priv->profile_cache);
+	g_ptr_array_unref (client->priv->sensor_cache);
 	if (client->priv->proxy != NULL)
 		g_object_unref (client->priv->proxy);
 

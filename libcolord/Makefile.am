@@ -16,6 +16,7 @@ libcolord_include_HEADERS =					\
 	cd-version.h						\
 	cd-enum.h						\
 	cd-device.h						\
+	cd-sensor.h						\
 	cd-profile.h						\
 	cd-client.h
 
@@ -23,6 +24,7 @@ libcolord_la_SOURCES =						\
 	cd-enum.c						\
 	cd-client.c						\
 	cd-profile.c						\
+	cd-sensor.c						\
 	cd-device.c
 
 libcolord_la_LIBADD =						\

@@ -31,6 +31,7 @@
 
 #include <libcolord/cd-device.h>
 #include <libcolord/cd-profile.h>
+#include <libcolord/cd-sensor.h>
 
 G_BEGIN_DECLS
 
@@ -66,6 +67,12 @@ typedef struct
 							 CdProfile		*profile);
 	void			(*profile_changed)	(CdClient		*client,
 							 CdProfile		*profile);
+	void			(*sensor_added)		(CdClient		*client,
+							 CdSensor		*sensor);
+	void			(*sensor_removed)	(CdClient		*client,
+							 CdSensor		*sensor);
+	void			(*sensor_changed)	(CdClient		*client,
+							 CdSensor		*sensor);
 	void			(*changed)              (CdClient		*client);
 	/*< private >*/
 	/* Padding for future expansion */
@@ -147,6 +154,17 @@ void		 cd_client_get_profiles			(CdClient		*client,
 GPtrArray	*cd_client_get_profiles_finish		(CdClient		*client,
 							 GAsyncResult		*res,
 							 GError			**error);
+GPtrArray	*cd_client_get_sensors_sync		(CdClient	*client,
+							 GCancellable	*cancellable,
+							 GError		**error);
+void		 cd_client_get_sensors			(CdClient		*client,
+							 GCancellable		*cancellable,
+							 GAsyncReadyCallback	 callback,
+							 gpointer		 user_data);
+GPtrArray	*cd_client_get_sensors_finish		(CdClient		*client,
+							 GAsyncResult		*res,
+							 GError			**error);
+
 GPtrArray	*cd_client_get_devices_by_kind_sync	(CdClient	*client,
 							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,
