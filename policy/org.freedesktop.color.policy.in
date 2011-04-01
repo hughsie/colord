@@ -131,5 +131,20 @@
     </defaults>
   </action>
 
+  <action id="org.freedesktop.color-manager.sensor-lock">
+    <!-- SECURITY:
+          - Normal users should not have to authenticate to use the
+            colorimeter device.
+     -->
+    <_description>Use color sensor</_description>
+    <_message>Authentication is required to use the color sensor</_message>
+    <icon_name>application-vnd.iccprofile</icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
 </policyconfig>
 
