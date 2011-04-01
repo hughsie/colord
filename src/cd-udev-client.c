@@ -26,6 +26,7 @@
 #include <gudev/gudev.h>
 
 #include "cd-udev-client.h"
+#include "cd-sensor.h"
 
 static void     cd_udev_client_finalize	(GObject	*object);
 
@@ -37,12 +38,15 @@ static void     cd_udev_client_finalize	(GObject	*object);
 struct _CdUdevClientPrivate
 {
 	GUdevClient			*gudev_client;
-	GPtrArray			*array;
+	GPtrArray			*array_devices;
+	GPtrArray			*array_sensors;
 };
 
 enum {
 	SIGNAL_DEVICE_ADDED,
 	SIGNAL_DEVICE_REMOVED,
+	SIGNAL_SENSOR_ADDED,
+	SIGNAL_SENSOR_REMOVED,
 	SIGNAL_LAST
 };
 
@@ -90,8 +94,8 @@ cd_udev_client_get_by_id (CdUdevClient *udev_client,
 	guint i;
 
 	/* find device */
-	for (i=0; i<priv->array->len; i++) {
-		device_tmp = g_ptr_array_index (priv->array, i);
+	for (i=0; i<priv->array_devices->len; i++) {
+		device_tmp = g_ptr_array_index (priv->array_devices, i);
 		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0) {
 			device = device_tmp;
 			break;
@@ -155,7 +159,7 @@ cd_udev_client_device_add (CdUdevClient *udev_client,
 	g_signal_emit (udev_client, signals[SIGNAL_DEVICE_ADDED], 0, device);
 
 	/* keep track so we can remove with the same device */
-	g_ptr_array_add (udev_client->priv->array, device);
+	g_ptr_array_add (udev_client->priv->array_devices, device);
 	g_free (id);
 	g_free (model);
 	g_free (vendor);
@@ -179,8 +183,83 @@ cd_udev_client_device_remove (CdUdevClient *udev_client,
 	g_signal_emit (udev_client, signals[SIGNAL_DEVICE_REMOVED], 0, device);
 
 	/* we don't care anymore */
-	g_ptr_array_remove (udev_client->priv->array, device);
+	g_ptr_array_remove (udev_client->priv->array_devices, device);
 	g_free (id);
+}
+
+/**
+ * cd_udev_client_sensor_add:
+ **/
+static gboolean
+cd_udev_client_sensor_add (CdUdevClient *udev_client,
+			   GUdevDevice *device)
+{
+	gboolean ret;
+	CdSensor *sensor = NULL;
+	CdSensorKind kind;
+	const gchar *kind_str;
+	const gchar *device_file;
+
+	/* interesting device? */
+	ret = g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR");
+	if (!ret)
+		goto out;
+
+	/* actual device? */
+	device_file = g_udev_device_get_device_file (device);
+	if (device_file == NULL)
+		goto out;
+
+	/* is it a sensor we have a internal native driver for? */
+	kind_str = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
+	kind = cd_sensor_kind_from_string (kind_str);
+	if (kind == CD_SENSOR_KIND_HUEY)
+		g_debug ("TODO: need to create native sensor device");
+	sensor = cd_sensor_new ();
+
+	/* get data */
+	g_debug ("adding color management device: %s [%s]",
+		 g_udev_device_get_sysfs_path (device),
+		 device_file);
+	ret = cd_sensor_set_from_device (sensor, device, NULL);
+	if (!ret)
+		goto out;
+
+	/* signal the addition */
+	g_debug ("emit: added");
+	g_signal_emit (udev_client, signals[SIGNAL_SENSOR_ADDED], 0, sensor);
+
+	/* keep track so we can remove with the same device */
+	g_ptr_array_add (udev_client->priv->array_sensors, sensor);
+out:
+	if (sensor != NULL)
+		g_object_unref (sensor);
+	return ret;
+}
+
+/**
+ * cd_udev_client_sensor_remove:
+ **/
+static gboolean
+cd_udev_client_sensor_remove (CdUdevClient *udev_client,
+			      GUdevDevice *device)
+{
+	gboolean ret;
+
+	/* interesting device? */
+	ret = g_udev_device_get_property_as_boolean (device, "CD_SENSOR_CLIENT");
+	if (!ret)
+		goto out;
+
+	/* get data */
+	g_debug ("removing color management device: %s",
+		 g_udev_device_get_sysfs_path (device));
+
+	/* FIXME: signal the removal */
+//	g_debug ("emit: removed");
+//	g_signal_emit (udev_client, signals[SIGNAL_SENSOR_REMOVED], 0, NULL);
+out:
+	return ret;
 }
 
 /**
@@ -194,26 +273,48 @@ cd_udev_client_uevent_cb (GUdevClient *gudev_client,
 {
 	const gchar *value;
 
-	/* matches our udev rules, which we can change without recompiling */
-	value = g_udev_device_get_property (udev_device, "COLORD_DEVICE");
-	if (value == NULL)
-		return;
-
-	/* emit signal if it's interesting */
+	/* remove */
 	if (g_strcmp0 (action, "remove") == 0) {
-		cd_udev_client_device_remove (udev_client,
-				       udev_device);
-	} else if (g_strcmp0 (action, "add") == 0) {
-		cd_udev_client_device_add (udev_client,
-				    udev_device);
+		value = g_udev_device_get_property (udev_device, "COLORD_DEVICE");
+		if (value != NULL) {
+			cd_udev_client_device_remove (udev_client,
+					       udev_device);
+			goto out;
+		}
+		value = g_udev_device_get_property (udev_device, "COLORD_SENSOR");
+		if (value != NULL) {
+			cd_udev_client_sensor_remove (udev_client,
+						      udev_device);
+			goto out;
+		}
+		goto out;
 	}
+
+	/* add */
+	if (g_strcmp0 (action, "add") == 0) {
+		value = g_udev_device_get_property (udev_device, "COLORD_DEVICE");
+		if (value != NULL) {
+			cd_udev_client_device_add (udev_client,
+						   udev_device);
+			goto out;
+		}
+		value = g_udev_device_get_property (udev_device, "COLORD_SENSOR");
+		if (value != NULL) {
+			cd_udev_client_sensor_add (udev_client,
+						   udev_device);
+			goto out;
+		}
+		goto out;
+	}
+out:
+	return;
 }
 
 /**
- * cd_udev_client_coldplug:
+ * cd_udev_client_devices_coldplug:
  **/
-void
-cd_udev_client_coldplug (CdUdevClient *udev_client)
+static void
+cd_udev_client_devices_coldplug (CdUdevClient *udev_client)
 {
 	GList *devices;
 	GList *l;
@@ -228,6 +329,37 @@ cd_udev_client_coldplug (CdUdevClient *udev_client)
 	}
 	g_list_foreach (devices, (GFunc) g_object_unref, NULL);
 	g_list_free (devices);
+}
+
+/**
+ * cd_udev_client_sensors_coldplug:
+ **/
+static void
+cd_udev_client_sensors_coldplug (CdUdevClient *udev_client)
+{
+	GList *devices;
+	GList *l;
+	GUdevDevice *udev_device;
+
+	/* get all video4linux devices */
+	devices = g_udev_client_query_by_subsystem (udev_client->priv->gudev_client,
+						    "usb");
+	for (l = devices; l != NULL; l = l->next) {
+		udev_device = l->data;
+		cd_udev_client_sensor_add (udev_client, udev_device);
+	}
+	g_list_foreach (devices, (GFunc) g_object_unref, NULL);
+	g_list_free (devices);
+}
+
+/**
+ * cd_udev_client_coldplug:
+ **/
+void
+cd_udev_client_coldplug (CdUdevClient *udev_client)
+{
+	cd_udev_client_devices_coldplug (udev_client);
+	cd_udev_client_sensors_coldplug (udev_client);
 }
 
 /**
@@ -250,6 +382,18 @@ cd_udev_client_class_init (CdUdevClientClass *klass)
 			      G_STRUCT_OFFSET (CdUdevClientClass, device_removed),
 			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1, CD_TYPE_DEVICE);
+	signals[SIGNAL_SENSOR_ADDED] =
+		g_signal_new ("sensor-added",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdUdevClientClass, sensor_added),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
+	signals[SIGNAL_SENSOR_REMOVED] =
+		g_signal_new ("sensor-removed",
+			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
+			      G_STRUCT_OFFSET (CdUdevClientClass, sensor_removed),
+			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
+			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
 
 	g_type_class_add_private (klass, sizeof (CdUdevClientPrivate));
 }
@@ -260,9 +404,10 @@ cd_udev_client_class_init (CdUdevClientClass *klass)
 static void
 cd_udev_client_init (CdUdevClient *udev_client)
 {
-	const gchar *subsystems[] = {"video4linux", NULL};
+	const gchar *subsystems[] = {"usb", "video4linux", NULL};
 	udev_client->priv = CD_UDEV_CLIENT_GET_PRIVATE (udev_client);
-	udev_client->priv->array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	udev_client->priv->array_devices = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	udev_client->priv->array_sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	udev_client->priv->gudev_client = g_udev_client_new (subsystems);
 	g_signal_connect (udev_client->priv->gudev_client, "uevent",
 			  G_CALLBACK (cd_udev_client_uevent_cb), udev_client);
@@ -278,7 +423,8 @@ cd_udev_client_finalize (GObject *object)
 	CdUdevClientPrivate *priv = udev_client->priv;
 
 	g_object_unref (priv->gudev_client);
-	g_ptr_array_unref (udev_client->priv->array);
+	g_ptr_array_unref (udev_client->priv->array_devices);
+	g_ptr_array_unref (udev_client->priv->array_sensors);
 
 	G_OBJECT_CLASS (cd_udev_client_parent_class)->finalize (object);
 }
