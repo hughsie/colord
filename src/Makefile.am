@@ -13,6 +13,7 @@ INCLUDES =						\
 	$(SANE_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
 	$(USB_CFLAGS)					\
+	-I$(top_srcdir)/libcolord			\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DDATADIR=\"$(datadir)\"			\
@@ -54,6 +55,8 @@ colord_SOURCES =					\
 	cd-profile-store.h				\
 	cd-sane-client.c				\
 	cd-sane-client.h				\
+	cd-sensor.c					\
+	cd-sensor.h					\
 	cd-udev-client.c				\
 	cd-udev-client.h				\
 	cd-usb.c					\
