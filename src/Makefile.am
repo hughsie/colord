@@ -56,6 +56,8 @@ colord_SOURCES =					\
 	cd-sane-client.c				\
 	cd-sane-client.h				\
 	cd-sensor.c					\
+	cd-sensor-dummy.c				\
+	cd-sensor-dummy.h				\
 	cd-sensor.h					\
 	cd-udev-client.c				\
 	cd-udev-client.h				\

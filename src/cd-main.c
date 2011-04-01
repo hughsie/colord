@@ -30,6 +30,7 @@
 #include "cd-device-array.h"
 #include "cd-device-db.h"
 #include "cd-device.h"
+#include "cd-sensor-dummy.h"
 #include "cd-mapping-db.h"
 #include "cd-profile-array.h"
 #include "cd-profile.h"
@@ -1214,6 +1215,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	GPtrArray *array_devices = NULL;
 	guint i;
 	CdProfileSearchFlags flags;
+	CdSensor *sensor = NULL;
 
 	g_debug ("CdMain: acquired name: %s", name);
 	connection = g_object_ref (connection_);
@@ -1251,6 +1253,13 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	/* add GUdev devices */
 	cd_udev_client_coldplug (udev_client);
 
+	/* add dummy sensor */
+	ret = cd_config_get_boolean (config, "CreateDummySensor");
+	if (ret) {
+		sensor = cd_sensor_dummy_new ();
+		cd_main_add_sensor (sensor);
+	}
+
 	/* add SANE devices */
 	ret = cd_config_get_boolean (config, "UseSANE");
 	if (ret) {
@@ -1264,6 +1273,8 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 out:
 	if (array_devices != NULL)
 		g_ptr_array_unref (array_devices);
+	if (sensor != NULL)
+		g_object_unref (sensor);
 }
 
 /**
