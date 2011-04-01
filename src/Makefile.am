@@ -11,6 +11,7 @@ INCLUDES =						\
 	$(GUDEV_CFLAGS)					\
 	$(SANE_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
+	$(USB_CFLAGS)					\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DDATADIR=\"$(datadir)\"			\
@@ -50,6 +51,8 @@ colord_SOURCES =					\
 	cd-sane-client.h				\
 	cd-udev-client.c				\
 	cd-udev-client.h				\
+	cd-usb.c					\
+	cd-usb.h					\
 	../libcolord/cd-enum.c				\
 	cd-main.c
 
@@ -59,6 +62,7 @@ colord_LDADD =						\
 	$(LCMS_LIBS)					\
 	$(GUDEV_LIBS)					\
 	$(SANE_LIBS)					\
+	$(USB_LIBS)					\
 	$(GLIB_LIBS)
 
 colord_CFLAGS =						\
@@ -84,6 +88,8 @@ cd_self_test_SOURCES =					\
 	cd-profile-array.h				\
 	cd-profile.c					\
 	cd-profile.h					\
+	cd-usb.c					\
+	cd-usb.h					\
 	../libcolord/cd-enum.c				\
 	cd-self-test.c
 
@@ -91,6 +97,7 @@ cd_self_test_LDADD =					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(SQLITE_LIBS)					\
+	$(USB_LIBS)					\
 	$(GLIB_LIBS)
 
 cd_self_test_CFLAGS = $(WARNINGFLAGS_C)

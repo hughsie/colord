@@ -126,6 +126,13 @@ PKG_CHECK_MODULES(LCMS, lcms2)
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 PKG_CHECK_MODULES(GUDEV, gudev-1.0)
 
+PKG_CHECK_MODULES(USB, libusb-1.0 >= 1.0.9, has_new_libusb=yes, has_new_libusb=no)
+if test x$has_new_libusb = xyes; then
+	AC_DEFINE(HAVE_NEW_USB,1,[Got new libusb])
+else
+	PKG_CHECK_MODULES(USB, libusb-1.0 >= 1.0.0)
+fi
+
 dnl ---------------------------------------------------------------------------
 dnl - Is docbook2man available?
 dnl ---------------------------------------------------------------------------
