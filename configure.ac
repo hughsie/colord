@@ -163,6 +163,13 @@ if test x$enable_examples = xyes; then
 	PKG_CHECK_MODULES(DBUS, dbus-1)
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl - Build reverse engineering
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(reverse, AS_HELP_STRING([--enable-reverse],[enable reverse engineering tools]),
+	      enable_reverse=$enableval,enable_reverse=no)
+AM_CONDITIONAL(CD_BUILD_REVERSE, test x$enable_reverse = xyes)
+
 dnl **** Check for SANE ****
 AC_ARG_ENABLE(sane, AS_HELP_STRING([--enable-sane],[Enable SANE support]),
 	      enable_sane=$enableval, enable_sane=yes)
@@ -231,7 +238,7 @@ echo "
         cflags:                    ${CFLAGS}
         cppflags:                  ${CPPFLAGS}
         PolicyKit support:         ${enable_polkit}
-        GUI support:               ${enable_gui}
+        Reverse engineering tools: ${enable_reverse}
         SANE support:              ${enable_sane}
 "
 
