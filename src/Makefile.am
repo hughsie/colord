@@ -43,6 +43,8 @@ colord_SOURCES =					\
 	cd-inhibit.h					\
 	cd-mapping-db.c					\
 	cd-mapping-db.h					\
+	cd-math.c					\
+	cd-math.h					\
 	cd-profile-array.c				\
 	cd-profile-array.h				\
 	cd-profile.c					\
@@ -88,6 +90,8 @@ cd_self_test_SOURCES =					\
 	cd-inhibit.h					\
 	cd-mapping-db.c					\
 	cd-mapping-db.h					\
+	cd-math.c					\
+	cd-math.h					\
 	cd-profile-array.c				\
 	cd-profile-array.h				\
 	cd-profile.c					\

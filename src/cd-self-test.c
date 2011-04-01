@@ -33,6 +33,7 @@
 #include "cd-device-db.h"
 #include "cd-device.h"
 #include "cd-mapping-db.h"
+#include "cd-math.h"
 #include "cd-profile-array.h"
 #include "cd-profile.h"
 #include "cd-usb.h"
@@ -347,6 +348,32 @@ cd_test_usb_func (void)
 	g_object_unref (usb);
 }
 
+static void
+cd_test_math_func (void)
+{
+	CdMat3x3 mat;
+	CdMat3x3 matsrc;
+
+	/* matrix */
+	mat.m00 = 1.00f;
+	cd_mat33_clear (&mat);
+	g_assert_cmpfloat (mat.m00, <, 0.001f);
+	g_assert_cmpfloat (mat.m00, >, -0.001f);
+	g_assert_cmpfloat (mat.m22, <, 0.001f);
+	g_assert_cmpfloat (mat.m22, >, -0.001f);
+
+	/* multiply two matrices */
+	cd_mat33_clear (&matsrc);
+	matsrc.m01 = matsrc.m10 = 2.0f;
+	cd_mat33_matrix_multiply (&matsrc, &matsrc, &mat);
+	g_assert_cmpfloat (mat.m00, <, 4.1f);
+	g_assert_cmpfloat (mat.m00, >, 3.9f);
+	g_assert_cmpfloat (mat.m11, <, 4.1f);
+	g_assert_cmpfloat (mat.m11, >, 3.9f);
+	g_assert_cmpfloat (mat.m22, <, 0.001f);
+	g_assert_cmpfloat (mat.m22, >, -0.001f);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -360,6 +387,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/usb", cd_test_usb_func);
 	g_test_add_func ("/colord/buffer", cd_test_buffer_func);
+	g_test_add_func ("/colord/math", cd_test_math_func);
 	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);
 	g_test_add_func ("/colord/device-db", cd_device_db_func);
 	g_test_add_func ("/colord/profile", colord_profile_func);
