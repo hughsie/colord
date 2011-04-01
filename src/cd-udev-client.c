@@ -41,8 +41,8 @@ struct _CdUdevClientPrivate
 };
 
 enum {
-	SIGNAL_ADDED,
-	SIGNAL_REMOVED,
+	SIGNAL_DEVICE_ADDED,
+	SIGNAL_DEVICE_REMOVED,
 	SIGNAL_LAST
 };
 
@@ -101,11 +101,11 @@ cd_udev_client_get_by_id (CdUdevClient *udev_client,
 }
 
 /**
- * cd_udev_client_add:
+ * cd_udev_client_device_add:
  **/
 static void
-cd_udev_client_add (CdUdevClient *udev_client,
-		    GUdevDevice *udev_device)
+cd_udev_client_device_add (CdUdevClient *udev_client,
+			   GUdevDevice *udev_device)
 {
 	CdDevice *device;
 	gchar *id;
@@ -152,7 +152,7 @@ cd_udev_client_add (CdUdevClient *udev_client,
 					 FALSE,
 					 NULL);
 	g_debug ("CdUdevClient: emit add: %s", id);
-	g_signal_emit (udev_client, signals[SIGNAL_ADDED], 0, device);
+	g_signal_emit (udev_client, signals[SIGNAL_DEVICE_ADDED], 0, device);
 
 	/* keep track so we can remove with the same device */
 	g_ptr_array_add (udev_client->priv->array, device);
@@ -162,11 +162,11 @@ cd_udev_client_add (CdUdevClient *udev_client,
 }
 
 /**
- * cd_udev_client_remove:
+ * cd_udev_client_device_remove:
  **/
 static void
-cd_udev_client_remove (CdUdevClient *udev_client,
-		       GUdevDevice *udev_device)
+cd_udev_client_device_remove (CdUdevClient *udev_client,
+			      GUdevDevice *udev_device)
 {
 	gchar *id;
 	CdDevice *device;
@@ -176,7 +176,7 @@ cd_udev_client_remove (CdUdevClient *udev_client,
 	device = cd_udev_client_get_by_id (udev_client, id);
 	g_assert (device != NULL);
 	g_debug ("CdUdevClient: emit remove: %s", id);
-	g_signal_emit (udev_client, signals[SIGNAL_REMOVED], 0, device);
+	g_signal_emit (udev_client, signals[SIGNAL_DEVICE_REMOVED], 0, device);
 
 	/* we don't care anymore */
 	g_ptr_array_remove (udev_client->priv->array, device);
@@ -201,10 +201,10 @@ cd_udev_client_uevent_cb (GUdevClient *gudev_client,
 
 	/* emit signal if it's interesting */
 	if (g_strcmp0 (action, "remove") == 0) {
-		cd_udev_client_remove (udev_client,
+		cd_udev_client_device_remove (udev_client,
 				       udev_device);
 	} else if (g_strcmp0 (action, "add") == 0) {
-		cd_udev_client_add (udev_client,
+		cd_udev_client_device_add (udev_client,
 				    udev_device);
 	}
 }
@@ -224,7 +224,7 @@ cd_udev_client_coldplug (CdUdevClient *udev_client)
 						    "video4linux");
 	for (l = devices; l != NULL; l = l->next) {
 		udev_device = l->data;
-		cd_udev_client_add (udev_client, udev_device);
+		cd_udev_client_device_add (udev_client, udev_device);
 	}
 	g_list_foreach (devices, (GFunc) g_object_unref, NULL);
 	g_list_free (devices);
@@ -238,16 +238,16 @@ cd_udev_client_class_init (CdUdevClientClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_udev_client_finalize;
-	signals[SIGNAL_ADDED] =
-		g_signal_new ("added",
+	signals[SIGNAL_DEVICE_ADDED] =
+		g_signal_new ("device-added",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (CdUdevClientClass, added),
+			      G_STRUCT_OFFSET (CdUdevClientClass, device_added),
 			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1, CD_TYPE_DEVICE);
-	signals[SIGNAL_REMOVED] =
-		g_signal_new ("removed",
+	signals[SIGNAL_DEVICE_REMOVED] =
+		g_signal_new ("device-removed",
 			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (CdUdevClientClass, removed),
+			      G_STRUCT_OFFSET (CdUdevClientClass, device_removed),
 			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1, CD_TYPE_DEVICE);
 

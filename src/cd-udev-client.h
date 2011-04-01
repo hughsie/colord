@@ -49,9 +49,9 @@ struct _CdUdevClient
 struct _CdUdevClientClass
 {
 	GObjectClass	parent_class;
-	void		(* added)		(CdUdevClient	*udev_client,
+	void		(* device_added)	(CdUdevClient	*udev_client,
 						 CdDevice	*device);
-	void		(* removed)		(CdUdevClient	*udev_client,
+	void		(* device_removed)	(CdUdevClient	*udev_client,
 						 CdDevice	*device);
 };
 

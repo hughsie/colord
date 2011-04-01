@@ -1179,12 +1179,12 @@ cd_main_on_name_lost_cb (GDBusConnection *connection_,
 }
 
 /**
- * cd_main_client_added_cb:
+ * cd_main_client_device_added_cb:
  **/
 static void
-cd_main_client_added_cb (CdUdevClient *udev_client_,
-			 CdDevice *device,
-			 gpointer user_data)
+cd_main_client_device_added_cb (CdUdevClient *udev_client_,
+				CdDevice *device,
+				gpointer user_data)
 {
 	gboolean ret;
 	GError *error = NULL;
@@ -1210,12 +1210,12 @@ out:
 }
 
 /**
- * cd_main_client_removed_cb:
+ * cd_main_client_device_removed_cb:
  **/
 static void
-cd_main_client_removed_cb (CdUdevClient *udev_client_,
-				CdDevice *device,
-				gpointer user_data)
+cd_main_client_device_removed_cb (CdUdevClient *udev_client_,
+				  CdDevice *device,
+				  gpointer user_data)
 {
 	g_debug ("CdMain: remove device: %s",
 		 cd_device_get_id (device));
@@ -1264,17 +1264,17 @@ main (int argc, char *argv[])
 	profiles_array = cd_profile_array_new ();
 	sane_client = cd_sane_client_new ();
 	g_signal_connect (sane_client, "added",
-			  G_CALLBACK (cd_main_client_added_cb),
+			  G_CALLBACK (cd_main_client_device_added_cb),
 			  NULL);
 	g_signal_connect (sane_client, "removed",
-			  G_CALLBACK (cd_main_client_removed_cb),
+			  G_CALLBACK (cd_main_client_device_removed_cb),
 			  NULL);
 	udev_client = cd_udev_client_new ();
-	g_signal_connect (udev_client, "added",
-			  G_CALLBACK (cd_main_client_added_cb),
+	g_signal_connect (udev_client, "device-added",
+			  G_CALLBACK (cd_main_client_device_added_cb),
 			  NULL);
-	g_signal_connect (udev_client, "removed",
-			  G_CALLBACK (cd_main_client_removed_cb),
+	g_signal_connect (udev_client, "device-removed",
+			  G_CALLBACK (cd_main_client_device_removed_cb),
 			  NULL);
 
 	/* connect to the mapping db */
