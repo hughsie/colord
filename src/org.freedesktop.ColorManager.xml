@@ -221,6 +221,26 @@
       </arg>
     </method>
 
+    <!--***********************************************************-->
+    <method name='GetSensors'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a list of all the sensors recognised by the system.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='ao' name='devices' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              An array of sensor IDs, e.g. <doc:tt>['/org/freedesktop/ColorManager/sensor/colormunki']</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
 
     <!--***********************************************************-->
     <method name='GetProfilesByKind'>
@@ -581,6 +601,46 @@
           <doc:summary>
             <doc:para>
               The profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </signal>
+
+   <!--***********************************************************-->
+    <signal name='SensorAdded'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            A sensor has been added.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='o' name='object_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The sensor path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </signal>
+
+    <!--***********************************************************-->
+    <signal name='SensorRemoved'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            A sensor has been removed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='o' name='object_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The sensor path.
             </doc:para>
           </doc:summary>
         </doc:doc>

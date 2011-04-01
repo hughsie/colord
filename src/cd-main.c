@@ -51,6 +51,7 @@ static CdDeviceDb *device_db = NULL;
 static CdUdevClient *udev_client = NULL;
 static CdSaneClient *sane_client = NULL;
 static CdConfig *config = NULL;
+static GPtrArray *sensors = NULL;
 
 /**
  * cd_main_profile_removed:
@@ -465,6 +466,35 @@ cd_main_profile_array_to_variant (GPtrArray *array)
 }
 
 /**
+ * cd_main_sensor_array_to_variant:
+ **/
+static GVariant *
+cd_main_sensor_array_to_variant (GPtrArray *array)
+{
+	CdSensor *sensor;
+	guint i;
+	guint length = 0;
+	GVariant *variant;
+	GVariant **variant_array = NULL;
+
+	/* copy the object paths */
+	variant_array = g_new0 (GVariant *, array->len + 1);
+	for (i=0; i<array->len; i++) {
+		sensor = g_ptr_array_index (array, i);
+		variant_array[length] = g_variant_new_object_path (
+			cd_sensor_get_object_path (sensor));
+		length++;
+	}
+
+	/* format the value */
+	variant = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
+				       variant_array,
+				       length);
+	g_free (variant_array);
+	return variant;
+}
+
+/**
  * cd_main_profile_auto_add_to_device:
  **/
 static void
@@ -581,6 +611,18 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* format the value */
 		array = cd_device_array_get_array (devices_array);
 		value = cd_main_device_array_to_variant (array);
+		tuple = g_variant_new_tuple (&value, 1);
+		g_dbus_method_invocation_return_value (invocation, tuple);
+		goto out;
+	}
+
+	/* return 'as' */
+	if (g_strcmp0 (method_name, "GetSensors") == 0) {
+
+		g_debug ("CdMain: %s:GetSensors()", sender);
+
+		/* format the value */
+		value = cd_main_sensor_array_to_variant (sensors);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		goto out;
@@ -1102,6 +1144,63 @@ out:
 }
 
 /**
+ * cd_main_sensor_register_on_bus:
+ **/
+static gboolean
+cd_main_sensor_register_on_bus (CdSensor *sensor,
+				GError **error)
+{
+	gboolean ret;
+
+	/* register object */
+	ret = cd_sensor_register_object (sensor,
+					 connection,
+					 introspection_sensor->interfaces[0],
+					 error);
+	if (!ret)
+		goto out;
+
+	/* emit signal */
+	g_debug ("CdMain: Emitting SensorAdded(%s)",
+		 cd_sensor_get_object_path (sensor));
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "SensorAdded",
+					     g_variant_new ("(o)",
+							    cd_sensor_get_object_path (sensor)),
+					     error);
+out:
+	return ret;
+}
+
+/**
+ * cd_main_add_sensor:
+ **/
+static void
+cd_main_add_sensor (CdSensor *sensor)
+{
+	gboolean ret;
+	GError *error = NULL;
+
+	g_debug ("CdMain: add sensor: %s",
+		 cd_sensor_get_id (sensor));
+	g_ptr_array_add (sensors, g_object_ref (sensor));
+
+	/* register on bus */
+	ret = cd_main_sensor_register_on_bus (sensor, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to emit SensorAdded: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	return;
+}
+
+/**
  * cd_main_on_name_acquired_cb:
  **/
 static void
@@ -1224,6 +1323,29 @@ cd_main_client_device_removed_cb (CdUdevClient *udev_client_,
 }
 
 /**
+ * cd_main_client_sensor_added_cb:
+ **/
+static void
+cd_main_client_sensor_added_cb (CdUdevClient *udev_client_,
+				CdSensor *sensor,
+				gpointer user_data)
+{
+	cd_main_add_sensor (sensor);
+}
+
+/**
+ * cd_main_client_sensor_removed_cb:
+ **/
+static void
+cd_main_client_sensor_removed_cb (CdUdevClient *udev_client_,
+				  CdSensor *sensor,
+				  gpointer user_data)
+{
+	g_debug ("CdMain: remove sensor: %s",
+		 cd_sensor_get_id (sensor));
+}
+
+/**
  * main:
  **/
 int
@@ -1265,6 +1387,7 @@ main (int argc, char *argv[])
 	loop = g_main_loop_new (NULL, FALSE);
 	devices_array = cd_device_array_new ();
 	profiles_array = cd_profile_array_new ();
+	sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	sane_client = cd_sane_client_new ();
 	g_signal_connect (sane_client, "added",
 			  G_CALLBACK (cd_main_client_device_added_cb),
@@ -1278,6 +1401,12 @@ main (int argc, char *argv[])
 			  NULL);
 	g_signal_connect (udev_client, "device-removed",
 			  G_CALLBACK (cd_main_client_device_removed_cb),
+			  NULL);
+	g_signal_connect (udev_client, "sensor-added",
+			  G_CALLBACK (cd_main_client_sensor_added_cb),
+			  NULL);
+	g_signal_connect (udev_client, "sensor-removed",
+			  G_CALLBACK (cd_main_client_sensor_removed_cb),
 			  NULL);
 
 	/* connect to the mapping db */
@@ -1400,6 +1529,7 @@ out:
 	g_free (introspection_device_data);
 	g_free (introspection_profile_data);
 	g_free (introspection_sensor_data);
+	g_ptr_array_unref (sensors);
 	if (udev_client != NULL)
 		g_object_unref (udev_client);
 	if (config != NULL)
