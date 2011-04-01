@@ -2,6 +2,7 @@ introspectiondir = $(datadir)/dbus-1/interfaces
 dist_introspection_DATA = 					\
 	org.freedesktop.ColorManager.xml			\
 	org.freedesktop.ColorManager.Device.xml			\
+	org.freedesktop.ColorManager.Sensor.xml			\
 	org.freedesktop.ColorManager.Profile.xml
 
 INCLUDES =						\

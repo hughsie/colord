@@ -67,6 +67,7 @@
     <xi:include href="dbus/org.freedesktop.ColorManager.ref.xml"/>
     <xi:include href="dbus/org.freedesktop.ColorManager.Device.ref.xml"/>
     <xi:include href="dbus/org.freedesktop.ColorManager.Profile.ref.xml"/>
+    <xi:include href="dbus/org.freedesktop.ColorManager.Sensor.ref.xml"/>
   </reference>
 
   <reference id="libcolord">

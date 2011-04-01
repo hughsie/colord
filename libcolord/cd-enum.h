@@ -197,6 +197,7 @@ typedef enum {
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
+#define COLORD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
 
 const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string		(const gchar		*kind);
