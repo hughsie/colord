@@ -23,8 +23,8 @@
 #error "Only <colord.h> can be included directly."
 #endif
 
-#ifndef __CD_TYPES_H
-#define __CD_TYPES_H
+#ifndef __CD_ENUM_H
+#define __CD_ENUM_H
 
 #include <glib-object.h>
 
@@ -163,5 +163,5 @@ CdObjectScope	 cd_object_scope_from_string		(const gchar		*object_scope);
 
 G_END_DECLS
 
-#endif /* __CD_TYPES_H */
+#endif /* __CD_ENUM_H */
 
