@@ -51,10 +51,10 @@ static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdUdevClient, cd_udev_client, G_TYPE_OBJECT)
 
 /**
- * gcm_client_get_id_for_udev_device:
+ * cd_client_get_id_for_udev_device:
  **/
 static gchar *
-gcm_client_get_id_for_udev_device (GUdevDevice *udev_device)
+cd_client_get_id_for_udev_device (GUdevDevice *udev_device)
 {
 	GString *string;
 	const gchar *tmp;
@@ -123,7 +123,7 @@ cd_udev_client_add (CdUdevClient *udev_client,
 	g_strchomp (vendor);
 
 	/* create new device */
-	id = gcm_client_get_id_for_udev_device (udev_device);
+	id = cd_client_get_id_for_udev_device (udev_device);
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
 	cd_device_set_property_internal (device,
@@ -172,7 +172,7 @@ cd_udev_client_remove (CdUdevClient *udev_client,
 	CdDevice *device;
 
 	/* find the id in the internal array */
-	id = gcm_client_get_id_for_udev_device (udev_device);
+	id = cd_client_get_id_for_udev_device (udev_device);
 	device = cd_udev_client_get_by_id (udev_client, id);
 	g_assert (device != NULL);
 	g_debug ("CdUdevClient: emit remove: %s", id);

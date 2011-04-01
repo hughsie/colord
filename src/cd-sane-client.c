@@ -55,10 +55,10 @@ G_DEFINE_TYPE (CdSaneClient, cd_sane_client, G_TYPE_OBJECT)
 #ifdef HAVE_SANE
 
 /**
- * gcm_client_get_id_for_sane_device:
+ * cd_client_get_id_for_sane_device:
  **/
 static gchar *
-gcm_client_get_id_for_sane_device (const SANE_Device *sane_device)
+cd_client_get_id_for_sane_device (const SANE_Device *sane_device)
 {
 	gchar *id;
 	id = g_strdup_printf ("sane-%s", sane_device->model);
@@ -108,7 +108,7 @@ cd_sane_client_add (CdSaneClient *sane_client,
 	}
 
 	/* convert device_id 'plustek:libusb:004:002' to suitable id */
-	id = gcm_client_get_id_for_sane_device (sane_device);
+	id = cd_client_get_id_for_sane_device (sane_device);
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
 
@@ -166,7 +166,7 @@ cd_sane_client_remove (CdSaneClient *sane_client,
 	CdDevice *device;
 
 	/* find the id in the internal array */
-	id = gcm_client_get_id_for_sane_device (sane_device);
+	id = cd_client_get_id_for_sane_device (sane_device);
 	device = cd_sane_client_get_by_id (sane_client, id);
 	g_assert (device != NULL);
 	g_debug ("CdSaneClient: emit remove: %s", id);
