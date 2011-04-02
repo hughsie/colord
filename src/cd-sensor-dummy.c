@@ -128,16 +128,19 @@ static void
 cd_sensor_dummy_get_sample_async (CdSensor *sensor,
 				  CdSensorCap cap,
 				  GCancellable *cancellable,
-				  GAsyncResult *res)
+				  GAsyncReadyCallback callback,
+				  gpointer user_data)
 {
 	CdSensorAsyncState *state;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-	g_return_if_fail (res != NULL);
 
 	/* save state */
 	state = g_slice_new0 (CdSensorAsyncState);
-	state->res = g_object_ref (res);
+	state->res = g_simple_async_result_new (G_OBJECT (sensor),
+						callback,
+						user_data,
+						cd_sensor_dummy_get_sample_async);
 	state->sensor = g_object_ref (sensor);
 	state->sample = g_new0 (CdSensorSample, 1);
 

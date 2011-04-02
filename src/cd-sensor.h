@@ -61,7 +61,8 @@ struct _CdSensorClass
 	void		 (*get_sample_async)	(CdSensor		*sensor,
 						 CdSensorCap		 cap,
 						 GCancellable		*cancellable,
-						 GAsyncResult		*res);
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
 	gboolean	 (*get_sample_finish)	(CdSensor		*sensor,
 						 GAsyncResult		*res,
 						 CdSensorSample		*value,

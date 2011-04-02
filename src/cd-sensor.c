@@ -240,15 +240,9 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 			    GAsyncReadyCallback callback,
 			    gpointer user_data)
 {
-	GSimpleAsyncResult *res = NULL;
 	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
 	GError *error = NULL;
-
-	/* new async request */
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_get_sample_async);
+	GSimpleAsyncResult *res = NULL;
 
 	/* coldplug source */
 	if (klass->get_sample_async == NULL) {
@@ -256,15 +250,41 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 				     CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_INTERNAL,
 				     "no klass support");
+		res = g_simple_async_result_new (G_OBJECT (sensor),
+						 callback,
+						 user_data,
+						 cd_sensor_get_sample_async);
 		g_simple_async_result_set_from_error (res, error);
+		g_simple_async_result_complete_in_idle (res);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* ensure the cap is known */
+	if (cap == CD_SENSOR_CAP_UNKNOWN) {
+		g_set_error_literal (&error,
+				     CD_SENSOR_ERROR,
+				     CD_SENSOR_ERROR_INTERNAL,
+				     "output sensor type was not set");
+		res = g_simple_async_result_new (G_OBJECT (sensor),
+						 callback,
+						 user_data,
+						 cd_sensor_get_sample_async);
+		g_simple_async_result_set_from_error (res, error);
+		g_simple_async_result_complete_in_idle (res);
 		g_error_free (error);
 		goto out;
 	}
 
 	/* proxy */
-	klass->get_sample_async (sensor, cap, cancellable, G_ASYNC_RESULT (res));
+	klass->get_sample_async (sensor,
+				 cap,
+				 cancellable,
+				 callback,
+				 user_data);
 out:
-	g_object_unref (res);
+	if (res != NULL)
+		g_object_unref (res);
 	return;
 }
 
@@ -350,6 +370,11 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	}
 
 	/* return value */
+	g_debug ("returning value %f, %f, %f, %f",
+		 sample.value.X,
+		 sample.value.Y,
+		 sample.value.Z,
+		 sample.luminance);
 	result = g_variant_new ("((ddd)d)",
 				sample.value.X,
 				sample.value.Y,
