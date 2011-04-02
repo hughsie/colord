@@ -27,6 +27,7 @@
 
 #include "cd-udev-client.h"
 #include "cd-sensor.h"
+#include "cd-sensor-huey.h"
 
 static void     cd_udev_client_finalize	(GObject	*object);
 
@@ -214,8 +215,9 @@ cd_udev_client_sensor_add (CdUdevClient *udev_client,
 	kind_str = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
 	kind = cd_sensor_kind_from_string (kind_str);
 	if (kind == CD_SENSOR_KIND_HUEY)
-		g_debug ("TODO: need to create native sensor device");
-	sensor = cd_sensor_new ();
+		sensor = cd_sensor_huey_new ();
+	else
+		sensor = cd_sensor_new ();
 
 	/* get data */
 	g_debug ("adding color management device: %s [%s]",

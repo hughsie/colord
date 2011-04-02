@@ -60,6 +60,8 @@ colord_SOURCES =					\
 	cd-sensor-dummy.h				\
 	cd-sensor-colormunki-private.c			\
 	cd-sensor-colormunki-private.h			\
+	cd-sensor-huey.c				\
+	cd-sensor-huey.h				\
 	cd-sensor-huey-private.c			\
 	cd-sensor-huey-private.h			\
 	cd-sensor.h					\
@@ -68,6 +70,7 @@ colord_SOURCES =					\
 	cd-usb.c					\
 	cd-usb.h					\
 	../libcolord/cd-enum.c				\
+	../libcolord/cd-color.c				\
 	cd-main.c
 
 colord_LDADD =						\
