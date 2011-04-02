@@ -3,3 +3,5 @@ colord
 *.o
 cd-self-test
 cd-parse-beagle
+cd-huey-parse
+cd-huey-dump-values

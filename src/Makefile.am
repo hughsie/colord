@@ -123,6 +123,8 @@ cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
 if CD_BUILD_REVERSE
 
 noinst_PROGRAMS =					\
+	cd-huey-parse					\
+	cd-huey-dump-values				\
 	cd-parse-beagle
 
 cd_parse_beagle_SOURCES =				\
@@ -133,10 +135,34 @@ cd_parse_beagle_SOURCES =				\
 	../libcolord/cd-enum.c				\
 	cd-parse-beagle.c
 
-cd_parse_beagle_LDADD =				\
+cd_parse_beagle_LDADD =					\
 	$(GLIB_LIBS)
 
 cd_parse_beagle_CFLAGS =				\
+	$(WARNINGFLAGS_C)
+
+cd_huey_parse_SOURCES =					\
+	cd-sensor-huey-private.c			\
+	cd-sensor-huey-private.h			\
+	cd-huey-parse.c
+
+cd_huey_parse_LDADD =					\
+	$(COLORD_LIBS)					\
+	$(GLIB_LIBS)
+
+cd_huey_parse_CFLAGS =					\
+	$(WARNINGFLAGS_C)
+
+cd_huey_dump_values_SOURCES =				\
+	cd-buffer.c					\
+	cd-buffer.h					\
+	cd-huey-dump-values.c
+
+cd_huey_dump_values_LDADD =				\
+	$(COLORD_LIBS)					\
+	$(GLIB_LIBS)
+
+cd_huey_dump_values_CFLAGS =				\
 	$(WARNINGFLAGS_C)
 
 endif
