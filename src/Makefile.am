@@ -128,6 +128,7 @@ if CD_BUILD_REVERSE
 noinst_PROGRAMS =					\
 	cd-huey-parse					\
 	cd-huey-dump-values				\
+	cd-sensor-dump					\
 	cd-parse-beagle
 
 cd_parse_beagle_SOURCES =				\
@@ -166,6 +167,33 @@ cd_huey_dump_values_LDADD =				\
 	$(GLIB_LIBS)
 
 cd_huey_dump_values_CFLAGS =				\
+	$(WARNINGFLAGS_C)
+
+cd_sensor_dump_SOURCES =				\
+	cd-buffer.c					\
+	cd-buffer.h					\
+	cd-common.c					\
+	cd-common.h					\
+	cd-math.c					\
+	cd-math.h					\
+	cd-sensor.c					\
+	cd-sensor.h					\
+	cd-sensor-huey.c				\
+	cd-usb.c					\
+	cd-usb.h					\
+	../libcolord/cd-enum.c				\
+	../libcolord/cd-color.c				\
+	cd-sensor-dump.c
+
+cd_sensor_dump_LDADD =					\
+	$(POLKIT_LIBS)					\
+	$(GLIB_LIBS)					\
+	$(LCMS_LIBS)					\
+	$(USB_LIBS)					\
+	$(GUDEV_LIBS)					\
+	-lm
+
+cd_sensor_dump_CFLAGS =				\
 	$(WARNINGFLAGS_C)
 
 endif
