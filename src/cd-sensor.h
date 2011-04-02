@@ -28,6 +28,7 @@
 
 #include "cd-common.h"
 #include "cd-enum.h"
+#include "cd-color.h"
 
 G_BEGIN_DECLS
 
@@ -43,10 +44,8 @@ typedef struct _CdSensor	CdSensor;
 typedef struct _CdSensorClass	CdSensorClass;
 
 typedef struct {
-	gdouble	 X;
-	gdouble	 Y;
-	gdouble	 Z;
-	gdouble	 luminance;
+	CdColorXYZ	 value;
+	gdouble		 luminance;
 } CdSensorSample;
 
 struct _CdSensor

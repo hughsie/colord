@@ -61,9 +61,9 @@ static void
 cd_sensor_copy_sample (const CdSensorSample *source,
 		       CdSensorSample *result)
 {
-	result->X = source->X;
-	result->Y = source->Y;
-	result->Z = source->Z;
+	result->value.X = source->value.X;
+	result->value.Y = source->value.Y;
+	result->value.Z = source->value.Z;
 	result->luminance = source->luminance;
 }
 
@@ -104,9 +104,9 @@ static gboolean
 cd_sensor_dummy_get_ambient_wait_cb (CdSensorAsyncState *state)
 {
 	state->ret = TRUE;
-	state->sample->X = CD_SENSOR_NO_VALUE;
-	state->sample->Y = CD_SENSOR_NO_VALUE;
-	state->sample->Z = CD_SENSOR_NO_VALUE;
+	state->sample->value.X = CD_SENSOR_NO_VALUE;
+	state->sample->value.Y = CD_SENSOR_NO_VALUE;
+	state->sample->value.Z = CD_SENSOR_NO_VALUE;
 	state->sample->luminance = 7.7f;
 
 	/* just return without a problem */
@@ -121,9 +121,9 @@ static gboolean
 cd_sensor_dummy_get_sample_wait_cb (CdSensorAsyncState *state)
 {
 	state->ret = TRUE;
-	state->sample->X = 0.1;
-	state->sample->Y = 0.2;
-	state->sample->Z = 0.3;
+	state->sample->value.X = 0.1;
+	state->sample->value.Y = 0.2;
+	state->sample->value.Z = 0.3;
 	state->sample->luminance = CD_SENSOR_NO_VALUE;
 
 	/* emulate */

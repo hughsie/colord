@@ -338,9 +338,9 @@ cd_sensor_get_sample_cb (GObject *source_object,
 
 	/* return value */
 	result = g_variant_new ("((ddd)d)",
-				sample.X,
-				sample.Y,
-				sample.Z,
+				sample.value.X,
+				sample.value.Y,
+				sample.value.Z,
 				sample.luminance);
 	g_dbus_method_invocation_return_value (invocation, result);
 out:
