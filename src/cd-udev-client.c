@@ -120,12 +120,16 @@ cd_udev_client_device_add (CdUdevClient *udev_client,
 	/* replace underscores with spaces */
 	model = g_strdup (g_udev_device_get_property (udev_device,
 						      "ID_MODEL"));
+	if (model != NULL) {
+		g_strdelimit (model, "_\r\n", ' ');
+		g_strchomp (model);
+	}
 	vendor = g_strdup (g_udev_device_get_property (udev_device,
 						       "ID_VENDOR"));
-	g_strdelimit (model, "_\r\n", ' ');
-	g_strdelimit (vendor, "_\r\n", ' ');
-	g_strchomp (model);
-	g_strchomp (vendor);
+	if (vendor != NULL) {
+		g_strdelimit (vendor, "_\r\n", ' ');
+		g_strchomp (vendor);
+	}
 
 	/* create new device */
 	id = cd_client_get_id_for_udev_device (udev_device);
@@ -136,16 +140,20 @@ cd_udev_client_device_add (CdUdevClient *udev_client,
 					 "camera",
 					 FALSE,
 					 NULL);
-	cd_device_set_property_internal (device,
-					 "Model",
-					 model,
-					 FALSE,
-					 NULL);
-	cd_device_set_property_internal (device,
-					 "Vendor",
-					 vendor,
-					 FALSE,
-					 NULL);
+	if (model != NULL) {
+		cd_device_set_property_internal (device,
+						 "Model",
+						 model,
+						 FALSE,
+						 NULL);
+	}
+	if (vendor != NULL) {
+		cd_device_set_property_internal (device,
+						 "Vendor",
+						 vendor,
+						 FALSE,
+						 NULL);
+	}
 	cd_device_set_property_internal (device,
 					 "Colorspace",
 					 "rgb",
