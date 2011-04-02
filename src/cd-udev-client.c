@@ -208,6 +208,7 @@ cd_udev_client_sensor_add (CdUdevClient *udev_client,
 	CdSensorKind kind;
 	const gchar *kind_str;
 	const gchar *device_file;
+	GError *error = NULL;
 
 	/* interesting device? */
 	ret = g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR");
@@ -231,9 +232,13 @@ cd_udev_client_sensor_add (CdUdevClient *udev_client,
 	g_debug ("adding color management device: %s [%s]",
 		 g_udev_device_get_sysfs_path (device),
 		 device_file);
-	ret = cd_sensor_set_from_device (sensor, device, NULL);
-	if (!ret)
+	ret = cd_sensor_set_from_device (sensor, device, &error);
+	if (!ret) {
+		g_warning ("failed to set CM sensor: %s",
+			   error->message);
+		g_error_free (error);
 		goto out;
+	}
 
 	/* signal the addition */
 	g_debug ("emit: added");
@@ -254,20 +259,38 @@ static gboolean
 cd_udev_client_sensor_remove (CdUdevClient *udev_client,
 			      GUdevDevice *device)
 {
+	CdSensor *sensor;
+	const gchar *device_file;
+	const gchar *id;
 	gboolean ret;
+	guint i;
 
 	/* interesting device? */
-	ret = g_udev_device_get_property_as_boolean (device, "CD_SENSOR_CLIENT");
+	ret = g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR");
 	if (!ret)
+		goto out;
+
+	/* actual device? */
+	device_file = g_udev_device_get_device_file (device);
+	if (device_file == NULL)
 		goto out;
 
 	/* get data */
 	g_debug ("removing color management device: %s",
 		 g_udev_device_get_sysfs_path (device));
+	id = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
+	for (i=0; i<udev_client->priv->array_sensors->len; i++) {
+		sensor = g_ptr_array_index (udev_client->priv->array_sensors, i);
+		if (g_strcmp0 (cd_sensor_get_id (sensor), id) == 0) {
+			g_debug ("emit: removed");
+			g_signal_emit (udev_client, signals[SIGNAL_SENSOR_REMOVED], 0, sensor);
+			g_ptr_array_remove_index_fast (udev_client->priv->array_sensors, i);
+			goto out;
+		}
+	}
 
-	/* FIXME: signal the removal */
-//	g_debug ("emit: removed");
-//	g_signal_emit (udev_client, signals[SIGNAL_SENSOR_REMOVED], 0, NULL);
+	/* nothing found */
+	g_warning ("removed CM sensor that was never added");
 out:
 	return ret;
 }
