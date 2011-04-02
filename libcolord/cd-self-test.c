@@ -23,12 +23,14 @@
 
 #include <limits.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <glib.h>
 #include <glib-object.h>
 
 #include "cd-client.h"
 #include "cd-sensor.h"
+#include "cd-color.h"
 
 /** ver:1.0 ***********************************************************/
 static GMainLoop *_test_loop = NULL;
@@ -726,6 +728,29 @@ colord_sensor_func (void)
 	g_object_unref (client);
 }
 
+static void
+colord_color_func (void)
+{
+	CdColorXYZ *xyz;
+	CdColorYxy yxy;
+
+	xyz = cd_color_xyz_new ();
+	g_assert (xyz != NULL);
+
+	/* nothing set */
+	cd_color_convert_xyz_to_yxy (xyz, &yxy);
+	g_assert_cmpfloat (fabs (yxy.x - 0.0f), <, 0.001f);
+
+	/* set dummy values */
+	cd_color_set_xyz (xyz, 0.125, 0.25, 0.5);
+	cd_color_convert_xyz_to_yxy (xyz, &yxy);
+
+	g_assert_cmpfloat (fabs (yxy.x - 0.142857143f), <, 0.001f);
+	g_assert_cmpfloat (fabs (yxy.y - 0.285714286f), <, 0.001f);
+
+	cd_color_xyz_free (xyz);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -737,6 +762,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/client", colord_client_func);
 	return g_test_run ();

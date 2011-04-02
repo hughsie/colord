@@ -35,6 +35,7 @@
 #define __COLORD_H_INSIDE__
 
 #include <libcolord/cd-client.h>
+#include <libcolord/cd-color.h>
 #include <libcolord/cd-device.h>
 #include <libcolord/cd-enum.h>
 #include <libcolord/cd-profile.h>
