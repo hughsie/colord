@@ -663,7 +663,7 @@ colord_sensor_func (void)
 	gboolean ret;
 	GError *error = NULL;
 	GPtrArray *array;
-	gdouble values[3] = { -2.0f, -2.0f, -2.0f };
+	CdColorXYZ values;
 	gdouble ambient = -2.0f;
 
 	client = cd_client_new ();
@@ -701,10 +701,15 @@ colord_sensor_func (void)
 			  G_CALLBACK (colord_sensor_state_notify_cb),
 			  NULL);
 
+	/* set to some dummy values */
+	values.X = -2.0f;
+	values.Y = -2.0f;
+	values.Z = -2.0f;
+
 	/* get a sample sync */
 	ret = cd_sensor_get_sample_sync (sensor,
 					 CD_SENSOR_CAP_DISPLAY,
-					 (gdouble **) &values,
+					 &values,
 					 &ambient,
 					 NULL,
 					 &error);
@@ -715,12 +720,12 @@ colord_sensor_func (void)
 	_g_test_loop_run_with_timeout (5);
 	g_assert_cmpint (_refcount, ==, 2);
 
-	g_assert_cmpfloat (values[0] - 0.1f, >, -0.01);
-	g_assert_cmpfloat (values[0] - 0.1f, <, 0.01);
-	g_assert_cmpfloat (values[1] - 0.2f, >, -0.01);
-	g_assert_cmpfloat (values[1] - 0.2f, <, 0.01);
-	g_assert_cmpfloat (values[2] - 0.3f, >, -0.01);
-	g_assert_cmpfloat (values[2] - 0.3f, <, 0.01);
+	g_assert_cmpfloat (values.X - 0.1f, >, -0.01);
+	g_assert_cmpfloat (values.X - 0.1f, <, 0.01);
+	g_assert_cmpfloat (values.Y - 0.2f, >, -0.01);
+	g_assert_cmpfloat (values.Y - 0.2f, <, 0.01);
+	g_assert_cmpfloat (values.Z - 0.3f, >, -0.01);
+	g_assert_cmpfloat (values.Z - 0.3f, <, 0.01);
 	g_assert_cmpfloat (ambient + 1.0f, >, -0.01);
 	g_assert_cmpfloat (ambient + 1.0f, <, 0.01);
 

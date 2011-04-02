@@ -522,7 +522,7 @@ out:
 gboolean
 cd_sensor_get_sample_sync (CdSensor *sensor,
 			   CdSensorCap cap,
-			   gdouble **values,
+			   CdColorXYZ *values,
 			   gdouble *ambient,
 			   GCancellable *cancellable,
 			   GError **error)
@@ -555,9 +555,9 @@ cd_sensor_get_sample_sync (CdSensor *sensor,
 	/* get the values */
 	g_variant_get (response,
 		       "((ddd)d)",
-		       &values[0],
-		       &values[1],
-		       &values[2],
+		       &values->X,
+		       &values->Y,
+		       &values->Z,
 		       ambient);
 out:
 	if (response != NULL)

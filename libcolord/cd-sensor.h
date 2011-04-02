@@ -30,6 +30,7 @@
 #include <gio/gio.h>
 
 #include <libcolord/cd-enum.h>
+#include <libcolord/cd-color.h>
 
 G_BEGIN_DECLS
 
@@ -94,7 +95,7 @@ gboolean	 cd_sensor_unlock_sync			(CdSensor	*sensor,
 							 GError		**error);
 gboolean	 cd_sensor_get_sample_sync		(CdSensor	*sensor,
 							 CdSensorCap	 cap,
-							 gdouble	**values,
+							 CdColorXYZ	*values,
 							 gdouble	*ambient,
 							 GCancellable	*cancellable,
 							 GError		**error);
