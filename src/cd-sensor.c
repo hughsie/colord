@@ -587,9 +587,13 @@ cd_sensor_set_from_device (CdSensor *sensor,
 
 	/* get caps */
 	ret = g_udev_device_get_property_as_boolean (device,
-						     "COLORD_SENSOR_CAP_DISPLAY");
+						     "COLORD_SENSOR_CAP_LCD");
 	if (ret)
-		priv->caps[idx++] = g_strdup ("display");
+		priv->caps[idx++] = g_strdup ("lcd");
+	ret = g_udev_device_get_property_as_boolean (device,
+						     "COLORD_SENSOR_CAP_CRT");
+	if (ret)
+		priv->caps[idx++] = g_strdup ("crt");
 	ret = g_udev_device_get_property_as_boolean (device,
 						     "COLORD_SENSOR_CAP_PROJECTOR");
 	if (ret)
@@ -602,6 +606,10 @@ cd_sensor_set_from_device (CdSensor *sensor,
 						     "COLORD_SENSOR_CAP_SPOT");
 	if (ret)
 		priv->caps[idx++] = g_strdup ("spot");
+	ret = g_udev_device_get_property_as_boolean (device,
+						     "COLORD_SENSOR_CAP_AMBIENT");
+	if (ret)
+		priv->caps[idx++] = g_strdup ("ambient");
 	priv->caps[idx] = NULL;
 
 	return TRUE;

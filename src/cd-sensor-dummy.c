@@ -158,7 +158,9 @@ cd_sensor_dummy_get_sample_async (CdSensor *sensor,
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
 
 	/* just complete in idle */
-	if (cap == CD_SENSOR_CAP_DISPLAY)
+	if (cap == CD_SENSOR_CAP_LCD ||
+	    cap == CD_SENSOR_CAP_CRT ||
+	    cap == CD_SENSOR_CAP_PROJECTOR)
 		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_dummy_get_sample_wait_cb, state);
 	else
 		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_dummy_get_ambient_wait_cb, state);
@@ -228,7 +230,13 @@ CdSensor *
 cd_sensor_dummy_new (void)
 {
 	CdSensorDummy *sensor;
-	const gchar *caps[] = { "display", "projector", "spot", "printer", NULL };
+	const gchar *caps[] = { "lcd",
+				"crt",
+				"projector",
+				"spot",
+				"printer",
+				"ambient",
+				NULL };
 	sensor = g_object_new (CD_TYPE_SENSOR_DUMMY,
 			       "id", "dummy",
 			       "kind", CD_SENSOR_KIND_DUMMY,

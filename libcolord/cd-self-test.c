@@ -683,7 +683,7 @@ colord_sensor_func (void)
 	g_assert_cmpstr (cd_sensor_get_vendor (sensor), ==, "Acme Corp");
 	g_assert_cmpstr (cd_sensor_get_model (sensor), ==, "Dummy Sensor #1");
 	g_assert_cmpstr (cd_sensor_get_object_path (sensor), ==, "/org/freedesktop/ColorManager/sensors/dummy");
-	g_assert_cmpint (cd_sensor_get_caps (sensor), ==, 30);
+	g_assert_cmpint (cd_sensor_get_caps (sensor), ==, 126);
 	g_assert (cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PROJECTOR));
 
 #if 0
@@ -708,7 +708,7 @@ colord_sensor_func (void)
 
 	/* get a sample sync */
 	ret = cd_sensor_get_sample_sync (sensor,
-					 CD_SENSOR_CAP_DISPLAY,
+					 CD_SENSOR_CAP_LCD,
 					 &values,
 					 &ambient,
 					 NULL,

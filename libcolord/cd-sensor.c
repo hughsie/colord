@@ -220,7 +220,7 @@ cd_sensor_get_caps (CdSensor *sensor)
 /**
  * cd_sensor_get_caps_item:
  * @sensor: a #CdSensor instance.
- * @cap: a specified capability, e.g. %CD_SENSOR_CAP_DISPLAY
+ * @cap: a specified capability, e.g. %CD_SENSOR_CAP_LCD
  *
  * Returns the sensor metadata for a specific key.
  *

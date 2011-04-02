@@ -255,10 +255,15 @@ cd_util_show_sensor (CdSensor *sensor)
 		 _("Native"),
 		 cd_sensor_get_native (sensor) ? "Yes" : "No");
 
-	/* TRANSLATORS: if the sensor supports calibrating a display */
+	/* TRANSLATORS: if the sensor supports calibrating an LCD display */
 	g_print ("%s:\t%s\n",
-		 _("Display"),
-		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_DISPLAY) ? "Yes" : "No");
+		 _("LCD"),
+		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_LCD) ? "Yes" : "No");
+
+	/* TRANSLATORS: if the sensor supports calibrating a CRT display */
+	g_print ("%s:\t%s\n",
+		 _("CRT"),
+		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_CRT) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor supports calibrating a printer */
 	g_print ("%s:\t%s\n",
@@ -274,6 +279,11 @@ cd_util_show_sensor (CdSensor *sensor)
 	g_print ("%s:\t%s\n",
 		 _("Projector"),
 		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PROJECTOR) ? "Yes" : "No");
+
+	/* TRANSLATORS: if the sensor supports getting the ambient light level */
+	g_print ("%s:\t%s\n",
+		 _("Ambient"),
+		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_AMBIENT) ? "Yes" : "No");
 }
 
 /**

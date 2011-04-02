@@ -444,14 +444,18 @@ cd_sensor_state_from_string (const gchar *sensor_state)
 const gchar *
 cd_sensor_cap_to_string (CdSensorCap sensor_cap)
 {
-	if (sensor_cap == CD_SENSOR_CAP_DISPLAY)
-		return "display";
+	if (sensor_cap == CD_SENSOR_CAP_LCD)
+		return "lcd";
+	if (sensor_cap == CD_SENSOR_CAP_CRT)
+		return "crt";
 	if (sensor_cap == CD_SENSOR_CAP_PRINTER)
 		return "printer";
 	if (sensor_cap == CD_SENSOR_CAP_PROJECTOR)
 		return "projector";
 	if (sensor_cap == CD_SENSOR_CAP_SPOT)
 		return "spot";
+	if (sensor_cap == CD_SENSOR_CAP_AMBIENT)
+		return "ambient";
 	return "unknown";
 }
 
@@ -466,13 +470,17 @@ cd_sensor_cap_to_string (CdSensorCap sensor_cap)
 CdSensorCap
 cd_sensor_cap_from_string (const gchar *sensor_cap)
 {
-	if (g_strcmp0 (sensor_cap, "display") == 0)
-		return CD_SENSOR_CAP_DISPLAY;
+	if (g_strcmp0 (sensor_cap, "lcd") == 0)
+		return CD_SENSOR_CAP_LCD;
+	if (g_strcmp0 (sensor_cap, "crt") == 0)
+		return CD_SENSOR_CAP_CRT;
 	if (g_strcmp0 (sensor_cap, "printer") == 0)
 		return CD_SENSOR_CAP_PRINTER;
 	if (g_strcmp0 (sensor_cap, "projector") == 0)
 		return CD_SENSOR_CAP_PROJECTOR;
 	if (g_strcmp0 (sensor_cap, "spot") == 0)
 		return CD_SENSOR_CAP_SPOT;
+	if (g_strcmp0 (sensor_cap, "ambient") == 0)
+		return CD_SENSOR_CAP_AMBIENT;
 	return CD_SENSOR_CAP_UNKNOWN;
 }
