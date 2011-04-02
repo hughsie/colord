@@ -123,6 +123,8 @@ gboolean	 cd_sensor_get_sample_finish	(CdSensor		*sensor,
 						 GAsyncResult		*res,
 						 CdSensorSample		*sample,
 						 GError			**error);
+void		 cd_sensor_copy_sample		(const CdSensorSample	*source,
+						 CdSensorSample		*result);
 
 G_END_DECLS
 

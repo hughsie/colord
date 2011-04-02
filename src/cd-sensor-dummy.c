@@ -55,19 +55,6 @@ typedef struct {
 } CdSensorAsyncState;
 
 /**
- * cd_sensor_copy_sample:
- **/
-static void
-cd_sensor_copy_sample (const CdSensorSample *source,
-		       CdSensorSample *result)
-{
-	result->value.X = source->value.X;
-	result->value.Y = source->value.Y;
-	result->value.Z = source->value.Z;
-	result->luminance = source->luminance;
-}
-
-/**
  * cd_sensor_dummy_get_sample_state_finish:
  **/
 static void

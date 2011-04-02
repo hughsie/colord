@@ -68,6 +68,19 @@ enum {
 G_DEFINE_TYPE (CdSensor, cd_sensor, G_TYPE_OBJECT)
 
 /**
+ * cd_sensor_copy_sample:
+ **/
+void
+cd_sensor_copy_sample (const CdSensorSample *source,
+		       CdSensorSample *result)
+{
+	result->value.X = source->value.X;
+	result->value.Y = source->value.Y;
+	result->value.Z = source->value.Z;
+	result->luminance = source->luminance;
+}
+
+/**
  * cd_sensor_get_object_path:
  **/
 const gchar *
