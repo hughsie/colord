@@ -2,3 +2,4 @@ colord
 .deps
 *.o
 cd-self-test
+cd-parse-beagle

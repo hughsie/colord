@@ -120,6 +120,27 @@ cd_self_test_LDADD =					\
 
 cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
 
+if CD_BUILD_REVERSE
+
+noinst_PROGRAMS =					\
+	cd-parse-beagle
+
+cd_parse_beagle_SOURCES =				\
+	cd-sensor-colormunki-private.c			\
+	cd-sensor-colormunki-private.h			\
+	cd-sensor-huey-private.c			\
+	cd-sensor-huey-private.h			\
+	../libcolord/cd-enum.c				\
+	cd-parse-beagle.c
+
+cd_parse_beagle_LDADD =				\
+	$(GLIB_LIBS)
+
+cd_parse_beagle_CFLAGS =				\
+	$(WARNINGFLAGS_C)
+
+endif
+
 install-data-hook:
 	if test -w $(DESTDIR)$(prefix)/; then \
 		mkdir -p $(DESTDIR)$(CD_SYSTEM_PROFILES_DIR); \
