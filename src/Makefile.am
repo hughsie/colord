@@ -58,6 +58,8 @@ colord_SOURCES =					\
 	cd-sensor.c					\
 	cd-sensor-dummy.c				\
 	cd-sensor-dummy.h				\
+	cd-sensor-huey-private.c			\
+	cd-sensor-huey-private.h			\
 	cd-sensor.h					\
 	cd-udev-client.c				\
 	cd-udev-client.h				\
