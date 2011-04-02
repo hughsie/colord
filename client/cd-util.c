@@ -543,6 +543,79 @@ out:
 }
 
 /**
+ * cd_util_get_sensor_reading:
+ **/
+static gboolean
+cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdColorXYZ xyz;
+	CdSensorCap cap;
+	CdSensor *sensor;
+	gboolean ret = TRUE;
+	gdouble ambient;
+	GPtrArray *array = NULL;
+	guint i;
+
+	if (g_strv_length (values) < 1) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     1, 0,
+				     "Not enough arguments, "
+				     "expected device type "
+				     "e.g. 'lcd'");
+		goto out;
+	}
+
+	/* execute sync method */
+	array = cd_client_get_sensors_sync (priv->client, NULL, error);
+	if (array == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	if (array->len == 0) {
+		ret = FALSE;
+		/* TRANSLATORS: the user does not have a colorimeter attached */
+		g_set_error_literal (error, 1, 0,
+				     _("There are no supported sensors attached"));
+		goto out;
+	}
+	cap = cd_sensor_cap_from_string (values[0]);
+	for (i=0; i < array->len; i++) {
+		sensor = g_ptr_array_index (array, i);
+
+		/* get a sample sync */
+		ret = cd_sensor_get_sample_sync (sensor,
+						 cap,
+						 &xyz,
+						 &ambient,
+						 NULL,
+						 error);
+		if (!ret)
+			goto out;
+
+		/* TRANSLATORS: this is the sensor title */
+		g_print ("%s: %s - %s\n",
+			 _("Sensor"),
+			 cd_sensor_get_vendor (sensor),
+			 cd_sensor_get_model (sensor));
+
+		/* TRANSLATORS: this is the ambient light level in Lux */
+		g_print ("%s: %f Lux\n",
+			 _("Ambient"),
+			 ambient);
+
+		/* TRANSLATORS: this is the XYZ color value */
+		g_print ("%s XYZ : %f, %f, %f\n",
+			 _("Color"),
+			 xyz.X, xyz.Y, xyz.Z);
+	}
+out:
+	if (array != NULL)
+		g_ptr_array_unref (array);
+	return ret;
+}
+
+/**
  * cd_util_create_device:
  **/
 static gboolean
@@ -1175,6 +1248,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Gets all the available color sensors"),
 		     cd_util_get_sensors);
+	cd_util_add (priv->cmd_array,
+		     "get-sensor-reading",
+		     /* TRANSLATORS: command description */
+		     _("Gets a reading from a sensor"),
+		     cd_util_get_sensor_reading);
 	cd_util_add (priv->cmd_array,
 		     "create-device",
 		     /* TRANSLATORS: command description */
