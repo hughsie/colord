@@ -48,6 +48,7 @@ struct _CdSensorPrivate
 	gboolean			 locked;
 	gchar				**caps;
 	gchar				*object_path;
+	guint				 watcher_id;
 	GDBusConnection			*connection;
 	guint				 registration_id;
 };
@@ -387,6 +388,59 @@ out:
 }
 
 /**
+ * cd_sensor_unlock_quietly_cb:
+ **/
+static void
+cd_sensor_unlock_quietly_cb (GObject *source_object,
+			     GAsyncResult *res,
+			     gpointer user_data)
+{
+	CdSensor *sensor = CD_SENSOR (source_object);
+	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
+	gboolean ret;
+	GError *error = NULL;
+
+	/* get the result */
+	ret = klass->unlock_finish (sensor, res, &error);
+	if (!ret) {
+		g_warning ("failed to unlock: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+	cd_sensor_set_locked (sensor, FALSE);
+out:
+	return;
+}
+
+/**
+ * cd_sensor_name_vanished_cb:
+ **/
+static void
+cd_sensor_name_vanished_cb (GDBusConnection *connection,
+			     const gchar *name,
+			     gpointer user_data)
+{
+	CdSensor *sensor = CD_SENSOR (user_data);
+	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
+
+	/* dummy */
+	g_debug ("locked sender has vanished without doing Unlock()!");
+	if (klass->unlock_async == NULL) {
+		cd_sensor_set_locked (sensor, FALSE);
+		goto out;
+	}
+
+	/* no longer valid */
+	klass->unlock_async (sensor,
+			     NULL,
+			     cd_sensor_unlock_quietly_cb,
+			     NULL);
+out:
+	sensor->priv->watcher_id = 0;
+}
+
+/**
  * cd_sensor_dbus_method_call:
  **/
 static void
@@ -398,9 +452,9 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	CdSensor *sensor = CD_SENSOR (user_data);
 	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
 	CdSensorPrivate *priv = sensor->priv;
+	CdSensorCap cap;
 	gboolean ret;
 	gchar *cap_tmp = NULL;
-	CdSensorCap cap;
 	GVariant *result = NULL;
 
 	/* return '' */
@@ -426,19 +480,28 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
-		/* no support */
-		if (klass->lock_async == NULL) {
-			cd_sensor_set_locked (sensor, TRUE);
-			g_dbus_method_invocation_return_value (invocation, NULL);
-			goto out;
-		}
-
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
 						    sender,
 						    "org.freedesktop.color-manager.sensor-lock");
 		if (!ret)
 			goto out;
+
+		/* watch this bus name */
+		priv->watcher_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
+						     sender,
+						     G_BUS_NAME_WATCHER_FLAGS_NONE,
+						     NULL,
+						     cd_sensor_name_vanished_cb,
+						     sensor,
+						     NULL);
+
+		/* no support */
+		if (klass->lock_async == NULL) {
+			cd_sensor_set_locked (sensor, TRUE);
+			g_dbus_method_invocation_return_value (invocation, NULL);
+			goto out;
+		}
 
 		/* proxy */
 		klass->lock_async (sensor,
@@ -470,19 +533,25 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
-		/* no support */
-		if (klass->unlock_async == NULL) {
-			cd_sensor_set_locked (sensor, FALSE);
-			g_dbus_method_invocation_return_value (invocation, NULL);
-			goto out;
-		}
-
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
 						    sender,
 						    "org.freedesktop.color-manager.sensor-lock");
 		if (!ret)
 			goto out;
+
+		/* un-watch this bus name */
+		if (priv->watcher_id != 0) {
+			g_bus_unwatch_name (priv->watcher_id);
+			priv->watcher_id = 0;
+		}
+
+		/* no support */
+		if (klass->unlock_async == NULL) {
+			cd_sensor_set_locked (sensor, FALSE);
+			g_dbus_method_invocation_return_value (invocation, NULL);
+			goto out;
+		}
 
 		/* proxy */
 		klass->unlock_async (sensor,
