@@ -1352,8 +1352,28 @@ cd_main_client_sensor_removed_cb (CdUdevClient *udev_client_,
 				  CdSensor *sensor,
 				  gpointer user_data)
 {
-	g_debug ("CdMain: remove sensor: %s",
-		 cd_sensor_get_id (sensor));
+	GError *error = NULL;
+	gboolean ret;
+
+	/* emit signal */
+	g_debug ("CdMain: Emitting SensorRemoved(%s)",
+		 cd_sensor_get_object_path (sensor));
+	ret = g_dbus_connection_emit_signal (connection,
+					     NULL,
+					     COLORD_DBUS_PATH,
+					     COLORD_DBUS_INTERFACE,
+					     "SensorRemoved",
+					     g_variant_new ("(o)",
+							    cd_sensor_get_object_path (sensor)),
+					     &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to emit SensorRemoved: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	g_ptr_array_remove (sensors, sensor);
 }
 
 /**

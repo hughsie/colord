@@ -245,7 +245,7 @@ cd_udev_client_sensor_add (CdUdevClient *udev_client,
 	g_signal_emit (udev_client, signals[SIGNAL_SENSOR_ADDED], 0, sensor);
 
 	/* keep track so we can remove with the same device */
-	g_ptr_array_add (udev_client->priv->array_sensors, sensor);
+	g_ptr_array_add (udev_client->priv->array_sensors, g_object_ref (sensor));
 out:
 	if (sensor != NULL)
 		g_object_unref (sensor);
