@@ -196,6 +196,17 @@ cd_util_show_device (CdDevice *device)
 }
 
 /**
+ * cd_util_idle_loop_quit_cb:
+ **/
+static gboolean
+cd_util_idle_loop_quit_cb (gpointer user_data)
+{
+	GMainLoop *loop = (GMainLoop *) user_data;
+	g_main_loop_quit (loop);
+	return FALSE;
+}
+
+/**
  * cd_util_show_sensor:
  **/
 static void
@@ -204,11 +215,30 @@ cd_util_show_sensor (CdSensor *sensor)
 	CdSensorKind kind;
 	CdSensorState state;
 	const gchar *tmp;
+	gboolean ret;
+	GError *error = NULL;
+	GMainLoop *loop = NULL;
 
 	/* TRANSLATORS: the internal DBus path */
 	g_print ("%s:\t%s\n",
 		 _("Object Path"),
 		 cd_sensor_get_object_path (sensor));
+
+	/* lock */
+	ret = cd_sensor_lock_sync (sensor,
+				   NULL,
+				   &error);
+	if (!ret) {
+		g_warning ("Failed to lock sensor: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* wait for updates */
+	loop = g_main_loop_new (NULL, FALSE);
+	g_idle_add (cd_util_idle_loop_quit_cb, loop);
+	g_main_loop_run (loop);
 
 	kind = cd_sensor_get_kind (sensor);
 	if (kind != CD_SENSOR_KIND_UNKNOWN) {
@@ -289,6 +319,20 @@ cd_util_show_sensor (CdSensor *sensor)
 	g_print ("%s:\t%s\n",
 		 _("Ambient"),
 		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_AMBIENT) ? "Yes" : "No");
+
+	/* unlock */
+	ret = cd_sensor_unlock_sync (sensor,
+				     NULL,
+				     &error);
+	if (!ret) {
+		g_warning ("Failed to unlock sensor: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	if (loop != NULL)
+		g_main_loop_unref (loop);
 }
 
 /**
