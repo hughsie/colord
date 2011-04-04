@@ -13,8 +13,11 @@
    height="744.09448"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.0 r9654"
-   sodipodi:docname="architecture-plan.svg">
+   inkscape:version="0.48.1 r9760"
+   sodipodi:docname="architecture-plan.svg"
+   inkscape:export-filename="/home/hughsie/Code/gnome3/colord/doc/website/img/architecture-plan.png"
+   inkscape:export-xdpi="59.99197"
+   inkscape:export-ydpi="59.99197">
   <defs
      id="defs4">
     <marker
@@ -133,18 +136,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="550.68525"
-     inkscape:cy="399.86546"
+     inkscape:zoom="0.7"
+     inkscape:cx="523.62793"
+     inkscape:cy="478.24202"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="973"
-     inkscape:window-x="1050"
-     inkscape:window-y="642"
+     inkscape:window-width="1200"
+     inkscape:window-height="1888"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -162,7 +165,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -318,9 +321,10 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#Arrow1Send)"
-       d="m 360,792.36218 100,0 0,-60"
+       d="m 360,792.36218 115,0 0,-60"
        id="path3843"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc" />
     <path
        style="fill:none;stroke:#000096;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Sstart);marker-end:url(#Arrow1Send)"
        d="m 360,892.36218 140,0 0,-160"
@@ -333,7 +337,7 @@
        inkscape:connector-curvature="0" />
     <path
        style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Sstart);marker-end:url(#Arrow1Send)"
-       d="m 720,792.36218 -100,0 0,-60"
+       d="m 720,792.36218 -110,0 0,-60"
        id="path3851"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
@@ -545,7 +549,7 @@
          sodipodi:role="line">ICC Profiles</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Sstart);marker-end:none"
-       d="m 540,732.36218 0,260 180,0"
+       d="m 550,732.36218 0,260 170,0"
        id="path3855-6"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
@@ -672,5 +676,43 @@
          x="660"
          id="tspan3914"
          sodipodi:role="line">$home</tspan></text>
+    <rect
+       ry="20"
+       y="972.36218"
+       x="180"
+       height="60"
+       width="180"
+       id="rect2993-5"
+       style="fill:#c8ffdf;fill-opacity:1;stroke:#000000;stroke-width:2.50000000000000000;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="270.64258"
+       y="1014.3622"
+       id="text3085"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3087"
+         x="270.64258"
+         y="1014.3622"
+         style="font-size:36px;text-align:center;text-anchor:middle">Sensors</tspan></text>
+    <path
+       sodipodi:nodetypes="ccc"
+       inkscape:connector-curvature="0"
+       id="path3097"
+       d="m 525,732.36218 0,260 -165,0"
+       style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Sstart);marker-end:none" />
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="370"
+       y="984.36218"
+       id="text3144"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3146"
+         x="370"
+         y="984.36218"
+         style="font-size:12px">libusb + driver</tspan></text>
   </g>
 </svg>
