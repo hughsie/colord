@@ -22,6 +22,7 @@
 <!--
 <li><a href="#xxx">xxx</a></li>
 -->
+<li><a href="#sensors">What is a native sensor?</a></li>
 <li><a href="#application">How would an application like Simple Scan use colord?</a></li>
 <li><a href="#qualifiers">What is a qualifier used for?</a></li>
 <li><a href="#daemon">How do system daemons add devices and profiles?</a></li>
@@ -126,6 +127,33 @@ a safe abstracted way.
 ccccccccccccccccccccccccccccccccccccccccccccccccccccc.
 </p>
 -->
+
+<hr/>
+<h3><a name="sensors">What is a native sensor?</a></h3>
+<p>
+A native sensor is a calibration device such as a colorimeter or
+photospectrometer that colord knows how to interface with.
+</p>
+<p>
+Many sensor makes and models are recognised, and are available to be used
+by programs such as <a href="http://www.argyllcms.com/">Argll CMS</a>.
+Only the <a href="http://www.pantone.co.uk/pages/products/product.aspx?pid=562">Pantone Huey</a>
+device is available for use in colord by default, as colord contains a
+native driver for this device.
+</p>
+<p>
+A native driver allows colord to lock the device, read a sample from the
+sensors (or from the ambient light sensor) and unlock the device.
+A native device allows client programs to get samples from the device
+trivially using either raw DBus or libcolord without relying on external
+programs.
+</p>
+<p>
+The author is also working on a Pantone ColorMunki native driver and
+other hardware can supported if it is sent to the developer, or if
+specifications can be obtained.
+Email me if you can help.
+</p>
 
 <hr/>
 <h3><a name="qualifiers">What is a qualifier used for?</a></h3>
