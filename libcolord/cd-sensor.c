@@ -585,7 +585,9 @@ out:
 /**
  * cd_sensor_get_sample_sync:
  * @sensor: a #CdSensor instance.
- * @value: The vendor.
+ * @cap: a %CdSensorCap, e.g. %CD_SENSOR_CAP_AMBIENT
+ * @values: the XYZ reading, or %NULL
+ * @ambient: the ambient light level in Lux, or %NULL
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
@@ -606,6 +608,8 @@ cd_sensor_get_sample_sync (CdSensor *sensor,
 	gboolean ret = TRUE;
 	GError *error_local = NULL;
 	GVariant *response = NULL;
+	CdColorXYZ values_tmp;
+	gdouble ambient_tmp;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
@@ -631,10 +635,14 @@ cd_sensor_get_sample_sync (CdSensor *sensor,
 	/* get the values */
 	g_variant_get (response,
 		       "((ddd)d)",
-		       &values->X,
-		       &values->Y,
-		       &values->Z,
-		       ambient);
+		       &values_tmp.X,
+		       &values_tmp.Y,
+		       &values_tmp.Z,
+		       &ambient_tmp);
+	if (values != NULL)
+		cd_color_copy_xyz (&values_tmp, values);
+	if (ambient != NULL)
+		*ambient = ambient_tmp;
 out:
 	if (response != NULL)
 		g_variant_unref (response);
