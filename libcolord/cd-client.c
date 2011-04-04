@@ -1804,7 +1804,7 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 							    NULL,
 							    &error);
 		if (sensor == NULL) {
-			g_warning ("failed to get cached device %s: %s",
+			g_warning ("failed to get cached sensor %s: %s",
 				   object_path_tmp, error->message);
 			g_error_free (error);
 			goto out;
@@ -1816,13 +1816,15 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 	} else if (g_strcmp0 (signal_name, "SensorRemoved") == 0) {
 		g_variant_get (parameters, "(o)", &object_path_tmp);
 
-		/* if the sensor isn't in the cache, we don't care
-		 * as the process isn't aware of it's existance */
-		sensor = cd_client_get_cache_sensor (client,
-						     object_path_tmp);
+		/* try to get from device cache, else create */
+		sensor = cd_client_get_cache_sensor_create (client,
+							    object_path_tmp,
+							    NULL,
+							    &error);
 		if (sensor == NULL) {
-			g_debug ("failed to get cached sensor %s",
-				 object_path_tmp);
+			g_warning ("failed to get cached sensor %s: %s",
+				   object_path_tmp, error->message);
+			g_error_free (error);
 			goto out;
 		}
 		g_debug ("CdClient: emit '%s' on %s",
