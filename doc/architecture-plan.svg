@@ -454,19 +454,14 @@
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:100%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
        x="710"
-       y="576.36218"
+       y="590.36218"
        id="text5667"
        sodipodi:linespacing="100%"><tspan
          sodipodi:role="line"
-         id="tspan5669"
          x="710"
-         y="576.36218"
-         style="font-size:24px;text-align:center;line-height:100%;text-anchor:middle">gnome-</tspan><tspan
-         sodipodi:role="line"
-         x="710"
-         y="600.36218"
+         y="590.36218"
          style="font-size:24px;text-align:center;line-height:100%;text-anchor:middle"
-         id="tspan7609">control-center</tspan></text>
+         id="tspan7609">gcm-prefs</tspan></text>
     <path
        style="fill:none;stroke:#000096;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Sstart-5);marker-end:url(#Arrow1Send-7);fill-opacity:1"
        d="m 620,592.36218 -40,0 0,80"
