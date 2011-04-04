@@ -473,6 +473,11 @@ cd_usb_disconnect (CdUsb *usb,
 	libusb_close (priv->handle);
 	priv->handle = NULL;
 
+	/* disconnect the event source */
+	libusb_set_pollfd_notifiers (usb->priv->ctx,
+				     NULL, NULL, NULL);
+	cd_libusb_pollfd_remove_all (usb);
+
 	/* success */
 	ret = TRUE;
 out:
