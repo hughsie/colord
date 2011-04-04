@@ -80,6 +80,17 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Locked' type='b' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            If the sensor is locked for use by colord.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Capabilities' type='as' access='read'>
       <doc:doc>
         <doc:description>

@@ -679,6 +679,7 @@ colord_sensor_func (void)
 	sensor = g_ptr_array_index (array, 0);
 	g_assert_cmpint (cd_sensor_get_kind (sensor), ==, CD_SENSOR_KIND_DUMMY);
 	g_assert_cmpint (cd_sensor_get_state (sensor), ==, CD_SENSOR_STATE_UNKNOWN);
+	g_assert (!cd_sensor_get_locked (sensor));
 	g_assert_cmpstr (cd_sensor_get_serial (sensor), ==, "0123456789a");
 	g_assert_cmpstr (cd_sensor_get_vendor (sensor), ==, "Acme Corp");
 	g_assert_cmpstr (cd_sensor_get_model (sensor), ==, "Dummy Sensor #1");
@@ -700,6 +701,27 @@ colord_sensor_func (void)
 			  "notify::state",
 			  G_CALLBACK (colord_sensor_state_notify_cb),
 			  NULL);
+
+	/* lock */
+	ret = cd_sensor_lock_sync (sensor,
+				   NULL,
+				   &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	_g_test_loop_run_with_timeout (5);
+	g_assert (cd_sensor_get_locked (sensor));
+
+	/* lock again */
+	ret = cd_sensor_lock_sync (sensor,
+				   NULL,
+				   &error);
+	g_assert_error (error, CD_SENSOR_ERROR, CD_SENSOR_ERROR_FAILED);
+	g_assert (!ret);
+
+	_g_test_loop_run_with_timeout (5);
+	g_assert (cd_sensor_get_locked (sensor));
+	g_clear_error (&error);
 
 	/* set to some dummy values */
 	values.X = -2.0f;
@@ -728,6 +750,27 @@ colord_sensor_func (void)
 	g_assert_cmpfloat (values.Z - 0.3f, <, 0.01);
 	g_assert_cmpfloat (ambient + 1.0f, >, -0.01);
 	g_assert_cmpfloat (ambient + 1.0f, <, 0.01);
+
+	/* unlock */
+	ret = cd_sensor_unlock_sync (sensor,
+				     NULL,
+				     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	_g_test_loop_run_with_timeout (5);
+	g_assert (!cd_sensor_get_locked (sensor));
+
+	/* lock again */
+	ret = cd_sensor_unlock_sync (sensor,
+				     NULL,
+				     &error);
+	g_assert_error (error, CD_SENSOR_ERROR, CD_SENSOR_ERROR_FAILED);
+	g_assert (!ret);
+
+	_g_test_loop_run_with_timeout (5);
+	g_assert (!cd_sensor_get_locked (sensor));
+	g_clear_error (&error);
 
 	g_ptr_array_unref (array);
 	g_object_unref (client);

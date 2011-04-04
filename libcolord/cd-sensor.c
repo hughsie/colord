@@ -58,6 +58,7 @@ struct _CdSensorPrivate
 	gchar			*model;
 	gchar			*vendor;
 	gboolean		 native;
+	gboolean		 locked;
 	guint			 caps;
 	GDBusProxy		*proxy;
 };
@@ -70,6 +71,7 @@ enum {
 	PROP_MODEL,
 	PROP_VENDOR,
 	PROP_NATIVE,
+	PROP_LOCKED,
 	PROP_LAST
 };
 
@@ -187,7 +189,7 @@ cd_sensor_get_vendor (CdSensor *sensor)
  * cd_sensor_get_native:
  * @sensor: a #CdSensor instance.
  *
- * Returns if the sensor has a VCGT table.
+ * Returns if the sensor has a native driver.
  *
  * Return value: %TRUE if VCGT is valid.
  *
@@ -198,6 +200,23 @@ cd_sensor_get_native (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	return sensor->priv->native;
+}
+
+/**
+ * cd_sensor_get_locked:
+ * @sensor: a #CdSensor instance.
+ *
+ * Returns if the sensor is locked.
+ *
+ * Return value: %TRUE if VCGT is valid.
+ *
+ * Since: 0.1.6
+ **/
+gboolean
+cd_sensor_get_locked (CdSensor *sensor)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	return sensor->priv->locked;
 }
 
 /**
@@ -299,6 +318,9 @@ cd_sensor_dbus_properties_changed (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, "Native") == 0) {
 			sensor->priv->native = g_variant_get_boolean (property_value);
 			g_object_notify (G_OBJECT (sensor), "native");
+		} else if (g_strcmp0 (property_name, "Locked") == 0) {
+			sensor->priv->locked = g_variant_get_boolean (property_value);
+			g_object_notify (G_OBJECT (sensor), "locked");
 		} else if (g_strcmp0 (property_name, "Capabilities") == 0) {
 			cd_sensor_set_caps_from_variant (sensor, property_value);
 			g_object_notify (G_OBJECT (sensor), "capabilities");
@@ -354,6 +376,7 @@ cd_sensor_set_object_path_sync (CdSensor *sensor,
 	GVariant *kind = NULL;
 	GVariant *state = NULL;
 	GVariant *native = NULL;
+	GVariant *locked = NULL;
 	GVariant *caps = NULL;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
@@ -420,6 +443,12 @@ cd_sensor_set_object_path_sync (CdSensor *sensor,
 	if (native != NULL)
 		sensor->priv->native = g_variant_get_boolean (native);
 
+	/* get locked */
+	locked = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
+						   "Locked");
+	if (locked != NULL)
+		sensor->priv->locked = g_variant_get_boolean (locked);
+
 	/* get if system wide */
 	caps = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
 						 "Capabilities");
@@ -454,6 +483,8 @@ out:
 		g_variant_unref (vendor);
 	if (native != NULL)
 		g_variant_unref (native);
+	if (locked != NULL)
+		g_variant_unref (locked);
 	if (caps != NULL)
 		g_variant_unref (caps);
 	return ret;
@@ -462,11 +493,10 @@ out:
 /**
  * cd_sensor_lock_sync:
  * @sensor: a #CdSensor instance.
- * @value: The model.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
- * Sets the sensor model.
+ * Locks the device so we can use it.
  *
  * Return value: #TRUE for success, else #FALSE and @error is used
  *
@@ -495,7 +525,53 @@ cd_sensor_lock_sync (CdSensor *sensor,
 		g_set_error (error,
 			     CD_SENSOR_ERROR,
 			     CD_SENSOR_ERROR_FAILED,
-			     "Failed to set property: %s",
+			     "Failed to lock: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+out:
+	if (response != NULL)
+		g_variant_unref (response);
+	return ret;
+}
+
+/**
+ * cd_sensor_unlock_sync:
+ * @sensor: a #CdSensor instance.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Unlocks the device for use by other programs.
+ *
+ * Return value: #TRUE for success, else #FALSE and @error is used
+ *
+ * Since: 0.1.6
+ **/
+gboolean
+cd_sensor_unlock_sync (CdSensor *sensor,
+		       GCancellable *cancellable,
+		       GError **error)
+{
+	gboolean ret = TRUE;
+	GError *error_local = NULL;
+	GVariant *response = NULL;
+
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
+
+	/* execute sync method */
+	response = g_dbus_proxy_call_sync (sensor->priv->proxy,
+					   "Unlock",
+					   NULL,
+					   G_DBUS_CALL_FLAGS_NONE,
+					   -1, NULL, &error_local);
+	if (response == NULL) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_SENSOR_ERROR,
+			     CD_SENSOR_ERROR_FAILED,
+			     "Failed to unlock: %s",
 			     error_local->message);
 		g_error_free (error_local);
 		goto out;
@@ -622,6 +698,9 @@ cd_sensor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_NATIVE:
 		g_value_set_boolean (value, sensor->priv->native);
 		break;
+	case PROP_LOCKED:
+		g_value_set_boolean (value, sensor->priv->locked);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -731,6 +810,20 @@ cd_sensor_class_init (CdSensorClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_NATIVE,
 					 g_param_spec_string ("native",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE));
+
+	/**
+	 * CdSensor:locked:
+	 *
+	 * If the sensor is locked.
+	 *
+	 * Since: 0.1.6
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_NATIVE,
+					 g_param_spec_string ("locked",
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE));

@@ -70,6 +70,20 @@ struct _CdSensorClass
 	gboolean	 (*dump)		(CdSensor		*sensor,
 						 GString		*data,
 						 GError			**error);
+	void		 (*lock_async)		(CdSensor		*sensor,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+	gboolean	 (*lock_finish)		(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
+	void		 (*unlock_async)	(CdSensor		*sensor,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+	gboolean	 (*unlock_finish)	(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
 };
 
 /* dummy */
@@ -113,17 +127,6 @@ void		 cd_sensor_set_state		(CdSensor		*sensor,
 						 CdSensorState		 state);
 void		 cd_sensor_set_serial		(CdSensor		*sensor,
 						 const gchar		*serial);
-
-/* not used externally */
-void		 cd_sensor_get_sample_async	(CdSensor		*sensor,
-						 CdSensorCap		 cap,
-						 GCancellable		*cancellable,
-						 GAsyncReadyCallback	 callback,
-						 gpointer		 user_data);
-gboolean	 cd_sensor_get_sample_finish	(CdSensor		*sensor,
-						 GAsyncResult		*res,
-						 CdSensorSample		*sample,
-						 GError			**error);
 void		 cd_sensor_copy_sample		(const CdSensorSample	*source,
 						 CdSensorSample		*result);
 

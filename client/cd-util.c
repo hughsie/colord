@@ -255,6 +255,11 @@ cd_util_show_sensor (CdSensor *sensor)
 		 _("Native"),
 		 cd_sensor_get_native (sensor) ? "Yes" : "No");
 
+	/* TRANSLATORS: if the sensor is locked */
+	g_print ("%s:\t%s\n",
+		 _("Locked"),
+		 cd_sensor_get_locked (sensor) ? "Yes" : "No");
+
 	/* TRANSLATORS: if the sensor supports calibrating an LCD display */
 	g_print ("%s:\t%s\n",
 		 _("LCD"),
@@ -583,6 +588,13 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 	for (i=0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
 
+		/* lock */
+		ret = cd_sensor_lock_sync (sensor,
+					   NULL,
+					   error);
+		if (!ret)
+			goto out;
+
 		/* get a sample sync */
 		ret = cd_sensor_get_sample_sync (sensor,
 						 cap,
@@ -590,6 +602,13 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 						 &ambient,
 						 NULL,
 						 error);
+		if (!ret)
+			goto out;
+
+		/* unlock */
+		ret = cd_sensor_unlock_sync (sensor,
+					     NULL,
+					     error);
 		if (!ret)
 			goto out;
 

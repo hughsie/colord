@@ -45,6 +45,7 @@ struct _CdSensorPrivate
 	gchar				*model;
 	gchar				*vendor;
 	gboolean			 native;
+	gboolean			 locked;
 	gchar				**caps;
 	gchar				*object_path;
 	GDBusConnection			*connection;
@@ -56,6 +57,7 @@ enum {
 	PROP_OBJECT_PATH,
 	PROP_ID,
 	PROP_NATIVE,
+	PROP_LOCKED,
 	PROP_STATE,
 	PROP_VENDOR,
 	PROP_MODEL,
@@ -225,80 +227,15 @@ cd_sensor_set_state (CdSensor *sensor, CdSensorState state)
 }
 
 /**
- * cd_sensor_get_sample_async:
- * @sensor: a valid #CdSensor instance
- * @cancellable: a #GCancellable or %NULL
- * @callback: the function to run on completion
- * @user_data: the data to pass to @callback
- *
- * Sample the color and store as a XYZ value.
+ * cd_sensor_set_locked:
  **/
-void
-cd_sensor_get_sample_async (CdSensor *sensor,
-			    CdSensorCap cap,
-			    GCancellable *cancellable,
-			    GAsyncReadyCallback callback,
-			    gpointer user_data)
+static void
+cd_sensor_set_locked (CdSensor *sensor, gboolean locked)
 {
-	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
-	GError *error = NULL;
-	GSimpleAsyncResult *res = NULL;
-
-	/* coldplug source */
-	if (klass->get_sample_async == NULL) {
-		g_set_error_literal (&error,
-				     CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_INTERNAL,
-				     "no klass support");
-		res = g_simple_async_result_new (G_OBJECT (sensor),
-						 callback,
-						 user_data,
-						 cd_sensor_get_sample_async);
-		g_simple_async_result_set_from_error (res, error);
-		g_simple_async_result_complete_in_idle (res);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* ensure the cap is known */
-	if (cap == CD_SENSOR_CAP_UNKNOWN) {
-		g_set_error_literal (&error,
-				     CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_INTERNAL,
-				     "output sensor type was not set");
-		res = g_simple_async_result_new (G_OBJECT (sensor),
-						 callback,
-						 user_data,
-						 cd_sensor_get_sample_async);
-		g_simple_async_result_set_from_error (res, error);
-		g_simple_async_result_complete_in_idle (res);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* proxy */
-	klass->get_sample_async (sensor,
-				 cap,
-				 cancellable,
-				 callback,
-				 user_data);
-out:
-	if (res != NULL)
-		g_object_unref (res);
-	return;
-}
-
-/**
- * cd_sensor_get_sample_finish:
- **/
-gboolean
-cd_sensor_get_sample_finish (CdSensor *sensor,
-			     GAsyncResult *res,
-			     CdSensorSample *value,
-			     GError **error)
-{
-	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
-	return klass->get_sample_finish (sensor, res, value, error);
+	sensor->priv->locked = locked;
+	cd_sensor_dbus_emit_property_changed (sensor,
+					      "Locked",
+					      g_variant_new_boolean (locked));
 }
 
 /**
@@ -353,12 +290,13 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	GVariant *result = NULL;
 	CdSensorSample sample;
 	CdSensor *sensor = CD_SENSOR (source_object);
+	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
 	gboolean ret;
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
 	GError *error = NULL;
 
 	/* get the result */
-	ret = cd_sensor_get_sample_finish (sensor, res, &sample, &error);
+	ret = klass->get_sample_finish (sensor, res, &sample, &error);
 	if (!ret) {
 		g_dbus_method_invocation_return_error (invocation,
 						       CD_MAIN_ERROR,
@@ -387,6 +325,68 @@ out:
 }
 
 /**
+ * cd_sensor_lock_cb:
+ **/
+static void
+cd_sensor_lock_cb (GObject *source_object,
+		   GAsyncResult *res,
+		   gpointer user_data)
+{
+	CdSensor *sensor = CD_SENSOR (source_object);
+	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
+	gboolean ret;
+	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
+	GError *error = NULL;
+
+	/* get the result */
+	ret = klass->lock_finish (sensor, res, &error);
+	if (!ret) {
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_MAIN_ERROR,
+						       CD_MAIN_ERROR_FAILED,
+						       "failed to lock: %s",
+						       error->message);
+		g_error_free (error);
+		goto out;
+	}
+	cd_sensor_set_locked (sensor, TRUE);
+	g_dbus_method_invocation_return_value (invocation, NULL);
+out:
+	return;
+}
+
+/**
+ * cd_sensor_unlock_cb:
+ **/
+static void
+cd_sensor_unlock_cb (GObject *source_object,
+		     GAsyncResult *res,
+		     gpointer user_data)
+{
+	CdSensor *sensor = CD_SENSOR (source_object);
+	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
+	gboolean ret;
+	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
+	GError *error = NULL;
+
+	/* get the result */
+	ret = klass->unlock_finish (sensor, res, &error);
+	if (!ret) {
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_MAIN_ERROR,
+						       CD_MAIN_ERROR_FAILED,
+						       "failed to unlock: %s",
+						       error->message);
+		g_error_free (error);
+		goto out;
+	}
+	cd_sensor_set_locked (sensor, FALSE);
+	g_dbus_method_invocation_return_value (invocation, NULL);
+out:
+	return;
+}
+
+/**
  * cd_sensor_dbus_method_call:
  **/
 static void
@@ -396,6 +396,7 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
 	CdSensor *sensor = CD_SENSOR (user_data);
+	CdSensorClass *klass = CD_SENSOR_GET_CLASS (sensor);
 	CdSensorPrivate *priv = sensor->priv;
 	gboolean ret;
 	gchar *cap_tmp = NULL;
@@ -405,6 +406,33 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return '' */
 	if (g_strcmp0 (method_name, "Lock") == 0) {
 
+		g_debug ("CdSensor %s:Lock()", sender);
+
+		/* non-native */
+		if (!priv->native) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "cannot lock non-native driver");
+			goto out;
+		}
+
+		/* check locked */
+		if (priv->locked) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "sensor is already locked");
+			goto out;
+		}
+
+		/* no support */
+		if (klass->lock_async == NULL) {
+			cd_sensor_set_locked (sensor, TRUE);
+			g_dbus_method_invocation_return_value (invocation, NULL);
+			goto out;
+		}
+
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
 						    sender,
@@ -412,12 +440,43 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		if (!ret)
 			goto out;
 
-		g_dbus_method_invocation_return_value (invocation, NULL);
+		/* proxy */
+		klass->lock_async (sensor,
+				   NULL,
+				   cd_sensor_lock_cb,
+				   invocation);
 		goto out;
 	}
 
 	if (g_strcmp0 (method_name, "Unlock") == 0) {
 
+		g_debug ("CdSensor %s:Unlock()", sender);
+
+		/* non-native */
+		if (!priv->native) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "cannot unlock non-native driver");
+			goto out;
+		}
+
+		/* check locked */
+		if (!priv->locked) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "sensor is not yet locked");
+			goto out;
+		}
+
+		/* no support */
+		if (klass->unlock_async == NULL) {
+			cd_sensor_set_locked (sensor, FALSE);
+			g_dbus_method_invocation_return_value (invocation, NULL);
+			goto out;
+		}
+
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
 						    sender,
@@ -425,21 +484,34 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		if (!ret)
 			goto out;
 
-		g_dbus_method_invocation_return_value (invocation, NULL);
+		/* proxy */
+		klass->unlock_async (sensor,
+				     NULL,
+				     cd_sensor_unlock_cb,
+				     invocation);
 		goto out;
 	}
 
 	/* return 'ddd,d' */
 	if (g_strcmp0 (method_name, "GetSample") == 0) {
 
-		/* FIXME: check locked */
+		g_debug ("CdSensor %s:GetSample()", sender);
 
-		/*  check native */
+		/* check native */
 		if (!priv->native) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
 							       "no native driver for sensor");
+			goto out;
+		}
+
+		/* check locked */
+		if (!priv->locked) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "sensor is not yet locked");
 			goto out;
 		}
 
@@ -450,6 +522,15 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 							       CD_MAIN_ERROR_FAILED,
 							       "sensor not idle: %s",
 							       cd_sensor_state_to_string (priv->state));
+			goto out;
+		}
+
+		/* no support */
+		if (klass->get_sample_async == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "no sensor->get_sample");
 			goto out;
 		}
 
@@ -465,12 +546,12 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
-		/* do the sample */
-		cd_sensor_get_sample_async (sensor,
-					    cap,
-					    NULL,
-					    cd_sensor_get_sample_cb,
-					    invocation);
+		/* proxy */
+		klass->get_sample_async (sensor,
+					 cap,
+					 NULL,
+					 cd_sensor_get_sample_cb,
+					 invocation);
 		goto out;
 	}
 
@@ -530,6 +611,10 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, "Native") == 0) {
 		retval = g_variant_new_boolean (priv->native);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Locked") == 0) {
+		retval = g_variant_new_boolean (priv->locked);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, "Capabilities") == 0) {
@@ -700,6 +785,9 @@ cd_sensor_set_property (GObject *object, guint prop_id, const GValue *value, GPa
 	case PROP_NATIVE:
 		priv->native = g_value_get_boolean (value);
 		break;
+	case PROP_LOCKED:
+		priv->locked = g_value_get_boolean (value);
+		break;
 	case PROP_STATE:
 		priv->state = g_value_get_uint (value);
 		break;
@@ -793,6 +881,14 @@ cd_sensor_class_init (CdSensorClass *klass)
 				      FALSE,
 				      G_PARAM_READWRITE | G_PARAM_CONSTRUCT);
 	g_object_class_install_property (object_class, PROP_NATIVE, pspec);
+
+	/**
+	 * CdSensor:locked:
+	 */
+	pspec = g_param_spec_boolean ("locked", NULL, NULL,
+				      FALSE,
+				      G_PARAM_READWRITE);
+	g_object_class_install_property (object_class, PROP_LOCKED, pspec);
 
 	g_type_class_add_private (klass, sizeof (CdSensorPrivate));
 }
