@@ -969,7 +969,7 @@ static void
 cd_sensor_init (CdSensor *sensor)
 {
 	sensor->priv = CD_SENSOR_GET_PRIVATE (sensor);
-	sensor->priv->caps = g_new0 (gchar *, 5);
+	sensor->priv->caps = g_new0 (gchar *, CD_SENSOR_CAP_LAST);
 	sensor->priv->state = CD_SENSOR_STATE_IDLE;
 }
 
