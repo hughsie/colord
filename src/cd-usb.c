@@ -158,6 +158,7 @@ cd_libusb_pollfd_remove_all (CdUsb *usb)
 		return;
 
 	/* rip apart all the pollfd's */
+	g_debug ("ripping");
 	do {
 		pollfd = elem->data;
 		g_source_remove_poll ((GSource *) source, pollfd);

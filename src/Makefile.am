@@ -131,8 +131,8 @@ noinst_PROGRAMS =					\
 	cd-parse-beagle
 
 cd_parse_beagle_SOURCES =				\
-	cd-sensor-colormunki-private.c			\
-	cd-sensor-colormunki-private.h			\
+	cd-sensor-munki-private.c			\
+	cd-sensor-munki-private.h			\
 	cd-sensor-huey-private.c			\
 	cd-sensor-huey-private.h			\
 	cd-parse-beagle.c
@@ -200,6 +200,7 @@ endif
 plugindir = $(libdir)/colord-sensors
 plugin_LTLIBRARIES =					\
 	libcolord_sensor_dummy.la			\
+	libcolord_sensor_munki.la			\
 	libcolord_sensor_huey.la
 
 libcolord_sensor_dummy_la_SOURCES = cd-sensor-dummy.c
@@ -211,6 +212,11 @@ libcolord_sensor_huey_la_SOURCES = cd-sensor-huey.c
 libcolord_sensor_huey_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
 libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
+
+libcolord_sensor_munki_la_SOURCES = cd-sensor-munki.c
+libcolord_sensor_munki_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
+libcolord_sensor_munki_la_LDFLAGS = -module -avoid-version
+libcolord_sensor_munki_la_CFLAGS = $(WARNINGFLAGS_C)
 
 install-data-hook:
 	if test -w $(DESTDIR)$(prefix)/; then \

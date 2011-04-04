@@ -1,6 +1,9 @@
 colord
 .deps
+.libs
 *.o
+*.la
+*.lo
 cd-self-test
 cd-parse-beagle
 cd-huey-parse
