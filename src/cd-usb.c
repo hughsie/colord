@@ -471,6 +471,7 @@ cd_usb_disconnect (CdUsb *usb,
 
 	/* just close */
 	libusb_close (priv->handle);
+	priv->handle = NULL;
 
 	/* success */
 	ret = TRUE;
