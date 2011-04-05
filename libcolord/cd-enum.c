@@ -456,6 +456,8 @@ cd_sensor_cap_to_string (CdSensorCap sensor_cap)
 		return "spot";
 	if (sensor_cap == CD_SENSOR_CAP_AMBIENT)
 		return "ambient";
+	if (sensor_cap == CD_SENSOR_CAP_CALIBRATION)
+		return "calibration";
 	return "unknown";
 }
 
@@ -482,5 +484,7 @@ cd_sensor_cap_from_string (const gchar *sensor_cap)
 		return CD_SENSOR_CAP_SPOT;
 	if (g_strcmp0 (sensor_cap, "ambient") == 0)
 		return CD_SENSOR_CAP_AMBIENT;
+	if (g_strcmp0 (sensor_cap, "calibration") == 0)
+		return CD_SENSOR_CAP_CALIBRATION;
 	return CD_SENSOR_CAP_UNKNOWN;
 }
