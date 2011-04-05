@@ -125,6 +125,9 @@ gboolean	 cd_sensor_dump			(CdSensor		*sensor,
 /* designed to be used by derived class */
 void		 cd_sensor_set_state		(CdSensor		*sensor,
 						 CdSensorState		 state);
+void		 cd_sensor_set_mode		(CdSensor		*sensor,
+						 CdSensorCap		 mode);
+CdSensorCap	 cd_sensor_get_mode		(CdSensor		*sensor);
 void		 cd_sensor_set_serial		(CdSensor		*sensor,
 						 const gchar		*serial);
 void		 cd_sensor_copy_sample		(const CdSensorSample	*source,

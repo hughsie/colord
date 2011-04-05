@@ -41,6 +41,7 @@ struct _CdSensorPrivate
 	gchar				*id;
 	CdSensorKind			 kind;
 	CdSensorState			 state;
+	CdSensorCap			 mode;
 	gchar				*serial;
 	gchar				*model;
 	gchar				*vendor;
@@ -60,6 +61,7 @@ enum {
 	PROP_NATIVE,
 	PROP_LOCKED,
 	PROP_STATE,
+	PROP_MODE,
 	PROP_VENDOR,
 	PROP_MODEL,
 	PROP_SERIAL,
@@ -225,6 +227,27 @@ cd_sensor_set_state (CdSensor *sensor, CdSensorState state)
 	cd_sensor_dbus_emit_property_changed (sensor,
 					      "State",
 					      g_variant_new_string (cd_sensor_state_to_string (state)));
+}
+
+/**
+ * cd_sensor_set_mode:
+ **/
+void
+cd_sensor_set_mode (CdSensor *sensor, CdSensorCap mode)
+{
+	sensor->priv->mode = mode;
+	cd_sensor_dbus_emit_property_changed (sensor,
+					      "Mode",
+					      g_variant_new_string (cd_sensor_cap_to_string (mode)));
+}
+
+/**
+ * cd_sensor_get_mode:
+ **/
+CdSensorCap
+cd_sensor_get_mode (CdSensor *sensor)
+{
+	return sensor->priv->mode;
 }
 
 /**
@@ -666,6 +689,10 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = g_variant_new_string (cd_sensor_state_to_string (priv->state));
 		goto out;
 	}
+	if (g_strcmp0 (property_name, "Mode") == 0) {
+		retval = g_variant_new_string (cd_sensor_cap_to_string (priv->mode));
+		goto out;
+	}
 	if (g_strcmp0 (property_name, "Serial") == 0) {
 		retval = cd_sensor_get_nullable_for_string (priv->serial);
 		goto out;
@@ -860,6 +887,9 @@ cd_sensor_set_property (GObject *object, guint prop_id, const GValue *value, GPa
 	case PROP_STATE:
 		priv->state = g_value_get_uint (value);
 		break;
+	case PROP_MODE:
+		priv->mode = g_value_get_uint (value);
+		break;
 	case PROP_KIND:
 		priv->kind = g_value_get_uint (value);
 		break;
@@ -971,6 +1001,7 @@ cd_sensor_init (CdSensor *sensor)
 	sensor->priv = CD_SENSOR_GET_PRIVATE (sensor);
 	sensor->priv->caps = g_new0 (gchar *, CD_SENSOR_CAP_LAST);
 	sensor->priv->state = CD_SENSOR_STATE_IDLE;
+	sensor->priv->mode = CD_SENSOR_CAP_UNKNOWN;
 }
 
 /**

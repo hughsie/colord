@@ -35,6 +35,23 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Mode' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The operating mode of the sensor, e.g. <doc:tt>ambient</doc:tt>,
+            <doc:tt>printer</doc:tt> or <doc:tt>unknown</doc:tt>.
+          </doc:para>
+          <doc:para>
+            On some devices, a sensor has to be set to a specific
+            position before a reading can be taken.
+            This property should be set to the current device mode.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Serial' type='s' access='read'>
       <doc:doc>
         <doc:description>

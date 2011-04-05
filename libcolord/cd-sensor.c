@@ -54,6 +54,7 @@ struct _CdSensorPrivate
 	gchar			*object_path;
 	CdSensorKind		 kind;
 	CdSensorState		 state;
+	CdSensorCap		 mode;
 	gchar			*serial;
 	gchar			*model;
 	gchar			*vendor;
@@ -67,6 +68,7 @@ enum {
 	PROP_0,
 	PROP_KIND,
 	PROP_STATE,
+	PROP_MODE,
 	PROP_SERIAL,
 	PROP_MODEL,
 	PROP_VENDOR,
@@ -132,6 +134,23 @@ cd_sensor_get_state (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), 0);
 	return sensor->priv->state;
+}
+
+/**
+ * cd_sensor_get_mode:
+ * @sensor: a #CdSensor instance.
+ *
+ * Gets the sensor operating mode.
+ *
+ * Return value: A #CdSensorCap, e.g. %CD_SENSOR_CAP_AMBIENT
+ *
+ * Since: 0.1.6
+ **/
+CdSensorCap
+cd_sensor_get_mode (CdSensor *sensor)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), 0);
+	return sensor->priv->mode;
 }
 
 /**
@@ -303,6 +322,9 @@ cd_sensor_dbus_properties_changed (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, "State") == 0) {
 			sensor->priv->state = cd_sensor_state_from_string (g_variant_get_string (property_value, NULL));
 			g_object_notify (G_OBJECT (sensor), "state");
+		} else if (g_strcmp0 (property_name, "Mode") == 0) {
+			sensor->priv->mode = cd_sensor_cap_from_string (g_variant_get_string (property_value, NULL));
+			g_object_notify (G_OBJECT (sensor), "mode");
 		} else if (g_strcmp0 (property_name, "Serial") == 0) {
 			g_free (sensor->priv->serial);
 			sensor->priv->serial = g_variant_dup_string (property_value, NULL);
@@ -375,6 +397,7 @@ cd_sensor_set_object_path_sync (CdSensor *sensor,
 	GVariant *vendor = NULL;
 	GVariant *kind = NULL;
 	GVariant *state = NULL;
+	GVariant *mode = NULL;
 	GVariant *native = NULL;
 	GVariant *locked = NULL;
 	GVariant *caps = NULL;
@@ -418,6 +441,12 @@ cd_sensor_set_object_path_sync (CdSensor *sensor,
 						  "State");
 	if (state != NULL)
 		sensor->priv->state = cd_colorspace_from_string (g_variant_get_string (state, NULL));
+
+	/* get mode */
+	mode = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
+						 "Mode");
+	if (mode != NULL)
+		sensor->priv->mode = cd_sensor_cap_from_string (g_variant_get_string (state, NULL));
 
 	/* get sensor serial */
 	serial = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
@@ -475,6 +504,8 @@ out:
 		g_variant_unref (kind);
 	if (state != NULL)
 		g_variant_unref (state);
+	if (mode != NULL)
+		g_variant_unref (mode);
 	if (serial != NULL)
 		g_variant_unref (serial);
 	if (model != NULL)
@@ -694,6 +725,9 @@ cd_sensor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_STATE:
 		g_value_set_uint (value, sensor->priv->state);
 		break;
+	case PROP_MODE:
+		g_value_set_uint (value, sensor->priv->mode);
+		break;
 	case PROP_SERIAL:
 		g_value_set_string (value, sensor->priv->serial);
 		break;
@@ -764,6 +798,20 @@ cd_sensor_class_init (CdSensorClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_STATE,
 					 g_param_spec_string ("state",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE));
+
+	/**
+	 * CdSensor:mode:
+	 *
+	 * The sensor mode.
+	 *
+	 * Since: 0.1.6
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_MODE,
+					 g_param_spec_string ("mode",
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE));

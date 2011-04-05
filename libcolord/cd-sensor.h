@@ -101,6 +101,7 @@ gboolean	 cd_sensor_get_sample_sync		(CdSensor	*sensor,
 							 GError		**error);
 CdSensorKind	 cd_sensor_get_kind			(CdSensor	*sensor);
 CdSensorState	 cd_sensor_get_state			(CdSensor	*sensor);
+CdSensorCap	 cd_sensor_get_mode			(CdSensor	*sensor);
 const gchar	*cd_sensor_get_serial			(CdSensor	*sensor);
 const gchar	*cd_sensor_get_model			(CdSensor	*sensor);
 const gchar	*cd_sensor_get_vendor			(CdSensor	*sensor);
