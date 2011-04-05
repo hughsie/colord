@@ -1874,6 +1874,39 @@ cd_client_owner_notify_cb (GObject *object,
 }
 
 /**
+ * cd_client_connect_proxy:
+ **/
+static void
+cd_client_connect_proxy (CdClient *client)
+{
+	GVariant *daemon_version = NULL;
+
+	/* get daemon version */
+	daemon_version = g_dbus_proxy_get_cached_property (client->priv->proxy,
+							   "DaemonVersion");
+	if (daemon_version != NULL)
+		client->priv->daemon_version = g_variant_dup_string (daemon_version, NULL);
+
+	/* get signals from DBus */
+	g_signal_connect (client->priv->proxy,
+			  "g-signal",
+			  G_CALLBACK (cd_client_dbus_signal_cb),
+			  client);
+
+	/* watch to see if it's fallen off the bus */
+	g_signal_connect (client->priv->proxy,
+			 "notify::g-name-owner",
+			 G_CALLBACK (cd_client_owner_notify_cb),
+			 client);
+
+	/* success */
+	g_debug ("Connected to colord daemon version %s",
+		 client->priv->daemon_version);
+	if (daemon_version != NULL)
+		g_variant_unref (daemon_version);
+}
+
+/**
  * cd_client_connect_sync:
  * @client: a #CdClient instance.
  * @cancellable: a #GCancellable or %NULL
@@ -1890,7 +1923,6 @@ cd_client_connect_sync (CdClient *client, GCancellable *cancellable, GError **er
 {
 	gboolean ret = TRUE;
 	GError *error_local = NULL;
-	GVariant *daemon_version = NULL;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
 	g_return_val_if_fail (client->priv->proxy == NULL, FALSE);
@@ -1916,32 +1948,119 @@ cd_client_connect_sync (CdClient *client, GCancellable *cancellable, GError **er
 		goto out;
 	}
 
-	/* get daemon version */
-	daemon_version = g_dbus_proxy_get_cached_property (client->priv->proxy,
-							   "Title");
-	if (daemon_version != NULL)
-		client->priv->daemon_version = g_variant_dup_string (daemon_version, NULL);
-
-	/* get signals from DBus */
-	g_signal_connect (client->priv->proxy,
-			  "g-signal",
-			  G_CALLBACK (cd_client_dbus_signal_cb),
-			  client);
-
-	/* watch to see if it's fallen off the bus */
-	g_signal_connect (client->priv->proxy,
-			 "notify::g-name-owner",
-			 G_CALLBACK (cd_client_owner_notify_cb),
-			 client);
-
-	/* success */
-	g_debug ("Connected to colord daemon version %s",
-		 client->priv->daemon_version);
+	/* connect to proxy */
+	cd_client_connect_proxy (client);
 out:
-	if (daemon_version != NULL)
-		g_variant_unref (daemon_version);
 	return ret;
 }
+
+/**
+ * cd_client_connect_cb:
+ **/
+static void
+cd_client_connect_cb (GObject *source_object,
+		      GAsyncResult *res,
+		      gpointer user_data)
+{
+	GAsyncResult *result_orig = G_ASYNC_RESULT (user_data);
+	CdClient *client = CD_CLIENT (g_async_result_get_source_object (result_orig));
+	GError *error = NULL;
+
+	/* get result */
+	client->priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
+	if (client->priv->proxy == NULL) {
+		g_simple_async_result_set_from_error (G_SIMPLE_ASYNC_RESULT (result_orig),
+						      error);
+		g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
+		g_error_free (error);
+		goto out;
+	}
+
+	/* connect to proxy */
+	cd_client_connect_proxy (client);
+
+	/* we're done */
+	g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
+out:
+	return;
+}
+
+/**
+ * cd_client_connect:
+ * @client: a #CdClient instance
+ * @cancellable: a #GCancellable or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Connects to the colord daemon.
+ *
+ * Since: 0.1.6
+ **/
+void
+cd_client_connect (CdClient *client,
+		   GCancellable *cancellable,
+		   GAsyncReadyCallback callback,
+		   gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	res = g_simple_async_result_new (G_OBJECT (client),
+					 callback,
+					 user_data,
+					 cd_client_connect);
+
+	/* connect async */
+	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+				  G_DBUS_PROXY_FLAGS_NONE,
+				  NULL,
+				  COLORD_DBUS_SERVICE,
+				  COLORD_DBUS_PATH,
+				  COLORD_DBUS_INTERFACE,
+				  cancellable,
+				  cd_client_connect_cb,
+				  res);
+}
+
+/**
+ * cd_client_connect_finish:
+ * @client: a #CdClient instance
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: %TRUE if we could connect to to the daemon
+ *
+ * Since: 0.1.6
+ **/
+gboolean
+cd_client_connect_finish (CdClient *client,
+			  GAsyncResult *res,
+			  GError **error)
+{
+	gpointer source_tag;
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	source_tag = g_simple_async_result_get_source_tag (simple);
+
+	g_return_val_if_fail (source_tag == cd_client_connect, FALSE);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return TRUE;
+}
+
+/***************************************************************************************************/
 
 /**
  * cd_client_get_daemon_version:

@@ -169,6 +169,13 @@ GPtrArray	*cd_client_get_devices_by_kind_sync	(CdClient	*client,
 							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,
 							 GError		**error);
+void		 cd_client_connect			(CdClient		*client,
+							 GCancellable		*cancellable,
+							 GAsyncReadyCallback	 callback,
+							 gpointer		 user_data);
+gboolean	 cd_client_connect_finish		(CdClient		*client,
+							 GAsyncResult		*res,
+							 GError			**error);
 gboolean	 cd_client_connect_sync			(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GError		**error);
