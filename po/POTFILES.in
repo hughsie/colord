@@ -1,3 +1,4 @@
+client/cd-fix-profile.c
 client/cd-util.c
 policy/org.freedesktop.color.policy.in
 src/cd-main.c

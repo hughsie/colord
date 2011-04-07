@@ -13,7 +13,8 @@ INCLUDES =						\
 COLORD_LIBS = $(top_builddir)/libcolord/libcolord.la
 
 bin_PROGRAMS =						\
-	colormgr
+	colormgr					\
+	cd-fix-profile
 
 colormgr_SOURCES =					\
 	cd-util.c
@@ -23,4 +24,15 @@ colormgr_LDADD =					\
 	$(GLIB_LIBS)
 
 colormgr_CFLAGS =					\
+	$(WARNINGFLAGS_C)
+
+cd_fix_profile_SOURCES =				\
+	cd-fix-profile.c
+
+cd_fix_profile_LDADD =					\
+	$(GLIB_LIBS)					\
+	$(LCMS_LIBS)					\
+	-lm
+
+cd_fix_profile_CFLAGS =					\
 	$(WARNINGFLAGS_C)
