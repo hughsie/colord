@@ -1377,6 +1377,16 @@ out:
 }
 
 /**
+ * cd_main_timed_exit_cb:
+ **/
+static gboolean
+cd_main_timed_exit_cb (gpointer user_data)
+{
+	g_main_loop_quit (loop);
+	return FALSE;
+}
+
+/**
  * main:
  **/
 int
@@ -1384,9 +1394,11 @@ main (int argc, char *argv[])
 {
 	GOptionContext *context;
 	GError *error = NULL;
+	gboolean immediate_exit = FALSE;
 	gboolean ret;
-	guint retval = 1;
+	gboolean timed_exit = FALSE;
 	guint owner_id = 0;
+	guint retval = 1;
 	GFile *file_daemon = NULL;
 	GFile *file_device = NULL;
 	GFile *file_profile = NULL;
@@ -1395,6 +1407,15 @@ main (int argc, char *argv[])
 	gchar *introspection_device_data = NULL;
 	gchar *introspection_profile_data = NULL;
 	gchar *introspection_sensor_data = NULL;
+	const GOptionEntry options[] = {
+		{ "timed-exit", '\0', 0, G_OPTION_ARG_NONE, &timed_exit,
+		  /* TRANSLATORS: exit after we've started up, used for user profiling */
+		  _("Exit after a small delay"), NULL },
+		{ "immediate-exit", '\0', 0, G_OPTION_ARG_NONE, &immediate_exit,
+		  /* TRANSLATORS: exit straight away, used for automatic profiling */
+		  _("Exit after the engine has loaded"), NULL },
+		{ NULL}
+	};
 
 	setlocale (LC_ALL, "");
 
@@ -1407,6 +1428,7 @@ main (int argc, char *argv[])
 	/* TRANSLATORS: program name */
 	g_set_application_name (_("Color Management"));
 	context = g_option_context_new (NULL);
+	g_option_context_add_main_entries (context, options, NULL);
 	g_option_context_set_summary (context, _("Color Management D-Bus Service"));
 	g_option_context_parse (context, &argc, &argv, NULL);
 	g_option_context_free (context);
@@ -1549,6 +1571,13 @@ main (int argc, char *argv[])
 				   cd_main_on_name_acquired_cb,
 				   cd_main_on_name_lost_cb,
 				   NULL, NULL);
+
+	/* Only timeout and close the mainloop if we have specified it
+	 * on the command line */
+	if (immediate_exit)
+		g_idle_add (cd_main_timed_exit_cb, loop);
+	else if (timed_exit)
+		g_timeout_add_seconds (5, cd_main_timed_exit_cb, loop);
 
 	/* wait */
 	g_main_loop_run (loop);
