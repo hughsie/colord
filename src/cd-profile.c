@@ -635,6 +635,36 @@ out:
 }
 
 /**
+ * cd_profile_get_precooked_md5:
+ **/
+static gchar *
+cd_profile_get_precooked_md5 (cmsHPROFILE lcms_profile)
+{
+	cmsUInt8Number profile_id[16];
+	gboolean md5_precooked = FALSE;
+	guint i;
+	gchar *md5 = NULL;
+
+	/* check to see if we have a pre-cooked MD5 */
+	cmsGetHeaderProfileID (lcms_profile, profile_id);
+	for (i=0; i<16; i++) {
+		if (profile_id[i] != 0) {
+			md5_precooked = TRUE;
+			break;
+		}
+	}
+	if (!md5_precooked)
+		goto out;
+
+	/* convert to a hex string */
+	md5 = g_new0 (gchar, 32 + 1);
+	for (i=0; i<16; i++)
+		g_snprintf (md5 + i*2, 3, "%x", profile_id[i]);
+out:
+	return md5;
+}
+
+/**
  * cd_profile_set_filename:
  **/
 gboolean
@@ -771,11 +801,15 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 			     g_strdup (fake_md5));
 	}
 
-	/* generate and set checksum */
-	profile->priv->checksum =
-		g_compute_checksum_for_data (G_CHECKSUM_MD5,
-					     (const guchar *) data,
-					    len);
+	/* use a pre-cooked MD5 if available, else fall back to
+	 * calculating it ourselves */
+	profile->priv->checksum = cd_profile_get_precooked_md5 (lcms_profile);
+	if (profile->priv->checksum == NULL) {
+		profile->priv->checksum =
+			g_compute_checksum_for_data (G_CHECKSUM_MD5,
+						     (const guchar *) data,
+						     len);
+	}
 
 	/* success */
 	g_free (profile->priv->filename);

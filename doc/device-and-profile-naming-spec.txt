@@ -129,10 +129,18 @@ and spaces and does not have to be escaped.
 A profile ID is the same for binary identical profiles, even if
 duplicated on the filesystem.
 
-In line with other ICC reccomendations, the complete MD5 file checksum
-is used for the profile ID, e.g.
+In line with other ICC reccomendations, the embedded profile ID (bytes
+84 to 99) is used, after converting it to a hexadecimal encoding.
 
-Format:		icc-{%checksum}
+Format:		icc-{%embedded-profile-id}
+Example:	icc-3c219b18958837493b586581f8c2a2a4
+
+The ICC do not mandate the embedded profile-id and only recommend it,
+and as such few profiles in the wild use a real value.
+If the embedded profile ID is not set, the complete MD5 file checksum
+should be used instead, e.g.
+
+Format:		icc-{%file-checksum}
 Example:	icc-bd847723f676e2b846daaf6759330624
 
 If a physical profile does not exist (for instance, for embedded printer
