@@ -8,15 +8,17 @@ License:   GPLv2+ and LGPLv2+
 URL:       http://gitorious.org/colord
 Source0:   http://people.freedesktop.org/~hughsient/releases/%{name}-%{version}.tar.gz
 
+BuildRequires: dbus-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
 BuildRequires: glib2-devel
 BuildRequires: intltool
 BuildRequires: lcms2-devel
-BuildRequires: polkit-devel
-BuildRequires: sqlite-devel
 BuildRequires: libgudev1-devel
+BuildRequires: libusb1-devel
+BuildRequires: polkit-devel
 BuildRequires: sane-backends-devel
+BuildRequires: sqlite-devel
 
 %description
 colord is a low level system activated daemon that maps color devices
@@ -65,7 +67,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
-%{_datadir}/man/man1/colormgr.1.gz
+%{_datadir}/man/man1/*.1.gz
 %{_libdir}/libcolord.so.*
 %config %{_sysconfdir}/colord.conf
 /lib/udev/rules.d/*.rules
