@@ -665,16 +665,67 @@ out:
 }
 
 /**
+ * cd_profile_get_best_md5:
+ *
+ * The profile checksum can be found in the following ways (listed in
+ * order of speed):
+ *
+ *  1. The FILE_checksum metadata
+ *  2. The precooked embedded profile-id
+ *  3. Working out the file MD5 manually
+ *
+ * We trust 2. and 3., and so we comprimise with a 2, 1, 3 ordering.
+ **/
+static gchar *
+cd_profile_get_best_md5 (CdProfile *profile,
+			 cmsHPROFILE lcms_profile,
+			 GError **error)
+{
+	const gchar *tmp;
+	gchar *checksum = NULL;
+	gboolean ret;
+	gchar *data = NULL;
+	gsize len;
+
+	/* use a pre-cooked MD5 if available */
+	checksum = cd_profile_get_precooked_md5 (lcms_profile);
+	if (checksum != NULL)
+		goto out;
+
+	/* try the metadata if available */
+	tmp = g_hash_table_lookup (profile->priv->metadata,
+				   "FILE_checksum");
+	if (tmp != NULL) {
+		checksum = g_strdup (tmp);
+		goto out;
+	}
+
+	/* fall back to calculating it ourselves */
+	g_debug ("%s has no profile-id nor FILE_checksum, falling back "
+		 "to slow MD5", profile->priv->filename);
+	ret = g_file_get_contents (profile->priv->filename,
+				   &data, &len, error);
+	if (!ret)
+		goto out;
+	checksum = g_compute_checksum_for_data (G_CHECKSUM_MD5,
+						(const guchar *) data,
+						len);
+out:
+	g_free (data);
+	return checksum;
+}
+
+/**
  * cd_profile_set_filename:
  **/
 gboolean
-cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **error)
+cd_profile_set_filename (CdProfile *profile,
+			 const gchar *filename,
+			 GError **error)
 {
 	gboolean ret = FALSE;
-	gchar *data = NULL;
 	gchar *fake_md5 = NULL;
 	gchar text[1024];
-	gsize len;
 	GError *error_local = NULL;
 	cmsHPROFILE lcms_profile = NULL;
 	cmsColorSpaceSignature color_space;
@@ -791,36 +842,27 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 			     g_strdup (fake_md5));
 	}
 
-	/* use a pre-cooked MD5 if available, else fall back to
-	 * calculating it ourselves */
-	profile->priv->checksum = cd_profile_get_precooked_md5 (lcms_profile);
+	/* get the checksum for the profile */
+	g_free (profile->priv->filename);
+	profile->priv->filename = g_strdup (filename);
+	profile->priv->checksum = cd_profile_get_best_md5 (profile,
+							   lcms_profile,
+							   &error_local);
 	if (profile->priv->checksum == NULL) {
-		g_debug ("%s has no profile-id, falling back to slow MD5",
-			 filename);
-		ret = g_file_get_contents (filename, &data, &len, &error_local);
-		if (!ret) {
-			g_set_error (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED,
-				     "failed to open profile: %s",
-				     error_local->message);
-			g_error_free (error_local);
-			goto out;
-		}
-		profile->priv->checksum =
-			g_compute_checksum_for_data (G_CHECKSUM_MD5,
-						     (const guchar *) data,
-						     len);
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "failed to open profile: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
 	}
 
 	/* success */
 	ret = TRUE;
-	g_free (profile->priv->filename);
-	profile->priv->filename = g_strdup (filename);
 out:
 	if (lcms_profile != NULL)
 		cmsCloseProfile (lcms_profile);
-	g_free (data);
 	g_free (fake_md5);
 	return ret;
 }

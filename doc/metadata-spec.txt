@@ -15,7 +15,7 @@ EDID_model		the EDID monitor name
 EDID_serial		the EDID serial number
 EDID_mnft		the EDID PNP ID
 EDID_manufacturer	the EDID vendor name
-
+FILE_checksum		the FILE checksum
 
 Projects already using this format:
  * GNOME Color Manager
