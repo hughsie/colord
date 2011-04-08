@@ -692,17 +692,7 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 	}
 
 	/* parse the ICC file */
-	ret = g_file_get_contents (filename, &data, &len, &error_local);
-	if (!ret) {
-		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
-			     "failed to open profile: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-	lcms_profile = cmsOpenProfileFromMem (data, len);
+	lcms_profile = cmsOpenProfileFromFile (filename, "r");
 	if (lcms_profile == NULL) {
 		g_set_error (error,
 			     CD_MAIN_ERROR,
@@ -805,6 +795,18 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 	 * calculating it ourselves */
 	profile->priv->checksum = cd_profile_get_precooked_md5 (lcms_profile);
 	if (profile->priv->checksum == NULL) {
+		g_debug ("%s has no profile-id, falling back to slow MD5",
+			 filename);
+		ret = g_file_get_contents (filename, &data, &len, &error_local);
+		if (!ret) {
+			g_set_error (error,
+				     CD_MAIN_ERROR,
+				     CD_MAIN_ERROR_FAILED,
+				     "failed to open profile: %s",
+				     error_local->message);
+			g_error_free (error_local);
+			goto out;
+		}
 		profile->priv->checksum =
 			g_compute_checksum_for_data (G_CHECKSUM_MD5,
 						     (const guchar *) data,
@@ -812,6 +814,7 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename, GError **err
 	}
 
 	/* success */
+	ret = TRUE;
 	g_free (profile->priv->filename);
 	profile->priv->filename = g_strdup (filename);
 out:
