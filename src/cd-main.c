@@ -227,7 +227,11 @@ cd_main_create_profile (const gchar *sender,
 		cd_profile_watch_sender (profile_tmp, sender);
 	} else if ((scope & CD_OBJECT_SCOPE_DISK) > 0) {
 		g_debug ("CdMain: persistant profile");
-		//FIXME: save to disk
+		g_set_error_literal (error,
+				     CD_MAIN_ERROR,
+				     CD_MAIN_ERROR_FAILED,
+				     "persistant profiles are no yet supported");
+		goto out;
 	} else {
 		g_warning ("CdMain: Unsupported scope kind: %i", scope);
 	}
