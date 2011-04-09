@@ -674,6 +674,10 @@ colord_sensor_func (void)
 	array = cd_client_get_sensors_sync (client, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (array != NULL);
+	if (array->len == 0) {
+		g_print ("WARNING: no dummy sensor found, skipping\n");
+		goto out;
+	}
 	g_assert_cmpint (array->len, ==, 1);
 
 	sensor = g_ptr_array_index (array, 0);
@@ -771,7 +775,7 @@ colord_sensor_func (void)
 	_g_test_loop_run_with_timeout (5);
 	g_assert (!cd_sensor_get_locked (sensor));
 	g_clear_error (&error);
-
+out:
 	g_ptr_array_unref (array);
 	g_object_unref (client);
 }
