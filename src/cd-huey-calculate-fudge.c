@@ -175,8 +175,10 @@ main (gint argc, gchar *argv[])
 									   &dark_offset,
 									   pre_scalar,
 									   post_scalar);
-//				g_debug ("gcolor-XYZ = %f,\t%f,\t%f", cd_xyz.X, cd_xyz.Y, cd_xyz.Z);
-//				g_debug ("argyll-XYZ = %f,\t%f,\t%f", actual_xyz[i].X, actual_xyz[i].Y, actual_xyz[i].Z);
+				g_debug ("gcolor-XYZ = %f,\t%f,\t%f",
+					 cd_xyz.X, cd_xyz.Y, cd_xyz.Z);
+				g_debug ("argyll-XYZ = %f,\t%f,\t%f",
+					 actual_xyz[i].X, actual_xyz[i].Y, actual_xyz[i].Z);
 				error += get_error (&actual_xyz[i], &cd_xyz);
 			}
 			if (error < min_error) {

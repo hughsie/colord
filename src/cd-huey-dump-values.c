@@ -47,7 +47,6 @@ main (gint argc, gchar *argv[])
 	for (i=0; i<0xff; i++)
 		buffer[i] = 0;
 
-	//g_error ("argv[1]=%s", argv[1]);
 	ret = g_file_get_contents (argv[1], &data, NULL, &error);
 	if (!ret) {
 		g_warning ("failed to open: %s", error->message);

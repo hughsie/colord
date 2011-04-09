@@ -30,8 +30,6 @@ G_BEGIN_DECLS
 #define CD_CONFIG(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_CONFIG, CdConfig))
 #define CD_CONFIG_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_CONFIG, CdConfigClass))
 #define CD_IS_CONFIG(o)	(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_CONFIG))
-//#define CD_IS_CONFIG_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_CONFIG))
-//#define CD_CONFIG_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_CONFIG, CdConfigClass))
 
 typedef struct _CdConfigPrivate	CdConfigPrivate;
 typedef struct _CdConfig		CdConfig;
