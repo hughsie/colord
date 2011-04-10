@@ -1,0 +1,153 @@
+<!doctype refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY date        "<date>8 April,1011</date>">
+  <!ENTITY package     "cd-create-profile">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <address>
+      <email>richard@hughsie.com</email>;
+    </address>
+    <author>
+      <firstname>Richard</firstname>
+      <surname>Hughes</surname>
+    </author>
+    <copyright>
+      <year>2011</year>
+      <holder>Richard Hughes</holder>
+    </copyright>
+    &date;
+  </refentryinfo>
+  <refmeta>
+    <refentrytitle>cd-create-profile</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+    <refname>&package;</refname>
+    <refpurpose>Color Manager Profile Creation Tool</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&package;</command>
+      <arg><option>--verbose</option></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+    <para>
+      This manual page documents briefly the <command>&package;</command> command.
+    </para>
+    <para>
+      <command>&package;</command> allows an administrator to create
+      ICC profiles on thier system.
+    </para>
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+    <para>
+      This program follows the usual &gnu; command line syntax,
+      with long options starting with two dashes (`-').  A summary of
+      options is included below.
+    </para>
+    <variablelist>
+      <varlistentry>
+        <term>
+          <option>--help</option>
+        </term>
+        <listitem>
+          <para>Show summary of options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--description (optional)</option>
+        </term>
+        <listitem>
+          <para>Sets the profile description.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--copyright (optional)</option>
+        </term>
+        <listitem>
+          <para>Sets the profile copyright.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--model (optional)</option>
+        </term>
+        <listitem>
+          <para>Sets the profile model.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--manufacturer (optional)</option>
+        </term>
+        <listitem>
+          <para>Sets the profile manufacturer.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--srgb-palette</option>
+        </term>
+        <listitem>
+          <para>Specifies a comma seporated values file that is used for the named color.</para>
+          <para>The format of the CSV file must be "Color Name",0-255(red),0-255(green),0-255(blue).</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--output</option>
+        </term>
+        <listitem>
+          <para>Specifies the output ICC filename.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--nc-prefix (optional)</option>
+        </term>
+        <listitem>
+          <para>Specifies the named color palette prefix.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>--nc-suffix (optional)</option>
+        </term>
+        <listitem>
+          <para>Specifies the named color palette suffix.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+  <refsect1>
+    <title>AUTHOR</title>
+    <para>This manual page was written by Richard Hughes <email>richard@hughsie.com</email>.
+    </para>
+  </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-default-dtd-file:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

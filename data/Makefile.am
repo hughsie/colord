@@ -16,3 +16,6 @@ EXTRA_DIST =						\
 
 DISTCLEANFILES =					\
 	org.freedesktop.ColorManager.service
+
+x11-colors.icc:
+	$(top_builddir)/client/cd-create-profile --output $@ --srgb-palette ./x11-colors.csv --nc-prefix="X11 Colors" -d "X11 Colors" -c "No copyright" -n "Richard Hughes"
