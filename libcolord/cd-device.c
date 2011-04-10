@@ -48,7 +48,7 @@ static void	cd_device_finalize	(GObject		*object);
 /**
  * CdDevicePrivate:
  *
- * Private #PkDevice data
+ * Private #CdDevice data
  **/
 struct _CdDevicePrivate
 {

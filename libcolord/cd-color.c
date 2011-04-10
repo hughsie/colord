@@ -20,10 +20,10 @@
  */
 
 /**
- * SECTION:gcm-color
- * @short_description: color functionality
+ * SECTION:cd-color
+ * @short_description: Color object data functionality
  *
- * Functions to manipulate color.
+ * Functions to manipulate color values.
  */
 
 #include "config.h"

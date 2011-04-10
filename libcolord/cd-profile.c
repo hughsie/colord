@@ -47,7 +47,7 @@ static void	cd_profile_finalize	(GObject	*object);
 /**
  * CdProfilePrivate:
  *
- * Private #PkProfile data
+ * Private #CdProfile data
  **/
 struct _CdProfilePrivate
 {

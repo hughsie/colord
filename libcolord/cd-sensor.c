@@ -47,7 +47,7 @@ static void	cd_sensor_finalize	(GObject	*object);
 /**
  * CdSensorPrivate:
  *
- * Private #PkSensor data
+ * Private #CdSensor data
  **/
 struct _CdSensorPrivate
 {

@@ -90,6 +90,7 @@
       </para>
     </partintro>
     <xi:include href="xml/cd-version.xml"/>
+    <xi:include href="xml/cd-color.xml"/>
   </reference>
 
   <index>
