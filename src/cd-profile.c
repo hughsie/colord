@@ -723,12 +723,13 @@ cd_profile_set_filename (CdProfile *profile,
 			 const gchar *filename,
 			 GError **error)
 {
+	cmsColorSpaceSignature color_space;
+	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret = FALSE;
 	gchar *fake_md5 = NULL;
 	gchar text[1024];
 	GError *error_local = NULL;
-	cmsHPROFILE lcms_profile = NULL;
-	cmsColorSpaceSignature color_space;
+	guint len;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
@@ -759,6 +760,16 @@ cd_profile_set_filename (CdProfile *profile,
 				"en", "US",
 				text, 1024);
 	profile->priv->title = g_strdup (text);
+
+	/* remove any shitty prefix */
+	if (g_str_has_suffix (profile->priv->title, ".icc") ||
+	    g_str_has_suffix (profile->priv->title, ".ICC") ||
+	    g_str_has_suffix (profile->priv->title, ".icm") ||
+	    g_str_has_suffix (profile->priv->title, ".ICM")) {
+		len = strlen (text);
+		if (len > 4)
+			profile->priv->title[len - 4] = '\0';
+	}
 
 	/* get the profile kind */
 	switch (cmsGetDeviceClass (lcms_profile)) {
