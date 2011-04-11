@@ -20,6 +20,9 @@ BuildRequires: polkit-devel
 BuildRequires: sane-backends-devel
 BuildRequires: sqlite-devel
 
+# Require a session policy agent to apply policy
+Requires: color-policy-agent
+
 %description
 colord is a low level system activated daemon that maps color devices
 to color profiles in the system context.
