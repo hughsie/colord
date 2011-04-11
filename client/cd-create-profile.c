@@ -63,9 +63,9 @@ static gboolean
 add_srgb_palette (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
 {
 	CdColorRGB8 rgb;
-	cmsCIEXYZ xyz;
+	cmsCIELab lab;
 	cmsHPROFILE srgb_profile;
-	cmsHPROFILE xyz_profile;
+	cmsHPROFILE lab_profile;
 	cmsHTRANSFORM transform;
 	cmsUInt16Number pcs[3];
 	gboolean ret;
@@ -76,10 +76,10 @@ add_srgb_palette (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
 	GError *error = NULL;
 	guint i;
 
-	xyz_profile = cmsCreateXYZProfile ();
+	lab_profile = cmsCreateLab4Profile (NULL);
 	srgb_profile = cmsCreate_sRGBProfile ();
 	transform = cmsCreateTransform (srgb_profile, TYPE_RGB_8,
-					xyz_profile, TYPE_XYZ_DBL,
+					lab_profile, TYPE_Lab_DBL,
 					INTENT_PERCEPTUAL, 0);
 
 	ret = g_file_get_contents (filename, &data, NULL, &error);
@@ -98,20 +98,20 @@ add_srgb_palette (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
 			rgb.R = atoi (split[1]);
 			rgb.G = atoi (split[2]);
 			rgb.B = atoi (split[3]);
-			cmsDoTransform (transform, &rgb, &xyz, 1);
+			cmsDoTransform (transform, &rgb, &lab, 1);
 
 			g_debug ("add %s, %i,%i,%i as %f,%f,%f",
 				 name,
 				 rgb.R, rgb.G, rgb.B,
-				 xyz.X,
-				 xyz.Y,
-				 xyz.Z);
+				 lab.L,
+				 lab.a,
+				 lab.b);
 
 			/*
 			 * PCS = colours in PCS colour space CIE*Lab
 			 * Colorant = colours in device colour space
 			 */
-			cmsFloat2XYZEncoded (pcs, &xyz);
+			cmsFloat2LabEncoded (pcs, &lab);
 			ret = cmsAppendNamedColor (nc2, name, pcs, pcs);
 			g_assert (ret);
 
@@ -123,7 +123,7 @@ add_srgb_palette (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
 	}
 out:
 	cmsDeleteTransform (transform);
-	cmsCloseProfile (xyz_profile);
+	cmsCloseProfile (lab_profile);
 	cmsCloseProfile (srgb_profile);
 	g_free (data);
 	g_strfreev (lines);
@@ -218,7 +218,7 @@ main (int argc, char **argv)
 
 	cmsSetDeviceClass(lcms_profile, cmsSigNamedColorClass);
 	cmsSetPCS (lcms_profile, cmsSigLabData);
-	cmsSetColorSpace (lcms_profile, cmsSigRgbData);
+	cmsSetColorSpace (lcms_profile, cmsSigLabData);
 	cmsSetProfileVersion (lcms_profile, 3.4);
 
 	if (srgb_palette != NULL) {
