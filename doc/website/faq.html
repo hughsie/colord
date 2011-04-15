@@ -19,6 +19,8 @@
 <li><a href="#xrandr13">Are XRandr 1.2 devices still supported?</a></li>
 <li><a href="#imageloading">Does colord or GNOME Color Manager convert my image?</a></li>
 <li><a href="#whydbnotxml">Why are the mappings stored in a database, not readable XML files?</a></li>
+<li><a href="#nvidia-driver">Does calibration work with the NVIDIA binary driver?</a></li>
+<li><a href="#cmm-cmf-cms">Whats the difference between a CMM, CMF and a CMS?</a></li>
 <!--
 <li><a href="#xxx">xxx</a></li>
 -->
@@ -118,6 +120,48 @@ not make good design.
 These people can use the <code>colormgr</code> command line client to
 add and remove mappings, and to append qualifiers to certain profiles in
 a safe abstracted way.
+</p>
+
+<hr/>
+<h3><a name="nvidia-driver">Does calibration work with the NVIDIA binary driver?</a></h3>
+<p>
+The binary driver from NVIDIA only supports XRANDR 1.2, which means that
+it doesn't support per-monitor gamma tables.
+This means we can only send gamma correction tables to the screen, which
+means multiple monitor wouldn't be supported.
+</p>
+<p>
+As the driver has no source code, we can't fix this and have to wait for
+NVIDIA to release a fixed version of thier driver.
+Nowadays the open source nouveau driver provides a much better
+experience for NVIDIA hardware, and gnome-color-manager of course works
+flawlessly with all of the open source drivers.
+</p>
+
+<hr/>
+<h3><a name="cmf-cme-cms">Whats the difference between a CMM, CMF and a CMS?</a></h3>
+<p>
+A CMM (Color Management Module) is the software component that takes the
+pixels in an image and converts them from one colorspace to another.
+There are several CMM engines in existance, both free and propriatry.
+Free CMM engines include ArgyllCMS and lcms2, of which the latter is
+used heavily by colord and both are used by gnome-color-manager.
+</p>
+<p>
+A CMF (Color Management Framework) is a software component that allows
+applications to register devices and profiles, and also allows
+applications to query what profiles to use for a device.
+A CMF is a higher logical layer component to a CMM engine -- in this
+way, colord aims to be a CMF, and is not a CMM.
+</p>
+<p>
+It is the authors opinion that the abbreviation CMS is a heavily
+overloaded term (in that Argll and L[ittle]CMS include them in thier
+name), but do not actually provide a system framework for other
+applications to use.
+In casual usage, both LCMS and colord exhibit some parts of a complete
+CMS, and in this way CMS is often used as a general term for both a
+CMM and a CMF.
 </p>
 
 <!--
