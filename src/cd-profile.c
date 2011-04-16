@@ -107,6 +107,16 @@ cd_profile_set_is_system_wide (CdProfile *profile, gboolean is_system_wide)
 }
 
 /**
+ * cd_profile_get_is_system_wide:
+ **/
+gboolean
+cd_profile_get_is_system_wide (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	return profile->priv->is_system_wide;
+}
+
+/**
  * cd_profile_get_object_path:
  **/
 const gchar *
@@ -918,6 +928,16 @@ cd_profile_get_title (CdProfile *profile)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 	return profile->priv->title;
+}
+
+/**
+ * cd_profile_get_metadata:
+ **/
+GHashTable *
+cd_profile_get_metadata (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
+	return profile->priv->metadata;
 }
 
 /**

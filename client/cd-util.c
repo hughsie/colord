@@ -781,6 +781,41 @@ out:
 }
 
 /**
+ * cd_util_get_standard_space:
+ **/
+static gboolean
+cd_util_get_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdProfile *profile = NULL;
+	gboolean ret = TRUE;
+
+	if (g_strv_length (values) < 1) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     1, 0,
+				     "Not enough arguments, "
+				     "expected standard space "
+				     "e.g. 'adobe-rgb'");
+		goto out;
+	}
+
+	/* execute sync method */
+	profile = cd_client_get_standard_space_sync (priv->client,
+						     cd_standard_space_from_string (values[0]),
+						     NULL,
+						     error);
+	if (profile == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	cd_util_show_profile (profile);
+out:
+	if (profile != NULL)
+		g_object_unref (profile);
+	return ret;
+}
+
+/**
  * cd_util_create_profile:
  **/
 static gboolean
@@ -1331,6 +1366,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Find a profile"),
 		     cd_util_find_profile);
+	cd_util_add (priv->cmd_array,
+		     "get-standard-space",
+		     /* TRANSLATORS: command description */
+		     _("Get a standard colorspace"),
+		     cd_util_get_standard_space);
 	cd_util_add (priv->cmd_array,
 		     "create-profile",
 		     /* TRANSLATORS: command description */

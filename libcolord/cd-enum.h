@@ -192,6 +192,18 @@ typedef enum {
 	CD_SENSOR_STATE_LAST
 } CdSensorState;
 
+/**
+ * CdStandardSpace:
+ *
+ * A standard colorspace
+ **/
+typedef enum {
+	CD_STANDARD_SPACE_UNKNOWN,
+	CD_STANDARD_SPACE_SRGB,
+	CD_STANDARD_SPACE_ADOBE_RGB,
+	CD_STANDARD_SPACE_LAST
+} CdStandardSpace;
+
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
@@ -219,6 +231,8 @@ const gchar	*cd_sensor_state_to_string		(CdSensorState		 sensor_state);
 CdSensorState	 cd_sensor_state_from_string		(const gchar		*sensor_state);
 const gchar	*cd_sensor_cap_to_string		(CdSensorCap		 sensor_cap);
 CdSensorCap	 cd_sensor_cap_from_string		(const gchar		*sensor_cap);
+const gchar	*cd_standard_space_to_string		(CdStandardSpace	 standard_space);
+CdStandardSpace	 cd_standard_space_from_string		(const gchar		*standard_space);
 
 G_END_DECLS
 

@@ -998,6 +998,75 @@ out:
 }
 
 /**
+ * cd_client_get_standard_space_sync:
+ * @client: a #CdClient instance.
+ * @standard_space: standard colorspace value
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Finds a standard colorspace.
+ *
+ * Return value: A #CdProfile object, or %NULL for error
+ *
+ * Since: 0.1.6
+ **/
+CdProfile *
+cd_client_get_standard_space_sync (CdClient *client,
+				   CdStandardSpace standard_space,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp = NULL;
+	gboolean ret;
+	gchar *object_path = NULL;
+	GError *error_local = NULL;
+	GVariant *result;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
+
+	result = g_dbus_proxy_call_sync (client->priv->proxy,
+					 "GetStandardSpace",
+					 g_variant_new ("(s)",
+							cd_standard_space_to_string (standard_space)),
+					 G_DBUS_CALL_FLAGS_NONE,
+					 -1,
+					 cancellable,
+					 &error_local);
+	if (result == NULL) {
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_FAILED,
+			     "Failed to GetStandardSpace: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+
+	/* create GObject CdDevice object */
+	g_variant_get (result, "(o)",
+		       &object_path);
+	profile_tmp = cd_profile_new ();
+	ret = cd_profile_set_object_path_sync (profile_tmp,
+					       object_path,
+					       cancellable,
+					       error);
+	if (!ret)
+		goto out;
+
+	/* success */
+	profile = g_object_ref (profile_tmp);
+out:
+	g_free (object_path);
+	if (profile_tmp != NULL)
+		g_object_unref (profile_tmp);
+	if (result != NULL)
+		g_variant_unref (result);
+	return profile;
+}
+
+/**
  * cd_client_find_profile_by_filename_sync:
  * @client: a #CdClient instance.
  * @filename: filename for the profile

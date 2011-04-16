@@ -50,6 +50,10 @@ GType		 cd_config_get_type		(void);
 CdConfig	*cd_config_new			(void);
 gboolean	 cd_config_get_boolean		(CdConfig	*config,
 						 const gchar	*key);
+gchar		*cd_config_get_string		(CdConfig	*config,
+						 const gchar	*key);
+gchar		**cd_config_get_strv		(CdConfig	*config,
+						 const gchar	*key);
 
 G_END_DECLS
 

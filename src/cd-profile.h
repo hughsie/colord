@@ -64,6 +64,7 @@ void		 cd_profile_set_scope			(CdProfile	*profile,
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
 void		 cd_profile_set_is_system_wide		(CdProfile	*profile,
 							 gboolean	 is_system_wide);
+gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
 gboolean	 cd_profile_set_filename		(CdProfile	*profile,
 							 const gchar	*filename,
 							 GError		**error);
@@ -79,6 +80,7 @@ void		 cd_profile_set_format			(CdProfile	*profile,
 const gchar	*cd_profile_get_checksum		(CdProfile	*profile);
 const gchar	*cd_profile_get_title			(CdProfile	*profile);
 const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
+GHashTable	*cd_profile_get_metadata		(CdProfile	*profile);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);
 CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);

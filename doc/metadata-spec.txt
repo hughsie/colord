@@ -10,6 +10,7 @@ devices to profiles.
 
 == Profile Metadata ==
 
+STANDARD_space		the standard space, e.g. "adobe-rgb", or "srgb"
 EDID_md5		the EDID md5 checksum
 EDID_model		the EDID monitor name
 EDID_serial		the EDID serial number

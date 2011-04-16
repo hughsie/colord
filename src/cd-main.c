@@ -53,6 +53,7 @@ static CdUdevClient *udev_client = NULL;
 static CdSaneClient *sane_client = NULL;
 static CdConfig *config = NULL;
 static GPtrArray *sensors = NULL;
+static GHashTable *standard_spaces = NULL;
 
 /**
  * cd_main_profile_removed:
@@ -585,6 +586,53 @@ out:
 }
 
 /**
+ * cd_main_get_standard_space_override:
+ **/
+static CdProfile *
+cd_main_get_standard_space_override (const gchar *standard_space)
+{
+	CdProfile *profile;
+	profile = g_hash_table_lookup (standard_spaces,
+				       standard_space);
+	if (profile == NULL)
+		goto out;
+	g_object_ref (profile);
+out:
+	return profile;
+}
+
+/**
+ * cd_main_get_standard_space_metadata:
+ **/
+static CdProfile *
+cd_main_get_standard_space_metadata (const gchar *standard_space)
+{
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp;
+	gboolean ret;
+	GPtrArray *array;
+	guint i;
+
+	/* get all the profiles with this metadata */
+	array = cd_profile_array_get_by_metadata (profiles_array,
+						  "STANDARD_space",
+						  standard_space);
+
+	/* just use the first system-wide profile */
+	for (i=0; i<array->len; i++) {
+		profile_tmp = g_ptr_array_index (array, i);
+		ret = cd_profile_get_is_system_wide (profile_tmp);
+		if (ret) {
+			profile = g_object_ref (profile_tmp);
+			goto out;
+		}
+	}
+out:
+	g_ptr_array_unref (array);
+	return profile;
+}
+
+/**
  * cd_main_daemon_method_call:
  **/
 static void
@@ -698,6 +746,31 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
 							       "profile id '%s' does not exist",
+							       device_id);
+			goto out;
+		}
+
+		/* format the value */
+		value = g_variant_new ("(o)", cd_profile_get_object_path (profile));
+		g_dbus_method_invocation_return_value (invocation, value);
+		goto out;
+	}
+
+	/* return 'o' */
+	if (g_strcmp0 (method_name, "GetStandardSpace") == 0) {
+
+		g_variant_get (parameters, "(s)", &device_id);
+		g_debug ("CdMain: %s:GetStandardSpace(%s)", sender, device_id);
+
+		/* first search overrides */
+		profile = cd_main_get_standard_space_override (device_id);
+		if (profile == NULL)
+			profile = cd_main_get_standard_space_metadata (device_id);
+		if (profile == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "profile space '%s' does not exist",
 							       device_id);
 			goto out;
 		}
@@ -1206,6 +1279,78 @@ out:
 }
 
 /**
+ * cd_main_setup_standard_space:
+ **/
+static void
+cd_main_setup_standard_space (const gchar *space,
+			      const gchar *search)
+{
+	CdProfile *profile = NULL;
+
+	/* depending on the prefix, find the profile */
+	if (g_str_has_prefix (search, "icc_")) {
+		profile = cd_profile_array_get_by_id (profiles_array,
+						      search);
+	} else if (g_str_has_prefix (search, "/")) {
+		profile = cd_profile_array_get_by_filename (profiles_array,
+							    search);
+	} else  {
+		g_warning ("unknown prefix for override search: %s",
+			   search);
+		goto out;
+	}
+	if (profile == NULL) {
+		g_warning ("failed to find profile %s for override",
+			   search);
+		goto out;
+	}
+
+	/* add override */
+	g_debug ("CdMain: adding profile override %s=%s",
+		 space, search);
+	g_hash_table_insert (standard_spaces,
+			     g_strdup (space),
+			     g_object_ref (profile));
+out:
+	if (profile != NULL)
+		g_object_unref (profile);
+}
+
+/**
+ * cd_main_setup_standard_spaces:
+ **/
+static void
+cd_main_setup_standard_spaces (void)
+{
+	gchar **spaces;
+	gchar **split;
+	guint i;
+
+	/* get overrides */
+	spaces = cd_config_get_strv (config, "StandardSpaces");
+	if (spaces == NULL) {
+		g_debug ("no standard space overrides");
+		goto out;
+	}
+
+	/* parse them */
+	for (i=0; spaces[i] != NULL; i++) {
+		split = g_strsplit (spaces[i], ":", 2);
+		if (g_strv_length (split) == 2) {
+			cd_main_setup_standard_space (split[0],
+						      split[1]);
+		} else {
+			g_warning ("invalid spaces override '%s', "
+				   "expected name:value",
+				   spaces[i]);
+		}
+		g_strfreev (split);
+	}
+out:
+	g_strfreev (spaces);
+}
+
+/**
  * cd_main_on_name_acquired_cb:
  **/
 static void
@@ -1274,6 +1419,9 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 			g_error_free (error);
 		}
 	}
+
+	/* now we've got the profiles, setup the overrides */
+	cd_main_setup_standard_spaces ();
 out:
 	if (array_devices != NULL)
 		g_ptr_array_unref (array_devices);
@@ -1445,6 +1593,11 @@ main (int argc, char *argv[])
 	devices_array = cd_device_array_new ();
 	profiles_array = cd_profile_array_new ();
 	sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	standard_spaces = g_hash_table_new_full (g_str_hash,
+						 g_str_equal,
+						 g_free,
+						 (GDestroyNotify) g_object_unref);
+
 	sane_client = cd_sane_client_new ();
 	g_signal_connect (sane_client, "added",
 			  G_CALLBACK (cd_main_client_device_added_cb),
@@ -1594,6 +1747,7 @@ out:
 	g_free (introspection_profile_data);
 	g_free (introspection_sensor_data);
 	g_ptr_array_unref (sensors);
+	g_hash_table_destroy (standard_spaces);
 	if (udev_client != NULL)
 		g_object_unref (udev_client);
 	if (config != NULL)

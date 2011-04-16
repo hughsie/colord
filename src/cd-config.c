@@ -53,6 +53,26 @@ cd_config_get_boolean (CdConfig *config, const gchar *key)
 }
 
 /**
+ * cd_config_get_string:
+ **/
+gchar *
+cd_config_get_string (CdConfig *config, const gchar *key)
+{
+	return g_key_file_get_string (config->priv->keyfile,
+				      "colord", key, NULL);
+}
+
+/**
+ * cd_config_get_strv:
+ **/
+gchar **
+cd_config_get_strv (CdConfig *config, const gchar *key)
+{
+	return g_key_file_get_string_list (config->priv->keyfile,
+					   "colord", key, NULL, NULL);
+}
+
+/**
  * cd_config_class_init:
  **/
 static void

@@ -488,3 +488,39 @@ cd_sensor_cap_from_string (const gchar *sensor_cap)
 		return CD_SENSOR_CAP_CALIBRATION;
 	return CD_SENSOR_CAP_UNKNOWN;
 }
+
+/**
+ * cd_standard_space_to_string:
+ * @standard_space: a #CdStandardSpace
+ *
+ * Gets the standard colorspace as a string.
+ *
+ * Return value: the standard colorspace, e.g. 'srgb'.
+ **/
+const gchar *
+cd_standard_space_to_string (CdStandardSpace standard_space)
+{
+	if (standard_space == CD_STANDARD_SPACE_SRGB)
+		return "srgb";
+	if (standard_space == CD_STANDARD_SPACE_ADOBE_RGB)
+		return "adobe-rgb";
+	return "unknown";
+}
+
+/**
+ * cd_standard_space_from_string:
+ * @standard_space: the standard colorspace, e.g. 'srgb'.
+ *
+ * Gets the standard colorspace as a enumerated value.
+ *
+ * Return value: a #CdStandardSpace
+ **/
+CdStandardSpace
+cd_standard_space_from_string (const gchar *standard_space)
+{
+	if (g_strcmp0 (standard_space, "srgb") == 0)
+		return CD_STANDARD_SPACE_SRGB;
+	if (g_strcmp0 (standard_space, "adobe-rgb") == 0)
+		return CD_STANDARD_SPACE_ADOBE_RGB;
+	return CD_STANDARD_SPACE_UNKNOWN;
+}
