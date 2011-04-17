@@ -25,6 +25,7 @@
 #include <glib/gi18n.h>
 #include <locale.h>
 
+#include "cd-debug.h"
 #include "cd-common.h"
 #include "cd-config.h"
 #include "cd-device-array.h"
@@ -1581,6 +1582,7 @@ main (int argc, char *argv[])
 	g_set_application_name (_("Color Management"));
 	context = g_option_context_new (NULL);
 	g_option_context_add_main_entries (context, options, NULL);
+	g_option_context_add_group (context, cd_debug_get_option_group ());
 	g_option_context_set_summary (context, _("Color Management D-Bus Service"));
 	g_option_context_parse (context, &argc, &argv, NULL);
 	g_option_context_free (context);
