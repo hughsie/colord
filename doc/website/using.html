@@ -81,9 +81,9 @@ See the <a href="screenshots.html">screenshots page</a> for more details.
 <h2>Using libcolord:</h2>
 <p>
 The <a href="api/libcolord.html">libcolord gobject library</a>
-wraps the DBUS interface in a nice glib-style API.
+wraps the D-Bus interface in a nice glib-style API.
 This makes designing programs that use libcolord can concentrate on
-core functionality rather that the DBUS and colord internals.
+core functionality rather that the D-Bus and colord internals.
 CdClient in libcolord can be used as easily as:
 </p>
 <pre>
@@ -99,13 +99,13 @@ g_ptr_array_unref (devices);
 The latest documentation for libcolord is available <a href="api/">here</a>.
 </p>
 
-<h2>Using the raw DBUS API:</h2>
+<h2>Using the raw D-Bus API:</h2>
 <p>
-Using the DBUS methods and signals directly means that no glib or
+Using the D-Bus methods and signals directly means that no glib or
 gobject dependency is needed.
 This is not difficult, although does require more code than just using
 libcolord.
-See these files for examples <a href="http://gitorious.org/colord/master/blobs/master/examples/cd-dbus-create-device.c">cd-dbus-create-device.c</a> and <a href="http://gitorious.org/colord/master/blobs/master/examples/cd-dbus-use-qualifier.c">cd-dbus-use-qualifier.c</a>.
+See these files for examples <a href="http://gitorious.org/colord/master/blobs/master/examples/cd-D-Bus-create-device.c">cd-D-Bus-create-device.c</a> and <a href="http://gitorious.org/colord/master/blobs/master/examples/cd-D-Bus-use-qualifier.c">cd-D-Bus-use-qualifier.c</a>.
 The latest interface description is available <a href="http://gitweb.freedesktop.org/?p=colord.git;a=blob;f=src/org.freedesktop.colord.xml">on-line</a>
 or viewable in the <a href="api/">generated help</a> pages.
 </p>

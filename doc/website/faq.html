@@ -16,11 +16,11 @@
 <ul>
 <li><a href="#spelling">Can I type colord with leading upper case 'C'?</a></li>
 <li><a href="#gcm">How does this work with gnome-color-manager?</a></li>
-<li><a href="#xrandr13">Are XRandr 1.2 devices still supported?</a></li>
+<li><a href="#XRandR13">Are XRandR 1.2 devices still supported?</a></li>
 <li><a href="#imageloading">Does colord or GNOME Color Manager convert my image?</a></li>
 <li><a href="#whydbnotxml">Why are the mappings stored in a database, not readable XML files?</a></li>
 <li><a href="#nvidia-driver">Does calibration work with the NVIDIA binary driver?</a></li>
-<li><a href="#cmm-cmf-cms">Whats the difference between a CMM, CMF and a CMS?</a></li>
+<li><a href="#cmm-cmf-cms">What is the difference between a CMM, CMF and a CMS?</a></li>
 <!--
 <li><a href="#xxx">xxx</a></li>
 -->
@@ -42,17 +42,17 @@ No.
 <hr/>
 <h3><a name="gcm">How does this work with gnome-color-manager?</a></h3>
 <p>
-At startup GCM has to create profiles, devices and otherwise act as the
+At start-up GCM has to create profiles, devices and otherwise act as the
 helper agent for colord in that user session.
 GNOME Color Manager basically has to do the following 6 things:
 </p>
 <ul>
 <li>
- Call <code>CreateDevice</code> for each connected XRandr screen and
+ Call <code>CreateDevice</code> for each connected XRandR screen and
  watch for changes to the screen.
 </li>
 <li>
- Create an ICC profile file for each Xrandr device using the EDID
+ Create an ICC profile file for each XRandR device using the EDID
  primary information and store it in the home directory.
 </li>
 <li>
@@ -60,25 +60,25 @@ GNOME Color Manager basically has to do the following 6 things:
  directory.</li>
 <li>
  For each <code>::profile-added</code> event check if the
- <code>EDID_md5</code> metadata matches any Xrandr devices.
+ <code>EDID_md5</code> metadata matches any XRandR devices.
  If it does, then it needs to call <code>Device.AddProfile()</code>
 </li>
 <li>
  For each <code>::device-added</code> event check if the device
- <code>modified</code> property is beyong a set threshold.
+ <code>modified</code> property is beyond a set threshold.
  If it is, show a notification that the user should calibrate the device.
 </li>
 <li>
- For each <code>::device-added</code> event from a Xrandr device,
+ For each <code>::device-added</code> event from a XRandR device,
  get the default profile and push the gamma ramp to the X output.
 </li>
 </ul>
 
 
 <hr/>
-<h3><a name="xrandr13">Are XRandr 1.2 devices still supported?</a></h3>
+<h3><a name="XRandR13">Are XRandR 1.2 devices still supported?</a></h3>
 <p>
-No. Xrandr 1.3 is required to do per-output gamma correction.
+No. XRandR 1.3 is required to do per-output gamma correction.
 </p>
 
 <hr/>
@@ -96,13 +96,13 @@ If you have a registry that more than one program is changing, you
 Locking with plain files is neither fun nor reliable.
 From a raw performance point of view, it's two order of magnitudes
 faster to mmap a single 20k sqlite .db file than it is to read 200
-small XML files from the filesystem.
+small XML files from the file system.
 </p>
 <p>
 The session needs to <b>query</b> things like <i>give me all the
 profiles for device $foo</i> and <i>find all the devices that use
 profile $bar</i> which is why we should be using a database, rather than
-searching discrete files on the filesystem every time the session asks
+searching discrete files on the file system every time the session asks
 for data.
 </p>
 <p>
@@ -112,7 +112,7 @@ I don't personally see a use case where I want to exchange low level
 device->profile settings data with somebody else.
 A chain of settings from document to printer would be a very useful
 thing, but this is what you generate for a process and ship, rather
-than copy from the filesystem unchanged.
+than copy from the file system unchanged.
 </p>
 <p>
 Having power users <i>tweaking</i> the mapping is something that does
@@ -125,25 +125,25 @@ a safe abstracted way.
 <hr/>
 <h3><a name="nvidia-driver">Does calibration work with the NVIDIA binary driver?</a></h3>
 <p>
-The binary driver from NVIDIA only supports XRANDR 1.2, which means that
-it doesn't support per-monitor gamma tables.
+The binary driver from NVIDIA only supports XRandR 1.2, which means that
+it does not support per-monitor gamma tables.
 This means we can only send gamma correction tables to the screen, which
-means multiple monitor wouldn't be supported.
+means multiple monitor would not be supported.
 </p>
 <p>
 As the driver has no source code, we can't fix this and have to wait for
-NVIDIA to release a fixed version of thier driver.
+NVIDIA to release a fixed version of their driver.
 Nowadays the open source nouveau driver provides a much better
 experience for NVIDIA hardware, and gnome-color-manager of course works
 flawlessly with all of the open source drivers.
 </p>
 
 <hr/>
-<h3><a name="cmf-cme-cms">Whats the difference between a CMM, CMF and a CMS?</a></h3>
+<h3><a name="cmf-cme-cms">What is the difference between a CMM, CMF and a CMS?</a></h3>
 <p>
 A CMM (Color Management Module) is the software component that takes the
 pixels in an image and converts them from one colorspace to another.
-There are several CMM engines in existance, both free and propriatry.
+There are several CMM engines in existence, both free and proprietary.
 Free CMM engines include ArgyllCMS and lcms2, of which the latter is
 used heavily by colord and both are used by gnome-color-manager.
 </p>
@@ -156,7 +156,7 @@ way, colord aims to be a CMF, and is not a CMM.
 </p>
 <p>
 It is the authors opinion that the abbreviation CMS is a heavily
-overloaded term (in that Argll and L[ittle]CMS include them in thier
+overloaded term (in that ArgyllCMS and L[ittle]CMS include them in thier
 name), but do not actually provide a system framework for other
 applications to use.
 In casual usage, both LCMS and colord exhibit some parts of a complete
@@ -180,7 +180,7 @@ photospectrometer that colord knows how to interface with.
 </p>
 <p>
 Many sensor makes and models are recognised, and are available to be used
-by programs such as <a href="http://www.argyllcms.com/">Argll CMS</a>.
+by programs such as <a href="http://www.argyllcms.com/">ArgyllCMS</a>.
 Only the <a href="http://www.pantone.co.uk/pages/products/product.aspx?pid=562">Pantone Huey</a>
 device is available for use in colord by default, as colord contains a
 native driver for this device.
@@ -189,7 +189,7 @@ native driver for this device.
 A native driver allows colord to lock the device, read a sample from the
 sensors (or from the ambient light sensor) and unlock the device.
 A native device allows client programs to get samples from the device
-trivially using either raw DBus or libcolord without relying on external
+trivially using either raw D-Bus or libcolord without relying on external
 programs.
 </p>
 <p>
@@ -202,14 +202,14 @@ Email me if you can help.
 <hr/>
 <h3><a name="qualifiers">What is a qualifier used for?</a></h3>
 <p>
-A qualifier is a single string with three substrings joined with dots.
+A qualifier is a single string with three sub-strings joined with dots.
 For example, <code>RGB.Glossy.300dpi</code> would be the qualifier on
 a profile for a RGB device, printing on glossy paper and at 300 dots-per-inch.
 </p>
 <p>
 Qualifiers are assigned to a profile either by CUPS itself or by the user
 and this allows CUPS to choose the correct profile for a given print job.
-The substrings are tried in preference order, so that for a print job
+The sub-strings are tried in preference order, so that for a print job
 of type <code>RGB.Glossy.300dpi</code> the following fallbacks would be
 used:
 </p>
@@ -226,10 +226,10 @@ different print conditions, as very few users will have more than
 a couple of different printer profiles.
 </p>
 <p>
-The tri-dotted notation was chosen in preference to JSOn or XML as it
+The tri-dotted notation was chosen in preference to JSON or XML as it
 is <a href="http://www.cups.org/documentation.php/doc-1.4/spec-ppd.html#cupsICCProfile">
-already being used by CUPS</a> in the cupsICCProfile PPD Extensions
-format.
+already being used by CUPS</a> in the <code>cupsICCProfile</code> PPD
+Extensions format.
 </p>
 
 <hr/>
@@ -283,7 +283,7 @@ out:
 </pre>
 <p>
 If you're not happy gaining an additional dependency of libcolord, then
-it's also pretty easy to use raw DBus calls to do the same thing.
+it's also pretty easy to use raw D-Bus calls to do the same thing.
 See the <a href="http://gitorious.org/colord/master/trees/master/examples">
 examples</a> folder for some code samples.
 </p>
@@ -327,7 +327,8 @@ web pages for how to contribute to GNOME localisation.
 <hr/>
 <h3><a name="corporate-sponsor">Is there an organization or corporation sponsoring development of colord?</a></h3>
 <p>
-colord is not sponsored by anyone, although Red Hat gives me the time to
+colord is not sponsored by anyone, although
+<a href="http://www.redhat.com">Red Hat</a> gives me the time to
 work on random open source projects. Thanks!
 </p>
 

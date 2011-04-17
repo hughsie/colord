@@ -13,18 +13,18 @@
 <h1>Introduction</h1>
 <p>
 colord is a system service that makes it easy to manage, install and
-generate color profiles to accuratly color manage input and output devices.
+generate color profiles to accurately color manage input and output devices.
 </p>
 
 <h2>What colord does:</h2>
 <ul>
 <li>
-  Provides a DBus API for system frameworks to query, e.g.
+  Provides a D-Bus API for system frameworks to query, e.g.
   <i>Get me the profiles for device $foo</i> or
   <i>Create a device and assign it profile $bar</i>.
 </li>
 <li>
-  Provides a persistant database backed store that is preserved accross
+  Provides a persistent database backed store that is preserved across
   reboots.
 </li>
 <li>
@@ -68,12 +68,12 @@ GNOME Color Manager acts as a client to colord.
  <td>
   <p>
    By default, colord uses PolicyKit for user authentication.
-   This means that you, as an admin, can specify with fine-grained control
-   what your users can and cannot do.
+   This means that you, as an administrator, can specify with fine-grained
+   control what your users can and cannot do.
   </p>
   <p>
-   For instance, an admin could specify that unprivileged users can create
-   color devices but not delete them.
+   For instance, an administrator could specify that unprivileged users can
+   create color devices but not delete them.
    For home users it's typical to ask the user for their own, or the
    administrator's <code>root</code> password.
   </p>
@@ -84,7 +84,7 @@ GNOME Color Manager acts as a client to colord.
 <h2>Use cases:</h2>
 <p>
 colord and GNOME Color Manager was designed to solve a few discrete use cases.
-The DBus interface was designed to fulfil the following scenarios:
+The D-Bus interface was designed to fulfil the following scenarios:
 </p>
 
 <ul>
@@ -147,11 +147,11 @@ The GNOME Color Manager project has the following features:
 </li>
 <li>
  Setting output gamma tables (with local brightness and adjustments) to
- any Xrandr output.
+ any XRandR output.
 </li>
 <li>
  Setting of per-user and system settings at session start, and when
- monitors are hotplugged.
+ monitors are hot-plugged.
 </li>
 <li>
  Easy install of vendor supplied .ICC or .ICM files, just by double
@@ -171,7 +171,7 @@ The GNOME Color Manager project has the following features:
  GIMP use a color managed output.
 </li>
 <li>
- Easy to use DBus interface for applications to query what ICC profiles
+ Easy to use D-Bus interface for applications to query what ICC profiles
  should be used for a specific device or device type.
 </li>
 </ul>

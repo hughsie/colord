@@ -62,7 +62,7 @@ One user may want to set the default for all users.
 We cannot reference files in <code>/home/foo/.icc/</code> when logged in
 as user bar, as the user will not have access permissions, or in the
 worst case, <code>/home/foo</code> may be encrypted and inaccessible even as root.
-For this reason, colord copies the ICC profiles to a systemwide directory,
+For this reason, colord copies the ICC profiles to a system-wide directory,
 <code>/usr/lib/color</code> that is per-machine and accessible to all users.
 </p>
 <img src="img/polkit.png" alt="[logo]"/>
@@ -83,15 +83,15 @@ GNOME Color Manager is a session framework that makes it easy to manage, install
 <li>Shipped by all of the big distributions already.</li>
 <li>Allows per-user and per-system configuration and defaults.</li>
 <li>Supports the ICC Profiles in X specification.</li>
-<li>Uses <a href="http://www.argyllcms.com/">Argyllcms</a>, so huge number of calibration devices supported.</li>
-<li>Supports the Huey device as a native device which does not use the Argyllcms driver</li>
+<li>Uses <a href="http://www.argyllcms.com/">ArgyllCMS</a>, so huge number of calibration devices supported.</li>
+<li>Supports the Huey device as a native device which does not use the ArgyllCMS driver</li>
 <li>GPLv2+ licence which makes it Free Software.</li>
-<li>Provides a simple to use cross-platform <a href="http://git.gnome.org/browse/gnome-color-manager/plain/src/org.gnome.ColorManager.xml">DBus interface</a> for applications to use.</li>
+<li>Provides a simple to use cross-platform <a href="http://git.gnome.org/browse/gnome-color-manager/plain/src/org.gnome.ColorManager.xml">D-Bus interface</a> for applications to use.</li>
 <li>Used by <a href="https://launchpad.net/simple-scan">simple scan</a> for calibration data.</li>
 <li>Used by gnome-screenshot for the window ICC profile.</li>
 </ul>
 <p>
-GNOME Color Manager is a ''thin solution'' where it defers to the application the pixbuf transforming (using something like <a href="http://www.littlecms.com/">lcms</a>, or <a href="http://cairographics.org/">cairo</a>) and only providing a <a href="http://projects.gnome.org/gnome-color-manager/screenshots.html">simple UI</a> and minimalist DBus interface for interested applications to query.
+GNOME Color Manager is a ''thin solution'' where it defers to the application the pixbuf transforming (using something like <a href="http://www.littlecms.com/">lcms</a>, or <a href="http://cairographics.org/">cairo</a>) and only providing a <a href="http://projects.gnome.org/gnome-color-manager/screenshots.html">simple UI</a> and minimalist D-Bus interface for interested applications to query.
 </p>
 
 <h2>What the binaries do</h2>
@@ -105,17 +105,18 @@ For interest, the different binaries are listed here.
 <h3>GTK programs</h3>
 
 <ul>
+<li><code>gcm-prefs</code> - The main preferences dialog used to map profiles to devices.</li>
 <li><code>gcm-import</code> - Helper to import an ICC file. This is normally run by the <code>gcm-import.desktop</code> file.</li>
-<li><code>gcm-picker</code> - Simple program to pick a spot color using a photospectrometer.</li>
+<li><code>gcm-picker</code> - Simple program to pick a spot color using a photospectrometer or colorimeter.</li>
 </ul>
 
 <h3>Command line tools</h3>
 <ul>
 <li><code>gcm-inspect</code> - Command line tool to inspect the
 <a href="http://www.oyranos.org/wiki/index.php?title=ICC_Profiles_in_X_Specification_0.4"><code>_ICC_PROFILE</code></a>
-atoms and test the DBus API.</li>
+atoms and test the D-Bus API.</li>
 <li><code>gcm-fix-profile</code> - Tries to fix a corrupted or invalid ICC profile file.</li>
-<li><code>gcm-session</code> - DBus session service that is started on demand.</li>
+<li><code>gcm-session</code> - D-Bus session service that is started on demand.</li>
 <li><code>gcm-dump-edid</code> - Debugging program that dumps the EDID to a file.</li>
 <li><code>gcm-dump-profile</code> - Debugging program that dumps all details about a profile.</li>
 </ul>
@@ -123,12 +124,13 @@ atoms and test the DBus API.</li>
 <h1>General points:</h1>
 
 <p>
-I think most of the CMS functionality can be (and should be) integrated
+I think most of the CMM functionality can be (and should be) integrated
 into the platform, e.g. <a href="http://www.gtk.org/">GTK</a> and Cairo.
 </p>
 <p>
 It's my opinion that it's best to have two different applications for
-something that share a common spec, rather than trying to be a jack-of-all-trades.
+something that share a common specification, rather than trying to be
+a jack-of-all-trades.
 It's a cliché, but KDE users do want options, and GNOME users do want
 things to 'just work'.
 You can't design a library, or even an application for those different
