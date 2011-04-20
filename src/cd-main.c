@@ -854,7 +854,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* set the properties */
 		while (g_variant_iter_loop (iter, "{ss}",
 					    &prop_key, &prop_value)) {
-			g_debug ("%s=%s", prop_key, prop_value);
 			ret = cd_device_set_property_internal (device,
 							       prop_key,
 							       prop_value,
@@ -1001,7 +1000,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* set the properties */
 		while (g_variant_iter_loop (iter, "{ss}",
 					    &prop_key, &prop_value)) {
-			g_debug ("%s=%s", prop_key, prop_value);
 			ret = cd_profile_set_property_internal (profile,
 								prop_key,
 								prop_value,
