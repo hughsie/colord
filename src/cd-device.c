@@ -849,7 +849,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* find the profile relation */
 		g_variant_get (parameters, "(o)", &property_value);
 		g_debug ("CdDevice %s:GetProfileRelation(%s)",
-			 sender, property_name);
+			 sender, property_value);
 
 		relation = cd_device_find_profile_relation (device,
 							    property_value);
@@ -858,7 +858,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
 							       "no profile '%s' found",
-							       property_name);
+							       property_value);
 			goto out;
 		}
 
