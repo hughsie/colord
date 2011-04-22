@@ -504,6 +504,8 @@ cd_standard_space_to_string (CdStandardSpace standard_space)
 		return "srgb";
 	if (standard_space == CD_STANDARD_SPACE_ADOBE_RGB)
 		return "adobe-rgb";
+	if (standard_space == CD_STANDARD_SPACE_PROPHOTO_RGB)
+		return "prophoto-rgb";
 	return "unknown";
 }
 
