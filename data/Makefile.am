@@ -5,6 +5,9 @@ SUBDIRS = 						\
 dbusdir = $(sysconfdir)/dbus-1/system.d
 dist_dbus_DATA = org.freedesktop.ColorManager.conf
 
+profiledir = $(datadir)/color/icc/colord
+dist_profile_DATA = x11-colors.icc
+
 servicemaindir = $(datadir)/dbus-1/system-services
 servicemain_in_files = org.freedesktop.ColorManager.service.in
 servicemain_DATA     = $(servicemain_in_files:.service.in=.service)

@@ -74,6 +74,8 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{_libdir}/libcolord.so.*
 %config %{_sysconfdir}/colord.conf
 /lib/udev/rules.d/*.rules
+%dir %{_datadir}/color/icc/colord
+%{_datadir}/color/icc/colord/*.ic?
 
 %files devel
 %defattr(-,root,root,-)
