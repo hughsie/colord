@@ -1,3 +1,42 @@
+Version 0.1.6
+~~~~~~~~~~~~~
+Released: 2011-04-24
+
+Notes:
+ - Sensor devices are now being managed by colord to make calibration a
+   nicer experience in the desktop. At the moment only taking spot
+   colors is supported, and only the huey driver is available.
+ - Applications can now request profiles for standard color spaces such
+   as sRGB, AdobeRGB and ProPhotoRGB.
+ - Lots of system performance improvements, but be sure to use g-c-m
+   from git for the fastest session startup.
+
+New Features:
+ - Add 3 tools for reverse engineering the huey colorimeter
+ - Add a DBus interface designed so normal users can use color sensors
+ - Add a dummy sensor object that is enabled if 'CreateDummySensor' is set
+ - Add an async version of CdClient:Connect()
+ - Add a --verbose command line option to print the debugging in color
+ - Add CdColor to libcolord so we have some reusable GTypes to use
+ - Add cd-create-profile, which provides a way to build a NCP
+ - Add GetStandardSpace to the DBus API
+ - Add support for sensor devices in libcolord
+ - Add get-sensors and get-sensor-reading commands to the colormgr tool
+ - Add the native Huey sensor driver which is taken from gnome-color-manager
+ - Add two options to colord: --timed-exit and --immediate-exit
+ - Import the sensor udev rules file from gnome-color-manager
+ - Move gcm-fix-profile from GNOME Color Manager as cd-fix-profile
+ - Update the architecture plan to include sensor devices
+
+Bugfixes:
+ - Do not emit a critical warning if ID_MODEL doesn't exist for a device
+ - Remove any .icc suffix automatically from the encoded profile title
+ - Return an error if the user tries to create a persistant profile
+ - The DTP92 cannot profile LCDs, according to Graeme
+ - Use cmsOpenProfileFromFile() rather than getting the complete profile content
+ - Use the embedded profile-id if it is available, else fallback to the file MD5
+ - Use the FILE_checksum metadata if it is available to speed up session startup
+
 Version 0.1.5
 ~~~~~~~~~~~~~
 Released: 2011-03-31

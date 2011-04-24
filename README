@@ -4,13 +4,6 @@ colord is a system activated daemon that maps devices to color profiles.
 It is used by gnome-color-manager for system integration and use when
 there are no users logged in.
 
-     [GCM]   [system-config-printer]        SESSION
-       |                 |
-_______|_________________|______________________
-       |                 |
-       |                 |
-     [colord]----------[CUPS]               SYSTEM
-
 What colord does:
 
 * Provides a DBus API for system frameworks to query, e.g.
