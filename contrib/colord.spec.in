@@ -55,6 +55,10 @@ make install DESTDIR=$RPM_BUILD_ROOT
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
+# databases
+touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/mapping.db
+touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/storage.db
+
 %find_lang %{name}
 
 %post -p /sbin/ldconfig
@@ -65,7 +69,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %defattr(-,root,root,-)
 %doc README AUTHORS NEWS COPYING
 %{_libexecdir}/colord
-%{_localstatedir}/lib/colord
+%dir %{_localstatedir}/lib/colord
 %{_bindir}/*
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml
@@ -77,6 +81,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 /lib/udev/rules.d/*.rules
 %dir %{_datadir}/color/icc/colord
 %{_datadir}/color/icc/colord/*.ic?
+%ghost %{_localstatedir}/lib/colord/*.db
 
 %files devel
 %defattr(-,root,root,-)
