@@ -65,6 +65,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %defattr(-,root,root,-)
 %doc README AUTHORS NEWS COPYING
 %{_libexecdir}/colord
+%{_localstatedir}/lib/colord
 %{_bindir}/*
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml

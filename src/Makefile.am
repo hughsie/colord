@@ -203,6 +203,7 @@ endif
 install-data-hook:
 	if test -w $(DESTDIR)$(prefix)/; then \
 		mkdir -p $(DESTDIR)$(CD_SYSTEM_PROFILES_DIR); \
+		mkdir -p $(DESTDIR)$(localstatedir)/lib/colord; \
 	fi
 
 TESTS = cd-self-test
