@@ -669,7 +669,7 @@ cd_profile_get_precooked_md5 (cmsHPROFILE lcms_profile)
 	/* convert to a hex string */
 	md5 = g_new0 (gchar, 32 + 1);
 	for (i=0; i<16; i++)
-		g_snprintf (md5 + i*2, 3, "%x", profile_id[i]);
+		g_snprintf (md5 + i*2, 3, "%02x", profile_id[i]);
 out:
 	return md5;
 }
@@ -706,6 +706,16 @@ cd_profile_get_best_md5 (CdProfile *profile,
 	tmp = g_hash_table_lookup (profile->priv->metadata,
 				   "FILE_checksum");
 	if (tmp != NULL) {
+
+		/* invalid metadata */
+		if (strlen (tmp) != 32) {
+			g_set_error (error,
+				     CD_MAIN_ERROR,
+				     CD_MAIN_ERROR_FAILED,
+				     "FILE_checksum invalid for %s: %s",
+				     profile->priv->filename, tmp);
+			goto out;
+		}
 		checksum = g_strdup (tmp);
 		goto out;
 	}
