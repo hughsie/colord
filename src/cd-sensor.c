@@ -1020,6 +1020,8 @@ cd_sensor_finalize (GObject *object)
 		g_dbus_connection_unregister_object (priv->connection,
 						     priv->registration_id);
 	}
+	if (priv->watcher_id != 0)
+		g_bus_unwatch_name (priv->watcher_id);
 	g_strfreev (priv->caps);
 	g_free (priv->model);
 	g_free (priv->vendor);
