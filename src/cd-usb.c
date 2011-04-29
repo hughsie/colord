@@ -228,13 +228,13 @@ cd_usb_source_dispatch (GSource *source,
 			GSourceFunc callback,
 			gpointer user_data)
 {
-	gint r;
+	gint rc;
 	struct timeval tv = { 0, 0 };
 	CdUsb *usb = user_data;
-	r = libusb_handle_events_timeout (usb->priv->ctx, &tv);
-	if (r < 0) {
-		g_warning ("failed to handle event: %s",
-			   libusb_strerror (retval));
+	rc = libusb_handle_events_timeout (usb->priv->ctx, &tv);
+	if (rc < 0) {
+		g_warning ("failed to handle event: %s [%i]",
+			   libusb_strerror (rc), rc);
 	}
 	return TRUE;
 }
@@ -280,25 +280,33 @@ static GSourceFuncs cd_usb_source_funcs = {
  * allows you to submit async requests using usb, and the callbacks
  * just kinda happen at the right time.
  **/
-void
-cd_usb_attach_to_context (CdUsb *usb, GMainContext *context)
+gboolean
+cd_usb_attach_to_context (CdUsb *usb,
+			  GMainContext *context,
+			  GError **error)
 {
 	guint i;
+	gboolean ret = FALSE;
 	const struct libusb_pollfd **pollfds;
 	CdUsbPrivate *priv = usb->priv;
 
-	/* already connected */
-	if (priv->source != NULL) {
-		g_warning ("already attached to a context");
-		return;
-	}
+	/* load libusb if we've not done this already */
+	ret = cd_usb_load (usb, error);
+	if (!ret)
+		goto out;
 
 	/* create new CdUsbSource */
-	priv->source = (CdUsbSource *) g_source_new (&cd_usb_source_funcs, sizeof(CdUsbSource));
-	priv->source->pollfds = NULL;
+	if (priv->source == NULL) {
+		priv->source = (CdUsbSource *) g_source_new (&cd_usb_source_funcs,
+							     sizeof(CdUsbSource));
+		priv->source->pollfds = NULL;
 
-	/* assign user_data */
-	g_source_set_callback ((GSource *)priv->source, NULL, usb, NULL);
+		/* assign user_data */
+		g_source_set_callback ((GSource *)priv->source, NULL, usb, NULL);
+
+		/* attach to the mainloop */
+		g_source_attach ((GSource *)priv->source, context);
+	}
 
 	/* watch the fd's already created */
 	pollfds = libusb_get_pollfds (usb->priv->ctx);
@@ -310,9 +318,8 @@ cd_usb_attach_to_context (CdUsb *usb, GMainContext *context)
 				     cd_libusb_pollfd_added_cb,
 				     cd_libusb_pollfd_removed_cb,
 				     usb);
-
-	/* attach to the mainloop */
-	g_source_attach ((GSource *)priv->source, context);
+out:
+	return ret;
 }
 
 /**
@@ -328,7 +335,7 @@ gboolean
 cd_usb_load (CdUsb *usb, GError **error)
 {
 	gboolean ret = FALSE;
-	gint retval;
+	gint rc;
 	CdUsbPrivate *priv = usb->priv;
 
 	/* already done */
@@ -338,12 +345,12 @@ cd_usb_load (CdUsb *usb, GError **error)
 	}
 
 	/* init */
-	retval = libusb_init (&priv->ctx);
-	if (retval < 0) {
+	rc = libusb_init (&priv->ctx);
+	if (rc < 0) {
 		g_set_error (error, CD_USB_ERROR,
 			     CD_USB_ERROR_INTERNAL,
-			     "failed to init libusb: %s",
-			     libusb_strerror (retval));
+			     "failed to init libusb: %s [%i]",
+			     libusb_strerror (rc), rc);
 		goto out;
 	}
 
@@ -392,7 +399,7 @@ cd_usb_connect (CdUsb *usb,
 		guint interface,
 		GError **error)
 {
-	gint retval;
+	gint rc;
 	gboolean ret = FALSE;
 	CdUsbPrivate *priv = usb->priv;
 
@@ -423,21 +430,23 @@ cd_usb_connect (CdUsb *usb,
 	}
 
 	/* set configuration and interface */
-	retval = libusb_set_configuration (priv->handle, configuration);
-	if (retval < 0) {
+	rc = libusb_set_configuration (priv->handle, configuration);
+	if (rc < 0) {
 		g_set_error (error, CD_USB_ERROR,
 			     CD_USB_ERROR_INTERNAL,
-			     "failed to set configuration 0x%02x: %s",
-			     configuration, libusb_strerror (retval));
+			     "failed to set configuration 0x%02x: %s [%i]",
+			     configuration,
+			     libusb_strerror (rc), rc);
 		ret = FALSE;
 		goto out;
 	}
-	retval = libusb_claim_interface (priv->handle, interface);
-	if (retval < 0) {
+	rc = libusb_claim_interface (priv->handle, interface);
+	if (rc < 0) {
 		g_set_error (error, CD_USB_ERROR,
 			     CD_USB_ERROR_INTERNAL,
-			     "failed to claim interface 0x%02x: %s",
-			     interface, libusb_strerror (retval));
+			     "failed to claim interface 0x%02x: %s [%i]",
+			     interface,
+			     libusb_strerror (rc), rc);
 		ret = FALSE;
 		goto out;
 	}

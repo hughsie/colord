@@ -77,8 +77,9 @@ gboolean		 cd_usb_disconnect		(CdUsb		*usb,
 							 GError		**error);
 gboolean		 cd_usb_get_connected		(CdUsb		*usb);
 
-void			 cd_usb_attach_to_context	(CdUsb		*usb,
-							 GMainContext	*context);
+gboolean		 cd_usb_attach_to_context	(CdUsb		*usb,
+							 GMainContext	*context,
+							 GError		**error);
 libusb_device_handle	*cd_usb_get_device_handle	(CdUsb		*usb);
 CdUsb			*cd_usb_new			(void);
 
