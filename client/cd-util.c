@@ -592,6 +592,53 @@ out:
 }
 
 /**
+ * cd_util_sensor_lock:
+ **/
+static gboolean
+cd_util_sensor_lock (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdSensor *sensor;
+	gboolean ret = TRUE;
+	GMainLoop *loop = NULL;
+	GPtrArray *array = NULL;
+	guint i;
+
+	/* execute sync method */
+	array = cd_client_get_sensors_sync (priv->client, NULL, error);
+	if (array == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	if (array->len == 0) {
+		ret = FALSE;
+		/* TRANSLATORS: the user does not have a colorimeter attached */
+		g_set_error_literal (error, 1, 0,
+				     _("There are no supported sensors attached"));
+		goto out;
+	}
+	for (i=0; i < array->len; i++) {
+		sensor = g_ptr_array_index (array, i);
+
+		/* lock */
+		ret = cd_sensor_lock_sync (sensor,
+					   NULL,
+					   error);
+		if (!ret)
+			goto out;
+	}
+
+	/* spin */
+	loop = g_main_loop_new (NULL, TRUE);
+	g_main_loop_run (loop);
+out:
+	if (loop != NULL)
+		g_main_loop_unref (loop);
+	if (array != NULL)
+		g_ptr_array_unref (array);
+	return ret;
+}
+
+/**
  * cd_util_get_sensor_reading:
  **/
 static gboolean
@@ -1351,6 +1398,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Gets a reading from a sensor"),
 		     cd_util_get_sensor_reading);
+	cd_util_add (priv->cmd_array,
+		     "sensor-lock",
+		     /* TRANSLATORS: command description */
+		     _("Locks the color sensor"),
+		     cd_util_sensor_lock);
 	cd_util_add (priv->cmd_array,
 		     "create-device",
 		     /* TRANSLATORS: command description */
