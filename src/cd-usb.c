@@ -571,6 +571,8 @@ cd_usb_finalize (GObject *object)
 	}
 	if (priv->handle != NULL)
 		libusb_close (priv->handle);
+	if (priv->source != NULL)
+		g_source_destroy ((GSource *) priv->source);
 
 	G_OBJECT_CLASS (cd_usb_parent_class)->finalize (object);
 }
