@@ -477,7 +477,6 @@ cd_device_dbus_signal_cb (GDBusProxy *proxy,
 	gchar *object_path_tmp = NULL;
 
 	if (g_strcmp0 (signal_name, "Changed") == 0) {
-		g_debug ("emit Changed on %s", device->priv->object_path);
 		g_signal_emit (device, signals[SIGNAL_CHANGED], 0);
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
@@ -630,10 +629,6 @@ cd_device_set_object_path_sync (CdDevice *device,
 			  "g-properties-changed",
 			  G_CALLBACK (cd_device_dbus_properties_changed),
 			  device);
-
-	/* success */
-	g_debug ("Connected to device %s",
-		 device->priv->id);
 out:
 	if (id != NULL)
 		g_variant_unref (id);

@@ -384,7 +384,6 @@ cd_profile_dbus_signal_cb (GDBusProxy *proxy,
 	gchar *object_path_tmp = NULL;
 
 	if (g_strcmp0 (signal_name, "Changed") == 0) {
-		g_debug ("emit Changed on %s", profile->priv->object_path);
 		g_signal_emit (profile, signals[SIGNAL_CHANGED], 0);
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
@@ -524,10 +523,6 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 			  "g-properties-changed",
 			  G_CALLBACK (cd_profile_dbus_properties_changed),
 			  profile);
-
-	/* success */
-	g_debug ("Connected to profile %s",
-		 profile->priv->id);
 out:
 	if (id != NULL)
 		g_variant_unref (id);

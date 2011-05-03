@@ -319,7 +319,6 @@ cd_client_get_device_array_from_variant (CdClient *client,
 	for (i=0; i < len; i++) {
 		g_variant_get_child (child, i,
 				     "o", &object_path_tmp);
-		g_debug ("%s", object_path_tmp);
 
 		/* try to get from device cache, else create */
 		device = cd_client_get_cache_device_create (client,
@@ -601,8 +600,6 @@ cd_client_create_device_sync (CdClient *client,
 	if (properties != NULL) {
 		list = g_hash_table_get_keys (properties);
 		for (l = list; l != NULL; l = l->next) {
-			g_debug ("adding property %s",
-				 (const gchar*) l->data);
 			g_variant_builder_add (&builder,
 					       "{ss}",
 					       l->data,
@@ -704,8 +701,6 @@ cd_client_create_profile_sync (CdClient *client,
 	if (properties != NULL) {
 		list = g_hash_table_get_keys (properties);
 		for (l = list; l != NULL; l = l->next) {
-			g_debug ("adding property %s",
-				 (const gchar*) l->data);
 			g_variant_builder_add (&builder,
 					       "{ss}",
 					       l->data,
@@ -1219,7 +1214,6 @@ cd_client_get_profile_array_from_variant (CdClient *client,
 	for (i=0; i < len; i++) {
 		g_variant_get_child (child, i,
 				     "o", &object_path_tmp);
-		g_debug ("%s", object_path_tmp);
 
 		/* create profile and add to the array */
 		profile = cd_profile_new ();
@@ -1497,7 +1491,6 @@ cd_client_get_sensor_array_from_variant (CdClient *client,
 	for (i=0; i < len; i++) {
 		g_variant_get_child (child, i,
 				     "o", &object_path_tmp);
-		g_debug ("%s", object_path_tmp);
 
 		/* create sensor and add to the array */
 		sensor = cd_sensor_new ();
@@ -1780,8 +1773,6 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			g_error_free (error);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_DEVICE_ADDED], 0,
 			       device);
 	} else if (g_strcmp0 (signal_name, "DeviceRemoved") == 0) {
@@ -1791,13 +1782,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 		 * as the process isn't aware of it's existance */
 		device = cd_client_get_cache_device (client,
 						     object_path_tmp);
-		if (device == NULL) {
-			g_debug ("failed to get cached device %s",
-				 object_path_tmp);
+		if (device == NULL)
 			goto out;
-		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_DEVICE_REMOVED], 0,
 			       device);
 	} else if (g_strcmp0 (signal_name, "DeviceChanged") == 0) {
@@ -1806,13 +1792,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 		/* is device in the cache? */
 		device = cd_client_get_cache_device (client,
 						     object_path_tmp);
-		if (device == NULL) {
-			g_debug ("failed to get cached device %s",
-				 object_path_tmp);
+		if (device == NULL)
 			goto out;
-		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_DEVICE_CHANGED], 0,
 			       device);
 	} else if (g_strcmp0 (signal_name, "ProfileAdded") == 0) {
@@ -1829,8 +1810,6 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			g_error_free (error);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_PROFILE_ADDED], 0,
 			       profile);
 	} else if (g_strcmp0 (signal_name, "ProfileRemoved") == 0) {
@@ -1840,13 +1819,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 		 * as the process isn't aware of it's existance */
 		profile = cd_client_get_cache_profile (client,
 						       object_path_tmp);
-		if (profile == NULL) {
-			g_debug ("failed to get cached profile %s",
-				 object_path_tmp);
+		if (profile == NULL)
 			goto out;
-		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_PROFILE_REMOVED], 0,
 			       profile);
 	} else if (g_strcmp0 (signal_name, "ProfileChanged") == 0) {
@@ -1855,13 +1829,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 		/* is device in the cache? */
 		profile = cd_client_get_cache_profile (client,
 						       object_path_tmp);
-		if (profile == NULL) {
-			g_debug ("failed to get cached profile %s",
-				 object_path_tmp);
+		if (profile == NULL)
 			goto out;
-		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_PROFILE_CHANGED], 0,
 			       profile);
 	} else if (g_strcmp0 (signal_name, "SensorAdded") == 0) {
@@ -1878,8 +1847,6 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			g_error_free (error);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_SENSOR_ADDED], 0,
 			       sensor);
 	} else if (g_strcmp0 (signal_name, "SensorRemoved") == 0) {
@@ -1896,8 +1863,6 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			g_error_free (error);
 			goto out;
 		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_SENSOR_REMOVED], 0,
 			       sensor);
 	} else if (g_strcmp0 (signal_name, "SensorChanged") == 0) {
@@ -1906,13 +1871,8 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 		/* is device in the cache? */
 		sensor = cd_client_get_cache_sensor (client,
 						     object_path_tmp);
-		if (sensor == NULL) {
-			g_debug ("failed to get cached sensor %s",
-				 object_path_tmp);
+		if (sensor == NULL)
 			goto out;
-		}
-		g_debug ("CdClient: emit '%s' on %s",
-			 signal_name, object_path_tmp);
 		g_signal_emit (client, signals[SIGNAL_SENSOR_CHANGED], 0,
 			       sensor);
 	} else {
@@ -1936,7 +1896,7 @@ cd_client_owner_notify_cb (GObject *object,
 			   GParamSpec *pspec,
 			   CdClient *client)
 {
-	g_debug ("daemon has quit, clearing caches");
+	/* daemon has quit, clearing caches */
 	g_ptr_array_set_size (client->priv->device_cache, 0);
 	g_ptr_array_set_size (client->priv->profile_cache, 0);
 	g_ptr_array_set_size (client->priv->sensor_cache, 0);
@@ -1969,8 +1929,6 @@ cd_client_connect_proxy (CdClient *client)
 			 client);
 
 	/* success */
-	g_debug ("Connected to colord daemon version %s",
-		 client->priv->daemon_version);
 	if (daemon_version != NULL)
 		g_variant_unref (daemon_version);
 }

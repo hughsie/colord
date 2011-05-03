@@ -364,7 +364,6 @@ cd_sensor_dbus_signal_cb (GDBusProxy *proxy,
 			  CdSensor   *sensor)
 {
 	if (g_strcmp0 (signal_name, "ButtonPressed") == 0) {
-		g_debug ("emit ButtonPressed on %s", sensor->priv->object_path);
 		g_signal_emit (sensor, signals[SIGNAL_BUTTON_PRESSED], 0);
 	} else {
 		g_warning ("unhandled signal '%s'", signal_name);
@@ -495,10 +494,6 @@ cd_sensor_set_object_path_sync (CdSensor *sensor,
 			  "g-properties-changed",
 			  G_CALLBACK (cd_sensor_dbus_properties_changed),
 			  sensor);
-
-	/* success */
-	g_debug ("Connected to sensor %s",
-		 sensor->priv->serial);
 out:
 	if (kind != NULL)
 		g_variant_unref (kind);
