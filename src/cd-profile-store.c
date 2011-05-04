@@ -41,6 +41,7 @@ struct _CdProfileStorePrivate
 	GPtrArray			*monitor_array;
 	GPtrArray			*directory_array;
 	GVolumeMonitor			*volume_monitor;
+	guint				 mount_added_id;
 };
 
 enum {
@@ -472,6 +473,45 @@ cd_profile_store_add_profiles_from_mounted_volumes (CdProfileStore *profile_stor
 }
 
 /**
+ * cd_profile_store_volume_monitor_mount_added_cb:
+ **/
+static void
+cd_profile_store_volume_monitor_mount_added_cb (GVolumeMonitor *volume_monitor,
+						GMount *mount,
+						CdProfileStore *profile_store)
+{
+	cd_profile_store_add_profiles_from_mounted_volume (profile_store, mount);
+}
+
+/**
+ * cd_profile_mount_tracking_enable:
+ **/
+static void
+cd_profile_mount_tracking_enable (CdProfileStore *profile_store)
+{
+	if (profile_store->priv->mount_added_id != 0)
+		return;
+	profile_store->priv->mount_added_id =
+		g_signal_connect (profile_store->priv->volume_monitor,
+				  "mount-added",
+				  G_CALLBACK(cd_profile_store_volume_monitor_mount_added_cb),
+				  profile_store);
+}
+
+/**
+ * cd_profile_mount_tracking_disable:
+ **/
+static void
+cd_profile_mount_tracking_disable (CdProfileStore *profile_store)
+{
+	if (profile_store->priv->mount_added_id == 0)
+		return;
+	g_signal_handler_disconnect (profile_store->priv->volume_monitor,
+				     profile_store->priv->mount_added_id);
+	profile_store->priv->mount_added_id = 0;
+}
+
+/**
  * cd_profile_store_search:
  **/
 gboolean
@@ -502,6 +542,9 @@ cd_profile_store_search (CdProfileStore *profile_store,
 		ret = cd_profile_store_add_profiles_from_mounted_volumes (profile_store);
 		if (ret)
 			success = TRUE;
+		cd_profile_mount_tracking_enable (profile_store);
+	} else {
+		cd_profile_mount_tracking_disable (profile_store);
 	}
 
 	/* get machine specific profiles */
@@ -513,17 +556,6 @@ cd_profile_store_search (CdProfileStore *profile_store,
 	}
 
 	return success;
-}
-
-/**
- * cd_profile_store_volume_monitor_mount_added_cb:
- **/
-static void
-cd_profile_store_volume_monitor_mount_added_cb (GVolumeMonitor *volume_monitor,
-						GMount *mount,
-						CdProfileStore *profile_store)
-{
-	cd_profile_store_add_profiles_from_mounted_volume (profile_store, mount);
 }
 
 /**
@@ -563,10 +595,6 @@ cd_profile_store_init (CdProfileStore *profile_store)
 
 	/* watch for volumes to be connected */
 	profile_store->priv->volume_monitor = g_volume_monitor_get ();
-	g_signal_connect (profile_store->priv->volume_monitor,
-			  "mount-added",
-			  G_CALLBACK(cd_profile_store_volume_monitor_mount_added_cb),
-			  profile_store);
 }
 
 /**
@@ -578,6 +606,7 @@ cd_profile_store_finalize (GObject *object)
 	CdProfileStore *profile_store = CD_PROFILE_STORE (object);
 	CdProfileStorePrivate *priv = profile_store->priv;
 
+	cd_profile_mount_tracking_disable (profile_store);
 	g_ptr_array_unref (priv->profile_array);
 	g_ptr_array_unref (priv->monitor_array);
 	g_ptr_array_unref (priv->directory_array);
