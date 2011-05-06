@@ -1,3 +1,18 @@
+Version 0.1.7
+~~~~~~~~~~~~~
+Released: 2011-05-06
+
+New Features:
+ - Add sensor-lock to just lock the color sensor and listen for events
+
+Bugfixes:
+ - Create /var/lib/colord at buildtime not runtime for SELinux
+ - Ensure profiles with embedded profile checksums are parsed correctly
+ - Move the colorimeter rules to be run before 70-acl.rules
+ - Stop watching the client when the sensor is finalized
+ - Ensure the source is destroyed when we unref CdUsb to prevent a crash
+ - Only enable the volume mount tracking when searching volumes
+
 Version 0.1.6
 ~~~~~~~~~~~~~
 Released: 2011-04-24
