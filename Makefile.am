@@ -8,10 +8,10 @@ SUBDIRS = 						\
 	etc						\
 	po						\
 	policy						\
-	data						\
 	man						\
 	libcolord					\
 	client						\
+	data						\
 	examples					\
 	rules						\
 	doc						\
