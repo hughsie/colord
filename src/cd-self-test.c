@@ -337,7 +337,9 @@ cd_test_usb_func (void)
 	g_assert (ret);
 
 	/* attach to the default mainloop */
-	cd_usb_attach_to_context (usb, NULL);
+	ret = cd_usb_attach_to_context (usb, NULL, &error);
+	g_assert (ret);
+	g_assert_no_error (error);
 
 	/* connect to a non-existant device */
 	ret = cd_usb_connect (usb, 0xffff, 0xffff, 0x1, 0x1, &error);
