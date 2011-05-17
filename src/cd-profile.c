@@ -420,6 +420,11 @@ cd_profile_set_property_internal (CdProfile *profile,
 		cd_profile_dbus_emit_property_changed (profile,
 						       property,
 						       g_variant_new_string (value));
+	} else if (g_strcmp0 (property, "Colorspace") == 0) {
+		priv->colorspace = cd_colorspace_from_string (value);
+		cd_profile_dbus_emit_property_changed (profile,
+						       property,
+						       g_variant_new_string (value));
 	} else {
 		/* add to metadata */
 		g_hash_table_insert (profile->priv->metadata,
