@@ -985,25 +985,20 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
 		profile = cd_profile_array_get_by_id (profiles_array,
 						      device_id);
-		if (profile != NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "profile object path '%s' already exists",
-							       cd_profile_get_object_path (profile));
-			goto out;
-		}
-
-		/* copy the device path */
 		scope = cd_object_scope_from_string (scope_tmp);
-		profile = cd_main_create_profile (sender,
-						  device_id,
-						  scope,
-						  &error);
 		if (profile == NULL) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
-			goto out;
+			profile = cd_main_create_profile (sender,
+							  device_id,
+							  scope,
+							  &error);
+			if (profile == NULL) {
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				goto out;
+			}
+		} else {
+			/* not new profile */
+			register_on_bus = FALSE;
 		}
 
 		/* auto add profiles from the database */
@@ -1027,12 +1022,14 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* register on bus */
-		ret = cd_main_profile_register_on_bus (profile, &error);
-		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
-			g_error_free (error);
-			goto out;
+		if (register_on_bus) {
+			ret = cd_main_profile_register_on_bus (profile, &error);
+			if (!ret) {
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				g_error_free (error);
+				goto out;
+			}
 		}
 
 		/* format the value */
