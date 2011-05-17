@@ -130,6 +130,12 @@
             Physical devices correspond to a connected device that
             cannot be removed by client software.
           </doc:para>
+          <doc:para>
+            If a virtual 'disk' device gets added by a client then it
+            is promoted to a 'physical' device.
+            This can happen if a printer is saved and then restored at
+            next boot before the CUPS daemon is running.
+          </doc:para>
         </doc:description>
       </doc:doc>
     </property>

@@ -849,6 +849,12 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 				g_error_free (error);
 				goto out;
 			}
+		} else {
+			/* where we try to manually add an existing
+			 * virtual device, which means promoting it to
+			 * an actual physical device */
+			cd_device_set_mode (device,
+					    CD_DEVICE_MODE_PHYSICAL);
 		}
 
 		/* set the properties */
