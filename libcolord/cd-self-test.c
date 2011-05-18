@@ -342,6 +342,10 @@ colord_client_func (void)
 	g_assert_cmpint (cd_profile_get_kind (profile), ==,
 			 CD_PROFILE_KIND_DISPLAY_DEVICE);
 
+	/* check profile age */
+	g_assert_cmpuint (cd_profile_get_created (profile), ==,
+			  1261606846);
+
 	/* check profile filename */
 	g_assert (g_str_has_suffix (cd_profile_get_filename (profile),
 				    "data/tests/ibm-t61.icc"));

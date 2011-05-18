@@ -56,6 +56,7 @@ struct _CdProfilePrivate
 	GHashTable			*metadata;
 	gboolean			 has_vcgt;
 	gboolean			 is_system_wide;
+	gint64				 created;
 };
 
 enum {
@@ -410,6 +411,9 @@ cd_profile_set_property_internal (CdProfile *profile,
 		cd_profile_dbus_emit_property_changed (profile,
 						       "Format",
 						       cd_profile_get_nullable_for_string (priv->format));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Created",
+						       g_variant_new_int64 (priv->created));
 	} else if (g_strcmp0 (property, "Qualifier") == 0) {
 		cd_profile_set_qualifier (profile, value);
 		cd_profile_dbus_emit_property_changed (profile,
@@ -571,6 +575,10 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, "Metadata") == 0) {
 		retval = cd_profile_get_metadata_as_variant (profile);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, "Created") == 0) {
+		retval = g_variant_new_int64 (profile->priv->created);
 		goto out;
 	}
 
@@ -755,6 +763,7 @@ cd_profile_set_filename (CdProfile *profile,
 	gchar text[1024];
 	GError *error_local = NULL;
 	guint len;
+	struct tm created;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
@@ -865,6 +874,15 @@ cd_profile_set_filename (CdProfile *profile,
 	    profile->priv->qualifier == NULL) {
 		cd_profile_set_format (profile, "ColorSpace..");
 		cd_profile_set_qualifier (profile, "RGB..");
+	}
+
+	/* get the profile created time and date */
+	ret = cmsGetHeaderCreationDateTime (lcms_profile, &created);
+	if (ret) {
+		profile->priv->created = mktime (&created);
+	} else {
+		g_warning ("failed to get created time");
+		profile->priv->created = 0;
 	}
 
 	/* do we have vcgt */

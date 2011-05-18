@@ -60,6 +60,7 @@ struct _CdProfilePrivate
 	GDBusProxy		*proxy;
 	CdProfileKind		 kind;
 	CdColorspace		 colorspace;
+	gint64			 created;
 	gboolean		 has_vcgt;
 	gboolean		 is_system_wide;
 	GHashTable		*metadata;
@@ -74,6 +75,7 @@ enum {
 	PROP_TITLE,
 	PROP_KIND,
 	PROP_COLORSPACE,
+	PROP_CREATED,
 	PROP_HAS_VCGT,
 	PROP_IS_SYSTEM_WIDE,
 	PROP_LAST
@@ -204,6 +206,23 @@ cd_profile_get_kind (CdProfile *profile)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
 	return profile->priv->kind;
+}
+
+/**
+ * cd_profile_get_created:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets the profile created date and time.
+ *
+ * Return value: A UNIX time
+ *
+ * Since: 0.1.8
+ **/
+gint64
+cd_profile_get_created (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+	return profile->priv->created;
 }
 
 /**
@@ -358,6 +377,8 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 			profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, "Colorspace") == 0) {
 			profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
+		} else if (g_strcmp0 (property_name, "Created") == 0) {
+			profile->priv->created = g_variant_get_int64 (property_value);
 		} else if (g_strcmp0 (property_name, "HasVcgt") == 0) {
 			profile->priv->has_vcgt = g_variant_get_boolean (property_value);
 		} else if (g_strcmp0 (property_name, "IsSystemWide") == 0) {
@@ -420,6 +441,7 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	GVariant *title = NULL;
 	GVariant *kind = NULL;
 	GVariant *colorspace = NULL;
+	GVariant *created = NULL;
 	GVariant *has_vcgt = NULL;
 	GVariant *is_system_wide = NULL;
 	GVariant *metadata = NULL;
@@ -494,6 +516,12 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	if (colorspace != NULL)
 		profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
 
+	/* get created */
+	created = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+						    "Created");
+	if (created != NULL)
+		profile->priv->created = g_variant_get_int64 (created);
+
 	/* get VCGT */
 	has_vcgt = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						     "HasVcgt");
@@ -530,6 +558,8 @@ out:
 		g_variant_unref (kind);
 	if (colorspace != NULL)
 		g_variant_unref (colorspace);
+	if (created != NULL)
+		g_variant_unref (created);
 	if (has_vcgt != NULL)
 		g_variant_unref (has_vcgt);
 	if (is_system_wide != NULL)
@@ -801,6 +831,9 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 	case PROP_COLORSPACE:
 		g_value_set_uint (value, profile->priv->colorspace);
 		break;
+	case PROP_CREATED:
+		g_value_set_int64 (value, profile->priv->created);
+		break;
 	case PROP_HAS_VCGT:
 		g_value_set_boolean (value, profile->priv->has_vcgt);
 		break;
@@ -932,6 +965,21 @@ cd_profile_class_init (CdProfileClass *klass)
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE));
+
+	/**
+	 * CdProfile:created:
+	 *
+	 * When the profile was created.
+	 *
+	 * Since: 0.1.8
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_CREATED,
+					 g_param_spec_int64 ("created",
+							     NULL, NULL,
+							     0, G_MAXINT64,
+							     0,
+							     G_PARAM_READABLE));
 
 	/**
 	 * CdProfile:has-vcgt:

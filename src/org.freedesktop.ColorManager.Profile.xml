@@ -131,6 +131,23 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Created' type='x' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The date and time the profile was created in UNIX time.
+          </doc:para>
+          <doc:para>
+            NOTE: this is NOT the time the meta-profile was created,
+            or added to colord, nor the disk timestamp for the profile
+            filename.
+            This is the encoded date and time inside the ICC filename.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <method name='SetProperty'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
