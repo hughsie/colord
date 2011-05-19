@@ -358,6 +358,23 @@ cd_profile_set_metadata_from_variant (CdProfile *profile, GVariant *variant)
 }
 
 /**
+ * cd_profile_get_nullable_str:
+ *
+ * We can't get nullable types from a GVariant yet. Work around...
+ **/
+static gchar *
+cd_profile_get_nullable_str (GVariant *value)
+{
+	const gchar *tmp;
+	tmp = g_variant_get_string (value, NULL);
+	if (tmp == NULL)
+		return NULL;
+	if (tmp[0] == '\0')
+		return NULL;
+	return g_strdup (tmp);
+}
+
+/**
  * cd_profile_dbus_properties_changed:
  **/
 static void
@@ -380,13 +397,13 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 				     &property_value);
 		if (g_strcmp0 (property_name, "Qualifier") == 0) {
 			g_free (profile->priv->qualifier);
-			profile->priv->qualifier = g_variant_dup_string (property_value, NULL);
+			profile->priv->qualifier = cd_profile_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, "Format") == 0) {
 			g_free (profile->priv->format);
-			profile->priv->format = g_variant_dup_string (property_value, NULL);
+			profile->priv->format = cd_profile_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, "Filename") == 0) {
 			g_free (profile->priv->filename);
-			profile->priv->filename = g_variant_dup_string (property_value, NULL);
+			profile->priv->filename = cd_profile_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, "ProfileId") == 0) {
 			g_free (profile->priv->id);
 			profile->priv->id = g_variant_dup_string (property_value, NULL);
@@ -504,25 +521,25 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	filename = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						     "Filename");
 	if (filename != NULL)
-		profile->priv->filename = g_variant_dup_string (filename, NULL);
+		profile->priv->filename = cd_profile_get_nullable_str (filename);
 
 	/* get qualifier */
 	qualifier = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						      "Qualifier");
 	if (qualifier != NULL)
-		profile->priv->qualifier = g_variant_dup_string (qualifier, NULL);
+		profile->priv->qualifier = cd_profile_get_nullable_str (qualifier);
 
 	/* get format */
 	format = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						   "Format");
 	if (format != NULL)
-		profile->priv->format = g_variant_dup_string (format, NULL);
+		profile->priv->format = cd_profile_get_nullable_str (format);
 
 	/* get title */
 	title = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						  "Title");
 	if (title != NULL)
-		profile->priv->title = g_variant_dup_string (title, NULL);
+		profile->priv->title = cd_profile_get_nullable_str (title);
 
 	/* get kind */
 	kind = g_dbus_proxy_get_cached_property (profile->priv->proxy,

@@ -284,6 +284,7 @@ colord_client_func (void)
 	g_assert_cmpstr (cd_profile_get_object_path (profile2), ==,
 			 profile2_path);
 	g_assert_cmpstr (cd_profile_get_id (profile2), ==, profile2_id);
+	g_assert_cmpstr (cd_profile_get_format (profile2), ==, NULL);
 	g_assert_cmpstr (cd_profile_get_qualifier (profile2), ==, "RGB.Glossy.1200dpi");
 
 	/* get new number of profiles */
