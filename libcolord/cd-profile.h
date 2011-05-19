@@ -106,6 +106,7 @@ const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);
 CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 gint64		 cd_profile_get_created			(CdProfile	*profile);
+gint64		 cd_profile_get_age			(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);
 gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
 GHashTable	*cd_profile_get_metadata		(CdProfile	*profile);

@@ -214,7 +214,7 @@ cd_profile_get_kind (CdProfile *profile)
  *
  * Gets the profile created date and time.
  *
- * Return value: A UNIX time
+ * Return value: A UNIX time, or 0 if the profile has no creation date
  *
  * Since: 0.1.8
  **/
@@ -223,6 +223,26 @@ cd_profile_get_created (CdProfile *profile)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
 	return profile->priv->created;
+}
+
+/**
+ * cd_profile_get_age:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets the profile age in seconds relative to the current time.
+ *
+ * Return value: A UNIX time, or 0 if the profile has no creation date
+ *
+ * Since: 0.1.8
+ **/
+gint64
+cd_profile_get_age (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+
+	if (profile->priv->created == 0)
+		return 0;
+	return (g_get_real_time () / G_USEC_PER_SEC) - profile->priv->created;
 }
 
 /**
