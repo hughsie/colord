@@ -663,24 +663,27 @@ cd_device_get_metadata_as_variant (CdDevice *device)
  * cd_device_string_remove_suffix:
  **/
 static void
-cd_device_string_remove_suffix (GString *string, const gchar *suffix)
+cd_device_string_remove_suffix (gchar *vendor, const gchar *suffix)
 {
-	gsize len;
-
-	/* remove trailing space */
-	if (string->str[string->len-1] == ' ')
-		g_string_truncate (string, string->len-1);
-
-	/* remove the suffix */
-	if (g_str_has_suffix (string->str, suffix)) {
-		len = strlen (suffix);
-		g_string_truncate (string, string->len - len);
+	g_strchomp (vendor);
+	if (g_str_has_suffix (vendor, suffix)) {
+		gint len, suffix_len;
+		len = strlen (vendor);
+		suffix_len = strlen (suffix);
+		vendor[len - suffix_len] = '\0';
 	}
-
-	/* remove trailing space */
-	if (string->str[string->len-1] == ' ')
-		g_string_truncate (string, string->len-1);
+	g_strchomp (vendor);
 }
+
+struct {
+	const gchar *old;
+	const gchar *new;
+} vendor_names[] = {
+	{ "HP", "Hewlett Packard" },
+	{ "Hewlett-Packard", "Hewlett Packard" },
+	{ "LENOVO", "Lenovo" },
+	{ NULL, NULL }
+};
 
 /**
  * cd_device_set_vendor:
@@ -688,26 +691,24 @@ cd_device_string_remove_suffix (GString *string, const gchar *suffix)
 static void
 cd_device_set_vendor (CdDevice *device, const gchar *vendor)
 {
-	GString *tmp;
 	CdDevicePrivate *priv = device->priv;
+	guint i;
 
-	/* remove insanities */
-	tmp = g_string_new (vendor);
-
-	/* get rid of crap suffixes */
-	cd_device_string_remove_suffix (tmp, "Ltd.");
-	cd_device_string_remove_suffix (tmp, "Co.");
+	g_free (priv->vendor);
 
 	/* correct some company names */
-	if (g_str_has_prefix (tmp->str, "HP ") ||
-	    g_strcmp0 (tmp->str, "Hewlett-Packard") == 0)
-		g_string_assign (tmp, "Hewlett Packard");
-	if (g_str_has_prefix (tmp->str, "LENOVO"))
-		g_string_assign (tmp, "Lenovo");
+	for (i = 0; vendor_names[i].old != NULL; i++) {
+		if (g_str_has_prefix (vendor, vendor_names[i].old)) {
+			priv->vendor = g_strdup (vendor_names[i].new);
+			return;
+		}
+	}
 
-	/* okay, we're done now */
-	g_free (priv->vendor);
-	priv->vendor = g_string_free (tmp, FALSE);
+	priv->vendor = g_strdup (vendor);
+
+	/* get rid of crap suffixes */
+	cd_device_string_remove_suffix (priv->vendor, "Ltd.");
+	cd_device_string_remove_suffix (priv->vendor, "Co.");
 }
 
 /**
