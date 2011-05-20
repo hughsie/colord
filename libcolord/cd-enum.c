@@ -61,6 +61,9 @@ cd_device_kind_to_string (CdDeviceKind kind_enum)
 	case CD_DEVICE_KIND_CAMERA:
 		kind = "camera";
 		break;
+	case CD_DEVICE_KIND_WEBCAM:
+		kind = "webcam";
+		break;
 	default:
 		kind = "unknown";
 		break;
@@ -90,6 +93,8 @@ cd_device_kind_from_string (const gchar *type)
 		return CD_DEVICE_KIND_PRINTER;
 	if (g_strcmp0 (type, "camera") == 0)
 		return CD_DEVICE_KIND_CAMERA;
+	if (g_strcmp0 (type, "webcam") == 0)
+		return CD_DEVICE_KIND_WEBCAM;
 	return CD_DEVICE_KIND_UNKNOWN;
 }
 
