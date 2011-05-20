@@ -174,7 +174,7 @@ colord_client_func (void)
 					      g_free, g_free);
 	g_hash_table_insert (device_props,
 			     g_strdup ("Vendor"),
-			     g_strdup ("CRAY"));
+			     g_strdup ("Hewlett-Packard Ltd."));
 	g_hash_table_insert (device_props,
 			     g_strdup ("Model"),
 			     g_strdup ("3000"));
@@ -239,7 +239,7 @@ colord_client_func (void)
 	g_assert_cmpstr (cd_device_get_model (device), ==, "3000");
 
 	/* check device vendor */
-	g_assert_cmpstr (cd_device_get_vendor (device), ==, "CRAY");
+	g_assert_cmpstr (cd_device_get_vendor (device), ==, "Hewlett Packard");
 
 	/* check device serial */
 	g_assert_cmpstr (cd_device_get_serial (device), ==, "0001");
