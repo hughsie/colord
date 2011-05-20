@@ -1289,6 +1289,25 @@ cd_device_to_string (CdDevice *device)
 	return g_string_free (string, FALSE);
 }
 
+/**
+ * cd_device_get_object_path:
+ * @device1: one #CdDevice instance.
+ * @device2: another #CdDevice instance.
+ *
+ * Tests two devices for equality.
+ *
+ * Return value: %TRUE if the devices are the same device
+ *
+ * Since: 0.1.8
+ **/
+gboolean
+cd_device_equal (CdDevice *device1, CdDevice *device2)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device1), FALSE);
+	g_return_val_if_fail (CD_IS_DEVICE (device2), FALSE);
+	return g_strcmp0 (device1->priv->id, device2->priv->id) == 0;
+}
+
 /*
  * cd_device_set_property:
  */

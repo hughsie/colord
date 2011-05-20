@@ -153,6 +153,8 @@ const gchar	*cd_device_get_object_path		(CdDevice	*device);
 GHashTable	*cd_device_get_metadata			(CdDevice	*device);
 const gchar	*cd_device_get_metadata_item		(CdDevice	*device,
 							 const gchar	*key);
+gboolean	 cd_device_equal			(CdDevice	*device1,
+							 CdDevice	*device2);
 
 G_END_DECLS
 

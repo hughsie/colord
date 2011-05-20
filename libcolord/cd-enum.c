@@ -539,6 +539,8 @@ cd_standard_space_from_string (const gchar *standard_space)
  * Gets the most suitable profile kind for a device kind.
  *
  * Return value: a #CdProfileKind
+ *
+ * Since: 0.1.6
  **/
 CdProfileKind
 cd_device_kind_to_profile_kind (CdDeviceKind device_kind)

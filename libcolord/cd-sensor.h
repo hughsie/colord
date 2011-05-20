@@ -111,6 +111,8 @@ guint		 cd_sensor_get_caps			(CdSensor	*sensor);
 gboolean	 cd_sensor_has_cap			(CdSensor	*sensor,
 							 CdSensorCap	 cap);
 const gchar	*cd_sensor_get_object_path		(CdSensor	*sensor);
+gboolean	 cd_sensor_equal			(CdSensor	*sensor1,
+							 CdSensor	*sensor2);
 
 G_END_DECLS
 

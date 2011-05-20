@@ -795,6 +795,25 @@ cd_profile_to_string (CdProfile *profile)
 	return g_string_free (string, FALSE);
 }
 
+/**
+ * cd_profile_get_object_path:
+ * @profile1: one #CdProfile instance.
+ * @profile2: another #CdProfile instance.
+ *
+ * Tests two profiles for equality.
+ *
+ * Return value: %TRUE if the profiles are the same device
+ *
+ * Since: 0.1.8
+ **/
+gboolean
+cd_profile_equal (CdProfile *profile1, CdProfile *profile2)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile1), FALSE);
+	g_return_val_if_fail (CD_IS_PROFILE (profile2), FALSE);
+	return g_strcmp0 (profile1->priv->id, profile2->priv->id) == 0;
+}
+
 /*
  * cd_profile_set_property:
  */

@@ -112,6 +112,8 @@ gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
 GHashTable	*cd_profile_get_metadata		(CdProfile	*profile);
 const gchar	*cd_profile_get_metadata_item		(CdProfile	*profile,
 							 const gchar	*key);
+gboolean	 cd_profile_equal			(CdProfile	*profile1,
+							 CdProfile	*profile2);
 
 G_END_DECLS
 

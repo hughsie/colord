@@ -691,6 +691,24 @@ cd_sensor_get_object_path (CdSensor *sensor)
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
 	return sensor->priv->object_path;
 }
+/**
+ * cd_sensor_get_object_path:
+ * @sensor1: one #CdSensor instance.
+ * @sensor2: another #CdSensor instance.
+ *
+ * Tests two sensors for equality.
+ *
+ * Return value: %TRUE if the sensors are the same device
+ *
+ * Since: 0.1.8
+ **/
+gboolean
+cd_sensor_equal (CdSensor *sensor1, CdSensor *sensor2)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor1), FALSE);
+	g_return_val_if_fail (CD_IS_SENSOR (sensor2), FALSE);
+	return g_strcmp0 (sensor1->priv->serial, sensor2->priv->serial) == 0;
+}
 
 /*
  * cd_sensor_set_property:
