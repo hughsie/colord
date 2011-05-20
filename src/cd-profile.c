@@ -764,6 +764,7 @@ cd_profile_set_filename (CdProfile *profile,
 	GError *error_local = NULL;
 	guint len;
 	struct tm created;
+	gchar *tmp;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
@@ -794,6 +795,13 @@ cd_profile_set_filename (CdProfile *profile,
 				"en", "US",
 				text, 1024);
 	profile->priv->title = g_strdup (text);
+
+	/* hack to make old profiles look nice */
+	if (profile->priv->title != NULL) {
+		tmp = g_strstr_len (profile->priv->title, -1, " (201");
+		if (tmp != NULL)
+			*tmp = '\0';
+	}
 
 	/* remove any shitty prefix */
 	if (g_str_has_suffix (profile->priv->title, ".icc") ||
