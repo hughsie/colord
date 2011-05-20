@@ -234,6 +234,7 @@ const gchar	*cd_sensor_cap_to_string		(CdSensorCap		 sensor_cap);
 CdSensorCap	 cd_sensor_cap_from_string		(const gchar		*sensor_cap);
 const gchar	*cd_standard_space_to_string		(CdStandardSpace	 standard_space);
 CdStandardSpace	 cd_standard_space_from_string		(const gchar		*standard_space);
+CdProfileKind	 cd_device_kind_to_profile_kind		(CdDeviceKind		 device_kind);
 
 G_END_DECLS
 

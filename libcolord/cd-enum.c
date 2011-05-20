@@ -526,3 +526,32 @@ cd_standard_space_from_string (const gchar *standard_space)
 		return CD_STANDARD_SPACE_ADOBE_RGB;
 	return CD_STANDARD_SPACE_UNKNOWN;
 }
+
+/**
+ * cd_device_kind_to_profile_kind:
+ * @device_kind: A #CdDeviceKind
+ *
+ * Gets the most suitable profile kind for a device kind.
+ *
+ * Return value: a #CdProfileKind
+ **/
+CdProfileKind
+cd_device_kind_to_profile_kind (CdDeviceKind device_kind)
+{
+	CdProfileKind profile_kind;
+	switch (device_kind) {
+	case CD_DEVICE_KIND_DISPLAY:
+		profile_kind = CD_PROFILE_KIND_DISPLAY_DEVICE;
+		break;
+	case CD_DEVICE_KIND_CAMERA:
+	case CD_DEVICE_KIND_SCANNER:
+		profile_kind = CD_PROFILE_KIND_INPUT_DEVICE;
+		break;
+	case CD_DEVICE_KIND_PRINTER:
+		profile_kind = CD_PROFILE_KIND_OUTPUT_DEVICE;
+		break;
+	default:
+		profile_kind = CD_PROFILE_KIND_UNKNOWN;
+	}
+	return profile_kind;
+}
