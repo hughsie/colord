@@ -724,16 +724,8 @@ cd_device_set_model (CdDevice *device, const gchar *model)
 	tmp = g_string_new (model);
 
 	/* are we really a webcam */
-	if (g_strcmp0 (priv->kind, "camera") == 0) {
-		if (g_strstr_len (tmp->str, -1, "webcam") != NULL ||
-		    g_strstr_len (tmp->str, -1, "Webcam") != NULL ||
-		    g_strstr_len (tmp->str, -1, "Internal") != NULL ||
-		    g_strstr_len (tmp->str, -1, "Integrated") != NULL) {
-			g_free (priv->kind);
-			priv->kind = g_strdup ("webcam");
-			g_string_assign (tmp, "Webcam");
-		}
-	}
+	if (g_strcmp0 (priv->kind, "webcam") == 0)
+		g_string_assign (tmp, "Webcam");
 
 	/* okay, we're done now */
 	g_free (priv->model);

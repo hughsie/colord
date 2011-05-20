@@ -113,9 +113,11 @@ cd_udev_client_device_add (CdUdevClient *udev_client,
 			   GUdevDevice *udev_device)
 {
 	CdDevice *device;
+	gboolean ret;
 	gchar *id;
 	gchar *model;
 	gchar *vendor;
+	const gchar *kind = "webcam";
 
 	/* replace underscores with spaces */
 	model = g_strdup (g_udev_device_get_property (udev_device,
@@ -131,13 +133,18 @@ cd_udev_client_device_add (CdUdevClient *udev_client,
 		g_strchomp (vendor);
 	}
 
+	/* is a proper camera and not a webcam */
+	ret = g_udev_device_has_property (udev_device, "ID_GPHOTO2");
+	if (ret)
+		kind = "camera";
+
 	/* create new device */
 	id = cd_client_get_id_for_udev_device (udev_device);
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
 	cd_device_set_property_internal (device,
 					 "Kind",
-					 "camera",
+					 kind,
 					 FALSE,
 					 NULL);
 	if (model != NULL) {
