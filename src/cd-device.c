@@ -24,6 +24,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <sys/time.h>
+#include <string.h>
 
 #include "cd-common.h"
 #include "cd-device.h"
@@ -659,6 +660,78 @@ cd_device_get_metadata_as_variant (CdDevice *device)
 }
 
 /**
+ * cd_device_string_remove_suffix:
+ **/
+static void
+cd_device_string_remove_suffix (GString *string, const gchar *suffix)
+{
+	gsize len;
+
+	/* remove trailing space */
+	if (string->str[string->len-1] == ' ')
+		g_string_truncate (string, string->len-1);
+
+	/* remove the suffix */
+	if (g_str_has_suffix (string->str, suffix)) {
+		len = strlen (suffix);
+		g_string_truncate (string, string->len - len);
+	}
+
+	/* remove trailing space */
+	if (string->str[string->len-1] == ' ')
+		g_string_truncate (string, string->len-1);
+}
+
+/**
+ * cd_device_set_vendor:
+ **/
+static void
+cd_device_set_vendor (CdDevice *device, const gchar *vendor)
+{
+	GString *tmp;
+	CdDevicePrivate *priv = device->priv;
+
+	/* remove insanities */
+	tmp = g_string_new (vendor);
+
+	/* get rid of crap suffixes */
+	cd_device_string_remove_suffix (tmp, "Ltd.");
+	cd_device_string_remove_suffix (tmp, "Co.");
+
+	/* correct some company names */
+	if (g_str_has_prefix (tmp->str, "HP ") ||
+	    g_strcmp0 (tmp->str, "Hewlett-Packard") == 0)
+		g_string_assign (tmp, "Hewlett Packard");
+	if (g_str_has_prefix (tmp->str, "LENOVO"))
+		g_string_assign (tmp, "Lenovo");
+
+	/* okay, we're done now */
+	g_free (priv->vendor);
+	priv->vendor = g_string_free (tmp, FALSE);
+}
+
+/**
+ * cd_device_set_model:
+ **/
+static void
+cd_device_set_model (CdDevice *device, const gchar *model)
+{
+	GString *tmp;
+	CdDevicePrivate *priv = device->priv;
+
+	/* remove insanities */
+	tmp = g_string_new (model);
+
+	/* correct some models */
+	if (g_strcmp0 (tmp->str, "Integrated Camera") == 0)
+		g_string_assign (tmp, "Webcam");
+
+	/* okay, we're done now */
+	g_free (priv->model);
+	priv->model = g_string_free (tmp, FALSE);
+}
+
+/**
  * cd_device_set_property_internal:
  **/
 gboolean
@@ -674,14 +747,12 @@ cd_device_set_property_internal (CdDevice *device,
 	g_debug ("CdDevice: Attempting to set %s to %s on %s",
 		 property, value, device->priv->id);
 	if (g_strcmp0 (property, "Model") == 0) {
-		g_free (priv->model);
-		priv->model = g_strdup (value);
+		cd_device_set_model (device, value);
 	} else if (g_strcmp0 (property, "Kind") == 0) {
 		g_free (priv->kind);
 		priv->kind = g_strdup (value);
 	} else if (g_strcmp0 (property, "Vendor") == 0) {
-		g_free (priv->vendor);
-		priv->vendor = g_strdup (value);
+		cd_device_set_vendor (device, value);
 	} else if (g_strcmp0 (property, "Serial") == 0) {
 		g_free (priv->serial);
 		priv->serial = g_strdup (value);
