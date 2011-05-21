@@ -30,7 +30,7 @@ INCLUDES = \
 	-I$(top_srcdir)/libcolord 		\
 	-I$(top_builddir)/libcolord
 
-COLORD_LIBS = $(top_builddir)/libcolord/.libs/libcolord.so
+COLORD_LIBS = $(top_builddir)/libcolord/libcolord.la
 
 GTKDOC_LIBS =					\
 	$(GLIB_LIBS)				\
