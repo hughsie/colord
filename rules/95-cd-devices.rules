@@ -16,3 +16,6 @@
 
 # video cameras
 SUBSYSTEM=="video4linux", ENV{ID_V4L_PRODUCT}!="", ENV{COLORD_DEVICE}="1", ENV{COLORD_KIND}="camera"
+
+# Cameras with gphoto drivers
+SUBSYSTEM=="usb", ENV{ID_GPHOTO2}!="", ENV{COLORD_DEVICE}="1", ENV{COLORD_KIND}="camera"

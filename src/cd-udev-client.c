@@ -311,18 +311,20 @@ cd_udev_client_uevent_cb (GUdevClient *gudev_client,
 			  GUdevDevice *udev_device,
 			  CdUdevClient *udev_client)
 {
-	const gchar *value;
+	gboolean ret;
 
 	/* remove */
 	if (g_strcmp0 (action, "remove") == 0) {
-		value = g_udev_device_get_property (udev_device, "COLORD_DEVICE");
-		if (value != NULL) {
+		g_debug ("CdUdevClient: remove %s",
+			 g_udev_device_get_sysfs_path (udev_device));
+		ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
+		if (ret) {
 			cd_udev_client_device_remove (udev_client,
-					       udev_device);
+						      udev_device);
 			goto out;
 		}
-		value = g_udev_device_get_property (udev_device, "COLORD_SENSOR");
-		if (value != NULL) {
+		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR");
+		if (ret) {
 			cd_udev_client_sensor_remove (udev_client,
 						      udev_device);
 			goto out;
@@ -332,14 +334,16 @@ cd_udev_client_uevent_cb (GUdevClient *gudev_client,
 
 	/* add */
 	if (g_strcmp0 (action, "add") == 0) {
-		value = g_udev_device_get_property (udev_device, "COLORD_DEVICE");
-		if (value != NULL) {
+		g_debug ("CdUdevClient: add %s",
+			 g_udev_device_get_sysfs_path (udev_device));
+		ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
+		if (ret) {
 			cd_udev_client_device_add (udev_client,
 						   udev_device);
 			goto out;
 		}
-		value = g_udev_device_get_property (udev_device, "COLORD_SENSOR");
-		if (value != NULL) {
+		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR");
+		if (ret) {
 			cd_udev_client_sensor_add (udev_client,
 						   udev_device);
 			goto out;
@@ -358,6 +362,7 @@ cd_udev_client_devices_coldplug (CdUdevClient *udev_client)
 {
 	GList *devices;
 	GList *l;
+	gboolean ret;
 	GUdevDevice *udev_device;
 
 	/* get all video4linux devices */
@@ -365,7 +370,21 @@ cd_udev_client_devices_coldplug (CdUdevClient *udev_client)
 						    "video4linux");
 	for (l = devices; l != NULL; l = l->next) {
 		udev_device = l->data;
-		cd_udev_client_device_add (udev_client, udev_device);
+		ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
+		if (ret)
+			cd_udev_client_device_add (udev_client, udev_device);
+	}
+	g_list_foreach (devices, (GFunc) g_object_unref, NULL);
+	g_list_free (devices);
+
+	/* get all usb devices */
+	devices = g_udev_client_query_by_subsystem (udev_client->priv->gudev_client,
+						    "usb");
+	for (l = devices; l != NULL; l = l->next) {
+		udev_device = l->data;
+		ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
+		if (ret)
+			cd_udev_client_device_add (udev_client, udev_device);
 	}
 	g_list_foreach (devices, (GFunc) g_object_unref, NULL);
 	g_list_free (devices);
