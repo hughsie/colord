@@ -816,6 +816,7 @@ colord_client_fd_pass_func (void)
 	GHashTable *profile_props;
 	gboolean ret;
 	GError *error = NULL;
+	gchar full_path[PATH_MAX];
 
 	/* create */
 	client = cd_client_new ();
@@ -827,11 +828,12 @@ colord_client_fd_pass_func (void)
 	g_assert (ret);
 
 	/* create extra profile */
+	realpath (TESTDATADIR "/ibm-t61.icc", full_path);
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
 	g_hash_table_insert (profile_props,
 			     g_strdup ("Filename"),
-			     g_strdup (TESTDATADIR "/ibm-t61.icc"));
+			     g_strdup (full_path));
 	profile = cd_client_create_profile_sync (client,
 						 "icc_temp",
 						 CD_OBJECT_SCOPE_TEMP,
