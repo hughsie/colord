@@ -723,16 +723,16 @@ cd_profile_set_from_profile (CdProfile *profile,
 		tmp = g_strstr_len (profile->priv->title, -1, " (201");
 		if (tmp != NULL)
 			*tmp = '\0';
-	}
 
-	/* remove any shitty prefix */
-	if (g_str_has_suffix (profile->priv->title, ".icc") ||
-	    g_str_has_suffix (profile->priv->title, ".ICC") ||
-	    g_str_has_suffix (profile->priv->title, ".icm") ||
-	    g_str_has_suffix (profile->priv->title, ".ICM")) {
-		len = strlen (text);
-		if (len > 4)
-			profile->priv->title[len - 4] = '\0';
+		/* remove any shitty prefix */
+		if (g_str_has_suffix (profile->priv->title, ".icc") ||
+		    g_str_has_suffix (profile->priv->title, ".ICC") ||
+		    g_str_has_suffix (profile->priv->title, ".icm") ||
+		    g_str_has_suffix (profile->priv->title, ".ICM")) {
+			len = strlen (profile->priv->title);
+			if (len > 4)
+				profile->priv->title[len - 4] = '\0';
+		}
 	}
 
 	/* get the profile kind */
