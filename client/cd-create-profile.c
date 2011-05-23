@@ -149,7 +149,7 @@ main (int argc, char **argv)
 	gchar *srgb_palette = NULL;
 	GError *error = NULL;
 	GOptionContext *context;
-	guint retval = 0;
+	guint retval = EXIT_FAILURE;
 
 	const GOptionEntry options[] = {
 		{ "description", 'd', 0, G_OPTION_ARG_STRING, &description,
@@ -212,7 +212,6 @@ main (int argc, char **argv)
 	lcms_profile = cmsCreateNULLProfile ();
 	if (lcms_profile == NULL || lcms_error_code != 0) {
 		g_warning ("failed to open profile");
-		ret = FALSE;
 		goto out;
 	}
 
@@ -276,6 +275,7 @@ main (int argc, char **argv)
 	}
 
 	/* success */
+	retval = EXIT_SUCCESS;
 	cmsSaveProfileToFile (lcms_profile, filename);
 out:
 	if (nc2 != NULL)
