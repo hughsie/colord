@@ -699,7 +699,7 @@ cd_client_create_profile_sync (CdClient *client,
 	GError *error_local = NULL;
 	GList *list, *l;
 	GVariantBuilder builder;
-	GVariant *result;
+	GVariant *result = NULL;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
 
