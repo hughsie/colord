@@ -593,7 +593,15 @@ cd_client_create_device_sync (CdClient *client,
 	GVariant *result;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
+
+	/* not connected */
+	if (client->priv->proxy == NULL) {
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_FAILED,
+				     "Not yet connected to colord");
+		goto out;
+	}
 
 	/* add properties */
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
@@ -694,7 +702,15 @@ cd_client_create_profile_sync (CdClient *client,
 	GVariant *result;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
+
+	/* not connected */
+	if (client->priv->proxy == NULL) {
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_FAILED,
+				     "Not yet connected to colord");
+		goto out;
+	}
 
 	/* add properties */
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
