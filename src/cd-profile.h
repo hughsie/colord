@@ -68,6 +68,9 @@ gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
 gboolean	 cd_profile_set_filename		(CdProfile	*profile,
 							 const gchar	*filename,
 							 GError		**error);
+gboolean	 cd_profile_set_fd			(CdProfile	*profile,
+							 gint		 fd,
+							 GError		**error);
 gboolean	 cd_profile_register_object		(CdProfile	*profile,
 							 GDBusConnection *connection,
 							 GDBusInterfaceInfo *info,

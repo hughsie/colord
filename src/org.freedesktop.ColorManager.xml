@@ -328,6 +328,16 @@
             doing <doc:tt>RemoveProfile</doc:tt>doc:tt> on the relevant
             device object.
           </doc:para>
+          <doc:para>
+            An optional file descriptor can be sent out of band for the
+            ICC profile file.
+          </doc:para>
+          <doc:para>
+            Using a file descriptor in addition to the filename allows
+            the daemon to parse the ICC profile without re-opening it,
+            which allows the daemon to read files inside the users
+            home directory in a SELinux environment.
+          </doc:para>
         </doc:description>
       </doc:doc>
       <arg type='s' name='profile_id' direction='in'>

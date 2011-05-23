@@ -808,6 +808,44 @@ colord_color_func (void)
 	cd_color_xyz_free (xyz);
 }
 
+static void
+colord_client_fd_pass_func (void)
+{
+	CdClient *client;
+	CdProfile *profile;
+	GHashTable *profile_props;
+	gboolean ret;
+	GError *error = NULL;
+
+	/* create */
+	client = cd_client_new ();
+	g_assert (client != NULL);
+
+	/* connect */
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create extra profile */
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (profile_props,
+			     g_strdup ("Filename"),
+			     g_strdup (TESTDATADIR "/ibm-t61.icc"));
+	profile = cd_client_create_profile_sync (client,
+						 "icc_temp",
+						 CD_OBJECT_SCOPE_TEMP,
+						 profile_props,
+						 NULL,
+						 &error);
+	g_assert_no_error (error);
+	g_assert (profile != NULL);
+
+	g_hash_table_unref (profile_props);
+	g_object_unref (profile);
+	g_object_unref (client);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -822,6 +860,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/client", colord_client_func);
+	g_test_add_func ("/colord/client-fd-pass", colord_client_fd_pass_func);
 	return g_test_run ();
 }
 

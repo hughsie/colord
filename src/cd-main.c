@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include <gio/gio.h>
+#include <gio/gunixfdlist.h>
 #include <glib/gi18n.h>
 #include <locale.h>
 
@@ -657,6 +658,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	GVariantIter *iter = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
+	gint fd = -1;
+	GDBusMessage *message;
+	GUnixFDList *fd_list;
 
 	/* return 'as' */
 	if (g_strcmp0 (method_name, "GetDevices") == 0) {
@@ -1003,6 +1007,32 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* auto add profiles from the database */
 		cd_main_profile_auto_add_to_device (profile);
+
+		/* get any file descriptor in the message */
+		message = g_dbus_method_invocation_get_message (invocation);
+		fd_list = g_dbus_message_get_unix_fd_list (message);
+		if (fd_list != NULL && g_unix_fd_list_get_length (fd_list) == 1) {
+			fd = g_unix_fd_list_get (fd_list, 0, &error);
+			if (fd < 0) {
+				g_warning ("CdMain: failed to get fd from message: %s",
+					   error->message);
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				g_error_free (error);
+				goto out;
+			}
+
+			/* read from a fd, avoiding open() */
+			ret = cd_profile_set_fd (profile, fd, &error);
+			if (!ret) {
+				g_warning ("CdMain: failed to profile from fd: %s",
+					   error->message);
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				g_error_free (error);
+				goto out;
+			}
+		}
 
 		/* set the properties */
 		while (g_variant_iter_loop (iter, "{ss}",

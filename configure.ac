@@ -121,7 +121,7 @@ GLIB_GSETTINGS
 dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9)
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gio-unix-2.0)
 PKG_CHECK_MODULES(LCMS, lcms2)
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 PKG_CHECK_MODULES(GUDEV, gudev-1.0)

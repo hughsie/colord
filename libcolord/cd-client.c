@@ -31,10 +31,16 @@
 
 #include "config.h"
 
-#include <stdlib.h>
+#include <fcntl.h>
 #include <stdio.h>
-#include <glib.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include <gio/gio.h>
+#include <gio/gunixfdlist.h>
+#include <glib/gstdio.h>
+#include <glib.h>
 
 #include "cd-client.h"
 #include "cd-device.h"
@@ -699,7 +705,14 @@ cd_client_create_profile_sync (CdClient *client,
 	GError *error_local = NULL;
 	GList *list, *l;
 	GVariantBuilder builder;
-	GVariant *result = NULL;
+	gint fd = -1;
+	const gchar *filename;
+	GDBusMessage *request = NULL;
+	GDBusMessage *reply;
+	GDBusConnection *connection;
+	GVariant *body;
+	GUnixFDList *fd_list = NULL;
+	gint retval;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
 
@@ -732,17 +745,55 @@ cd_client_create_profile_sync (CdClient *client,
 				       "");
 	}
 
-	result = g_dbus_proxy_call_sync (client->priv->proxy,
-					 "CreateProfile",
-					 g_variant_new ("(ssa{ss})",
-						        id,
-						        cd_object_scope_to_string (scope),
-						        &builder),
-					 G_DBUS_CALL_FLAGS_NONE,
-					 -1,
-					 cancellable,
-					 &error_local);
-	if (result == NULL) {
+	/* do low level call */
+	request = g_dbus_message_new_method_call (COLORD_DBUS_SERVICE,
+						  COLORD_DBUS_PATH,
+						  COLORD_DBUS_INTERFACE,
+						  "CreateProfile");
+
+	/* get fd if possible top avoid open() in daemon */
+	if (properties != NULL) {
+		filename = g_hash_table_lookup (properties, "Filename");
+		if (filename != NULL) {
+			fd = open (filename, O_RDONLY);
+			if (fd < 0) {
+				g_set_error (error,
+					     CD_CLIENT_ERROR,
+					     CD_CLIENT_ERROR_FAILED,
+					     "Failed to open %s",
+					     filename);
+				goto out;
+			}
+
+			/* set out of band file descriptor */
+			fd_list = g_unix_fd_list_new ();
+			retval = g_unix_fd_list_append (fd_list, fd, error);
+			if (retval < 0)
+				goto out;
+			g_dbus_message_set_unix_fd_list (request, fd_list);
+
+			/* g_unix_fd_list_append did a dup() already */
+			close (fd);
+		}
+	}
+
+	/* set parameters */
+	body = g_variant_new ("(ssa{ss})",
+			      id,
+			      cd_object_scope_to_string (scope),
+			      &builder);
+	g_dbus_message_set_body (request, body);
+
+	/* send sync message to the bus */
+	connection = g_dbus_proxy_get_connection (client->priv->proxy);
+	reply = g_dbus_connection_send_message_with_reply_sync (connection,
+								request,
+								G_DBUS_SEND_MESSAGE_FLAGS_NONE,
+								5000,
+								NULL,
+								cancellable,
+								&error_local);
+	if (reply == NULL) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_FAILED,
@@ -752,8 +803,14 @@ cd_client_create_profile_sync (CdClient *client,
 		goto out;
 	}
 
+	/* this is an error message */
+	if (g_dbus_message_get_message_type (reply) == G_DBUS_MESSAGE_TYPE_ERROR) {
+		g_dbus_message_to_gerror (reply, &error_local);
+		goto out;
+	}
+
 	/* create thick CdDevice object */
-	g_variant_get (result, "(o)",
+	g_variant_get (g_dbus_message_get_body (reply), "(o)",
 		       &object_path);
 	profile_tmp = cd_profile_new ();
 	ret = cd_profile_set_object_path_sync (profile_tmp,
@@ -769,8 +826,10 @@ out:
 	g_free (object_path);
 	if (profile_tmp != NULL)
 		g_object_unref (profile_tmp);
-	if (result != NULL)
-		g_variant_unref (result);
+	if (fd_list != NULL)
+		g_object_unref (fd_list);
+	if (request != NULL)
+		g_object_unref (request);
 	return profile;
 }
 

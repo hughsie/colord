@@ -387,33 +387,6 @@ cd_profile_set_property_internal (CdProfile *profile,
 					       error);
 		if (!ret)
 			goto out;
-		cd_profile_dbus_emit_property_changed (profile,
-						       property,
-						       g_variant_new_string (value));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "Title",
-						       cd_profile_get_nullable_for_string (priv->title));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "Kind",
-						       g_variant_new_string (cd_profile_kind_to_string (priv->kind)));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "Colorspace",
-						       g_variant_new_string (cd_colorspace_to_string (priv->colorspace)));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "HasVcgt",
-						       g_variant_new_boolean (priv->has_vcgt));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "Metadata",
-						       cd_profile_get_metadata_as_variant (profile));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "Qualifier",
-						       cd_profile_get_nullable_for_string (priv->qualifier));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "Format",
-						       cd_profile_get_nullable_for_string (priv->format));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "Created",
-						       g_variant_new_int64 (priv->created));
 	} else if (g_strcmp0 (property, "Qualifier") == 0) {
 		cd_profile_set_qualifier (profile, value);
 		cd_profile_dbus_emit_property_changed (profile,
@@ -690,25 +663,17 @@ out:
 /**
  * cd_profile_get_best_md5:
  *
- * The profile checksum can be found in the following ways (listed in
- * order of speed):
+ * The profile checksum can be found in the following ways:
  *
  *  1. The FILE_checksum metadata
  *  2. The precooked embedded profile-id
- *  3. Working out the file MD5 manually
- *
- * We trust 2. and 3., and so we comprimise with a 2, 1, 3 ordering.
  **/
 static gchar *
 cd_profile_get_best_md5 (CdProfile *profile,
-			 cmsHPROFILE lcms_profile,
-			 GError **error)
+			 cmsHPROFILE lcms_profile)
 {
 	const gchar *tmp;
 	gchar *checksum = NULL;
-	gboolean ret;
-	gchar *data = NULL;
-	gsize len;
 
 	/* use a pre-cooked MD5 if available */
 	checksum = cd_profile_get_precooked_md5 (lcms_profile);
@@ -721,73 +686,30 @@ cd_profile_get_best_md5 (CdProfile *profile,
 	if (tmp != NULL) {
 
 		/* invalid metadata */
-		if (strlen (tmp) != 32) {
-			g_set_error (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED,
-				     "FILE_checksum invalid for %s: %s",
-				     profile->priv->filename, tmp);
+		if (strlen (tmp) != 32)
 			goto out;
-		}
+
 		checksum = g_strdup (tmp);
 		goto out;
 	}
-
-	/* fall back to calculating it ourselves */
-	g_debug ("%s has no profile-id nor FILE_checksum, falling back "
-		 "to slow MD5", profile->priv->filename);
-	ret = g_file_get_contents (profile->priv->filename,
-				   &data, &len, error);
-	if (!ret)
-		goto out;
-	checksum = g_compute_checksum_for_data (G_CHECKSUM_MD5,
-						(const guchar *) data,
-						len);
 out:
-	g_free (data);
 	return checksum;
 }
 
 /**
- * cd_profile_set_filename:
+ * cd_profile_set_from_profile:
  **/
-gboolean
-cd_profile_set_filename (CdProfile *profile,
-			 const gchar *filename,
-			 GError **error)
+static gboolean
+cd_profile_set_from_profile (CdProfile *profile,
+			     cmsHPROFILE lcms_profile,
+			     GError **error)
 {
 	cmsColorSpaceSignature color_space;
-	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret = FALSE;
-	gchar *fake_md5 = NULL;
 	gchar text[1024];
-	GError *error_local = NULL;
 	guint len;
 	struct tm created;
 	gchar *tmp;
-
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-
-	/* copy the profile path */
-	if (profile->priv->filename != NULL) {
-		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
-			     "profile '%s' filename already set",
-			     profile->priv->object_path);
-		goto out;
-	}
-
-	/* parse the ICC file */
-	lcms_profile = cmsOpenProfileFromFile (filename, "r");
-	if (lcms_profile == NULL) {
-		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
-			     "failed to parse %s",
-			     filename);
-		goto out;
-	}
 
 	/* get the description as the title */
 	cmsGetProfileInfoASCII (lcms_profile,
@@ -896,36 +818,186 @@ cd_profile_set_filename (CdProfile *profile,
 	/* do we have vcgt */
 	profile->priv->has_vcgt = cmsIsTag (lcms_profile, cmsSigVcgtTag);
 
-	/* TODO: actually extract metadata from the DICT tag */
-	fake_md5 = cd_profile_get_fake_md5 (filename);
-	if (fake_md5 != NULL) {
-		g_hash_table_insert (profile->priv->metadata,
-			     g_strdup ("EDID_md5"),
-			     g_strdup (fake_md5));
-	}
-
-	/* get the checksum for the profile */
-	g_free (profile->priv->filename);
-	profile->priv->filename = g_strdup (filename);
+	/* get the checksum for the profile if we can */
 	profile->priv->checksum = cd_profile_get_best_md5 (profile,
-							   lcms_profile,
-							   &error_local);
-	if (profile->priv->checksum == NULL) {
-		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
-			     "failed to open profile: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
+							   lcms_profile);
 
 	/* success */
 	ret = TRUE;
+	return ret;
+}
+
+/**
+ * cd_profile_emit_parsed_property_changed:
+ **/
+static void
+cd_profile_emit_parsed_property_changed (CdProfile *profile)
+{
+	CdProfilePrivate *priv = profile->priv;
+
+	cd_profile_dbus_emit_property_changed (profile,
+					       "Filename",
+					       cd_profile_get_nullable_for_string (priv->filename));
+	cd_profile_dbus_emit_property_changed (profile,
+					       "Title",
+					       cd_profile_get_nullable_for_string (priv->title));
+	cd_profile_dbus_emit_property_changed (profile,
+					       "Kind",
+					       g_variant_new_string (cd_profile_kind_to_string (priv->kind)));
+	cd_profile_dbus_emit_property_changed (profile,
+					       "Colorspace",
+					       g_variant_new_string (cd_colorspace_to_string (priv->colorspace)));
+	cd_profile_dbus_emit_property_changed (profile,
+					       "HasVcgt",
+					       g_variant_new_boolean (priv->has_vcgt));
+	cd_profile_dbus_emit_property_changed (profile,
+					       "Metadata",
+					       cd_profile_get_metadata_as_variant (profile));
+	cd_profile_dbus_emit_property_changed (profile,
+					       "Qualifier",
+					       cd_profile_get_nullable_for_string (priv->qualifier));
+	cd_profile_dbus_emit_property_changed (profile,
+					       "Format",
+					       cd_profile_get_nullable_for_string (priv->format));
+	cd_profile_dbus_emit_property_changed (profile,
+					       "Created",
+					       g_variant_new_int64 (priv->created));
+}
+
+/**
+ * cd_profile_set_filename:
+ **/
+gboolean
+cd_profile_set_filename (CdProfile *profile,
+			 const gchar *filename,
+			 GError **error)
+{
+	cmsHPROFILE lcms_profile = NULL;
+	gboolean ret = FALSE;
+	gchar *fake_md5 = NULL;
+	gchar *data = NULL;
+	gsize len;
+	CdProfilePrivate *priv = profile->priv;
+
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+
+	/* save filename */
+	g_free (profile->priv->filename);
+	profile->priv->filename = g_strdup (filename);
+
+	/* TODO: actually extract metadata from the DICT tag */
+	fake_md5 = cd_profile_get_fake_md5 (priv->filename);
+	if (fake_md5 != NULL) {
+		g_hash_table_insert (priv->metadata,
+				     g_strdup ("EDID_md5"),
+				     g_strdup (fake_md5));
+		cd_profile_dbus_emit_property_changed (profile,
+						       "Metadata",
+						       cd_profile_get_metadata_as_variant (profile));
+	}
+
+	/* fall back to calculating it ourselves */
+	if (priv->checksum == NULL) {
+		g_debug ("%s has no profile-id nor FILE_checksum, falling back "
+			 "to slow MD5", priv->filename);
+		ret = g_file_get_contents (priv->filename,
+					   &data, &len, error);
+		if (!ret)
+			goto out;
+		priv->checksum = g_compute_checksum_for_data (G_CHECKSUM_MD5,
+							      (const guchar *) data,
+							      len);
+	}
+
+	/* check we're not already set using the fd */
+	if (profile->priv->kind != CD_PROFILE_KIND_UNKNOWN) {
+		ret = TRUE;
+		g_debug ("profile '%s' already set",
+			 profile->priv->object_path);
+		goto out;
+	}
+
+	/* parse the ICC file */
+	lcms_profile = cmsOpenProfileFromFile (filename, "r");
+	if (lcms_profile == NULL) {
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "failed to parse %s",
+			     filename);
+		goto out;
+	}
+
+	/* set the virtual profile from the lcms profile */
+	ret = cd_profile_set_from_profile (profile, lcms_profile, error);
+	if (!ret)
+		goto out;
+
+	/* emit all the things that could have changed */
+	cd_profile_emit_parsed_property_changed (profile);
+out:
+	g_free (data);
+	g_free (fake_md5);
+	if (lcms_profile != NULL)
+		cmsCloseProfile (lcms_profile);
+	return ret;
+}
+
+/**
+ * cd_profile_set_fd:
+ **/
+gboolean
+cd_profile_set_fd (CdProfile *profile,
+		   gint fd,
+		   GError **error)
+{
+	cmsHPROFILE lcms_profile = NULL;
+	FILE *stream = NULL;
+	gboolean ret = FALSE;
+
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+
+	/* check we're not already set */
+	if (profile->priv->kind != CD_PROFILE_KIND_UNKNOWN) {
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "profile '%s' already set",
+			     profile->priv->object_path);
+		goto out;
+	}
+
+	/* convert the file descriptor to a stream */
+	stream = fdopen (fd, "r");
+	if (stream == NULL) {
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "failed to open stream from fd %i",
+			     fd);
+		goto out;
+	}
+
+	/* parse the ICC file */
+	lcms_profile = cmsOpenProfileFromStream (stream, "r");
+	if (lcms_profile == NULL) {
+		g_set_error_literal (error,
+				     CD_MAIN_ERROR,
+				     CD_MAIN_ERROR_FAILED,
+				     "failed to open stream");
+		goto out;
+	}
+
+	/* set the virtual profile from the lcms profile */
+	ret = cd_profile_set_from_profile (profile, lcms_profile, error);
+	if (!ret)
+		goto out;
+
+	/* emit all the things that could have changed */
+	cd_profile_emit_parsed_property_changed (profile);
 out:
 	if (lcms_profile != NULL)
 		cmsCloseProfile (lcms_profile);
-	g_free (fake_md5);
 	return ret;
 }
 
