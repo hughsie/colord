@@ -27,23 +27,9 @@
 #include <colord.h>
 #include <stdlib.h>
 
-static gint lcms_error_code = 0;
+#include "cd-lcms-helpers.h"
 
-/*
- * _cmsWriteTagTextAscii:
- */
-static cmsBool
-_cmsWriteTagTextAscii (cmsHPROFILE lcms_profile,
-		       cmsTagSignature sig,
-		       const gchar *text)
-{
-	cmsBool ret;
-	cmsMLU *mlu = cmsMLUalloc (0, 1);
-	cmsMLUsetASCII (mlu, "EN", "us", text);
-	ret = cmsWriteTag (lcms_profile, sig, mlu);
-	cmsMLUfree (mlu);
-	return ret;
-}
+static gint lcms_error_code = 0;
 
 /**
  * cd_fix_profile_error_cb:
@@ -143,6 +129,7 @@ main (int argc, char **argv)
 	gchar *description = NULL;
 	gchar *filename = NULL;
 	gchar *manufacturer = NULL;
+	gchar *metadata = NULL;
 	gchar *model = NULL;
 	gchar *nc_prefix = NULL;
 	gchar *nc_suffix = NULL;
@@ -176,6 +163,9 @@ main (int argc, char **argv)
 		{ "nc-suffix", '\0', 0, G_OPTION_ARG_STRING, &nc_suffix,
 		/* TRANSLATORS: command line option */
 		  _("Named color suffix"), NULL },
+		{ "metadata", 'n', 0, G_OPTION_ARG_STRING, &metadata,
+		/* TRANSLATORS: command line option */
+		  _("The metadata of the profile in 'key1=value1,key2=value2' format"), NULL },
 		{ NULL}
 	};
 
@@ -266,6 +256,17 @@ main (int argc, char **argv)
 			goto out;
 		}
 	}
+	if (metadata != NULL) {
+		ret = _cmsProfileWriteMetadataString (lcms_profile,
+						      metadata,
+						      &error);
+		if (!ret) {
+			g_warning ("failed to write metadata: %s",
+				   error->message);
+			g_error_free (error);
+			goto out;
+		}
+	}
 
 	/* write profile id */
 	ret = cmsMD5computeID (lcms_profile);
@@ -286,6 +287,7 @@ out:
 	g_free (copyright);
 	g_free (model);
 	g_free (manufacturer);
+	g_free (metadata);
 	g_free (filename);
 	g_free (srgb_palette);
 	g_free (nc_prefix);

@@ -25,6 +25,7 @@
 #include <glib-object.h>
 #include <lcms2.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "cd-common.h"
 #include "cd-profile.h"
@@ -697,6 +698,42 @@ out:
 }
 
 /**
+ * cd_profile_set_metadata_from_profile:
+ **/
+static void
+cd_profile_set_metadata_from_profile (CdProfile *profile,
+				      cmsHPROFILE lcms_profile)
+{
+#ifdef HAVE_NEW_LCMS
+	cmsHANDLE dict;
+	const cmsDICTentry* entry;
+	gchar ascii_name[1024];
+	gchar ascii_value[1024];
+	CdProfilePrivate *priv = profile->priv;
+
+	/* does profile have metadata? */
+	dict = cmsReadTag (lcms_profile, cmsSigMetaTag);
+	if (dict == NULL)
+		return;
+
+	/* read each bit of metadata */
+	for (entry = cmsDictGetEntryList (dict);
+	     entry != NULL;
+	     entry = cmsDictNextEntry (entry)) {
+
+		/* convert from wchar_t to char */
+		wcstombs (ascii_name, entry->Name, sizeof (ascii_name));
+		wcstombs (ascii_value, entry->Value, sizeof (ascii_value));
+		g_debug ("Adding metadata %s=%s",
+			 ascii_name, ascii_value);
+		g_hash_table_insert (priv->metadata,
+				     g_strdup (ascii_name),
+				     g_strdup (ascii_value));
+	}
+#endif
+}
+
+/**
  * cd_profile_set_from_profile:
  **/
 static gboolean
@@ -807,6 +844,9 @@ cd_profile_set_from_profile (CdProfile *profile,
 		cd_profile_set_qualifier (profile, "RGB..");
 	}
 
+	/* get metadata from the DICTionary */
+	cd_profile_set_metadata_from_profile (profile, lcms_profile);
+
 	/* get the profile created time and date */
 	ret = cmsGetHeaderCreationDateTime (lcms_profile, &created);
 	if (ret) {
@@ -878,6 +918,7 @@ cd_profile_set_filename (CdProfile *profile,
 	gchar *fake_md5 = NULL;
 	gchar *data = NULL;
 	gsize len;
+	const gchar *tmp;
 	CdProfilePrivate *priv = profile->priv;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
@@ -886,15 +927,20 @@ cd_profile_set_filename (CdProfile *profile,
 	g_free (priv->filename);
 	priv->filename = g_strdup (filename);
 
-	/* TODO: actually extract metadata from the DICT tag */
-	fake_md5 = cd_profile_get_fake_md5 (priv->filename);
-	if (fake_md5 != NULL) {
-		g_hash_table_insert (priv->metadata,
-				     g_strdup ("EDID_md5"),
-				     g_strdup (fake_md5));
-		cd_profile_dbus_emit_property_changed (profile,
-						       "Metadata",
-						       cd_profile_get_metadata_as_variant (profile));
+	/* if we didn't get the metadata from the DICT tag then
+	 * guess it from the filename.
+	 * we can delete this hack when lcms2 >= 2.2 is a hard dep */
+	tmp = g_hash_table_lookup (priv->metadata, "EDID_md5");
+	if (tmp == NULL) {
+		fake_md5 = cd_profile_get_fake_md5 (priv->filename);
+		if (fake_md5 != NULL) {
+			g_hash_table_insert (priv->metadata,
+					     g_strdup ("EDID_md5"),
+					     g_strdup (fake_md5));
+			cd_profile_dbus_emit_property_changed (profile,
+							       "Metadata",
+							       cd_profile_get_metadata_as_variant (profile));
+		}
 	}
 
 	/* fall back to calculating it ourselves */

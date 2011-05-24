@@ -24,24 +24,11 @@
 #include <glib/gi18n.h>
 #include <locale.h>
 #include <lcms2.h>
+#include <stdlib.h>
+
+#include "cd-lcms-helpers.h"
 
 static gint lcms_error_code = 0;
-
-/*
- * _cmsWriteTagTextAscii:
- */
-static cmsBool
-_cmsWriteTagTextAscii (cmsHPROFILE lcms_profile,
-		       cmsTagSignature sig,
-		       const gchar *text)
-{
-	cmsBool ret;
-	cmsMLU *mlu = cmsMLUalloc (0, 1);
-	cmsMLUsetASCII (mlu, "EN", "us", text);
-	ret = cmsWriteTag (lcms_profile, sig, mlu);
-	cmsMLUfree (mlu);
-	return ret;
-}
 
 /*
  * cd_fix_profile_filename:
@@ -51,7 +38,8 @@ cd_fix_profile_filename (const gchar *filename,
 			 const gchar *description,
 			 const gchar *copyright,
 			 const gchar *model,
-			 const gchar *manufacturer)
+			 const gchar *manufacturer,
+			 const gchar *metadata)
 {
 	gboolean ret = TRUE;
 	cmsHPROFILE lcms_profile = NULL;
@@ -112,6 +100,17 @@ cd_fix_profile_filename (const gchar *filename,
 			goto out;
 		}
 	}
+	if (metadata != NULL) {
+		ret = _cmsProfileWriteMetadataString (lcms_profile,
+						      metadata,
+						      &error);
+		if (!ret) {
+			g_warning ("failed to write metadata: %s",
+				   error->message);
+			g_error_free (error);
+			goto out;
+		}
+	}
 
 	/* write profile id */
 	ret = cmsMD5computeID (lcms_profile);
@@ -157,6 +156,7 @@ main (int argc, char **argv)
 	gchar *copyright = NULL;
 	gchar *model = NULL;
 	gchar *manufacturer = NULL;
+	gchar *metadata = NULL;
 
 	const GOptionEntry options[] = {
 		{ "description", 'd', 0, G_OPTION_ARG_STRING, &description,
@@ -171,6 +171,9 @@ main (int argc, char **argv)
 		{ "manufacturer", 'n', 0, G_OPTION_ARG_STRING, &manufacturer,
 		/* TRANSLATORS: command line option */
 		  _("The manufacturer of the profile"), NULL },
+		{ "metadata", 'n', 0, G_OPTION_ARG_STRING, &metadata,
+		/* TRANSLATORS: command line option */
+		  _("The metadata of the profile in 'key1=value1,key2=value2' format"), NULL },
 		{ G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, &files,
 		/* TRANSLATORS: command line option */
 		  _("Profiles to fix"), NULL },
@@ -202,7 +205,8 @@ main (int argc, char **argv)
 					       description,
 					       copyright,
 					       model,
-					       manufacturer);
+					       manufacturer,
+					       metadata);
 		if (!ret) {
 			retval = 1;
 			goto out;

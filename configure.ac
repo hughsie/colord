@@ -122,7 +122,14 @@ dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gio-unix-2.0)
-PKG_CHECK_MODULES(LCMS, lcms2)
+
+PKG_CHECK_MODULES(LCMS, lcms2 >= 2.2, has_new_lcms=yes, has_new_lcms=no)
+if test x$has_new_lcms = xyes; then
+	AC_DEFINE(HAVE_NEW_LCMS,1,[Got new lcms2])
+else
+	PKG_CHECK_MODULES(LCMS, lcms2)
+fi
+
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 PKG_CHECK_MODULES(GUDEV, gudev-1.0)
 
@@ -240,6 +247,7 @@ echo "
         PolicyKit support:         ${enable_polkit}
         Reverse engineering tools: ${enable_reverse}
         SANE support:              ${enable_sane}
+        LCMS2 DICT support:        ${has_new_lcms}
 "
 
 

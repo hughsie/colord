@@ -28,6 +28,8 @@ colormgr_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 cd_fix_profile_SOURCES =				\
+	cd-lcms-helpers.c				\
+	cd-lcms-helpers.h				\
 	cd-fix-profile.c
 
 cd_fix_profile_LDADD =					\
@@ -39,6 +41,8 @@ cd_fix_profile_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 cd_create_profile_SOURCES =				\
+	cd-lcms-helpers.c				\
+	cd-lcms-helpers.h				\
 	cd-create-profile.c
 
 cd_create_profile_LDADD =				\

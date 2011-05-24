@@ -316,7 +316,13 @@ colord_client_func (void)
 
 	/* check metadata */
 	metadata = cd_profile_get_metadata (profile);
+#ifdef HAVE_NEW_LCMS
+	g_assert_cmpint (g_hash_table_size (metadata), ==, 1);
+	g_assert_cmpstr (g_hash_table_lookup (metadata, "EDID_md5"), ==,
+			 "f09e42aa86585d1bb6687d3c322ed0c1");
+#else
 	g_assert_cmpint (g_hash_table_size (metadata), ==, 0);
+#endif
 	g_hash_table_unref (metadata);
 
 	/* set profile qualifier */
