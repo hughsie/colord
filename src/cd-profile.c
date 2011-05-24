@@ -710,98 +710,99 @@ cd_profile_set_from_profile (CdProfile *profile,
 	guint len;
 	struct tm created;
 	gchar *tmp;
+	CdProfilePrivate *priv = profile->priv;
 
 	/* get the description as the title */
 	cmsGetProfileInfoASCII (lcms_profile,
 				cmsInfoDescription,
 				"en", "US",
 				text, 1024);
-	profile->priv->title = g_strdup (text);
+	priv->title = g_strdup (text);
 
 	/* hack to make old profiles look nice */
-	if (profile->priv->title != NULL) {
-		tmp = g_strstr_len (profile->priv->title, -1, " (201");
+	if (priv->title != NULL) {
+		tmp = g_strstr_len (priv->title, -1, " (201");
 		if (tmp != NULL)
 			*tmp = '\0';
 
 		/* remove any shitty prefix */
-		if (g_str_has_suffix (profile->priv->title, ".icc") ||
-		    g_str_has_suffix (profile->priv->title, ".ICC") ||
-		    g_str_has_suffix (profile->priv->title, ".icm") ||
-		    g_str_has_suffix (profile->priv->title, ".ICM")) {
-			len = strlen (profile->priv->title);
+		if (g_str_has_suffix (priv->title, ".icc") ||
+		    g_str_has_suffix (priv->title, ".ICC") ||
+		    g_str_has_suffix (priv->title, ".icm") ||
+		    g_str_has_suffix (priv->title, ".ICM")) {
+			len = strlen (priv->title);
 			if (len > 4)
-				profile->priv->title[len - 4] = '\0';
+				priv->title[len - 4] = '\0';
 		}
 	}
 
 	/* get the profile kind */
 	switch (cmsGetDeviceClass (lcms_profile)) {
 	case cmsSigInputClass:
-		profile->priv->kind = CD_PROFILE_KIND_INPUT_DEVICE;
+		priv->kind = CD_PROFILE_KIND_INPUT_DEVICE;
 		break;
 	case cmsSigDisplayClass:
-		profile->priv->kind = CD_PROFILE_KIND_DISPLAY_DEVICE;
+		priv->kind = CD_PROFILE_KIND_DISPLAY_DEVICE;
 		break;
 	case cmsSigOutputClass:
-		profile->priv->kind = CD_PROFILE_KIND_OUTPUT_DEVICE;
+		priv->kind = CD_PROFILE_KIND_OUTPUT_DEVICE;
 		break;
 	case cmsSigLinkClass:
-		profile->priv->kind = CD_PROFILE_KIND_DEVICELINK;
+		priv->kind = CD_PROFILE_KIND_DEVICELINK;
 		break;
 	case cmsSigColorSpaceClass:
-		profile->priv->kind = CD_PROFILE_KIND_COLORSPACE_CONVERSION;
+		priv->kind = CD_PROFILE_KIND_COLORSPACE_CONVERSION;
 		break;
 	case cmsSigAbstractClass:
-		profile->priv->kind = CD_PROFILE_KIND_ABSTRACT;
+		priv->kind = CD_PROFILE_KIND_ABSTRACT;
 		break;
 	case cmsSigNamedColorClass:
-		profile->priv->kind = CD_PROFILE_KIND_NAMED_COLOR;
+		priv->kind = CD_PROFILE_KIND_NAMED_COLOR;
 		break;
 	default:
-		profile->priv->kind = CD_PROFILE_KIND_UNKNOWN;
+		priv->kind = CD_PROFILE_KIND_UNKNOWN;
 	}
 
 	/* get colorspace */
 	color_space = cmsGetColorSpace (lcms_profile);
 	switch (color_space) {
 	case cmsSigXYZData:
-		profile->priv->colorspace = CD_COLORSPACE_XYZ;
+		priv->colorspace = CD_COLORSPACE_XYZ;
 		break;
 	case cmsSigLabData:
-		profile->priv->colorspace = CD_COLORSPACE_LAB;
+		priv->colorspace = CD_COLORSPACE_LAB;
 		break;
 	case cmsSigLuvData:
-		profile->priv->colorspace = CD_COLORSPACE_LUV;
+		priv->colorspace = CD_COLORSPACE_LUV;
 		break;
 	case cmsSigYCbCrData:
-		profile->priv->colorspace = CD_COLORSPACE_YCBCR;
+		priv->colorspace = CD_COLORSPACE_YCBCR;
 		break;
 	case cmsSigYxyData:
-		profile->priv->colorspace = CD_COLORSPACE_YXY;
+		priv->colorspace = CD_COLORSPACE_YXY;
 		break;
 	case cmsSigRgbData:
-		profile->priv->colorspace = CD_COLORSPACE_RGB;
+		priv->colorspace = CD_COLORSPACE_RGB;
 		break;
 	case cmsSigGrayData:
-		profile->priv->colorspace = CD_COLORSPACE_GRAY;
+		priv->colorspace = CD_COLORSPACE_GRAY;
 		break;
 	case cmsSigHsvData:
-		profile->priv->colorspace = CD_COLORSPACE_HSV;
+		priv->colorspace = CD_COLORSPACE_HSV;
 		break;
 	case cmsSigCmykData:
-		profile->priv->colorspace = CD_COLORSPACE_CMYK;
+		priv->colorspace = CD_COLORSPACE_CMYK;
 		break;
 	case cmsSigCmyData:
-		profile->priv->colorspace = CD_COLORSPACE_CMY;
+		priv->colorspace = CD_COLORSPACE_CMY;
 		break;
 	default:
-		profile->priv->colorspace = CD_COLORSPACE_UNKNOWN;
+		priv->colorspace = CD_COLORSPACE_UNKNOWN;
 	}
 
 	/* set a generic qualifier if there was nothing set before */
-	if (profile->priv->colorspace == CD_COLORSPACE_RGB &&
-	    profile->priv->qualifier == NULL) {
+	if (priv->colorspace == CD_COLORSPACE_RGB &&
+	    priv->qualifier == NULL) {
 		cd_profile_set_format (profile, "ColorSpace..");
 		cd_profile_set_qualifier (profile, "RGB..");
 	}
@@ -809,18 +810,18 @@ cd_profile_set_from_profile (CdProfile *profile,
 	/* get the profile created time and date */
 	ret = cmsGetHeaderCreationDateTime (lcms_profile, &created);
 	if (ret) {
-		profile->priv->created = mktime (&created);
+		priv->created = mktime (&created);
 	} else {
 		g_warning ("failed to get created time");
-		profile->priv->created = 0;
+		priv->created = 0;
 	}
 
 	/* do we have vcgt */
-	profile->priv->has_vcgt = cmsIsTag (lcms_profile, cmsSigVcgtTag);
+	priv->has_vcgt = cmsIsTag (lcms_profile, cmsSigVcgtTag);
 
 	/* get the checksum for the profile if we can */
-	profile->priv->checksum = cd_profile_get_best_md5 (profile,
-							   lcms_profile);
+	priv->checksum = cd_profile_get_best_md5 (profile,
+						  lcms_profile);
 
 	/* success */
 	ret = TRUE;
@@ -882,8 +883,8 @@ cd_profile_set_filename (CdProfile *profile,
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
 	/* save filename */
-	g_free (profile->priv->filename);
-	profile->priv->filename = g_strdup (filename);
+	g_free (priv->filename);
+	priv->filename = g_strdup (filename);
 
 	/* TODO: actually extract metadata from the DICT tag */
 	fake_md5 = cd_profile_get_fake_md5 (priv->filename);
@@ -910,10 +911,10 @@ cd_profile_set_filename (CdProfile *profile,
 	}
 
 	/* check we're not already set using the fd */
-	if (profile->priv->kind != CD_PROFILE_KIND_UNKNOWN) {
+	if (priv->kind != CD_PROFILE_KIND_UNKNOWN) {
 		ret = TRUE;
 		g_debug ("profile '%s' already set",
-			 profile->priv->object_path);
+			 priv->object_path);
 		goto out;
 	}
 
@@ -954,16 +955,17 @@ cd_profile_set_fd (CdProfile *profile,
 	cmsHPROFILE lcms_profile = NULL;
 	FILE *stream = NULL;
 	gboolean ret = FALSE;
+	CdProfilePrivate *priv = profile->priv;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
 	/* check we're not already set */
-	if (profile->priv->kind != CD_PROFILE_KIND_UNKNOWN) {
+	if (priv->kind != CD_PROFILE_KIND_UNKNOWN) {
 		g_set_error (error,
 			     CD_MAIN_ERROR,
 			     CD_MAIN_ERROR_FAILED,
 			     "profile '%s' already set",
-			     profile->priv->object_path);
+			     priv->object_path);
 		goto out;
 	}
 
