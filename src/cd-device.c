@@ -748,20 +748,20 @@ cd_device_set_property_internal (CdDevice *device,
 
 	g_debug ("CdDevice: Attempting to set %s to %s on %s",
 		 property, value, device->priv->id);
-	if (g_strcmp0 (property, "Model") == 0) {
+	if (g_strcmp0 (property, CD_DEVICE_PROPERTY_MODEL) == 0) {
 		cd_device_set_model (device, value);
-	} else if (g_strcmp0 (property, "Kind") == 0) {
+	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_KIND) == 0) {
 		g_free (priv->kind);
 		priv->kind = g_strdup (value);
-	} else if (g_strcmp0 (property, "Vendor") == 0) {
+	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_VENDOR) == 0) {
 		cd_device_set_vendor (device, value);
-	} else if (g_strcmp0 (property, "Serial") == 0) {
+	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_SERIAL) == 0) {
 		g_free (priv->serial);
 		priv->serial = g_strdup (value);
-	} else if (g_strcmp0 (property, "Colorspace") == 0) {
+	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_COLORSPACE) == 0) {
 		g_free (priv->colorspace);
 		priv->colorspace = g_strdup (value);
-	} else if (g_strcmp0 (property, "Mode") == 0) {
+	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_MODE) == 0) {
 		g_free (priv->mode);
 		priv->mode = g_strdup (value);
 	} else {
@@ -770,7 +770,7 @@ cd_device_set_property_internal (CdDevice *device,
 				     g_strdup (property),
 				     g_strdup (value));
 		cd_device_dbus_emit_property_changed (device,
-						       "Metadata",
+						       CD_DEVICE_PROPERTY_METADATA,
 						       cd_device_get_metadata_as_variant (device));
 		goto out;
 	}
@@ -1205,43 +1205,43 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 
 	g_debug ("CdDevice %s:GetProperty '%s'",
 		 sender, property_name);
-	if (g_strcmp0 (property_name, "Created") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_CREATED) == 0) {
 		retval = g_variant_new_uint64 (priv->created);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Modified") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODIFIED) == 0) {
 		retval = g_variant_new_uint64 (priv->modified);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Model") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODEL) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->model);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Vendor") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_VENDOR) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->vendor);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Serial") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SERIAL) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->serial);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Colorspace") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_COLORSPACE) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->colorspace);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Mode") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODE) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->mode);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Kind") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_KIND) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->kind);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "DeviceId") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_ID) == 0) {
 		retval = g_variant_new_string (priv->id);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Profiles") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILES) == 0) {
 
 		/* are we profiling? */
 		ret = cd_inhibit_valid (priv->inhibit);
@@ -1257,7 +1257,7 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		}
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Metadata") == 0) {
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_METADATA) == 0) {
 		retval = cd_device_get_metadata_as_variant (device);
 		goto out;
 	}

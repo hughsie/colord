@@ -213,6 +213,44 @@ typedef enum {
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
 #define COLORD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
 
+/* defined in metadata-spec.txt */
+#define CD_PROFILE_METADATA_STANDARD_SPACE	"STANDARD_space"
+#define CD_PROFILE_METADATA_EDID_MD5		"EDID_md5"
+#define CD_PROFILE_METADATA_EDID_MODEL		"EDID_model"
+#define CD_PROFILE_METADATA_EDID_SERIAL		"EDID_serial"
+#define CD_PROFILE_METADATA_EDID_MNFT		"EDID_mnft"
+#define CD_PROFILE_METADATA_EDID_VENDOR		"EDID_manufacturer"
+#define CD_PROFILE_METADATA_FILE_CHECKSUM	"FILE_checksum"
+
+/* defined in org.freedesktop.ColorManager.Profile.xml */
+#define CD_PROFILE_PROPERTY_FILENAME		"Filename"
+#define CD_PROFILE_PROPERTY_QUALIFIER		"Qualifier"
+#define CD_PROFILE_PROPERTY_FORMAT		"Format"
+#define CD_PROFILE_PROPERTY_COLORSPACE		"Colorspace"
+#define CD_PROFILE_PROPERTY_TITLE		"Title"
+#define CD_PROFILE_PROPERTY_KIND		"Kind"
+#define CD_PROFILE_PROPERTY_CREATED		"Created"
+#define CD_PROFILE_PROPERTY_HAS_VCGT		"HasVcgt"
+#define CD_PROFILE_PROPERTY_IS_SYSTEM_WIDE	"IsSystemWide"
+#define CD_PROFILE_PROPERTY_METADATA		"Metadata"
+#define CD_PROFILE_PROPERTY_ID			"ProfileId"
+
+/* defined in metadata-spec.txt */
+#define CD_DEVICE_METADATA_XRANDR_NAME		"XRANDR_name"
+
+/* defined in org.freedesktop.ColorManager.Device.xml */
+#define CD_DEVICE_PROPERTY_MODEL		"Model"
+#define CD_DEVICE_PROPERTY_KIND			"Kind"
+#define CD_DEVICE_PROPERTY_VENDOR		"Vendor"
+#define CD_DEVICE_PROPERTY_SERIAL		"Serial"
+#define CD_DEVICE_PROPERTY_COLORSPACE		"Colorspace"
+#define CD_DEVICE_PROPERTY_MODE			"Mode"
+#define CD_DEVICE_PROPERTY_PROFILES		"Profiles"
+#define CD_DEVICE_PROPERTY_CREATED		"Created"
+#define CD_DEVICE_PROPERTY_MODIFIED		"Modified"
+#define CD_DEVICE_PROPERTY_METADATA		"Metadata"
+#define CD_DEVICE_PROPERTY_ID			"DeviceId"
+
 const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string		(const gchar		*kind);
 const gchar	*cd_profile_kind_to_string		(CdProfileKind		 profile_kind);

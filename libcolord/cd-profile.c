@@ -395,32 +395,32 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
 				     "{sv}",
 				     &property_name,
 				     &property_value);
-		if (g_strcmp0 (property_name, "Qualifier") == 0) {
+		if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_QUALIFIER) == 0) {
 			g_free (profile->priv->qualifier);
 			profile->priv->qualifier = cd_profile_get_nullable_str (property_value);
-		} else if (g_strcmp0 (property_name, "Format") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FORMAT) == 0) {
 			g_free (profile->priv->format);
 			profile->priv->format = cd_profile_get_nullable_str (property_value);
-		} else if (g_strcmp0 (property_name, "Filename") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FILENAME) == 0) {
 			g_free (profile->priv->filename);
 			profile->priv->filename = cd_profile_get_nullable_str (property_value);
-		} else if (g_strcmp0 (property_name, "ProfileId") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_ID) == 0) {
 			g_free (profile->priv->id);
 			profile->priv->id = g_variant_dup_string (property_value, NULL);
-		} else if (g_strcmp0 (property_name, "Title") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_TITLE) == 0) {
 			g_free (profile->priv->title);
 			profile->priv->title = g_variant_dup_string (property_value, NULL);
-		} else if (g_strcmp0 (property_name, "Kind") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_KIND) == 0) {
 			profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (property_value, NULL));
-		} else if (g_strcmp0 (property_name, "Colorspace") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_COLORSPACE) == 0) {
 			profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
-		} else if (g_strcmp0 (property_name, "Created") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_CREATED) == 0) {
 			profile->priv->created = g_variant_get_int64 (property_value);
-		} else if (g_strcmp0 (property_name, "HasVcgt") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_HAS_VCGT) == 0) {
 			profile->priv->has_vcgt = g_variant_get_boolean (property_value);
-		} else if (g_strcmp0 (property_name, "IsSystemWide") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_IS_SYSTEM_WIDE) == 0) {
 			profile->priv->is_system_wide = g_variant_get_boolean (property_value);
-		} else if (g_strcmp0 (property_name, "Metadata") == 0) {
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_METADATA) == 0) {
 			cd_profile_set_metadata_from_variant (profile, property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
@@ -513,67 +513,67 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 
 	/* get profile id */
 	id = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-					       "ProfileId");
+					       CD_PROFILE_PROPERTY_ID);
 	if (id != NULL)
 		profile->priv->id = g_variant_dup_string (id, NULL);
 
 	/* get filename */
 	filename = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						     "Filename");
+						     CD_PROFILE_PROPERTY_FILENAME);
 	if (filename != NULL)
 		profile->priv->filename = cd_profile_get_nullable_str (filename);
 
 	/* get qualifier */
 	qualifier = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						      "Qualifier");
+						      CD_PROFILE_PROPERTY_QUALIFIER);
 	if (qualifier != NULL)
 		profile->priv->qualifier = cd_profile_get_nullable_str (qualifier);
 
 	/* get format */
 	format = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						   "Format");
+						   CD_PROFILE_PROPERTY_FORMAT);
 	if (format != NULL)
 		profile->priv->format = cd_profile_get_nullable_str (format);
 
 	/* get title */
 	title = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						  "Title");
+						  CD_PROFILE_PROPERTY_TITLE);
 	if (title != NULL)
 		profile->priv->title = cd_profile_get_nullable_str (title);
 
 	/* get kind */
 	kind = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						 "Kind");
+						 CD_PROFILE_PROPERTY_KIND);
 	if (kind != NULL)
 		profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (kind, NULL));
 
 	/* get colorspace */
 	colorspace = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						       "Colorspace");
+						       CD_PROFILE_PROPERTY_COLORSPACE);
 	if (colorspace != NULL)
 		profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
 
 	/* get created */
 	created = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						    "Created");
+						    CD_PROFILE_PROPERTY_CREATED);
 	if (created != NULL)
 		profile->priv->created = g_variant_get_int64 (created);
 
 	/* get VCGT */
 	has_vcgt = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						     "HasVcgt");
+						     CD_PROFILE_PROPERTY_HAS_VCGT);
 	if (has_vcgt != NULL)
 		profile->priv->has_vcgt = g_variant_get_boolean (has_vcgt);
 
 	/* get if system wide */
 	is_system_wide = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-							   "IsSystemWide");
+							   CD_PROFILE_PROPERTY_IS_SYSTEM_WIDE);
 	if (is_system_wide != NULL)
 		profile->priv->is_system_wide = g_variant_get_boolean (is_system_wide);
 
 	/* get if system wide */
 	metadata = g_dbus_proxy_get_cached_property (profile->priv->proxy,
-						     "Metadata");
+						     CD_PROFILE_PROPERTY_METADATA);
 	if (metadata != NULL)
 		cd_profile_set_metadata_from_variant (profile, metadata);
 
@@ -677,7 +677,9 @@ cd_profile_set_filename_sync (CdProfile *profile,
 	g_return_val_if_fail (profile->priv->proxy != NULL, FALSE);
 
 	/* execute sync helper */
-	return cd_profile_set_property_sync (profile, "Filename", value,
+	return cd_profile_set_property_sync (profile,
+					     CD_PROFILE_PROPERTY_FILENAME,
+					     value,
 					     cancellable, error);
 }
 
@@ -750,7 +752,7 @@ cd_profile_set_qualifier_sync (CdProfile *profile,
 	g_return_val_if_fail (profile->priv->proxy != NULL, FALSE);
 
 	/* execute sync helper */
-	return cd_profile_set_property_sync (profile, "Qualifier", value,
+	return cd_profile_set_property_sync (profile, CD_PROFILE_PROPERTY_QUALIFIER, value,
 					     cancellable, error);
 }
 

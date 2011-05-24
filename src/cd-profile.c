@@ -382,23 +382,23 @@ cd_profile_set_property_internal (CdProfile *profile,
 	gboolean ret = TRUE;
 	CdProfilePrivate *priv = profile->priv;
 
-	if (g_strcmp0 (property, "Filename") == 0) {
+	if (g_strcmp0 (property, CD_PROFILE_PROPERTY_FILENAME) == 0) {
 		ret = cd_profile_set_filename (profile,
 					       value,
 					       error);
 		if (!ret)
 			goto out;
-	} else if (g_strcmp0 (property, "Qualifier") == 0) {
+	} else if (g_strcmp0 (property, CD_PROFILE_PROPERTY_QUALIFIER) == 0) {
 		cd_profile_set_qualifier (profile, value);
 		cd_profile_dbus_emit_property_changed (profile,
 						       property,
 						       g_variant_new_string (value));
-	} else if (g_strcmp0 (property, "Format") == 0) {
+	} else if (g_strcmp0 (property, CD_PROFILE_PROPERTY_FORMAT) == 0) {
 		cd_profile_set_format (profile, value);
 		cd_profile_dbus_emit_property_changed (profile,
 						       property,
 						       g_variant_new_string (value));
-	} else if (g_strcmp0 (property, "Colorspace") == 0) {
+	} else if (g_strcmp0 (property, CD_PROFILE_PROPERTY_COLORSPACE) == 0) {
 		priv->colorspace = cd_colorspace_from_string (value);
 		cd_profile_dbus_emit_property_changed (profile,
 						       property,
@@ -409,7 +409,7 @@ cd_profile_set_property_internal (CdProfile *profile,
 				     g_strdup (property),
 				     g_strdup (value));
 		cd_profile_dbus_emit_property_changed (profile,
-						       "Metadata",
+						       CD_PROFILE_PROPERTY_METADATA,
 						       cd_profile_get_metadata_as_variant (profile));
 		goto out;
 	}
@@ -511,47 +511,47 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	GVariant *retval = NULL;
 	CdProfile *profile = CD_PROFILE (user_data);
 
-	if (g_strcmp0 (property_name, "Title") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_TITLE) == 0) {
 		retval = cd_profile_get_nullable_for_string (profile->priv->title);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "ProfileId") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_ID) == 0) {
 		retval = cd_profile_get_nullable_for_string (profile->priv->id);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Qualifier") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_QUALIFIER) == 0) {
 		retval = cd_profile_get_nullable_for_string (profile->priv->qualifier);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Format") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FORMAT) == 0) {
 		retval = cd_profile_get_nullable_for_string (profile->priv->format);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Filename") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FILENAME) == 0) {
 		retval = cd_profile_get_nullable_for_string (profile->priv->filename);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Kind") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_KIND) == 0) {
 		retval = g_variant_new_string (cd_profile_kind_to_string (profile->priv->kind));
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Colorspace") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_COLORSPACE) == 0) {
 		retval = g_variant_new_string (cd_colorspace_to_string (profile->priv->colorspace));
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "HasVcgt") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_HAS_VCGT) == 0) {
 		retval = g_variant_new_boolean (profile->priv->has_vcgt);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "IsSystemWide") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_IS_SYSTEM_WIDE) == 0) {
 		retval = g_variant_new_boolean (profile->priv->is_system_wide);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Metadata") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_METADATA) == 0) {
 		retval = cd_profile_get_metadata_as_variant (profile);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Created") == 0) {
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_CREATED) == 0) {
 		retval = g_variant_new_int64 (profile->priv->created);
 		goto out;
 	}
@@ -683,7 +683,7 @@ cd_profile_get_best_md5 (CdProfile *profile,
 
 	/* try the metadata if available */
 	tmp = g_hash_table_lookup (profile->priv->metadata,
-				   "FILE_checksum");
+				   CD_PROFILE_METADATA_FILE_CHECKSUM);
 	if (tmp != NULL) {
 
 		/* invalid metadata */
@@ -877,31 +877,31 @@ cd_profile_emit_parsed_property_changed (CdProfile *profile)
 	CdProfilePrivate *priv = profile->priv;
 
 	cd_profile_dbus_emit_property_changed (profile,
-					       "Filename",
+					       CD_PROFILE_PROPERTY_FILENAME,
 					       cd_profile_get_nullable_for_string (priv->filename));
 	cd_profile_dbus_emit_property_changed (profile,
-					       "Title",
+					       CD_PROFILE_PROPERTY_TITLE,
 					       cd_profile_get_nullable_for_string (priv->title));
 	cd_profile_dbus_emit_property_changed (profile,
-					       "Kind",
+					       CD_PROFILE_PROPERTY_KIND,
 					       g_variant_new_string (cd_profile_kind_to_string (priv->kind)));
 	cd_profile_dbus_emit_property_changed (profile,
-					       "Colorspace",
+					       CD_PROFILE_PROPERTY_COLORSPACE,
 					       g_variant_new_string (cd_colorspace_to_string (priv->colorspace)));
 	cd_profile_dbus_emit_property_changed (profile,
-					       "HasVcgt",
+					       CD_PROFILE_PROPERTY_HAS_VCGT,
 					       g_variant_new_boolean (priv->has_vcgt));
 	cd_profile_dbus_emit_property_changed (profile,
-					       "Metadata",
+					       CD_PROFILE_PROPERTY_METADATA,
 					       cd_profile_get_metadata_as_variant (profile));
 	cd_profile_dbus_emit_property_changed (profile,
-					       "Qualifier",
+					       CD_PROFILE_PROPERTY_QUALIFIER,
 					       cd_profile_get_nullable_for_string (priv->qualifier));
 	cd_profile_dbus_emit_property_changed (profile,
-					       "Format",
+					       CD_PROFILE_PROPERTY_FORMAT,
 					       cd_profile_get_nullable_for_string (priv->format));
 	cd_profile_dbus_emit_property_changed (profile,
-					       "Created",
+					       CD_PROFILE_PROPERTY_CREATED,
 					       g_variant_new_int64 (priv->created));
 }
 
@@ -930,23 +930,25 @@ cd_profile_set_filename (CdProfile *profile,
 	/* if we didn't get the metadata from the DICT tag then
 	 * guess it from the filename.
 	 * we can delete this hack when lcms2 >= 2.2 is a hard dep */
-	tmp = g_hash_table_lookup (priv->metadata, "EDID_md5");
+	tmp = g_hash_table_lookup (priv->metadata, CD_PROFILE_METADATA_EDID_MD5);
 	if (tmp == NULL) {
 		fake_md5 = cd_profile_get_fake_md5 (priv->filename);
 		if (fake_md5 != NULL) {
 			g_hash_table_insert (priv->metadata,
-					     g_strdup ("EDID_md5"),
+					     g_strdup (CD_PROFILE_METADATA_EDID_MD5),
 					     g_strdup (fake_md5));
 			cd_profile_dbus_emit_property_changed (profile,
-							       "Metadata",
+							       CD_PROFILE_PROPERTY_METADATA,
 							       cd_profile_get_metadata_as_variant (profile));
 		}
 	}
 
 	/* fall back to calculating it ourselves */
 	if (priv->checksum == NULL) {
-		g_debug ("%s has no profile-id nor FILE_checksum, falling back "
-			 "to slow MD5", priv->filename);
+		g_debug ("%s has no profile-id nor %s, falling back "
+			 "to slow MD5",
+			 priv->filename,
+			 CD_PROFILE_METADATA_FILE_CHECKSUM);
 		ret = g_file_get_contents (priv->filename,
 					   &data, &len, error);
 		if (!ret)

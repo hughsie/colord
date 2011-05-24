@@ -426,36 +426,36 @@ cd_device_dbus_properties_changed (GDBusProxy  *proxy,
 				     "{sv}",
 				     &property_name,
 				     &property_value);
-		if (g_strcmp0 (property_name, "Model") == 0) {
+		if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODEL) == 0) {
 			g_free (device->priv->model);
 			device->priv->model = g_variant_dup_string (property_value, NULL);
-		} else if (g_strcmp0 (property_name, "Serial") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SERIAL) == 0) {
 			g_free (device->priv->serial);
 			device->priv->serial = g_variant_dup_string (property_value, NULL);
-		} else if (g_strcmp0 (property_name, "Vendor") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_VENDOR) == 0) {
 			g_free (device->priv->vendor);
 			device->priv->vendor = g_variant_dup_string (property_value, NULL);
-		} else if (g_strcmp0 (property_name, "Kind") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_KIND) == 0) {
 			device->priv->kind =
 				cd_device_kind_from_string (g_variant_get_string (property_value, NULL));
-		} else if (g_strcmp0 (property_name, "Colorspace") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_COLORSPACE) == 0) {
 			device->priv->colorspace =
 				cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
-		} else if (g_strcmp0 (property_name, "Mode") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODE) == 0) {
 			device->priv->mode =
 				cd_device_mode_from_string (g_variant_get_string (property_value, NULL));
-		} else if (g_strcmp0 (property_name, "Profiles") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILES) == 0) {
 			cd_device_set_profiles_array_from_variant (device,
 								   property_value,
 								   NULL,
 								   NULL);
-		} else if (g_strcmp0 (property_name, "Created") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_CREATED) == 0) {
 			device->priv->created = g_variant_get_uint64 (property_value);
-		} else if (g_strcmp0 (property_name, "Modified") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODIFIED) == 0) {
 			device->priv->modified = g_variant_get_uint64 (property_value);
-		} else if (g_strcmp0 (property_name, "Metadata") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_METADATA) == 0) {
 			cd_device_set_metadata_from_variant (device, property_value);
-		} else if (g_strcmp0 (property_name, "DeviceId") == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_ID) == 0) {
 			/* ignore this, we don't support it changing */;
 		} else {
 			g_warning ("%s property unhandled", property_name);
@@ -547,64 +547,64 @@ cd_device_set_object_path_sync (CdDevice *device,
 
 	/* get device id */
 	id = g_dbus_proxy_get_cached_property (device->priv->proxy,
-					       "DeviceId");
+					       CD_DEVICE_PROPERTY_ID);
 	if (id != NULL)
 		device->priv->id = g_variant_dup_string (id, NULL);
 
 	/* get kind */
 	kind = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						 "Kind");
+						 CD_DEVICE_PROPERTY_KIND);
 	if (kind != NULL)
 		device->priv->kind =
 			cd_device_kind_from_string (g_variant_get_string (kind, NULL));
 
 	/* get colorspace */
 	colorspace = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						       "Colorspace");
+						       CD_DEVICE_PROPERTY_COLORSPACE);
 	if (colorspace != NULL)
 		device->priv->colorspace =
 			cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
 
 	/* get mode */
 	mode = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						 "Mode");
+						 CD_DEVICE_PROPERTY_MODE);
 	if (mode != NULL)
 		device->priv->mode =
 			cd_device_mode_from_string (g_variant_get_string (mode, NULL));
 
 	/* get model */
 	model = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						  "Model");
+						  CD_DEVICE_PROPERTY_MODEL);
 	if (model != NULL)
 		device->priv->model = g_variant_dup_string (model, NULL);
 
 	/* get serial */
 	serial = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						   "Serial");
+						   CD_DEVICE_PROPERTY_SERIAL);
 	if (serial != NULL)
 		device->priv->serial = g_variant_dup_string (serial, NULL);
 
 	/* get vendor */
 	vendor = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						   "Vendor");
+						   CD_DEVICE_PROPERTY_VENDOR);
 	if (vendor != NULL)
 		device->priv->vendor = g_variant_dup_string (vendor, NULL);
 
 	/* get created */
 	created = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						    "Created");
+						    CD_DEVICE_PROPERTY_CREATED);
 	if (created != NULL)
 		device->priv->created = g_variant_get_uint64 (created);
 
 	/* get modified */
 	modified = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						     "Modified");
+						     CD_DEVICE_PROPERTY_MODIFIED);
 	if (modified != NULL)
 		device->priv->modified = g_variant_get_uint64 (modified);
 
 	/* get profiles */
 	profiles = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						     "Profiles");
+						     CD_DEVICE_PROPERTY_PROFILES);
 	ret = cd_device_set_profiles_array_from_variant (device,
 							 profiles,
 							 cancellable,
@@ -614,7 +614,7 @@ cd_device_set_object_path_sync (CdDevice *device,
 
 	/* get metadata */
 	metadata = g_dbus_proxy_get_cached_property (device->priv->proxy,
-						     "Metadata");
+						     CD_DEVICE_PROPERTY_METADATA);
 	if (metadata != NULL)
 		cd_device_set_metadata_from_variant (device, metadata);
 
@@ -716,7 +716,9 @@ cd_device_set_model_sync (CdDevice *device,
 	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
 
 	/* execute sync helper */
-	return cd_device_set_property_sync (device, "Model", value,
+	return cd_device_set_property_sync (device,
+					    CD_DEVICE_PROPERTY_MODEL,
+					    value,
 					    cancellable, error);
 }
 
@@ -743,7 +745,9 @@ cd_device_set_serial_sync (CdDevice *device,
 	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
 
 	/* execute sync helper */
-	return cd_device_set_property_sync (device, "Serial", value,
+	return cd_device_set_property_sync (device,
+					    CD_DEVICE_PROPERTY_SERIAL,
+					    value,
 					    cancellable, error);
 }
 
@@ -770,7 +774,9 @@ cd_device_set_vendor_sync (CdDevice *device,
 	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
 
 	/* execute sync helper */
-	return cd_device_set_property_sync (device, "Vendor", value,
+	return cd_device_set_property_sync (device,
+					    CD_DEVICE_PROPERTY_VENDOR,
+					    value,
 					    cancellable, error);
 }
 
@@ -797,7 +803,8 @@ cd_device_set_kind_sync (CdDevice *device,
 	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
 
 	/* execute sync helper */
-	return cd_device_set_property_sync (device, "Kind",
+	return cd_device_set_property_sync (device,
+					    CD_DEVICE_PROPERTY_KIND,
 					    cd_device_kind_to_string (kind),
 					    cancellable, error);
 }
@@ -825,7 +832,8 @@ cd_device_set_colorspace_sync (CdDevice *device,
 	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
 
 	/* execute sync helper */
-	return cd_device_set_property_sync (device, "Colorspace",
+	return cd_device_set_property_sync (device,
+					    CD_DEVICE_PROPERTY_COLORSPACE,
 					    cd_colorspace_to_string (colorspace),
 					    cancellable, error);
 }
@@ -853,7 +861,8 @@ cd_device_set_mode_sync (CdDevice *device,
 	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
 
 	/* execute sync helper */
-	return cd_device_set_property_sync (device, "Mode",
+	return cd_device_set_property_sync (device,
+					    CD_DEVICE_PROPERTY_MODE,
 					    cd_device_mode_to_string (mode),
 					    cancellable, error);
 }

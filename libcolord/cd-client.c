@@ -741,7 +741,7 @@ cd_client_create_profile_sync (CdClient *client,
 		/* just fake something here */
 		g_variant_builder_add (&builder,
 				       "{ss}",
-				       "Qualifier",
+				       CD_PROFILE_PROPERTY_QUALIFIER,
 				       "");
 	}
 
@@ -753,7 +753,8 @@ cd_client_create_profile_sync (CdClient *client,
 
 	/* get fd if possible top avoid open() in daemon */
 	if (properties != NULL) {
-		filename = g_hash_table_lookup (properties, "Filename");
+		filename = g_hash_table_lookup (properties,
+						CD_PROFILE_PROPERTY_FILENAME);
 		if (filename != NULL) {
 			fd = open (filename, O_RDONLY);
 			if (fd < 0) {
