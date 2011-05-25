@@ -83,32 +83,21 @@ GType		 cd_device_get_type			(void);
 GQuark		 cd_device_error_quark			(void);
 CdDevice	*cd_device_new				(void);
 gchar		*cd_device_to_string			(CdDevice	*device);
-gboolean	 cd_device_set_object_path_sync		(CdDevice	*device,
+
+/* async */
+void		 cd_device_set_object_path		(CdDevice	*device,
 							 const gchar	*object_path,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_device_set_object_path_finish	(CdDevice	*device,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_device_set_model_sync		(CdDevice	*device,
+
+/* sync: FIXME */
+gboolean	 cd_device_set_property_sync		(CdDevice	*device,
+							 const gchar	*key,
 							 const gchar	*value,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_device_set_serial_sync		(CdDevice	*device,
-							 const gchar	*value,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_device_set_vendor_sync		(CdDevice	*device,
-							 const gchar	*value,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_device_set_kind_sync		(CdDevice	*device,
-							 CdDeviceKind	 kind,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_device_set_colorspace_sync		(CdDevice	*device,
-							 CdColorspace	 colorspace,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_device_set_mode_sync		(CdDevice	*device,
-							 CdDeviceMode	 mode,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_device_add_profile_sync		(CdDevice	*device,
@@ -138,6 +127,8 @@ CdDeviceRelation cd_device_get_profile_relation		(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GError		**error);
+
+/* helpers */
 const gchar	*cd_device_get_id			(CdDevice	*device);
 const gchar	*cd_device_get_model			(CdDevice	*device);
 const gchar	*cd_device_get_vendor			(CdDevice	*device);

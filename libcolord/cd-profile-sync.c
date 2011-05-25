@@ -98,3 +98,52 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 }
 
 /**********************************************************************/
+
+/**
+ * cd_profile_set_filename_sync:
+ * @profile: a #CdProfile instance.
+ * @value: The filename.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Sets the profile model.
+ *
+ * Return value: #TRUE for success, else #FALSE and @error is used
+ *
+ * Since: 0.1.0
+ **/
+gboolean
+cd_profile_set_filename_sync (CdProfile *profile,
+			      const gchar *value,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	return cd_profile_set_property_sync (profile,
+					     CD_PROFILE_PROPERTY_FILENAME,
+					     value,
+					     cancellable, error);
+}
+
+
+/**
+ * cd_profile_set_qualifier_sync:
+ * @profile: a #CdProfile instance.
+ * @value: The qualifier.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Sets the profile model.
+ *
+ * Return value: #TRUE for success, else #FALSE and @error is used
+ *
+ * Since: 0.1.0
+ **/
+gboolean
+cd_profile_set_qualifier_sync (CdProfile *profile,
+			       const gchar *value,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	return cd_profile_set_property_sync (profile, CD_PROFILE_PROPERTY_QUALIFIER, value,
+					     cancellable, error);
+}

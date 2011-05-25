@@ -35,6 +35,7 @@
 #include <gio/gio.h>
 
 #include "cd-profile.h"
+#include "cd-device.h"
 #include "cd-client.h"
 #include "cd-client-sync.h"
 
@@ -44,6 +45,8 @@ typedef struct {
 	GMainLoop	*loop;
 	gboolean	 ret;
 	CdProfile	*profile;
+	CdDevice	*device;
+	GPtrArray	*array;
 } CdClientHelper;
 
 static void
@@ -246,6 +249,57 @@ cd_client_find_profile_by_filename_sync (CdClient *client,
 /**********************************************************************/
 
 static void
+cd_client_find_profile_finish_sync (CdClient *client,
+				    GAsyncResult *res,
+				    CdClientHelper *helper)
+{
+	helper->profile = cd_client_find_profile_finish (client,
+							 res,
+							 helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_find_profile_sync:
+ * @client: a #CdClient instance.
+ * @id: id for the profile
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Finds a color profile from its id.
+ *
+ * Return value: A #CdProfile object, or %NULL for error
+ *
+ * Since: 0.1.0
+ **/
+CdProfile *
+cd_client_find_profile_sync (CdClient *client,
+			     const gchar *id,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.profile = NULL;
+
+	/* run async method */
+	cd_client_find_profile (client, id, cancellable,
+				(GAsyncReadyCallback) cd_client_find_profile_finish_sync,
+				&helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.profile;
+}
+
+/**********************************************************************/
+
+static void
 cd_client_create_profile_finish_sync (CdClient *client,
 				      GAsyncResult *res,
 				      CdClientHelper *helper)
@@ -297,6 +351,212 @@ cd_client_create_profile_sync (CdClient *client,
 	g_main_loop_unref (helper.loop);
 
 	return helper.profile;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_create_device_finish_sync (CdClient *client,
+				      GAsyncResult *res,
+				      CdClientHelper *helper)
+{
+	helper->device = cd_client_create_device_finish (client,
+							   res,
+							   helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_create_device_sync:
+ * @client: a #CdClient instance.
+ * @id: identifier for the device
+ * @scope: the scope of the device
+ * @properties: properties to set on the device, or %NULL
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Creates a color device.
+ *
+ * Return value: A #CdDevice object, or %NULL for error
+ *
+ * Since: 0.1.2
+ **/
+CdDevice *
+cd_client_create_device_sync (CdClient *client,
+			       const gchar *id,
+			       CdObjectScope scope,
+			       GHashTable *properties,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.device = NULL;
+
+	/* run async method */
+	cd_client_create_device (client, id, scope,
+				  properties, cancellable,
+				  (GAsyncReadyCallback) cd_client_create_device_finish_sync,
+				  &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.device;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_get_devices_finish_sync (CdClient *client,
+				   GAsyncResult *res,
+				   CdClientHelper *helper)
+{
+	helper->array = cd_client_get_devices_finish (client,
+						      res,
+						      helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_get_devices_sync:
+ * @client: a #CdClient instance.
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Get an array of the device objects.
+ *
+ * Return value: (transfer full): an array of #CdDevice objects,
+ *		 free with g_ptr_array_unref()
+ *
+ * Since: 0.1.0
+ **/
+GPtrArray *
+cd_client_get_devices_sync (CdClient *client,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.array = NULL;
+
+	/* run async method */
+	cd_client_get_devices (client, cancellable,
+			       (GAsyncReadyCallback) cd_client_get_devices_finish_sync,
+			       &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.array;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_get_profiles_finish_sync (CdClient *client,
+				   GAsyncResult *res,
+				   CdClientHelper *helper)
+{
+	helper->array = cd_client_get_profiles_finish (client,
+						       res,
+						       helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_get_profiles_sync:
+ * @client: a #CdClient instance.
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Get an array of the profile objects.
+ *
+ * Return value: (transfer full): an array of #CdProfile objects,
+ *		 free with g_ptr_array_unref()
+ *
+ * Since: 0.1.0
+ **/
+GPtrArray *
+cd_client_get_profiles_sync (CdClient *client,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.array = NULL;
+
+	/* run async method */
+	cd_client_get_profiles (client, cancellable,
+			        (GAsyncReadyCallback) cd_client_get_profiles_finish_sync,
+			        &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.array;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_get_sensors_finish_sync (CdClient *client,
+				   GAsyncResult *res,
+				   CdClientHelper *helper)
+{
+	helper->array = cd_client_get_sensors_finish (client,
+						      res,
+						      helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_get_sensors_sync:
+ * @client: a #CdClient instance.
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Get an array of the sensor objects.
+ *
+ * Return value: (transfer full): an array of #CdSensor objects,
+ *		 free with g_ptr_array_unref()
+ *
+ * Since: 0.1.0
+ **/
+GPtrArray *
+cd_client_get_sensors_sync (CdClient *client,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.array = NULL;
+
+	/* run async method */
+	cd_client_get_sensors (client, cancellable,
+			       (GAsyncReadyCallback) cd_client_get_sensors_finish_sync,
+			       &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.array;
 }
 
 /**********************************************************************/

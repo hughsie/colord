@@ -82,6 +82,8 @@ GType		 cd_profile_get_type			(void);
 GQuark		 cd_profile_error_quark			(void);
 CdProfile	*cd_profile_new				(void);
 gchar		*cd_profile_to_string			(CdProfile	*profile);
+
+/* async */
 void		 cd_profile_set_object_path		(CdProfile	*profile,
 							 const gchar	*object_path,
 							 GCancellable	*cancellable,
@@ -90,17 +92,18 @@ void		 cd_profile_set_object_path		(CdProfile	*profile,
 gboolean	 cd_profile_set_object_path_finish	(CdProfile	*profile,
 							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_profile_set_filename_sync		(CdProfile	*profile,
+
+/* sync: FIXME */
+gboolean	 cd_profile_set_property_sync		(CdProfile	*profile,
+							 const gchar	*key,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_profile_install_system_wide_sync	(CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GError		**error);
-gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
-							 const gchar	*value,
-							 GCancellable	*cancellable,
-							 GError		**error);
+
+/* helpers */
 const gchar	*cd_profile_get_id			(CdProfile	*profile);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
 const gchar	*cd_profile_get_qualifier		(CdProfile	*profile);

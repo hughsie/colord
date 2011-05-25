@@ -34,6 +34,14 @@ gboolean	 cd_profile_set_object_path_sync	(CdProfile	*profile,
 							 const gchar	*object_path,
 							 GCancellable	*cancellable,
 							 GError		**error);
+gboolean	 cd_profile_set_filename_sync		(CdProfile	*profile,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
 
 G_END_DECLS
 

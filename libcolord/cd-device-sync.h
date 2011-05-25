@@ -23,55 +23,45 @@
 #error "Only <colord.h> can be included directly."
 #endif
 
-#ifndef __CD_CLIENT_SYNC_H
-#define __CD_CLIENT_SYNC_H
+#ifndef __CD_DEVICE_SYNC_H
+#define __CD_DEVICE_SYNC_H
 
 #include <glib-object.h>
 
+#include "cd-device.h"
+
 G_BEGIN_DECLS
 
-gboolean	 cd_client_connect_sync			(CdClient	*client,
+gboolean	 cd_device_set_object_path_sync		(CdDevice	*device,
+							 const gchar	*object_path,
 							 GCancellable	*cancellable,
 							 GError		**error);
-gboolean	 cd_client_delete_profile_sync		(CdClient	*client,
-							 const gchar	*id,
+gboolean	 cd_device_set_model_sync		(CdDevice	*device,
+							 const gchar	*value,
 							 GCancellable	*cancellable,
 							 GError		**error);
-gboolean	 cd_client_delete_device_sync		(CdClient	*client,
-							 const gchar	*id,
+gboolean	 cd_device_set_serial_sync		(CdDevice	*device,
+							 const gchar	*value,
 							 GCancellable	*cancellable,
 							 GError		**error);
-CdProfile	*cd_client_find_profile_sync		(CdClient	*client,
-							 const gchar	*id,
+gboolean	 cd_device_set_vendor_sync		(CdDevice	*device,
+							 const gchar	*value,
 							 GCancellable	*cancellable,
 							 GError		**error);
-CdProfile	*cd_client_find_profile_by_filename_sync (CdClient	*client,
-							 const gchar	*filename,
+gboolean	 cd_device_set_kind_sync		(CdDevice	*device,
+							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,
 							 GError		**error);
-CdProfile	*cd_client_create_profile_sync		(CdClient	*client,
-							 const gchar	*id,
-							 CdObjectScope	 scope,
-							 GHashTable	*properties,
+gboolean	 cd_device_set_colorspace_sync		(CdDevice	*device,
+							 CdColorspace	 colorspace,
 							 GCancellable	*cancellable,
 							 GError		**error);
-CdDevice	*cd_client_create_device_sync		(CdClient	*client,
-							 const gchar	*id,
-							 CdObjectScope	 scope,
-							 GHashTable	*properties,
-							 GCancellable	*cancellable,
-							 GError		**error);
-GPtrArray	*cd_client_get_devices_sync		(CdClient	*client,
-							 GCancellable	*cancellable,
-							 GError		**error);
-GPtrArray	*cd_client_get_profiles_sync		(CdClient	*client,
-							 GCancellable	*cancellable,
-							 GError		**error);
-GPtrArray	*cd_client_get_sensors_sync		(CdClient	*client,
+gboolean	 cd_device_set_mode_sync		(CdDevice	*device,
+							 CdDeviceMode	 mode,
 							 GCancellable	*cancellable,
 							 GError		**error);
 
 G_END_DECLS
 
-#endif /* __CD_CLIENT_SYNC_H */
+#endif /* __CD_DEVICE_SYNC_H */
 

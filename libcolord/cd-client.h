@@ -102,11 +102,23 @@ GType		 cd_client_get_type			(void);
 GQuark		 cd_client_error_quark			(void);
 CdClient	*cd_client_new				(void);
 
-CdDevice	*cd_client_create_device_sync		(CdClient	*client,
+/* async */
+void		 cd_client_connect			(CdClient		*client,
+							 GCancellable		*cancellable,
+							 GAsyncReadyCallback	 callback,
+							 gpointer		 user_data);
+gboolean	 cd_client_connect_finish		(CdClient		*client,
+							 GAsyncResult		*res,
+							 GError			**error);
+void		cd_client_create_device			(CdClient	*client,
 							 const gchar	*id,
 							 CdObjectScope	 scope,
 							 GHashTable	*properties,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdDevice	*cd_client_create_device_finish		(CdClient	*client,
+							 GAsyncResult	*res,
 							 GError		**error);
 void		cd_client_create_profile		(CdClient	*client,
 							 const gchar	*id,
@@ -134,17 +146,13 @@ void		 cd_client_delete_device		(CdClient	*client,
 gboolean	 cd_client_delete_device_finish		(CdClient	*client,
 							 GAsyncResult	*res,
 							 GError		**error);
-CdDevice	*cd_client_find_device_sync		(CdClient	*client,
+void		cd_client_find_profile			(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
-							 GError		**error);
-CdProfile	*cd_client_find_profile_sync		(CdClient	*client,
-							 const gchar	*id,
-							 GCancellable	*cancellable,
-							 GError		**error);
-CdProfile	*cd_client_get_standard_space_sync	(CdClient	*client,
-							 CdStandardSpace standard_space,
-							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdProfile	*cd_client_find_profile_finish 		(CdClient	*client,
+							 GAsyncResult	*res,
 							 GError		**error);
 void		cd_client_find_profile_by_filename	(CdClient	*client,
 							 const gchar	*filename,
@@ -154,9 +162,6 @@ void		cd_client_find_profile_by_filename	(CdClient	*client,
 CdProfile	*cd_client_find_profile_by_filename_finish (CdClient	*client,
 							 GAsyncResult	*res,
 							 GError		**error);
-GPtrArray	*cd_client_get_devices_sync		(CdClient	*client,
-							 GCancellable	*cancellable,
-							 GError		**error);
 void		 cd_client_get_devices			(CdClient		*client,
 							 GCancellable		*cancellable,
 							 GAsyncReadyCallback	 callback,
@@ -164,9 +169,6 @@ void		 cd_client_get_devices			(CdClient		*client,
 GPtrArray	*cd_client_get_devices_finish		(CdClient		*client,
 							 GAsyncResult		*res,
 							 GError			**error);
-GPtrArray	*cd_client_get_profiles_sync		(CdClient	*client,
-							 GCancellable	*cancellable,
-							 GError		**error);
 void		 cd_client_get_profiles			(CdClient		*client,
 							 GCancellable		*cancellable,
 							 GAsyncReadyCallback	 callback,
@@ -174,9 +176,6 @@ void		 cd_client_get_profiles			(CdClient		*client,
 GPtrArray	*cd_client_get_profiles_finish		(CdClient		*client,
 							 GAsyncResult		*res,
 							 GError			**error);
-GPtrArray	*cd_client_get_sensors_sync		(CdClient	*client,
-							 GCancellable	*cancellable,
-							 GError		**error);
 void		 cd_client_get_sensors			(CdClient		*client,
 							 GCancellable		*cancellable,
 							 GAsyncReadyCallback	 callback,
@@ -185,17 +184,21 @@ GPtrArray	*cd_client_get_sensors_finish		(CdClient		*client,
 							 GAsyncResult		*res,
 							 GError			**error);
 
+/* sync: FIXME */
+CdDevice	*cd_client_find_device_sync		(CdClient	*client,
+							 const gchar	*id,
+							 GCancellable	*cancellable,
+							 GError		**error);
+CdProfile	*cd_client_get_standard_space_sync	(CdClient	*client,
+							 CdStandardSpace standard_space,
+							 GCancellable	*cancellable,
+							 GError		**error);
 GPtrArray	*cd_client_get_devices_by_kind_sync	(CdClient	*client,
 							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,
 							 GError		**error);
-void		 cd_client_connect			(CdClient		*client,
-							 GCancellable		*cancellable,
-							 GAsyncReadyCallback	 callback,
-							 gpointer		 user_data);
-gboolean	 cd_client_connect_finish		(CdClient		*client,
-							 GAsyncResult		*res,
-							 GError			**error);
+
+/* helpers */
 const gchar	*cd_client_get_daemon_version		(CdClient	*client);
 
 G_END_DECLS

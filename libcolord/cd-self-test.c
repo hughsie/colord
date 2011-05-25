@@ -30,8 +30,12 @@
 
 #include "cd-client.h"
 #include "cd-client-sync.h"
-#include "cd-sensor.h"
 #include "cd-color.h"
+#include "cd-device.h"
+#include "cd-device-sync.h"
+#include "cd-profile.h"
+#include "cd-profile-sync.h"
+#include "cd-sensor.h"
 
 /** ver:1.0 ***********************************************************/
 static GMainLoop *_test_loop = NULL;

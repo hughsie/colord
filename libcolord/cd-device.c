@@ -485,27 +485,47 @@ cd_device_dbus_signal_cb (GDBusProxy *proxy,
 	g_free (object_path_tmp);
 }
 
+
+
+/**********************************************************************/
+
 /**
- * cd_device_set_object_path_sync:
+ * cd_device_set_object_path_finish:
  * @device: a #CdDevice instance.
- * @object_path: The colord object path.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
  *
- * Sets the object path of the object and fills up initial properties.
+ * Gets the result from the asynchronous function.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Return value: success
  *
- * Since: 0.1.0
+ * Since: 0.1.8
  **/
 gboolean
-cd_device_set_object_path_sync (CdDevice *device,
-				const gchar *object_path,
-				GCancellable *cancellable,
-				GError **error)
+cd_device_set_object_path_finish (CdDevice *device,
+				   GAsyncResult *res,
+				   GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_device_set_object_path_cb (GObject *source_object,
+			      GAsyncResult *res,
+			      gpointer user_data)
+{
+	gboolean ret;
+	GError *error = NULL;
 	GVariant *created = NULL;
 	GVariant *modified = NULL;
 	GVariant *id = NULL;
@@ -517,34 +537,22 @@ cd_device_set_object_path_sync (CdDevice *device,
 	GVariant *mode = NULL;
 	GVariant *profiles = NULL;
 	GVariant *metadata = NULL;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	CdDevice *device;
 
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy == NULL, FALSE);
-
-	/* connect to the daemon */
-	device->priv->proxy =
-		g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-					       G_DBUS_PROXY_FLAGS_NONE,
-					       NULL,
-					       COLORD_DBUS_SERVICE,
-					       object_path,
-					       COLORD_DBUS_INTERFACE_DEVICE,
-					       cancellable,
-					       &error_local);
+	device = CD_DEVICE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
+	device->priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
+								&error);
 	if (device->priv->proxy == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to connect to device %s: %s",
-			     object_path,
-			     error_local->message);
-		g_error_free (error_local);
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to connect to device %s: %s",
+						 cd_device_get_object_path (device),
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
-
-	/* save object path */
-	device->priv->object_path = g_strdup (object_path);
 
 	/* get device id */
 	id = g_dbus_proxy_get_cached_property (device->priv->proxy,
@@ -608,10 +616,18 @@ cd_device_set_object_path_sync (CdDevice *device,
 						     CD_DEVICE_PROPERTY_PROFILES);
 	ret = cd_device_set_profiles_array_from_variant (device,
 							 profiles,
-							 cancellable,
-							 error);
-	if (!ret)
+							 NULL,
+							 &error);
+	if (!ret) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to set profiles for device %s: %s",
+						 cd_device_get_object_path (device),
+						 error->message);
+		g_error_free (error);
 		goto out;
+	}
 
 	/* get metadata */
 	metadata = g_dbus_proxy_get_cached_property (device->priv->proxy,
@@ -630,6 +646,9 @@ cd_device_set_object_path_sync (CdDevice *device,
 			  "g-properties-changed",
 			  G_CALLBACK (cd_device_dbus_properties_changed),
 			  device);
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
 out:
 	if (id != NULL)
 		g_variant_unref (id);
@@ -653,13 +672,59 @@ out:
 		g_variant_unref (profiles);
 	if (metadata != NULL)
 		g_variant_unref (metadata);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+	g_object_unref (device);
 }
+
+/**
+ * cd_device_set_object_path:
+ * @device: a #CdDevice instance.
+ * @object_path: The colord object path.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
+ *
+ * Sets the object path of the object and fills up initial properties.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_device_set_object_path (CdDevice *device,
+			   const gchar *object_path,
+			   GCancellable *cancellable,
+			   GAsyncReadyCallback callback,
+			   gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy == NULL);
+
+	/* save object path */
+	device->priv->object_path = g_strdup (object_path);
+
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_set_object_path);
+	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+				  G_DBUS_PROXY_FLAGS_NONE,
+				  NULL,
+				  COLORD_DBUS_SERVICE,
+				  object_path,
+				  COLORD_DBUS_INTERFACE_DEVICE,
+				  cancellable,
+				  cd_device_set_object_path_cb,
+				  res);
+}
+
+/**********************************************************************/
 
 /**
  * cd_device_set_property_sync:
  **/
-static gboolean
+gboolean
 cd_device_set_property_sync (CdDevice *device,
 			     const gchar *name,
 			     const gchar *value,
@@ -692,180 +757,6 @@ out:
 	if (response != NULL)
 		g_variant_unref (response);
 	return ret;
-}
-
-/**
- * cd_device_set_model_sync:
- * @device: a #CdDevice instance.
- * @value: The model.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the device model.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.0
- **/
-gboolean
-cd_device_set_model_sync (CdDevice *device,
-			  const gchar *value,
-			  GCancellable *cancellable,
-			  GError **error)
-{
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
-
-	/* execute sync helper */
-	return cd_device_set_property_sync (device,
-					    CD_DEVICE_PROPERTY_MODEL,
-					    value,
-					    cancellable, error);
-}
-
-/**
- * cd_device_set_serial_sync:
- * @device: a #CdDevice instance.
- * @value: The string value.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the device serial number.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.1
- **/
-gboolean
-cd_device_set_serial_sync (CdDevice *device,
-			   const gchar *value,
-			   GCancellable *cancellable,
-			   GError **error)
-{
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
-
-	/* execute sync helper */
-	return cd_device_set_property_sync (device,
-					    CD_DEVICE_PROPERTY_SERIAL,
-					    value,
-					    cancellable, error);
-}
-
-/**
- * cd_device_set_vendor_sync:
- * @device: a #CdDevice instance.
- * @value: The string value.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the device vendor.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.1
- **/
-gboolean
-cd_device_set_vendor_sync (CdDevice *device,
-			   const gchar *value,
-			   GCancellable *cancellable,
-			   GError **error)
-{
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
-
-	/* execute sync helper */
-	return cd_device_set_property_sync (device,
-					    CD_DEVICE_PROPERTY_VENDOR,
-					    value,
-					    cancellable, error);
-}
-
-/**
- * cd_device_set_kind_sync:
- * @device: a #CdDevice instance.
- * @kind: The device kind, e.g. #CD_DEVICE_KIND_DISPLAY
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the device kind.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.0
- **/
-gboolean
-cd_device_set_kind_sync (CdDevice *device,
-			 CdDeviceKind kind,
-			 GCancellable *cancellable,
-			 GError **error)
-{
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
-
-	/* execute sync helper */
-	return cd_device_set_property_sync (device,
-					    CD_DEVICE_PROPERTY_KIND,
-					    cd_device_kind_to_string (kind),
-					    cancellable, error);
-}
-
-/**
- * cd_device_set_colorspace_sync:
- * @device: a #CdDevice instance.
- * @kind: The device kind, e.g. #CD_DEVICE_KIND_DISPLAY
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the device kind.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.1
- **/
-gboolean
-cd_device_set_colorspace_sync (CdDevice *device,
-			       CdColorspace colorspace,
-			       GCancellable *cancellable,
-			       GError **error)
-{
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
-
-	/* execute sync helper */
-	return cd_device_set_property_sync (device,
-					    CD_DEVICE_PROPERTY_COLORSPACE,
-					    cd_colorspace_to_string (colorspace),
-					    cancellable, error);
-}
-
-/**
- * cd_device_set_mode_sync:
- * @device: a #CdDevice instance.
- * @mode: The device kind, e.g. #CD_DEVICE_MODE_VIRTUAL
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the device mode.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.2
- **/
-gboolean
-cd_device_set_mode_sync (CdDevice *device,
-			 CdDeviceMode mode,
-			 GCancellable *cancellable,
-			 GError **error)
-{
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
-
-	/* execute sync helper */
-	return cd_device_set_property_sync (device,
-					    CD_DEVICE_PROPERTY_MODE,
-					    cd_device_mode_to_string (mode),
-					    cancellable, error);
 }
 
 /**

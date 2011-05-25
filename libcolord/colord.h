@@ -38,6 +38,7 @@
 #include <libcolord/cd-client-sync.h>
 #include <libcolord/cd-color.h>
 #include <libcolord/cd-device.h>
+#include <libcolord/cd-device-sync.h>
 #include <libcolord/cd-enum.h>
 #include <libcolord/cd-profile.h>
 #include <libcolord/cd-profile-sync.h>
