@@ -82,9 +82,13 @@ GType		 cd_profile_get_type			(void);
 GQuark		 cd_profile_error_quark			(void);
 CdProfile	*cd_profile_new				(void);
 gchar		*cd_profile_to_string			(CdProfile	*profile);
-gboolean	 cd_profile_set_object_path_sync	(CdProfile	*profile,
+void		 cd_profile_set_object_path		(CdProfile	*profile,
 							 const gchar	*object_path,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_profile_set_object_path_finish	(CdProfile	*profile,
+							 GAsyncResult	*res,
 							 GError		**error);
 gboolean	 cd_profile_set_filename_sync		(CdProfile	*profile,
 							 const gchar	*value,

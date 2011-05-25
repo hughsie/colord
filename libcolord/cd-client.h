@@ -108,19 +108,31 @@ CdDevice	*cd_client_create_device_sync		(CdClient	*client,
 							 GHashTable	*properties,
 							 GCancellable	*cancellable,
 							 GError		**error);
-CdProfile	*cd_client_create_profile_sync		(CdClient	*client,
+void		cd_client_create_profile		(CdClient	*client,
 							 const gchar	*id,
 							 CdObjectScope	 scope,
 							 GHashTable	*properties,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdProfile	*cd_client_create_profile_finish	(CdClient	*client,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_client_delete_device_sync		(CdClient	*client,
+void		 cd_client_delete_profile		(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_client_delete_profile_finish	(CdClient	*client,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_client_delete_profile_sync		(CdClient	*client,
+void		 cd_client_delete_device		(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_client_delete_device_finish		(CdClient	*client,
+							 GAsyncResult	*res,
 							 GError		**error);
 CdDevice	*cd_client_find_device_sync		(CdClient	*client,
 							 const gchar	*id,
@@ -134,9 +146,13 @@ CdProfile	*cd_client_get_standard_space_sync	(CdClient	*client,
 							 CdStandardSpace standard_space,
 							 GCancellable	*cancellable,
 							 GError		**error);
-CdProfile	*cd_client_find_profile_by_filename_sync (CdClient	*client,
+void		cd_client_find_profile_by_filename	(CdClient	*client,
 							 const gchar	*filename,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdProfile	*cd_client_find_profile_by_filename_finish (CdClient	*client,
+							 GAsyncResult	*res,
 							 GError		**error);
 GPtrArray	*cd_client_get_devices_sync		(CdClient	*client,
 							 GCancellable	*cancellable,

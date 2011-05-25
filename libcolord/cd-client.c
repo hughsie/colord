@@ -43,8 +43,10 @@
 #include <glib.h>
 
 #include "cd-client.h"
+#include "cd-client-sync.h"
 #include "cd-device.h"
 #include "cd-sensor.h"
+#include "cd-profile-sync.h"
 
 static void	cd_client_class_init	(CdClientClass	*klass);
 static void	cd_client_init		(CdClient	*client);
@@ -675,53 +677,503 @@ out:
 	return device;
 }
 
+/**********************************************************************/
+
 /**
- * cd_client_create_profile_sync:
+ * cd_client_delete_profile_finish:
+ * @client: a #CdClient instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
+ **/
+gboolean
+cd_client_delete_profile_finish (CdClient *client,
+				 GAsyncResult *res,
+				 GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_client_delete_profile_cb (GObject *source_object,
+			     GAsyncResult *res,
+			     gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Failed to DeleteProfile: %s",
+						 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
+out:
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+/**
+ * cd_client_delete_profile:
+ * @client: a #CdClient instance.
+ * @id: a #CdProfile id
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
+ *
+ * Deletes a color profile.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_client_delete_profile (CdClient *client,
+			  const gchar *id,
+			  GCancellable *cancellable,
+			  GAsyncReadyCallback callback,
+			  gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (client->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (client),
+					 callback,
+					 user_data,
+					 cd_client_delete_profile);
+	g_dbus_proxy_call (client->priv->proxy,
+			   "DeleteProfile",
+			   g_variant_new ("(s)", id),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_client_delete_profile_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_client_delete_device_finish:
+ * @client: a #CdClient instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
+ **/
+gboolean
+cd_client_delete_device_finish (CdClient *client,
+				GAsyncResult *res,
+				GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_client_delete_device_cb (GObject *source_object,
+			    GAsyncResult *res,
+			    gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Failed to DeleteDevice: %s",
+						 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
+out:
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+/**
+ * cd_client_delete_device:
+ * @client: a #CdClient instance.
+ * @id: a #CdProfile id
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
+ *
+ * Deletes a color device.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_client_delete_device (CdClient *client,
+			 const gchar *id,
+			 GCancellable *cancellable,
+			 GAsyncReadyCallback callback,
+			 gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (client->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (client),
+					 callback,
+					 user_data,
+					 cd_client_delete_device);
+	g_dbus_proxy_call (client->priv->proxy,
+			   "DeleteDevice",
+			   g_variant_new ("(s)", id),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_client_delete_device_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+typedef struct {
+	GCancellable		*cancellable;
+	GSimpleAsyncResult	*res;
+} CdClientAsync;
+
+/**
+ * cd_client_find_profile_by_filename_finish:
+ * @client: a #CdClient instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
+ **/
+CdProfile *
+cd_client_find_profile_by_filename_finish (CdClient *client,
+					   GAsyncResult *res,
+					   GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+static void
+cd_client_set_object_path_cb (GObject *source_object,
+			      GAsyncResult *res,
+			      gpointer user_data)
+{
+	GError *error = NULL;
+	gboolean ret;
+	CdProfile *profile = CD_PROFILE (source_object);
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	ret = cd_profile_set_object_path_finish (profile,
+						 res,
+						 &error);
+	if (ret) {
+		g_simple_async_result_set_op_res_gpointer (res_source,
+							   g_object_ref (profile),
+							   g_object_unref);
+	} else {
+		g_simple_async_result_set_error (res_source,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Failed to set profile %s: %s",
+						 cd_profile_get_object_path (profile),
+						 error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+static void
+cd_client_find_profile_by_filename_cb (GObject *source_object,
+				       GAsyncResult *res,
+				       gpointer user_data)
+{
+	CdProfile *profile = NULL;
+	gchar *object_path;
+	GError *error = NULL;
+	GVariant *result = NULL;
+	CdClientAsync *async = (CdClientAsync *) user_data;
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (async->res,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Failed to FindProfileByFilename: %s",
+						 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* success */
+	g_variant_get (result, "(o)",
+		       &object_path);
+	profile = cd_profile_new ();
+	cd_profile_set_object_path (profile,
+				    object_path,
+				    async->cancellable,
+				    cd_client_set_object_path_cb,
+				    async->res);
+out:
+	if (result != NULL)
+		g_variant_unref (result);
+	if (profile != NULL)
+		g_object_unref (profile);
+	g_free (object_path);
+	if (async->cancellable != NULL)
+		g_object_unref (async->cancellable);
+	g_free (async);
+}
+
+/**
+ * cd_client_find_profile_by_filename:
+ * @client: a #CdClient instance.
+ * @filename: a #CdProfile filename
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
+ *
+ * Finds a color profile by it's filename.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_client_find_profile_by_filename (CdClient *client,
+				    const gchar *filename,
+				    GCancellable *cancellable,
+				    GAsyncReadyCallback callback,
+				    gpointer user_data)
+{
+	CdClientAsync *async;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (client->priv->proxy != NULL);
+
+	async = g_new0 (CdClientAsync, 1);
+	if (async->cancellable != NULL)
+		async->cancellable = g_object_ref (cancellable);
+	async->res = g_simple_async_result_new (G_OBJECT (client),
+						callback,
+						user_data,
+						cd_client_find_profile_by_filename);
+	g_dbus_proxy_call (client->priv->proxy,
+			   "FindProfileByFilename",
+			   g_variant_new ("(s)", filename),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_client_find_profile_by_filename_cb,
+			   async);
+}
+
+
+/**********************************************************************/
+
+/**
+ * cd_client_create_profile_finish:
+ * @client: a #CdClient instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
+ **/
+CdProfile *
+cd_client_create_profile_finish (CdClient *client,
+				 GAsyncResult *res,
+				 GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
+
+	return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+static void
+cd_client_create_profile_cb (GObject *source_object,
+			     GAsyncResult *res,
+			     gpointer user_data)
+{
+	CdProfile *profile = NULL;
+	gchar *object_path;
+	GDBusMessage *reply;
+	GError *error = NULL;
+	CdClientAsync *async = (CdClientAsync *) user_data;
+
+	reply = g_dbus_connection_send_message_with_reply_finish (G_DBUS_CONNECTION (source_object),
+								  res,
+								  &error);
+	if (reply == NULL) {
+		g_simple_async_result_set_error (async->res,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Failed to CreateProfile: %s",
+						 error->message);
+		g_simple_async_result_complete_in_idle (async->res);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* this is an error message */
+	if (g_dbus_message_get_message_type (reply) == G_DBUS_MESSAGE_TYPE_ERROR) {
+		g_dbus_message_to_gerror (reply, &error);
+		g_simple_async_result_set_error (async->res,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Failed to CreateProfile: %s",
+						 error->message);
+		g_simple_async_result_complete_in_idle (async->res);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* create thick CdDevice object */
+	g_variant_get (g_dbus_message_get_body (reply), "(o)",
+		       &object_path);
+	profile = cd_profile_new ();
+	cd_profile_set_object_path (profile,
+				    object_path,
+				    async->cancellable,
+				    cd_client_set_object_path_cb,
+				    async->res);
+out:
+	if (reply != NULL)
+		g_object_unref (reply);
+	if (profile != NULL)
+		g_object_unref (profile);
+	g_free (object_path);
+	if (async->cancellable != NULL)
+		g_object_unref (async->cancellable);
+	g_free (async);
+}
+
+/**
+ * cd_client_create_profile:
  * @client: a #CdClient instance.
  * @id: identifier for the device
  * @scope: the scope of the profile
  * @properties: properties to set on the profile, or %NULL
  * @cancellable: a #GCancellable, or %NULL
- * @error: a #GError, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Creates a color profile.
  *
- * Return value: A #CdProfile object, or %NULL for error
- *
- * Since: 0.1.2
+ * Since: 0.1.8
  **/
-CdProfile *
-cd_client_create_profile_sync (CdClient *client,
-			       const gchar *id,
-			       CdObjectScope scope,
-			       GHashTable *properties,
-			       GCancellable *cancellable,
-			       GError **error)
+void
+cd_client_create_profile (CdClient *client,
+			  const gchar *id,
+			  CdObjectScope scope,
+			  GHashTable *properties,
+			  GCancellable *cancellable,
+			  GAsyncReadyCallback callback,
+			  gpointer user_data)
 {
-	CdProfile *profile = NULL;
-	CdProfile *profile_tmp = NULL;
-	gboolean ret;
-	gchar *object_path = NULL;
-	GError *error_local = NULL;
-	GList *list, *l;
-	GVariantBuilder builder;
-	gint fd = -1;
+	CdClientAsync *async;
 	const gchar *filename;
-	GDBusMessage *request = NULL;
-	GDBusMessage *reply;
 	GDBusConnection *connection;
-	GVariant *body;
-	GUnixFDList *fd_list = NULL;
+	GDBusMessage *request = NULL;
+	gint fd = -1;
 	gint retval;
+	GList *list, *l;
+	GUnixFDList *fd_list = NULL;
+	GVariant *body;
+	GVariantBuilder builder;
 
-	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (client->priv->proxy != NULL);
+
+	async = g_new0 (CdClientAsync, 1);
+	if (async->cancellable != NULL)
+		async->cancellable = g_object_ref (cancellable);
+	async->res = g_simple_async_result_new (G_OBJECT (client),
+						callback,
+						user_data,
+						cd_client_create_profile);
 
 	/* not connected */
 	if (client->priv->proxy == NULL) {
-		g_set_error_literal (error,
-				     CD_CLIENT_ERROR,
-				     CD_CLIENT_ERROR_FAILED,
-				     "Not yet connected to colord");
+		g_simple_async_result_set_error (async->res,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Not yet connected to colord");
+		g_simple_async_result_complete_in_idle (async->res);
 		goto out;
 	}
 
@@ -758,19 +1210,19 @@ cd_client_create_profile_sync (CdClient *client,
 		if (filename != NULL) {
 			fd = open (filename, O_RDONLY);
 			if (fd < 0) {
-				g_set_error (error,
-					     CD_CLIENT_ERROR,
-					     CD_CLIENT_ERROR_FAILED,
-					     "Failed to open %s",
-					     filename);
+				g_simple_async_result_set_error (async->res,
+								 CD_CLIENT_ERROR,
+								 CD_CLIENT_ERROR_FAILED,
+								 "Failed to open %s",
+								 filename);
+				g_simple_async_result_complete_in_idle (async->res);
 				goto out;
 			}
 
 			/* set out of band file descriptor */
 			fd_list = g_unix_fd_list_new ();
-			retval = g_unix_fd_list_append (fd_list, fd, error);
-			if (retval < 0)
-				goto out;
+			retval = g_unix_fd_list_append (fd_list, fd, NULL);
+			g_assert (retval != -1);
 			g_dbus_message_set_unix_fd_list (request, fd_list);
 
 			/* g_unix_fd_list_append did a dup() already */
@@ -787,150 +1239,45 @@ cd_client_create_profile_sync (CdClient *client,
 
 	/* send sync message to the bus */
 	connection = g_dbus_proxy_get_connection (client->priv->proxy);
-	reply = g_dbus_connection_send_message_with_reply_sync (connection,
-								request,
-								G_DBUS_SEND_MESSAGE_FLAGS_NONE,
-								5000,
-								NULL,
-								cancellable,
-								&error_local);
-	if (reply == NULL) {
-		g_set_error (error,
-			     CD_CLIENT_ERROR,
-			     CD_CLIENT_ERROR_FAILED,
-			     "Failed to CreateProfile: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-
-	/* this is an error message */
-	if (g_dbus_message_get_message_type (reply) == G_DBUS_MESSAGE_TYPE_ERROR) {
-		g_dbus_message_to_gerror (reply, &error_local);
-		goto out;
-	}
-
-	/* create thick CdDevice object */
-	g_variant_get (g_dbus_message_get_body (reply), "(o)",
-		       &object_path);
-	profile_tmp = cd_profile_new ();
-	ret = cd_profile_set_object_path_sync (profile_tmp,
-					       object_path,
-					       cancellable,
-					       error);
-	if (!ret)
-		goto out;
-
-	/* success */
-	profile = g_object_ref (profile_tmp);
+	g_dbus_connection_send_message_with_reply (connection,
+						   request,
+						   G_DBUS_SEND_MESSAGE_FLAGS_NONE,
+						   5000,
+						   NULL,
+						   cancellable,
+						   cd_client_create_profile_cb,
+						   async);
 out:
-	g_free (object_path);
-	if (profile_tmp != NULL)
-		g_object_unref (profile_tmp);
 	if (fd_list != NULL)
 		g_object_unref (fd_list);
 	if (request != NULL)
 		g_object_unref (request);
-	return profile;
 }
 
-/**
- * cd_client_delete_device_sync:
- * @client: a #CdClient instance.
- * @device: a #CdDevice instance.
- * @cancellable: a #GCancellable, or %NULL
- * @error: a #GError, or %NULL
- *
- * Deletes a color device.
- *
- * Return value: %TRUE is the device was deleted
- *
- * Since: 0.1.0
- **/
-gboolean
-cd_client_delete_device_sync (CdClient *client,
-			      const gchar *id,
-			      GCancellable *cancellable,
-			      GError **error)
-{
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *result;
+/**********************************************************************/
 
-	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv->proxy != NULL, FALSE);
 
-	result = g_dbus_proxy_call_sync (client->priv->proxy,
-					 "DeleteDevice",
-					 g_variant_new ("(s)", id),
-					 G_DBUS_CALL_FLAGS_NONE,
-					 -1,
-					 cancellable,
-					 &error_local);
-	if (result == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_CLIENT_ERROR,
-			     CD_CLIENT_ERROR_FAILED,
-			     "Failed to DeleteDevice: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-out:
-	if (result != NULL)
-		g_variant_unref (result);
-	return ret;
-}
 
-/**
- * cd_client_delete_profile_sync:
- * @client: a #CdClient instance.
- * @profile: a #CdProfile instance.
- * @cancellable: a #GCancellable, or %NULL
- * @error: a #GError, or %NULL
- *
- * Deletes a color profile.
- *
- * Return value: %TRUE is the profile was deleted
- *
- * Since: 0.1.0
- **/
-gboolean
-cd_client_delete_profile_sync (CdClient *client,
-			       const gchar *id,
-			       GCancellable *cancellable,
-			       GError **error)
-{
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *result;
+//xxxxxxxxxxxxxxxxxxxxxxxxx
 
-	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv->proxy != NULL, FALSE);
 
-	result = g_dbus_proxy_call_sync (client->priv->proxy,
-					 "DeleteProfile",
-					 g_variant_new ("(s)", id),
-					 G_DBUS_CALL_FLAGS_NONE,
-					 -1,
-					 cancellable,
-					 &error_local);
-	if (result == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_CLIENT_ERROR,
-			     CD_CLIENT_ERROR_FAILED,
-			     "Failed to DeleteProfile: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-out:
-	if (result != NULL)
-		g_variant_unref (result);
-	return ret;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * cd_client_find_device_sync:
@@ -1110,74 +1457,6 @@ cd_client_get_standard_space_sync (CdClient *client,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_FAILED,
 			     "Failed to GetStandardSpace: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-
-	/* create GObject CdDevice object */
-	g_variant_get (result, "(o)",
-		       &object_path);
-	profile_tmp = cd_profile_new ();
-	ret = cd_profile_set_object_path_sync (profile_tmp,
-					       object_path,
-					       cancellable,
-					       error);
-	if (!ret)
-		goto out;
-
-	/* success */
-	profile = g_object_ref (profile_tmp);
-out:
-	g_free (object_path);
-	if (profile_tmp != NULL)
-		g_object_unref (profile_tmp);
-	if (result != NULL)
-		g_variant_unref (result);
-	return profile;
-}
-
-/**
- * cd_client_find_profile_by_filename_sync:
- * @client: a #CdClient instance.
- * @filename: filename for the profile
- * @cancellable: a #GCancellable, or %NULL
- * @error: a #GError, or %NULL
- *
- * Finds a color profile from its filename.
- *
- * Return value: A #CdProfile object, or %NULL for error
- *
- * Since: 0.1.3
- **/
-CdProfile *
-cd_client_find_profile_by_filename_sync (CdClient *client,
-					 const gchar *filename,
-					 GCancellable *cancellable,
-					 GError **error)
-{
-	CdProfile *profile = NULL;
-	CdProfile *profile_tmp = NULL;
-	gboolean ret;
-	gchar *object_path = NULL;
-	GError *error_local = NULL;
-	GVariant *result;
-
-	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
-
-	result = g_dbus_proxy_call_sync (client->priv->proxy,
-					 "FindProfileByFilename",
-					 g_variant_new ("(s)", filename),
-					 G_DBUS_CALL_FLAGS_NONE,
-					 -1,
-					 cancellable,
-					 &error_local);
-	if (result == NULL) {
-		g_set_error (error,
-			     CD_CLIENT_ERROR,
-			     CD_CLIENT_ERROR_FAILED,
-			     "Failed to FindProfileByFilename: %s",
 			     error_local->message);
 		g_error_free (error_local);
 		goto out;
@@ -1979,12 +2258,27 @@ cd_client_owner_notify_cb (GObject *object,
 }
 
 /**
- * cd_client_connect_proxy:
+ * cd_client_connect_cb:
  **/
 static void
-cd_client_connect_proxy (CdClient *client)
+cd_client_connect_cb (GObject *source_object,
+		      GAsyncResult *res,
+		      gpointer user_data)
 {
 	GVariant *daemon_version = NULL;
+	GAsyncResult *result_orig = G_ASYNC_RESULT (user_data);
+	CdClient *client = CD_CLIENT (g_async_result_get_source_object (result_orig));
+	GError *error = NULL;
+
+	/* get result */
+	client->priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
+	if (client->priv->proxy == NULL) {
+		g_simple_async_result_set_from_error (G_SIMPLE_ASYNC_RESULT (result_orig),
+						      error);
+		g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
+		g_error_free (error);
+		goto out;
+	}
 
 	/* get daemon version */
 	daemon_version = g_dbus_proxy_get_cached_property (client->priv->proxy,
@@ -2004,40 +2298,11 @@ cd_client_connect_proxy (CdClient *client)
 			 G_CALLBACK (cd_client_owner_notify_cb),
 			 client);
 
-	/* success */
-	if (daemon_version != NULL)
-		g_variant_unref (daemon_version);
-}
-
-/**
- * cd_client_connect_cb:
- **/
-static void
-cd_client_connect_cb (GObject *source_object,
-		      GAsyncResult *res,
-		      gpointer user_data)
-{
-	GAsyncResult *result_orig = G_ASYNC_RESULT (user_data);
-	CdClient *client = CD_CLIENT (g_async_result_get_source_object (result_orig));
-	GError *error = NULL;
-
-	/* get result */
-	client->priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
-	if (client->priv->proxy == NULL) {
-		g_simple_async_result_set_from_error (G_SIMPLE_ASYNC_RESULT (result_orig),
-						      error);
-		g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
-		g_error_free (error);
-		goto out;
-	}
-
-	/* connect to proxy */
-	cd_client_connect_proxy (client);
-
 	/* we're done */
 	g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
 out:
-	return;
+	if (daemon_version != NULL)
+		g_variant_unref (daemon_version);
 }
 
 /**

@@ -34,6 +34,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "cd-profile.h"
 #include "cd-client.h"
 #include "cd-client-sync.h"
 
@@ -42,6 +43,7 @@ typedef struct {
 	GError		**error;
 	GMainLoop	*loop;
 	gboolean	 ret;
+	CdProfile	*profile;
 } CdClientHelper;
 
 static void
@@ -89,3 +91,212 @@ cd_client_connect_sync (CdClient *client,
 
 	return helper.ret;
 }
+
+/**********************************************************************/
+
+static void
+cd_client_delete_profile_finish_sync (CdClient *client,
+				      GAsyncResult *res,
+				      CdClientHelper *helper)
+{
+	helper->ret = cd_client_delete_profile_finish (client, res, helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_delete_profile_sync:
+ * @client: a #CdClient instance.
+ * @id: a #CdProfile id.
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Deletes a color profile.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: %TRUE is the profile was deleted
+ *
+ * Since: 0.1.0
+ **/
+gboolean
+cd_client_delete_profile_sync (CdClient *client,
+			       const gchar *id,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+
+	/* run async method */
+	cd_client_delete_profile (client, id, cancellable,
+				  (GAsyncReadyCallback) cd_client_delete_profile_finish_sync, &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.ret;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_delete_device_finish_sync (CdClient *client,
+				      GAsyncResult *res,
+				      CdClientHelper *helper)
+{
+	helper->ret = cd_client_delete_device_finish (client, res, helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_delete_device_sync:
+ * @client: a #CdClient instance.
+ * @id: a #CdProfile id.
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Deletes a color device.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: %TRUE is the device was deleted
+ *
+ * Since: 0.1.0
+ **/
+gboolean
+cd_client_delete_device_sync (CdClient *client,
+			      const gchar *id,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+
+	/* run async method */
+	cd_client_delete_device (client, id, cancellable,
+				  (GAsyncReadyCallback) cd_client_delete_device_finish_sync, &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.ret;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_find_profile_by_filename_finish_sync (CdClient *client,
+						GAsyncResult *res,
+						CdClientHelper *helper)
+{
+	helper->profile = cd_client_find_profile_by_filename_finish (client,
+								     res,
+								     helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_find_profile_by_filename_sync:
+ * @client: a #CdClient instance.
+ * @filename: filename for the profile
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Finds a color profile from its filename.
+ *
+ * Return value: A #CdProfile object, or %NULL for error
+ *
+ * Since: 0.1.3
+ **/
+CdProfile *
+cd_client_find_profile_by_filename_sync (CdClient *client,
+					 const gchar *filename,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.profile = NULL;
+
+	/* run async method */
+	cd_client_find_profile_by_filename (client, filename, cancellable,
+					    (GAsyncReadyCallback) cd_client_find_profile_by_filename_finish_sync,
+					    &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.profile;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_create_profile_finish_sync (CdClient *client,
+				      GAsyncResult *res,
+				      CdClientHelper *helper)
+{
+	helper->profile = cd_client_create_profile_finish (client,
+							   res,
+							   helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_create_profile_sync:
+ * @client: a #CdClient instance.
+ * @id: identifier for the device
+ * @scope: the scope of the profile
+ * @properties: properties to set on the profile, or %NULL
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Creates a color profile.
+ *
+ * Return value: A #CdProfile object, or %NULL for error
+ *
+ * Since: 0.1.2
+ **/
+CdProfile *
+cd_client_create_profile_sync (CdClient *client,
+			       const gchar *id,
+			       CdObjectScope scope,
+			       GHashTable *properties,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.profile = NULL;
+
+	/* run async method */
+	cd_client_create_profile (client, id, scope,
+				  properties, cancellable,
+				  (GAsyncReadyCallback) cd_client_create_profile_finish_sync,
+				  &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.profile;
+}
+
+/**********************************************************************/

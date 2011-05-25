@@ -40,6 +40,7 @@
 #include <libcolord/cd-device.h>
 #include <libcolord/cd-enum.h>
 #include <libcolord/cd-profile.h>
+#include <libcolord/cd-profile-sync.h>
 #include <libcolord/cd-sensor.h>
 #include <libcolord/cd-version.h>
 

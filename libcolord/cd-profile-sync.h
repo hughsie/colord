@@ -23,36 +23,19 @@
 #error "Only <colord.h> can be included directly."
 #endif
 
-#ifndef __CD_CLIENT_SYNC_H
-#define __CD_CLIENT_SYNC_H
+#ifndef __CD_PROFILE_SYNC_H
+#define __CD_PROFILE_SYNC_H
 
 #include <glib-object.h>
 
 G_BEGIN_DECLS
 
-gboolean	 cd_client_connect_sync			(CdClient	*client,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_client_delete_profile_sync		(CdClient	*client,
-							 const gchar	*id,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_client_delete_device_sync		(CdClient	*client,
-							 const gchar	*id,
-							 GCancellable	*cancellable,
-							 GError		**error);
-CdProfile	*cd_client_find_profile_by_filename_sync (CdClient	*client,
-							 const gchar	*filename,
-							 GCancellable	*cancellable,
-							 GError		**error);
-CdProfile	*cd_client_create_profile_sync		(CdClient	*client,
-							 const gchar	*id,
-							 CdObjectScope	 scope,
-							 GHashTable	*properties,
+gboolean	 cd_profile_set_object_path_sync	(CdProfile	*profile,
+							 const gchar	*object_path,
 							 GCancellable	*cancellable,
 							 GError		**error);
 
 G_END_DECLS
 
-#endif /* __CD_CLIENT_SYNC_H */
+#endif /* __CD_PROFILE_SYNC_H */
 

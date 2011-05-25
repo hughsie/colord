@@ -434,10 +434,10 @@ cd_profile_dbus_properties_changed (GDBusProxy  *proxy,
  **/
 static void
 cd_profile_dbus_signal_cb (GDBusProxy *proxy,
-			  gchar      *sender_name,
-			  gchar      *signal_name,
-			  GVariant   *parameters,
-			  CdProfile   *profile)
+			   gchar      *sender_name,
+			   gchar      *signal_name,
+			   GVariant   *parameters,
+			   CdProfile   *profile)
 {
 	gchar *object_path_tmp = NULL;
 
@@ -449,27 +449,44 @@ cd_profile_dbus_signal_cb (GDBusProxy *proxy,
 	g_free (object_path_tmp);
 }
 
+/**********************************************************************/
+
 /**
- * cd_profile_set_object_path_sync:
+ * cd_profile_set_object_path_finish:
  * @profile: a #CdProfile instance.
- * @object_path: The colord object path.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
  *
- * Sets the object path of the object and fills up initial properties.
+ * Gets the result from the asynchronous function.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Return value: success
  *
- * Since: 0.1.0
+ * Since: 0.1.8
  **/
 gboolean
-cd_profile_set_object_path_sync (CdProfile *profile,
-				const gchar *object_path,
-				GCancellable *cancellable,
-				GError **error)
+cd_profile_set_object_path_finish (CdProfile *profile,
+				   GAsyncResult *res,
+				   GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_profile_set_object_path_cb (GObject *source_object,
+			       GAsyncResult *res,
+			       gpointer user_data)
+{
+	GError *error = NULL;
 	GVariant *filename = NULL;
 	GVariant *id = NULL;
 	GVariant *profiles = NULL;
@@ -482,34 +499,22 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 	GVariant *has_vcgt = NULL;
 	GVariant *is_system_wide = NULL;
 	GVariant *metadata = NULL;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	CdProfile *profile;
 
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (profile->priv->proxy == NULL, FALSE);
-
-	/* connect to the daemon */
-	profile->priv->proxy =
-		g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-					       G_DBUS_PROXY_FLAGS_NONE,
-					       NULL,
-					       COLORD_DBUS_SERVICE,
-					       object_path,
-					       COLORD_DBUS_INTERFACE_PROFILE,
-					       cancellable,
-					       &error_local);
+	profile = CD_PROFILE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
+	profile->priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
+								&error);
 	if (profile->priv->proxy == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_PROFILE_ERROR,
-			     CD_PROFILE_ERROR_FAILED,
-			     "Failed to connect to profile %s: %s",
-			     object_path,
-			     error_local->message);
-		g_error_free (error_local);
+		g_simple_async_result_set_error (res_source,
+						 CD_PROFILE_ERROR,
+						 CD_PROFILE_ERROR_FAILED,
+						 "Failed to connect to profile %s: %s",
+						 cd_profile_get_object_path (profile),
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
-
-	/* save object path */
-	profile->priv->object_path = g_strdup (object_path);
 
 	/* get profile id */
 	id = g_dbus_proxy_get_cached_property (profile->priv->proxy,
@@ -588,6 +593,9 @@ cd_profile_set_object_path_sync (CdProfile *profile,
 			  "g-properties-changed",
 			  G_CALLBACK (cd_profile_dbus_properties_changed),
 			  profile);
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
 out:
 	if (id != NULL)
 		g_variant_unref (id);
@@ -613,8 +621,54 @@ out:
 		g_variant_unref (title);
 	if (profiles != NULL)
 		g_variant_unref (profiles);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+	g_object_unref (profile);
 }
+
+/**
+ * cd_profile_set_object_path:
+ * @profile: a #CdProfile instance.
+ * @object_path: The colord object path.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
+ *
+ * Sets the object path of the object and fills up initial properties.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_profile_set_object_path (CdProfile *profile,
+			    const gchar *object_path,
+			    GCancellable *cancellable,
+			    GAsyncReadyCallback callback,
+			    gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (profile->priv->proxy == NULL);
+
+	/* save object path */
+	profile->priv->object_path = g_strdup (object_path);
+
+	res = g_simple_async_result_new (G_OBJECT (profile),
+					 callback,
+					 user_data,
+					 cd_profile_set_object_path);
+	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+				  G_DBUS_PROXY_FLAGS_NONE,
+				  NULL,
+				  COLORD_DBUS_SERVICE,
+				  object_path,
+				  COLORD_DBUS_INTERFACE_PROFILE,
+				  cancellable,
+				  cd_profile_set_object_path_cb,
+				  res);
+}
+
+/**********************************************************************/
 
 /**
  * cd_profile_set_property_sync:

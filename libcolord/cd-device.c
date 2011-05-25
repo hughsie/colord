@@ -38,6 +38,7 @@
 
 #include "cd-device.h"
 #include "cd-profile.h"
+#include "cd-profile-sync.h"
 
 static void	cd_device_class_init	(CdDeviceClass	*klass);
 static void	cd_device_init		(CdDevice	*device);
