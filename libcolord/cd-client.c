@@ -2010,54 +2010,6 @@ cd_client_connect_proxy (CdClient *client)
 }
 
 /**
- * cd_client_connect_sync:
- * @client: a #CdClient instance.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Connects to the colord daemon.
- *
- * Return value: %TRUE for success, else %FALSE.
- *
- * Since: 0.1.0
- **/
-gboolean
-cd_client_connect_sync (CdClient *client, GCancellable *cancellable, GError **error)
-{
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-
-	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
-	g_return_val_if_fail (client->priv->proxy == NULL, FALSE);
-
-	/* connect to the daemon */
-	client->priv->proxy =
-		g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-					       G_DBUS_PROXY_FLAGS_NONE,
-					       NULL,
-					       COLORD_DBUS_SERVICE,
-					       COLORD_DBUS_PATH,
-					       COLORD_DBUS_INTERFACE,
-					       cancellable,
-					       &error_local);
-	if (client->priv->proxy == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_CLIENT_ERROR,
-			     CD_CLIENT_ERROR_FAILED,
-			     "Failed to connect to colord: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-
-	/* connect to proxy */
-	cd_client_connect_proxy (client);
-out:
-	return ret;
-}
-
-/**
  * cd_client_connect_cb:
  **/
 static void

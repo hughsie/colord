@@ -180,9 +180,6 @@ void		 cd_client_connect			(CdClient		*client,
 gboolean	 cd_client_connect_finish		(CdClient		*client,
 							 GAsyncResult		*res,
 							 GError			**error);
-gboolean	 cd_client_connect_sync			(CdClient	*client,
-							 GCancellable	*cancellable,
-							 GError		**error);
 const gchar	*cd_client_get_daemon_version		(CdClient	*client);
 
 G_END_DECLS

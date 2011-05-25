@@ -19,11 +19,13 @@ libcolord_include_HEADERS =					\
 	cd-sensor.h						\
 	cd-profile.h						\
 	cd-color.h						\
-	cd-client.h
+	cd-client.h						\
+	cd-client-sync.h
 
 libcolord_la_SOURCES =						\
 	cd-enum.c						\
 	cd-client.c						\
+	cd-client-sync.c					\
 	cd-profile.c						\
 	cd-sensor.c						\
 	cd-color.c						\
