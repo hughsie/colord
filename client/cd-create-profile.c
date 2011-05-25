@@ -163,7 +163,7 @@ main (int argc, char **argv)
 		{ "nc-suffix", '\0', 0, G_OPTION_ARG_STRING, &nc_suffix,
 		/* TRANSLATORS: command line option */
 		  _("Named color suffix"), NULL },
-		{ "metadata", 'n', 0, G_OPTION_ARG_STRING, &metadata,
+		{ "metadata", '\0', 0, G_OPTION_ARG_STRING, &metadata,
 		/* TRANSLATORS: command line option */
 		  _("The metadata of the profile in 'key1=value1,key2=value2' format"), NULL },
 		{ NULL}
