@@ -320,7 +320,7 @@ cd_sensor_huey_read_register_float (CdSensorHuey *huey,
 				    GError **error)
 {
 	gboolean ret;
-	guint32 tmp;
+	guint32 tmp = 0;
 
 	/* first read in 32 bit integer */
 	ret = cd_sensor_huey_read_register_word (huey,
@@ -347,7 +347,7 @@ cd_sensor_huey_read_register_vector (CdSensorHuey *huey,
 {
 	gboolean ret = TRUE;
 	guint i;
-	gfloat tmp;
+	gfloat tmp = 0.0f;
 	gdouble *vector_data;
 
 	/* get this to avoid casting */
@@ -380,7 +380,7 @@ cd_sensor_huey_read_register_matrix (CdSensorHuey *huey,
 {
 	gboolean ret = TRUE;
 	guint i;
-	gfloat tmp;
+	gfloat tmp = 0.0f;
 	gdouble *matrix_data;
 
 	/* get this to avoid casting */
@@ -389,9 +389,9 @@ cd_sensor_huey_read_register_matrix (CdSensorHuey *huey,
 	/* read in 3d matrix */
 	for (i=0; i<9; i++) {
 		ret = cd_sensor_huey_read_register_float (huey,
-							   addr + (i*4),
-							   &tmp,
-							   error);
+							  addr + (i*4),
+							  &tmp,
+							  error);
 		if (!ret)
 			goto out;
 
