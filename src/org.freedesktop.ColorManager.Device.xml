@@ -281,7 +281,7 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='s' name='profile_id' direction='in'>
+      <arg type='o' name='profile_path' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>

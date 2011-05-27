@@ -29,13 +29,47 @@
 #include <glib-object.h>
 
 #include "cd-device.h"
+#include "cd-profile.h"
 
 G_BEGIN_DECLS
 
-gboolean	 cd_device_set_object_path_sync		(CdDevice	*device,
-							 const gchar	*object_path,
+gboolean	 cd_device_connect_sync			(CdDevice	*device,
 							 GCancellable	*cancellable,
 							 GError		**error);
+gboolean	 cd_device_set_property_sync		(CdDevice	*device,
+							 const gchar	*key,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_device_add_profile_sync		(CdDevice	*device,
+							 CdDeviceRelation relation,
+							 CdProfile	*profile,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_device_remove_profile_sync		(CdDevice	*device,
+							 CdProfile	*profile,
+							 GCancellable	*cancellable,
+							 GError		**error);
+CdProfile	*cd_device_get_profile_for_qualifiers_sync (CdDevice	*device,
+							 const gchar	**qualifiers,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_device_make_profile_default_sync	(CdDevice	*device,
+							 CdProfile	*profile,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_device_profiling_inhibit_sync	(CdDevice	*device,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_device_profiling_uninhibit_sync	(CdDevice	*device,
+							 GCancellable	*cancellable,
+							 GError		**error);
+CdDeviceRelation cd_device_get_profile_relation_sync	(CdDevice	*device,
+							 CdProfile	*profile,
+							 GCancellable	*cancellable,
+							 GError		**error);
+
+/* helpers */
 gboolean	 cd_device_set_model_sync		(CdDevice	*device,
 							 const gchar	*value,
 							 GCancellable	*cancellable,

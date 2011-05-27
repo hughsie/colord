@@ -82,53 +82,82 @@ typedef enum
 GType		 cd_device_get_type			(void);
 GQuark		 cd_device_error_quark			(void);
 CdDevice	*cd_device_new				(void);
-gchar		*cd_device_to_string			(CdDevice	*device);
+CdDevice	*cd_device_new_with_object_path		(const gchar	*object_path);
 
 /* async */
-void		 cd_device_set_object_path		(CdDevice	*device,
-							 const gchar	*object_path,
+void		 cd_device_connect			(CdDevice	*device,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
-gboolean	 cd_device_set_object_path_finish	(CdDevice	*device,
+gboolean	 cd_device_connect_finish		(CdDevice	*device,
 							 GAsyncResult	*res,
 							 GError		**error);
-
-/* sync: FIXME */
-gboolean	 cd_device_set_property_sync		(CdDevice	*device,
+void		 cd_device_set_property			(CdDevice	*device,
 							 const gchar	*key,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_device_set_property_finish		(CdDevice	*device,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_device_add_profile_sync		(CdDevice	*device,
+void		 cd_device_add_profile			(CdDevice	*device,
 							 CdDeviceRelation relation,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_device_add_profile_finish		(CdDevice	*device,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_device_remove_profile_sync		(CdDevice	*device,
+void		 cd_device_remove_profile		(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_device_remove_profile_finish	(CdDevice	*device,
+							 GAsyncResult	*res,
 							 GError		**error);
-CdProfile	*cd_device_get_profile_for_qualifiers_sync (CdDevice	*device,
+void		 cd_device_make_profile_default		(CdDevice	*device,
+							 CdProfile	*profile,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_device_make_profile_default_finish	(CdDevice	*device,
+							 GAsyncResult	*res,
+							 GError		**error);
+void		 cd_device_profiling_inhibit		(CdDevice	*device,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_device_profiling_inhibit_finish	(CdDevice	*device,
+							 GAsyncResult	*res,
+							 GError		**error);
+void		 cd_device_profiling_uninhibit		(CdDevice	*device,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_device_profiling_uninhibit_finish	(CdDevice	*device,
+							 GAsyncResult	*res,
+							 GError		**error);
+void		 cd_device_get_profile_for_qualifiers	(CdDevice	*device,
 							 const gchar	**qualifiers,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdProfile	*cd_device_get_profile_for_qualifiers_finish (CdDevice	*device,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_device_make_profile_default_sync	(CdDevice	*device,
+void		 cd_device_get_profile_relation		(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_device_profiling_inhibit_sync	(CdDevice	*device,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_device_profiling_uninhibit_sync	(CdDevice	*device,
-							 GCancellable	*cancellable,
-							 GError		**error);
-CdDeviceRelation cd_device_get_profile_relation		(CdDevice	*device,
-							 CdProfile	*profile,
-							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdDeviceRelation cd_device_get_profile_relation_finish	(CdDevice	*device,
+							 GAsyncResult	*res,
 							 GError		**error);
 
-/* helpers */
+/* getters */
 const gchar	*cd_device_get_id			(CdDevice	*device);
 const gchar	*cd_device_get_model			(CdDevice	*device);
 const gchar	*cd_device_get_vendor			(CdDevice	*device);
@@ -144,6 +173,11 @@ const gchar	*cd_device_get_object_path		(CdDevice	*device);
 GHashTable	*cd_device_get_metadata			(CdDevice	*device);
 const gchar	*cd_device_get_metadata_item		(CdDevice	*device,
 							 const gchar	*key);
+
+/* helpers */
+void		 cd_device_set_object_path		(CdDevice	*device,
+							 const gchar	*object_path);
+gchar		*cd_device_to_string			(CdDevice	*device);
 gboolean	 cd_device_equal			(CdDevice	*device1,
 							 CdDevice	*device2);
 

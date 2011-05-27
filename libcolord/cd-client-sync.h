@@ -34,11 +34,11 @@ gboolean	 cd_client_connect_sync			(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_client_delete_profile_sync		(CdClient	*client,
-							 const gchar	*id,
+							 CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_client_delete_device_sync		(CdClient	*client,
-							 const gchar	*id,
+							 CdDevice	*device,
 							 GCancellable	*cancellable,
 							 GError		**error);
 CdProfile	*cd_client_find_profile_sync		(CdClient	*client,
@@ -68,6 +68,18 @@ GPtrArray	*cd_client_get_profiles_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GError		**error);
 GPtrArray	*cd_client_get_sensors_sync		(CdClient	*client,
+							 GCancellable	*cancellable,
+							 GError		**error);
+CdDevice	*cd_client_find_device_sync		(CdClient	*client,
+							 const gchar	*id,
+							 GCancellable	*cancellable,
+							 GError		**error);
+CdProfile	*cd_client_get_standard_space_sync	(CdClient	*client,
+							 CdStandardSpace standard_space,
+							 GCancellable	*cancellable,
+							 GError		**error);
+GPtrArray	*cd_client_get_devices_by_kind_sync	(CdClient	*client,
+							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,
 							 GError		**error);
 

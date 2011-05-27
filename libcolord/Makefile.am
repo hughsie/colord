@@ -18,6 +18,7 @@ libcolord_include_HEADERS =					\
 	cd-device.h						\
 	cd-device-sync.h					\
 	cd-sensor.h						\
+	cd-sensor-sync.h					\
 	cd-profile.h						\
 	cd-profile-sync.h					\
 	cd-color.h						\
@@ -31,6 +32,7 @@ libcolord_la_SOURCES =						\
 	cd-profile.c						\
 	cd-profile-sync.c					\
 	cd-sensor.c						\
+	cd-sensor-sync.c					\
 	cd-color.c						\
 	cd-device.c						\
 	cd-device-sync.c

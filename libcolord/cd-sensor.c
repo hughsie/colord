@@ -66,6 +66,7 @@ struct _CdSensorPrivate
 
 enum {
 	PROP_0,
+	PROP_OBJECT_PATH,
 	PROP_KIND,
 	PROP_STATE,
 	PROP_MODE,
@@ -103,6 +104,23 @@ cd_sensor_error_quark (void)
 }
 
 /**
+ * cd_sensor_set_object_path:
+ * @sensor: a #CdSensor instance.
+ * @object_path: The colord object path.
+ *
+ * Sets the object path of the sensor.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_sensor_set_object_path (CdSensor *sensor, const gchar *object_path)
+{
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (sensor->priv->object_path == NULL);
+	sensor->priv->object_path = g_strdup (object_path);
+}
+
+/**
  * cd_sensor_get_kind:
  * @sensor: a #CdSensor instance.
  *
@@ -132,7 +150,8 @@ cd_sensor_get_kind (CdSensor *sensor)
 CdSensorState
 cd_sensor_get_state (CdSensor *sensor)
 {
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), 0);
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), CD_SENSOR_STATE_UNKNOWN);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, CD_SENSOR_STATE_UNKNOWN);
 	return sensor->priv->state;
 }
 
@@ -149,7 +168,8 @@ cd_sensor_get_state (CdSensor *sensor)
 CdSensorCap
 cd_sensor_get_mode (CdSensor *sensor)
 {
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), 0);
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), CD_SENSOR_CAP_UNKNOWN);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, CD_SENSOR_CAP_UNKNOWN);
 	return sensor->priv->mode;
 }
 
@@ -167,6 +187,7 @@ const gchar *
 cd_sensor_get_serial (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, NULL);
 	return sensor->priv->serial;
 }
 
@@ -184,6 +205,7 @@ const gchar *
 cd_sensor_get_model (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, NULL);
 	return sensor->priv->model;
 }
 
@@ -201,6 +223,7 @@ const gchar *
 cd_sensor_get_vendor (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, NULL);
 	return sensor->priv->vendor;
 }
 
@@ -218,6 +241,7 @@ gboolean
 cd_sensor_get_native (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
 	return sensor->priv->native;
 }
 
@@ -235,6 +259,7 @@ gboolean
 cd_sensor_get_locked (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
 	return sensor->priv->locked;
 }
 
@@ -252,6 +277,7 @@ guint
 cd_sensor_get_caps (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), 0);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, 0);
 	return sensor->priv->caps;
 }
 
@@ -270,9 +296,9 @@ gboolean
 cd_sensor_has_cap (CdSensor *sensor, CdSensorCap cap)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
 	return (sensor->priv->caps & (1 << cap)) > 0;
 }
-
 
 /**
  * cd_sensor_set_caps_from_variant:
@@ -296,10 +322,10 @@ cd_sensor_set_caps_from_variant (CdSensor *sensor, GVariant *variant)
 }
 
 /**
- * cd_sensor_dbus_properties_changed:
+ * cd_sensor_dbus_properties_changed_cb:
  **/
 static void
-cd_sensor_dbus_properties_changed (GDBusProxy  *proxy,
+cd_sensor_dbus_properties_changed_cb (GDBusProxy  *proxy,
 				   GVariant    *changed_properties,
 				   const gchar * const *invalidated_properties,
 				   CdSensor   *sensor)
@@ -370,27 +396,16 @@ cd_sensor_dbus_signal_cb (GDBusProxy *proxy,
 	}
 }
 
+/**********************************************************************/
+
 /**
- * cd_sensor_set_object_path_sync:
- * @sensor: a #CdSensor instance.
- * @object_path: The colord object path.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the object path of the object and fills up initial properties.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.6
+ * cd_sensor_connect_cb:
  **/
-gboolean
-cd_sensor_set_object_path_sync (CdSensor *sensor,
-				 const gchar *object_path,
-				 GCancellable *cancellable,
-				 GError **error)
+static void
+cd_sensor_connect_cb (GObject *source_object,
+		      GAsyncResult *res,
+		      gpointer user_data)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
 	GVariant *model = NULL;
 	GVariant *serial = NULL;
 	GVariant *vendor = NULL;
@@ -400,34 +415,19 @@ cd_sensor_set_object_path_sync (CdSensor *sensor,
 	GVariant *native = NULL;
 	GVariant *locked = NULL;
 	GVariant *caps = NULL;
+	GAsyncResult *result_orig = G_ASYNC_RESULT (user_data);
+	CdSensor *sensor = CD_SENSOR (g_async_result_get_source_object (result_orig));
+	GError *error = NULL;
 
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (sensor->priv->proxy == NULL, FALSE);
-
-	/* connect to the daemon */
-	sensor->priv->proxy =
-		g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
-					       G_DBUS_PROXY_FLAGS_NONE,
-					       NULL,
-					       COLORD_DBUS_SERVICE,
-					       object_path,
-					       COLORD_DBUS_INTERFACE_SENSOR,
-					       cancellable,
-					       &error_local);
+	/* get result */
+	sensor->priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 	if (sensor->priv->proxy == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_FAILED,
-			     "Failed to connect to sensor %s: %s",
-			     object_path,
-			     error_local->message);
-		g_error_free (error_local);
+		g_simple_async_result_set_from_error (G_SIMPLE_ASYNC_RESULT (result_orig),
+						      error);
+		g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
+		g_error_free (error);
 		goto out;
 	}
-
-	/* save object path */
-	sensor->priv->object_path = g_strdup (object_path);
 
 	/* get kind */
 	kind = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
@@ -492,8 +492,11 @@ cd_sensor_set_object_path_sync (CdSensor *sensor,
 	/* watch if any remote properties change */
 	g_signal_connect (sensor->priv->proxy,
 			  "g-properties-changed",
-			  G_CALLBACK (cd_sensor_dbus_properties_changed),
+			  G_CALLBACK (cd_sensor_dbus_properties_changed_cb),
 			  sensor);
+
+	/* we're done */
+	g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
 out:
 	if (kind != NULL)
 		g_variant_unref (kind);
@@ -513,167 +516,401 @@ out:
 		g_variant_unref (locked);
 	if (caps != NULL)
 		g_variant_unref (caps);
-	return ret;
 }
 
 /**
- * cd_sensor_lock_sync:
- * @sensor: a #CdSensor instance.
+ * cd_sensor_connect:
+ * @sensor: a #CdSensor instance
  * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Connects to the sensor.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_sensor_connect (CdSensor *sensor,
+		   GCancellable *cancellable,
+		   GAsyncReadyCallback callback,
+		   gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (callback != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	res = g_simple_async_result_new (G_OBJECT (sensor),
+					 callback,
+					 user_data,
+					 cd_sensor_connect);
+
+	/* already connected */
+	if (sensor->priv->proxy != NULL) {
+		g_simple_async_result_set_op_res_gboolean (res, TRUE);
+		g_simple_async_result_complete_in_idle (res);
+		return;
+	}
+
+	/* connect async */
+	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
+				  G_DBUS_PROXY_FLAGS_NONE,
+				  NULL,
+				  COLORD_DBUS_SERVICE,
+				  COLORD_DBUS_PATH,
+				  COLORD_DBUS_INTERFACE_SENSOR,
+				  cancellable,
+				  cd_sensor_connect_cb,
+				  res);
+}
+
+/**
+ * cd_sensor_connect_finish:
+ * @sensor: a #CdSensor instance
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: %TRUE if we could connect to to the sensor
+ *
+ * Since: 0.1.8
+ **/
+gboolean
+cd_sensor_connect_finish (CdSensor *sensor,
+			  GAsyncResult *res,
+			  GError **error)
+{
+	gpointer source_tag;
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	source_tag = g_simple_async_result_get_source_tag (simple);
+
+	g_return_val_if_fail (source_tag == cd_sensor_connect, FALSE);
+
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return TRUE;
+}
+
+/**********************************************************************/
+
+/**
+ * cd_sensor_lock_finish:
+ * @sensor: a #CdSensor instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
+ **/
+gboolean
+cd_sensor_lock_finish (CdSensor *sensor,
+				GAsyncResult *res,
+				GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_sensor_lock_cb (GObject *source_object,
+		   GAsyncResult *res,
+		   gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_FAILED,
+						 "Failed to Lock: %s",
+						 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
+out:
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+/**
+ * cd_sensor_lock:
+ * @sensor: a #CdSensor instance.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Locks the device so we can use it.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Since: 0.1.8
+ **/
+void
+cd_sensor_lock (CdSensor *sensor,
+		GCancellable *cancellable,
+		GAsyncReadyCallback callback,
+		gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (sensor->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (sensor),
+					 callback,
+					 user_data,
+					 cd_sensor_lock);
+	g_dbus_proxy_call (sensor->priv->proxy,
+			   "Lock",
+			   NULL,
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_sensor_lock_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_sensor_unlock_finish:
+ * @sensor: a #CdSensor instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
  *
- * Since: 0.1.6
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
  **/
 gboolean
-cd_sensor_lock_sync (CdSensor *sensor,
-		     GCancellable *cancellable,
-		     GError **error)
+cd_sensor_unlock_finish (CdSensor *sensor,
+			 GAsyncResult *res,
+			 GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *simple;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (sensor->priv->proxy,
-					   "Lock",
-					   NULL,
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_FAILED,
-			     "Failed to lock: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_sensor_unlock_cb (GObject *source_object,
+		     GAsyncResult *res,
+		     gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_FAILED,
+						 "Failed to Unlock: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
 out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
 
 /**
- * cd_sensor_unlock_sync:
+ * cd_sensor_unlock:
  * @sensor: a #CdSensor instance.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @id: a #CdProfile id
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
- * Unlocks the device for use by other programs.
+ * Unlocks the sensor for use by other programs.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.6
+ * Since: 0.1.8
  **/
-gboolean
-cd_sensor_unlock_sync (CdSensor *sensor,
-		       GCancellable *cancellable,
-		       GError **error)
+void
+cd_sensor_unlock (CdSensor *sensor,
+		  GCancellable *cancellable,
+		  GAsyncReadyCallback callback,
+		  gpointer user_data)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *res;
 
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (sensor->priv->proxy != NULL);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (sensor->priv->proxy,
-					   "Unlock",
-					   NULL,
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_FAILED,
-			     "Failed to unlock: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	res = g_simple_async_result_new (G_OBJECT (sensor),
+					 callback,
+					 user_data,
+					 cd_sensor_unlock);
+	g_dbus_proxy_call (sensor->priv->proxy,
+			   "Unlock",
+			   NULL,
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_sensor_unlock_cb,
+			   res);
 }
 
+/**********************************************************************/
+
 /**
- * cd_sensor_get_sample_sync:
+ * cd_sensor_get_sample_finish:
  * @sensor: a #CdSensor instance.
- * @cap: a %CdSensorCap, e.g. %CD_SENSOR_CAP_AMBIENT
- * @values: the XYZ reading, or %NULL
- * @ambient: the ambient light level in Lux, or %NULL
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
  *
- * Gets a sample from the sensor.
+ * Gets the result from the asynchronous function.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Return value: the XYZ reading, or %NULL
  *
- * Since: 0.1.6
+ * Since: 0.1.8
  **/
-gboolean
-cd_sensor_get_sample_sync (CdSensor *sensor,
-			   CdSensorCap cap,
-			   CdColorXYZ *values,
-			   gdouble *ambient,
-			   GCancellable *cancellable,
-			   GError **error)
+CdColorXYZ *
+cd_sensor_get_sample_finish (CdSensor *sensor,
+			     GAsyncResult *res,
+			     GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
-	CdColorXYZ values_tmp;
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+static void
+cd_sensor_get_sample_cb (GObject *source_object,
+			 GAsyncResult *res,
+			 gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	CdColorXYZ *xyz;
 	gdouble ambient_tmp;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
-
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (sensor->priv->proxy,
-					   "GetSample",
-					   g_variant_new ("(s)",
-							  cd_sensor_cap_to_string (cap)),
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_FAILED,
-			     "Failed to set property: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_FAILED,
+						 "Failed to GetSample: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
 
-	/* get the values */
-	g_variant_get (response,
+	/* success */
+	xyz = cd_color_xyz_new ();
+	g_variant_get (result,
 		       "((ddd)d)",
-		       &values_tmp.X,
-		       &values_tmp.Y,
-		       &values_tmp.Z,
+		       &xyz->X,
+		       &xyz->Y,
+		       &xyz->Z,
 		       &ambient_tmp);
-	if (values != NULL)
-		cd_color_copy_xyz (&values_tmp, values);
-	if (ambient != NULL)
-		*ambient = ambient_tmp;
+
+	g_simple_async_result_set_op_res_gpointer (res_source,
+						   xyz,
+						   (GDestroyNotify) g_object_unref);
+	g_variant_unref (result);
 out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
+
+/**
+ * cd_sensor_get_sample:
+ * @sensor: a #CdSensor instance.
+ * @cap: a #CdSensorCap
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
+ *
+ * Gets a color sample from a sensor
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_sensor_get_sample (CdSensor *sensor,
+		      CdSensorCap cap,
+		      GCancellable *cancellable,
+		      GAsyncReadyCallback callback,
+		      gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (sensor->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (sensor),
+					 callback,
+					 user_data,
+					 cd_sensor_get_sample);
+	g_dbus_proxy_call (sensor->priv->proxy,
+			   "GetSample",
+			   g_variant_new ("(s)",
+			   		  cd_sensor_cap_to_string (cap)),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_sensor_get_sample_cb,
+			   res);
+}
+
+/**********************************************************************/
 
 /**
  * cd_sensor_get_object_path:
@@ -692,7 +929,7 @@ cd_sensor_get_object_path (CdSensor *sensor)
 	return sensor->priv->object_path;
 }
 /**
- * cd_sensor_get_object_path:
+ * cd_sensor_equal:
  * @sensor1: one #CdSensor instance.
  * @sensor2: another #CdSensor instance.
  *
@@ -716,7 +953,13 @@ cd_sensor_equal (CdSensor *sensor1, CdSensor *sensor2)
 static void
 cd_sensor_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
+	CdSensor *sensor = CD_SENSOR (object);
+
 	switch (prop_id) {
+	case PROP_OBJECT_PATH:
+		g_free (sensor->priv->object_path);
+		sensor->priv->object_path = g_value_dup_string (value);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -732,6 +975,9 @@ cd_sensor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	CdSensor *sensor = CD_SENSOR (object);
 
 	switch (prop_id) {
+	case PROP_OBJECT_PATH:
+		g_value_set_string (value, sensor->priv->object_path);
+		break;
 	case PROP_KIND:
 		g_value_set_uint (value, sensor->priv->kind);
 		break;
@@ -787,6 +1033,20 @@ cd_sensor_class_init (CdSensorClass *klass)
 			      G_STRUCT_OFFSET (CdSensorClass, button_pressed),
 			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
+
+	/**
+	 * CdSensor:object-path:
+	 *
+	 * The object path of the remote object
+	 *
+	 * Since: 0.1.8
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_OBJECT_PATH,
+					 g_param_spec_string ("object-path",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 	/**
 	 * CdSensor:kind:
 	 *
@@ -799,7 +1059,7 @@ cd_sensor_class_init (CdSensorClass *klass)
 					 g_param_spec_string ("kind",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 
 	/**
 	 * CdSensor:state:
@@ -813,7 +1073,7 @@ cd_sensor_class_init (CdSensorClass *klass)
 					 g_param_spec_string ("state",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 
 	/**
 	 * CdSensor:mode:
@@ -827,7 +1087,7 @@ cd_sensor_class_init (CdSensorClass *klass)
 					 g_param_spec_string ("mode",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 
 	/**
 	 * CdSensor:serial:
@@ -841,7 +1101,7 @@ cd_sensor_class_init (CdSensorClass *klass)
 					 g_param_spec_string ("serial",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 	/**
 	 * CdSensor:model:
 	 *
@@ -854,7 +1114,7 @@ cd_sensor_class_init (CdSensorClass *klass)
 					 g_param_spec_string ("model",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 	/**
 	 * CdSensor:vendor:
 	 *
@@ -867,7 +1127,7 @@ cd_sensor_class_init (CdSensorClass *klass)
 					 g_param_spec_string ("vendor",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 
 	/**
 	 * CdSensor:native:
@@ -881,7 +1141,7 @@ cd_sensor_class_init (CdSensorClass *klass)
 					 g_param_spec_string ("native",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 
 	/**
 	 * CdSensor:locked:
@@ -891,11 +1151,11 @@ cd_sensor_class_init (CdSensorClass *klass)
 	 * Since: 0.1.6
 	 **/
 	g_object_class_install_property (object_class,
-					 PROP_NATIVE,
+					 PROP_LOCKED,
 					 g_param_spec_string ("locked",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 
 	g_type_class_add_private (klass, sizeof (CdSensorPrivate));
 }
@@ -948,3 +1208,22 @@ cd_sensor_new (void)
 	return CD_SENSOR (sensor);
 }
 
+/**
+ * cd_sensor_new_with_object_path:
+ * @object_path: The colord object path.
+ *
+ * Creates a new #CdSensor object with a known object path.
+ *
+ * Return value: a new sensor object.
+ *
+ * Since: 0.1.8
+ **/
+CdSensor *
+cd_sensor_new_with_object_path (const gchar *object_path)
+{
+	CdSensor *sensor;
+	sensor = g_object_new (CD_TYPE_SENSOR,
+				"object-path", object_path,
+				NULL);
+	return CD_SENSOR (sensor);
+}

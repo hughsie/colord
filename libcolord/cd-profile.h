@@ -81,29 +81,34 @@ typedef enum
 GType		 cd_profile_get_type			(void);
 GQuark		 cd_profile_error_quark			(void);
 CdProfile	*cd_profile_new				(void);
-gchar		*cd_profile_to_string			(CdProfile	*profile);
+CdProfile	*cd_profile_new_with_object_path	(const gchar	*object_path);
 
 /* async */
-void		 cd_profile_set_object_path		(CdProfile	*profile,
-							 const gchar	*object_path,
+void		 cd_profile_connect			(CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
-gboolean	 cd_profile_set_object_path_finish	(CdProfile	*profile,
+gboolean	 cd_profile_connect_finish		(CdProfile	*profile,
 							 GAsyncResult	*res,
 							 GError		**error);
-
-/* sync: FIXME */
-gboolean	 cd_profile_set_property_sync		(CdProfile	*profile,
+void		 cd_profile_set_property		(CdProfile	*profile,
 							 const gchar	*key,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_profile_set_property_finish		(CdProfile	*profile,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_profile_install_system_wide_sync	(CdProfile	*profile,
+void		 cd_profile_install_system_wide		(CdProfile	*profile,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_profile_install_system_wide_finish	(CdProfile	*profile,
+							 GAsyncResult	*res,
 							 GError		**error);
 
-/* helpers */
+/* getters */
 const gchar	*cd_profile_get_id			(CdProfile	*profile);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
 const gchar	*cd_profile_get_qualifier		(CdProfile	*profile);
@@ -119,6 +124,11 @@ gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
 GHashTable	*cd_profile_get_metadata		(CdProfile	*profile);
 const gchar	*cd_profile_get_metadata_item		(CdProfile	*profile,
 							 const gchar	*key);
+
+/* helpers */
+void		 cd_profile_set_object_path		(CdProfile	*profile,
+							 const gchar	*object_path);
+gchar		*cd_profile_to_string			(CdProfile	*profile);
 gboolean	 cd_profile_equal			(CdProfile	*profile1,
 							 CdProfile	*profile2);
 

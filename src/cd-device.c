@@ -378,10 +378,10 @@ out:
 }
 
 /**
- * cd_device_find_profile_by_id:
+ * cd_device_find_profile_by_object_path:
  **/
 static CdProfile *
-cd_device_find_profile_by_id (GPtrArray *array, const gchar *object_path)
+cd_device_find_profile_by_object_path (GPtrArray *array, const gchar *object_path)
 {
 	CdProfile *profile = NULL;
 	CdProfile *profile_tmp;
@@ -392,7 +392,7 @@ cd_device_find_profile_by_id (GPtrArray *array, const gchar *object_path)
 	for (i=0; i<array->len; i++) {
 		profile_tmp = g_ptr_array_index (array, i);
 		ret = (g_strcmp0 (object_path,
-				  cd_profile_get_id (profile_tmp)) == 0);
+				  cd_profile_get_object_path (profile_tmp)) == 0);
 		if (ret) {
 			profile = profile_tmp;
 			goto out;
@@ -1009,12 +1009,12 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* check the profile_object_path exists */
-		g_variant_get (parameters, "(s)",
+		g_variant_get (parameters, "(o)",
 			       &profile_object_path);
 		g_debug ("CdDevice %s:MakeProfileDefault(%s)",
 			 sender, profile_object_path);
-		profile = cd_device_find_profile_by_id (priv->profiles,
-							profile_object_path);
+		profile = cd_device_find_profile_by_object_path (priv->profiles,
+								 profile_object_path);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,

@@ -512,11 +512,11 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='s' name='device_id' direction='in'>
+      <arg type='o' name='object_path' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
-              A device ID that is used to map to the device path.
+              A device path.
             </doc:para>
           </doc:summary>
         </doc:doc>
@@ -533,11 +533,11 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='s' name='profile_id' direction='in'>
+      <arg type='o' name='object_path' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
-              A profile ID that is used to map to the profile path.
+              A profile path.
             </doc:para>
           </doc:summary>
         </doc:doc>

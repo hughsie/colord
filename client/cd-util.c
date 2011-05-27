@@ -644,11 +644,11 @@ out:
 static gboolean
 cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	CdColorXYZ xyz;
+	CdColorXYZ *xyz;
 	CdSensorCap cap;
 	CdSensor *sensor;
 	gboolean ret = TRUE;
-	gdouble ambient;
+//	gdouble ambient;
 	GPtrArray *array = NULL;
 	guint i;
 
@@ -687,10 +687,8 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 			goto out;
 
 		/* get a sample sync */
-		ret = cd_sensor_get_sample_sync (sensor,
+		xyz = cd_sensor_get_sample_sync (sensor,
 						 cap,
-						 &xyz,
-						 &ambient,
 						 NULL,
 						 error);
 		if (!ret)
@@ -710,14 +708,15 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 			 cd_sensor_get_model (sensor));
 
 		/* TRANSLATORS: this is the ambient light level in Lux */
-		g_print ("%s: %f Lux\n",
-			 _("Ambient"),
-			 ambient);
+//		g_print ("%s: %f Lux\n",
+//			 _("Ambient"),
+//			 ambient);
 
 		/* TRANSLATORS: this is the XYZ color value */
 		g_print ("%s XYZ : %f, %f, %f\n",
 			 _("Color"),
-			 xyz.X, xyz.Y, xyz.Z);
+			 xyz->X, xyz->Y, xyz->Z);
+		cd_color_xyz_free (xyz);
 	}
 out:
 	if (array != NULL)
@@ -918,20 +917,8 @@ cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	device = cd_device_new ();
-	ret = cd_device_set_object_path_sync (device,
-					      values[0],
-					      NULL,
-					      error);
-	if (!ret)
-		goto out;
-	profile = cd_profile_new ();
-	ret = cd_profile_set_object_path_sync (profile,
-					       values[1],
-					       NULL,
-					       error);
-	if (!ret)
-		goto out;
+	device = cd_device_new_with_object_path (values[0]);
+	profile = cd_profile_new_with_object_path (values[1]);
 	ret = cd_device_add_profile_sync (device,
 					  CD_DEVICE_RELATION_HARD,
 					  profile,
@@ -967,20 +954,8 @@ cd_util_device_make_profile_default (CdUtilPrivate *priv, gchar **values, GError
 		goto out;
 	}
 
-	device = cd_device_new ();
-	ret = cd_device_set_object_path_sync (device,
-					      values[0],
-					      NULL,
-					      error);
-	if (!ret)
-		goto out;
-	profile = cd_profile_new ();
-	ret = cd_profile_set_object_path_sync (profile,
-					       values[1],
-					       NULL,
-					       error);
-	if (!ret)
-		goto out;
+	device = cd_device_new_with_object_path (values[0]);
+	profile = cd_profile_new_with_object_path (values[1]);
 	ret = cd_device_make_profile_default_sync (device, profile,
 						   NULL, error);
 	if (!ret)
@@ -1000,6 +975,7 @@ static gboolean
 cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	gboolean ret = TRUE;
+	CdDevice *device = NULL;
 
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
@@ -1011,11 +987,14 @@ cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	ret = cd_client_delete_device_sync (priv->client, values[0],
+	device = cd_device_new_with_object_path (values[0]);
+	ret = cd_client_delete_device_sync (priv->client, device,
 					    NULL, error);
 	if (!ret)
 		goto out;
 out:
+	if (device != NULL)
+		g_object_unref (device);
 	return ret;
 }
 
@@ -1026,6 +1005,7 @@ static gboolean
 cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	gboolean ret = TRUE;
+	CdProfile *profile = NULL;
 
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
@@ -1037,11 +1017,14 @@ cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	ret = cd_client_delete_profile_sync (priv->client, values[0],
+	profile = cd_profile_new_with_object_path (values[0]);
+	ret = cd_client_delete_profile_sync (priv->client, profile,
 					     NULL, error);
 	if (!ret)
 		goto out;
 out:
+	if (profile != NULL)
+		g_object_unref (profile);
 	return ret;
 }
 
@@ -1064,13 +1047,7 @@ cd_util_profile_set_qualifier (CdUtilPrivate *priv, gchar **values, GError **err
 		goto out;
 	}
 
-	profile = cd_profile_new ();
-	ret = cd_profile_set_object_path_sync (profile,
-					       values[0],
-					       NULL,
-					       error);
-	if (!ret)
-		goto out;
+	profile = cd_profile_new_with_object_path (values[0]);
 	ret = cd_profile_set_qualifier_sync (profile, values[1],
 					     NULL, error);
 	if (!ret)
@@ -1100,13 +1077,7 @@ cd_util_profile_set_filename (CdUtilPrivate *priv, gchar **values, GError **erro
 		goto out;
 	}
 
-	profile = cd_profile_new ();
-	ret = cd_profile_set_object_path_sync (profile,
-					       values[0],
-					       NULL,
-					       error);
-	if (!ret)
-		goto out;
+	profile = cd_profile_new_with_object_path (values[0]);
 	ret = cd_profile_set_filename_sync (profile, values[1],
 					    NULL, error);
 	if (!ret)
@@ -1136,13 +1107,7 @@ cd_util_device_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	device = cd_device_new ();
-	ret = cd_device_set_object_path_sync (device,
-					      values[0],
-					      NULL,
-					      error);
-	if (!ret)
-		goto out;
+	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_set_model_sync (device, values[1],
 					NULL, error);
 	if (!ret)
@@ -1173,13 +1138,7 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv, gchar **values, GError 
 		goto out;
 	}
 
-	device = cd_device_new ();
-	ret = cd_device_set_object_path_sync (device,
-					      values[0],
-					      NULL,
-					      error);
-	if (!ret)
-		goto out;
+	device = cd_device_new_with_object_path (values[0]);
 	profile = cd_device_get_default_profile (device);
 	if (profile == NULL) {
 		ret = FALSE;
@@ -1213,13 +1172,7 @@ cd_util_device_set_vendor (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	device = cd_device_new ();
-	ret = cd_device_set_object_path_sync (device,
-					      values[0],
-					      NULL,
-					      error);
-	if (!ret)
-		goto out;
+	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_set_vendor_sync (device, values[1],
 					 NULL, error);
 	if (!ret)
@@ -1249,13 +1202,7 @@ cd_util_device_set_serial (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	device = cd_device_new ();
-	ret = cd_device_set_object_path_sync (device,
-					      values[0],
-					      NULL,
-					      error);
-	if (!ret)
-		goto out;
+	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_set_serial_sync (device, values[1],
 					 NULL, error);
 	if (!ret)
@@ -1285,13 +1232,7 @@ cd_util_device_set_kind (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	device = cd_device_new ();
-	ret = cd_device_set_object_path_sync (device,
-					      values[0],
-					      NULL,
-					      error);
-	if (!ret)
-		goto out;
+	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_set_kind_sync (device, cd_device_kind_from_string (values[1]),
 				       NULL, error);
 	if (!ret)
@@ -1324,13 +1265,7 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 		goto out;
 	}
 
-	device = cd_device_new ();
-	ret = cd_device_set_object_path_sync (device,
-					      values[0],
-					      NULL,
-					      error);
-	if (!ret)
-		goto out;
+	device = cd_device_new_with_object_path (values[0]);
 	profile = cd_device_get_profile_for_qualifiers_sync (device,
 							     (const gchar **) values,
 							     NULL,

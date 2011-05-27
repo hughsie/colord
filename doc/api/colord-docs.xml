@@ -89,6 +89,9 @@
         This part documents helper funtions in libcolord-glib.
       </para>
     </partintro>
+    <xi:include href="xml/cd-client-sync.xml"/>
+    <xi:include href="xml/cd-device-sync.xml"/>
+    <xi:include href="xml/cd-profile-sync.xml"/>
     <xi:include href="xml/cd-version.xml"/>
     <xi:include href="xml/cd-color.xml"/>
   </reference>

@@ -23,36 +23,30 @@
 #error "Only <colord.h> can be included directly."
 #endif
 
-#ifndef __CD_PROFILE_SYNC_H
-#define __CD_PROFILE_SYNC_H
+#ifndef __CD_SENSOR_SYNC_H
+#define __CD_SENSOR_SYNC_H
 
 #include <glib-object.h>
 
+#include "cd-sensor.h"
+
 G_BEGIN_DECLS
 
-gboolean	 cd_profile_connect_sync		(CdProfile	*profile,
+gboolean	 cd_sensor_connect_sync			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
 							 GError		**error);
-gboolean	 cd_profile_set_property_sync		(CdProfile	*profile,
-							 const gchar	*key,
-							 const gchar	*value,
+gboolean	 cd_sensor_lock_sync			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
 							 GError		**error);
-gboolean	 cd_profile_install_system_wide_sync	(CdProfile	*profile,
+gboolean	 cd_sensor_unlock_sync			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
 							 GError		**error);
-
-/* helpers */
-gboolean	 cd_profile_set_filename_sync		(CdProfile	*profile,
-							 const gchar	*value,
-							 GCancellable	*cancellable,
-							 GError		**error);
-gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
-							 const gchar	*value,
+CdColorXYZ	*cd_sensor_get_sample_sync		(CdSensor	*sensor,
+							 CdSensorCap	 cap,
 							 GCancellable	*cancellable,
 							 GError		**error);
 
 G_END_DECLS
 
-#endif /* __CD_PROFILE_SYNC_H */
+#endif /* __CD_SENSOR_SYNC_H */
 

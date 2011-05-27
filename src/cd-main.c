@@ -912,7 +912,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(s)", &device_id);
+		g_variant_get (parameters, "(o)", &device_id);
 		g_debug ("CdMain: %s:DeleteDevice(%s)", sender, device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
@@ -923,7 +923,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 				g_dbus_method_invocation_return_error (invocation,
 								       CD_MAIN_ERROR,
 								       CD_MAIN_ERROR_FAILED,
-								       "device id '%s' not found",
+								       "device path '%s' not found",
 								       device_id);
 				goto out;
 			}
@@ -947,9 +947,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(s)", &device_id);
+		g_variant_get (parameters, "(o)", &device_id);
 		g_debug ("CdMain: %s:DeleteProfile(%s)", sender, device_id);
-		profile = cd_profile_array_get_by_id (profiles_array, device_id);
+		profile = cd_profile_array_get_by_object_path (profiles_array, device_id);
 		if (profile == NULL) {
 			/* fall back to checking the object path */
 			profile = cd_profile_array_get_by_object_path (profiles_array,
@@ -958,7 +958,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 				g_dbus_method_invocation_return_error (invocation,
 								       CD_MAIN_ERROR,
 								       CD_MAIN_ERROR_FAILED,
-								       "profile id '%s' not found",
+								       "profile path '%s' not found",
 								       device_id);
 				goto out;
 			}

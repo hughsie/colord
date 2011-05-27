@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -43,6 +43,7 @@
 #include <libcolord/cd-profile.h>
 #include <libcolord/cd-profile-sync.h>
 #include <libcolord/cd-sensor.h>
+#include <libcolord/cd-sensor-sync.h>
 #include <libcolord/cd-version.h>
 
 #undef __COLORD_H_INSIDE__

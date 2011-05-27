@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-04-24 16:57+0100\n"
+"POT-Creation-Date: 2011-05-30 18:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,66 +18,71 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:157 ../client/cd-fix-profile.c:164
+#: ../client/cd-create-profile.c:144 ../client/cd-fix-profile.c:164
 msgid "The description of the profile"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:160 ../client/cd-fix-profile.c:167
+#: ../client/cd-create-profile.c:147 ../client/cd-fix-profile.c:167
 msgid "The copyright of the profile"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:163 ../client/cd-fix-profile.c:170
+#: ../client/cd-create-profile.c:150 ../client/cd-fix-profile.c:170
 msgid "The model of the profile"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:166 ../client/cd-fix-profile.c:173
+#: ../client/cd-create-profile.c:153 ../client/cd-fix-profile.c:173
 msgid "The manufacturer of the profile"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:169
+#: ../client/cd-create-profile.c:156
 msgid "Profile to create"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:172
+#: ../client/cd-create-profile.c:159
 msgid "sRGB CSV filename"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:175
+#: ../client/cd-create-profile.c:162
 msgid "Named color prefix"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:178
+#: ../client/cd-create-profile.c:165
 msgid "Named color suffix"
 msgstr ""
 
+#. TRANSLATORS: command line option
+#: ../client/cd-create-profile.c:168 ../client/cd-fix-profile.c:176
+msgid "The metadata of the profile in 'key1=value1,key2=value2' format"
+msgstr ""
+
 #. TRANSLATORS: command line tool
-#: ../client/cd-create-profile.c:189
+#: ../client/cd-create-profile.c:179
 msgid "ICC profile creation program"
 msgstr ""
 
-#: ../client/cd-create-profile.c:195
+#: ../client/cd-create-profile.c:185
 msgid "Failed to parse arguments"
 msgstr ""
 
 #. TRANSLATORS: the user forgot to use -o
-#: ../client/cd-create-profile.c:205
+#: ../client/cd-create-profile.c:195
 msgid "No output filename specified"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-fix-profile.c:176
+#: ../client/cd-fix-profile.c:179
 msgid "Profiles to fix"
 msgstr ""
 
 #. TRANSLATORS: command line tool
-#: ../client/cd-fix-profile.c:187
+#: ../client/cd-fix-profile.c:190
 msgid "ICC profile fix program"
 msgstr ""
 
@@ -177,7 +182,7 @@ msgstr ""
 msgid "Projector"
 msgstr ""
 
-#: ../client/cd-util.c:320 ../client/cd-util.c:667
+#: ../client/cd-util.c:320
 msgid "Ambient"
 msgstr ""
 
@@ -191,135 +196,140 @@ msgstr ""
 msgid "Command not found, valid commands are:"
 msgstr ""
 
-#: ../client/cd-util.c:581 ../client/cd-util.c:628
+#: ../client/cd-util.c:581 ../client/cd-util.c:616 ../client/cd-util.c:675
 msgid "There are no supported sensors attached"
 msgstr ""
 
-#: ../client/cd-util.c:661
+#: ../client/cd-util.c:706
 msgid "Sensor"
 msgstr ""
 
-#: ../client/cd-util.c:672
+#: ../client/cd-util.c:717
 msgid "Color"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1332
+#: ../client/cd-util.c:1314
 msgid "Gets all the color managed devices"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1337
+#: ../client/cd-util.c:1319
 msgid "Gets all the color managed devices of a specific kind"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1342
+#: ../client/cd-util.c:1324
 msgid "Gets all the available color profiles"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1347
+#: ../client/cd-util.c:1329
 msgid "Gets all the available color sensors"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1352
+#: ../client/cd-util.c:1334
 msgid "Gets a reading from a sensor"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1357
+#: ../client/cd-util.c:1339
+msgid "Locks the color sensor"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1344
 msgid "Create a device"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1362
+#: ../client/cd-util.c:1349
 msgid "Find a device"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1367
+#: ../client/cd-util.c:1354
 msgid "Find a profile"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1372
+#: ../client/cd-util.c:1359
 msgid "Get a standard colorspace"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1377
+#: ../client/cd-util.c:1364
 msgid "Create a profile"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1382
+#: ../client/cd-util.c:1369
 msgid "Add a profile to a device"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1387
+#: ../client/cd-util.c:1374
 msgid "Makes a profile default for a device"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1392
+#: ../client/cd-util.c:1379
 msgid "Deletes a device"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1397
+#: ../client/cd-util.c:1384
 msgid "Deletes a profile"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1402
+#: ../client/cd-util.c:1389
 msgid "Sets the profile qualifier"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1407
+#: ../client/cd-util.c:1394
 msgid "Sets the profile filename"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1412
+#: ../client/cd-util.c:1399
 msgid "Sets the device model"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1417
+#: ../client/cd-util.c:1404
 msgid "Gets the default profile for a device"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1422
+#: ../client/cd-util.c:1409
 msgid "Sets the device vendor"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1427
+#: ../client/cd-util.c:1414
 msgid "Sets the device serial"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1432
+#: ../client/cd-util.c:1419
 msgid "Sets the device kind"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1437
+#: ../client/cd-util.c:1424
 msgid "Returns all the profiles that match a qualifier"
 msgstr ""
 
 #. TRANSLATORS: program name
-#: ../client/cd-util.c:1450 ../src/cd-main.c:1580
+#: ../client/cd-util.c:1437 ../src/cd-main.c:1619
 msgid "Color Management"
 msgstr ""
 
 #. TRANSLATORS: no colord available
-#: ../client/cd-util.c:1458
+#: ../client/cd-util.c:1445
 msgid "No connection to colord:"
 msgstr ""
 
@@ -443,15 +453,15 @@ msgid "Show debugging options"
 msgstr ""
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:1564
+#: ../src/cd-main.c:1603
 msgid "Exit after a small delay"
 msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:1567
+#: ../src/cd-main.c:1606
 msgid "Exit after the engine has loaded"
 msgstr ""
 
-#: ../src/cd-main.c:1584
+#: ../src/cd-main.c:1623
 msgid "Color Management D-Bus Service"
 msgstr ""

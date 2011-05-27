@@ -20,13 +20,13 @@
  */
 
 /**
- * SECTION:cd-profile-sync
- * @short_description: Sync helpers for #CdProfile
+ * SECTION:cd-sensor-sync
+ * @short_description: Sync helpers for #CdSensor
  *
  * These helper functions provide a simple way to use the async functions
  * in command line tools.
  *
- * See also: #CdProfile
+ * See also: #CdSensor
  */
 
 #include "config.h"
@@ -34,31 +34,31 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "cd-profile.h"
-#include "cd-profile-sync.h"
+#include "cd-sensor.h"
+#include "cd-sensor-sync.h"
 
 /* tiny helper to help us do the async operation */
 typedef struct {
 	GError		**error;
 	GMainLoop	*loop;
 	gboolean	 ret;
-	CdProfile	*profile;
-} CdProfileHelper;
+	CdColorXYZ	*sample;
+} CdSensorHelper;
 
 static void
-cd_profile_connect_finish_sync (CdProfile *profile,
-				GAsyncResult *res,
-				CdProfileHelper *helper)
+cd_sensor_connect_finish_sync (CdSensor *sensor,
+			       GAsyncResult *res,
+			       CdSensorHelper *helper)
 {
-	helper->ret = cd_profile_connect_finish (profile,
-						 res,
-						 helper->error);
+	helper->ret = cd_sensor_connect_finish (sensor,
+						res,
+						helper->error);
 	g_main_loop_quit (helper->loop);
 }
 
 /**
- * cd_profile_connect_sync:
- * @profile: a #CdProfile instance.
+ * cd_sensor_connect_sync:
+ * @sensor: a #CdSensor instance.
  * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
@@ -73,20 +73,20 @@ cd_profile_connect_finish_sync (CdProfile *profile,
  * Since: 0.1.8
  **/
 gboolean
-cd_profile_connect_sync (CdProfile *profile,
-			 GCancellable *cancellable,
-			 GError **error)
+cd_sensor_connect_sync (CdSensor *sensor,
+			GCancellable *cancellable,
+			GError **error)
 {
-	CdProfileHelper helper;
+	CdSensorHelper helper;
 
 	/* create temp object */
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
 	/* run async method */
-	cd_profile_connect (profile, cancellable,
-			    (GAsyncReadyCallback) cd_profile_connect_finish_sync,
-			    &helper);
+	cd_sensor_connect (sensor, cancellable,
+			   (GAsyncReadyCallback) cd_sensor_connect_finish_sync,
+			   &helper);
 	g_main_loop_run (helper.loop);
 
 	/* free temp object */
@@ -98,50 +98,47 @@ cd_profile_connect_sync (CdProfile *profile,
 /**********************************************************************/
 
 static void
-cd_profile_set_property_finish_sync (CdProfile *profile,
-				     GAsyncResult *res,
-				     CdProfileHelper *helper)
+cd_sensor_lock_finish_sync (CdSensor *sensor,
+			    GAsyncResult *res,
+			    CdSensorHelper *helper)
 {
-	helper->ret = cd_profile_set_property_finish (profile,
-						 res,
-						 helper->error);
+	helper->ret = cd_sensor_lock_finish (sensor,
+					     res,
+					     helper->error);
 	g_main_loop_quit (helper->loop);
 }
 
 /**
- * cd_profile_set_property_sync:
- * @profile: a #CdProfile instance.
- * @key: The key
- * @value: The value
+ * cd_sensor_lock_sync:
+ * @sensor: a #CdSensor instance.
+ * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
- * Sets properties on an object
+ * Locks the device so we can use it.
  *
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
  * Return value: %TRUE for success, else %FALSE.
  *
- * Since: 0.1.8
+ * Since: 0.1.6
  **/
 gboolean
-cd_profile_set_property_sync (CdProfile *profile,
-			      const gchar *key,
-			      const gchar *value,
-			      GCancellable *cancellable,
-			      GError **error)
+cd_sensor_lock_sync (CdSensor *sensor,
+			GCancellable *cancellable,
+			GError **error)
 {
-	CdProfileHelper helper;
+	CdSensorHelper helper;
 
 	/* create temp object */
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
 	/* run async method */
-	cd_profile_set_property (profile, key, value, cancellable,
-				 (GAsyncReadyCallback) cd_profile_set_property_finish_sync,
-				 &helper);
+	cd_sensor_lock (sensor, cancellable,
+			(GAsyncReadyCallback) cd_sensor_lock_finish_sync,
+			&helper);
 	g_main_loop_run (helper.loop);
 
 	/* free temp object */
@@ -153,46 +150,47 @@ cd_profile_set_property_sync (CdProfile *profile,
 /**********************************************************************/
 
 static void
-cd_profile_install_system_wide_finish_sync (CdProfile *profile,
-					    GAsyncResult *res,
-					    CdProfileHelper *helper)
+cd_sensor_unlock_finish_sync (CdSensor *sensor,
+			      GAsyncResult *res,
+			      CdSensorHelper *helper)
 {
-	helper->ret = cd_profile_install_system_wide_finish (profile,
-						 res,
-						 helper->error);
+	helper->ret = cd_sensor_unlock_finish (sensor,
+					       res,
+					       helper->error);
 	g_main_loop_quit (helper->loop);
 }
 
 /**
- * cd_profile_install_system_wide_sync:
- * @profile: a #CdProfile instance.
+ * cd_sensor_unlock_sync:
+ * @sensor: a #CdSensor instance.
+ * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
- * Sets the profile system wide.
+ * Unlocks the device for use by other programs.
  *
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
  * Return value: %TRUE for success, else %FALSE.
  *
- * Since: 0.1.8
+ * Since: 0.1.6
  **/
 gboolean
-cd_profile_install_system_wide_sync (CdProfile *profile,
-				     GCancellable *cancellable,
-				     GError **error)
+cd_sensor_unlock_sync (CdSensor *sensor,
+		       GCancellable *cancellable,
+		       GError **error)
 {
-	CdProfileHelper helper;
+	CdSensorHelper helper;
 
 	/* create temp object */
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
 	/* run async method */
-	cd_profile_install_system_wide (profile, cancellable,
-					(GAsyncReadyCallback) cd_profile_install_system_wide_finish_sync,
-					&helper);
+	cd_sensor_unlock (sensor, cancellable,
+			  (GAsyncReadyCallback) cd_sensor_unlock_finish_sync,
+			  &helper);
 	g_main_loop_run (helper.loop);
 
 	/* free temp object */
@@ -203,56 +201,55 @@ cd_profile_install_system_wide_sync (CdProfile *profile,
 
 /**********************************************************************/
 
-/**
- * cd_profile_set_filename_sync:
- * @profile: a #CdProfile instance.
- * @value: The filename.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the profile model.
- *
- * WARNING: This function is synchronous, and may block.
- * Do not use it in GUI applications.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.0
- **/
-gboolean
-cd_profile_set_filename_sync (CdProfile *profile,
-			      const gchar *value,
-			      GCancellable *cancellable,
-			      GError **error)
+static void
+cd_sensor_get_sample_finish_sync (CdSensor *sensor,
+				  GAsyncResult *res,
+				  CdSensorHelper *helper)
 {
-	return cd_profile_set_property_sync (profile,
-					     CD_PROFILE_PROPERTY_FILENAME,
-					     value,
-					     cancellable, error);
+	helper->sample = cd_sensor_get_sample_finish (sensor,
+						      res,
+						      helper->error);
+	g_main_loop_quit (helper->loop);
 }
 
 /**
- * cd_profile_set_qualifier_sync:
- * @profile: a #CdProfile instance.
- * @value: The qualifier.
+ * cd_sensor_get_sample_sync:
+ * @sensor: a #CdSensor instance.
+ * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
- * Sets the profile model.
+ * Gets a sample from the sensor.
  *
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Return value: the XYZ reading, with ambient levels in Lux encoded in X, or %NULL for error.
  *
- * Since: 0.1.0
+ * Since: 0.1.8
  **/
-gboolean
-cd_profile_set_qualifier_sync (CdProfile *profile,
-			       const gchar *value,
-			       GCancellable *cancellable,
-			       GError **error)
+CdColorXYZ *
+cd_sensor_get_sample_sync (CdSensor *sensor,
+			   CdSensorCap cap,
+			   GCancellable *cancellable,
+			   GError **error)
 {
-	return cd_profile_set_property_sync (profile, CD_PROFILE_PROPERTY_QUALIFIER, value,
-					     cancellable, error);
+	CdSensorHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+
+	/* run async method */
+	cd_sensor_get_sample (sensor, cap, cancellable,
+			      (GAsyncReadyCallback) cd_sensor_get_sample_finish_sync,
+			      &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.sample;
 }
+
+/**********************************************************************/

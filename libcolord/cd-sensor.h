@@ -82,23 +82,41 @@ typedef enum
 GType		 cd_sensor_get_type			(void);
 GQuark		 cd_sensor_error_quark			(void);
 CdSensor	*cd_sensor_new				(void);
-gchar		*cd_sensor_to_string			(CdSensor	*sensor);
-gboolean	 cd_sensor_set_object_path_sync		(CdSensor	*sensor,
-							 const gchar	*object_path,
+CdSensor	*cd_sensor_new_with_object_path		(const gchar	*object_path);
+
+/* async */
+void		 cd_sensor_connect			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_sensor_connect_finish		(CdSensor	*sensor,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_sensor_lock_sync			(CdSensor	*sensor,
+void	 	 cd_sensor_lock				(CdSensor	*sensor,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean 	 cd_sensor_lock_finish			(CdSensor	*sensor,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_sensor_unlock_sync			(CdSensor	*sensor,
+void		 cd_sensor_unlock			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_sensor_unlock_finish		(CdSensor	*sensor,
+							 GAsyncResult	*res,
 							 GError		**error);
-gboolean	 cd_sensor_get_sample_sync		(CdSensor	*sensor,
+void		 cd_sensor_get_sample			(CdSensor	*sensor,
 							 CdSensorCap	 cap,
-							 CdColorXYZ	*values,
-							 gdouble	*ambient,
 							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdColorXYZ	*cd_sensor_get_sample_finish		(CdSensor	*sensor,
+							 GAsyncResult	*res,
 							 GError		**error);
+
+/* getters */
+const gchar	*cd_sensor_get_object_path		(CdSensor	*sensor);
 CdSensorKind	 cd_sensor_get_kind			(CdSensor	*sensor);
 CdSensorState	 cd_sensor_get_state			(CdSensor	*sensor);
 CdSensorCap	 cd_sensor_get_mode			(CdSensor	*sensor);
@@ -110,9 +128,13 @@ gboolean	 cd_sensor_get_locked			(CdSensor	*sensor);
 guint		 cd_sensor_get_caps			(CdSensor	*sensor);
 gboolean	 cd_sensor_has_cap			(CdSensor	*sensor,
 							 CdSensorCap	 cap);
-const gchar	*cd_sensor_get_object_path		(CdSensor	*sensor);
+
+/* utilities */
+void		 cd_sensor_set_object_path		(CdSensor	*sensor,
+							 const gchar	*object_path);
 gboolean	 cd_sensor_equal			(CdSensor	*sensor1,
 							 CdSensor	*sensor2);
+gchar		*cd_sensor_to_string			(CdSensor	*sensor);
 
 G_END_DECLS
 

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -212,6 +212,9 @@ typedef enum {
 #define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
 #define COLORD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
+
+/* defined in org.freedesktop.ColorManager.xml */
+#define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"
 
 /* defined in metadata-spec.txt */
 #define CD_PROFILE_METADATA_STANDARD_SPACE	"STANDARD_space"

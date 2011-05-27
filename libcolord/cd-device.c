@@ -70,6 +70,7 @@ struct _CdDevicePrivate
 
 enum {
 	PROP_0,
+	PROP_OBJECT_PATH,
 	PROP_CREATED,
 	PROP_MODIFIED,
 	PROP_ID,
@@ -108,6 +109,23 @@ cd_device_error_quark (void)
 }
 
 /**
+ * cd_device_set_object_path:
+ * @device: a #CdDevice instance.
+ * @object_path: The colord object path.
+ *
+ * Sets the object path of the device.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_device_set_object_path (CdDevice *device, const gchar *object_path)
+{
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->object_path == NULL);
+	device->priv->object_path = g_strdup (object_path);
+}
+
+/**
  * cd_device_get_id:
  * @device: a #CdDevice instance.
  *
@@ -121,6 +139,7 @@ const gchar *
 cd_device_get_id (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return device->priv->id;
 }
 
@@ -138,6 +157,7 @@ const gchar *
 cd_device_get_model (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return device->priv->model;
 }
 
@@ -155,6 +175,7 @@ const gchar *
 cd_device_get_vendor (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return device->priv->vendor;
 }
 
@@ -172,6 +193,7 @@ const gchar *
 cd_device_get_serial (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return device->priv->serial;
 }
 
@@ -189,6 +211,7 @@ guint64
 cd_device_get_created (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), 0);
+	g_return_val_if_fail (device->priv->proxy != NULL, 0);
 	return device->priv->created;
 }
 
@@ -206,6 +229,7 @@ guint64
 cd_device_get_modified (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), 0);
+	g_return_val_if_fail (device->priv->proxy != NULL, 0);
 	return device->priv->modified;
 }
 
@@ -223,6 +247,7 @@ CdDeviceKind
 cd_device_get_kind (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_KIND_UNKNOWN);
+	g_return_val_if_fail (device->priv->proxy != NULL, CD_DEVICE_KIND_UNKNOWN);
 	return device->priv->kind;
 }
 
@@ -240,6 +265,7 @@ CdColorspace
 cd_device_get_colorspace (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), CD_COLORSPACE_UNKNOWN);
+	g_return_val_if_fail (device->priv->proxy != NULL, CD_COLORSPACE_UNKNOWN);
 	return device->priv->colorspace;
 }
 
@@ -257,6 +283,7 @@ CdDeviceMode
 cd_device_get_mode (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_MODE_UNKNOWN);
+	g_return_val_if_fail (device->priv->proxy != NULL, CD_DEVICE_MODE_UNKNOWN);
 	return device->priv->mode;
 }
 
@@ -274,6 +301,7 @@ GPtrArray *
 cd_device_get_profiles (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	if (device->priv->profiles == NULL)
 		return NULL;
 	return g_ptr_array_ref (device->priv->profiles);
@@ -293,6 +321,7 @@ CdProfile *
 cd_device_get_default_profile (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	if (device->priv->profiles == NULL)
 		return NULL;
 	if (device->priv->profiles->len == 0)
@@ -312,7 +341,6 @@ cd_device_set_profiles_array_from_variant (CdDevice *device,
 	CdProfile *profile_tmp;
 	gboolean ret = TRUE;
 	gchar *object_path_tmp;
-	GError *error_local = NULL;
 	gsize len;
 	guint i;
 	GVariantIter iter;
@@ -325,20 +353,7 @@ cd_device_set_profiles_array_from_variant (CdDevice *device,
 		g_variant_get_child (profiles, i,
 				     "o", &object_path_tmp);
 		profile_tmp = cd_profile_new ();
-		ret = cd_profile_set_object_path_sync (profile_tmp,
-						       object_path_tmp,
-						       cancellable,
-						       &error_local);
-		if (!ret) {
-			g_set_error (error,
-				     CD_DEVICE_ERROR,
-				     CD_DEVICE_ERROR_FAILED,
-				     "Failed to set profile object path: %s",
-				     error_local->message);
-			g_error_free (error_local);
-			g_object_unref (profile_tmp);
-			goto out;
-		}
+		cd_profile_set_object_path (profile_tmp, object_path_tmp);
 		g_ptr_array_add (device->priv->profiles, profile_tmp);
 		g_free (object_path_tmp);
 	}
@@ -360,6 +375,7 @@ GHashTable *
 cd_device_get_metadata (CdDevice *device)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return g_hash_table_ref (device->priv->metadata);
 }
 
@@ -378,6 +394,7 @@ const gchar *
 cd_device_get_metadata_item (CdDevice *device, const gchar *key)
 {
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return g_hash_table_lookup (device->priv->metadata, key);
 }
 
@@ -407,13 +424,13 @@ cd_device_set_metadata_from_variant (CdDevice *device, GVariant *variant)
 }
 
 /**
- * cd_device_dbus_properties_changed:
+ * cd_device_dbus_properties_changed_cb:
  **/
 static void
-cd_device_dbus_properties_changed (GDBusProxy  *proxy,
-				   GVariant    *changed_properties,
-				   const gchar * const *invalidated_properties,
-				   CdDevice    *device)
+cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
+				      GVariant    *changed_properties,
+				      const gchar * const *invalidated_properties,
+				      CdDevice    *device)
 {
 	guint i;
 	guint len;
@@ -485,12 +502,10 @@ cd_device_dbus_signal_cb (GDBusProxy *proxy,
 	g_free (object_path_tmp);
 }
 
-
-
 /**********************************************************************/
 
 /**
- * cd_device_set_object_path_finish:
+ * cd_device_connect_finish:
  * @device: a #CdDevice instance.
  * @res: the #GAsyncResult
  * @error: A #GError or %NULL
@@ -502,9 +517,9 @@ cd_device_dbus_signal_cb (GDBusProxy *proxy,
  * Since: 0.1.8
  **/
 gboolean
-cd_device_set_object_path_finish (CdDevice *device,
-				   GAsyncResult *res,
-				   GError **error)
+cd_device_connect_finish (CdDevice *device,
+			  GAsyncResult *res,
+			  GError **error)
 {
 	GSimpleAsyncResult *simple;
 
@@ -520,9 +535,9 @@ cd_device_set_object_path_finish (CdDevice *device,
 }
 
 static void
-cd_device_set_object_path_cb (GObject *source_object,
-			      GAsyncResult *res,
-			      gpointer user_data)
+cd_device_connect_cb (GObject *source_object,
+		      GAsyncResult *res,
+		      gpointer user_data)
 {
 	gboolean ret;
 	GError *error = NULL;
@@ -644,7 +659,7 @@ cd_device_set_object_path_cb (GObject *source_object,
 	/* watch if any remote properties change */
 	g_signal_connect (device->priv->proxy,
 			  "g-properties-changed",
-			  G_CALLBACK (cd_device_dbus_properties_changed),
+			  G_CALLBACK (cd_device_dbus_properties_changed_cb),
 			  device);
 
 	/* success */
@@ -678,466 +693,886 @@ out:
 }
 
 /**
- * cd_device_set_object_path:
+ * cd_device_connect:
  * @device: a #CdDevice instance.
- * @object_path: The colord object path.
  * @cancellable: a #GCancellable, or %NULL
  * @callback_ready: the function to run on completion
  * @user_data: the data to pass to @callback_ready
  *
- * Sets the object path of the object and fills up initial properties.
+ * Connects to the object and fills up initial properties.
  *
  * Since: 0.1.8
  **/
 void
-cd_device_set_object_path (CdDevice *device,
-			   const gchar *object_path,
-			   GCancellable *cancellable,
-			   GAsyncReadyCallback callback,
-			   gpointer user_data)
+cd_device_connect (CdDevice *device,
+		   GCancellable *cancellable,
+		   GAsyncReadyCallback callback,
+		   gpointer user_data)
 {
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
-	g_return_if_fail (device->priv->proxy == NULL);
-
-	/* save object path */
-	device->priv->object_path = g_strdup (object_path);
 
 	res = g_simple_async_result_new (G_OBJECT (device),
 					 callback,
 					 user_data,
-					 cd_device_set_object_path);
+					 cd_device_connect);
+
+	/* already connected */
+	if (device->priv->proxy != NULL) {
+		g_simple_async_result_set_op_res_gboolean (res, TRUE);
+		g_simple_async_result_complete_in_idle (res);
+		return;
+	}
+
 	g_dbus_proxy_new_for_bus (G_BUS_TYPE_SYSTEM,
 				  G_DBUS_PROXY_FLAGS_NONE,
 				  NULL,
 				  COLORD_DBUS_SERVICE,
-				  object_path,
+				  device->priv->object_path,
 				  COLORD_DBUS_INTERFACE_DEVICE,
 				  cancellable,
-				  cd_device_set_object_path_cb,
+				  cd_device_connect_cb,
 				  res);
 }
 
 /**********************************************************************/
 
+/**********************************************************************/
+
 /**
- * cd_device_set_property_sync:
+ * cd_device_set_property_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
  **/
 gboolean
-cd_device_set_property_sync (CdDevice *device,
-			     const gchar *name,
-			     const gchar *value,
-			     GCancellable *cancellable,
-			     GError **error)
+cd_device_set_property_finish (CdDevice *device,
+				GAsyncResult *res,
+				GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *simple;
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "SetProperty",
-					   g_variant_new ("(ss)",
-						       name,
-						       value),
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to set profile object path: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_device_set_property_cb (GObject *source_object,
+			    GAsyncResult *res,
+			    gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to SetProperty: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
 out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
 
 /**
- * cd_device_add_profile_sync:
+ * cd_device_set_property:
+ * @device: a #CdDevice instance.
+ * @key: a property key
+ * @value: a property key
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
+ *
+ * Sets a property on the device.
+ *
+ * Since: 0.1.8
+ **/
+void
+cd_device_set_property (CdDevice *device,
+			const gchar *key,
+			const gchar *value,
+			GCancellable *cancellable,
+			GAsyncReadyCallback callback,
+			gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_set_property);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "SetProperty",
+			   g_variant_new ("(ss)",
+			   		  key, value),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_set_property_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_device_add_profile_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
+ **/
+gboolean
+cd_device_add_profile_finish (CdDevice *device,
+				GAsyncResult *res,
+				GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_device_add_profile_cb (GObject *source_object,
+			    GAsyncResult *res,
+			    gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to AddProfile: %s",
+						 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
+out:
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+/**
+ * cd_device_add_profile:
  * @device: a #CdDevice instance.
  * @relation: a #CdDeviceRelation, e.g. #CD_DEVICE_RELATION_HARD
  * @profile: a #CdProfile instance
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Adds a profile to a device.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Since: 0.1.8
+ **/
+void
+cd_device_add_profile (CdDevice *device,
+		       CdDeviceRelation relation,
+		       CdProfile *profile,
+		       GCancellable *cancellable,
+		       GAsyncReadyCallback callback,
+		       gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_add_profile);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "AddProfile",
+			   g_variant_new ("(so)",
+					  cd_device_relation_to_string (relation),
+					  cd_profile_get_object_path (profile)),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_add_profile_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_device_remove_profile_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
  *
- * Since: 0.1.3
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
  **/
 gboolean
-cd_device_add_profile_sync (CdDevice *device,
-			    CdDeviceRelation relation,
-			    CdProfile *profile,
-			    GCancellable *cancellable,
-			    GError **error)
+cd_device_remove_profile_finish (CdDevice *device,
+				 GAsyncResult *res,
+				 GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *simple;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (relation != CD_DEVICE_RELATION_UNKNOWN, FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "AddProfile",
-					   g_variant_new ("(so)",
-							  cd_device_relation_to_string (relation),
-							  cd_profile_get_object_path (profile)),
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to add profile to device: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_device_remove_profile_cb (GObject *source_object,
+			     GAsyncResult *res,
+			     gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to RemoveProfile: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
 out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
 
 /**
- * cd_device_remove_profile_sync:
+ * cd_device_remove_profile:
  * @device: a #CdDevice instance.
  * @profile: a #CdProfile instance
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Removes a profile from a device.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Since: 0.1.8
+ **/
+void
+cd_device_remove_profile (CdDevice *device,
+			  CdProfile *profile,
+			  GCancellable *cancellable,
+			  GAsyncReadyCallback callback,
+			  gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_remove_profile);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "RemoveProfile",
+			   g_variant_new ("(o)",
+					  cd_profile_get_object_path (profile)),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_remove_profile_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_device_make_profile_default_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
  *
- * Since: 0.1.2
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
  **/
 gboolean
-cd_device_remove_profile_sync (CdDevice *device,
-			       CdProfile *profile,
-			       GCancellable *cancellable,
-			       GError **error)
+cd_device_make_profile_default_finish (CdDevice *device,
+				       GAsyncResult *res,
+				       GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *simple;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "RemoveProfile",
-					   g_variant_new ("(o)",
-							  cd_profile_get_object_path (profile)),
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to remove profile from device: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_device_make_profile_default_cb (GObject *source_object,
+				   GAsyncResult *res,
+				   gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to MakeProfileDefault: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
 out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
 
 /**
- * cd_device_make_profile_default_sync:
+ * cd_device_make_profile_default:
  * @device: a #CdDevice instance.
  * @profile: a #CdProfile instance
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Makes an already added profile default for a device.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Since: 0.1.8
+ **/
+void
+cd_device_make_profile_default (CdDevice *device,
+				CdProfile *profile,
+				GCancellable *cancellable,
+				GAsyncReadyCallback callback,
+				gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_make_profile_default);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "MakeProfileDefault",
+			   g_variant_new ("(o)",
+					  cd_profile_get_object_path (profile)),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_make_profile_default_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_device_profiling_inhibit_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
  *
- * Since: 0.1.0
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
  **/
 gboolean
-cd_device_make_profile_default_sync (CdDevice *device,
-				     CdProfile *profile,
-				     GCancellable *cancellable,
-				     GError **error)
+cd_device_profiling_inhibit_finish (CdDevice *device,
+				    GAsyncResult *res,
+				    GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *simple;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "MakeProfileDefault",
-					   g_variant_new ("(s)",
-							  cd_profile_get_id (profile)),
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to make profile default on device: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_device_profiling_inhibit_cb (GObject *source_object,
+				GAsyncResult *res,
+				gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to ProfilingInhibit: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
 out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
 
 /**
- * cd_device_profiling_inhibit_sync:
+ * cd_device_profiling_inhibit:
  * @device: a #CdDevice instance.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Sets up the device for profiling and causes no profiles to be
  * returned if cd_device_get_profile_for_qualifiers_sync() is used.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
+ * Since: 0.1.8
+ **/
+void
+cd_device_profiling_inhibit (CdDevice *device,
+			     GCancellable *cancellable,
+			     GAsyncReadyCallback callback,
+			     gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_profiling_inhibit);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "ProfilingInhibit",
+			   NULL,
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_profiling_inhibit_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_device_profiling_uninhibit_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
  *
- * Since: 0.1.1
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
  **/
 gboolean
-cd_device_profiling_inhibit_sync (CdDevice *device,
-				  GCancellable *cancellable,
-				  GError **error)
+cd_device_profiling_uninhibit_finish (CdDevice *device,
+				      GAsyncResult *res,
+				      GError **error)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *simple;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "ProfilingInhibit",
-					   NULL,
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to inhibit device: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_device_profiling_uninhibit_cb (GObject *source_object,
+				  GAsyncResult *res,
+				  gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to ProfilingUninhibit: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
 out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
 
 /**
- * cd_device_profiling_uninhibit_sync:
+ * cd_device_profiling_uninhibit:
  * @device: a #CdDevice instance.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Restores the device after profiling and causes normal profiles to be
  * returned if cd_device_get_profile_for_qualifiers_sync() is used.
  *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.1
+ * Since: 0.1.8
  **/
-gboolean
-cd_device_profiling_uninhibit_sync (CdDevice *device,
-				    GCancellable *cancellable,
-				    GError **error)
+void
+cd_device_profiling_uninhibit (CdDevice *device,
+			       GCancellable *cancellable,
+			       GAsyncReadyCallback callback,
+			       gpointer user_data)
 {
-	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_profiling_uninhibit);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "ProfilingUninhibit",
+			   NULL,
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_profiling_uninhibit_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_device_get_profile_for_qualifiers_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
+ **/
+CdProfile *
+cd_device_get_profile_for_qualifiers_finish (CdDevice *device,
+					     GAsyncResult *res,
+					     GError **error)
+{
+	GSimpleAsyncResult *simple;
 
 	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "ProfilingUninhibit",
-					   NULL,
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to uninhibit device: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+static void
+cd_device_get_profile_for_qualifiers_cb (GObject *source_object,
+					 GAsyncResult *res,
+					 gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	CdProfile *profile;
+	gchar *object_path = NULL;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to GetProfileForQualifiers: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
+
+	/* create CdProfile object */
+	g_variant_get (result, "(o)",
+		       &object_path);
+	profile = cd_profile_new ();
+	cd_profile_set_object_path (profile, object_path);
+
+	/* success */
+	g_simple_async_result_set_op_res_gpointer (res_source,
+						   profile, (GDestroyNotify)
+						   g_object_unref);
+	g_variant_unref (result);
 out:
-	if (response != NULL)
-		g_variant_unref (response);
-	return ret;
+	g_free (object_path);
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
 
 /**
- * cd_device_get_profile_for_qualifiers_sync:
+ * cd_device_get_profile_for_qualifiers:
  * @device: a #CdDevice instance.
- * @qualifier: a qualifier that can included wildcards
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @qualifiers: a set of qualifiers that can included wildcards
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Gets the prefered profile for some qualifiers.
  *
- * Return value: a #CdProfile, free with g_object_unref()
- *
- * Since: 0.1.3
+ * Since: 0.1.8
  **/
-CdProfile *
-cd_device_get_profile_for_qualifiers_sync (CdDevice *device,
-					   const gchar **qualifiers,
-					   GCancellable *cancellable,
-					   GError **error)
+void
+cd_device_get_profile_for_qualifiers (CdDevice *device,
+				      const gchar **qualifiers,
+				      GCancellable *cancellable,
+				      GAsyncReadyCallback callback,
+				      gpointer user_data)
 {
-	CdProfile *profile = NULL;
-	CdProfile *profile_tmp = NULL;
-	gboolean ret;
-	gchar *object_path = NULL;
-	GError *error_local = NULL;
+	GSimpleAsyncResult *res;
 	guint i;
 	GVariantBuilder builder;
-	GVariant *response = NULL;
 
-	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
-	g_return_val_if_fail (qualifiers != NULL, NULL);
-	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy != NULL);
 
 	/* squash char** into an array of strings */
 	g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
 	for (i=0; qualifiers[i] != NULL; i++)
 		g_variant_builder_add (&builder, "s", qualifiers[i]);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "GetProfileForQualifiers",
-					   g_variant_new ("(as)",
-							  &builder),
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to get a suitable profile: %s",
-			     error_local->message);
-		g_error_free (error_local);
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_get_profile_for_qualifiers);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "GetProfileForQualifiers",
+			   g_variant_new ("(as)",
+					  &builder),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_get_profile_for_qualifiers_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_device_get_profile_relation_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.8
+ **/
+CdDeviceRelation
+cd_device_get_profile_relation_finish (CdDevice *device,
+				       GAsyncResult *res,
+				       GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return CD_DEVICE_RELATION_UNKNOWN;
+
+	return g_simple_async_result_get_op_res_gssize (simple);
+}
+
+static void
+cd_device_get_profile_relation_cb (GObject *source_object,
+				   GAsyncResult *res,
+				   gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	gchar *relation_string = NULL;
+	CdDeviceRelation relation;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to GetProfileRelation: %s",
+						 error->message);
+		g_error_free (error);
 		goto out;
 	}
 
-	/* create thick CdDevice object */
-	g_variant_get (response, "(o)",
-		       &object_path);
-	profile_tmp = cd_profile_new ();
-	ret = cd_profile_set_object_path_sync (profile_tmp,
-					       object_path,
-					       cancellable,
-					       error);
-	if (!ret)
-		goto out;
-
 	/* success */
-	profile = g_object_ref (profile_tmp);
+	g_variant_get (result, "(s)",
+		       &relation_string);
+	relation = cd_device_relation_from_string (relation_string);
+
+	g_simple_async_result_set_op_res_gssize (res_source, relation);
+	g_variant_unref (result);
 out:
-	g_free (object_path);
-	if (profile_tmp != NULL)
-		g_object_unref (profile_tmp);
-	if (response != NULL)
-		g_variant_unref (response);
-	return profile;
+	g_free (relation_string);
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
 }
 
 /**
  * cd_device_get_profile_relation:
  * @device: a #CdDevice instance.
- * @profile: a #CdProfile instance.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
+ * @profile: a #CdProfile instance
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
  *
  * Gets the property relationship to the device.
  *
- * Return value: a #CdDeviceRelation
- *
- * Since: 0.1.4
+ * Since: 0.1.8
  **/
-CdDeviceRelation
+void
 cd_device_get_profile_relation (CdDevice *device,
 				CdProfile *profile,
 				GCancellable *cancellable,
-				GError **error)
+				GAsyncReadyCallback callback,
+				gpointer user_data)
 {
-	CdDeviceRelation relation = CD_DEVICE_RELATION_UNKNOWN;
-	gchar *relation_string = NULL;
-	GError *error_local = NULL;
-	GVariant *response = NULL;
+	GSimpleAsyncResult *res;
 
-	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_RELATION_UNKNOWN);
-	g_return_val_if_fail (CD_IS_PROFILE (profile), CD_DEVICE_RELATION_UNKNOWN);
-	g_return_val_if_fail (device->priv->proxy != NULL, CD_DEVICE_RELATION_UNKNOWN);
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (device->priv->proxy != NULL);
 
-	/* execute sync method */
-	response = g_dbus_proxy_call_sync (device->priv->proxy,
-					   "GetProfileRelation",
-					   g_variant_new ("(o)",
-							  cd_profile_get_object_path (profile)),
-					   G_DBUS_CALL_FLAGS_NONE,
-					   -1, NULL, &error_local);
-	if (response == NULL) {
-		g_set_error (error,
-			     CD_DEVICE_ERROR,
-			     CD_DEVICE_ERROR_FAILED,
-			     "Failed to get relationship: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-
-	/* get the relationship */
-	g_variant_get (response, "(s)",
-		       &relation_string);
-	relation = cd_device_relation_from_string (relation_string);
-out:
-	g_free (relation_string);
-	if (response != NULL)
-		g_variant_unref (response);
-	return relation;
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_get_profile_relation);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "GetProfileRelation",
+			   g_variant_new ("(o)",
+					  cd_profile_get_object_path (profile)),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_get_profile_relation_cb,
+			   res);
 }
+
+/**********************************************************************/
 
 /**
  * cd_device_get_object_path:
@@ -1210,30 +1645,17 @@ cd_device_equal (CdDevice *device1, CdDevice *device2)
 }
 
 /*
- * cd_device_set_property:
+ * _cd_device_set_property:
  */
 static void
-cd_device_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+_cd_device_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	CdDevice *device = CD_DEVICE (object);
 
 	switch (prop_id) {
-	case PROP_ID:
-		g_free (device->priv->id);
-		device->priv->id = g_strdup (g_value_get_string (value));
-		break;
-	case PROP_MODEL:
-		g_free (device->priv->model);
-		device->priv->model = g_strdup (g_value_get_string (value));
-		break;
-	case PROP_CREATED:
-		device->priv->created = g_value_get_uint64 (value);
-		break;
-	case PROP_MODIFIED:
-		device->priv->modified = g_value_get_uint64 (value);
-		break;
-	case PROP_KIND:
-		device->priv->kind = g_value_get_uint (value);
+	case PROP_OBJECT_PATH:
+		g_free (device->priv->object_path);
+		device->priv->object_path = g_value_dup_string (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1250,6 +1672,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	CdDevice *device = CD_DEVICE (object);
 
 	switch (prop_id) {
+	case PROP_OBJECT_PATH:
+		g_value_set_string (value, device->priv->object_path);
+		break;
 	case PROP_CREATED:
 		g_value_set_uint64 (value, device->priv->created);
 		break;
@@ -1291,7 +1716,7 @@ cd_device_class_init (CdDeviceClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_device_finalize;
-	object_class->set_property = cd_device_set_property;
+	object_class->set_property = _cd_device_set_property;
 	object_class->get_property = cd_device_get_property;
 
 	/**
@@ -1310,6 +1735,19 @@ cd_device_class_init (CdDeviceClass *klass)
 			      G_TYPE_NONE, 0);
 
 	/**
+	 * CdDevice:object-path:
+	 *
+	 * The object path of the remote object
+	 *
+	 * Since: 0.1.8
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_OBJECT_PATH,
+					 g_param_spec_string ("object-path",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+	/**
 	 * CdDevice:created:
 	 *
 	 * The time the device was created.
@@ -1321,7 +1759,7 @@ cd_device_class_init (CdDeviceClass *klass)
 					 g_param_spec_uint64 ("created",
 							      NULL, NULL,
 							      0, G_MAXUINT64, 0,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 	/**
 	 * CdDevice:modified:
 	 *
@@ -1334,7 +1772,7 @@ cd_device_class_init (CdDeviceClass *klass)
 					 g_param_spec_uint64 ("modified",
 							      NULL, NULL,
 							      0, G_MAXUINT64, 0,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 	/**
 	 * CdDevice:id:
 	 *
@@ -1347,7 +1785,7 @@ cd_device_class_init (CdDeviceClass *klass)
 					 g_param_spec_string ("id",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 	/**
 	 * CdDevice:model:
 	 *
@@ -1360,7 +1798,7 @@ cd_device_class_init (CdDeviceClass *klass)
 					 g_param_spec_string ("model",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 	/**
 	 * CdDevice:serial:
 	 *
@@ -1373,7 +1811,7 @@ cd_device_class_init (CdDeviceClass *klass)
 					 g_param_spec_string ("serial",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 	/**
 	 * CdDevice:vendor:
 	 *
@@ -1386,7 +1824,7 @@ cd_device_class_init (CdDeviceClass *klass)
 					 g_param_spec_string ("vendor",
 							      NULL, NULL,
 							      NULL,
-							      G_PARAM_READWRITE));
+							      G_PARAM_READABLE));
 	/**
 	 * CdDevice:kind:
 	 *
@@ -1401,7 +1839,7 @@ cd_device_class_init (CdDeviceClass *klass)
 							    CD_DEVICE_KIND_UNKNOWN,
 							    CD_DEVICE_KIND_LAST,
 							    CD_DEVICE_KIND_UNKNOWN,
-							    G_PARAM_READWRITE));
+							    G_PARAM_READABLE));
 	/**
 	 * CdDevice:colorspace:
 	 *
@@ -1416,7 +1854,7 @@ cd_device_class_init (CdDeviceClass *klass)
 							    0,
 							    G_MAXUINT,
 							    0,
-							    G_PARAM_READWRITE));
+							    G_PARAM_READABLE));
 
 	/**
 	 * CdDevice:mode:
@@ -1432,7 +1870,7 @@ cd_device_class_init (CdDeviceClass *klass)
 							    0,
 							    G_MAXUINT,
 							    0,
-							    G_PARAM_READWRITE));
+							    G_PARAM_READABLE));
 
 	g_type_class_add_private (klass, sizeof (CdDevicePrivate));
 }
@@ -1490,3 +1928,22 @@ cd_device_new (void)
 	return CD_DEVICE (device);
 }
 
+/**
+ * cd_device_new_with_object_path:
+ * @object_path: The colord object path.
+ *
+ * Creates a new #CdDevice object with a known object path.
+ *
+ * Return value: a new device object.
+ *
+ * Since: 0.1.8
+ **/
+CdDevice *
+cd_device_new_with_object_path (const gchar *object_path)
+{
+	CdDevice *device;
+	device = g_object_new (CD_TYPE_DEVICE,
+			       "object-path", object_path,
+			       NULL);
+	return CD_DEVICE (device);
+}
