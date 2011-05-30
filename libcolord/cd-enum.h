@@ -89,14 +89,6 @@ typedef enum {
 	CD_RENDERING_INTENT_LAST
 } CdRenderingIntent;
 
-/* I can't spell:
- * These compatibility defines will be removed after 3 releases or
- * six months, whichever comes faster. [2011-03-28] */
-#define CD_RENDERING_INTENT_RELATIVE_COLORMETRIC	\
-	CD_RENDERING_INTENT_RELATIVE_COLORIMETRIC
-#define CD_RENDERING_INTENT_ABSOLUTE_COLORMETRIC	\
-	CD_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC
-
 /**
  * CdColorspace:
  *
