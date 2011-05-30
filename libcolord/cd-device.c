@@ -332,14 +332,11 @@ cd_device_get_default_profile (CdDevice *device)
 /**
  * cd_device_set_profiles_array_from_variant:
  **/
-static gboolean
+static void
 cd_device_set_profiles_array_from_variant (CdDevice *device,
-					   GVariant *profiles,
-					   GCancellable *cancellable,
-					   GError **error)
+					   GVariant *profiles)
 {
 	CdProfile *profile_tmp;
-	gboolean ret = TRUE;
 	gchar *object_path_tmp;
 	gsize len;
 	guint i;
@@ -352,13 +349,12 @@ cd_device_set_profiles_array_from_variant (CdDevice *device,
 	for (i=0; i<len; i++) {
 		g_variant_get_child (profiles, i,
 				     "o", &object_path_tmp);
-		profile_tmp = cd_profile_new ();
-		cd_profile_set_object_path (profile_tmp, object_path_tmp);
+		profile_tmp = cd_profile_new_with_object_path (object_path_tmp);
 		g_ptr_array_add (device->priv->profiles, profile_tmp);
 		g_free (object_path_tmp);
 	}
 out:
-	return ret;
+	return;
 }
 
 /**
@@ -464,9 +460,7 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 				cd_device_mode_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILES) == 0) {
 			cd_device_set_profiles_array_from_variant (device,
-								   property_value,
-								   NULL,
-								   NULL);
+								   property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_CREATED) == 0) {
 			device->priv->created = g_variant_get_uint64 (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODIFIED) == 0) {
@@ -539,7 +533,6 @@ cd_device_connect_cb (GObject *source_object,
 		      GAsyncResult *res,
 		      gpointer user_data)
 {
-	gboolean ret;
 	GError *error = NULL;
 	GVariant *created = NULL;
 	GVariant *modified = NULL;
@@ -629,20 +622,7 @@ cd_device_connect_cb (GObject *source_object,
 	/* get profiles */
 	profiles = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						     CD_DEVICE_PROPERTY_PROFILES);
-	ret = cd_device_set_profiles_array_from_variant (device,
-							 profiles,
-							 NULL,
-							 &error);
-	if (!ret) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to set profiles for device %s: %s",
-						 cd_device_get_object_path (device),
-						 error->message);
-		g_error_free (error);
-		goto out;
-	}
+	cd_device_set_profiles_array_from_variant (device, profiles);
 
 	/* get metadata */
 	metadata = g_dbus_proxy_get_cached_property (device->priv->proxy,

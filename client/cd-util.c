@@ -482,6 +482,9 @@ cd_util_get_devices (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 	for (i=0; i < array->len; i++) {
 		device = g_ptr_array_index (array, i);
+		ret = cd_device_connect_sync (device, NULL, error);
+		if (!ret)
+			goto out;
 		cd_util_show_device (device);
 	}
 out:
@@ -522,6 +525,9 @@ cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error
 	}
 	for (i=0; i < array->len; i++) {
 		device = g_ptr_array_index (array, i);
+		ret = cd_device_connect_sync (device, NULL, error);
+		if (!ret)
+			goto out;
 		cd_util_show_device (device);
 	}
 out:
@@ -549,6 +555,9 @@ cd_util_get_profiles (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 	for (i=0; i < array->len; i++) {
 		profile = g_ptr_array_index (array, i);
+		ret = cd_profile_connect_sync (profile, NULL, error);
+		if (!ret)
+			goto out;
 		cd_util_show_profile (profile);
 	}
 out:
@@ -583,6 +592,9 @@ cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 	for (i=0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
+		ret = cd_sensor_connect_sync (sensor, NULL, error);
+		if (!ret)
+			goto out;
 		cd_util_show_sensor (sensor);
 	}
 out:
@@ -618,6 +630,10 @@ cd_util_sensor_lock (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 	for (i=0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
+
+		ret = cd_sensor_connect_sync (sensor, NULL, error);
+		if (!ret)
+			goto out;
 
 		/* lock */
 		ret = cd_sensor_lock_sync (sensor,
@@ -678,6 +694,10 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 	cap = cd_sensor_cap_from_string (values[0]);
 	for (i=0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
+
+		ret = cd_sensor_connect_sync (sensor, NULL, error);
+		if (!ret)
+			goto out;
 
 		/* lock */
 		ret = cd_sensor_lock_sync (sensor,
