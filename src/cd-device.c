@@ -1246,12 +1246,8 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		/* are we profiling? */
 		ret = cd_inhibit_valid (priv->inhibit);
 		if (!ret) {
-			const char *list = NULL;
 			g_debug ("CdDevice: returning no profiles for profiling");
-			/* work around a GVariant bug:
-			 * Ideally we want to do g_variant_new("(ao)", NULL);
-			 * but this explodes in an ugly ball of fire */
-			retval = g_variant_new ("(^as)", &list);
+			retval = g_variant_new ("ao", NULL);
 		} else {
 			retval = cd_device_get_profiles_as_variant (device);
 		}
