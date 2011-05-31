@@ -189,8 +189,8 @@ cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 					     G_BUS_NAME_WATCHER_FLAGS_NONE,
 					     NULL,
 					     cd_inhibit_name_vanished_cb,
-					     inhibit,
-					     NULL);
+					     g_object_ref (inhibit),
+					     g_object_unref);
 	g_ptr_array_add (inhibit->priv->array, item);
 
 	/* emit signal */
