@@ -456,8 +456,10 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 							property_value,
 							&error);
 		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "%s", error->message);
 			g_error_free (error);
 			goto out;
 		}
@@ -480,8 +482,10 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* copy systemwide */
 		ret = cd_profile_install_system_wide (profile, &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "%s", error->message);
 			g_error_free (error);
 			goto out;
 		}

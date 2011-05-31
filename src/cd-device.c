@@ -854,8 +854,10 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 					     profile_object_path,
 					     &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "%s", error->message);
 			g_error_free (error);
 			goto out;
 		}
@@ -895,8 +897,10 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 						profile_object_path,
 						&error);
 		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "%s", error->message);
 			g_error_free (error);
 			goto out;
 		}
@@ -1093,8 +1097,10 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 						       (priv->object_scope == CD_OBJECT_SCOPE_DISK),
 						       &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "%s", error->message);
 			g_error_free (error);
 			goto out;
 		}
@@ -1119,8 +1125,10 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 				      sender,
 				      &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "%s", error->message);
 			g_error_free (error);
 			goto out;
 		}
@@ -1138,8 +1146,10 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 					 sender,
 					 &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_gerror (invocation,
-								error);
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "%s", error->message);
 			g_error_free (error);
 			goto out;
 		}
