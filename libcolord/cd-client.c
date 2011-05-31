@@ -56,6 +56,8 @@ static void	cd_client_finalize	(GObject	*object);
 
 #define CD_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_CLIENT, CdClientPrivate))
 
+#define CD_CLIENT_MESSAGE_TIMEOUT	15000 /* ms */
+
 /**
  * CdClientPrivate:
  *
@@ -671,7 +673,7 @@ cd_client_create_profile (CdClient *client,
 	g_dbus_connection_send_message_with_reply (connection,
 						   request,
 						   G_DBUS_SEND_MESSAGE_FLAGS_NONE,
-						   5000,
+						   CD_CLIENT_MESSAGE_TIMEOUT,
 						   NULL,
 						   cancellable,
 						   cd_client_create_profile_cb,
