@@ -133,7 +133,8 @@ cd_sensor_set_object_path (CdSensor *sensor, const gchar *object_path)
 CdSensorKind
 cd_sensor_get_kind (CdSensor *sensor)
 {
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), 0);
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), CD_SENSOR_KIND_UNKNOWN);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, CD_SENSOR_KIND_UNKNOWN);
 	return sensor->priv->kind;
 }
 
