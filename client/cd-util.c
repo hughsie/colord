@@ -773,6 +773,9 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 	g_print ("Created device:\n");
+	ret = cd_device_connect_sync (device, NULL, error);
+	if (!ret)
+		goto out;
 	cd_util_show_device (device);
 out:
 	if (device != NULL)
@@ -806,6 +809,9 @@ cd_util_find_device (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = FALSE;
 		goto out;
 	}
+	ret = cd_device_connect_sync (device, NULL, error);
+	if (!ret)
+		goto out;
 	cd_util_show_device (device);
 out:
 	if (device != NULL)
@@ -839,6 +845,9 @@ cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = FALSE;
 		goto out;
 	}
+	ret = cd_profile_connect_sync (profile, NULL, error);
+	if (!ret)
+		goto out;
 	cd_util_show_profile (profile);
 out:
 	if (profile != NULL)
@@ -874,6 +883,9 @@ cd_util_get_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = FALSE;
 		goto out;
 	}
+	ret = cd_profile_connect_sync (profile, NULL, error);
+	if (!ret)
+		goto out;
 	cd_util_show_profile (profile);
 out:
 	if (profile != NULL)
@@ -909,6 +921,9 @@ cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = FALSE;
 		goto out;
 	}
+	ret = cd_profile_connect_sync (profile, NULL, error);
+	if (!ret)
+		goto out;
 	g_print ("Created profile:\n");
 	cd_util_show_profile (profile);
 out:
