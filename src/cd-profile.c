@@ -666,42 +666,6 @@ out:
 }
 
 /**
- * cd_profile_get_best_md5:
- *
- * The profile checksum can be found in the following ways:
- *
- *  1. The FILE_checksum metadata
- *  2. The precooked embedded profile-id
- **/
-static gchar *
-cd_profile_get_best_md5 (CdProfile *profile,
-			 cmsHPROFILE lcms_profile)
-{
-	const gchar *tmp;
-	gchar *checksum = NULL;
-
-	/* use a pre-cooked MD5 if available */
-	checksum = cd_profile_get_precooked_md5 (lcms_profile);
-	if (checksum != NULL)
-		goto out;
-
-	/* try the metadata if available */
-	tmp = g_hash_table_lookup (profile->priv->metadata,
-				   CD_PROFILE_METADATA_FILE_CHECKSUM);
-	if (tmp != NULL) {
-
-		/* invalid metadata */
-		if (strlen (tmp) != 32)
-			goto out;
-
-		checksum = g_strdup (tmp);
-		goto out;
-	}
-out:
-	return checksum;
-}
-
-/**
  * cd_profile_set_metadata_from_profile:
  **/
 static void
@@ -864,8 +828,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 	priv->has_vcgt = cmsIsTag (lcms_profile, cmsSigVcgtTag);
 
 	/* get the checksum for the profile if we can */
-	priv->checksum = cd_profile_get_best_md5 (profile,
-						  lcms_profile);
+	priv->checksum = cd_profile_get_precooked_md5 (lcms_profile);
 
 	/* success */
 	ret = TRUE;
@@ -944,6 +907,16 @@ cd_profile_set_filename (CdProfile *profile,
 			cd_profile_dbus_emit_property_changed (profile,
 							       CD_PROFILE_PROPERTY_METADATA,
 							       cd_profile_get_metadata_as_variant (profile));
+		}
+	}
+
+	/* try the metadata if available */
+	if (priv->checksum == NULL) {
+		tmp = g_hash_table_lookup (profile->priv->metadata,
+					   CD_PROFILE_METADATA_FILE_CHECKSUM);
+		if (tmp != NULL &&
+		    strlen (tmp) == 32) {
+			priv->checksum = g_strdup (tmp);
 		}
 	}
 
