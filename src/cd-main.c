@@ -526,6 +526,13 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 		goto out;
 	}
 
+	/* nothing set */
+	if (array->len == 0) {
+		g_debug ("no matched device data for profile %s",
+			 cd_profile_get_id (profile));
+		goto out;
+	}
+
 	/* try to add them */
 	for (i=0; i<array->len; i++) {
 		object_path_tmp = g_ptr_array_index (array, i);

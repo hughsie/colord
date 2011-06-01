@@ -93,18 +93,17 @@ cd_mapping_db_load (CdMappingDb *mdb,
 			    "profile TEXT);";
 		sqlite3_exec (mdb->priv->db, statement, NULL, NULL, NULL);
 	}
-#if 0
-	/* check mappings has enough data (since 0.1.99999) */
+
+	/* check mappings has timestamp (since 0.1.8) */
 	rc = sqlite3_exec (mdb->priv->db,
-			   "SELECT default FROM mappings LIMIT 1",
+			   "SELECT timestamp FROM mappings LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_debug ("CdMappingDb: altering table to repair: %s", error_msg);
 		sqlite3_free (error_msg);
-		statement = "ALTER TABLE mappings ADD COLUMN default INTEGER DEFAULT 0;";
+		statement = "ALTER TABLE mappings ADD COLUMN timestamp INTEGER DEFAULT 0;";
 		sqlite3_exec (mdb->priv->db, statement, NULL, NULL, NULL);
 	}
-#endif
 out:
 	g_free (path);
 	return ret;
@@ -157,6 +156,7 @@ cd_mapping_db_add (CdMappingDb *mdb,
 	gchar *profile_id;
 	gchar *statement;
 	gint rc;
+	gint64 timestamp;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
@@ -166,12 +166,61 @@ cd_mapping_db_add (CdMappingDb *mdb,
 	g_debug ("CdMappingDb: add %s<->%s with id %s-%s",
 		 device, profile,
 		 device_id, profile_id);
-	statement = g_strdup_printf ("INSERT INTO mappings (id, device, profile) "
-				     "VALUES ('%s-%s', '%s', '%s')",
+	timestamp = g_get_real_time ();
+	statement = g_strdup_printf ("INSERT INTO mappings (id, device, profile, timestamp) "
+				     "VALUES ('%s-%s', '%s', '%s', %"G_GINT64_FORMAT")",
 				     device_id, profile_id,
-				     device, profile);
+				     device, profile, timestamp);
 
 	/* insert the entry */
+	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
+	if (rc != SQLITE_OK) {
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "SQL error: %s",
+			     error_msg);
+		sqlite3_free (error_msg);
+		ret = FALSE;
+		goto out;
+	}
+out:
+	g_free (device_id);
+	g_free (profile_id);
+	g_free (statement);
+	return ret;
+}
+/**
+ * cd_mapping_db_update_timestamp:
+ **/
+gboolean
+cd_mapping_db_update_timestamp (CdMappingDb *mdb,
+				const gchar *device,
+				const gchar *profile,
+				GError  **error)
+{
+	gboolean ret = TRUE;
+	gchar *device_id;
+	gchar *error_msg = NULL;
+	gchar *profile_id;
+	gchar *statement;
+	gint rc;
+	gint64 timestamp;
+
+	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
+	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+
+	device_id = g_path_get_basename (device);
+	profile_id = g_path_get_basename (profile);
+	g_debug ("CdMappingDb: update timestamp %s<->%s with id %s-%s",
+		 device, profile,
+		 device_id, profile_id);
+	timestamp = g_get_real_time ();
+	statement = g_strdup_printf ("UPDATE mappings SET timestamp = %"G_GINT64_FORMAT
+				     " WHERE id = '%s-%s';",
+				     timestamp, device_id, profile_id);
+
+	/* update the entry */
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
@@ -248,6 +297,9 @@ cd_mapping_db_sqlite_cb (void *data,
 
 /**
  * cd_mapping_db_get_profiles:
+ *
+ * The returned values are returned with the oldest assigned profile in
+ * the first position and the newest assigned profile in last posision.
  **/
 GPtrArray *
 cd_mapping_db_get_profiles (CdMappingDb *mdb,
@@ -265,7 +317,7 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 
 	g_debug ("CdMappingDb: get profiles for %s", device);
 	statement = g_strdup_printf ("SELECT profile FROM mappings WHERE "
-				     "device = '%s';", device);
+				     "device = '%s' ORDER BY timestamp ASC;", device);
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
@@ -294,6 +346,9 @@ out:
 
 /**
  * cd_mapping_db_get_devices:
+ *
+ * The returned values are returned with the oldest assigned profile in
+ * the first position and the newest assigned profile in last posision.
  **/
 GPtrArray *
 cd_mapping_db_get_devices (CdMappingDb *mdb,
@@ -311,7 +366,7 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 
 	g_debug ("CdMappingDb: get devices for %s", profile);
 	statement = g_strdup_printf ("SELECT device FROM mappings WHERE "
-				     "profile = '%s';", profile);
+				     "profile = '%s' ORDER BY timestamp ASC;", profile);
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);

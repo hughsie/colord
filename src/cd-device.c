@@ -533,6 +533,18 @@ _cd_device_relation_to_string (CdDeviceRelation device_relation)
 	return "unknown";
 }
 
+static void
+_g_ptr_array_insert (GPtrArray *array, guint idx, gpointer data)
+{
+	g_return_if_fail (idx <= array->len);
+
+	g_ptr_array_add (array, NULL);
+	g_memmove (&array->pdata[idx+1],
+		   &array->pdata[idx+0],
+		   (array->len - idx - 1) * sizeof (gpointer));
+	array->pdata[idx] = data;
+}
+
 /**
  * cd_device_add_profile:
  **/
@@ -581,11 +593,11 @@ cd_device_add_profile (CdDevice *device,
 		 cd_profile_get_id (profile),
 		 _cd_device_relation_to_string (relation),
 		 device->priv->id);
-	g_ptr_array_add (priv->profiles, g_object_ref (profile));
+	_g_ptr_array_insert (priv->profiles, 0, g_object_ref (profile));
 	if (relation == CD_DEVICE_RELATION_SOFT)
-		g_ptr_array_add (priv->profiles_soft, g_object_ref (profile));
+		_g_ptr_array_insert (priv->profiles_soft, 0, g_object_ref (profile));
 	if (relation == CD_DEVICE_RELATION_HARD)
-		g_ptr_array_add (priv->profiles_hard, g_object_ref (profile));
+		_g_ptr_array_insert (priv->profiles_hard, 0, g_object_ref (profile));
 
 	/* emit */
 	cd_device_dbus_emit_property_changed (device,
@@ -790,6 +802,76 @@ out:
 }
 
 /**
+ * cd_device_make_default:
+ **/
+gboolean
+cd_device_make_default (CdDevice *device,
+		        const gchar *profile_object_path,
+		        GError **error)
+{
+	CdProfile *profile;
+	CdProfile *profile_tmp;
+	guint i;
+	gboolean ret = FALSE;
+	CdDevicePrivate *priv = device->priv;
+
+	/* find profile */
+	profile = cd_device_find_profile_by_object_path (priv->profiles,
+							 profile_object_path);
+	if (profile == NULL) {
+		g_set_error (error, 1, 0,
+			     "profile object path '%s' does not exist for this device",
+			     profile_object_path);
+		goto out;
+	}
+
+	/* make the profile first in the array */
+	for (i=1; i<priv->profiles->len; i++) {
+		profile_tmp = g_ptr_array_index (priv->profiles, i);
+		if (profile_tmp == profile) {
+			/* swap [0] and [i] */
+			g_debug ("CdDevice: making %s the default on %s",
+				 profile_object_path,
+				 priv->object_path);
+			profile_tmp = priv->profiles->pdata[0];
+			priv->profiles->pdata[0] = profile;
+			priv->profiles->pdata[i] = profile_tmp;
+			break;
+		}
+	}
+
+	/* ensure profile is in the 'hard' relation array */
+	ret = g_ptr_array_remove (priv->profiles_soft, profile);
+	if (ret)
+		g_ptr_array_add (priv->profiles_hard, g_object_ref (profile));
+
+	/* make the profile first in the hard array */
+	for (i=1; i<priv->profiles_hard->len; i++) {
+		profile_tmp = g_ptr_array_index (priv->profiles_hard, i);
+		if (profile_tmp == profile) {
+			/* swap [0] and [i] */
+			profile_tmp = priv->profiles_hard->pdata[0];
+			priv->profiles_hard->pdata[0] = profile;
+			priv->profiles_hard->pdata[i] = profile_tmp;
+			break;
+		}
+	}
+
+	/* emit */
+	cd_device_dbus_emit_property_changed (device,
+					      "Profiles",
+					      cd_device_get_profiles_as_variant (device));
+
+	/* emit global signal */
+	cd_device_dbus_emit_device_changed (device);
+
+	/* success */
+	ret = TRUE;
+out:
+	return ret;
+}
+
+/**
  * cd_device_dbus_method_call:
  **/
 static void
@@ -801,7 +883,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	CdDevice *device = CD_DEVICE (user_data);
 	CdDevicePrivate *priv = device->priv;
 	CdProfile *profile = NULL;
-	CdProfile *profile_tmp;
 	gboolean ret;
 	gchar **devices = NULL;
 	gchar *profile_object_path = NULL;
@@ -1017,59 +1098,31 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			       &profile_object_path);
 		g_debug ("CdDevice %s:MakeProfileDefault(%s)",
 			 sender, profile_object_path);
-		profile = cd_device_find_profile_by_object_path (priv->profiles,
-								 profile_object_path);
-		if (profile == NULL) {
+
+		/* make profile default */
+		ret = cd_device_make_default (device,
+					      profile_object_path,
+					      &error);
+		if (!ret) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
-							       "profile object path '%s' does not exist for this device",
-							       profile_object_path);
+							       "failed to make profile default",
+							       error->message);
+			g_error_free (error);
 			goto out;
 		}
-
-		/* make the profile first in the array */
-		for (i=1; i<priv->profiles->len; i++) {
-			profile_tmp = g_ptr_array_index (priv->profiles, i);
-			if (profile_tmp == profile) {
-				/* swap [0] and [i] */
-				g_debug ("CdDevice: making %s the default on %s",
-					 profile_object_path,
-					 priv->object_path);
-				profile_tmp = priv->profiles->pdata[0];
-				priv->profiles->pdata[0] = profile;
-				priv->profiles->pdata[i] = profile_tmp;
-				break;
-			}
-		}
-
-		/* ensure profile is in the 'hard' relation array */
-		ret = g_ptr_array_remove (priv->profiles_soft, profile);
-		if (ret)
-			g_ptr_array_add (priv->profiles_hard, g_object_ref (profile));
-
-		/* make the profile first in the hard array */
-		for (i=1; i<priv->profiles_hard->len; i++) {
-			profile_tmp = g_ptr_array_index (priv->profiles_hard, i);
-			if (profile_tmp == profile) {
-				/* swap [0] and [i] */
-				profile_tmp = priv->profiles_hard->pdata[0];
-				priv->profiles_hard->pdata[0] = profile;
-				priv->profiles_hard->pdata[i] = profile_tmp;
-				break;
-			}
-		}
-
-		/* emit */
-		cd_device_dbus_emit_property_changed (device,
-						      "Profiles",
-						      cd_device_get_profiles_as_variant (device));
 
 		/* reset modification time */
 		cd_device_reset_modified (device);
 
-		/* emit global signal */
-		cd_device_dbus_emit_device_changed (device);
+		/* save new timestamp in database */
+		ret = cd_mapping_db_update_timestamp (priv->mapping_db,
+						      priv->object_path,
+						      profile_object_path,
+						      &error);
+		if (!ret)
+			goto out;
 
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;

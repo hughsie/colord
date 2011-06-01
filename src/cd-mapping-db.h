@@ -54,6 +54,10 @@ gboolean	 cd_mapping_db_load		(CdMappingDb	*mdb,
 						 GError		**error);
 gboolean	 cd_mapping_db_empty		(CdMappingDb	*mdb,
 						 GError		**error);
+gboolean	 cd_mapping_db_update_timestamp	(CdMappingDb	*mdb,
+						 const gchar	*device,
+						 const gchar	*profile,
+						 GError		**error);
 gboolean	 cd_mapping_db_add		(CdMappingDb	*mdb,
 						 const gchar	*device,
 						 const gchar	*profile,

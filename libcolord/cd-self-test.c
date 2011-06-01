@@ -881,6 +881,185 @@ colord_client_func (void)
 }
 
 static void
+colord_device_mapping_func (void)
+{
+	CdClient *client;
+	gboolean ret;
+	GError *error = NULL;
+	CdDevice *device;
+	CdProfile *profile1;
+	CdProfile *profile2;
+	CdProfile *profile_tmp;
+	gint32 key;
+	gchar *profile_id1;
+	gchar *profile_id2;
+
+	key = g_random_int_range (0x00, 0xffff);
+	g_debug ("using random key %04x", key);
+	profile_id1 = g_strdup_printf ("profile-mapping-%04x_1", key);
+	profile_id2 = g_strdup_printf ("profile-mapping-%04x_2", key);
+
+	client = cd_client_new ();
+
+	/* connect once */
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create a device */
+	device = cd_client_create_device_sync (client,
+					       "device_mapping",
+					       CD_OBJECT_SCOPE_TEMP,
+					       NULL,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* create a profile */
+	profile1 = cd_client_create_profile_sync (client,
+						  profile_id1,
+						  CD_OBJECT_SCOPE_TEMP,
+						  NULL,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert (profile1 != NULL);
+
+	/* create another profile */
+	profile2 = cd_client_create_profile_sync (client,
+						  profile_id2,
+						  CD_OBJECT_SCOPE_TEMP,
+						  NULL,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert (profile2 != NULL);
+
+	/* connect to device */
+	ret = cd_device_connect_sync (device,
+				      NULL,
+				      &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* assign profile to device */
+	ret = cd_device_add_profile_sync (device,
+					  CD_DEVICE_RELATION_HARD,
+					  profile1,
+					  NULL,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* assign profile to device */
+	ret = cd_device_add_profile_sync (device,
+					  CD_DEVICE_RELATION_HARD,
+					  profile2,
+					  NULL,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* ensure the second profile is the default profile */
+	profile_tmp = cd_device_get_default_profile (device);
+	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
+			 ==,
+			 cd_profile_get_object_path (profile2));
+	g_object_unref (profile_tmp);
+
+	/* remove both profiles */
+	ret = cd_client_delete_profile_sync (client,
+					     profile1,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (profile1);
+	ret = cd_client_delete_profile_sync (client,
+					     profile2,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (profile2);
+
+	/* add back the first profile */
+	profile1 = cd_client_create_profile_sync (client,
+						  profile_id1,
+						  CD_OBJECT_SCOPE_TEMP,
+						  NULL,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert (profile1 != NULL);
+
+	/* ensure the first profile is selected */
+	profile_tmp = cd_device_get_default_profile (device);
+	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
+			 ==,
+			 cd_profile_get_object_path (profile1));
+	g_object_unref (profile_tmp);
+
+	/* add back the second (and prefered) profile */
+	profile2 = cd_client_create_profile_sync (client,
+						  profile_id2,
+						  CD_OBJECT_SCOPE_TEMP,
+						  NULL,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert (profile2 != NULL);
+
+	/* ensure the second profile is selected */
+	profile_tmp = cd_device_get_default_profile (device);
+	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
+			 ==,
+			 cd_profile_get_object_path (profile2));
+	g_object_unref (profile_tmp);
+
+	/* delete the device */
+	ret = cd_client_delete_device_sync (client,
+					    device,
+					    NULL,
+					    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (device);
+
+	/* create a device */
+	device = cd_client_create_device_sync (client,
+					       "device_mapping",
+					       CD_OBJECT_SCOPE_TEMP,
+					       NULL,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect to device */
+	ret = cd_device_connect_sync (device,
+				      NULL,
+				      &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* ensure the second profile is the default profile */
+	profile_tmp = cd_device_get_default_profile (device);
+	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
+			 ==,
+			 cd_profile_get_object_path (profile2));
+	g_object_unref (profile_tmp);
+
+	g_free (profile_id1);
+	g_free (profile_id2);
+	g_object_unref (profile1);
+	g_object_unref (profile2);
+	g_object_unref (device);
+	g_object_unref (client);
+}
+
+static void
 colord_client_fd_pass_func (void)
 {
 	CdClient *client;
@@ -1164,6 +1343,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/client", colord_client_func);
+	g_test_add_func ("/colord/device-mapping", colord_device_mapping_func);
 	g_test_add_func ("/colord/client-random", colord_client_random_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/device-modified", colord_device_modified_func);

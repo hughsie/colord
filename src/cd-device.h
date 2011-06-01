@@ -73,6 +73,9 @@ gboolean	 cd_device_add_profile			(CdDevice	*device,
 gboolean	 cd_device_remove_profile		(CdDevice	*device,
 							 const gchar	*profile_object_path,
 							 GError		**error);
+gboolean	 cd_device_make_default			(CdDevice	*device,
+							 const gchar	*profile_object_path,
+							 GError		**error);
 const gchar	*cd_device_get_object_path		(CdDevice	*device);
 gboolean	 cd_device_register_object		(CdDevice	*device,
 							 GDBusConnection *connection,
