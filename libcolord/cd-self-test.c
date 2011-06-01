@@ -733,6 +733,11 @@ colord_sensor_func (void)
 	g_assert_cmpint (array->len, ==, 1);
 
 	sensor = g_ptr_array_index (array, 0);
+
+	ret = cd_sensor_connect_sync (sensor, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	g_assert_cmpint (cd_sensor_get_kind (sensor), ==, CD_SENSOR_KIND_DUMMY);
 	g_assert_cmpint (cd_sensor_get_state (sensor), ==, CD_SENSOR_STATE_UNKNOWN);
 	g_assert (!cd_sensor_get_locked (sensor));
