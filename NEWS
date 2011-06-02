@@ -1,3 +1,39 @@
+Version 0.1.8
+~~~~~~~~~~~~~
+Released: 2011-06-02
+
+Translations:
+ - Add Japanese translation (Ryo Fujita)
+
+New Features:
+ - Add a 'Created' property to the Profile interface (Richard Hughes)
+ - Add an basic ColorMunki native sensor driver (Richard Hughes)
+ - Add an explicit 'webcam' device kind (Richard Hughes)
+ - Add a timestamp when making profiles default (Richard Hughes)
+ - Add support for reading and writing ICC profile metadata (Richard Hughes)
+ - Allow the client to pass file descriptors out of band to CreateProfile (Richard Hughes)
+ - Manually remove the date from profiles to make them look nicer in the GUI (Richard Hughes)
+ - Prettify the device vendor and model names (Richard Hughes)
+ - Split out the sensors into runtime-loadable shared objects (Richard Hughes)
+ - libcolord: Add a cd_device_kind_to_profile_kind() utility function (Richard Hughes)
+ - libcolord: Add preprocessor defines for the device and profile property and metadata names (Richard Hughes)
+ - libcolord: Add some simple helpers to check objects for equality (Richard Hughes)
+ - libcolord: Add the helper function cd_profile_get_age() (Richard Hughes)
+ - libcolord: Provide some GIO async variants for the methods in CdClient (Richard Hughes)
+
+Bugfixes:
+ - Allow setting the 'Colorspace' property on profile objects (Richard Hughes)
+ - Bump glib requirement to 2.28 in configure.ac (Adrien Bustany)
+ - Do not return a 4-double triple for Sensor.GetSample() (Richard Hughes)
+ - Do not try to register a second identical instance of a device on the bus (Richard Hughes)
+ - Ensure empty strings are specially parsed as NULL (Richard Hughes)
+ - Ensure GPhoto2 devices get added to the device list (Richard Hughes)
+ - Fix the gtk-doc build (Richard Hughes)
+ - If the user tries to register a second identical profile don't return an error (Richard Hughes)
+ - Simplify vendor cleanup code (Bastien Nocera)
+ - Use the FILE_checksum metadata for profiles created without internal checksums (Richard Hughes)
+ - When creating a device with an existing virtual device promote it to a physical device (Richard Hughes)
+
 Version 0.1.7
 ~~~~~~~~~~~~~
 Released: 2011-05-06
