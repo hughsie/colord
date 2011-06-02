@@ -819,15 +819,15 @@ cd_sensor_get_sample_finish (CdSensor *sensor,
 {
 	GSimpleAsyncResult *simple;
 
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	simple = G_SIMPLE_ASYNC_RESULT (res);
 	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
+		return NULL;
 
-	return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
+	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
 }
 
 static void
@@ -865,7 +865,7 @@ cd_sensor_get_sample_cb (GObject *source_object,
 
 	g_simple_async_result_set_op_res_gpointer (res_source,
 						   xyz,
-						   (GDestroyNotify) g_object_unref);
+						   (GDestroyNotify) cd_color_xyz_free);
 	g_variant_unref (result);
 out:
 	g_simple_async_result_complete_in_idle (res_source);
