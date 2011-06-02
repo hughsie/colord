@@ -16,6 +16,7 @@ INCLUDES =						\
 	-I$(top_srcdir)/libcolord			\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
+	-DLIBDIR=\"$(libdir)\"				\
 	-DDATADIR=\"$(datadir)\"			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\"		\
@@ -26,6 +27,8 @@ INCLUDES =						\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 COLORD_LIBS =						\
+	$(top_builddir)/libcolord/libcolord.la
+COLORD_PRIVATE_LIBS =					\
 	$(top_builddir)/libcolord/libcolordprivate.a
 
 libexec_PROGRAMS =					\
@@ -61,14 +64,6 @@ colord_SOURCES =					\
 	cd-sane-client.c				\
 	cd-sane-client.h				\
 	cd-sensor.c					\
-	cd-sensor-dummy.c				\
-	cd-sensor-dummy.h				\
-	cd-sensor-colormunki-private.c			\
-	cd-sensor-colormunki-private.h			\
-	cd-sensor-huey.c				\
-	cd-sensor-huey.h				\
-	cd-sensor-huey-private.c			\
-	cd-sensor-huey-private.h			\
 	cd-sensor.h					\
 	cd-udev-client.c				\
 	cd-udev-client.h				\
@@ -77,7 +72,7 @@ colord_SOURCES =					\
 	cd-main.c
 
 colord_LDADD =						\
-	$(COLORD_LIBS)					\
+	$(COLORD_PRIVATE_LIBS)				\
 	$(SQLITE_LIBS)					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
@@ -118,7 +113,7 @@ cd_self_test_SOURCES =					\
 	cd-self-test.c
 
 cd_self_test_LDADD =					\
-	$(COLORD_LIBS)					\
+	$(COLORD_PRIVATE_LIBS)				\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(SQLITE_LIBS)					\
@@ -140,10 +135,10 @@ cd_parse_beagle_SOURCES =				\
 	cd-sensor-colormunki-private.h			\
 	cd-sensor-huey-private.c			\
 	cd-sensor-huey-private.h			\
-	../libcolord/cd-enum.c				\
 	cd-parse-beagle.c
 
 cd_parse_beagle_LDADD =					\
+	$(COLORD_PRIVATE_LIBS)				\
 	$(GLIB_LIBS)
 
 cd_parse_beagle_CFLAGS =				\
@@ -155,7 +150,7 @@ cd_huey_parse_SOURCES =					\
 	cd-huey-parse.c
 
 cd_huey_parse_LDADD =					\
-	$(COLORD_LIBS)					\
+	$(COLORD_PRIVATE_LIBS)				\
 	$(GLIB_LIBS)
 
 cd_huey_parse_CFLAGS =					\
@@ -167,7 +162,7 @@ cd_huey_dump_values_SOURCES =				\
 	cd-huey-dump-values.c
 
 cd_huey_dump_values_LDADD =				\
-	$(COLORD_LIBS)					\
+	$(COLORD_PRIVATE_LIBS)				\
 	$(GLIB_LIBS)
 
 cd_huey_dump_values_CFLAGS =				\
@@ -185,11 +180,10 @@ cd_sensor_dump_SOURCES =				\
 	cd-sensor-huey.c				\
 	cd-usb.c					\
 	cd-usb.h					\
-	../libcolord/cd-enum.c				\
-	../libcolord/cd-color.c				\
 	cd-sensor-dump.c
 
 cd_sensor_dump_LDADD =					\
+	$(COLORD_PRIVATE_LIBS)				\
 	$(POLKIT_LIBS)					\
 	$(GLIB_LIBS)					\
 	$(LCMS_LIBS)					\
@@ -197,10 +191,26 @@ cd_sensor_dump_LDADD =					\
 	$(GUDEV_LIBS)					\
 	-lm
 
-cd_sensor_dump_CFLAGS =				\
+cd_sensor_dump_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 endif
+
+# sensor plugins
+plugindir = $(libdir)/colord-sensors
+plugin_LTLIBRARIES =					\
+	libcolord_sensor_dummy.la			\
+	libcolord_sensor_huey.la
+
+libcolord_sensor_dummy_la_SOURCES = cd-sensor-dummy.c
+libcolord_sensor_dummy_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
+libcolord_sensor_dummy_la_LDFLAGS = -module -avoid-version
+libcolord_sensor_dummy_la_CFLAGS = $(WARNINGFLAGS_C)
+
+libcolord_sensor_huey_la_SOURCES = cd-sensor-huey.c
+libcolord_sensor_huey_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
+libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
+libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
 
 install-data-hook:
 	if test -w $(DESTDIR)$(prefix)/; then \

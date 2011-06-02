@@ -43,11 +43,6 @@ typedef struct _CdSensorPrivate	CdSensorPrivate;
 typedef struct _CdSensor	CdSensor;
 typedef struct _CdSensorClass	CdSensorClass;
 
-typedef struct {
-	CdColorXYZ	 value;
-	gdouble		 luminance;
-} CdSensorSample;
-
 struct _CdSensor
 {
 	 GObject		 parent;
@@ -57,33 +52,6 @@ struct _CdSensor
 struct _CdSensorClass
 {
 	GObjectClass	 parent_class;
-	/* vtable */
-	void		 (*get_sample_async)	(CdSensor		*sensor,
-						 CdSensorCap		 cap,
-						 GCancellable		*cancellable,
-						 GAsyncReadyCallback	 callback,
-						 gpointer		 user_data);
-	gboolean	 (*get_sample_finish)	(CdSensor		*sensor,
-						 GAsyncResult		*res,
-						 CdSensorSample		*value,
-						 GError			**error);
-	gboolean	 (*dump)		(CdSensor		*sensor,
-						 GString		*data,
-						 GError			**error);
-	void		 (*lock_async)		(CdSensor		*sensor,
-						 GCancellable		*cancellable,
-						 GAsyncReadyCallback	 callback,
-						 gpointer		 user_data);
-	gboolean	 (*lock_finish)		(CdSensor		*sensor,
-						 GAsyncResult		*res,
-						 GError			**error);
-	void		 (*unlock_async)	(CdSensor		*sensor,
-						 GCancellable		*cancellable,
-						 GAsyncReadyCallback	 callback,
-						 gpointer		 user_data);
-	gboolean	 (*unlock_finish)	(CdSensor		*sensor,
-						 GAsyncResult		*res,
-						 GError			**error);
 };
 
 /* dummy */
@@ -121,8 +89,10 @@ void		 cd_sensor_button_pressed	(CdSensor		*sensor);
 gboolean	 cd_sensor_dump			(CdSensor		*sensor,
 						 GString		*data,
 						 GError			**error);
-
-/* designed to be used by derived class */
+void		 cd_sensor_set_kind		(CdSensor		*sensor,
+						 CdSensorKind		 kind);
+gboolean	 cd_sensor_load			(CdSensor		*sensor,
+						 GError			**error);
 void		 cd_sensor_set_state		(CdSensor		*sensor,
 						 CdSensorState		 state);
 void		 cd_sensor_set_mode		(CdSensor		*sensor,
@@ -130,8 +100,35 @@ void		 cd_sensor_set_mode		(CdSensor		*sensor,
 CdSensorCap	 cd_sensor_get_mode		(CdSensor		*sensor);
 void		 cd_sensor_set_serial		(CdSensor		*sensor,
 						 const gchar		*serial);
-void		 cd_sensor_copy_sample		(const CdSensorSample	*source,
-						 CdSensorSample		*result);
+
+/* GModule */
+void		 cd_sensor_get_sample_async	(CdSensor		*sensor,
+						 CdSensorCap		 cap,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+CdColorXYZ	*cd_sensor_get_sample_finish	(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
+gboolean	 cd_sensor_coldplug		(CdSensor		*sensor,
+						 GError			**error);
+gboolean	 cd_sensor_dump_device		(CdSensor		*sensor,
+						 GString		*data,
+						 GError			**error);
+void		 cd_sensor_lock_async		(CdSensor		*sensor,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+gboolean	 cd_sensor_lock_finish		(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
+void		 cd_sensor_unlock_async		(CdSensor		*sensor,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+gboolean	 cd_sensor_unlock_finish	(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
 
 G_END_DECLS
 

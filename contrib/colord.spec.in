@@ -81,6 +81,7 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/storage.db
 /lib/udev/rules.d/*.rules
 %dir %{_datadir}/color/icc/colord
 %{_datadir}/color/icc/colord/*.ic?
+%{_libdir}/colord-sensors
 %ghost %{_localstatedir}/lib/colord/*.db
 
 %files devel

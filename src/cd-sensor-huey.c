@@ -20,9 +20,6 @@
  */
 
 /**
- * SECTION:cd-sensor-huey
- * @short_description: Userspace driver for the HUEY colorimeter.
- *
  * This object contains all the low level logic for the HUEY hardware.
  */
 
@@ -34,19 +31,10 @@
 #include "cd-buffer.h"
 #include "cd-usb.h"
 #include "cd-math.h"
-#include "cd-sensor-huey.h"
+#include "cd-sensor.h"
 #include "cd-sensor-huey-private.h"
 
-static void     cd_sensor_huey_finalize	(GObject     *object);
-
-#define CD_SENSOR_HUEY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_SENSOR_HUEY, CdSensorHueyPrivate))
-
-/**
- * CdSensorHueyPrivate:
- *
- * Private #CdSensorHuey data
- **/
-struct _CdSensorHueyPrivate
+typedef struct
 {
 	gboolean			 done_startup;
 	CdUsb				*usb;
@@ -55,20 +43,18 @@ struct _CdSensorHueyPrivate
 	gfloat				 calibration_value;
 	CdVec3				 dark_offset;
 	gchar				 unlock_string[5];
-};
+} CdSensorHueyPrivate;
 
 /* async state for the sensor readings */
 typedef struct {
 	gboolean			 ret;
-	CdSensorSample			 sample;
+	CdColorXYZ			*sample;
 	gulong				 cancellable_id;
 	GCancellable			*cancellable;
 	GSimpleAsyncResult		*res;
 	CdSensor			*sensor;
 	CdSensorCap			 current_cap;
 } CdSensorAsyncState;
-
-G_DEFINE_TYPE (CdSensorHuey, cd_sensor_huey, CD_TYPE_SENSOR)
 
 #define HUEY_CONTROL_MESSAGE_TIMEOUT	50000 /* ms */
 #define HUEY_MAX_READ_RETRIES		5
@@ -89,9 +75,13 @@ G_DEFINE_TYPE (CdSensorHuey, cd_sensor_huey, CD_TYPE_SENSOR)
  * indicates we doing something wrong. */
 #define HUEY_XYZ_POST_MULTIPLY_SCALE_FACTOR	3.43
 
-/**
- * cd_sensor_huey_print_data:
- **/
+
+static CdSensorHueyPrivate *
+cd_sensor_huey_get_private (CdSensor *sensor)
+{
+	return g_object_get_data (G_OBJECT (sensor), "priv");
+}
+
 static void
 cd_sensor_huey_print_data (const gchar *title,
 			   const guchar *data,
@@ -111,11 +101,8 @@ cd_sensor_huey_print_data (const gchar *title,
 	g_print ("%c[%dm\n", 0x1B, 0);
 }
 
-/**
- * cd_sensor_huey_send_data:
- **/
 static gboolean
-cd_sensor_huey_send_data (CdSensorHuey *sensor_huey,
+cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 			  const guchar *request, gsize request_len,
 			  guchar *reply, gsize reply_len,
 			  gsize *reply_read, GError **error)
@@ -136,7 +123,13 @@ cd_sensor_huey_send_data (CdSensorHuey *sensor_huey,
 	cd_sensor_huey_print_data ("request", request, request_len);
 
 	/* do sync request */
-	handle = cd_usb_get_device_handle (sensor_huey->priv->usb);
+	handle = cd_usb_get_device_handle (priv->usb);
+	if (handle == NULL) {
+		g_set_error_literal (error, CD_SENSOR_ERROR,
+				     CD_SENSOR_ERROR_INTERNAL,
+				     "failed to get device handle");
+		goto out;
+	}
 	retval = libusb_control_transfer (handle,
 					  LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE,
 					  0x09, 0x0200, 0,
@@ -220,11 +213,8 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_read_register_byte:
- **/
 static gboolean
-cd_sensor_huey_read_register_byte (CdSensorHuey *sensor_huey,
+cd_sensor_huey_read_register_byte (CdSensorHueyPrivate *priv,
 				   guint8 addr,
 				   guint8 *value,
 				   GError **error)
@@ -243,11 +233,11 @@ cd_sensor_huey_read_register_byte (CdSensorHuey *sensor_huey,
 
 	/* hit hardware */
 	request[1] = addr;
-	ret = cd_sensor_huey_send_data (sensor_huey,
-					 request, 8,
-					 reply, 8,
-					 &reply_read,
-					 error);
+	ret = cd_sensor_huey_send_data (priv,
+					request, 8,
+					reply, 8,
+					&reply_read,
+					error);
 	if (!ret)
 		goto out;
 	*value = reply[3];
@@ -255,11 +245,8 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_read_register_string:
- **/
 static gboolean
-cd_sensor_huey_read_register_string (CdSensorHuey *huey,
+cd_sensor_huey_read_register_string (CdSensorHueyPrivate *huey,
 				     guint8 addr,
 				     gchar *value,
 				     gsize len,
@@ -271,9 +258,9 @@ cd_sensor_huey_read_register_string (CdSensorHuey *huey,
 	/* get each byte of the string */
 	for (i=0; i<len; i++) {
 		ret = cd_sensor_huey_read_register_byte (huey,
-							  addr+i,
-							  (guint8*) &value[i],
-							  error);
+							 addr+i,
+							 (guint8*) &value[i],
+							 error);
 		if (!ret)
 			goto out;
 	}
@@ -281,11 +268,8 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_read_register_word:
- **/
 static gboolean
-cd_sensor_huey_read_register_word (CdSensorHuey *huey,
+cd_sensor_huey_read_register_word (CdSensorHueyPrivate *huey,
 				   guint8 addr,
 				   guint32 *value,
 				   GError **error)
@@ -310,11 +294,8 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_read_register_float:
- **/
 static gboolean
-cd_sensor_huey_read_register_float (CdSensorHuey *huey,
+cd_sensor_huey_read_register_float (CdSensorHueyPrivate *huey,
 				    guint8 addr,
 				    gfloat *value,
 				    GError **error)
@@ -336,11 +317,8 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_read_register_vector:
- **/
 static gboolean
-cd_sensor_huey_read_register_vector (CdSensorHuey *huey,
+cd_sensor_huey_read_register_vector (CdSensorHueyPrivate *huey,
 				     guint8 addr,
 				     CdVec3 *value,
 				     GError **error)
@@ -369,11 +347,8 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_read_register_matrix:
- **/
 static gboolean
-cd_sensor_huey_read_register_matrix (CdSensorHuey *huey,
+cd_sensor_huey_read_register_matrix (CdSensorHueyPrivate *huey,
 				     guint8 addr,
 				     CdMat3x3 *value,
 				     GError **error)
@@ -402,22 +377,15 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_get_sample_state_finish:
- **/
 static void
 cd_sensor_huey_get_sample_state_finish (CdSensorAsyncState *state,
 					const GError *error)
 {
-	CdSensorSample *sample;
-
 	/* set result to temp memory location */
 	if (state->ret) {
-		sample = g_new0 (CdSensorSample, 1);
-		cd_sensor_copy_sample (&state->sample, sample);
 		g_simple_async_result_set_op_res_gpointer (state->res,
-							   sample,
-							   (GDestroyNotify) g_free);
+							   state->sample,
+							   cd_color_xyz_free);
 	} else {
 		g_simple_async_result_set_from_error (state->res, error);
 	}
@@ -427,14 +395,12 @@ cd_sensor_huey_get_sample_state_finish (CdSensorAsyncState *state,
 		g_cancellable_disconnect (state->cancellable, state->cancellable_id);
 		g_object_unref (state->cancellable);
 	}
+
 	g_object_unref (state->res);
 	g_object_unref (state->sensor);
 	g_slice_free (CdSensorAsyncState, state);
 }
 
-/**
- * cd_sensor_huey_cancellable_cancel_cb:
- **/
 static void
 cd_sensor_huey_cancellable_cancel_cb (GCancellable *cancellable,
 				      CdSensorAsyncState *state)
@@ -460,7 +426,7 @@ cd_sensor_huey_get_ambient_thread_cb (GSimpleAsyncResult *res,
 			     0x00,
 			     0x00,
 			     0x00 };
-	CdSensorHuey *sensor_huey = CD_SENSOR_HUEY (sensor);
+	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 
 	/* no hardware support */
@@ -478,7 +444,7 @@ cd_sensor_huey_get_ambient_thread_cb (GSimpleAsyncResult *res,
 
 	/* hit hardware */
 	request[2] = (state->current_cap == CD_SENSOR_CAP_LCD) ? 0x00 : 0x02;
-	ret = cd_sensor_huey_send_data (sensor_huey,
+	ret = cd_sensor_huey_send_data (priv,
 					request, 8,
 					reply, 8,
 					&reply_read,
@@ -491,22 +457,19 @@ cd_sensor_huey_get_ambient_thread_cb (GSimpleAsyncResult *res,
 
 	/* parse the value */
 	state->ret = TRUE;
-	state->sample.luminance = (gdouble) cd_buffer_read_uint16_be (reply+5) / HUEY_AMBIENT_UNITS_TO_LUX;
+	state->sample->X = (gdouble) cd_buffer_read_uint16_be (reply+5) / HUEY_AMBIENT_UNITS_TO_LUX;
 	cd_sensor_huey_get_sample_state_finish (state, NULL);
 out:
 	/* set state */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 }
 
-/**
- * cd_sensor_huey_set_leds:
- **/
 static gboolean
 cd_sensor_huey_set_leds (CdSensor *sensor, guint8 value, GError **error)
 {
 	guchar reply[8];
 	gsize reply_read;
-	CdSensorHuey *sensor_huey = CD_SENSOR_HUEY (sensor);
+	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	guchar payload[] = { CD_SENSOR_HUEY_COMMAND_SET_LEDS,
 			     0x00,
 			     ~value,
@@ -515,31 +478,28 @@ cd_sensor_huey_set_leds (CdSensor *sensor, guint8 value, GError **error)
 			     0x00,
 			     0x00,
 			     0x00 };
-	return cd_sensor_huey_send_data (sensor_huey,
-					  payload, 8, reply, 8,
-					  &reply_read,
-					  error);
+	return cd_sensor_huey_send_data (priv,
+					 payload, 8, reply, 8,
+					 &reply_read,
+					 error);
 }
 
 typedef struct {
 	guint16	R;
 	guint16	G;
 	guint16	B;
-} CdSensorHueyMultiplier;
+} CdSensorHueyPrivateMultiplier;
 
 typedef struct {
 	guint32	R;
 	guint32	G;
 	guint32	B;
-} CdSensorHueyDeviceRaw;
+} CdSensorHueyPrivateDeviceRaw;
 
-/**
- * cd_sensor_huey_sample_for_threshold:
- **/
 static gboolean
-cd_sensor_huey_sample_for_threshold (CdSensorHuey *sensor_huey,
-				     CdSensorHueyMultiplier *threshold,
-				     CdSensorHueyDeviceRaw *raw,
+cd_sensor_huey_sample_for_threshold (CdSensorHueyPrivate *priv,
+				     CdSensorHueyPrivateMultiplier *threshold,
+				     CdSensorHueyPrivateDeviceRaw *raw,
 				     GError **error)
 {
 	guchar request[] = { CD_SENSOR_HUEY_COMMAND_SENSOR_MEASURE_RGB,
@@ -554,11 +514,11 @@ cd_sensor_huey_sample_for_threshold (CdSensorHuey *sensor_huey,
 	cd_buffer_write_uint16_be (request + 5, threshold->B);
 
 	/* measure, and get red */
-	ret = cd_sensor_huey_send_data (sensor_huey,
-					 request, 8,
-					 reply, 8,
-					 &reply_read,
-					 error);
+	ret = cd_sensor_huey_send_data (priv,
+					request, 8,
+					reply, 8,
+					&reply_read,
+					error);
 	if (!ret)
 		goto out;
 
@@ -567,11 +527,11 @@ cd_sensor_huey_sample_for_threshold (CdSensorHuey *sensor_huey,
 
 	/* get green */
 	request[0] = CD_SENSOR_HUEY_COMMAND_READ_GREEN;
-	ret = cd_sensor_huey_send_data (sensor_huey,
-					 request, 8,
-					 reply, 8,
-					 &reply_read,
-					 error);
+	ret = cd_sensor_huey_send_data (priv,
+					request, 8,
+					reply, 8,
+					&reply_read,
+					error);
 	if (!ret)
 		goto out;
 
@@ -580,11 +540,11 @@ cd_sensor_huey_sample_for_threshold (CdSensorHuey *sensor_huey,
 
 	/* get blue */
 	request[0] = CD_SENSOR_HUEY_COMMAND_READ_BLUE;
-	ret = cd_sensor_huey_send_data (sensor_huey,
-					 request, 8,
-					 reply, 8,
-					 &reply_read,
-					 error);
+	ret = cd_sensor_huey_send_data (priv,
+					request, 8,
+					reply, 8,
+					&reply_read,
+					error);
 	if (!ret)
 		goto out;
 
@@ -629,12 +589,12 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 	CdColorRGB values;
 	CdColorXYZ color_result;
 	CdMat3x3 *device_calibration;
-	CdSensorHueyDeviceRaw color_native;
-	CdSensorHueyMultiplier multiplier;
+	CdSensorHueyPrivateDeviceRaw color_native;
+	CdSensorHueyPrivateMultiplier multiplier;
 	CdVec3 *temp;
 	GError *error = NULL;
 	CdSensor *sensor = CD_SENSOR (object);
-	CdSensorHuey *sensor_huey = CD_SENSOR_HUEY (sensor);
+	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 
 	/* no hardware support */
@@ -654,7 +614,7 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 	multiplier.R = 1;
 	multiplier.G = 1;
 	multiplier.B = 1;
-	ret = cd_sensor_huey_sample_for_threshold (sensor_huey,
+	ret = cd_sensor_huey_sample_for_threshold (priv,
 						   &multiplier,
 						   &color_native,
 						   &error);
@@ -680,10 +640,10 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 		multiplier.B = 1;
 	g_debug ("using multiplier factor: red=%i, green=%i, blue=%i",
 		 multiplier.R, multiplier.G, multiplier.B);
-	ret = cd_sensor_huey_sample_for_threshold (sensor_huey,
-						    &multiplier,
-						    &color_native,
-						    &error);
+	ret = cd_sensor_huey_sample_for_threshold (priv,
+						   &multiplier,
+						   &color_native,
+						   &error);
 	if (!ret) {
 		cd_sensor_huey_get_sample_state_finish (state, error);
 		g_error_free (error);
@@ -704,7 +664,7 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 	/* remove dark offset */
 	temp = (CdVec3*) &values;
 	cd_vec3_subtract (temp,
-			  &sensor_huey->priv->dark_offset,
+			  &priv->dark_offset,
 			  temp);
 
 	g_debug ("dark offset values: red=%0.6lf, green=%0.6lf, blue=%0.6lf",
@@ -721,10 +681,10 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 	/* we use different calibration matrices for each output type */
 	if (state->current_cap == CD_SENSOR_CAP_LCD) {
 		g_debug ("using LCD calibration matrix");
-		device_calibration = &sensor_huey->priv->calibration_lcd;
+		device_calibration = &priv->calibration_lcd;
 	} else {
 		g_debug ("using CRT calibration matrix");
-		device_calibration = &sensor_huey->priv->calibration_crt;
+		device_calibration = &priv->calibration_crt;
 	}
 
 	/* convert from device RGB to XYZ */
@@ -738,23 +698,19 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 
 	/* save result */
 	state->ret = TRUE;
-	state->sample.luminance = CD_SENSOR_NO_VALUE;
-	cd_color_copy_xyz (&color_result, &state->sample.value);
+	state->sample = cd_color_xyz_dup (&color_result);
 	cd_sensor_huey_get_sample_state_finish (state, NULL);
 out:
 	/* set state */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 }
 
-/**
- * cd_sensor_huey_get_sample_async:
- **/
-static void
-cd_sensor_huey_get_sample_async (CdSensor *sensor,
-				 CdSensorCap cap,
-				 GCancellable *cancellable,
-				 GAsyncReadyCallback callback,
-				 gpointer user_data)
+void
+cd_sensor_get_sample_async (CdSensor *sensor,
+			    CdSensorCap cap,
+			    GCancellable *cancellable,
+			    GAsyncReadyCallback callback,
+			    gpointer user_data)
 {
 	CdSensorAsyncState *state;
 	GCancellable *tmp;
@@ -766,7 +722,7 @@ cd_sensor_huey_get_sample_async (CdSensor *sensor,
 	state->res = g_simple_async_result_new (G_OBJECT (sensor),
 						callback,
 						user_data,
-						cd_sensor_huey_get_sample_async);
+						cd_sensor_get_sample_async);
 	state->sensor = g_object_ref (sensor);
 	if (cancellable != NULL) {
 		state->cancellable = g_object_ref (cancellable);
@@ -791,42 +747,28 @@ cd_sensor_huey_get_sample_async (CdSensor *sensor,
 	g_object_unref (tmp);
 }
 
-/**
- * cd_sensor_huey_get_sample_finish:
- **/
-static gboolean
-cd_sensor_huey_get_sample_finish (CdSensor *sensor,
-				  GAsyncResult *res,
-				  CdSensorSample *value,
-				  GError **error)
+CdColorXYZ *
+cd_sensor_get_sample_finish (CdSensor *sensor,
+			     GAsyncResult *res,
+			     GError **error)
 {
 	GSimpleAsyncResult *simple;
-	gboolean ret = TRUE;
-	CdSensorSample *sample;
 
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* failed */
 	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		ret = FALSE;
-		goto out;
-	}
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
 
 	/* grab detail */
-	sample = (CdSensorSample*) g_simple_async_result_get_op_res_gpointer (simple);
-	cd_sensor_copy_sample (sample, value);
-out:
-	return ret;
+	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
 }
 
-/**
- * cd_sensor_huey_send_unlock:
- **/
 static gboolean
-cd_sensor_huey_send_unlock (CdSensorHuey *sensor_huey, GError **error)
+cd_sensor_huey_send_unlock (CdSensorHueyPrivate *priv, GError **error)
 {
 	guchar request[8];
 	guchar reply[8];
@@ -843,11 +785,11 @@ cd_sensor_huey_send_unlock (CdSensorHuey *sensor_huey, GError **error)
 	request[7] = 'd'; /* <-         "" */
 
 	/* no idea why the hardware gets 'locked' */
-	ret = cd_sensor_huey_send_data (sensor_huey,
-					 request, 8,
-					 reply, 8,
-					 &reply_read,
-					 error);
+	ret = cd_sensor_huey_send_data (priv,
+					request, 8,
+					reply, 8,
+					&reply_read,
+					error);
 	if (!ret)
 		goto out;
 out:
@@ -860,8 +802,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 			       GCancellable *cancellable)
 {
 	CdSensor *sensor = CD_SENSOR (object);
-	CdSensorHuey *sensor_huey = CD_SENSOR_HUEY (sensor);
-	CdSensorHueyPrivate *priv = sensor_huey->priv;
+	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	const guint8 spin_leds[] = { 0x0, 0x1, 0x2, 0x4, 0x8, 0x4, 0x2, 0x1, 0x0, 0xff };
 	gboolean ret = FALSE;
 	gchar *serial_number_tmp = NULL;
@@ -883,7 +824,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_STARTING);
 
 	/* unlock */
-	ret = cd_sensor_huey_send_unlock (sensor_huey, &error);
+	ret = cd_sensor_huey_send_unlock (priv, &error);
 	if (!ret) {
 		g_simple_async_result_set_from_error (res, error);
 		g_error_free (error);
@@ -891,7 +832,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	}
 
 	/* get serial number */
-	ret = cd_sensor_huey_read_register_word (sensor_huey,
+	ret = cd_sensor_huey_read_register_word (priv,
 						 CD_SENSOR_HUEY_EEPROM_ADDR_SERIAL,
 						 &serial_number,
 						 &error);
@@ -905,7 +846,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	g_debug ("Serial number: %s", serial_number_tmp);
 
 	/* get unlock string */
-	ret = cd_sensor_huey_read_register_string (sensor_huey,
+	ret = cd_sensor_huey_read_register_string (priv,
 						   CD_SENSOR_HUEY_EEPROM_ADDR_UNLOCK,
 						   priv->unlock_string,
 						   5,
@@ -919,7 +860,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 
 	/* get matrix */
 	cd_mat33_clear (&priv->calibration_lcd);
-	ret = cd_sensor_huey_read_register_matrix (sensor_huey,
+	ret = cd_sensor_huey_read_register_matrix (priv,
 						   CD_SENSOR_HUEY_EEPROM_ADDR_CALIBRATION_DATA_LCD,
 						   &priv->calibration_lcd,
 						   &error);
@@ -933,7 +874,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 
 	/* get another matrix, although this one is different... */
 	cd_mat33_clear (&priv->calibration_crt);
-	ret = cd_sensor_huey_read_register_matrix (sensor_huey,
+	ret = cd_sensor_huey_read_register_matrix (priv,
 						   CD_SENSOR_HUEY_EEPROM_ADDR_CALIBRATION_DATA_CRT,
 						   &priv->calibration_crt,
 						   &error);
@@ -946,7 +887,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 		 cd_mat33_to_string (&priv->calibration_crt));
 
 	/* this number is different on all three hueys */
-	ret = cd_sensor_huey_read_register_float (sensor_huey,
+	ret = cd_sensor_huey_read_register_float (priv,
 						  CD_SENSOR_HUEY_EEPROM_ADDR_AMBIENT_CALIB_VALUE,
 						  &priv->calibration_value,
 						  &error);
@@ -957,7 +898,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	}
 
 	/* this vector changes between sensor 1 and 3 */
-	ret = cd_sensor_huey_read_register_vector (sensor_huey,
+	ret = cd_sensor_huey_read_register_vector (priv,
 						   CD_SENSOR_HUEY_EEPROM_ADDR_DARK_OFFSET,
 						   &priv->dark_offset,
 						   &error);
@@ -983,14 +924,11 @@ out:
 	g_free (serial_number_tmp);
 }
 
-/**
- * cd_sensor_huey_lock_async:
- **/
-static void
-cd_sensor_huey_lock_async (CdSensor *sensor,
-			   GCancellable *cancellable,
-			   GAsyncReadyCallback callback,
-			   gpointer user_data)
+void
+cd_sensor_lock_async (CdSensor *sensor,
+		      GCancellable *cancellable,
+		      GAsyncReadyCallback callback,
+		      gpointer user_data)
 {
 	GSimpleAsyncResult *res;
 
@@ -1000,7 +938,7 @@ cd_sensor_huey_lock_async (CdSensor *sensor,
 	res = g_simple_async_result_new (G_OBJECT (sensor),
 					 callback,
 					 user_data,
-					 cd_sensor_huey_lock_async);
+					 cd_sensor_lock_async);
 	g_simple_async_result_run_in_thread (res,
 					     cd_sensor_huey_lock_thread_cb,
 					     0,
@@ -1008,13 +946,10 @@ cd_sensor_huey_lock_async (CdSensor *sensor,
 	g_object_unref (res);
 }
 
-/**
- * cd_sensor_huey_lock_finish:
- **/
-static gboolean
-cd_sensor_huey_lock_finish (CdSensor *sensor,
-			    GAsyncResult *res,
-			    GError **error)
+gboolean
+cd_sensor_lock_finish (CdSensor *sensor,
+		       GAsyncResult *res,
+		       GError **error)
 {
 	GSimpleAsyncResult *simple;
 	gboolean ret = TRUE;
@@ -1032,20 +967,18 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_unlock_thread_cb:
- **/
 static void
-cd_sensor_huey_unlock_thread_cb (GSimpleAsyncResult *res,
-				 GObject *object,
-				 GCancellable *cancellable)
+cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
+			    GObject *object,
+			    GCancellable *cancellable)
 {
-	CdSensorHuey *sensor_huey = CD_SENSOR_HUEY (object);
+	CdSensor *sensor = CD_SENSOR (object);
+	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	gboolean ret = FALSE;
 	GError *error = NULL;
 
 	/* connect */
-	ret = cd_usb_disconnect (sensor_huey->priv->usb,
+	ret = cd_usb_disconnect (priv->usb,
 			         &error);
 	if (!ret) {
 		g_simple_async_result_set_from_error (res, error);
@@ -1056,14 +989,11 @@ out:
 	return;
 }
 
-/**
- * cd_sensor_huey_unlock_async:
- **/
-static void
-cd_sensor_huey_unlock_async (CdSensor *sensor,
-			     GCancellable *cancellable,
-			     GAsyncReadyCallback callback,
-			     gpointer user_data)
+void
+cd_sensor_unlock_async (CdSensor *sensor,
+			GCancellable *cancellable,
+			GAsyncReadyCallback callback,
+			gpointer user_data)
 {
 	GSimpleAsyncResult *res;
 
@@ -1073,21 +1003,18 @@ cd_sensor_huey_unlock_async (CdSensor *sensor,
 	res = g_simple_async_result_new (G_OBJECT (sensor),
 					 callback,
 					 user_data,
-					 cd_sensor_huey_unlock_async);
+					 cd_sensor_unlock_async);
 	g_simple_async_result_run_in_thread (res,
-					     cd_sensor_huey_unlock_thread_cb,
+					     cd_sensor_unlock_thread_cb,
 					     0,
 					     cancellable);
 	g_object_unref (res);
 }
 
-/**
- * cd_sensor_huey_unlock_finish:
- **/
-static gboolean
-cd_sensor_huey_unlock_finish (CdSensor *sensor,
-			    GAsyncResult *res,
-			    GError **error)
+gboolean
+cd_sensor_unlock_finish (CdSensor *sensor,
+			 GAsyncResult *res,
+			 GError **error)
 {
 	GSimpleAsyncResult *simple;
 	gboolean ret = TRUE;
@@ -1105,14 +1032,10 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_dump:
- **/
-static gboolean
-cd_sensor_huey_dump (CdSensor *sensor, GString *data, GError **error)
+gboolean
+cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 {
-	CdSensorHuey *sensor_huey = CD_SENSOR_HUEY (sensor);
-	CdSensorHueyPrivate *priv = sensor_huey->priv;
+	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	gboolean ret;
 	guint i;
 	guint8 value;
@@ -1130,10 +1053,10 @@ cd_sensor_huey_dump (CdSensor *sensor, GString *data, GError **error)
 
 	/* read all the register space */
 	for (i=0; i<0xff; i++) {
-		ret = cd_sensor_huey_read_register_byte (sensor_huey,
-							  i,
-							  &value,
-							  error);
+		ret = cd_sensor_huey_read_register_byte (priv,
+							 i,
+							 &value,
+							 error);
 		if (!ret)
 			goto out;
 
@@ -1147,69 +1070,29 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_huey_class_init:
- **/
 static void
-cd_sensor_huey_class_init (CdSensorHueyClass *klass)
+cd_sensor_unref_private (CdSensorHueyPrivate *priv)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	CdSensorClass *parent_class = CD_SENSOR_CLASS (klass);
-	object_class->finalize = cd_sensor_huey_finalize;
-
-	/* setup klass links */
-	parent_class->get_sample_async = cd_sensor_huey_get_sample_async;
-	parent_class->get_sample_finish = cd_sensor_huey_get_sample_finish;
-	parent_class->lock_async = cd_sensor_huey_lock_async;
-	parent_class->lock_finish = cd_sensor_huey_lock_finish;
-	parent_class->unlock_async = cd_sensor_huey_unlock_async;
-	parent_class->unlock_finish = cd_sensor_huey_unlock_finish;
-	parent_class->dump = cd_sensor_huey_dump;
-
-	g_type_class_add_private (klass, sizeof (CdSensorHueyPrivate));
+	g_object_unref (priv->usb);
+	g_free (priv);
 }
 
-/**
- * cd_sensor_huey_init:
- **/
-static void
-cd_sensor_huey_init (CdSensorHuey *sensor)
+gboolean
+cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
 	CdSensorHueyPrivate *priv;
-	priv = sensor->priv = CD_SENSOR_HUEY_GET_PRIVATE (sensor);
+	g_object_set (sensor,
+		      "native", TRUE,
+		      "kind", CD_SENSOR_KIND_HUEY,
+		      NULL);
+	/* create private data */
+	priv = g_new0 (CdSensorHueyPrivate, 1);
+	g_object_set_data_full (G_OBJECT (sensor), "priv", priv,
+				(GDestroyNotify) cd_sensor_unref_private);
 	priv->usb = cd_usb_new ();
 	cd_mat33_clear (&priv->calibration_lcd);
 	cd_mat33_clear (&priv->calibration_crt);
 	priv->unlock_string[0] = '\0';
-}
-
-/**
- * cd_sensor_huey_finalize:
- **/
-static void
-cd_sensor_huey_finalize (GObject *object)
-{
-	CdSensorHuey *sensor = CD_SENSOR_HUEY (object);
-	CdSensorHueyPrivate *priv = sensor->priv;
-
-	g_object_unref (priv->usb);
-
-	G_OBJECT_CLASS (cd_sensor_huey_parent_class)->finalize (object);
-}
-
-/**
- * cd_sensor_huey_new:
- *
- * Return value: a new #CdSensor object.
- **/
-CdSensor *
-cd_sensor_huey_new (void)
-{
-	CdSensorHuey *sensor;
-	sensor = g_object_new (CD_TYPE_SENSOR_HUEY,
-			       "native", TRUE,
-			       "kind", CD_SENSOR_KIND_HUEY,
-			       NULL);
-	return CD_SENSOR (sensor);
+	return TRUE;
 }
 

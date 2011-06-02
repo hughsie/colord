@@ -27,7 +27,6 @@
 
 #include "cd-udev-client.h"
 #include "cd-sensor.h"
-#include "cd-sensor-huey.h"
 
 static void     cd_udev_client_finalize	(GObject	*object);
 
@@ -212,8 +211,6 @@ cd_udev_client_sensor_add (CdUdevClient *udev_client,
 {
 	gboolean ret;
 	CdSensor *sensor = NULL;
-	CdSensorKind kind;
-	const gchar *kind_str;
 	const gchar *device_file;
 	GError *error = NULL;
 
@@ -227,22 +224,24 @@ cd_udev_client_sensor_add (CdUdevClient *udev_client,
 	if (device_file == NULL)
 		goto out;
 
-	/* is it a sensor we have a internal native driver for? */
-	kind_str = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
-	kind = cd_sensor_kind_from_string (kind_str);
-	if (kind == CD_SENSOR_KIND_HUEY)
-		sensor = cd_sensor_huey_new ();
-	else
-		sensor = cd_sensor_new ();
-
 	/* get data */
 	g_debug ("adding color management device: %s [%s]",
 		 g_udev_device_get_sysfs_path (device),
 		 device_file);
+	sensor = cd_sensor_new ();
 	ret = cd_sensor_set_from_device (sensor, device, &error);
 	if (!ret) {
-		g_warning ("failed to set CM sensor: %s",
+		g_warning ("CdUdevClient: failed to set CM sensor: %s",
 			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* load the sensor */
+	ret = cd_sensor_load (sensor, &error);
+	if (!ret) {
+		g_warning ("CdUdevClient: failed to load sensor: %s",
+			    error->message);
 		g_error_free (error);
 		goto out;
 	}

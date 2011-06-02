@@ -25,7 +25,6 @@
 #include <locale.h>
 
 #include "cd-sensor.h"
-#include "cd-sensor-huey.h"
 
 /**
  * main:
@@ -54,7 +53,15 @@ main (int argc, char **argv)
 	g_option_context_free (context);
 
 	/* get the default sensor */
-	sensor = cd_sensor_huey_new ();
+	sensor = cd_sensor_new ();
+	cd_sensor_set_kind (sensor, CD_SENSOR_KIND_HUEY);
+	ret = cd_sensor_load (sensor, &error);
+	if (!ret) {
+		g_print ("FAILED: Failed to load sensor: %s\n",
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* dump details */
 	filename = g_strdup ("./sensor-dump.txt");

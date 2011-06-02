@@ -32,7 +32,6 @@
 #include "cd-device-array.h"
 #include "cd-device-db.h"
 #include "cd-device.h"
-#include "cd-sensor-dummy.h"
 #include "cd-mapping-db.h"
 #include "cd-profile-array.h"
 #include "cd-profile.h"
@@ -1304,11 +1303,16 @@ out:
 static void
 cd_main_add_sensor (CdSensor *sensor)
 {
+	const gchar *id;
 	gboolean ret;
 	GError *error = NULL;
 
-	g_debug ("CdMain: add sensor: %s",
-		 cd_sensor_get_id (sensor));
+	id = cd_sensor_get_id (sensor);
+	if (id == NULL) {
+		g_warning ("did not get an ID from the sensor");
+		goto out;
+	}
+	g_debug ("CdMain: add sensor: %s", id);
 	g_ptr_array_add (sensors, g_object_ref (sensor));
 
 	/* register on bus */
@@ -1450,8 +1454,16 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	/* add dummy sensor */
 	ret = cd_config_get_boolean (config, "CreateDummySensor");
 	if (ret) {
-		sensor = cd_sensor_dummy_new ();
-		cd_main_add_sensor (sensor);
+		sensor = cd_sensor_new ();
+		cd_sensor_set_kind (sensor, CD_SENSOR_KIND_DUMMY);
+		ret = cd_sensor_load (sensor, &error);
+		if (!ret) {
+			g_warning ("CdMain: failed to load dummy sensor: %s",
+				    error->message);
+			g_clear_error (&error);
+		} else {
+			cd_main_add_sensor (sensor);
+		}
 	}
 
 	/* add SANE devices */

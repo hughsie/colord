@@ -20,9 +20,6 @@
  */
 
 /**
- * SECTION:cd-sensor-dummy
- * @short_description: Userspace driver for a dummy sensor.
- *
  * This object contains all the low level logic for imaginary hardware.
  */
 
@@ -30,44 +27,29 @@
 
 #include <glib-object.h>
 
-#include "cd-sensor-dummy.h"
+#include "cd-sensor.h"
 
-G_DEFINE_TYPE (CdSensorDummy, cd_sensor_dummy, CD_TYPE_SENSOR)
-
-#define CD_SENSOR_HUEY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_SENSOR_DUMMY, CdSensorHueyPrivate))
-
-/**
- * CdSensorHueyPrivate:
- *
- * Private #CdSensorHuey data
- **/
-struct _CdSensorHueyPrivate
+typedef struct
 {
 	gboolean			 done_startup;
-};
+} CdSensorDummyPrivate;
 
 /* async state for the sensor readings */
 typedef struct {
 	gboolean		 ret;
-	CdSensorSample		*sample;
+	CdColorXYZ		*sample;
 	GSimpleAsyncResult	*res;
 	CdSensor		*sensor;
 } CdSensorAsyncState;
 
-/**
- * cd_sensor_dummy_get_sample_state_finish:
- **/
 static void
-cd_sensor_dummy_get_sample_state_finish (CdSensorAsyncState *state,
-					 const GError *error)
+cd_sensor_get_sample_state_finish (CdSensorAsyncState *state,
+				   const GError *error)
 {
-	CdSensorSample *result;
-
-	/* set result to temp memory location */
 	if (state->ret) {
-		result = g_new0 (CdSensorSample, 1);
-		cd_sensor_copy_sample (state->sample, result);
-		g_simple_async_result_set_op_res_gpointer (state->res, result, (GDestroyNotify) g_free);
+		g_simple_async_result_set_op_res_gpointer (state->res,
+							   state->sample,
+							   cd_color_xyz_free);
 	} else {
 		g_simple_async_result_set_from_error (state->res, error);
 	}
@@ -80,56 +62,46 @@ cd_sensor_dummy_get_sample_state_finish (CdSensorAsyncState *state,
 
 	g_object_unref (state->res);
 	g_object_unref (state->sensor);
-	g_free (state->sample);
 	g_slice_free (CdSensorAsyncState, state);
 }
 
-/**
- * cd_sensor_dummy_get_ambient_wait_cb:
- **/
 static gboolean
-cd_sensor_dummy_get_ambient_wait_cb (CdSensorAsyncState *state)
+cd_sensor_get_ambient_wait_cb (CdSensorAsyncState *state)
 {
 	state->ret = TRUE;
-	state->sample->value.X = CD_SENSOR_NO_VALUE;
-	state->sample->value.Y = CD_SENSOR_NO_VALUE;
-	state->sample->value.Z = CD_SENSOR_NO_VALUE;
-	state->sample->luminance = 7.7f;
+	state->sample = cd_color_xyz_new ();
+	state->sample->X = 7.7f;
+	state->sample->Y = CD_SENSOR_NO_VALUE;
+	state->sample->Z = CD_SENSOR_NO_VALUE;
 
 	/* just return without a problem */
-	cd_sensor_dummy_get_sample_state_finish (state, NULL);
+	cd_sensor_get_sample_state_finish (state, NULL);
 	return FALSE;
 }
 
-/**
- * cd_sensor_dummy_get_sample_wait_cb:
- **/
 static gboolean
-cd_sensor_dummy_get_sample_wait_cb (CdSensorAsyncState *state)
+cd_sensor_get_sample_wait_cb (CdSensorAsyncState *state)
 {
 	state->ret = TRUE;
-	state->sample->value.X = 0.1;
-	state->sample->value.Y = 0.2;
-	state->sample->value.Z = 0.3;
-	state->sample->luminance = CD_SENSOR_NO_VALUE;
+	state->sample = cd_color_xyz_new ();
+	state->sample->X = 0.1;
+	state->sample->Y = 0.2;
+	state->sample->Z = 0.3;
 
 	/* emulate */
 	cd_sensor_button_pressed (state->sensor);
 
 	/* just return without a problem */
-	cd_sensor_dummy_get_sample_state_finish (state, NULL);
+	cd_sensor_get_sample_state_finish (state, NULL);
 	return FALSE;
 }
 
-/**
- * cd_sensor_dummy_get_sample_async:
- **/
-static void
-cd_sensor_dummy_get_sample_async (CdSensor *sensor,
-				  CdSensorCap cap,
-				  GCancellable *cancellable,
-				  GAsyncReadyCallback callback,
-				  gpointer user_data)
+void
+cd_sensor_get_sample_async (CdSensor *sensor,
+			    CdSensorCap cap,
+			    GCancellable *cancellable,
+			    GAsyncReadyCallback callback,
+			    gpointer user_data)
 {
 	CdSensorAsyncState *state;
 
@@ -140,9 +112,8 @@ cd_sensor_dummy_get_sample_async (CdSensor *sensor,
 	state->res = g_simple_async_result_new (G_OBJECT (sensor),
 						callback,
 						user_data,
-						cd_sensor_dummy_get_sample_async);
+						cd_sensor_get_sample_async);
 	state->sensor = g_object_ref (sensor);
-	state->sample = g_new0 (CdSensorSample, 1);
 
 	/* set state */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
@@ -151,75 +122,41 @@ cd_sensor_dummy_get_sample_async (CdSensor *sensor,
 	if (cap == CD_SENSOR_CAP_LCD ||
 	    cap == CD_SENSOR_CAP_CRT ||
 	    cap == CD_SENSOR_CAP_PROJECTOR)
-		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_dummy_get_sample_wait_cb, state);
+		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_get_sample_wait_cb, state);
 	else
-		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_dummy_get_ambient_wait_cb, state);
+		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_get_ambient_wait_cb, state);
 }
 
-/**
- * cd_sensor_dummy_get_sample_finish:
- **/
-static gboolean
-cd_sensor_dummy_get_sample_finish (CdSensor *sensor,
-				   GAsyncResult *res,
-				   CdSensorSample *value,
-				   GError **error)
+CdColorXYZ *
+cd_sensor_get_sample_finish (CdSensor *sensor,
+			     GAsyncResult *res,
+			     GError **error)
 {
 	GSimpleAsyncResult *simple;
-	gboolean ret = TRUE;
-	CdSensorSample *sample;
 
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* failed */
 	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		ret = FALSE;
-		goto out;
-	}
+	if (g_simple_async_result_propagate_error (simple, error))
+		return NULL;
 
 	/* grab detail */
-	sample = (CdSensorSample*) g_simple_async_result_get_op_res_gpointer (simple);
-	cd_sensor_copy_sample (sample, value);
-out:
-	return ret;
+	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
 }
 
-/**
- * cd_sensor_dummy_class_init:
- **/
 static void
-cd_sensor_dummy_class_init (CdSensorDummyClass *klass)
+cd_sensor_unref_private (CdSensorDummyPrivate *priv)
 {
-	CdSensorClass *parent_class = CD_SENSOR_CLASS (klass);
-
-	/* setup klass links */
-	parent_class->get_sample_async = cd_sensor_dummy_get_sample_async;
-	parent_class->get_sample_finish = cd_sensor_dummy_get_sample_finish;
-
-	g_type_class_add_private (klass, sizeof (CdSensorHueyPrivate));
+	g_free (priv);
 }
 
-/**
- * cd_sensor_dummy_init:
- **/
-static void
-cd_sensor_dummy_init (CdSensorDummy *sensor)
+gboolean
+cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
-	sensor->priv = CD_SENSOR_HUEY_GET_PRIVATE (sensor);
-}
-
-/**
- * cd_sensor_dummy_new:
- *
- * Return value: a new #CdSensor object.
- **/
-CdSensor *
-cd_sensor_dummy_new (void)
-{
-	CdSensorDummy *sensor;
+	CdSensorDummyPrivate *priv;
 	const gchar *caps[] = { "lcd",
 				"crt",
 				"projector",
@@ -227,15 +164,20 @@ cd_sensor_dummy_new (void)
 				"printer",
 				"ambient",
 				NULL };
-	sensor = g_object_new (CD_TYPE_SENSOR_DUMMY,
-			       "id", "dummy",
-			       "kind", CD_SENSOR_KIND_DUMMY,
-			       "serial", "0123456789a",
-			       "model", "Dummy Sensor #1",
-			       "vendor", "Acme Corp",
-			       "caps", caps,
-			       "native", TRUE,
-			       NULL);
-	return CD_SENSOR (sensor);
+	g_object_set (sensor,
+		      "id", "dummy",
+		      "kind", CD_SENSOR_KIND_DUMMY,
+		      "serial", "0123456789a",
+		      "model", "Dummy Sensor #1",
+		      "vendor", "Acme Corp",
+		      "caps", caps,
+		      "native", TRUE,
+		      NULL);
+
+	/* create private data */
+	priv = g_new0 (CdSensorDummyPrivate, 1);
+	g_object_set_data_full (G_OBJECT (sensor), "priv", priv,
+				(GDestroyNotify) cd_sensor_unref_private);
+	return TRUE;
 }
 
