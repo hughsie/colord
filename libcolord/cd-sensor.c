@@ -838,7 +838,6 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	GError *error = NULL;
 	GVariant *result;
 	CdColorXYZ *xyz;
-	gdouble ambient_tmp;
 	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
@@ -857,11 +856,10 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	/* success */
 	xyz = cd_color_xyz_new ();
 	g_variant_get (result,
-		       "((ddd)d)",
+		       "(ddd)",
 		       &xyz->X,
 		       &xyz->Y,
-		       &xyz->Z,
-		       &ambient_tmp);
+		       &xyz->Z);
 
 	g_simple_async_result_set_op_res_gpointer (res_source,
 						   xyz,

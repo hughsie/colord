@@ -443,11 +443,10 @@ cd_sensor_get_sample_cb (GObject *source_object,
 		 sample->X,
 		 sample->Y,
 		 sample->Z);
-	result = g_variant_new ("((ddd)d)",
+	result = g_variant_new ("(ddd)",
 				sample->X,
 				sample->Y,
-				sample->Z,
-				-1.0f);
+				sample->Z);
 	g_dbus_method_invocation_return_value (invocation, result);
 out:
 	if (sample != NULL)

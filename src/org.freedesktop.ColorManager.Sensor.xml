@@ -168,28 +168,33 @@
           </doc:summary>
         </doc:doc>
       </arg>
-      <arg type='(ddd)' name='value' direction='out'>
+      <arg type='d' name='sample_x' direction='out'>
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The XYZ value, or <doc:tt>-1.0, -1.0, -1.0</doc:tt> if not
-              supported by the sensor.
+              The X value, or <doc:tt>-1.0</doc:tt> for an error.
+            </doc:para>
+            <doc:para>
+              For the capability of <doc:tt>ambient</doc:tt> this is
+              the brightness in Lux.
             </doc:para>
           </doc:summary>
         </doc:doc>
       </arg>
-      <arg type='d' name='value' direction='out'>
+      <arg type='d' name='sample_y' direction='out'>
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The value in Lux, or <doc:tt>-1.0</doc:tt> if not
-              supported by the sensor.
+              The Y value, or <doc:tt>-1.0</doc:tt> for an error.
             </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='d' name='sample_z' direction='out'>
+        <doc:doc>
+          <doc:summary>
             <doc:para>
-              Note: only populate this value when the capability is
-              <doc:tt>ambient</doc:tt> or when this value is available
-              at no cost, i.e. does not require additional hardware
-              access.
+              The Z value, or <doc:tt>-1.0</doc:tt> for an error.
             </doc:para>
           </doc:summary>
         </doc:doc>
