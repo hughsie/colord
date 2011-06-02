@@ -37,6 +37,7 @@
 #include "cd-profile-sync.h"
 #include "cd-sensor.h"
 #include "cd-sensor-sync.h"
+#include "cd-version.h"
 
 /** ver:1.0 ***********************************************************/
 static GMainLoop *_test_loop = NULL;
@@ -918,6 +919,7 @@ colord_client_func (void)
 {
 	CdClient *client;
 	const gchar *version;
+	gchar *version_str;
 	gboolean ret;
 	GError *error = NULL;
 
@@ -934,7 +936,12 @@ colord_client_func (void)
 	g_assert (ret);
 
 	version = cd_client_get_daemon_version (client);
-	g_assert_cmpstr (version, ==, "0.1.8");
+	version_str = g_strdup_printf ("%i.%i.%i",
+				       CD_MAJOR_VERSION,
+				       CD_MINOR_VERSION,
+				       CD_MICRO_VERSION);
+	g_assert_cmpstr (version, ==, version_str);
+	g_free (version_str);
 
 	g_object_unref (client);
 }
