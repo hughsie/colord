@@ -7,6 +7,15 @@ INCLUDES = \
 	-DTESTDATADIR=\""$(top_srcdir)/data/tests"\"		\
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"
 
+# only stuff we can use in the daemon
+noinst_LIBRARIES = libcolordprivate.a
+libcolordprivate_a_SOURCES =					\
+	cd-color.c						\
+	cd-enum.c
+
+libcolordprivate_a_CFLAGS =					\
+	$(WARNINGFLAGS_C)
+
 lib_LTLIBRARIES =						\
 	libcolord.la
 

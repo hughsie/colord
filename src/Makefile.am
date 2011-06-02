@@ -25,6 +25,9 @@ INCLUDES =						\
 	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DLOCALEDIR=\""$(localedir)"\"
 
+COLORD_LIBS =						\
+	$(top_builddir)/libcolord/libcolordprivate.a
+
 libexec_PROGRAMS =					\
 	colord
 
@@ -71,11 +74,10 @@ colord_SOURCES =					\
 	cd-udev-client.h				\
 	cd-usb.c					\
 	cd-usb.h					\
-	../libcolord/cd-enum.c				\
-	../libcolord/cd-color.c				\
 	cd-main.c
 
 colord_LDADD =						\
+	$(COLORD_LIBS)					\
 	$(SQLITE_LIBS)					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
@@ -113,10 +115,10 @@ cd_self_test_SOURCES =					\
 	cd-profile.h					\
 	cd-usb.c					\
 	cd-usb.h					\
-	../libcolord/cd-enum.c				\
 	cd-self-test.c
 
 cd_self_test_LDADD =					\
+	$(COLORD_LIBS)					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(SQLITE_LIBS)					\
