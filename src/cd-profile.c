@@ -681,8 +681,10 @@ cd_profile_set_metadata_from_profile (CdProfile *profile,
 
 	/* does profile have metadata? */
 	dict = cmsReadTag (lcms_profile, cmsSigMetaTag);
-	if (dict == NULL)
+	if (dict == NULL) {
+		g_debug ("%s (%s) has no DICT tag", priv->id, priv->filename);
 		return;
+	}
 
 	/* read each bit of metadata */
 	for (entry = cmsDictGetEntryList (dict);

@@ -136,7 +136,6 @@ colord_client_random_func (void)
 	GPtrArray *devices;
 	GPtrArray *profiles;
 	guint32 key;
-	GHashTable *metadata;
 	const gchar *qualifier1[] = {"RGB.Plain.300dpi",
 				     "RGB.Glossy.300dpi",
 				     "RGB.Matte.300dpi",
@@ -334,20 +333,16 @@ colord_client_random_func (void)
 							       &error);
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
-	g_assert_cmpstr (cd_profile_get_id (profile), ==,
+
+	/* connect */
+	ret = cd_profile_connect_sync (profile_tmp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check id */
+	g_assert_cmpstr (cd_profile_get_id (profile_tmp), ==,
 			 profile_id);
 	g_object_unref (profile_tmp);
-
-	/* check metadata */
-	metadata = cd_profile_get_metadata (profile);
-#ifdef HAVE_NEW_LCMS
-	g_assert_cmpint (g_hash_table_size (metadata), ==, 1);
-	g_assert_cmpstr (g_hash_table_lookup (metadata, "EDID_md5"), ==,
-			 "f09e42aa86585d1bb6687d3c322ed0c1");
-#else
-	g_assert_cmpint (g_hash_table_size (metadata), ==, 0);
-#endif
-	g_hash_table_unref (metadata);
 
 	/* set profile qualifier */
 	ret = cd_profile_set_qualifier_sync (profile, "RGB.Glossy.300dpi",
@@ -675,6 +670,61 @@ colord_client_random_func (void)
 	g_object_unref (profile);
 	g_object_unref (profile2);
 	g_object_unref (client);
+}
+
+static void
+colord_icc_meta_dict_func (void)
+{
+	gchar *filename;
+	gboolean ret;
+	GError *error = NULL;
+	GHashTable *metadata;
+	CdProfile *profile;
+	CdClient *client;
+
+	/* create */
+	client = cd_client_new ();
+	g_assert (client != NULL);
+
+	/* connect */
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create profile */
+	profile = cd_client_create_profile_sync (client,
+						 "profile_metadata_test",
+						 CD_OBJECT_SCOPE_TEMP,
+						 NULL,
+						 NULL,
+						 &error);
+	g_assert_no_error (error);
+	g_assert (profile != NULL);
+
+	/* connect */
+	ret = cd_profile_connect_sync (profile, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* set profile filename */
+	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
+	ret = cd_profile_set_filename_sync (profile, filename, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check metadata */
+	metadata = cd_profile_get_metadata (profile);
+#ifdef HAVE_NEW_LCMS
+	g_assert_cmpint (g_hash_table_size (metadata), ==, 1);
+	g_assert_cmpstr (g_hash_table_lookup (metadata, "EDID_md5"), ==,
+			 "f09e42aa86585d1bb6687d3c322ed0c1");
+#else
+	g_assert_cmpint (g_hash_table_size (metadata), ==, 0);
+#endif
+	g_hash_table_unref (metadata);
+	g_object_unref (profile);
+	g_object_unref (client);
+	g_free (filename);
 }
 
 #if 0
@@ -1343,6 +1393,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/client", colord_client_func);
+if(0)	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
 	g_test_add_func ("/colord/device-mapping", colord_device_mapping_func);
 	g_test_add_func ("/colord/client-random", colord_client_random_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
