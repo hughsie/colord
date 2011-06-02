@@ -722,6 +722,15 @@ colord_icc_meta_dict_func (void)
 	g_assert_cmpint (g_hash_table_size (metadata), ==, 0);
 #endif
 	g_hash_table_unref (metadata);
+
+	/* create profile */
+	ret = cd_client_delete_profile_sync (client,
+					     profile,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	g_object_unref (profile);
 	g_object_unref (client);
 	g_free (filename);
@@ -1393,7 +1402,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/client", colord_client_func);
-if(0)	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
+	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
 	g_test_add_func ("/colord/device-mapping", colord_device_mapping_func);
 	g_test_add_func ("/colord/client-random", colord_client_random_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
