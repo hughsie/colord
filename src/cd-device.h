@@ -88,6 +88,8 @@ gboolean	 cd_device_set_property_internal	(CdDevice	*device,
 							 const gchar	*value,
 							 gboolean	 save_in_db,
 							 GError		**error);
+const gchar	*cd_device_get_metadata			(CdDevice	*device,
+							 const gchar	*key);
 
 G_END_DECLS
 

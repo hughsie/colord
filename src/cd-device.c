@@ -802,6 +802,15 @@ out:
 }
 
 /**
+ * cd_device_get_metadata:
+ **/
+const gchar *
+cd_device_get_metadata (CdDevice *device, const gchar *key)
+{
+	return g_hash_table_lookup (device->priv->metadata, key);
+}
+
+/**
  * cd_device_make_default:
  **/
 gboolean

@@ -74,6 +74,11 @@ CdDevice	*cd_client_find_device_sync		(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
 							 GError		**error);
+CdDevice	*cd_client_find_device_by_property_sync	(CdClient	*client,
+							 const gchar	*key,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
 CdProfile	*cd_client_get_standard_space_sync	(CdClient	*client,
 							 CdStandardSpace standard_space,
 							 GCancellable	*cancellable,

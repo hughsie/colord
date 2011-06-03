@@ -141,6 +141,45 @@
     </method>
 
     <!--***********************************************************-->
+    <method name='FindDeviceByProperty'>
+      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a device path for the device with the specified property.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='key' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A property key, e.g. <doc:tt>XRANDR_name</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='s' name='value' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A property value, e.g. <doc:tt>lvds</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='o' name='object_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A device path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--***********************************************************-->
     <method name='FindProfileById'>
       <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>

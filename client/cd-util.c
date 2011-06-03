@@ -820,6 +820,45 @@ out:
 }
 
 /**
+ * cd_util_find_device_by_property:
+ **/
+static gboolean
+cd_util_find_device_by_property (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdDevice *device = NULL;
+	gboolean ret = TRUE;
+
+	if (g_strv_length (values) < 2) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     1, 0,
+				     "Not enough arguments, "
+				     "expected key value "
+				     "e.g. 'XRANDR_name' 'lvds'");
+		goto out;
+	}
+
+	/* execute sync method */
+	device = cd_client_find_device_by_property_sync (priv->client,
+							 values[0],
+							 values[1],
+							 NULL,
+							 error);
+	if (device == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	ret = cd_device_connect_sync (device, NULL, error);
+	if (!ret)
+		goto out;
+	cd_util_show_device (device);
+out:
+	if (device != NULL)
+		g_object_unref (device);
+	return ret;
+}
+
+/**
  * cd_util_find_profile:
  **/
 static gboolean
@@ -1383,6 +1422,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Find a device"),
 		     cd_util_find_device);
+	cd_util_add (priv->cmd_array,
+		     "find-device-by-property",
+		     /* TRANSLATORS: command description */
+		     _("Find a device that has a specific property"),
+		     cd_util_find_device_by_property);
 	cd_util_add (priv->cmd_array,
 		     "find-profile",
 		     /* TRANSLATORS: command description */

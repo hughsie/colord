@@ -665,6 +665,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	gint fd = -1;
+	gchar *metadata_key = NULL;
+	gchar *metadata_value = NULL;
 	GDBusMessage *message;
 	GUnixFDList *fd_list;
 
@@ -726,7 +728,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
-	/* return 's' */
+	/* return 'o' */
 	if (g_strcmp0 (method_name, "FindDeviceById") == 0) {
 
 		g_variant_get (parameters, "(s)", &device_id);
@@ -738,6 +740,32 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 							       CD_MAIN_ERROR_FAILED,
 							       "device id '%s' does not exists",
 							       device_id);
+			goto out;
+		}
+
+		/* format the value */
+		value = g_variant_new ("(o)", cd_device_get_object_path (device));
+		g_dbus_method_invocation_return_value (invocation, value);
+		goto out;
+	}
+
+	/* return 'o' */
+	if (g_strcmp0 (method_name, "FindDeviceByProperty") == 0) {
+
+		g_variant_get (parameters, "(ss)",
+			       &metadata_key, &metadata_value);
+		g_debug ("CdMain: %s:FindDeviceByProperty(%s=%s)",
+			 sender, metadata_key, metadata_value);
+		device = cd_device_array_get_by_property (devices_array,
+							  metadata_key,
+							  metadata_value);
+		if (device == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "prperty match '%s'='%s' does not exist",
+							       metadata_key,
+							       metadata_value);
 			goto out;
 		}
 
@@ -1078,6 +1106,8 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
+	g_free (metadata_key);
+	g_free (metadata_value);
 	g_free (scope_tmp);
 	g_free (object_path_tmp);
 	if (iter != NULL)

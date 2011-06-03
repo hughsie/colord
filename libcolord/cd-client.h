@@ -154,6 +154,15 @@ void		cd_client_find_device			(CdClient	*client,
 CdDevice	*cd_client_find_device_finish 		(CdClient	*client,
 							 GAsyncResult	*res,
 							 GError		**error);
+void		cd_client_find_device_by_property	(CdClient	*client,
+							 const gchar	*key,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdDevice	*cd_client_find_device_by_property_finish (CdClient	*client,
+							 GAsyncResult	*res,
+							 GError		**error);
 void		cd_client_find_profile			(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,

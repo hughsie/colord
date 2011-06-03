@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -110,6 +110,32 @@ cd_device_array_get_by_object_path (CdDeviceArray *device_array,
 		device_tmp = g_ptr_array_index (priv->array, i);
 		if (g_strcmp0 (cd_device_get_object_path (device_tmp),
 			       object_path) == 0) {
+			device = g_object_ref (device_tmp);
+			break;
+		}
+	}
+	return device;
+}
+
+/**
+ * cd_device_array_get_by_property:
+ **/
+CdDevice *
+cd_device_array_get_by_property (CdDeviceArray *device_array,
+				 const gchar *key,
+				 const gchar *value)
+{
+	CdDeviceArrayPrivate *priv = device_array->priv;
+	CdDevice *device = NULL;
+	CdDevice *device_tmp;
+	const gchar *value_tmp;
+	guint i;
+
+	/* find device */
+	for (i=0; i<priv->array->len; i++) {
+		device_tmp = g_ptr_array_index (priv->array, i);
+		value_tmp = cd_device_get_metadata (device_tmp, key);
+		if (g_strcmp0 (value_tmp, value) == 0) {
 			device = g_object_ref (device_tmp);
 			break;
 		}
