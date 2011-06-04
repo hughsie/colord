@@ -219,6 +219,7 @@ GPtrArray	*cd_client_get_sensors_finish		(CdClient	*client,
 							 GError		**error);
 
 /* getters */
+gboolean	 cd_client_get_connected		(CdClient	*client);
 const gchar	*cd_client_get_daemon_version		(CdClient	*client);
 
 G_END_DECLS

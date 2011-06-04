@@ -925,10 +925,16 @@ colord_client_func (void)
 
 	client = cd_client_new ();
 
+	/* check not connected */
+	g_assert (!cd_client_get_connected (client));
+
 	/* connect once */
 	ret = cd_client_connect_sync (client, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+
+	/* check connected */
+	g_assert (cd_client_get_connected (client));
 
 	/* connect again */
 	ret = cd_client_connect_sync (client, NULL, &error);

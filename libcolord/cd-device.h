@@ -177,6 +177,7 @@ const gchar	*cd_device_get_metadata_item		(CdDevice	*device,
 /* helpers */
 void		 cd_device_set_object_path		(CdDevice	*device,
 							 const gchar	*object_path);
+gboolean	 cd_device_get_connected		(CdDevice	*device);
 gchar		*cd_device_to_string			(CdDevice	*device);
 gboolean	 cd_device_equal			(CdDevice	*device1,
 							 CdDevice	*device2);

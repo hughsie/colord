@@ -128,6 +128,7 @@ const gchar	*cd_profile_get_metadata_item		(CdProfile	*profile,
 /* helpers */
 void		 cd_profile_set_object_path		(CdProfile	*profile,
 							 const gchar	*object_path);
+gboolean	 cd_profile_get_connected		(CdProfile	*profile);
 gchar		*cd_profile_to_string			(CdProfile	*profile);
 gboolean	 cd_profile_equal			(CdProfile	*profile1,
 							 CdProfile	*profile2);

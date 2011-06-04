@@ -117,6 +117,7 @@ CdColorXYZ	*cd_sensor_get_sample_finish		(CdSensor	*sensor,
 
 /* getters */
 const gchar	*cd_sensor_get_object_path		(CdSensor	*sensor);
+gboolean	 cd_sensor_get_connected		(CdSensor	*sensor);
 CdSensorKind	 cd_sensor_get_kind			(CdSensor	*sensor);
 CdSensorState	 cd_sensor_get_state			(CdSensor	*sensor);
 CdSensorCap	 cd_sensor_get_mode			(CdSensor	*sensor);

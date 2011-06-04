@@ -69,6 +69,7 @@ struct _CdProfilePrivate
 enum {
 	PROP_0,
 	PROP_OBJECT_PATH,
+	PROP_CONNECTED,
 	PROP_ID,
 	PROP_FILENAME,
 	PROP_QUALIFIER,
@@ -924,6 +925,23 @@ cd_profile_get_object_path (CdProfile *profile)
 }
 
 /**
+ * cd_profile_get_connected:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets if the profile has been connected.
+ *
+ * Return value: %TRUE if properties are valid
+ *
+ * Since: 0.1.9
+ **/
+gboolean
+cd_profile_get_connected (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	return profile->priv->proxy != NULL;
+}
+
+/**
  * cd_profile_to_string:
  * @profile: a #CdProfile instance.
  *
@@ -1000,6 +1018,9 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 	case PROP_OBJECT_PATH:
 		g_value_set_string (value, profile->priv->object_path);
 		break;
+	case PROP_CONNECTED:
+		g_value_set_boolean (value, profile->priv->proxy != NULL);
+		break;
 	case PROP_ID:
 		g_value_set_string (value, profile->priv->id);
 		break;
@@ -1075,6 +1096,19 @@ cd_profile_class_init (CdProfileClass *klass)
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+	/**
+	 * CdProfile:connected:
+	 *
+	 * The if the object path has been connected as is valid for use.
+	 *
+	 * Since: 0.1.9
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_CONNECTED,
+					 g_param_spec_string ("connected",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READABLE));
 	/**
 	 * CdProfile:id:
 	 *

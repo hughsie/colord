@@ -71,6 +71,7 @@ struct _CdDevicePrivate
 enum {
 	PROP_0,
 	PROP_OBJECT_PATH,
+	PROP_CONNECTED,
 	PROP_CREATED,
 	PROP_MODIFIED,
 	PROP_ID,
@@ -1572,6 +1573,23 @@ cd_device_get_object_path (CdDevice *device)
 }
 
 /**
+ * cd_device_get_connected:
+ * @device: a #CdDevice instance.
+ *
+ * Gets if the device has been connected.
+ *
+ * Return value: %TRUE if properties are valid
+ *
+ * Since: 0.1.9
+ **/
+gboolean
+cd_device_get_connected (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	return device->priv->proxy != NULL;
+}
+
+/**
  * cd_device_to_string:
  * @device: a #CdDevice instance.
  *
@@ -1655,6 +1673,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_OBJECT_PATH:
 		g_value_set_string (value, device->priv->object_path);
 		break;
+	case PROP_CONNECTED:
+		g_value_set_boolean (value, device->priv->proxy != NULL);
+		break;
 	case PROP_CREATED:
 		g_value_set_uint64 (value, device->priv->created);
 		break;
@@ -1727,6 +1748,19 @@ cd_device_class_init (CdDeviceClass *klass)
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+	/**
+	 * CdDevice:connected:
+	 *
+	 * The if the object path has been connected as is valid for use.
+	 *
+	 * Since: 0.1.9
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_CONNECTED,
+					 g_param_spec_string ("connected",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READABLE));
 	/**
 	 * CdDevice:created:
 	 *

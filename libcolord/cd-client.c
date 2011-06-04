@@ -86,6 +86,7 @@ enum {
 enum {
 	PROP_0,
 	PROP_DAEMON_VERSION,
+	PROP_CONNECTED,
 	PROP_LAST
 };
 
@@ -126,6 +127,23 @@ cd_client_get_daemon_version (CdClient *client)
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
 	return client->priv->daemon_version;
+}
+
+/**
+ * cd_client_get_connected:
+ * @client: a #CdClient instance.
+ *
+ * Gets if the client has been connected.
+ *
+ * Return value: %TRUE if properties are valid
+ *
+ * Since: 0.1.9
+ **/
+gboolean
+cd_client_get_connected (CdClient *client)
+{
+	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
+	return client->priv->proxy != NULL;
 }
 
 /**********************************************************************/
@@ -1983,6 +2001,9 @@ cd_client_get_property (GObject *object,
 	case PROP_DAEMON_VERSION:
 		g_value_set_string (value, client->priv->daemon_version);
 		break;
+	case PROP_CONNECTED:
+		g_value_set_boolean (value, client->priv->proxy != NULL);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -2012,6 +2033,19 @@ cd_client_class_init (CdClientClass *klass)
 					 g_param_spec_string ("daemon-version",
 							      "Daemon version",
 							      NULL,
+							      NULL,
+							      G_PARAM_READABLE));
+	/**
+	 * CdClient:connected:
+	 *
+	 * The if the object path has been connected as is valid for use.
+	 *
+	 * Since: 0.1.9
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_CONNECTED,
+					 g_param_spec_string ("connected",
+							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READABLE));
 

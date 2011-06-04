@@ -67,6 +67,7 @@ struct _CdSensorPrivate
 enum {
 	PROP_0,
 	PROP_OBJECT_PATH,
+	PROP_CONNECTED,
 	PROP_KIND,
 	PROP_STATE,
 	PROP_MODE,
@@ -927,6 +928,24 @@ cd_sensor_get_object_path (CdSensor *sensor)
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
 	return sensor->priv->object_path;
 }
+
+/**
+ * cd_sensor_get_connected:
+ * @sensor: a #CdSensor instance.
+ *
+ * Gets if the sensor has been connected.
+ *
+ * Return value: %TRUE if properties are valid
+ *
+ * Since: 0.1.9
+ **/
+gboolean
+cd_sensor_get_connected (CdSensor *sensor)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	return sensor->priv->proxy != NULL;
+}
+
 /**
  * cd_sensor_equal:
  * @sensor1: one #CdSensor instance.
@@ -976,6 +995,9 @@ cd_sensor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	switch (prop_id) {
 	case PROP_OBJECT_PATH:
 		g_value_set_string (value, sensor->priv->object_path);
+		break;
+	case PROP_CONNECTED:
+		g_value_set_boolean (value, sensor->priv->proxy != NULL);
 		break;
 	case PROP_KIND:
 		g_value_set_uint (value, sensor->priv->kind);
@@ -1046,6 +1068,19 @@ cd_sensor_class_init (CdSensorClass *klass)
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+	/**
+	 * CdSensor:connected:
+	 *
+	 * The if the object path has been connected as is valid for use.
+	 *
+	 * Since: 0.1.9
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_CONNECTED,
+					 g_param_spec_string ("connected",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READABLE));
 	/**
 	 * CdSensor:kind:
 	 *
