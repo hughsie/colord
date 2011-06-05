@@ -757,6 +757,7 @@ cd_device_set_property_internal (CdDevice *device,
 				 GError **error)
 {
 	gboolean ret = TRUE;
+	gboolean is_metadata = FALSE;
 	CdDevicePrivate *priv = device->priv;
 
 	g_debug ("CdDevice: Attempting to set %s to %s on %s",
@@ -782,13 +783,13 @@ cd_device_set_property_internal (CdDevice *device,
 		priv->mode = g_strdup (value);
 	} else {
 		/* add to metadata */
+		is_metadata = TRUE;
 		g_hash_table_insert (device->priv->metadata,
 				     g_strdup (property),
 				     g_strdup (value));
 		cd_device_dbus_emit_property_changed (device,
 						       CD_DEVICE_PROPERTY_METADATA,
 						       cd_device_get_metadata_as_variant (device));
-		goto out;
 	}
 
 	/* set this externally so we can add disk devices at startup
@@ -798,9 +799,13 @@ cd_device_set_property_internal (CdDevice *device,
 					      property,
 					      value);
 	}
-	cd_device_dbus_emit_property_changed (device,
-					      property,
-					      g_variant_new_string (value));
+
+	/* if a known property, emit the correct property changed signal */
+	if (!is_metadata) {
+		cd_device_dbus_emit_property_changed (device,
+						      property,
+						      g_variant_new_string (value));
+	}
 out:
 	return ret;
 }
