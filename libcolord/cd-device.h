@@ -162,6 +162,7 @@ const gchar	*cd_device_get_id			(CdDevice	*device);
 const gchar	*cd_device_get_model			(CdDevice	*device);
 const gchar	*cd_device_get_vendor			(CdDevice	*device);
 const gchar	*cd_device_get_serial			(CdDevice	*device);
+const gchar	*cd_device_get_format			(CdDevice	*device);
 guint64		 cd_device_get_created			(CdDevice	*device);
 guint64		 cd_device_get_modified			(CdDevice	*device);
 CdDeviceKind	 cd_device_get_kind			(CdDevice	*device);

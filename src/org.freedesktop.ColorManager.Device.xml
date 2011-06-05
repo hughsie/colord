@@ -141,6 +141,18 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Format' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The qualifier format for the device, e.g.
+            <doc:tt>ColorModel.OutputMode.OutputResolution</doc:tt>.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Metadata' type='a{ss}' access='read'>
       <doc:doc>
         <doc:description>

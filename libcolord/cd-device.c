@@ -58,6 +58,7 @@ struct _CdDevicePrivate
 	gchar			*id;
 	gchar			*model;
 	gchar			*serial;
+	gchar			*format;
 	gchar			*vendor;
 	guint64			 created;
 	guint64			 modified;
@@ -78,6 +79,7 @@ enum {
 	PROP_MODEL,
 	PROP_VENDOR,
 	PROP_SERIAL,
+	PROP_FORMAT,
 	PROP_KIND,
 	PROP_COLORSPACE,
 	PROP_MODE,
@@ -196,6 +198,24 @@ cd_device_get_serial (CdDevice *device)
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return device->priv->serial;
+}
+
+/**
+ * cd_device_get_format:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device format.
+ *
+ * Return value: A string, or %NULL for invalid
+ *
+ * Since: 0.1.9
+ **/
+const gchar *
+cd_device_get_format (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
+	return device->priv->format;
 }
 
 /**
@@ -447,6 +467,9 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SERIAL) == 0) {
 			g_free (device->priv->serial);
 			device->priv->serial = g_variant_dup_string (property_value, NULL);
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_FORMAT) == 0) {
+			g_free (device->priv->format);
+			device->priv->format = g_variant_dup_string (property_value, NULL);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_VENDOR) == 0) {
 			g_free (device->priv->vendor);
 			device->priv->vendor = g_variant_dup_string (property_value, NULL);
@@ -541,6 +564,7 @@ cd_device_connect_cb (GObject *source_object,
 	GVariant *kind = NULL;
 	GVariant *model = NULL;
 	GVariant *serial = NULL;
+	GVariant *format = NULL;
 	GVariant *vendor = NULL;
 	GVariant *colorspace = NULL;
 	GVariant *mode = NULL;
@@ -602,6 +626,12 @@ cd_device_connect_cb (GObject *source_object,
 	if (serial != NULL)
 		device->priv->serial = g_variant_dup_string (serial, NULL);
 
+	/* get format */
+	format = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						   CD_DEVICE_PROPERTY_FORMAT);
+	if (format != NULL)
+		device->priv->format = g_variant_dup_string (format, NULL);
+
 	/* get vendor */
 	vendor = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						   CD_DEVICE_PROPERTY_VENDOR);
@@ -654,6 +684,8 @@ out:
 		g_variant_unref (vendor);
 	if (serial != NULL)
 		g_variant_unref (serial);
+	if (format != NULL)
+		g_variant_unref (format);
 	if (colorspace != NULL)
 		g_variant_unref (colorspace);
 	if (mode != NULL)
@@ -1691,6 +1723,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_SERIAL:
 		g_value_set_string (value, device->priv->serial);
 		break;
+	case PROP_FORMAT:
+		g_value_set_string (value, device->priv->format);
+		break;
 	case PROP_VENDOR:
 		g_value_set_string (value, device->priv->vendor);
 		break;
@@ -1823,6 +1858,19 @@ cd_device_class_init (CdDeviceClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_SERIAL,
 					 g_param_spec_string ("serial",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READABLE));
+	/**
+	 * CdDevice:format:
+	 *
+	 * The device format.
+	 *
+	 * Since: 0.1.9
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_FORMAT,
+					 g_param_spec_string ("format",
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READABLE));

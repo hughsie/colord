@@ -179,13 +179,16 @@ colord_client_random_func (void)
 	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					      g_free, g_free);
 	g_hash_table_insert (device_props,
-			     g_strdup ("Vendor"),
+			     g_strdup (CD_DEVICE_PROPERTY_VENDOR),
 			     g_strdup ("Hewlett-Packard Ltd."));
 	g_hash_table_insert (device_props,
-			     g_strdup ("Model"),
+			     g_strdup (CD_DEVICE_PROPERTY_MODEL),
 			     g_strdup ("3000"));
 	g_hash_table_insert (device_props,
-			     g_strdup ("XRANDR_name"),
+			     g_strdup (CD_DEVICE_PROPERTY_FORMAT),
+			     g_strdup ("ColorModel.OutputMode.OutputResolution"));
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_METADATA_XRANDR_NAME),
 			     g_strdup ("lvds1"));
 	device = cd_client_create_device_sync (client,
 					       device_id,
@@ -255,6 +258,9 @@ colord_client_random_func (void)
 
 	/* check device serial */
 	g_assert_cmpstr (cd_device_get_serial (device), ==, "0001");
+
+	/* check device format */
+	g_assert_cmpstr (cd_device_get_format (device), ==, "ColorModel.OutputMode.OutputResolution");
 
 	/* check device metadata item */
 	g_assert_cmpstr (cd_device_get_metadata_item (device, "XRANDR_name"), ==, "lvds1");

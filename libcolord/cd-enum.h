@@ -239,6 +239,7 @@ typedef enum {
 #define CD_DEVICE_PROPERTY_VENDOR		"Vendor"
 #define CD_DEVICE_PROPERTY_SERIAL		"Serial"
 #define CD_DEVICE_PROPERTY_COLORSPACE		"Colorspace"
+#define CD_DEVICE_PROPERTY_FORMAT		"Format"
 #define CD_DEVICE_PROPERTY_MODE			"Mode"
 #define CD_DEVICE_PROPERTY_PROFILES		"Profiles"
 #define CD_DEVICE_PROPERTY_CREATED		"Created"

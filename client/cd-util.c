@@ -58,6 +58,12 @@ cd_util_show_profile (CdProfile *profile)
 	g_print ("%s:\t%s\n",
 		 _("Object Path"),
 		 cd_profile_get_object_path (profile));
+	tmp = cd_profile_get_format (profile);
+	if (tmp != NULL && tmp[0] != '\0') {
+		/* TRANSLATORS: the profile format, e.g.
+		 * ColorModel.OutputMode.OutputResolution */
+		g_print ("%s:\t%s\n", _("Format"), tmp);
+	}
 	tmp = cd_profile_get_qualifier (profile);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi */
@@ -118,6 +124,7 @@ cd_util_show_profile (CdProfile *profile)
 static void
 cd_util_show_device (CdDevice *device)
 {
+	const gchar *tmp;
 	CdProfile *profile_tmp;
 	GHashTable *metadata;
 	GList *list, *l;
@@ -158,6 +165,13 @@ cd_util_show_device (CdDevice *device)
 	g_print ("%s:\t%s\n",
 		 _("Serial"),
 		 cd_device_get_serial (device));
+
+	tmp = cd_device_get_format (device);
+	if (tmp != NULL && tmp[0] != '\0') {
+		/* TRANSLATORS: the device format, e.g.
+		 * ColorModel.OutputMode.OutputResolution */
+		g_print ("%s:\t%s\n", _("Format"), tmp);
+	}
 
 	/* TRANSLATORS: the device colorspace, e.g. "rgb" */
 	g_print ("%s:\t%s\n",

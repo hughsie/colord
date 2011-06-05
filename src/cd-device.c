@@ -59,6 +59,7 @@ struct _CdDevicePrivate
 	gchar				*serial;
 	gchar				*vendor;
 	gchar				*colorspace;
+	gchar				*format;
 	gchar				*mode;
 	gchar				*kind;
 	gchar				*object_path;
@@ -773,6 +774,9 @@ cd_device_set_property_internal (CdDevice *device,
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_COLORSPACE) == 0) {
 		g_free (priv->colorspace);
 		priv->colorspace = g_strdup (value);
+	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_FORMAT) == 0) {
+		g_free (priv->format);
+		priv->format = g_strdup (value);
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_MODE) == 0) {
 		g_free (priv->mode);
 		priv->mode = g_strdup (value);
@@ -1301,6 +1305,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = cd_device_get_nullable_for_string (priv->colorspace);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_FORMAT) == 0) {
+		retval = cd_device_get_nullable_for_string (priv->format);
+		goto out;
+	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODE) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->mode);
 		goto out;
@@ -1554,6 +1562,7 @@ cd_device_finalize (GObject *object)
 	g_free (priv->model);
 	g_free (priv->vendor);
 	g_free (priv->colorspace);
+	g_free (priv->format);
 	g_free (priv->mode);
 	g_free (priv->serial);
 	g_free (priv->kind);
