@@ -131,7 +131,15 @@ else
 fi
 
 PKG_CHECK_MODULES(SQLITE, sqlite3)
-PKG_CHECK_MODULES(GUDEV, gudev-1.0)
+
+dnl **** Check for GUDEV ****
+AC_ARG_ENABLE(gudev, AS_HELP_STRING([--enable-gudev],[Enable GUDEV support]),
+	      enable_gudev=$enableval, enable_gudev=yes)
+if test x$enable_gudev != xno; then
+	PKG_CHECK_MODULES(GUDEV, gudev-1.0)
+	AC_DEFINE(HAVE_GUDEV,1,[Use GUDEV support for hardware])
+fi
+AM_CONDITIONAL(HAVE_GUDEV, test x$enable_gudev = xyes)
 
 PKG_CHECK_MODULES(USB, libusb-1.0 >= 1.0.9, has_new_libusb=yes, has_new_libusb=no)
 if test x$has_new_libusb = xyes; then
@@ -247,6 +255,7 @@ echo "
         PolicyKit support:         ${enable_polkit}
         Reverse engineering tools: ${enable_reverse}
         SANE support:              ${enable_sane}
+        GUDEV support:             ${enable_gudev}
         LCMS2 DICT support:        ${has_new_lcms}
 "
 

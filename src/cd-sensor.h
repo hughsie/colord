@@ -22,9 +22,14 @@
 #ifndef __CD_SENSOR_H
 #define __CD_SENSOR_H
 
+#include "config.h"
+
 #include <glib-object.h>
-#include <gudev/gudev.h>
 #include <gio/gio.h>
+
+#ifdef HAVE_GUDEV
+#include <gudev/gudev.h>
+#endif
 
 #include "cd-common.h"
 #include "cd-enum.h"
@@ -82,9 +87,11 @@ gboolean	 cd_sensor_register_object	(CdSensor		*sensor,
 						 GDBusConnection	*connection,
 						 GDBusInterfaceInfo	*info,
 						 GError			**error);
+#ifdef HAVE_GUDEV
 gboolean	 cd_sensor_set_from_device	(CdSensor		*sensor,
 						 GUdevDevice		*device,
 						 GError			**error);
+#endif
 void		 cd_sensor_button_pressed	(CdSensor		*sensor);
 gboolean	 cd_sensor_dump			(CdSensor		*sensor,
 						 GString		*data,

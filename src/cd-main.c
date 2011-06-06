@@ -50,7 +50,9 @@ static CdProfileArray *profiles_array = NULL;
 static CdProfileStore *profile_store = NULL;
 static CdMappingDb *mapping_db = NULL;
 static CdDeviceDb *device_db = NULL;
+#ifdef HAVE_GUDEV
 static CdUdevClient *udev_client = NULL;
+#endif
 static CdSaneClient *sane_client = NULL;
 static CdConfig *config = NULL;
 static GPtrArray *sensors = NULL;
@@ -1478,8 +1480,10 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 		cd_main_add_disk_device (device_id);
 	}
 
+#ifdef HAVE_GUDEV
 	/* add GUdev devices */
 	cd_udev_client_coldplug (udev_client);
+#endif
 
 	/* add dummy sensor */
 	ret = cd_config_get_boolean (config, "CreateDummySensor");
@@ -1532,7 +1536,7 @@ cd_main_on_name_lost_cb (GDBusConnection *connection_,
  * cd_main_client_device_added_cb:
  **/
 static void
-cd_main_client_device_added_cb (CdUdevClient *udev_client_,
+cd_main_client_device_added_cb (GObject *source,
 				CdDevice *device,
 				gpointer user_data)
 {
@@ -1563,7 +1567,7 @@ out:
  * cd_main_client_device_removed_cb:
  **/
 static void
-cd_main_client_device_removed_cb (CdUdevClient *udev_client_,
+cd_main_client_device_removed_cb (GObject *source,
 				  CdDevice *device,
 				  gpointer user_data)
 {
@@ -1571,6 +1575,8 @@ cd_main_client_device_removed_cb (CdUdevClient *udev_client_,
 		 cd_device_get_id (device));
 	cd_main_device_removed (device);
 }
+
+#ifdef HAVE_GUDEV
 
 /**
  * cd_main_client_sensor_added_cb:
@@ -1614,6 +1620,7 @@ cd_main_client_sensor_removed_cb (CdUdevClient *udev_client_,
 out:
 	g_ptr_array_remove (sensors, sensor);
 }
+#endif
 
 /**
  * cd_main_timed_exit_cb:
@@ -1693,6 +1700,7 @@ main (int argc, char *argv[])
 	g_signal_connect (sane_client, "removed",
 			  G_CALLBACK (cd_main_client_device_removed_cb),
 			  NULL);
+#ifdef HAVE_GUDEV
 	udev_client = cd_udev_client_new ();
 	g_signal_connect (udev_client, "device-added",
 			  G_CALLBACK (cd_main_client_device_added_cb),
@@ -1706,6 +1714,7 @@ main (int argc, char *argv[])
 	g_signal_connect (udev_client, "sensor-removed",
 			  G_CALLBACK (cd_main_client_sensor_removed_cb),
 			  NULL);
+#endif
 
 	/* connect to the mapping db */
 	mapping_db = cd_mapping_db_new ();
@@ -1836,8 +1845,10 @@ out:
 	g_free (introspection_sensor_data);
 	g_ptr_array_unref (sensors);
 	g_hash_table_destroy (standard_spaces);
+#ifdef HAVE_GUDEV
 	if (udev_client != NULL)
 		g_object_unref (udev_client);
+#endif
 	if (config != NULL)
 		g_object_unref (config);
 	if (sane_client != NULL)

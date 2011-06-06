@@ -65,11 +65,15 @@ colord_SOURCES =					\
 	cd-sane-client.h				\
 	cd-sensor.c					\
 	cd-sensor.h					\
-	cd-udev-client.c				\
-	cd-udev-client.h				\
 	cd-usb.c					\
 	cd-usb.h					\
 	cd-main.c
+
+if HAVE_GUDEV
+colord_SOURCES +=					\
+	cd-udev-client.c				\
+	cd-udev-client.h
+endif
 
 colord_LDADD =						\
 	$(COLORD_PRIVATE_LIBS)				\
@@ -196,6 +200,7 @@ cd_sensor_dump_CFLAGS =					\
 
 endif
 
+if HAVE_GUDEV
 # sensor plugins
 plugindir = $(libdir)/colord-sensors
 plugin_LTLIBRARIES =					\
@@ -217,6 +222,7 @@ libcolord_sensor_munki_la_SOURCES = cd-sensor-munki.c
 libcolord_sensor_munki_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
 libcolord_sensor_munki_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_munki_la_CFLAGS = $(WARNINGFLAGS_C)
+endif
 
 install-data-hook:
 	if test -w $(DESTDIR)$(prefix)/; then \

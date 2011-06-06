@@ -871,6 +871,7 @@ out:
 	return ret;
 }
 
+#ifdef HAVE_GUDEV
 /**
  * cd_sensor_name_vanished_cb:
  **/
@@ -935,6 +936,7 @@ cd_sensor_set_from_device (CdSensor *sensor,
 
 	return TRUE;
 }
+#endif
 
 /**
  * cd_sensor_get_property:

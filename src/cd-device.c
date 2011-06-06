@@ -806,7 +806,6 @@ cd_device_set_property_internal (CdDevice *device,
 						      property,
 						      g_variant_new_string (value));
 	}
-out:
 	return ret;
 }
 
