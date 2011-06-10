@@ -21,3 +21,8 @@ EXTRA_DIST = spec-to-docbook.xsl dbus-introspect-docs.dtd
 
 clean-local :
 	rm -f *~ *.ref.xml
+
+MAINTAINERCLEANFILES =					\
+	*.ref.xml
+
+-include $(top_srcdir)/git.mk

@@ -69,3 +69,5 @@ endif
 # Version information for marking the documentation
 EXTRA_DIST += version.xml.in
 
+
+-include $(top_srcdir)/git.mk

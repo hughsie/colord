@@ -5,3 +5,5 @@ udevrules_DATA =						\
 
 EXTRA_DIST =							\
 	$(udevrules_DATA)
+
+-include $(top_srcdir)/git.mk

@@ -231,3 +231,5 @@ install-data-hook:
 	fi
 
 TESTS = cd-self-test
+
+-include $(top_srcdir)/git.mk

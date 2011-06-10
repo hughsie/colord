@@ -19,7 +19,15 @@ cd-fix-profile.1: cd-fix-profile.sgml
 	docbook2man $? > /dev/null
 endif
 
+MAINTAINERCLEANFILES =					\
+	manpage.links					\
+	manpage.log					\
+	manpage.refs					\
+	$(man_MANS)
+
 clean-local :
 	rm -f *~
 	rm -f *.1
 	rm -f manpage.*
+
+-include $(top_srcdir)/git.mk

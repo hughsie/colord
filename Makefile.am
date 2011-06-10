@@ -20,12 +20,6 @@ SUBDIRS = 						\
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`
 
-DISTCLEANFILES =					\
-	colord-*.tar.gz					\
-	intltool-extract				\
-	intltool-merge					\
-	intltool-update
-
 EXTRA_DIST =						\
 	COPYING						\
 	MAINTAINERS					\
@@ -38,6 +32,29 @@ EXTRA_DIST =						\
         intltool-extract.in				\
         intltool-merge.in				\
         intltool-update.in
+
+MAINTAINERCLEANFILES =					\
+	$(srcdir)/INSTALL				\
+	$(srcdir)/ABOUT-NLS				\
+	$(srcdir)/aclocal.m4				\
+	$(srcdir)/autoscan.log				\
+	$(srcdir)/compile				\
+	$(srcdir)/config.guess				\
+	$(srcdir)/config.rpath				\
+	$(srcdir)/config.h.in				\
+	$(srcdir)/config.sub				\
+	$(srcdir)/configure.scan			\
+	$(srcdir)/depcomp				\
+	$(srcdir)/install-sh				\
+	$(srcdir)/ltmain.sh				\
+	$(srcdir)/missing				\
+	$(srcdir)/mkinstalldirs				\
+	$(srcdir)/omf.make				\
+	$(srcdir)/xmldocs.make				\
+	$(srcdir)/gtk-doc.make				\
+	$(srcdir)/ChangeLog				\
+	$(srcdir)/colord-*.tar.*			\
+	`find "$(srcdir)" -type f -name Makefile.in -print`
 
 distclean-local:
 	if test $(srdcir) = .; then :; else \
@@ -59,3 +76,5 @@ ChangeLog:
 	fi
 
 .PHONY: ChangeLog
+
+-include $(top_srcdir)/git.mk

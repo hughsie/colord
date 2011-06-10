@@ -17,8 +17,11 @@ $(servicemain_DATA): $(servicemain_in_files) Makefile
 EXTRA_DIST =						\
 	$(servicemain_in_files)
 
-DISTCLEANFILES =					\
-	org.freedesktop.ColorManager.service
-
 x11-colors.icc:
 	$(top_builddir)/client/cd-create-profile --output $@ --srgb-palette ./x11-colors.csv --nc-prefix="X11" -d "X11 Colors" -c "No copyright" -n "Richard Hughes"
+
+DISTCLEANFILES =					\
+	org.freedesktop.ColorManager.service		\
+	$(dist_profile_DATA)
+
+-include $(top_srcdir)/git.mk

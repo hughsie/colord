@@ -52,3 +52,5 @@ cd_create_profile_LDADD =				\
 
 cd_create_profile_CFLAGS =				\
 	$(WARNINGFLAGS_C)
+
+-include $(top_srcdir)/git.mk

@@ -5,3 +5,5 @@ dist_polkit_policy_DATA =					\
 
 EXTRA_DIST = org.freedesktop.color.policy.in
 DISTCLEANFILES = org.freedesktop.color.policy
+
+-include $(top_srcdir)/git.mk

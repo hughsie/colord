@@ -79,7 +79,12 @@ EXTRA_DIST =							\
 	cd-version.h.in						\
 	colord.pc.in
 
+MAINTAINERCLEANFILES =						\
+	$(noinst_LIBRARIES)
+
 CLEANFILES = $(BUILT_SOURCES)
 
 clean-local:
 	rm -f *~
+
+-include $(top_srcdir)/git.mk

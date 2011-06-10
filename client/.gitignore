@@ -1,6 +1,0 @@
-colormgr
-.deps
-.libs
-*.o
-cd-fix-profile
-cd-create-profile

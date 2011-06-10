@@ -26,3 +26,5 @@ cd_dbus_use_qualifier_LDADD =				\
 cd_dbus_use_qualifier_CFLAGS =				\
 	$(WARNINGFLAGS_C)
 endif
+
+-include $(top_srcdir)/git.mk
