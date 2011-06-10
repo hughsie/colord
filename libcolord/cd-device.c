@@ -945,6 +945,7 @@ cd_device_add_profile (CdDevice *device,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (device),
@@ -1963,6 +1964,7 @@ static void
 cd_device_finalize (GObject *object)
 {
 	CdDevice *device;
+	guint ret;
 
 	g_return_if_fail (CD_IS_DEVICE (object));
 
@@ -1975,8 +1977,18 @@ cd_device_finalize (GObject *object)
 	g_free (device->priv->format);
 	g_free (device->priv->vendor);
 	g_ptr_array_unref (device->priv->profiles);
-	if (device->priv->proxy != NULL)
+	if (device->priv->proxy != NULL) {
+		ret = g_signal_handlers_disconnect_by_func (device->priv->proxy,
+							    G_CALLBACK (cd_device_dbus_signal_cb),
+							    device);
+		g_assert (ret > 0);
+		ret = g_signal_handlers_disconnect_by_func (device->priv->proxy,
+							    G_CALLBACK (cd_device_dbus_properties_changed_cb),
+							    device);
+		g_assert (ret > 0);
 		g_object_unref (device->priv->proxy);
+		g_assert (!G_IS_DBUS_PROXY (device->priv->proxy));
+	}
 
 	G_OBJECT_CLASS (cd_device_parent_class)->finalize (object);
 }

@@ -1214,6 +1214,7 @@ static void
 cd_sensor_finalize (GObject *object)
 {
 	CdSensor *sensor;
+	guint ret;
 
 	g_return_if_fail (CD_IS_SENSOR (object));
 
@@ -1223,8 +1224,18 @@ cd_sensor_finalize (GObject *object)
 	g_free (sensor->priv->serial);
 	g_free (sensor->priv->model);
 	g_free (sensor->priv->vendor);
-	if (sensor->priv->proxy != NULL)
+	if (sensor->priv->proxy != NULL) {
+		ret = g_signal_handlers_disconnect_by_func (sensor->priv->proxy,
+							    G_CALLBACK (cd_sensor_dbus_signal_cb),
+							    sensor);
+		g_assert (ret > 0);
+		ret = g_signal_handlers_disconnect_by_func (sensor->priv->proxy,
+							    G_CALLBACK (cd_sensor_dbus_properties_changed_cb),
+							    sensor);
+		g_assert (ret > 0);
 		g_object_unref (sensor->priv->proxy);
+		g_assert (!G_IS_DBUS_PROXY (sensor->priv->proxy));
+	}
 
 	G_OBJECT_CLASS (cd_sensor_parent_class)->finalize (object);
 }
