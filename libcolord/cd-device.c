@@ -707,7 +707,6 @@ out:
 		g_variant_unref (metadata);
 	g_simple_async_result_complete_in_idle (res_source);
 	g_object_unref (res_source);
-	g_object_unref (device);
 }
 
 /**
