@@ -1246,7 +1246,75 @@ colord_client_async_func (void)
 	g_object_unref (profile);
 
 	g_object_unref (client);
+}
 
+static void
+colord_device_connect_cb (GObject *object, GAsyncResult *res, gpointer user_data)
+{
+	gboolean ret;
+	GError *error = NULL;
+	CdDevice *device = CD_DEVICE (object);
+
+	ret = cd_device_connect_finish (device, res, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	_g_test_loop_quit ();
+}
+
+static void
+colord_device_async_func (void)
+{
+	gboolean ret;
+	GError *error = NULL;
+	CdClient *client;
+	CdDevice *device;
+	CdDevice *device_tmp;
+
+	client = cd_client_new ();
+
+	/* connect */
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	device = cd_client_create_device_sync (client,
+					       "device_async_dave",
+					       CD_OBJECT_SCOPE_TEMP,
+					       NULL,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect */
+	cd_device_connect (device, NULL, colord_device_connect_cb, NULL);
+
+	/* unref straight away */
+	g_object_unref (device);
+	device = NULL;
+
+	_g_test_loop_run_with_timeout (1500);
+	g_debug ("connected to device in %f", g_test_timer_elapsed ());
+
+	/* set a property in another instance */
+	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave");
+	ret = cd_device_connect_sync (device_tmp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	ret = cd_device_set_model_sync (device_tmp, "Cray", NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (device_tmp);
+
+	/* delete known device */
+	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave");
+	ret = cd_client_delete_device_sync (client, device_tmp, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (device_tmp);
+
+	g_object_unref (client);
 }
 
 static void
@@ -1427,6 +1495,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/device-modified", colord_device_modified_func);
 	g_test_add_func ("/colord/client-async", colord_client_async_func);
+	g_test_add_func ("/colord/device-async", colord_device_async_func);
 	if (g_test_thorough ())
 		g_test_add_func ("/colord/client-systemwide", colord_client_systemwide_func);
 	g_test_add_func ("/colord/client-fd-pass", colord_client_fd_pass_func);
