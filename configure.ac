@@ -193,7 +193,7 @@ if test x$enable_sane != xno; then
 	if test $has_sane = "no"; then
 		AC_CHECK_HEADER(sane/sane.h, has_sane=yes, has_sane=no)
 		if test $has_sane = "no"; then
-			AC_MSG_ERROR([Cannot fine SANE])
+			AC_MSG_ERROR([Cannot find SANE])
 		fi
 		SANE_CFLAGS=""
 		SANE_LIBS="-lsane"
