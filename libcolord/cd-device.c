@@ -496,6 +496,7 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
+		g_free (property_name);
 		g_variant_unref (property_value);
 	}
 }
@@ -1966,6 +1967,9 @@ cd_device_finalize (GObject *object)
 	g_free (device->priv->object_path);
 	g_free (device->priv->id);
 	g_free (device->priv->model);
+	g_free (device->priv->serial);
+	g_free (device->priv->format);
+	g_free (device->priv->vendor);
 	g_ptr_array_unref (device->priv->profiles);
 	if (device->priv->proxy != NULL)
 		g_object_unref (device->priv->proxy);

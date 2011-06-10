@@ -457,6 +457,7 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
+		g_free (property_name);
 		g_variant_unref (property_value);
 	}
 }

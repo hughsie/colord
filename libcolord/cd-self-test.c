@@ -58,6 +58,7 @@ static void
 _g_test_loop_run_with_timeout (guint timeout_ms)
 {
 	g_assert (_test_loop_timeout_id == 0);
+	g_assert (_test_loop == NULL);
 	_test_loop = g_main_loop_new (NULL, FALSE);
 	_test_loop_timeout_id = g_timeout_add (timeout_ms, _g_test_hang_check_cb, NULL);
 	g_main_loop_run (_test_loop);
@@ -243,6 +244,7 @@ colord_client_random_func (void)
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
+	_g_test_loop_quit ();
 
 	/* check device created */
 	g_assert_cmpuint (cd_device_get_created (device), >, 1295354162);
@@ -332,6 +334,7 @@ colord_client_random_func (void)
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
+	_g_test_loop_quit ();
 
 	/* check we can find profile based on filename */
 	profile_tmp = cd_client_find_profile_by_filename_sync (client,
@@ -365,6 +368,7 @@ colord_client_random_func (void)
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
+	_g_test_loop_quit ();
 
 	/* check profile kind */
 	g_assert_cmpint (cd_profile_get_kind (profile), ==,
@@ -451,6 +455,7 @@ colord_client_random_func (void)
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
+	_g_test_loop_quit ();
 
 	/* ensure profile is default */
 	array = cd_device_get_profiles (device);
@@ -473,6 +478,7 @@ colord_client_random_func (void)
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
+	_g_test_loop_quit ();
 
 	/* ensure profile is default */
 	array = cd_device_get_profiles (device);
@@ -577,6 +583,7 @@ colord_client_random_func (void)
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
+	_g_test_loop_quit ();
 
 	/* ensure device no longer lists deleted profile */
 	array = cd_device_get_profiles (device);
@@ -598,6 +605,7 @@ colord_client_random_func (void)
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
+	_g_test_loop_quit ();
 
 	/* ensure device has profile auto-added */
 	array = cd_device_get_profiles (device);
@@ -837,6 +845,7 @@ colord_sensor_func (void)
 	g_assert (ret);
 
 	_g_test_loop_run_with_timeout (5);
+	_g_test_loop_quit ();
 	g_assert (cd_sensor_get_locked (sensor));
 
 	/* lock again */
@@ -847,6 +856,7 @@ colord_sensor_func (void)
 	g_assert (!ret);
 
 	_g_test_loop_run_with_timeout (5);
+	_g_test_loop_quit ();
 	g_assert (cd_sensor_get_locked (sensor));
 	g_clear_error (&error);
 
@@ -860,6 +870,7 @@ colord_sensor_func (void)
 
 	/* get async events */
 	_g_test_loop_run_with_timeout (5);
+	_g_test_loop_quit ();
 	g_assert_cmpint (_refcount, ==, 2);
 
 	g_assert_cmpfloat (values->X - 0.1f, >, -0.01);
@@ -880,6 +891,7 @@ colord_sensor_func (void)
 	g_assert (ret);
 
 	_g_test_loop_run_with_timeout (5);
+	_g_test_loop_quit ();
 	g_assert (!cd_sensor_get_locked (sensor));
 
 	/* lock again */
@@ -890,6 +902,7 @@ colord_sensor_func (void)
 	g_assert (!ret);
 
 	_g_test_loop_run_with_timeout (5);
+	_g_test_loop_quit ();
 	g_assert (!cd_sensor_get_locked (sensor));
 	g_clear_error (&error);
 out:
@@ -1462,6 +1475,7 @@ colord_device_modified_func (void)
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
+	_g_test_loop_quit ();
 
 	/* get new number of profiles */
 	array = cd_device_get_profiles (device);
