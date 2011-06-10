@@ -9,32 +9,27 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-srcdir=`dirname $0`
-test -z "$srcdir" && srcdir=.
+test -n "$srcdir" || srcdir=`dirname "$0"`
+test -n "$srcdir" || srcdir=.
 
-(test -f $srcdir/configure.ac) || {
-    echo -n "**Error**: Directory \"\'$srcdir\'\" does not look like the"
-    echo " top-level package directory"
-    exit 1
-}
+olddir=`pwd`
+cd "$srcdir"
 
-if ([ -z "$*" ] && [ "x$NOCONFIGURE" = "x" ]) ; then
-  echo "**Warning**: I am going to run 'configure' with no arguments."
-  echo "If you wish to pass any to it, please specify them on the"
-  echo "'$0' command line."
-  echo
+GTKDOCIZE=`which gtkdocize`
+if test -z $GTKDOCIZE; then
+        echo "*** No GTK-Doc found, please install it ***"
+        exit 1
 fi
 
-(cd $srcdir && gtkdocize) || exit 1
-(cd $srcdir && autoreconf --force --install) || exit 1
-(cd $srcdir && intltoolize) || exit 1
-
-conf_flags="--enable-gtk-doc"
-
-if test x$NOCONFIGURE = x; then
-  echo Running $srcdir/configure $conf_flags "$@" ...
-  $srcdir/configure $conf_flags "$@" \
-  && echo Now type \`make\' to compile. || exit 1
-else
-  echo Skipping configure process.
+AUTORECONF=`which autoreconf`
+if test -z $AUTORECONF; then
+        echo "*** No autoreconf found, please install it ***"
+        exit 1
 fi
+
+gtkdocize || exit $?
+autopoint --force
+AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
+
+cd "$olddir"
+test -n "$NOCONFIGURE" || "$srcdir/configure" "$@"

@@ -111,11 +111,13 @@ AC_SUBST(WARNINGFLAGS_C)
 dnl ---------------------------------------------------------------------------
 dnl - gettext stuff
 dnl ---------------------------------------------------------------------------
+AM_GNU_GETTEXT_VERSION([0.17])
+AM_GNU_GETTEXT([external])
+
 GETTEXT_PACKAGE=AC_PACKAGE_NAME
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE(GETTEXT_PACKAGE, "AC_PACKAGE_NAME", [foo])
 
-AM_GLIB_GNU_GETTEXT
 GLIB_GSETTINGS
 
 dnl ---------------------------------------------------------------------------
