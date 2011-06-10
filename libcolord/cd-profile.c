@@ -421,6 +421,8 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 	gchar *property_name;
 	GVariant *property_value;
 
+	g_return_if_fail (CD_IS_PROFILE (profile));
+
 	len = g_variant_iter_init (&iter, changed_properties);
 	for (i=0; i < len; i++) {
 		g_variant_get_child (changed_properties, i,
@@ -473,6 +475,8 @@ cd_profile_dbus_signal_cb (GDBusProxy *proxy,
 			   CdProfile   *profile)
 {
 	gchar *object_path_tmp = NULL;
+
+	g_return_if_fail (CD_IS_PROFILE (profile));
 
 	if (g_strcmp0 (signal_name, "Changed") == 0) {
 		g_signal_emit (profile, signals[SIGNAL_CHANGED], 0);

@@ -338,6 +338,8 @@ cd_sensor_dbus_properties_changed_cb (GDBusProxy  *proxy,
 	gchar *property_name;
 	GVariant *property_value;
 
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+
 	len = g_variant_iter_init (&iter, changed_properties);
 	for (i=0; i < len; i++) {
 		g_variant_get_child (changed_properties, i,
@@ -391,6 +393,8 @@ cd_sensor_dbus_signal_cb (GDBusProxy *proxy,
 			  GVariant   *parameters,
 			  CdSensor   *sensor)
 {
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+
 	if (g_strcmp0 (signal_name, "ButtonPressed") == 0) {
 		g_signal_emit (sensor, signals[SIGNAL_BUTTON_PRESSED], 0);
 	} else {
