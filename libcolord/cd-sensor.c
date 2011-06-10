@@ -421,16 +421,16 @@ cd_sensor_connect_cb (GObject *source_object,
 	GVariant *native = NULL;
 	GVariant *locked = NULL;
 	GVariant *caps = NULL;
-	GAsyncResult *result_orig = G_ASYNC_RESULT (user_data);
-	CdSensor *sensor = CD_SENSOR (g_async_result_get_source_object (result_orig));
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	CdSensor *sensor = CD_SENSOR (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
 	GError *error = NULL;
 
 	/* get result */
 	sensor->priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 	if (sensor->priv->proxy == NULL) {
-		g_simple_async_result_set_from_error (G_SIMPLE_ASYNC_RESULT (result_orig),
+		g_simple_async_result_set_from_error (res_source,
 						      error);
-		g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
+		g_simple_async_result_complete (res_source);
 		g_error_free (error);
 		goto out;
 	}
@@ -502,7 +502,7 @@ cd_sensor_connect_cb (GObject *source_object,
 			  sensor);
 
 	/* we're done */
-	g_simple_async_result_complete (G_SIMPLE_ASYNC_RESULT (result_orig));
+	g_simple_async_result_complete (res_source);
 out:
 	if (kind != NULL)
 		g_variant_unref (kind);
@@ -522,6 +522,7 @@ out:
 		g_variant_unref (locked);
 	if (caps != NULL)
 		g_variant_unref (caps);
+	g_object_unref (res_source);
 }
 
 /**
