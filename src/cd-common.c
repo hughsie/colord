@@ -69,13 +69,13 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 	gboolean ret = FALSE;
 	GError *error = NULL;
 	PolkitAuthorizationResult *result = NULL;
-	PolkitSubject *subject;
+	PolkitSubject *subject = NULL;
 	PolkitAuthority *authority = NULL;
 
 	/* get authority */
 	authority = polkit_authority_get_sync (NULL, &error);
 	if (authority == NULL) {
-		g_error ("failed to get pokit authority: %s", error->message);
+		g_warning ("failed to get pokit authority: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -118,7 +118,8 @@ out:
 		g_object_unref (authority);
 	if (result != NULL)
 		g_object_unref (result);
-	g_object_unref (subject);
+	if (subject != NULL)
+		g_object_unref (subject);
 	return ret;
 #else
 	g_warning ("CdCommon: not checking %s for %s as no PolicyKit support",
