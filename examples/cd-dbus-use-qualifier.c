@@ -165,6 +165,7 @@ get_profile_for_device_path (DBusConnection *con,
 		 split[QUAL_COLORSPACE]);
 	key[i++] = strdup(str);
 	key[i++] = strdup("*");
+	printf("specified %i qualifiers\n", i);
 	dbus_message_iter_open_container(&args,
 					 DBUS_TYPE_ARRAY,
 					 "s",

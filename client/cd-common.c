@@ -43,7 +43,7 @@ cd_profile_write_metadata_string (cmsHPROFILE lcms_profile,
 	gchar **metadata_split = NULL;
 	gchar *tmp;
 	guint i;
-	gboolean own_dict;
+	gboolean own_dict = FALSE;
 
 	/* read existing metadata */
 	if (!clear_existing)
@@ -56,18 +56,20 @@ cd_profile_write_metadata_string (cmsHPROFILE lcms_profile,
 	}
 
 	/* parse string */
-	metadata_split = g_strsplit (metadata, ",", -1);
-	for (i=0; metadata_split[i] != NULL; i++) {
-		tmp = g_strstr_len (metadata_split[i], -1, "=");
-		if (tmp == NULL) {
-			g_set_error (error, 1, 0,
-				     "invalid metadata format: '%s' "
-				     "expected 'key=value'",
-				     metadata_split[i]);
-			goto out;
+	if (metadata != NULL) {
+		metadata_split = g_strsplit (metadata, ",", -1);
+		for (i=0; metadata_split[i] != NULL; i++) {
+			tmp = g_strstr_len (metadata_split[i], -1, "=");
+			if (tmp == NULL) {
+				g_set_error (error, 1, 0,
+					     "invalid metadata format: '%s' "
+					     "expected 'key=value'",
+					     metadata_split[i]);
+				goto out;
+			}
+			*tmp = '\0';
+			_cmsDictAddEntryAscii (dict, metadata_split[i], tmp+1);
 		}
-		*tmp = '\0';
-		_cmsDictAddEntryAscii (dict, metadata_split[i], tmp+1);
 	}
 
 	/* add CMS defines */
