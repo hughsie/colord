@@ -17,13 +17,23 @@ EDID_serial		the EDID serial number
 EDID_mnft		the EDID PNP ID
 EDID_manufacturer	the EDID vendor name
 FILE_checksum		the FILE checksum
+CMF_product		the color management framework name that
+			generated this profile
+CMF_binary		the color management framework binary that
+			generated this profile
+CMF_version		the color management framework version that
+			generated this profile
 
 Projects already using this format:
- * GNOME Color Manager
+ * colord
+ * gnome-color-manager
+ * gnome-settings-daemon
 
 == Device Metadata ==
 
 XRANDR_name		the XRandR name, e.g. "lvds1"
 
 Projects already using this format:
- * GNOME Color Manager
+ * gnome-color-manager
+ * gnome-settings-daemon
+ * gnome-control-center

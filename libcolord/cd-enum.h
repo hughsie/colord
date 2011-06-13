@@ -216,6 +216,9 @@ typedef enum {
 #define CD_PROFILE_METADATA_EDID_MNFT		"EDID_mnft"
 #define CD_PROFILE_METADATA_EDID_VENDOR		"EDID_manufacturer"
 #define CD_PROFILE_METADATA_FILE_CHECKSUM	"FILE_checksum"
+#define CD_PROFILE_METADATA_CMF_PRODUCT		"CMF_product"
+#define CD_PROFILE_METADATA_CMF_BINARY		"CMF_binary"
+#define CD_PROFILE_METADATA_CMF_VERSION		"CMF_version"
 
 /* defined in org.freedesktop.ColorManager.Profile.xml */
 #define CD_PROFILE_PROPERTY_FILENAME		"Filename"
