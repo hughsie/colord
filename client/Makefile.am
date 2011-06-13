@@ -12,6 +12,13 @@ INCLUDES =						\
 
 COLORD_LIBS = $(top_builddir)/libcolord/libcolord.la
 
+noinst_LIBRARIES = libclientprivate.a
+libclientprivate_a_SOURCES =				\
+	cd-common.c					\
+	cd-common.h					\
+	cd-lcms-helpers.c				\
+	cd-lcms-helpers.h
+
 bin_PROGRAMS =						\
 	colormgr					\
 	cd-create-profile				\
@@ -21,6 +28,7 @@ colormgr_SOURCES =					\
 	cd-util.c
 
 colormgr_LDADD =					\
+	libclientprivate.a				\
 	$(COLORD_LIBS)					\
 	$(GLIB_LIBS)
 
@@ -28,11 +36,10 @@ colormgr_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 cd_fix_profile_SOURCES =				\
-	cd-lcms-helpers.c				\
-	cd-lcms-helpers.h				\
 	cd-fix-profile.c
 
 cd_fix_profile_LDADD =					\
+	libclientprivate.a				\
 	$(GLIB_LIBS)					\
 	$(LCMS_LIBS)					\
 	-lm
@@ -41,16 +48,17 @@ cd_fix_profile_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 cd_create_profile_SOURCES =				\
-	cd-lcms-helpers.c				\
-	cd-lcms-helpers.h				\
 	cd-create-profile.c
 
 cd_create_profile_LDADD =				\
+	libclientprivate.a				\
 	$(GLIB_LIBS)					\
 	$(LCMS_LIBS)					\
 	-lm
 
 cd_create_profile_CFLAGS =				\
 	$(WARNINGFLAGS_C)
+
+MAINTAINERCLEANFILES = *.a
 
 -include $(top_srcdir)/git.mk

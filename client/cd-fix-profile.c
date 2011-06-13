@@ -26,6 +26,7 @@
 #include <lcms2.h>
 #include <stdlib.h>
 
+#include "cd-common.h"
 #include "cd-lcms-helpers.h"
 
 static gint lcms_error_code = 0;
@@ -39,7 +40,8 @@ cd_fix_profile_filename (const gchar *filename,
 			 const gchar *copyright,
 			 const gchar *model,
 			 const gchar *manufacturer,
-			 const gchar *metadata)
+			 const gchar *metadata,
+			 gboolean clear_metadata)
 {
 	gboolean ret = TRUE;
 	cmsHPROFILE lcms_profile = NULL;
@@ -101,9 +103,11 @@ cd_fix_profile_filename (const gchar *filename,
 		}
 	}
 	if (metadata != NULL) {
-		ret = _cmsProfileWriteMetadataString (lcms_profile,
-						      metadata,
-						      &error);
+		ret = cd_profile_write_metadata_string (lcms_profile,
+							metadata,
+							clear_metadata,
+							"cd-fix-profile",
+							&error);
 		if (!ret) {
 			g_warning ("failed to write metadata: %s",
 				   error->message);
@@ -157,6 +161,7 @@ main (int argc, char **argv)
 	gchar *model = NULL;
 	gchar *manufacturer = NULL;
 	gchar *metadata = NULL;
+	gboolean clear_metadata = FALSE;
 
 	const GOptionEntry options[] = {
 		{ "description", 'd', 0, G_OPTION_ARG_STRING, &description,
@@ -171,6 +176,9 @@ main (int argc, char **argv)
 		{ "manufacturer", 'n', 0, G_OPTION_ARG_STRING, &manufacturer,
 		/* TRANSLATORS: command line option */
 		  _("The manufacturer of the profile"), NULL },
+		{ "clear-metadata", '\0', 0, G_OPTION_ARG_NONE, &clear_metadata,
+		/* TRANSLATORS: command line option */
+		  _("Clear existing metadata in the profile"), NULL },
 		{ "metadata", 'n', 0, G_OPTION_ARG_STRING, &metadata,
 		/* TRANSLATORS: command line option */
 		  _("The metadata of the profile in 'key1=value1,key2=value2' format"), NULL },
@@ -206,7 +214,8 @@ main (int argc, char **argv)
 					       copyright,
 					       model,
 					       manufacturer,
-					       metadata);
+					       metadata,
+					       clear_metadata);
 		if (!ret) {
 			retval = 1;
 			goto out;

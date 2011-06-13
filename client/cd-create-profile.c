@@ -27,6 +27,7 @@
 #include <colord.h>
 #include <stdlib.h>
 
+#include "cd-common.h"
 #include "cd-lcms-helpers.h"
 
 static gint lcms_error_code = 0;
@@ -256,16 +257,17 @@ main (int argc, char **argv)
 			goto out;
 		}
 	}
-	if (metadata != NULL) {
-		ret = _cmsProfileWriteMetadataString (lcms_profile,
-						      metadata,
-						      &error);
-		if (!ret) {
-			g_warning ("failed to write metadata: %s",
-				   error->message);
-			g_error_free (error);
-			goto out;
-		}
+
+	ret = cd_profile_write_metadata_string (lcms_profile,
+						metadata,
+						TRUE,
+						argv[0],
+						&error);
+	if (!ret) {
+		g_warning ("failed to write metadata: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
 	}
 
 	/* write profile id */

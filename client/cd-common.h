@@ -19,22 +19,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef __CD_LCMS_HELPERS_H
-#define __CD_LCMS_HELPERS_H
+#ifndef __CD_COMMON_H
+#define __CD_COMMON_H
 
 #include <glib.h>
 #include <lcms2.h>
 
 G_BEGIN_DECLS
 
-cmsBool		 _cmsWriteTagTextAscii		(cmsHPROFILE	 lcms_profile,
-						 cmsTagSignature sig,
-						 const gchar	*text);
-cmsBool		 _cmsDictAddEntryAscii		(cmsHANDLE	 dict,
-						 const gchar	*key,
-						 const gchar	*value);
+gboolean	 cd_profile_write_metadata_string	(cmsHPROFILE	 lcms_profile,
+							 const gchar	*metadata,
+							 gboolean	 clear_existing,
+							 const gchar	*binary_name,
+							 GError		**error);
 
 G_END_DECLS
 
-#endif /* __CD_LCMS_HELPERS_H */
+#endif /* __CD_COMMON_H */
 
