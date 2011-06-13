@@ -717,6 +717,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 	guint len;
 	struct tm created;
 	gchar *tmp;
+	const gchar *value;
 	CdProfilePrivate *priv = profile->priv;
 
 	/* get the description as the title */
@@ -807,15 +808,27 @@ cd_profile_set_from_profile (CdProfile *profile,
 		priv->colorspace = CD_COLORSPACE_UNKNOWN;
 	}
 
+	/* get metadata from the DICTionary */
+	cd_profile_set_metadata_from_profile (profile, lcms_profile);
+
+	/* set the format from the metadata */
+	value = g_hash_table_lookup (priv->metadata,
+				     CD_PROFILE_METADATA_MAPPING_FORMAT);
+	if (value != NULL)
+		cd_profile_set_format (profile, value);
+
+	/* set the qualifier from the metadata */
+	value = g_hash_table_lookup (priv->metadata,
+				     CD_PROFILE_METADATA_MAPPING_QUALIFIER);
+	if (value != NULL)
+		cd_profile_set_qualifier (profile, value);
+
 	/* set a generic qualifier if there was nothing set before */
 	if (priv->colorspace == CD_COLORSPACE_RGB &&
 	    priv->qualifier == NULL) {
 		cd_profile_set_format (profile, "ColorSpace..");
 		cd_profile_set_qualifier (profile, "RGB..");
 	}
-
-	/* get metadata from the DICTionary */
-	cd_profile_set_metadata_from_profile (profile, lcms_profile);
 
 	/* get the profile created time and date */
 	ret = cmsGetHeaderCreationDateTime (lcms_profile, &created);

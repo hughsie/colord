@@ -26,6 +26,10 @@ CMF_version		the color management framework version that
 DATA_source		the data source of the profile, where:
 			"edid"  :  From a display EDID blob
 			"calib" :  From a calibration using hardware
+MAPPING_format		the format used for matching, e.g.
+			"ColorModel.OutputMode.OutputResolution"
+MAPPING_qualifier	the qualifiers the profile should adopt by
+			default, e.g. "RGB.Plain.300dpi"
 
 Projects already using this format:
  * colord
