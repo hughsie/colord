@@ -23,6 +23,9 @@ CMF_binary		the color management framework binary that
 			generated this profile
 CMF_version		the color management framework version that
 			generated this profile
+DATA_source		the data source of the profile, where:
+			"edid"  :  From a display EDID blob
+			"calib" :  From a calibration using hardware
 
 Projects already using this format:
  * colord
