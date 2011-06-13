@@ -1,3 +1,25 @@
+Version 0.1.9
+~~~~~~~~~~~~~
+Released: 2011-06-13
+
+New Features:
+ - Add a 'Format' property to the device interface (Richard Hughes)
+ - Add a new method Client:FindDeviceByProperty for when only a property is known (Richard Hughes)
+ - Add methods to get the connected state of each object (Richard Hughes)
+ - Define the DATA_source profile metadata item (Richard Hughes)
+ - Define three metadata keys for the framework creator to set (Richard Hughes)
+ - Define two keys to allow the profile to contain the mapping parameters (Richard Hughes)
+
+Bugfixes:
+ - Allow GUDEV to be disabled at compile time (Richard Hughes)
+ - Autodetect SANE in configure (Richard Hughes)
+ - Fix 3 small memory leaks (Richard Hughes)
+ - Fix a bug that caused a critical warning in client code (Richard Hughes)
+ - Only warn if we fail to get the PolicyKit authority (Richard Hughes)
+ - Save any additional disk device metadata in the property database (Richard Hughes)
+ - Use upstream gettext instead the glib one (Javier Jardón)
+ - Write the new metadata entries in the utility programs (Richard Hughes)
+
 Version 0.1.8
 ~~~~~~~~~~~~~
 Released: 2011-06-02

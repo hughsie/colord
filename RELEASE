@@ -42,8 +42,6 @@ git push
 8. Send an email to gnome-color-manager-list@gnome.org
 
 colord is a system activated daemon that maps devices to color profiles.
-It is used by gnome-color-manager for system integration and use when
-there are no users logged in.
 
 See http://colord.hughsie.com/ for more details.
 
