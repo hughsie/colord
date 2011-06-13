@@ -9,7 +9,7 @@ m4_define([cd_version],
 
 AC_INIT([colord],[cd_version],[http://hughsie.com])
 AC_CONFIG_SRCDIR(src)
-AM_INIT_AUTOMAKE([1.9 tar-ustar dist-bzip2])
+AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_LIBTOOL

@@ -6,7 +6,7 @@ Version:   #VERSION#
 Release:   0.#BUILD#%{?alphatag}%{?dist}
 License:   GPLv2+ and LGPLv2+
 URL:       http://gitorious.org/colord
-Source0:   http://people.freedesktop.org/~hughsient/releases/%{name}-%{version}.tar.gz
+Source0:   http://people.freedesktop.org/~hughsient/releases/%{name}-%{version}.tar.xz
 
 BuildRequires: dbus-devel
 BuildRequires: docbook-utils
