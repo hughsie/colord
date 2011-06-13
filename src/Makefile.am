@@ -198,6 +198,8 @@ cd_sensor_dump_LDADD =					\
 cd_sensor_dump_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
+CLEANFILES = $(noinst_PROGRAMS)
+
 endif
 
 if HAVE_GUDEV
