@@ -96,9 +96,11 @@ out:
 		cmsDictFree (dict);
 	g_strfreev (metadata_split);
 #else
-	g_set_error (error, 1, 0,
-		     "no LCMS2 DICT support, so cannot write %s",
-		     metadata);
+	if (metadata != NULL) {
+		g_set_error (error, 1, 0,
+			     "no LCMS2 DICT support, so cannot write %s",
+			     metadata);
+	}
 #endif
 	return ret;
 }
