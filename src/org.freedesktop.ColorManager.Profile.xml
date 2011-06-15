@@ -149,7 +149,6 @@
 
     <!--***********************************************************-->
     <method name='SetProperty'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -180,7 +179,6 @@
 
     <!--***********************************************************-->
     <method name='InstallSystemWide'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>

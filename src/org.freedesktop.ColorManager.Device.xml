@@ -166,7 +166,6 @@
 
     <!--***********************************************************-->
     <method name='SetProperty'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -207,7 +206,6 @@
 
     <!--***********************************************************-->
     <method name='AddProfile'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -258,7 +256,6 @@
 
     <!--***********************************************************-->
     <method name='RemoveProfile'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -285,7 +282,6 @@
 
     <!--***********************************************************-->
     <method name='MakeProfileDefault'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -306,7 +302,6 @@
 
     <!--***********************************************************-->
     <method name='GetProfileForQualifiers'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -341,7 +336,6 @@
 
     <!--***********************************************************-->
     <method name='GetProfileRelation'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -372,7 +366,6 @@
 
     <!--***********************************************************-->
     <method name='ProfilingInhibit'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -397,7 +390,6 @@
 
     <!--***********************************************************-->
     <method name='ProfilingUninhibit'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>

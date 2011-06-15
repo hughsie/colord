@@ -121,7 +121,6 @@
 
     <!--***********************************************************-->
     <method name='Lock'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -137,7 +136,6 @@
 
     <!--***********************************************************-->
     <method name='Unlock'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -149,7 +147,6 @@
 
     <!--***********************************************************-->
     <method name='GetSample'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>

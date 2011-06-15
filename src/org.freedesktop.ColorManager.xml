@@ -25,7 +25,6 @@
     <!--***********************************************************-->
 <!--
     <method name='GetProfilesForFile'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -56,7 +55,6 @@
 
     <!--***********************************************************-->
     <method name='GetDevices'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -77,7 +75,6 @@
 
     <!--***********************************************************-->
     <method name='GetDevicesByKind'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -108,7 +105,6 @@
 
     <!--***********************************************************-->
     <method name='FindDeviceById'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -142,7 +138,6 @@
 
     <!--***********************************************************-->
     <method name='FindDeviceByProperty'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -181,7 +176,6 @@
 
     <!--***********************************************************-->
     <method name='FindProfileById'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -211,7 +205,6 @@
 
     <!--***********************************************************-->
     <method name='FindProfileByFilename'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -241,7 +234,6 @@
 
     <!--***********************************************************-->
     <method name='GetStandardSpace'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -280,7 +272,6 @@
 
     <!--***********************************************************-->
     <method name='GetProfiles'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -301,7 +292,6 @@
 
     <!--***********************************************************-->
     <method name='GetSensors'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -322,7 +312,6 @@
 
     <!--***********************************************************-->
     <method name='GetProfilesByKind'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -353,7 +342,6 @@
 
     <!--***********************************************************-->
     <method name='CreateProfile'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -453,7 +441,6 @@
 
     <!--***********************************************************-->
     <method name='CreateDevice'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -543,7 +530,6 @@
 
     <!--***********************************************************-->
     <method name='DeleteDevice'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -564,7 +550,6 @@
 
     <!--***********************************************************-->
     <method name='DeleteProfile'>
-      <annotation name='org.freedesktop.DBus.GLib.Async' value=''/>
       <doc:doc>
         <doc:description>
           <doc:para>
