@@ -100,7 +100,11 @@ out:
 		g_set_error (error, 1, 0,
 			     "no LCMS2 DICT support, so cannot write %s",
 			     metadata);
+		goto out;
 	}
+
+	/* no metadata, so no problem */
+	ret = TRUE;
 #endif
 	return ret;
 }
