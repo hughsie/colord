@@ -19,6 +19,7 @@ BuildRequires: libusb1-devel
 BuildRequires: polkit-devel
 BuildRequires: sane-backends-devel
 BuildRequires: sqlite-devel
+Requires: shared-color-profiles
 
 %description
 colord is a low level system activated daemon that maps color devices
