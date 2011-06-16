@@ -28,6 +28,10 @@
 
 #include <glib-object.h>
 
+#include "cd-client.h"
+#include "cd-device.h"
+#include "cd-profile.h"
+
 G_BEGIN_DECLS
 
 gboolean	 cd_client_connect_sync			(CdClient	*client,

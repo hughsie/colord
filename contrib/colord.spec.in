@@ -83,7 +83,7 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/storage.db
 
 %files devel
 %defattr(-,root,root,-)
-%{_includedir}/libcolord/*.h
+%{_includedir}/colord-1
 %{_libdir}/libcolord.so
 %{_libdir}/pkgconfig/colord.pc
 

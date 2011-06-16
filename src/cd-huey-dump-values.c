@@ -23,7 +23,6 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <math.h>
-#include <colord.h>
 #include <glib.h>
 
 #include "cd-buffer.h"

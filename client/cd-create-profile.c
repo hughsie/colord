@@ -24,9 +24,9 @@
 #include <glib/gi18n.h>
 #include <locale.h>
 #include <lcms2.h>
-#include <colord.h>
 #include <stdlib.h>
 
+#include "cd-color.h"
 #include "cd-common.h"
 #include "cd-lcms-helpers.h"
 

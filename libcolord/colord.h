@@ -34,17 +34,17 @@
 
 #define __COLORD_H_INSIDE__
 
-#include <libcolord/cd-client.h>
-#include <libcolord/cd-client-sync.h>
-#include <libcolord/cd-color.h>
-#include <libcolord/cd-device.h>
-#include <libcolord/cd-device-sync.h>
-#include <libcolord/cd-enum.h>
-#include <libcolord/cd-profile.h>
-#include <libcolord/cd-profile-sync.h>
-#include <libcolord/cd-sensor.h>
-#include <libcolord/cd-sensor-sync.h>
-#include <libcolord/cd-version.h>
+#include <colord/cd-client.h>
+#include <colord/cd-client-sync.h>
+#include <colord/cd-color.h>
+#include <colord/cd-device.h>
+#include <colord/cd-device-sync.h>
+#include <colord/cd-enum.h>
+#include <colord/cd-profile.h>
+#include <colord/cd-profile-sync.h>
+#include <colord/cd-sensor.h>
+#include <colord/cd-sensor-sync.h>
+#include <colord/cd-version.h>
 
 #undef __COLORD_H_INSIDE__
 

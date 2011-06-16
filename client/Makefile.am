@@ -4,6 +4,7 @@ INCLUDES =						\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/libcolord			\
 	-DG_LOG_DOMAIN=\"Cd\"				\
+	-DCD_COMPILATION				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DDATADIR=\"$(datadir)\"			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"		\

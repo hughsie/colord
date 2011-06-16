@@ -9,4 +9,4 @@ Version: @VERSION@
 Requires.private: dbus-1, gthread-2.0
 Requires: glib-2.0, gobject-2.0
 Libs: -L${libdir} -lcolord
-Cflags: -I${includedir}/libcolord
+Cflags: -I${includedir}/colord-1

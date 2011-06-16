@@ -19,9 +19,12 @@ libcolordprivate_a_CFLAGS =					\
 lib_LTLIBRARIES =						\
 	libcolord.la
 
-libcolord_includedir = $(includedir)/libcolord
+libcolord_includedir = $(includedir)/colord-1
 libcolord_include_HEADERS =					\
-	colord.h						\
+	colord.h
+
+libcolordbase_includedir = $(libcolord_includedir)/colord
+libcolordbase_include_HEADERS =					\
 	cd-version.h						\
 	cd-enum.h						\
 	cd-device.h						\

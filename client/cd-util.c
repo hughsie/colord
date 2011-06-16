@@ -24,7 +24,12 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <locale.h>
-#include <colord.h>
+
+#include "cd-client-sync.h"
+#include "cd-device-sync.h"
+#include "cd-enum.h"
+#include "cd-profile-sync.h"
+#include "cd-sensor-sync.h"
 
 typedef struct {
 	CdClient		*client;
