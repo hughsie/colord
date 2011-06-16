@@ -105,6 +105,7 @@ out:
 
 	/* no metadata, so no problem */
 	ret = TRUE;
+out:
 #endif
 	return ret;
 }
