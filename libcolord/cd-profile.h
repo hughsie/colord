@@ -29,7 +29,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <libcolord/cd-enum.h>
+#include "cd-enum.h"
 
 G_BEGIN_DECLS
 

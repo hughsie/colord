@@ -29,9 +29,9 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <libcolord/cd-device.h>
-#include <libcolord/cd-profile.h>
-#include <libcolord/cd-sensor.h>
+#include "cd-device.h"
+#include "cd-profile.h"
+#include "cd-sensor.h"
 
 G_BEGIN_DECLS
 

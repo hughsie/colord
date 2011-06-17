@@ -29,8 +29,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include <libcolord/cd-enum.h>
-#include <libcolord/cd-profile.h>
+#include "cd-enum.h"
+#include "cd-profile.h"
 
 G_BEGIN_DECLS
 
