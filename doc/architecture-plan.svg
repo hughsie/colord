@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.48.1 r9760"
    sodipodi:docname="architecture-plan.svg"
-   inkscape:export-filename="/home/hughsie/Code/gnome3/colord/doc/website/img/architecture-plan.png"
+   inkscape:export-filename="/home/hughsie/Code/colord/doc/website/img/architecture-plan.png"
    inkscape:export-xdpi="59.99197"
    inkscape:export-ydpi="59.99197">
   <defs
@@ -137,17 +137,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.7"
-     inkscape:cx="523.62793"
-     inkscape:cy="478.24202"
+     inkscape:cx="534.46073"
+     inkscape:cy="391.38963"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="1200"
-     inkscape:window-height="1888"
+     inkscape:window-width="1600"
+     inkscape:window-height="845"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="27"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -348,8 +348,8 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 40,652.36218 960,0"
+       style="fill:none;stroke:#000000;stroke-width:0.95742708px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 40,652.36218 880,0"
        id="path5615"
        inkscape:connector-curvature="0" />
     <text
@@ -387,15 +387,16 @@
     <text
        sodipodi:linespacing="125%"
        id="text5627"
-       y="490.36218"
-       x="540.64258"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       xml:space="preserve"><tspan
-         style="font-size:28px;text-align:center;text-anchor:middle"
-         y="490.36218"
-         x="540.64258"
-         id="tspan5629"
-         sodipodi:role="line">gcm-session</tspan></text>
+       y="483.64496"
+       x="532.30066"
+       style="font-size:28.10403442px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       transform="scale(1.0144841,0.98572269)"><tspan
+         style="font-size:19.67282104px;text-align:center;text-anchor:middle"
+         y="483.64496"
+         x="532.30066"
+         sodipodi:role="line"
+         id="tspan3086">gnome settings</tspan></text>
     <path
        style="fill:none;stroke:#000096;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Sstart-5);marker-end:url(#Arrow1Send-7)"
        d="m 540,672.36218 0,-160"
@@ -447,25 +448,26 @@
        id="path5663"
        inkscape:connector-curvature="0" />
     <rect
-       style="fill:#83a2ff;fill-opacity:1;stroke:#000000;stroke-width:2.50445843;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#83a2ff;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect5665"
-       width="180.64258"
+       width="280.64258"
        height="60"
        x="619.35742"
        y="552.36218"
        ry="20" />
     <text
        xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:100%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="710"
-       y="590.36218"
+       style="font-size:38.54405212px;font-style:normal;font-weight:normal;line-height:100%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="787.42194"
+       y="568.87372"
        id="text5667"
-       sodipodi:linespacing="100%"><tspan
+       sodipodi:linespacing="100%"
+       transform="scale(0.96360127,1.0377736)"><tspan
          sodipodi:role="line"
-         x="710"
-         y="590.36218"
-         style="font-size:24px;text-align:center;line-height:100%;text-anchor:middle"
-         id="tspan7609">gcm-prefs</tspan></text>
+         x="787.42194"
+         y="568.87372"
+         style="font-size:23.12643051px;text-align:center;line-height:100%;text-anchor:middle"
+         id="tspan7609">gnome-control-center</tspan></text>
     <path
        style="fill:none;stroke:#000096;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:url(#Arrow1Sstart-5);marker-end:url(#Arrow1Send-7);fill-opacity:1"
        d="m 620,592.36218 -40,0 0,80"
@@ -502,32 +504,6 @@
        id="path5673-3"
        inkscape:connector-curvature="0" />
     <rect
-       style="fill:#e0e8ff;fill-opacity:1;stroke:#000000;stroke-width:2.63523149;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       id="rect5699"
-       width="200"
-       height="60"
-       x="439.35742"
-       y="334.36218"
-       ry="20" />
-    <text
-       xml:space="preserve"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="540"
-       y="372.36218"
-       id="text5701"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan5703"
-         x="540"
-         y="372.36218"
-         style="font-size:28px;text-align:center;text-anchor:middle">GTK Apps</tspan></text>
-    <path
-       style="fill:none;stroke:#000096;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:12,4;marker-start:url(#Arrow1Sstart-5);marker-end:none;stroke-dashoffset:0"
-       d="m 540,392.36218 c 0,60 0,60 0,60"
-       id="path5705"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
-    <rect
        ry="20"
        y="972.36218"
        x="720"
@@ -562,13 +538,13 @@
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
        x="380"
-       y="467.36218"
+       y="465.36218"
        id="text7146"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan7148"
          x="380"
-         y="467.36218"
+         y="465.36218"
          style="font-size:12px">gamma</tspan></text>
     <text
        xml:space="preserve"
@@ -644,28 +620,6 @@
          style="font-size:12px">/var/share/color, /var/lib/color</tspan></text>
     <text
        sodipodi:linespacing="125%"
-       id="text3906"
-       y="414.36218"
-       x="548"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       xml:space="preserve"><tspan
-         style="font-size:12px"
-         y="414.36218"
-         x="548"
-         id="tspan3908"
-         sodipodi:role="line">optional</tspan><tspan
-         style="font-size:12px"
-         y="429.36218"
-         x="548"
-         sodipodi:role="line"
-         id="tspan3916">session</tspan><tspan
-         style="font-size:12px"
-         y="444.36218"
-         x="548"
-         sodipodi:role="line"
-         id="tspan3910">interface</tspan></text>
-    <text
-       sodipodi:linespacing="125%"
        id="text3912"
        y="486.36218"
        x="660"
@@ -714,5 +668,18 @@
          x="370"
          y="984.36218"
          style="font-size:12px">libusb + driver</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text5627-8"
+       y="506.595"
+       x="532.30066"
+       style="font-size:28.10403442px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       transform="scale(1.0144841,0.98572269)"><tspan
+         style="font-size:19.67282104px;text-align:center;text-anchor:middle"
+         y="506.595"
+         x="532.30066"
+         sodipodi:role="line"
+         id="tspan3086-5">daemon plugin</tspan></text>
   </g>
 </svg>

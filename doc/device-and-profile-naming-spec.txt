@@ -17,11 +17,11 @@ This also allows applications to create new types of devices and
 profiles in the CMS without the CMS being aware of all the nuances of
 what the application is trying to do.
 
-This is illustrated well, with gcm-session creating xrandr devices for
-colord and also auto-creating profiles based on the device EDID.
+For an example, gnome-settings-daemon creates xrandr devices for colord
+and also auto-creates profiles based on the device EDID.
 When this happens, colord saves the device->profile mapping and on next
 session start re-maps the devices which causes the session policy the
-be applied in gcm-session.
+be applied in the gnome-settings-daemon color plugin.
 
 In this way, the CMS knows nothing about XRandR and everything works
 transparently and correctly.

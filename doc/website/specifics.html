@@ -42,7 +42,7 @@ This is stored in the colord mapping database, which is
 The schema is really simple, and as follows:
 </p>
 <pre>
-CREATE TABLE mappings (id TEXT PRIMARY KEY,device TEXT,profile TEXT);
+CREATE TABLE mappings (id TEXT PRIMARY KEY,device TEXT,profile TEXT, timestamp INTEGER DEFAULT 0);
 </pre>
 
 <p>
@@ -65,7 +65,7 @@ worst case, <code>/home/foo</code> may be encrypted and inaccessible even as roo
 For this reason, colord copies the ICC profiles to a system-wide directory,
 <code>/usr/lib/color</code> that is per-machine and accessible to all users.
 </p>
-<img src="img/polkit.png" alt="[logo]"/>
+<img src="http://projects.gnome.org/gnome-color-manager/images/polkit.png" alt="[PolicyKit authentication dialog]"/>
 <p>
 It is <a href="http://lists.freedesktop.org/archives/openicc/2010q2/002167.html">encouraged</a> that other CMS implementations also read ICC profiles from the per-machine
 <code>/usr/lib/color</code> directory.
@@ -97,29 +97,8 @@ GNOME Color Manager is a ''thin solution'' where it defers to the application th
 <h2>What the binaries do</h2>
 
 <p>
-GCM ships quite a few data files and binary files. Most users will interact with ICC files by double clicking on them, and with color management using ''System->Preferences->Color Profiles''. It's not expected that users should need to run any command line programs at all.
+GCM ships quite a few data files and binary files. Most users will interact with ICC files by double clicking on them, and with color management using ''System Settings->Color''. It's not expected that users should need to run any command line programs at all.
 </p>
-
-For interest, the different binaries are listed here.
-
-<h3>GTK programs</h3>
-
-<ul>
-<li><code>gcm-prefs</code> - The main preferences dialog used to map profiles to devices.</li>
-<li><code>gcm-import</code> - Helper to import an ICC file. This is normally run by the <code>gcm-import.desktop</code> file.</li>
-<li><code>gcm-picker</code> - Simple program to pick a spot color using a photospectrometer or colorimeter.</li>
-</ul>
-
-<h3>Command line tools</h3>
-<ul>
-<li><code>gcm-inspect</code> - Command line tool to inspect the
-<a href="http://www.oyranos.org/wiki/index.php?title=ICC_Profiles_in_X_Specification_0.4"><code>_ICC_PROFILE</code></a>
-atoms and test the D-Bus API.</li>
-<li><code>gcm-fix-profile</code> - Tries to fix a corrupted or invalid ICC profile file.</li>
-<li><code>gcm-session</code> - D-Bus session service that is started on demand.</li>
-<li><code>gcm-dump-edid</code> - Debugging program that dumps the EDID to a file.</li>
-<li><code>gcm-dump-profile</code> - Debugging program that dumps all details about a profile.</li>
-</ul>
 
 <h1>General points:</h1>
 
