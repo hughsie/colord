@@ -10,37 +10,54 @@ devices to profiles.
 
 == Profile Metadata ==
 
-STANDARD_space		the standard space, e.g. "adobe-rgb", or "srgb"
-EDID_md5		the EDID md5 checksum
-EDID_model		the EDID monitor name
-EDID_serial		the EDID serial number
-EDID_mnft		the EDID PNP ID
-EDID_manufacturer	the EDID vendor name
-FILE_checksum		the FILE checksum
-CMF_product		the color management framework name that
-			generated this profile
-CMF_binary		the color management framework binary that
-			generated this profile
-CMF_version		the color management framework version that
-			generated this profile
-DATA_source		the data source of the profile, where:
-			"edid"  :  From a display EDID blob
-			"calib" :  From a calibration using hardware
-MAPPING_format		the format used for matching, e.g.
+These data values are not properties on the DBus interface, but are
+loaded from the metadata table in the .icc file, and added to the colord
+Profile.Metadata dictionary.
+
+These keys are optional but recomended. Other keys may also be present,
+and should be ignored.
+
+STANDARD_space		A standard space, where
+			"srgb"		: sRGB
+			"adobe-rgb"	: AdobeRGB
+			"prophoto-rgb"	: ProPhotoRGB
+EDID_md5		The EDID MD5 checksum
+EDID_model		The EDID monitor name
+EDID_serial		The EDID serial number
+EDID_mnft		The EDID PNP ID
+EDID_manufacturer	The EDID vendor name
+CMF_product		The color management framework name that
+			generated this profile, e.g.
+			"GNOME Color Manager"
+CMF_binary		The color management framework binary that
+			generated this profile, e.g. "gcm-calibrate"
+CMF_version		The color management framework version that
+			generated this profile, e.g. "3.1.1"
+DATA_source		The data source of the profile, where:
+			"edid"	: From a display EDID blob
+			"calib"	: From a calibration using hardware
+MAPPING_format		The format used for matching, e.g.
 			"ColorModel.OutputMode.OutputResolution"
-MAPPING_qualifier	the qualifiers the profile should adopt by
+MAPPING_qualifier	The qualifiers the profile should adopt by
 			default, e.g. "RGB.Plain.300dpi"
 
-Projects already using this format:
- * colord
- * gnome-color-manager
- * gnome-settings-daemon
+== Virtual Profile Metadata ==
 
-== Device Metadata ==
+Virtual metadata are values that are never loaded from the .icc file,
+but are visible in the Profile.Metadata dictionary.
 
-XRANDR_name		the XRandR name, e.g. "lvds1"
+FILE_checksum		The FILE checksum, for use when the ICC header
+			checksum is not available.
+			This is set by the session process as a hint to
+			reduce the amount of I/O at startup for a large
+			numbers of legacy profiles when using file
+			descriptor passing. It's also optional.
 
-Projects already using this format:
- * gnome-color-manager
- * gnome-settings-daemon
- * gnome-control-center
+== Virtual Device Metadata ==
+
+These data values are not properties on the DBus interface, but are
+added to the colord Device.Metadata dictionary.
+
+XRANDR_name		The XRandR name, e.g. "lvds1". This is added by
+			and used by the session client interfacing with
+			the display.
