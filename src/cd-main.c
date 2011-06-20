@@ -254,7 +254,7 @@ static void
 cd_main_device_auto_add_profiles (CdDevice *device)
 {
 	CdProfile *profile_tmp;
-	const gchar *object_path_tmp;
+	const gchar *object_id_tmp;
 	gboolean ret;
 	GError *error = NULL;
 	GPtrArray *array;
@@ -262,7 +262,7 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 
 	/* get data */
 	array = cd_mapping_db_get_profiles (mapping_db,
-					    cd_device_get_object_path (device),
+					    cd_device_get_id (device),
 					    &error);
 	if (array == NULL) {
 		g_warning ("CdMain: failed to get profiles for device from db: %s",
@@ -273,16 +273,16 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 
 	/* try to add them */
 	for (i=0; i<array->len; i++) {
-		object_path_tmp = g_ptr_array_index (array, i);
-		profile_tmp = cd_profile_array_get_by_object_path (profiles_array,
-								   object_path_tmp);
+		object_id_tmp = g_ptr_array_index (array, i);
+		profile_tmp = cd_profile_array_get_by_id (profiles_array,
+							  object_id_tmp);
 		if (profile_tmp != NULL) {
 			g_debug ("CdMain: Automatically add %s to %s",
-				 object_path_tmp,
+				 object_id_tmp,
 				 cd_device_get_object_path (device));
 			ret = cd_device_add_profile (device,
 						     CD_DEVICE_RELATION_HARD,
-						     object_path_tmp,
+						     cd_profile_get_object_path (profile_tmp),
 						     &error);
 			if (!ret) {
 				g_debug ("CdMain: failed to assign, non-fatal: %s",
@@ -292,7 +292,7 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 			g_object_unref (profile_tmp);
 		} else {
 			g_debug ("CdMain: profile %s is not (yet) available",
-				 object_path_tmp);
+				 object_id_tmp);
 		}
 	}
 out:
@@ -510,7 +510,7 @@ static void
 cd_main_profile_auto_add_to_device (CdProfile *profile)
 {
 	CdDevice *device_tmp;
-	const gchar *object_path_tmp;
+	const gchar *device_id_tmp;
 	gboolean ret;
 	GError *error = NULL;
 	GPtrArray *array;
@@ -518,7 +518,7 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 
 	/* get data */
 	array = cd_mapping_db_get_devices (mapping_db,
-					   cd_profile_get_object_path (profile),
+					   cd_profile_get_id (profile),
 					   &error);
 	if (array == NULL) {
 		g_warning ("CdMain: failed to get profiles for device from db: %s",
@@ -536,13 +536,13 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 
 	/* try to add them */
 	for (i=0; i<array->len; i++) {
-		object_path_tmp = g_ptr_array_index (array, i);
-		device_tmp = cd_device_array_get_by_object_path (devices_array,
-								 object_path_tmp);
+		device_id_tmp = g_ptr_array_index (array, i);
+		device_tmp = cd_device_array_get_by_id (devices_array,
+							device_id_tmp);
 		if (device_tmp != NULL) {
 			g_debug ("CdMain: Automatically add %s to %s",
 				 cd_profile_get_object_path (profile),
-				 object_path_tmp);
+				 device_id_tmp);
 			ret = cd_device_add_profile (device_tmp,
 						     CD_DEVICE_RELATION_HARD,
 						     cd_profile_get_object_path (profile),
@@ -555,7 +555,7 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 			g_object_unref (device_tmp);
 		} else {
 			g_debug ("CdMain: device %s is not (yet) available",
-				 object_path_tmp);
+				 device_id_tmp);
 		}
 	}
 out:

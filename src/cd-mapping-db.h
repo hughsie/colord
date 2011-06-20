@@ -55,22 +55,22 @@ gboolean	 cd_mapping_db_load		(CdMappingDb	*mdb,
 gboolean	 cd_mapping_db_empty		(CdMappingDb	*mdb,
 						 GError		**error);
 gboolean	 cd_mapping_db_update_timestamp	(CdMappingDb	*mdb,
-						 const gchar	*device,
-						 const gchar	*profile,
+						 const gchar	*device_id,
+						 const gchar	*profile_id,
 						 GError		**error);
 gboolean	 cd_mapping_db_add		(CdMappingDb	*mdb,
-						 const gchar	*device,
-						 const gchar	*profile,
+						 const gchar	*device_id,
+						 const gchar	*profile_id,
 						 GError		**error);
 gboolean	 cd_mapping_db_remove		(CdMappingDb	*mdb,
-						 const gchar	*device,
-						 const gchar	*profile,
+						 const gchar	*device_id,
+						 const gchar	*profile_id,
 						 GError		**error);
 GPtrArray	*cd_mapping_db_get_profiles	(CdMappingDb	*mdb,
-						 const gchar	*device,
+						 const gchar	*device_id,
 						 GError		**error);
 GPtrArray	*cd_mapping_db_get_devices	(CdMappingDb	*mdb,
-						 const gchar	*profile,
+						 const gchar	*profile_id,
 						 GError		**error);
 
 G_END_DECLS

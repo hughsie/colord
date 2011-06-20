@@ -1087,6 +1087,7 @@ colord_device_mapping_func (void)
 
 	/* ensure the first profile is selected */
 	profile_tmp = cd_device_get_default_profile (device);
+	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
 			 ==,
 			 cd_profile_get_object_path (profile1));
@@ -1104,6 +1105,7 @@ colord_device_mapping_func (void)
 
 	/* ensure the second profile is selected */
 	profile_tmp = cd_device_get_default_profile (device);
+	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
 			 ==,
 			 cd_profile_get_object_path (profile2));

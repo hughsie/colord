@@ -900,6 +900,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	CdDevice *device = CD_DEVICE (user_data);
 	CdDevicePrivate *priv = device->priv;
 	CdProfile *profile = NULL;
+	const gchar *id;
 	gboolean ret;
 	gchar **devices = NULL;
 	gchar *profile_object_path = NULL;
@@ -960,11 +961,17 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
+		/* get profile id from object path */
+		profile = cd_profile_array_get_by_object_path (priv->profile_array,
+							       profile_object_path);
+		id = cd_profile_get_id (profile);
+		g_object_unref (profile);
+
 		/* save this to the permanent database */
 		if (relation == CD_DEVICE_RELATION_HARD) {
 			ret = cd_mapping_db_add (priv->mapping_db,
-						 priv->object_path,
-						 profile_object_path,
+						 priv->id,
+						 id,
 						 &error);
 			if (!ret) {
 				g_warning ("CdDevice: failed to save mapping to database: %s",
@@ -1003,10 +1010,16 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 		}
 
+		/* get profile id from object path */
+		profile = cd_profile_array_get_by_object_path (priv->profile_array,
+							       profile_object_path);
+		id = cd_profile_get_id (profile);
+		g_object_unref (profile);
+
 		/* save this to the permanent database */
 		ret = cd_mapping_db_remove (priv->mapping_db,
-					    priv->object_path,
-					    profile_object_path,
+					    priv->id,
+					    id,
 					    &error);
 		if (!ret) {
 			g_warning ("CdDevice: failed to save mapping to database: %s",
@@ -1133,10 +1146,16 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* reset modification time */
 		cd_device_reset_modified (device);
 
+		/* get profile id from object path */
+		profile = cd_profile_array_get_by_object_path (priv->profile_array,
+							       profile_object_path);
+		id = cd_profile_get_id (profile);
+		g_object_unref (profile);
+
 		/* save new timestamp in database */
 		ret = cd_mapping_db_update_timestamp (priv->mapping_db,
-						      priv->object_path,
-						      profile_object_path,
+						      priv->id,
+						      id,
 						      &error);
 		if (!ret)
 			goto out;

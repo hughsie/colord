@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -157,36 +157,36 @@ cd_mapping_db_func (void)
 	g_assert (ret);
 
 	/* add a few entries */
-	ret = cd_mapping_db_add (mdb, "/device1", "/profile1", &error);
+	ret = cd_mapping_db_add (mdb, "device1", "profile1", &error);
 	g_assert_no_error (error);
 	g_assert (ret);
-	ret = cd_mapping_db_add (mdb, "/device1", "/profile2", &error);
+	ret = cd_mapping_db_add (mdb, "device1", "profile2", &error);
 	g_assert_no_error (error);
 	g_assert (ret);
-	ret = cd_mapping_db_add (mdb, "/device1", "/profile3", &error);
+	ret = cd_mapping_db_add (mdb, "device1", "profile3", &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* remove one */
-	ret = cd_mapping_db_remove (mdb, "/device1", "/profile2", &error);
+	ret = cd_mapping_db_remove (mdb, "device1", "profile2", &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* get the profiles for a device */
-	array = cd_mapping_db_get_profiles (mdb, "/device1", &error);
+	array = cd_mapping_db_get_profiles (mdb, "device1", &error);
 	g_assert_no_error (error);
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 2);
-	g_assert_cmpstr (g_ptr_array_index (array, 0), ==, "/profile1");
-	g_assert_cmpstr (g_ptr_array_index (array, 1), ==, "/profile3");
+	g_assert_cmpstr (g_ptr_array_index (array, 0), ==, "profile1");
+	g_assert_cmpstr (g_ptr_array_index (array, 1), ==, "profile3");
 	g_ptr_array_unref (array);
 
 	/* get the devices for a profile */
-	array = cd_mapping_db_get_devices (mdb, "/profile1", &error);
+	array = cd_mapping_db_get_devices (mdb, "profile1", &error);
 	g_assert_no_error (error);
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 1);
-	g_assert_cmpstr (g_ptr_array_index (array, 0), ==, "/device1");
+	g_assert_cmpstr (g_ptr_array_index (array, 0), ==, "device1");
 	g_ptr_array_unref (array);
 
 	g_object_unref (mdb);

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -88,7 +88,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 		g_debug ("CdMappingDb: creating table to repair: %s", error_msg);
 		sqlite3_free (error_msg);
 		statement = "CREATE TABLE mappings ("
-			    "id TEXT PRIMARY KEY,"
+			    "timestamp INTEGER DEFAULT 0,"
 			    "device TEXT,"
 			    "profile TEXT);";
 		sqlite3_exec (mdb->priv->db, statement, NULL, NULL, NULL);
@@ -146,14 +146,12 @@ out:
  **/
 gboolean  
 cd_mapping_db_add (CdMappingDb *mdb,
-		   const gchar *device,
-		   const gchar *profile,
+		   const gchar *device_id,
+		   const gchar *profile_id,
 		   GError  **error)
 {
 	gboolean ret = TRUE;
-	gchar *device_id;
 	gchar *error_msg = NULL;
-	gchar *profile_id;
 	gchar *statement;
 	gint rc;
 	gint64 timestamp;
@@ -161,16 +159,12 @@ cd_mapping_db_add (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	device_id = g_path_get_basename (device);
-	profile_id = g_path_get_basename (profile);
-	g_debug ("CdMappingDb: add %s<->%s with id %s-%s",
-		 device, profile,
+	g_debug ("CdMappingDb: add %s<=>%s",
 		 device_id, profile_id);
 	timestamp = g_get_real_time ();
-	statement = g_strdup_printf ("INSERT INTO mappings (id, device, profile, timestamp) "
-				     "VALUES ('%s-%s', '%s', '%s', %"G_GINT64_FORMAT")",
-				     device_id, profile_id,
-				     device, profile, timestamp);
+	statement = g_strdup_printf ("INSERT INTO mappings (device, profile, timestamp) "
+				     "VALUES ('%s', '%s', %"G_GINT64_FORMAT")",
+				     device_id, profile_id, timestamp);
 
 	/* insert the entry */
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
@@ -185,8 +179,6 @@ cd_mapping_db_add (CdMappingDb *mdb,
 		goto out;
 	}
 out:
-	g_free (device_id);
-	g_free (profile_id);
 	g_free (statement);
 	return ret;
 }
@@ -195,14 +187,12 @@ out:
  **/
 gboolean
 cd_mapping_db_update_timestamp (CdMappingDb *mdb,
-				const gchar *device,
-				const gchar *profile,
+				const gchar *device_id,
+				const gchar *profile_id,
 				GError  **error)
 {
 	gboolean ret = TRUE;
-	gchar *device_id;
 	gchar *error_msg = NULL;
-	gchar *profile_id;
 	gchar *statement;
 	gint rc;
 	gint64 timestamp;
@@ -210,14 +200,11 @@ cd_mapping_db_update_timestamp (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	device_id = g_path_get_basename (device);
-	profile_id = g_path_get_basename (profile);
-	g_debug ("CdMappingDb: update timestamp %s<->%s with id %s-%s",
-		 device, profile,
+	g_debug ("CdMappingDb: update timestamp %s<=>%s",
 		 device_id, profile_id);
 	timestamp = g_get_real_time ();
 	statement = g_strdup_printf ("UPDATE mappings SET timestamp = %"G_GINT64_FORMAT
-				     " WHERE id = '%s-%s';",
+				     " WHERE device = '%s' AND profile = '%s';",
 				     timestamp, device_id, profile_id);
 
 	/* update the entry */
@@ -233,8 +220,6 @@ cd_mapping_db_update_timestamp (CdMappingDb *mdb,
 		goto out;
 	}
 out:
-	g_free (device_id);
-	g_free (profile_id);
 	g_free (statement);
 	return ret;
 }
@@ -244,8 +229,8 @@ out:
  **/
 gboolean  
 cd_mapping_db_remove (CdMappingDb *mdb,
-		      const gchar *device,
-		      const gchar *profile,
+		      const gchar *device_id,
+		      const gchar *profile_id,
 		      GError  **error)
 {
 	gboolean ret = TRUE;
@@ -256,10 +241,10 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	g_debug ("CdMappingDb: remove %s<->%s", device, profile);
+	g_debug ("CdMappingDb: remove %s<=>%s", device_id, profile_id);
 	statement = g_strdup_printf ("DELETE FROM mappings WHERE "
 				     "device = '%s' AND profile = '%s';",
-				     device, profile);
+				     device_id, profile_id);
 
 	/* remove the entry */
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
@@ -303,7 +288,7 @@ cd_mapping_db_sqlite_cb (void *data,
  **/
 GPtrArray *
 cd_mapping_db_get_profiles (CdMappingDb *mdb,
-			    const gchar *device,
+			    const gchar *device_id,
 			    GError  **error)
 {
 	gchar *error_msg = NULL;
@@ -315,9 +300,9 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	g_debug ("CdMappingDb: get profiles for %s", device);
+	g_debug ("CdMappingDb: get profiles for %s", device_id);
 	statement = g_strdup_printf ("SELECT profile FROM mappings WHERE "
-				     "device = '%s' ORDER BY timestamp ASC;", device);
+				     "device = '%s' ORDER BY timestamp ASC;", device_id);
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
@@ -352,7 +337,7 @@ out:
  **/
 GPtrArray *
 cd_mapping_db_get_devices (CdMappingDb *mdb,
-			   const gchar *profile,
+			   const gchar *profile_id,
 			   GError  **error)
 {
 	gchar *error_msg = NULL;
@@ -364,9 +349,9 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
 
-	g_debug ("CdMappingDb: get devices for %s", profile);
+	g_debug ("CdMappingDb: get devices for %s", profile_id);
 	statement = g_strdup_printf ("SELECT device FROM mappings WHERE "
-				     "profile = '%s' ORDER BY timestamp ASC;", profile);
+				     "profile = '%s' ORDER BY timestamp ASC;", profile_id);
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
