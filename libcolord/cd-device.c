@@ -66,6 +66,7 @@ struct _CdDevicePrivate
 	CdDeviceKind		 kind;
 	CdColorspace		 colorspace;
 	CdDeviceMode		 mode;
+	CdObjectScope		 scope;
 	GHashTable		*metadata;
 };
 
@@ -83,6 +84,7 @@ enum {
 	PROP_KIND,
 	PROP_COLORSPACE,
 	PROP_MODE,
+	PROP_SCOPE,
 	PROP_LAST
 };
 
@@ -306,6 +308,24 @@ cd_device_get_mode (CdDevice *device)
 	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_MODE_UNKNOWN);
 	g_return_val_if_fail (device->priv->proxy != NULL, CD_DEVICE_MODE_UNKNOWN);
 	return device->priv->mode;
+}
+
+/**
+ * cd_device_get_scope:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device scope.
+ *
+ * Return value: An object scope, e.g. %CD_OBJECT_SCOPE_TEMP
+ *
+ * Since: 0.1.10
+ **/
+CdObjectScope
+cd_device_get_scope (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), CD_OBJECT_SCOPE_UNKNOWN);
+	g_return_val_if_fail (device->priv->proxy != NULL, CD_OBJECT_SCOPE_UNKNOWN);
+	return device->priv->scope;
 }
 
 /**
@@ -572,6 +592,7 @@ cd_device_connect_cb (GObject *source_object,
 	GVariant *format = NULL;
 	GVariant *vendor = NULL;
 	GVariant *colorspace = NULL;
+	GVariant *scope = NULL;
 	GVariant *mode = NULL;
 	GVariant *profiles = NULL;
 	GVariant *metadata = NULL;
@@ -611,6 +632,13 @@ cd_device_connect_cb (GObject *source_object,
 	if (colorspace != NULL)
 		device->priv->colorspace =
 			cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
+
+	/* get scope */
+	scope = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						  CD_DEVICE_PROPERTY_SCOPE);
+	if (scope != NULL)
+		device->priv->scope =
+			cd_object_scope_from_string (g_variant_get_string (scope, NULL));
 
 	/* get mode */
 	mode = g_dbus_proxy_get_cached_property (device->priv->proxy,
@@ -693,6 +721,8 @@ out:
 		g_variant_unref (format);
 	if (colorspace != NULL)
 		g_variant_unref (colorspace);
+	if (scope != NULL)
+		g_variant_unref (scope);
 	if (mode != NULL)
 		g_variant_unref (mode);
 	if (created != NULL)
@@ -1743,6 +1773,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_MODE:
 		g_value_set_uint (value, device->priv->mode);
 		break;
+	case PROP_SCOPE:
+		g_value_set_uint (value, device->priv->scope);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1933,6 +1966,22 @@ cd_device_class_init (CdDeviceClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_MODE,
 					 g_param_spec_uint ("mode",
+							    NULL, NULL,
+							    0,
+							    G_MAXUINT,
+							    0,
+							    G_PARAM_READABLE));
+
+	/**
+	 * CdDevice:scope:
+	 *
+	 * The device scope, e.g. %CD_OBJECT_SCOPE_TEMP.
+	 *
+	 * Since: 0.1.10
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_SCOPE,
+					 g_param_spec_uint ("scope",
 							    NULL, NULL,
 							    0,
 							    G_MAXUINT,

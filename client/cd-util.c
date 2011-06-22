@@ -55,6 +55,7 @@ cd_util_show_profile (CdProfile *profile)
 {
 	CdColorspace colorspace;
 	CdProfileKind kind;
+	CdObjectScope scope;
 	const gchar *tmp;
 	GHashTable *metadata;
 	GList *list, *l;
@@ -89,6 +90,12 @@ cd_util_show_profile (CdProfile *profile)
 		g_print ("%s:\t%s\n",
 			 _("Colorspace"),
 			 cd_colorspace_to_string (colorspace));
+	}
+	scope = cd_profile_get_scope (profile);
+	if (scope != CD_OBJECT_SCOPE_UNKNOWN) {
+		/* TRANSLATORS: the object scope, e.g. temp, disk, etc */
+		g_print ("%s:\t%s\n", _("Scope"),
+			 cd_object_scope_to_string (scope));
 	}
 
 	/* TRANSLATORS: if the profile has a Video Card Gamma Table lookup */
@@ -131,6 +138,7 @@ cd_util_show_device (CdDevice *device)
 {
 	const gchar *tmp;
 	CdProfile *profile_tmp;
+	CdObjectScope scope;
 	GHashTable *metadata;
 	GList *list, *l;
 	GPtrArray *profiles;
@@ -176,6 +184,13 @@ cd_util_show_device (CdDevice *device)
 		/* TRANSLATORS: the device format, e.g.
 		 * ColorModel.OutputMode.OutputResolution */
 		g_print ("%s:\t%s\n", _("Format"), tmp);
+	}
+
+	scope = cd_device_get_scope (device);
+	if (scope != CD_OBJECT_SCOPE_UNKNOWN) {
+		/* TRANSLATORS: the object scope, e.g. temp, disk, etc */
+		g_print ("%s:\t%s\n", _("Scope"),
+			 cd_object_scope_to_string (scope));
 	}
 
 	/* TRANSLATORS: the device colorspace, e.g. "rgb" */

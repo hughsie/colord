@@ -1360,6 +1360,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = cd_device_get_metadata_as_variant (device);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SCOPE) == 0) {
+		retval = g_variant_new_string (cd_object_scope_to_string (priv->object_scope));
+		goto out;
+	}
 
 	g_critical ("failed to get property %s", property_name);
 out:

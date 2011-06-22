@@ -60,6 +60,7 @@ struct _CdProfilePrivate
 	GDBusProxy		*proxy;
 	CdProfileKind		 kind;
 	CdColorspace		 colorspace;
+	CdObjectScope		 scope;
 	gint64			 created;
 	gboolean		 has_vcgt;
 	gboolean		 is_system_wide;
@@ -80,6 +81,7 @@ enum {
 	PROP_CREATED,
 	PROP_HAS_VCGT,
 	PROP_IS_SYSTEM_WIDE,
+	PROP_SCOPE,
 	PROP_LAST
 };
 
@@ -231,6 +233,24 @@ cd_profile_get_kind (CdProfile *profile)
 	g_return_val_if_fail (CD_IS_PROFILE (profile), CD_PROFILE_KIND_UNKNOWN);
 	g_return_val_if_fail (profile->priv->proxy != NULL, CD_PROFILE_KIND_UNKNOWN);
 	return profile->priv->kind;
+}
+
+/**
+ * cd_profile_get_scope:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets the profile scope.
+ *
+ * Return value: A #CdObjectScope, e.g. %CD_OBJECT_SCOPE_UNKNOWN
+ *
+ * Since: 0.1.10
+ **/
+CdObjectScope
+cd_profile_get_scope (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), CD_OBJECT_SCOPE_UNKNOWN);
+	g_return_val_if_fail (profile->priv->proxy != NULL, CD_OBJECT_SCOPE_UNKNOWN);
+	return profile->priv->scope;
 }
 
 /**
@@ -448,6 +468,8 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 			profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_COLORSPACE) == 0) {
 			profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_SCOPE) == 0) {
+			profile->priv->scope = cd_object_scope_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_CREATED) == 0) {
 			profile->priv->created = g_variant_get_int64 (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_HAS_VCGT) == 0) {
@@ -532,6 +554,7 @@ cd_profile_connect_cb (GObject *source_object,
 	GVariant *title = NULL;
 	GVariant *kind = NULL;
 	GVariant *colorspace = NULL;
+	GVariant *scope = NULL;
 	GVariant *created = NULL;
 	GVariant *has_vcgt = NULL;
 	GVariant *is_system_wide = NULL;
@@ -595,6 +618,12 @@ cd_profile_connect_cb (GObject *source_object,
 	if (colorspace != NULL)
 		profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
 
+	/* get scope */
+	scope = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+						  CD_PROFILE_PROPERTY_SCOPE);
+	if (scope != NULL)
+		profile->priv->scope = cd_object_scope_from_string (g_variant_get_string (scope, NULL));
+
 	/* get created */
 	created = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						    CD_PROFILE_PROPERTY_CREATED);
@@ -640,6 +669,8 @@ out:
 		g_variant_unref (kind);
 	if (colorspace != NULL)
 		g_variant_unref (colorspace);
+	if (scope != NULL)
+		g_variant_unref (scope);
 	if (created != NULL)
 		g_variant_unref (created);
 	if (has_vcgt != NULL)
@@ -1055,6 +1086,9 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 	case PROP_IS_SYSTEM_WIDE:
 		g_value_set_boolean (value, profile->priv->is_system_wide);
 		break;
+	case PROP_SCOPE:
+		g_value_set_uint (value, profile->priv->scope);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1250,6 +1284,22 @@ cd_profile_class_init (CdProfileClass *klass)
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READABLE));
+
+	/**
+	 * CdProfile:scope:
+	 *
+	 * The profile scope, e.g. %CD_OBJECT_SCOPE_TEMP.
+	 *
+	 * Since: 0.1.10
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_SCOPE,
+					 g_param_spec_uint ("scope",
+							    NULL, NULL,
+							    0,
+							    G_MAXUINT,
+							    0,
+							    G_PARAM_READABLE));
 
 	g_type_class_add_private (klass, sizeof (CdProfilePrivate));
 }

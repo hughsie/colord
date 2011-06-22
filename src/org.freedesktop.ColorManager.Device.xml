@@ -153,6 +153,18 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Scope' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The scope of the device, e.g. <doc:tt>normal</doc:tt>,
+            <doc:tt>temp</doc:tt> or <doc:tt>disk</doc:tt>.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Metadata' type='a{ss}' access='read'>
       <doc:doc>
         <doc:description>

@@ -559,6 +559,10 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = g_variant_new_int64 (profile->priv->created);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_SCOPE) == 0) {
+		retval = g_variant_new_string (cd_object_scope_to_string (profile->priv->object_scope));
+		goto out;
+	}
 
 	g_critical ("failed to set property %s", property_name);
 out:
