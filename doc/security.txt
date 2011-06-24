@@ -1,0 +1,105 @@
+                     Security and colord
+
+This document is a brief overview of security policies and notes about
+security in the colord project. It has been written by the colord
+authors, and should not be treated as independent analysis.
+This document has been written as colord is a system activated daemon
+running as the root user (uid 0), which means certain file parsing
+operations are done as root also. The daemon receives untrusted input
+from the client, which means the daemon is security sensitive.
+
+First, a high level overview of the mapping functionality.
+
+  gcm-viewer     gnome-settings-daemon     gnome-control-center
+     \_                  |                  __/
+       \__[D-Bus]__   [D-Bus]   __[D-Bus]__/
+                   \__   |   __/
+                      \  |  /
+  cupsd -- [D-Bus] -- colord -- [D-Bus] -- polkitd-1
+
+colord provides a D-Bus activated service 'colord' that is responsible
+for mapping devices to color profiles. It creates some internal devices
+itself using Linux, and relies on system frameworks such as CUPS and
+session helpers to create other devices. The mapping information is
+stored in one SQLite database, and virtual persistent devices are
+created in another SQLite database.
+
+The colord daemon scans and parses profiles installed system wide color
+profiles using the lcms2 library, and per-user color profiles are
+created using session helpers that pass files to the daemon as file
+descriptors out of band with the D-Bus message.
+
+Color calibration devices are also recognized and registered by colord
+which allows the session to lock the hardware, and return abstract
+results without driving the hardware from the session. This is
+immeasurably safer than just opening the permissions of the device for
+all users.
+
+colord does not expose itself remotely over XMLRPC or other remote
+interface, and so a remote denial of service or exploit is impossible
+without a serious exploit of other services such as D-Bus.
+It advertises several simple interfaces that can be queried by clients
+in unprivileged and privileged modes.
+The privileged modes are controlled using PolicyKit, and policy and the
+authentication mechanism is deferred to the polkitd-1 service.
+
+When a privileged method is executed, the daemon checks with polkitd-1
+daemon for whether the client is authorized for the action it wants to
+perform. The default for most authorization checks is to allow the local
+active session user to perform the action, but preventing other remote
+and non-active users.
+The only authorization that requires manual authorization by default is
+when a profile is set system wide for all user, which necessitates
+copying the profile from the user profile into a per-system directory
+location.
+
+This may involve the user authenticating that they are either the user
+(by typing their password) or that they are an administrative user (by
+typing the root password or the password of a user designated as an
+administrative user).
+The authorization check can take some time, but the daemon can process
+other requests whilst waiting for user input. Please see the the
+PolicyKit-1 man page for more information.
+
+The colord daemon is started using D-Bus system activation, which means
+it is started without any environment (no PATH, etc) and therefore is
+impossible to exploit by preloading other libraries. It is also running
+as uid 0, and so requires root privileges to inject code into it.
+
+The SELinux mandatory access framework works alongside colord but is not
+required for normal operation..
+
+Possible attack vectors:
+
+ • A client could cause a local DoS (denial of service) by registering
+   a great many profiles to colord as to overload it and cause 100% CPU
+   utilization on one CPU.
+   ∘ Not mitigated, malicious session DoS isn't preventable.
+
+ • A malicious session process could change the screen color (e.g.
+   setting the 'Bluish test' profile)
+   ∘ If the session has a malicious process then there are more
+     interesting things to do.
+   ∘ Can easily do this using xcalib without calling into colord.
+   ∘ User cannot set another users display profile without user password
+     by default, if in a shared non-co-operative environment the
+     PolicyKit authorization should be changed to "admin" or "no".
+
+ • A user could be convinced to download and install a corrupt color
+   profile using social engineering tricks.
+   ∘ The session component (running as the UID of the user) opens the
+     profile, parsing it using lcms2 and passing it to the daemon using
+     a file descriptor.
+   ∘ Any security parsing bug in lcms2 will have been caught by the
+     session process before passed to the daemon.
+   ∘ It's also worth noting that lcms2 has an excellent security record.
+
+ • The mapping database or virtual device database can be read by any
+   user in the system introducing an information disclosure problem.
+   ∘ The databases are not writeable by the user, and the same
+     information is available using the D-Bus interface.
+   ∘ Potentially useful information in the database are device
+     identification strings and some device property names, such as the
+     display serial number and the printer queue name. This information
+     is freely available by other means such as querying the EDID from
+     xrandr directly.
