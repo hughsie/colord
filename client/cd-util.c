@@ -901,7 +901,7 @@ cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	CdProfile *profile = NULL;
 	gboolean ret = TRUE;
 
-	if (g_strv_length (values) < 2) {
+	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
 				     1, 0,
@@ -914,6 +914,42 @@ cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	/* execute sync method */
 	profile = cd_client_find_profile_sync (priv->client, values[0],
 					       NULL, error);
+	if (profile == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	ret = cd_profile_connect_sync (profile, NULL, error);
+	if (!ret)
+		goto out;
+	cd_util_show_profile (profile);
+out:
+	if (profile != NULL)
+		g_object_unref (profile);
+	return ret;
+}
+
+/**
+ * cd_util_find_profile_by_filename:
+ **/
+static gboolean
+cd_util_find_profile_by_filename (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdProfile *profile = NULL;
+	gboolean ret = TRUE;
+
+	if (g_strv_length (values) < 1) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     1, 0,
+				     "Not enough arguments, "
+				     "expected profile filename");
+		goto out;
+	}
+
+	/* execute sync method */
+	profile = cd_client_find_profile_by_filename_sync (priv->client,
+							   values[0],
+							   NULL, error);
 	if (profile == NULL) {
 		ret = FALSE;
 		goto out;
@@ -1466,6 +1502,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Find a profile"),
 		     cd_util_find_profile);
+	cd_util_add (priv->cmd_array,
+		     "find-profile-by-filename",
+		     /* TRANSLATORS: command description */
+		     _("Find a profile by filename"),
+		     cd_util_find_profile_by_filename);
 	cd_util_add (priv->cmd_array,
 		     "get-standard-space",
 		     /* TRANSLATORS: command description */
