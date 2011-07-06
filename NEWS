@@ -1,3 +1,20 @@
+Version 0.1.10
+~~~~~~~~~~~~~~
+Released: 2011-07-06
+
+New Features:
+ - Add a find-profile-by-filename command to the colormgr client tool (Richard Hughes)
+ - Add the object scope to the DBus interface as a property (Richard Hughes)
+ - Write a document detailing the colord security attack surface (Richard Hughes)
+
+Bugfixes:
+ - Actually store the device ID in the mapping database (Richard Hughes)
+ - Fix include statements to search from current libcolord folder (Kenny Stuart)
+ - Fix mbstowcs usage (Colin Walters)
+ - Fix the build for old versions of lcms2 (Stef Walter)
+ - Fix up the location of the libcolord header files (Richard Hughes)
+ - Remove the DBus annotations in the introspection (Richard Hughes)
+
 Version 0.1.9
 ~~~~~~~~~~~~~
 Released: 2011-06-13
