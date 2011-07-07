@@ -765,7 +765,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
-							       "prperty match '%s'='%s' does not exist",
+							       "property match '%s'='%s' does not exist",
 							       metadata_key,
 							       metadata_value);
 			goto out;

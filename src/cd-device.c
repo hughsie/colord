@@ -815,6 +815,12 @@ cd_device_set_property_internal (CdDevice *device,
 const gchar *
 cd_device_get_metadata (CdDevice *device, const gchar *key)
 {
+	if (g_strcmp0 (key, CD_DEVICE_PROPERTY_MODEL) == 0)
+		return device->priv->model;
+	if (g_strcmp0 (key, CD_DEVICE_PROPERTY_VENDOR) == 0)
+		return device->priv->vendor;
+	if (g_strcmp0 (key, CD_DEVICE_PROPERTY_SERIAL) == 0)
+		return device->priv->serial;
 	return g_hash_table_lookup (device->priv->metadata, key);
 }
 
