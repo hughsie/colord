@@ -47,18 +47,24 @@ main (int argc, char *argv[])
         /* get details about the device */
         ret = cd_device_connect_sync (device, NULL, &error);
         if (!ret) {
-                g_warning ("failed to get properties from the device: %s", error->message);
+                g_warning ("failed to get properties from the device: %s",
+                           error->message);
                 g_error_free (error);
                 goto out;
         }
 
         /* get the default profile for the device */
         profile = cd_device_get_default_profile (device);
+        if (profile == NULL) {
+                g_warning ("no default profile for device: %s", argv[1]);
+                goto out;
+        }
 
         /* get details about the profile */
         ret = cd_profile_connect_sync (profile, NULL, &error);
         if (!ret) {
-                g_warning ("failed to get properties from the profile: %s", error->message);
+                g_warning ("failed to get properties from the profile: %s",
+                           error->message);
                 g_error_free (error);
                 goto out;
         }
