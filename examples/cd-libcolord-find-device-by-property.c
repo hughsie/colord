@@ -1,4 +1,4 @@
-//gcc -o cd-libcolord-find-device-by-property.c cd-libcolord-find-device-by-property.c.c `pkg-config --cflags --libs colord` -Wall
+//gcc -o cd-libcolord-find-device-by-property cd-libcolord-find-device-by-property.c `pkg-config --cflags --libs colord` -Wall
 
 #include <stdlib.h>
 #include <colord.h>
