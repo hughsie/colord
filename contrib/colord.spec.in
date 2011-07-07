@@ -20,6 +20,7 @@ BuildRequires: polkit-devel
 BuildRequires: sane-backends-devel
 BuildRequires: sqlite-devel
 BuildRequires: gobject-introspection-devel
+BuildRequires: vala-tools
 Requires: shared-color-profiles
 
 %description
@@ -90,6 +91,7 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/storage.db
 %{_libdir}/libcolord.so
 %{_libdir}/pkgconfig/colord.pc
 %{_datadir}/gir-1.0/*.gir
+%{_datadir}/vala/vapi/*.vapi
 
 %changelog
 * #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#

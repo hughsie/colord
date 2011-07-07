@@ -215,6 +215,23 @@ if test x$has_sane = xyes; then
 	AC_DEFINE(HAVE_SANE,1,[Use SANE support for detecting scanners])
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl - Build VALA support
+dnl ---------------------------------------------------------------------------
+if test x$found_introspection != xno; then
+	AC_PATH_PROG([VAPIGEN], [vapigen], [])
+	if test "x$VAPIGEN" = "x"; then
+		has_vapigen="no"
+		AC_MSG_WARN([vapigen not found, will not build Vala binding])
+	else
+		has_vapigen="yes"
+	fi
+else
+	has_vapigen="no"
+	AC_MSG_WARN([Not introspection found, will not build Vala binding])
+fi
+AM_CONDITIONAL(HAVE_VAPIGEN, [test "x$has_vapigen" = "xyes"])
+
 # udev rules go in /lib, not /usr/lib
 if test "$prefix" = "/usr" -o "$prefix" = "/usr/local" ; then
   slashlibdir=/lib
@@ -267,6 +284,7 @@ echo "
         SANE support:              ${has_sane}
         GUDEV support:             ${enable_gudev}
         LCMS2 DICT support:        ${has_new_lcms}
+        Vala API generator:        ${has_vapigen}
 "
 
 

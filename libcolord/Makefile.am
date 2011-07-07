@@ -119,6 +119,21 @@ typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
 CLEANFILES += $(gir_DATA) $(typelib_DATA)
+
+if HAVE_VAPIGEN
+colord.vapi: Colord-1.0.gir
+	$(MAKE) $(AM_MAKEFLAGS) Colord-1.0.gir
+	$(AM_V_GEN)$(VAPIGEN) $(VAPIGENFLAGS)			\
+		--library colord \
+		--pkg gio-2.0					\
+		Colord-1.0.gir
+	touch $@
+vapidir = $(datadir)/vala/vapi
+dist_vapi_DATA =						\
+	colord.vapi
+CLEANFILES += $(dist_vapi_DATA)
+endif
+
 endif
 
 clean-local:
