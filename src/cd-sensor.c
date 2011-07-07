@@ -26,6 +26,7 @@
 #include <sys/time.h>
 #include <gmodule.h>
 
+#include "cd-common.h"
 #include "cd-sensor.h"
 #include "cd-enum.h"
 

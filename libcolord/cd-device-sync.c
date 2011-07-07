@@ -284,7 +284,7 @@ cd_device_get_profile_for_qualifiers_finish_sync (CdDevice *device,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: %TRUE for success, else %FALSE.
+ * Return value: (transfer full): a #CdProfile or %NULL
  *
  * Since: 0.1.8
  **/
@@ -433,7 +433,6 @@ cd_device_profiling_uninhibit_finish_sync (CdDevice *device,
 /**
  * cd_device_profiling_uninhibit_sync:
  * @device: a #CdDevice instance.
- * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
@@ -640,7 +639,7 @@ cd_device_set_kind_sync (CdDevice *device,
 /**
  * cd_device_set_colorspace_sync:
  * @device: a #CdDevice instance.
- * @kind: The device kind, e.g. #CD_DEVICE_KIND_DISPLAY
+ * @colorspace: The device colorspace, e.g. #CD_DEVICE_COLORSPACE_RGB
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *

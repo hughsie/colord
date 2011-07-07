@@ -59,7 +59,6 @@ cd_profile_connect_finish_sync (CdProfile *profile,
 /**
  * cd_profile_connect_sync:
  * @profile: a #CdProfile instance.
- * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *

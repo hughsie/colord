@@ -44,6 +44,9 @@ static void	cd_profile_finalize	(GObject	*object);
 
 #define CD_PROFILE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_PROFILE, CdProfilePrivate))
 
+#define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
+#define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
+
 /**
  * CdProfilePrivate:
  *
@@ -353,7 +356,7 @@ cd_profile_get_is_system_wide (CdProfile *profile)
  *
  * Returns the profile metadata.
  *
- * Return value: a #GHashTable, free with g_hash_table_unref().
+ * Return value: (transfer full): a #GHashTable.
  *
  * Since: 0.1.2
  **/
@@ -697,8 +700,8 @@ out:
  * cd_profile_connect:
  * @profile: a #CdProfile instance.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Connects to the object and fills up initial properties.
  *
@@ -802,11 +805,11 @@ out:
 /**
  * cd_profile_set_property:
  * @profile: a #CdProfile instance.
- * @name: a key name
+ * @key: a key name
  * @value: a key value
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Deletes a color device.
  *
@@ -906,10 +909,9 @@ out:
 /**
  * cd_profile_install_system_wide:
  * @profile: a #CdProfile instance.
- * @id: a #CdProfile id
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Sets the profile system wide.
  *
@@ -1001,7 +1003,7 @@ cd_profile_to_string (CdProfile *profile)
 }
 
 /**
- * cd_profile_get_object_path:
+ * cd_profile_equal:
  * @profile1: one #CdProfile instance.
  * @profile2: another #CdProfile instance.
  *

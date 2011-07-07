@@ -46,6 +46,9 @@ static void	cd_device_finalize	(GObject		*object);
 
 #define CD_DEVICE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_DEVICE, CdDevicePrivate))
 
+#define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
+#define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
+
 /**
  * CdDevicePrivate:
  *
@@ -334,7 +337,7 @@ cd_device_get_scope (CdDevice *device)
  *
  * Gets the device profiles.
  *
- * Return value: An array of #CdProfile's, free with g_ptr_array_unref()
+ * Return value: (element-type CdProfile) (transfer full): An array of #CdProfile's
  *
  * Since: 0.1.0
  **/
@@ -354,7 +357,7 @@ cd_device_get_profiles (CdDevice *device)
  *
  * Gets the default device profile.
  *
- * Return value: A #CdProfile's or NULL, free with g_object_unref()
+ * Return value: (transfer full): A #CdProfile's or NULL
  *
  * Since: 0.1.1
  **/
@@ -404,7 +407,7 @@ out:
  *
  * Returns the device metadata.
  *
- * Return value: a #GHashTable, free with g_hash_table_unref().
+ * Return value: (transfer full): a #GHashTable, free with g_hash_table_unref().
  *
  * Since: 0.1.5
  **/
@@ -743,8 +746,8 @@ out:
  * cd_device_connect:
  * @device: a #CdDevice instance.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Connects to the object and fills up initial properties.
  *
@@ -853,8 +856,8 @@ out:
  * @key: a property key
  * @value: a property key
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Sets a property on the device.
  *
@@ -956,8 +959,8 @@ out:
  * @relation: a #CdDeviceRelation, e.g. #CD_DEVICE_RELATION_HARD
  * @profile: a #CdProfile instance
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Adds a profile to a device.
  *
@@ -1060,8 +1063,8 @@ out:
  * @device: a #CdDevice instance.
  * @profile: a #CdProfile instance
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Removes a profile from a device.
  *
@@ -1161,8 +1164,8 @@ out:
  * @device: a #CdDevice instance.
  * @profile: a #CdProfile instance
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Makes an already added profile default for a device.
  *
@@ -1261,8 +1264,8 @@ out:
  * cd_device_profiling_inhibit:
  * @device: a #CdDevice instance.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Sets up the device for profiling and causes no profiles to be
  * returned if cd_device_get_profile_for_qualifiers_sync() is used.
@@ -1360,8 +1363,8 @@ out:
  * cd_device_profiling_uninhibit:
  * @device: a #CdDevice instance.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Restores the device after profiling and causes normal profiles to be
  * returned if cd_device_get_profile_for_qualifiers_sync() is used.
@@ -1403,7 +1406,7 @@ cd_device_profiling_uninhibit (CdDevice *device,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: success
+ * Return value: (transfer full): a #CdProfile or %NULL
  *
  * Since: 0.1.8
  **/
@@ -1471,8 +1474,8 @@ out:
  * @device: a #CdDevice instance.
  * @qualifiers: a set of qualifiers that can included wildcards
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Gets the prefered profile for some qualifiers.
  *
@@ -1586,8 +1589,8 @@ out:
  * @device: a #CdDevice instance.
  * @profile: a #CdProfile instance
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Gets the property relationship to the device.
  *
@@ -1691,7 +1694,7 @@ cd_device_to_string (CdDevice *device)
 }
 
 /**
- * cd_device_get_object_path:
+ * cd_device_equal:
  * @device1: one #CdDevice instance.
  * @device2: another #CdDevice instance.
  *

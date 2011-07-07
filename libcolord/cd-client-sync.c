@@ -220,7 +220,7 @@ cd_client_find_profile_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: A #CdProfile object, or %NULL for error
+ * Return value: (transfer full): A #CdProfile object, or %NULL for error
  *
  * Since: 0.1.0
  **/
@@ -274,7 +274,7 @@ cd_client_find_profile_by_filename_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: A #CdProfile object, or %NULL for error
+ * Return value: (transfer full): A #CdProfile object, or %NULL for error
  *
  * Since: 0.1.3
  **/
@@ -330,7 +330,7 @@ cd_client_create_profile_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: A #CdProfile object, or %NULL for error
+ * Return value: (transfer full): A #CdProfile object, or %NULL for error
  *
  * Since: 0.1.2
  **/
@@ -389,7 +389,7 @@ cd_client_create_device_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: A #CdDevice object, or %NULL for error
+ * Return value: (transfer full): A #CdDevice object, or %NULL for error
  *
  * Since: 0.1.2
  **/
@@ -605,7 +605,7 @@ cd_client_find_device_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: A #CdDevice object, or %NULL for error
+ * Return value: (transfer full): A #CdDevice object, or %NULL for error
  *
  * Since: 0.1.0
  **/
@@ -649,7 +649,8 @@ cd_client_find_device_by_property_finish_sync (CdClient *client,
 /**
  * cd_client_find_device_by_property_sync:
  * @client: a #CdClient instance.
- * @id: The device ID.
+ * @key: The device property key.
+ * @value: The device property value.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
@@ -658,7 +659,7 @@ cd_client_find_device_by_property_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: A #CdDevice object, or %NULL for error
+ * Return value: (transfer full): A #CdDevice object, or %NULL for error
  *
  * Since: 0.1.8
  **/
@@ -712,7 +713,7 @@ cd_client_get_standard_space_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: A #CdProfile object, or %NULL for error
+ * Return value: (transfer full): A #CdProfile object, or %NULL for error
  *
  * Since: 0.1.2
  **/

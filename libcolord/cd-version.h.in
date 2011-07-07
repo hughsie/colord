@@ -37,14 +37,14 @@
 #define __CD_VERSION_H
 
 /**
- * CD_CHECK_VERSION:
+ * CD_MAJOR_VERSION:
  *
  * The compile-time major version
  */
 #define CD_MAJOR_VERSION				(@CD_MAJOR_VERSION@)
 
 /**
- * CD_CHECK_MINOR:
+ * CD_MINOR_VERSION:
  *
  * The compile-time minor version
  */
@@ -57,7 +57,10 @@
  */
 #define CD_MICRO_VERSION				(@CD_MICRO_VERSION@)
 
-/* check whether a colord version equal to or greater than
+/**
+ * CD_CHECK_VERSION:
+ *
+ * Check whether a colord version equal to or greater than
  * major.minor.micro.
  */
 #define CD_CHECK_VERSION(major,minor,micro)    \

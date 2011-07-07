@@ -44,6 +44,9 @@ static void	cd_sensor_finalize	(GObject	*object);
 
 #define CD_SENSOR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_SENSOR, CdSensorPrivate))
 
+#define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
+#define COLORD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
+
 /**
  * CdSensorPrivate:
  *
@@ -673,8 +676,8 @@ out:
  * cd_sensor_lock:
  * @sensor: a #CdSensor instance.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Locks the device so we can use it.
  *
@@ -770,10 +773,9 @@ out:
 /**
  * cd_sensor_unlock:
  * @sensor: a #CdSensor instance.
- * @id: a #CdProfile id
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Unlocks the sensor for use by other programs.
  *
@@ -881,8 +883,8 @@ out:
  * @sensor: a #CdSensor instance.
  * @cap: a #CdSensorCap
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Gets a color sample from a sensor
  *

@@ -198,13 +198,6 @@ typedef enum {
 	CD_STANDARD_SPACE_LAST
 } CdStandardSpace;
 
-#define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
-#define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
-#define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
-#define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
-#define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
-#define COLORD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
-
 /* defined in org.freedesktop.ColorManager.xml */
 #define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"
 

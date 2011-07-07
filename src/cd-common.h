@@ -33,6 +33,7 @@
 #define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
+#define COLORD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
 
 #define CD_MAIN_ERROR			cd_main_error_quark()
 

@@ -58,6 +58,10 @@ static void	cd_client_finalize	(GObject	*object);
 
 #define CD_CLIENT_MESSAGE_TIMEOUT	15000 /* ms */
 
+#define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
+#define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"
+#define COLORD_DBUS_INTERFACE		"org.freedesktop.ColorManager"
+
 /**
  * CdClientPrivate:
  *
@@ -369,7 +373,7 @@ cd_client_connect (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: success
+ * Return value: (transfer full): a #CdDevice or %NULL
  *
  * Since: 0.1.8
  **/
@@ -439,8 +443,8 @@ out:
  * @scope: the scope of the device
  * @properties: properties to set on the device, or %NULL
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Creates a color device.
  *
@@ -510,7 +514,7 @@ cd_client_create_device (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: success
+ * Return value: (transfer full): a #CdProfile or %NULL
  *
  * Since: 0.1.8
  **/
@@ -593,8 +597,8 @@ out:
  * @scope: the scope of the profile
  * @properties: properties to set on the profile, or %NULL
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Creates a color profile.
  *
@@ -770,8 +774,8 @@ out:
  * @client: a #CdClient instance.
  * @device: a #CdDevice
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Deletes a device.
  *
@@ -871,8 +875,8 @@ out:
  * @client: a #CdClient instance.
  * @profile: a #CdProfile
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Deletes a profile.
  *
@@ -915,7 +919,7 @@ cd_client_delete_profile (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: a #CdDevice, or NULL
+ * Return value: (transfer full): a #CdDevice or %NULL
  *
  * Since: 0.1.8
  **/
@@ -983,8 +987,8 @@ out:
  * @client: a #CdClient instance.
  * @id: a device id
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Finds a device by an ID.
  *
@@ -1026,7 +1030,7 @@ cd_client_find_device (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: a #CdDevice, or NULL
+ * Return value: (transfer full): a #CdDevice or %NULL
  *
  * Since: 0.1.8
  **/
@@ -1092,10 +1096,11 @@ out:
 /**
  * cd_client_find_device_by_property:
  * @client: a #CdClient instance.
- * @id: a device id
+ * @key: the device property key
+ * @value: the device property value
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Finds a color device that has a property value.
  *
@@ -1138,7 +1143,7 @@ cd_client_find_device_by_property (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: a CdProfile or %NULL
+ * Return value: (transfer full): a #CdProfile or %NULL
  *
  * Since: 0.1.8
  **/
@@ -1206,8 +1211,8 @@ out:
  * @client: a #CdClient instance.
  * @id: a profile id
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Finds a profile by an ID.
  *
@@ -1249,7 +1254,7 @@ cd_client_find_profile (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: a #CdProfile or %NULL
+ * Return value: (transfer full): a #CdProfile or %NULL
  *
  * Since: 0.1.8
  **/
@@ -1317,8 +1322,8 @@ out:
  * @client: a #CdClient instance.
  * @filename: a #profile filename
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Finds a profile by a filename.
  *
@@ -1360,7 +1365,7 @@ cd_client_find_profile_by_filename (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: a #CdProfile or %NULL
+ * Return value: (transfer full): a #CdProfile or %NULL
  *
  * Since: 0.1.8
  **/
@@ -1428,8 +1433,8 @@ out:
  * @client: a #CdStandardSpace instance.
  * @standard_space: a #profile id
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Finds a standard profile space.
  *
@@ -1502,7 +1507,7 @@ cd_client_get_device_array_from_variant (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: success
+ * Return value: (element-type CdDevice) (transfer full): the devices
  *
  * Since: 0.1.8
  **/
@@ -1567,8 +1572,8 @@ out:
  * cd_client_get_devices:
  * @client: a #CdClient instance.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Gets an array of color devices.
  *
@@ -1609,7 +1614,7 @@ cd_client_get_devices (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: success
+ * Return value: (element-type CdDevice) (transfer full): the devices
  *
  * Since: 0.1.8
  **/
@@ -1675,8 +1680,8 @@ out:
  * @client: a #CdClient instance.
  * @kind: the type of device.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Gets an array of color devices.
  *
@@ -1749,7 +1754,7 @@ cd_client_get_profile_array_from_variant (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: success
+ * Return value: (element-type CdProfile) (transfer full): the profiles
  *
  * Since: 0.1.8
  **/
@@ -1814,8 +1819,8 @@ out:
  * cd_client_get_profiles:
  * @client: a #CdClient instance.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Gets an array of color profiles.
  *
@@ -1886,7 +1891,7 @@ cd_client_get_sensor_array_from_variant (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: success
+ * Return value: (element-type CdSensor) (transfer full): the sensors
  *
  * Since: 0.1.8
  **/
@@ -1951,8 +1956,8 @@ out:
  * cd_client_get_sensors:
  * @client: a #CdClient instance.
  * @cancellable: a #GCancellable, or %NULL
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
  *
  * Gets an array of color sensors.
  *

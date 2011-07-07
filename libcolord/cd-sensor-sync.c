@@ -59,7 +59,6 @@ cd_sensor_connect_finish_sync (CdSensor *sensor,
 /**
  * cd_sensor_connect_sync:
  * @sensor: a #CdSensor instance.
- * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
@@ -111,7 +110,6 @@ cd_sensor_lock_finish_sync (CdSensor *sensor,
 /**
  * cd_sensor_lock_sync:
  * @sensor: a #CdSensor instance.
- * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
@@ -126,8 +124,8 @@ cd_sensor_lock_finish_sync (CdSensor *sensor,
  **/
 gboolean
 cd_sensor_lock_sync (CdSensor *sensor,
-			GCancellable *cancellable,
-			GError **error)
+		     GCancellable *cancellable,
+		     GError **error)
 {
 	CdSensorHelper helper;
 
@@ -163,7 +161,6 @@ cd_sensor_unlock_finish_sync (CdSensor *sensor,
 /**
  * cd_sensor_unlock_sync:
  * @sensor: a #CdSensor instance.
- * @object_path: The colord object path.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
@@ -215,7 +212,7 @@ cd_sensor_get_sample_finish_sync (CdSensor *sensor,
 /**
  * cd_sensor_get_sample_sync:
  * @sensor: a #CdSensor instance.
- * @object_path: The colord object path.
+ * @cap: The device capability, e.g. %CD_SENSOR_CAP_AMBIENT.
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
