@@ -19,6 +19,7 @@ BuildRequires: libusb1-devel
 BuildRequires: polkit-devel
 BuildRequires: sane-backends-devel
 BuildRequires: sqlite-devel
+BuildRequires: gobject-introspection-devel
 Requires: shared-color-profiles
 
 %description
