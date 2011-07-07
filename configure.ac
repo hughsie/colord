@@ -14,6 +14,8 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_LIBTOOL
 
+GOBJECT_INTROSPECTION_CHECK([0.9.8])
+
 # set up gtk-doc
 GTK_DOC_CHECK(1.9)
 
@@ -259,6 +261,7 @@ echo "
         compiler:                  ${CC}
         cflags:                    ${CFLAGS}
         cppflags:                  ${CPPFLAGS}
+        gobject-introspection:     ${found_introspection}
         PolicyKit support:         ${enable_polkit}
         Reverse engineering tools: ${enable_reverse}
         SANE support:              ${has_sane}

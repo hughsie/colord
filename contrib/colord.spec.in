@@ -80,6 +80,7 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/storage.db
 %dir %{_datadir}/color/icc/colord
 %{_datadir}/color/icc/colord/*.ic?
 %{_libdir}/colord-sensors
+%{_libdir}/girepository-1.0/*.typelib
 %ghost %{_localstatedir}/lib/colord/*.db
 
 %files devel
@@ -87,6 +88,7 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/storage.db
 %{_includedir}/colord-1
 %{_libdir}/libcolord.so
 %{_libdir}/pkgconfig/colord.pc
+%{_datadir}/gir-1.0/*.gir
 
 %changelog
 * #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#

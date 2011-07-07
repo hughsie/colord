@@ -1,3 +1,10 @@
+if HAVE_INTROSPECTION
+-include $(INTROSPECTION_MAKEFILE)
+INTROSPECTION_GIRS =
+INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
+INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+endif
+
 INCLUDES = \
 	$(GLIB_CFLAGS)						\
 	-I$(top_srcdir)						\
@@ -86,6 +93,33 @@ MAINTAINERCLEANFILES =						\
 	$(noinst_LIBRARIES)
 
 CLEANFILES = $(BUILT_SOURCES)
+
+if HAVE_INTROSPECTION
+introspection_sources =						\
+	$(libcolord_la_SOURCES)					\
+	$(libcolordbase_include_HEADERS)
+
+Colord-1.0.gir: libcolord.la
+Colord_1_0_gir_INCLUDES = GObject-2.0 Gio-2.0
+Colord_1_0_gir_CFLAGS = $(INCLUDES)
+Colord_1_0_gir_SCANNERFLAGS = --identifier-prefix=Cd \
+				--symbol-prefix=cd_ \
+				--warn-all \
+				--add-include-path=$(srcdir) \
+				--c-include="colord/colord.h"
+Colord_1_0_gir_EXPORT_PACKAGES = colord
+Colord_1_0_gir_LIBS = libcolord.la
+Colord_1_0_gir_FILES = $(introspection_sources)
+INTROSPECTION_GIRS += Colord-1.0.gir
+
+girdir = $(datadir)/gir-1.0
+gir_DATA = $(INTROSPECTION_GIRS)
+
+typelibdir = $(libdir)/girepository-1.0
+typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
+
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
+endif
 
 clean-local:
 	rm -f *~
