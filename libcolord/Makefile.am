@@ -106,7 +106,7 @@ Colord_1_0_gir_SCANNERFLAGS = --identifier-prefix=Cd \
 				--symbol-prefix=cd_ \
 				--warn-all \
 				--add-include-path=$(srcdir) \
-				--c-include="colord/colord.h"
+				--c-include="colord.h"
 Colord_1_0_gir_EXPORT_PACKAGES = colord
 Colord_1_0_gir_LIBS = libcolord.la
 Colord_1_0_gir_FILES = $(introspection_sources)
