@@ -1,13 +1,17 @@
+man_MANS_DIST = 					\
+	colormgr.1					\
+	cd-create-profile.1				\
+	cd-fix-profile.1
+
 EXTRA_DIST =						\
 	colormgr.sgml					\
 	cd-create-profile.sgml				\
-	cd-fix-profile.sgml
+	cd-fix-profile.sgml				\
+	$(man_MANS_DIST)
 
 if HAVE_DOCBOOK2MAN
 man_MANS =						\
-	colormgr.1					\
-	cd-create-profile.1
-	cd-fix-profile.1
+	$(man_MANS_DIST)
 endif
 
 if HAVE_DOCBOOK2MAN

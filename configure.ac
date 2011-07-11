@@ -157,7 +157,7 @@ dnl - Is docbook2man available?
 dnl ---------------------------------------------------------------------------
 AC_PATH_PROG(DOCBOOK2MAN, docbook2man, no)
 if test "$DOCBOOK2MAN" = "no" ; then
-	AC_MSG_WARN([docbook2man not found, will not be able to build man documentation])
+	AC_MSG_WARN([docbook2man not found, will not be able to build man documentation (if tarball, pre-generated documentation will be installed)])
 fi
 AM_CONDITIONAL(HAVE_DOCBOOK2MAN, [test "$DOCBOOK2MAN" != "no"])
 
