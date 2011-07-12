@@ -10,7 +10,7 @@ What colord does:
   "Get me the profiles for device $foo" or
   "Create a device and assign it profile $bar"
 
-* Provides a persistant key-file backed store that is preserved accross
+* Provides a persistent key-file backed store that is preserved accross
   reboots.
 
 * Provides the session for a way to set system settings, for instance

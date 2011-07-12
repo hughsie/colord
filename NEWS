@@ -121,7 +121,7 @@ New Features:
 Bugfixes:
  - Do not emit a critical warning if ID_MODEL doesn't exist for a device
  - Remove any .icc suffix automatically from the encoded profile title
- - Return an error if the user tries to create a persistant profile
+ - Return an error if the user tries to create a persistent profile
  - The DTP92 cannot profile LCDs, according to Graeme
  - Use cmsOpenProfileFromFile() rather than getting the complete profile content
  - Use the embedded profile-id if it is available, else fallback to the file MD5
