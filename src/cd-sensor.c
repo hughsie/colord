@@ -580,7 +580,7 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	CdSensorPrivate *priv = sensor->priv;
 	CdSensorCap cap;
 	gboolean ret;
-	gchar *cap_tmp = NULL;
+	const gchar *cap_tmp = NULL;
 	GVariant *result = NULL;
 
 	/* return '' */
@@ -730,7 +730,7 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* get the type */
-		g_variant_get (parameters, "(s)", &cap_tmp);
+		g_variant_get (parameters, "(&s)", &cap_tmp);
 		cap = cd_sensor_cap_from_string (cap_tmp);
 		if (cap == CD_SENSOR_CAP_UNKNOWN) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -755,7 +755,6 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 out:
 	if (result != NULL)
 		g_variant_unref (result);
-	g_free (cap_tmp);
 }
 
 /**

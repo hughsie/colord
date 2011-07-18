@@ -658,17 +658,16 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	const gchar *prop_value;
 	gboolean register_on_bus = TRUE;
 	gboolean ret;
-	gchar *device_id = NULL;
-	gchar *object_path_tmp = NULL;
-	gchar *scope_tmp = NULL;
+	const gchar *device_id = NULL;
+	const gchar *scope_tmp = NULL;
 	GError *error = NULL;
 	GPtrArray *array = NULL;
 	GVariantIter *iter = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	gint fd = -1;
-	gchar *metadata_key = NULL;
-	gchar *metadata_value = NULL;
+	const gchar *metadata_key = NULL;
+	const gchar *metadata_value = NULL;
 	GDBusMessage *message;
 	GUnixFDList *fd_list;
 
@@ -701,8 +700,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetDevicesByKind") == 0) {
 
 		/* get all the devices that match this type */
-		g_variant_get (parameters, "(s)", &device_id);
-		g_debug ("CdMain: %s:GetDevicesByKind(%s)", sender, device_id);
+		g_variant_get (parameters, "(&s)", &device_id);
+		g_debug ("CdMain: %s:GetDevicesByKind(%s)",
+			 sender, device_id);
 		array = cd_device_array_get_by_kind (devices_array,
 						     device_id);
 
@@ -717,7 +717,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetProfilesByKind") == 0) {
 
 		/* get all the devices that match this type */
-		g_variant_get (parameters, "(s)", &scope_tmp);
+		g_variant_get (parameters, "(&s)", &scope_tmp);
 		g_debug ("CdMain: %s:GetProfilesByKind(%s)",
 			 sender, scope_tmp);
 		array = cd_profile_array_get_by_kind (profiles_array,
@@ -733,8 +733,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 'o' */
 	if (g_strcmp0 (method_name, "FindDeviceById") == 0) {
 
-		g_variant_get (parameters, "(s)", &device_id);
-		g_debug ("CdMain: %s:FindDeviceById(%s)", sender, device_id);
+		g_variant_get (parameters, "(&s)", &device_id);
+		g_debug ("CdMain: %s:FindDeviceById(%s)",
+			 sender, device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -754,8 +755,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 'o' */
 	if (g_strcmp0 (method_name, "FindDeviceByProperty") == 0) {
 
-		g_variant_get (parameters, "(ss)",
-			       &metadata_key, &metadata_value);
+		g_variant_get (parameters, "(&s&s)",
+			       &metadata_key,
+			       &metadata_value);
 		g_debug ("CdMain: %s:FindDeviceByProperty(%s=%s)",
 			 sender, metadata_key, metadata_value);
 		device = cd_device_array_get_by_property (devices_array,
@@ -780,8 +782,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 'o' */
 	if (g_strcmp0 (method_name, "FindProfileById") == 0) {
 
-		g_variant_get (parameters, "(s)", &device_id);
-		g_debug ("CdMain: %s:FindProfileById(%s)", sender, device_id);
+		g_variant_get (parameters, "(&s)", &device_id);
+		g_debug ("CdMain: %s:FindProfileById(%s)",
+			 sender, device_id);
 		profile = cd_profile_array_get_by_id (profiles_array, device_id);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -801,8 +804,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 'o' */
 	if (g_strcmp0 (method_name, "GetStandardSpace") == 0) {
 
-		g_variant_get (parameters, "(s)", &device_id);
-		g_debug ("CdMain: %s:GetStandardSpace(%s)", sender, device_id);
+		g_variant_get (parameters, "(&s)", &device_id);
+		g_debug ("CdMain: %s:GetStandardSpace(%s)",
+			 sender, device_id);
 
 		/* first search overrides */
 		profile = cd_main_get_standard_space_override (device_id);
@@ -826,7 +830,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* return 'o' */
 	if (g_strcmp0 (method_name, "FindProfileByFilename") == 0) {
 
-		g_variant_get (parameters, "(s)", &device_id);
+		g_variant_get (parameters, "(&s)", &device_id);
 		g_debug ("CdMain: %s:FindProfileByFilename(%s)",
 			 sender, device_id);
 		profile = cd_profile_array_get_by_filename (profiles_array,
@@ -868,7 +872,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(ssa{ss})",
+		g_variant_get (parameters, "(&s&sa{ss})",
 			       &device_id,
 			       &scope_tmp,
 			       &iter);
@@ -948,8 +952,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(o)", &device_id);
-		g_debug ("CdMain: %s:DeleteDevice(%s)", sender, device_id);
+		g_variant_get (parameters, "(&o)", &device_id);
+		g_debug ("CdMain: %s:DeleteDevice(%s)",
+			 sender, device_id);
 		device = cd_device_array_get_by_id (devices_array, device_id);
 		if (device == NULL) {
 			/* fall back to checking the object path */
@@ -983,8 +988,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(o)", &device_id);
-		g_debug ("CdMain: %s:DeleteProfile(%s)", sender, device_id);
+		g_variant_get (parameters, "(&o)", &device_id);
+		g_debug ("CdMain: %s:DeleteProfile(%s)",
+			 sender, device_id);
 		profile = cd_profile_array_get_by_object_path (profiles_array, device_id);
 		if (profile == NULL) {
 			/* fall back to checking the object path */
@@ -1018,7 +1024,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* does already exist */
-		g_variant_get (parameters, "(ssa{ss})",
+		g_variant_get (parameters, "(&s&sa{ss})",
 			       &device_id,
 			       &scope_tmp,
 			       &iter);
@@ -1108,10 +1114,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
-	g_free (metadata_key);
-	g_free (metadata_value);
-	g_free (scope_tmp);
-	g_free (object_path_tmp);
 	if (iter != NULL)
 		g_variant_iter_free (iter);
 	if (array != NULL)

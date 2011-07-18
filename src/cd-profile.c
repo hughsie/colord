@@ -430,8 +430,8 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
 	gboolean ret;
-	gchar *property_name = NULL;
-	gchar *property_value = NULL;
+	const gchar *property_name = NULL;
+	const gchar *property_value = NULL;
 	GError *error = NULL;
 	CdProfile *profile = CD_PROFILE (user_data);
 
@@ -446,7 +446,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			goto out;
 
 		/* set, and parse */
-		g_variant_get (parameters, "(ss)",
+		g_variant_get (parameters, "(&s&s)",
 			       &property_name,
 			       &property_value);
 		g_debug ("CdProfile %s:SetProperty(%s,%s)",
@@ -498,8 +498,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
-	g_free (property_name);
-	g_free (property_value);
+	return;
 }
 
 /**
@@ -511,7 +510,6 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 			     const gchar *property_name, GError **error,
 			     gpointer user_data)
 {
-	gchar **profiles = NULL;
 	GVariant *retval = NULL;
 	CdProfile *profile = CD_PROFILE (user_data);
 
@@ -566,7 +564,6 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 
 	g_critical ("failed to set property %s", property_name);
 out:
-	g_strfreev (profiles);
 	return retval;
 }
 
