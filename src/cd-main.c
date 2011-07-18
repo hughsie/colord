@@ -1633,6 +1633,34 @@ cd_main_timed_exit_cb (gpointer user_data)
 }
 
 /**
+ * cd_main_load_introspection:
+ **/
+static GDBusNodeInfo *
+cd_main_load_introspection (const gchar *filename, GError **error)
+{
+	gboolean ret;
+	gchar *data = NULL;
+	GDBusNodeInfo *info = NULL;
+	GFile *file;
+
+	/* load file */
+	file = g_file_new_for_path (filename);
+	ret = g_file_load_contents (file, NULL, &data,
+				    NULL, NULL, error);
+	if (!ret)
+		goto out;
+
+	/* build introspection from XML */
+	info = g_dbus_node_info_new_for_xml (data, error);
+	if (info == NULL)
+		goto out;
+out:
+	g_object_unref (file);
+	g_free (data);
+	return info;
+}
+
+/**
  * main:
  **/
 int
@@ -1645,14 +1673,6 @@ main (int argc, char *argv[])
 	gboolean timed_exit = FALSE;
 	guint owner_id = 0;
 	guint retval = 1;
-	GFile *file_daemon = NULL;
-	GFile *file_device = NULL;
-	GFile *file_profile = NULL;
-	GFile *file_sensor = NULL;
-	gchar *introspection_daemon_data = NULL;
-	gchar *introspection_device_data = NULL;
-	gchar *introspection_profile_data = NULL;
-	gchar *introspection_sensor_data = NULL;
 	const GOptionEntry options[] = {
 		{ "timed-exit", '\0', 0, G_OPTION_ARG_NONE, &timed_exit,
 		  /* TRANSLATORS: exit after we've started up, used for user profiling */
@@ -1741,74 +1761,36 @@ main (int argc, char *argv[])
 	}
 
 	/* load introspection from file */
-	file_daemon = g_file_new_for_path (DATADIR "/dbus-1/interfaces/"
-					   COLORD_DBUS_INTERFACE ".xml");
-	ret = g_file_load_contents (file_daemon, NULL,
-				    &introspection_daemon_data,
-				    NULL, NULL, &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to load introspection: %s", error->message);
-		g_error_free (error);
-		goto out;
-	}
-	file_device = g_file_new_for_path (DATADIR "/dbus-1/interfaces/"
-					   COLORD_DBUS_INTERFACE_DEVICE ".xml");
-	ret = g_file_load_contents (file_device, NULL,
-				    &introspection_device_data,
-				    NULL, NULL, &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to load introspection: %s", error->message);
-		g_error_free (error);
-		goto out;
-	}
-	file_profile = g_file_new_for_path (DATADIR "/dbus-1/interfaces/"
-					    COLORD_DBUS_INTERFACE_PROFILE ".xml");
-	ret = g_file_load_contents (file_profile, NULL,
-				    &introspection_profile_data,
-				    NULL, NULL, &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to load introspection: %s", error->message);
-		g_error_free (error);
-		goto out;
-	}
-	file_sensor = g_file_new_for_path (DATADIR "/dbus-1/interfaces/"
-					    COLORD_DBUS_INTERFACE_SENSOR ".xml");
-	ret = g_file_load_contents (file_sensor, NULL,
-				    &introspection_sensor_data,
-				    NULL, NULL, &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to load introspection: %s", error->message);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* build introspection from XML */
-	introspection_daemon = g_dbus_node_info_new_for_xml (introspection_daemon_data,
-							     &error);
+	introspection_daemon = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
+							   COLORD_DBUS_INTERFACE ".xml",
+							   &error);
 	if (introspection_daemon == NULL) {
 		g_warning ("CdMain: failed to load daemon introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
 	}
-	introspection_device = g_dbus_node_info_new_for_xml (introspection_device_data,
-							     &error);
+	introspection_device = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
+							   COLORD_DBUS_INTERFACE_DEVICE ".xml",
+							   &error);
 	if (introspection_device == NULL) {
 		g_warning ("CdMain: failed to load device introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
 	}
-	introspection_profile = g_dbus_node_info_new_for_xml (introspection_profile_data,
-							     &error);
+	introspection_profile = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
+							   COLORD_DBUS_INTERFACE_PROFILE ".xml",
+							   &error);
 	if (introspection_profile == NULL) {
 		g_warning ("CdMain: failed to load profile introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
 	}
-	introspection_sensor = g_dbus_node_info_new_for_xml (introspection_sensor_data,
-							     &error);
+	introspection_sensor = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
+							   COLORD_DBUS_INTERFACE_SENSOR ".xml",
+							   &error);
 	if (introspection_sensor == NULL) {
 		g_warning ("CdMain: failed to load sensor introspection: %s",
 			   error->message);
@@ -1839,10 +1821,6 @@ main (int argc, char *argv[])
 	/* success */
 	retval = 0;
 out:
-	g_free (introspection_daemon_data);
-	g_free (introspection_device_data);
-	g_free (introspection_profile_data);
-	g_free (introspection_sensor_data);
 	g_ptr_array_unref (sensors);
 	g_hash_table_destroy (standard_spaces);
 #ifdef HAVE_GUDEV
@@ -1863,14 +1841,6 @@ out:
 		g_object_unref (devices_array);
 	if (profiles_array != NULL)
 		g_object_unref (profiles_array);
-	if (file_daemon != NULL)
-		g_object_unref (file_daemon);
-	if (file_device != NULL)
-		g_object_unref (file_device);
-	if (file_profile != NULL)
-		g_object_unref (file_profile);
-	if (file_sensor != NULL)
-		g_object_unref (file_sensor);
 	if (owner_id > 0)
 		g_bus_unown_name (owner_id);
 	if (connection != NULL)
