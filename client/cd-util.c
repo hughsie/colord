@@ -61,8 +61,7 @@ cd_util_show_profile (CdProfile *profile)
 	GList *list, *l;
 
 	/* TRANSLATORS: the internal DBus path */
-	g_print ("%s:\t%s\n",
-		 _("Object Path"),
+	g_print ("%s:\t%s\n", _("Object Path"),
 		 cd_profile_get_object_path (profile));
 	tmp = cd_profile_get_format (profile);
 	if (tmp != NULL && tmp[0] != '\0') {
@@ -73,22 +72,18 @@ cd_util_show_profile (CdProfile *profile)
 	tmp = cd_profile_get_qualifier (profile);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi */
-		g_print ("%s:\t%s\n",
-			 _("Qualifier"),
-			  tmp);
+		g_print ("%s:\t%s\n", _("Qualifier"), tmp);
 	}
 	kind = cd_profile_get_kind (profile);
 	if (kind != CD_PROFILE_KIND_UNKNOWN) {
 		/* TRANSLATORS: the profile kind, e.g. 'output' */
-		g_print ("%s:\t%s\n",
-			 _("Kind"),
+		g_print ("%s:\t%s\n", _("Kind"),
 			 cd_profile_kind_to_string (kind));
 	}
 	colorspace = cd_profile_get_colorspace (profile);
 	if (colorspace != CD_COLORSPACE_UNKNOWN) {
 		/* TRANSLATORS: the profile colorspace, e.g. 'rgb' */
-		g_print ("%s:\t%s\n",
-			 _("Colorspace"),
+		g_print ("%s:\t%s\n", _("Colorspace"),
 			 cd_colorspace_to_string (colorspace));
 	}
 	scope = cd_profile_get_scope (profile);
@@ -99,18 +94,15 @@ cd_util_show_profile (CdProfile *profile)
 	}
 
 	/* TRANSLATORS: if the profile has a Video Card Gamma Table lookup */
-	g_print ("%s:\t%s\n",
-		 _("Has video gamma table"),
+	g_print ("%s:\t%s\n", _("Has video gamma table"),
 		 cd_profile_get_has_vcgt (profile) ? "Yes" : "No");
 
 	/* TRANSLATORS: profile filename */
-	g_print ("%s:\t%s\n",
-		 _("Filename"),
+	g_print ("%s:\t%s\n", _("Filename"),
 		 cd_profile_get_filename (profile));
 
 	/* TRANSLATORS: profile identifier */
-	g_print ("%s:\t%s\n",
-		 _("Profile ID"),
+	g_print ("%s:\t%s\n", _("Profile ID"),
 		 cd_profile_get_id (profile));
 
 	/* list all the items of metadata */
@@ -120,8 +112,7 @@ cd_util_show_profile (CdProfile *profile)
 		if (g_strcmp0 (l->data, "CMS") == 0)
 			continue;
 		/* TRANSLATORS: the metadata contiained in the profile */
-		g_print ("%s:\t%s=%s\n",
-			 _("Metadata"),
+		g_print ("%s:\t%s=%s\n", _("Metadata"),
 			 (const gchar *) l->data,
 			 (const gchar *) g_hash_table_lookup (metadata,
 							      l->data));
@@ -145,38 +136,31 @@ cd_util_show_device (CdDevice *device)
 	guint i;
 
 	/* TRANSLATORS: the internal DBus path */
-	g_print ("%s: %s\n",
-		 _("Object Path"),
+	g_print ("%s: %s\n", _("Object Path"),
 		 cd_device_get_object_path (device));
 
 	/* TRANSLATORS: when the device was created */
-	g_print ("%s:\t%" G_GUINT64_FORMAT "\n",
-		 _("Created"),
+	g_print ("%s:\t%" G_GUINT64_FORMAT "\n", _("Created"),
 		 cd_device_get_created (device));
 
 	/* TRANSLATORS: when the device was modified */
-	g_print ("%s:\t%" G_GUINT64_FORMAT "\n",
-		 _("Modified"),
+	g_print ("%s:\t%" G_GUINT64_FORMAT "\n", _("Modified"),
 		 cd_device_get_modified (device));
 
 	/* TRANSLATORS: the device kind, e.g. "printer" */
-	g_print ("%s:\t%s\n",
-		 _("Kind"),
+	g_print ("%s:\t%s\n", _("Kind"),
 		 cd_device_kind_to_string (cd_device_get_kind (device)));
 
 	/* TRANSLATORS: the device model */
-	g_print ("%s:\t%s\n",
-		 _("Model"),
+	g_print ("%s:\t%s\n", _("Model"),
 		 cd_device_get_model (device));
 
 	/* TRANSLATORS: the device vendor */
-	g_print ("%s:\t%s\n",
-		 _("Vendor"),
+	g_print ("%s:\t%s\n", _("Vendor"),
 		 cd_device_get_vendor (device));
 
 	/* TRANSLATORS: the device serial number */
-	g_print ("%s:\t%s\n",
-		 _("Serial"),
+	g_print ("%s:\t%s\n", _("Serial"),
 		 cd_device_get_serial (device));
 
 	tmp = cd_device_get_format (device);
@@ -194,13 +178,11 @@ cd_util_show_device (CdDevice *device)
 	}
 
 	/* TRANSLATORS: the device colorspace, e.g. "rgb" */
-	g_print ("%s:\t%s\n",
-		 _("Colorspace"),
+	g_print ("%s:\t%s\n", _("Colorspace"),
 		 cd_colorspace_to_string (cd_device_get_colorspace (device)));
 
 	/* TRANSLATORS: the device identifier */
-	g_print ("%s:\t%s\n",
-		 _("Device ID"),
+	g_print ("%s:\t%s\n", _("Device ID"),
 		 cd_device_get_id (device));
 
 	/* print profiles */
@@ -208,8 +190,7 @@ cd_util_show_device (CdDevice *device)
 	for (i=0; i<profiles->len; i++) {
 		profile_tmp = g_ptr_array_index (profiles, i);
 		/* TRANSLATORS: the profile for the device */
-		g_print ("%s %i:\t%s\n",
-			 _("Profile"),
+		g_print ("%s %i:\t%s\n", _("Profile"),
 			 i+1,
 			 cd_profile_get_object_path (profile_tmp));
 	}
@@ -219,8 +200,7 @@ cd_util_show_device (CdDevice *device)
 	list = g_hash_table_get_keys (metadata);
 	for (l = list; l != NULL; l = l->next) {
 		/* TRANSLATORS: the metadata for the device */
-		g_print ("%s:\t%s=%s\n",
-			 _("Metadata"),
+		g_print ("%s:\t%s=%s\n", _("Metadata"),
 			 (const gchar *) l->data,
 			 (const gchar *) g_hash_table_lookup (metadata,
 							      l->data));
@@ -254,8 +234,7 @@ cd_util_show_sensor (CdSensor *sensor)
 	GMainLoop *loop = NULL;
 
 	/* TRANSLATORS: the internal DBus path */
-	g_print ("%s:\t%s\n",
-		 _("Object Path"),
+	g_print ("%s:\t%s\n", _("Object Path"),
 		 cd_sensor_get_object_path (sensor));
 
 	/* lock */
@@ -277,81 +256,68 @@ cd_util_show_sensor (CdSensor *sensor)
 	kind = cd_sensor_get_kind (sensor);
 	if (kind != CD_SENSOR_KIND_UNKNOWN) {
 		/* TRANSLATORS: the sensor kind, e.g. 'output' */
-		g_print ("%s:\t%s\n",
-			 _("Kind"),
+		g_print ("%s:\t%s\n", _("Kind"),
 			 cd_sensor_kind_to_string (kind));
 	}
 
 	state = cd_sensor_get_state (sensor);
 	if (state != CD_SENSOR_STATE_UNKNOWN) {
 		/* TRANSLATORS: the sensor state, e.g. 'idle' */
-		g_print ("%s:\t%s\n",
-			 _("State"),
+		g_print ("%s:\t%s\n", _("State"),
 			 cd_sensor_state_to_string (state));
 	}
 
 	tmp = cd_sensor_get_serial (sensor);
 	if (tmp != NULL) {
 		/* TRANSLATORS: sensor serial */
-		g_print ("%s:\t%s\n",
-			 _("Serial number"),
+		g_print ("%s:\t%s\n", _("Serial number"),
 			 tmp);
 	}
 
 	tmp = cd_sensor_get_model (sensor);
 	if (tmp != NULL) {
 		/* TRANSLATORS: sensor model */
-		g_print ("%s:\t%s\n",
-			 _("Model"),
+		g_print ("%s:\t%s\n", _("Model"),
 			 tmp);
 	}
 
 	tmp = cd_sensor_get_vendor (sensor);
 	if (tmp != NULL) {
 		/* TRANSLATORS: sensor vendor */
-		g_print ("%s:\t%s\n",
-			 _("Vendor"),
+		g_print ("%s:\t%s\n", _("Vendor"),
 			 tmp);
 	}
 
 	/* TRANSLATORS: if the sensor has a colord native driver */
-	g_print ("%s:\t%s\n",
-		 _("Native"),
+	g_print ("%s:\t%s\n", _("Native"),
 		 cd_sensor_get_native (sensor) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor is locked */
-	g_print ("%s:\t%s\n",
-		 _("Locked"),
+	g_print ("%s:\t%s\n", _("Locked"),
 		 cd_sensor_get_locked (sensor) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor supports calibrating an LCD display */
-	g_print ("%s:\t%s\n",
-		 _("LCD"),
+	g_print ("%s:\t%s\n", _("LCD"),
 		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_LCD) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor supports calibrating a CRT display */
-	g_print ("%s:\t%s\n",
-		 _("CRT"),
+	g_print ("%s:\t%s\n", _("CRT"),
 		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_CRT) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor supports calibrating a printer */
-	g_print ("%s:\t%s\n",
-		 _("Printer"),
+	g_print ("%s:\t%s\n", _("Printer"),
 		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PRINTER) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor supports spot measurements */
-	g_print ("%s:\t%s\n",
-		 _("Spot"),
+	g_print ("%s:\t%s\n", _("Spot"),
 		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_SPOT) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor supports calibrating a projector */
-	g_print ("%s:\t%s\n",
-		 _("Projector"),
+	g_print ("%s:\t%s\n", _("Projector"),
 		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PROJECTOR) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor supports getting the ambient light level */
-	g_print ("%s:\t%s\n",
-		 _("Ambient"),
+	g_print ("%s:\t%s\n", _("Ambient"),
 		 cd_sensor_has_cap (sensor, CD_SENSOR_CAP_AMBIENT) ? "Yes" : "No");
 
 	/* unlock */
@@ -756,8 +722,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 			goto out;
 
 		/* TRANSLATORS: this is the sensor title */
-		g_print ("%s: %s - %s\n",
-			 _("Sensor"),
+		g_print ("%s: %s - %s\n", _("Sensor"),
 			 cd_sensor_get_vendor (sensor),
 			 cd_sensor_get_model (sensor));
 
@@ -1596,7 +1561,8 @@ main (int argc, char *argv[])
 	ret = cd_client_connect_sync (priv->client, NULL, &error);
 	if (!ret) {
 		/* TRANSLATORS: no colord available */
-		g_print ("%s %s\n", _("No connection to colord:"), error->message);
+		g_print ("%s %s\n", _("No connection to colord:"),
+			 error->message);
 		g_error_free (error);
 		goto out;
 	}
