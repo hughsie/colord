@@ -218,7 +218,6 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 				      const gchar *property_name,
 				      GVariant *property_value)
 {
-	GError *error_local = NULL;
 	GVariantBuilder builder;
 	GVariantBuilder invalidated_builder;
 
@@ -242,8 +241,7 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 				       COLORD_DBUS_INTERFACE_DEVICE,
 				       &builder,
 				       &invalidated_builder),
-				       &error_local);
-	g_assert_no_error (error_local);
+				       NULL);
 }
 
 /**
@@ -252,9 +250,6 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 static void
 cd_device_dbus_emit_device_changed (CdDevice *device)
 {
-	gboolean ret;
-	GError *error_local = NULL;
-
 	/* not yet connected */
 	if (device->priv->connection == NULL)
 		return;
@@ -262,32 +257,24 @@ cd_device_dbus_emit_device_changed (CdDevice *device)
 	/* emit signal */
 	g_debug ("CdDevice: emit Changed on %s",
 		 cd_device_get_object_path (device));
-	ret = g_dbus_connection_emit_signal (device->priv->connection,
-					     NULL,
-					     cd_device_get_object_path (device),
-					     COLORD_DBUS_INTERFACE_DEVICE,
-					     "Changed",
-					     NULL,
-					     &error_local);
-	if (!ret) {
-		g_warning ("CdDevice: failed to send signal %s", error_local->message);
-		g_error_free (error_local);
-	}
+	g_dbus_connection_emit_signal (device->priv->connection,
+				       NULL,
+				       cd_device_get_object_path (device),
+				       COLORD_DBUS_INTERFACE_DEVICE,
+				       "Changed",
+				       NULL,
+				       NULL);
 
 	/* emit signal */
 	g_debug ("CdDevice: emit Changed");
-	ret = g_dbus_connection_emit_signal (device->priv->connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "DeviceChanged",
-					     g_variant_new ("(o)",
+	g_dbus_connection_emit_signal (device->priv->connection,
+				       NULL,
+				       COLORD_DBUS_PATH,
+				       COLORD_DBUS_INTERFACE,
+				       "DeviceChanged",
+				       g_variant_new ("(o)",
 							    cd_device_get_object_path (device)),
-					     &error_local);
-	if (!ret) {
-		g_warning ("CdDevice: failed to send signal %s", error_local->message);
-		g_error_free (error_local);
-	}
+				       NULL);
 }
 
 /**

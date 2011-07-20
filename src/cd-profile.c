@@ -177,7 +177,6 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 				       const gchar *property_name,
 				       GVariant *property_value)
 {
-	GError *error_local = NULL;
 	GVariantBuilder builder;
 	GVariantBuilder invalidated_builder;
 
@@ -201,8 +200,7 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 				       COLORD_DBUS_INTERFACE_PROFILE,
 				       &builder,
 				       &invalidated_builder),
-				       &error_local);
-	g_assert_no_error (error_local);
+				       NULL);
 }
 
 /**
@@ -211,9 +209,6 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 static void
 cd_profile_dbus_emit_profile_changed (CdProfile *profile)
 {
-	gboolean ret;
-	GError *error_local = NULL;
-
 	/* not yet connected */
 	if (profile->priv->connection == NULL)
 		return;
@@ -221,32 +216,24 @@ cd_profile_dbus_emit_profile_changed (CdProfile *profile)
 	/* emit signal */
 	g_debug ("CdProfile: emit Changed on %s",
 		 cd_profile_get_object_path (profile));
-	ret = g_dbus_connection_emit_signal (profile->priv->connection,
-					     NULL,
-					     cd_profile_get_object_path (profile),
-					     COLORD_DBUS_INTERFACE_PROFILE,
-					     "Changed",
-					     NULL,
-					     &error_local);
-	if (!ret) {
-		g_warning ("CdProfile: failed to send signal %s", error_local->message);
-		g_error_free (error_local);
-	}
+	g_dbus_connection_emit_signal (profile->priv->connection,
+				       NULL,
+				       cd_profile_get_object_path (profile),
+				       COLORD_DBUS_INTERFACE_PROFILE,
+				       "Changed",
+				       NULL,
+				       NULL);
 
 	/* emit signal */
 	g_debug ("CdProfile: emit Changed");
-	ret = g_dbus_connection_emit_signal (profile->priv->connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "ProfileChanged",
-					     g_variant_new ("(o)",
-							    cd_profile_get_object_path (profile)),
-					     &error_local);
-	if (!ret) {
-		g_warning ("CdProfile: failed to send signal %s", error_local->message);
-		g_error_free (error_local);
-	}
+	g_dbus_connection_emit_signal (profile->priv->connection,
+				       NULL,
+				       COLORD_DBUS_PATH,
+				       COLORD_DBUS_INTERFACE,
+				       "ProfileChanged",
+				       g_variant_new ("(o)",
+						      cd_profile_get_object_path (profile)),
+				       NULL);
 }
 
 /**

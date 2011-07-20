@@ -158,7 +158,6 @@ cd_sensor_dbus_emit_property_changed (CdSensor *sensor,
 				      const gchar *property_name,
 				      GVariant *property_value)
 {
-	GError *error_local = NULL;
 	GVariantBuilder builder;
 	GVariantBuilder invalidated_builder;
 
@@ -183,8 +182,7 @@ cd_sensor_dbus_emit_property_changed (CdSensor *sensor,
 				       COLORD_DBUS_INTERFACE_SENSOR,
 				       &builder,
 				       &invalidated_builder),
-				       &error_local);
-	g_assert_no_error (error_local);
+				       NULL);
 }
 
 /**
@@ -195,9 +193,6 @@ cd_sensor_dbus_emit_property_changed (CdSensor *sensor,
 void
 cd_sensor_button_pressed (CdSensor *sensor)
 {
-	gboolean ret;
-	GError *error_local = NULL;
-
 	/* not yet connected */
 	if (sensor->priv->connection == NULL)
 		return;
@@ -205,18 +200,13 @@ cd_sensor_button_pressed (CdSensor *sensor)
 	/* emit signal */
 	g_debug ("CdSensor: emit ButtonPressed on %s",
 		 sensor->priv->object_path);
-	ret = g_dbus_connection_emit_signal (sensor->priv->connection,
-					     NULL,
-					     sensor->priv->object_path,
-					     COLORD_DBUS_INTERFACE_SENSOR,
-					     "ButtonPressed",
-					     NULL,
-					     &error_local);
-	if (!ret) {
-		g_warning ("CdSensor: failed to send signal %s",
-			   error_local->message);
-		g_error_free (error_local);
-	}
+	g_dbus_connection_emit_signal (sensor->priv->connection,
+				       NULL,
+				       sensor->priv->object_path,
+				       COLORD_DBUS_INTERFACE_SENSOR,
+				       "ButtonPressed",
+				       NULL,
+				       NULL);
 }
 
 /**

@@ -67,7 +67,6 @@ cd_main_profile_removed (CdProfile *profile)
 	gboolean ret;
 	gchar *object_path_tmp;
 	CdDevice *device_tmp;
-	GError *error = NULL;
 	GPtrArray *devices;
 	guint i;
 
@@ -91,18 +90,14 @@ cd_main_profile_removed (CdProfile *profile)
 
 	/* emit signal */
 	g_debug ("CdMain: Emitting ProfileRemoved(%s)", object_path_tmp);
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "ProfileRemoved",
-					     g_variant_new ("(o)",
+	g_dbus_connection_emit_signal (connection,
+				       NULL,
+				       COLORD_DBUS_PATH,
+				       COLORD_DBUS_INTERFACE,
+				       "ProfileRemoved",
+				       g_variant_new ("(o)",
 							    object_path_tmp),
-					     &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to send signal %s", error->message);
-		g_error_free (error);
-	}
+				       NULL);
 	g_free (object_path_tmp);
 	g_ptr_array_unref (devices);
 }
@@ -149,18 +144,14 @@ cd_main_device_removed (CdDevice *device)
 
 	/* emit signal */
 	g_debug ("CdMain: Emitting DeviceRemoved(%s)", object_path_tmp);
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "DeviceRemoved",
-					     g_variant_new ("(o)",
+	g_dbus_connection_emit_signal (connection,
+				       NULL,
+				       COLORD_DBUS_PATH,
+				       COLORD_DBUS_INTERFACE,
+				       "DeviceRemoved",
+				       g_variant_new ("(o)",
 							    object_path_tmp),
-					     &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to send signal %s", error->message);
-		g_error_free (error);
-	}
+				       &error);
 	g_free (object_path_tmp);
 }
 
@@ -320,14 +311,14 @@ cd_main_device_register_on_bus (CdDevice *device,
 	/* emit signal */
 	g_debug ("CdMain: Emitting DeviceAdded(%s)",
 		 cd_device_get_object_path (device));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "DeviceAdded",
-					     g_variant_new ("(o)",
-							    cd_device_get_object_path (device)),
-					     error);
+	g_dbus_connection_emit_signal (connection,
+				       NULL,
+				       COLORD_DBUS_PATH,
+				       COLORD_DBUS_INTERFACE,
+				       "DeviceAdded",
+				       g_variant_new ("(o)",
+						      cd_device_get_object_path (device)),
+				       NULL);
 out:
 	return ret;
 }
@@ -583,14 +574,14 @@ cd_main_profile_register_on_bus (CdProfile *profile,
 	/* emit signal */
 	g_debug ("CdMain: Emitting ProfileAdded(%s)",
 		 cd_profile_get_object_path (profile));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "ProfileAdded",
-					     g_variant_new ("(o)",
+	g_dbus_connection_emit_signal (connection,
+				       NULL,
+				       COLORD_DBUS_PATH,
+				       COLORD_DBUS_INTERFACE,
+				       "ProfileAdded",
+				       g_variant_new ("(o)",
 							    cd_profile_get_object_path (profile)),
-					     error);
+				       NULL);
 out:
 	return ret;
 }
@@ -1319,14 +1310,14 @@ cd_main_sensor_register_on_bus (CdSensor *sensor,
 	/* emit signal */
 	g_debug ("CdMain: Emitting SensorAdded(%s)",
 		 cd_sensor_get_object_path (sensor));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "SensorAdded",
-					     g_variant_new ("(o)",
-							    cd_sensor_get_object_path (sensor)),
-					     error);
+	g_dbus_connection_emit_signal (connection,
+				       NULL,
+				       COLORD_DBUS_PATH,
+				       COLORD_DBUS_INTERFACE,
+				       "SensorAdded",
+				       g_variant_new ("(o)",
+						      cd_sensor_get_object_path (sensor)),
+				       NULL);
 out:
 	return ret;
 }
@@ -1599,27 +1590,17 @@ cd_main_client_sensor_removed_cb (CdUdevClient *udev_client_,
 				  CdSensor *sensor,
 				  gpointer user_data)
 {
-	GError *error = NULL;
-	gboolean ret;
-
 	/* emit signal */
 	g_debug ("CdMain: Emitting SensorRemoved(%s)",
 		 cd_sensor_get_object_path (sensor));
-	ret = g_dbus_connection_emit_signal (connection,
-					     NULL,
-					     COLORD_DBUS_PATH,
-					     COLORD_DBUS_INTERFACE,
-					     "SensorRemoved",
-					     g_variant_new ("(o)",
-							    cd_sensor_get_object_path (sensor)),
-					     &error);
-	if (!ret) {
-		g_warning ("CdMain: failed to emit SensorRemoved: %s",
-			   error->message);
-		g_error_free (error);
-		goto out;
-	}
-out:
+	g_dbus_connection_emit_signal (connection,
+				       NULL,
+				       COLORD_DBUS_PATH,
+				       COLORD_DBUS_INTERFACE,
+				       "SensorRemoved",
+				       g_variant_new ("(o)",
+						      cd_sensor_get_object_path (sensor)),
+				       NULL);
 	g_ptr_array_remove (sensors, sensor);
 }
 #endif
