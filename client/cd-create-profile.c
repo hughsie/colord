@@ -142,16 +142,16 @@ main (int argc, char **argv)
 	const GOptionEntry options[] = {
 		{ "description", 'd', 0, G_OPTION_ARG_STRING, &description,
 		/* TRANSLATORS: command line option */
-		  _("The description of the profile"), NULL },
+		  _("The profile description"), NULL },
 		{ "copyright", 'c', 0, G_OPTION_ARG_STRING, &copyright,
 		/* TRANSLATORS: command line option */
-		  _("The copyright of the profile"), NULL },
+		  _("The profile copyright"), NULL },
 		{ "model", 'm', 0, G_OPTION_ARG_STRING, &model,
 		/* TRANSLATORS: command line option */
-		  _("The model of the profile"), NULL },
+		  _("The device model"), NULL },
 		{ "manufacturer", 'n', 0, G_OPTION_ARG_STRING, &manufacturer,
 		/* TRANSLATORS: command line option */
-		  _("The manufacturer of the profile"), NULL },
+		  _("The device manufacturer"), NULL },
 		{ "output", 'o', 0, G_OPTION_ARG_STRING, &filename,
 		/* TRANSLATORS: command line option */
 		  _("Profile to create"), NULL },
@@ -166,7 +166,7 @@ main (int argc, char **argv)
 		  _("Named color suffix"), NULL },
 		{ "metadata", '\0', 0, G_OPTION_ARG_STRING, &metadata,
 		/* TRANSLATORS: command line option */
-		  _("The metadata of the profile in 'key1=value1,key2=value2' format"), NULL },
+		  _("The metadata in 'key1=value1,key2=value2' format"), NULL },
 		{ NULL}
 	};
 
