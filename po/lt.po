@@ -2,8 +2,6 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # 
-# Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2009.
-# Kiyoto Hashida <khashida@redhat.com>, 2009.
 # Richard Hughes <richard@hughsie.com>, 2011.
 msgid ""
 msgstr ""
@@ -16,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Language: lt\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:145 ../client/cd-fix-profile.c:169
@@ -121,7 +119,7 @@ msgstr ""
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: ../client/cd-util.c:80 ../client/cd-util.c:154 ../client/cd-util.c:262
 msgid "Type"
-msgstr "タイプ"
+msgstr "Tipas"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -178,7 +176,7 @@ msgstr ""
 #. TRANSLATORS: sensor vendor
 #: ../client/cd-util.c:162 ../client/cd-util.c:290
 msgid "Vendor"
-msgstr "供給元"
+msgstr "Tiekėjas"
 
 #. TRANSLATORS: the device serial number
 #: ../client/cd-util.c:166
@@ -198,7 +196,7 @@ msgstr ""
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:269
 msgid "State"
-msgstr "状態"
+msgstr "Būsena"
 
 #. TRANSLATORS: sensor serial
 #: ../client/cd-util.c:276
@@ -512,25 +510,25 @@ msgstr ""
 #. TRANSLATORS: turn on all debugging
 #: ../src/cd-debug.c:112
 msgid "Show debugging information for all files"
-msgstr "全てのファイル用にデバッグ情報を表示"
+msgstr "Rodyti visų failų derinimo informaciją"
 
 #: ../src/cd-debug.c:170
 msgid "Debugging Options"
-msgstr "デバッギングオプション"
+msgstr "Derinimo parinktys"
 
 #: ../src/cd-debug.c:171
 msgid "Show debugging options"
-msgstr "デバッグオプションを表示"
+msgstr "Rodyti derinimo parinktis"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: ../src/cd-main.c:1662
 msgid "Exit after a small delay"
-msgstr "少し遅れて終了"
+msgstr "Išeiti šiek tiek palaukus"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: ../src/cd-main.c:1665
 msgid "Exit after the engine has loaded"
-msgstr "エンジンがロードされてから終了"
+msgstr "Išeiti įkėlus modulį"
 
 #: ../src/cd-main.c:1682
 msgid "Color Management D-Bus Service"

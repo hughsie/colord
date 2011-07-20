@@ -2,8 +2,10 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # 
-# Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2009.
-# Kiyoto Hashida <khashida@redhat.com>, 2009.
+# A S Alam <aalam@users.sf.net>, 2009.
+# Amanpreet Singh Alam <aalam@users.sf.net>, 2008, 2009.
+# Jaswinder Singh <jsingh@redhat.com>, 2009.
+# A S Alam <apreet.alam@gmail.com>, 2011.
 # Richard Hughes <richard@hughsie.com>, 2011.
 msgid ""
 msgstr ""
@@ -12,12 +14,12 @@ msgstr ""
 "POT-Creation-Date: 2011-07-20 12:43+0100\n"
 "PO-Revision-Date: 2011-07-20 11:44+0000\n"
 "Last-Translator: hughsie <richard@hughsie.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Panjabi (Punjabi) (http://www.transifex.net/projects/p/freedesktop/team/pa/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Language: pa\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:145 ../client/cd-fix-profile.c:169
@@ -121,7 +123,7 @@ msgstr ""
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: ../client/cd-util.c:80 ../client/cd-util.c:154 ../client/cd-util.c:262
 msgid "Type"
-msgstr "タイプ"
+msgstr "ਟਾਈਪ"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -178,7 +180,7 @@ msgstr ""
 #. TRANSLATORS: sensor vendor
 #: ../client/cd-util.c:162 ../client/cd-util.c:290
 msgid "Vendor"
-msgstr "供給元"
+msgstr "ਵੇਂਡਰ"
 
 #. TRANSLATORS: the device serial number
 #: ../client/cd-util.c:166
@@ -198,7 +200,7 @@ msgstr ""
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:269
 msgid "State"
-msgstr "状態"
+msgstr "ਹਾਲਤ"
 
 #. TRANSLATORS: sensor serial
 #: ../client/cd-util.c:276
@@ -512,25 +514,25 @@ msgstr ""
 #. TRANSLATORS: turn on all debugging
 #: ../src/cd-debug.c:112
 msgid "Show debugging information for all files"
-msgstr "全てのファイル用にデバッグ情報を表示"
+msgstr "ਸਭ ਫਾਇਲਾਂ ਲਈ ਡੀਬੱਗ ਜਾਣਕਾਰੀ ਵੇਖੋ"
 
 #: ../src/cd-debug.c:170
 msgid "Debugging Options"
-msgstr "デバッギングオプション"
+msgstr "ਡੀਬੱਗਿੰਗ ਚੋਣਾਂ"
 
 #: ../src/cd-debug.c:171
 msgid "Show debugging options"
-msgstr "デバッグオプションを表示"
+msgstr "ਡੀਬੱਗਿੰਗ ਚੋਣਾਂ ਵੇਖੋ"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: ../src/cd-main.c:1662
 msgid "Exit after a small delay"
-msgstr "少し遅れて終了"
+msgstr "ਥੋੜ੍ਹੀ ਦੇਰ ਬਾਅਦ ਬੰਦ ਕਰੋ"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: ../src/cd-main.c:1665
 msgid "Exit after the engine has loaded"
-msgstr "エンジンがロードされてから終了"
+msgstr "ਇੰਜਣ ਲੋਡ ਕਰਨ ਦੇ ਬਾਅਦ ਬੰਦ ਕਰੋ"
 
 #: ../src/cd-main.c:1682
 msgid "Color Management D-Bus Service"

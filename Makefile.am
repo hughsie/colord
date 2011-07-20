@@ -56,6 +56,9 @@ MAINTAINERCLEANFILES =					\
 	$(srcdir)/colord-*.tar.*			\
 	`find "$(srcdir)" -type f -name Makefile.in -print`
 
+GITIGNOREFILES =					\
+	.tx
+
 distclean-local:
 	if test $(srdcir) = .; then :; else \
 		rm -f ChangeLog; \
