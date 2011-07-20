@@ -139,11 +139,14 @@ cd_util_show_device (CdDevice *device)
 	g_print ("%s: %s\n", _("Object Path"),
 		 cd_device_get_object_path (device));
 
-	/* TRANSLATORS: when the device was created */
+	/* TRANSLATORS: this is the time the device was registered
+	 * with colord, and probably is the same as the system startup
+	 * unless the device has been explicitly saved in the database */
 	g_print ("%s:\t%" G_GUINT64_FORMAT "\n", _("Created"),
 		 cd_device_get_created (device));
 
-	/* TRANSLATORS: when the device was modified */
+	/* TRANSLATORS: this is the time of the last calibration or when
+	 * the manufacturer-provided profile was assigned by the user */
 	g_print ("%s:\t%" G_GUINT64_FORMAT "\n", _("Modified"),
 		 cd_device_get_modified (device));
 
