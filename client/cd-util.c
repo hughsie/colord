@@ -76,8 +76,8 @@ cd_util_show_profile (CdProfile *profile)
 	}
 	kind = cd_profile_get_kind (profile);
 	if (kind != CD_PROFILE_KIND_UNKNOWN) {
-		/* TRANSLATORS: the profile kind, e.g. 'output' */
-		g_print ("%s:\t%s\n", _("Kind"),
+		/* TRANSLATORS: the profile type, e.g. 'output' */
+		g_print ("%s:\t%s\n", _("Type"),
 			 cd_profile_kind_to_string (kind));
 	}
 	colorspace = cd_profile_get_colorspace (profile);
@@ -147,8 +147,8 @@ cd_util_show_device (CdDevice *device)
 	g_print ("%s:\t%" G_GUINT64_FORMAT "\n", _("Modified"),
 		 cd_device_get_modified (device));
 
-	/* TRANSLATORS: the device kind, e.g. "printer" */
-	g_print ("%s:\t%s\n", _("Kind"),
+	/* TRANSLATORS: the device type, e.g. "printer" */
+	g_print ("%s:\t%s\n", _("Type"),
 		 cd_device_kind_to_string (cd_device_get_kind (device)));
 
 	/* TRANSLATORS: the device model */
@@ -255,8 +255,8 @@ cd_util_show_sensor (CdSensor *sensor)
 
 	kind = cd_sensor_get_kind (sensor);
 	if (kind != CD_SENSOR_KIND_UNKNOWN) {
-		/* TRANSLATORS: the sensor kind, e.g. 'output' */
-		g_print ("%s:\t%s\n", _("Kind"),
+		/* TRANSLATORS: the sensor type, e.g. 'output' */
+		g_print ("%s:\t%s\n", _("Type"),
 			 cd_sensor_kind_to_string (kind));
 	}
 
