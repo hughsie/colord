@@ -20,6 +20,8 @@ SUBDIRS = 						\
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`
 
+DISTCHECK_CONFIGURE_FLAGS = --enable-introspection
+
 EXTRA_DIST =						\
 	COPYING						\
 	MAINTAINERS					\
