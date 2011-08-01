@@ -1,3 +1,26 @@
+Version 0.1.11
+~~~~~~~~~~~~~~
+Released: 2011-08-01
+
+Translations:
+ - Updated Russian translation (Alexandre Prokoudine)
+
+New Features:
+ - Enable GObject introspection generation on libcolord (Richard Hughes)
+ - Generate a Vala API binding from the GObject Introspection GIR (Richard Hughes)
+ - Move the project home to freedesktop.org (Richard Hughes)
+ - Ship generated man pages in tarballs (Vincent Untz)
+
+Bugfixes:
+ - Add all of the required GObject Introspection annotations required (Richard Hughes)
+ - Allow FindDeviceByProperty() to match on model, vendor and serial number (Richard Hughes)
+ - Don't crash the example program if there is no default profile assigned (Richard Hughes)
+ - Fix the bugzilla and mailing list links on the webpage. Fixes #39129 (Richard Hughes)
+ - Fix the licence headers in colord.h and cd-color.h (Richard Hughes)
+ - Fix up some translatable strings (Richard Hughes)
+ - Honor ACLOCAL_FLAGS when running autoreconf (Owen W. Taylor)
+ - Use the const formatter when unwrapping GVariants to reduce memory allocation (Richard Hughes)
+
 Version 0.1.10
 ~~~~~~~~~~~~~~
 Released: 2011-07-06
