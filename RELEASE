@@ -2,9 +2,9 @@ colord Release Notes
 
 1. Write NEWS entries for colord in the same format as usual.
 
-git shortlog COLORD_0_1_10.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog COLORD_0_1_11.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
-Version 0.1.11
+Version 0.1.12
 ~~~~~~~~~~~~~~
 Released: 2011-xx-xx
 
@@ -16,8 +16,8 @@ Write release date to doc/website/download.html
 
 2. Commit changes to git:
 
-git commit -a -m "Release colord 0.1.11"
-git tag -s -f -m "Release colord 0.1.11" COLORD_0_1_11
+git commit -a -m "Release colord 0.1.12"
+git tag -s -f -m "Release colord 0.1.12" COLORD_0_1_12
 <wait>
 git push --tags
 git push
