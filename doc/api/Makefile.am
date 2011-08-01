@@ -62,12 +62,13 @@ MAINTAINERCLEANFILES =				\
 
 if ENABLE_GTK_DOC
 include $(top_srcdir)/gtk-doc.make
+CLEANFILES += tmpl
 else
 EXTRA_DIST =
+CLEANFILES = tmpl
 endif
 
 # Version information for marking the documentation
 EXTRA_DIST += version.xml.in
-
 
 -include $(top_srcdir)/git.mk

@@ -55,6 +55,7 @@ MAINTAINERCLEANFILES =					\
 	$(srcdir)/xmldocs.make				\
 	$(srcdir)/gtk-doc.make				\
 	$(srcdir)/ChangeLog				\
+	$(srcdir)/po/Makefile.in.in~			\
 	$(srcdir)/colord-*.tar.*			\
 	`find "$(srcdir)" -type f -name Makefile.in -print`
 
