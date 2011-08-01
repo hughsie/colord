@@ -150,6 +150,40 @@ cd_client_get_connected (CdClient *client)
 	return client->priv->proxy != NULL;
 }
 
+/**
+ * cd_client_get_has_server:
+ * @client: a #CdClient instance.
+ *
+ * Gets if the colord server is currently running.
+ *
+ * Return value: %TRUE if the colord process is running
+ *
+ * Since: 0.1.12
+ **/
+gboolean
+cd_client_get_has_server (CdClient *client)
+{
+	gboolean connected = FALSE;
+	gchar *name_owner = NULL;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
+
+	/* not yet connected */
+	if (client->priv->proxy == NULL)
+		goto out;
+
+	/* get name owner */
+	name_owner = g_dbus_proxy_get_name_owner (client->priv->proxy);
+	if (name_owner == NULL)
+		goto out;
+
+	/* just assume it's ready for use */
+	connected = TRUE;
+out:
+	g_free (name_owner);
+	return connected;
+}
+
 /**********************************************************************/
 
 /**

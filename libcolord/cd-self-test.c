@@ -39,6 +39,8 @@
 #include "cd-sensor-sync.h"
 #include "cd-version.h"
 
+static gboolean has_colord_process = FALSE;
+
 /** ver:1.0 ***********************************************************/
 static GMainLoop *_test_loop = NULL;
 static guint _test_loop_timeout_id = 0;
@@ -147,6 +149,12 @@ colord_client_random_func (void)
 				     NULL};
 	const gchar *qualifier3[] = {"*.*.*",
 				     NULL};
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
 
 	key = g_random_int_range (0x00, 0xffff);
 	g_debug ("using random key %04x", key);
@@ -697,6 +705,12 @@ colord_icc_meta_dict_func (void)
 	CdProfile *profile;
 	CdClient *client;
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	/* create */
 	client = cd_client_new ();
 	g_assert (client != NULL);
@@ -791,6 +805,12 @@ colord_sensor_func (void)
 	GPtrArray *array;
 	CdColorXYZ *values;
 //	gdouble ambient = -2.0f;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
 
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
@@ -942,6 +962,12 @@ colord_client_func (void)
 	gboolean ret;
 	GError *error = NULL;
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	client = cd_client_new ();
 
 	/* check not connected */
@@ -959,6 +985,9 @@ colord_client_func (void)
 	ret = cd_client_connect_sync (client, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+
+	/* is there a running colord instance? */
+	has_colord_process = cd_client_get_has_server (client);
 
 	version = cd_client_get_daemon_version (client);
 	version_str = g_strdup_printf ("%i.%i.%i",
@@ -984,6 +1013,12 @@ colord_device_mapping_func (void)
 	gint32 key;
 	gchar *profile_id1;
 	gchar *profile_id2;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
 
 	key = g_random_int_range (0x00, 0xffff);
 	g_debug ("using random key %04x", key);
@@ -1162,6 +1197,12 @@ colord_client_fd_pass_func (void)
 	GError *error = NULL;
 	gchar full_path[PATH_MAX];
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	/* create */
 	client = cd_client_new ();
 	g_assert (client != NULL);
@@ -1228,6 +1269,12 @@ colord_client_async_func (void)
 	CdClient *client;
 	CdProfile *profile;
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	client = cd_client_new ();
 
 	/* connect */
@@ -1286,6 +1333,12 @@ colord_device_async_func (void)
 	CdDevice *device;
 	CdDevice *device_tmp;
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	client = cd_client_new ();
 
 	/* connect */
@@ -1342,6 +1395,12 @@ colord_client_systemwide_func (void)
 	GError *error = NULL;
 	gchar full_path[PATH_MAX];
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	/* create */
 	client = cd_client_new ();
 	g_assert (client != NULL);
@@ -1397,6 +1456,12 @@ colord_device_modified_func (void)
 	GError *error = NULL;
 	gchar full_path[PATH_MAX];
 	GPtrArray *array;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
 
 	/* create */
 	client = cd_client_new ();

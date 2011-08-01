@@ -220,6 +220,7 @@ GPtrArray	*cd_client_get_sensors_finish		(CdClient	*client,
 
 /* getters */
 gboolean	 cd_client_get_connected		(CdClient	*client);
+gboolean	 cd_client_get_has_server		(CdClient	*client);
 const gchar	*cd_client_get_daemon_version		(CdClient	*client);
 
 G_END_DECLS
