@@ -345,10 +345,10 @@ cd_client_connect_cb (GObject *source_object,
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_simple_async_result_complete_in_idle (res_source);
 out:
 	if (daemon_version != NULL)
 		g_variant_unref (daemon_version);
-	g_simple_async_result_complete_in_idle (res_source);
 	g_object_unref (res_source);
 }
 
