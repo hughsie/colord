@@ -2,8 +2,8 @@
 
 # This controls whether we search external volumes for color profiles.
 #
-# default=true
-SearchVolumes=true
+# default=@enablevolumesearch@
+SearchVolumes=@enablevolumesearch@
 
 # If we should use SANE to add scanner and camera devices.
 #

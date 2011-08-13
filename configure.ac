@@ -222,6 +222,16 @@ if test x$enable_fd_fallback != xno; then
 	AC_DEFINE(HAVE_FD_FALLBACK,1,[Use FD fallback])
 fi
 
+dnl **** Daemon is allowed to do search external volumes for profiles ****
+AC_ARG_ENABLE(volume_search, AS_HELP_STRING([--enable-volume-search],[Enable profile volume search]),
+	      enable_volume_search=$enableval, enable_volume_search=yes)
+tmp="false"
+if test x$enable_volume_search != xno; then
+	tmp="true"
+fi
+AC_DEFINE_UNQUOTED(ENABLE_VOLUME_SEARCH, "$tmp", [enable volume search])
+AC_SUBST(ENABLE_VOLUME_SEARCH, "$tmp")
+
 dnl ---------------------------------------------------------------------------
 dnl - Build VALA support
 dnl ---------------------------------------------------------------------------
@@ -289,6 +299,7 @@ echo "
         PolicyKit support:         ${enable_polkit}
         Reverse engineering tools: ${enable_reverse}
         File descriptor fallback:  ${enable_fd_fallback}
+        External volume searching: ${enable_volume_search}
         SANE support:              ${has_sane}
         GUDEV support:             ${enable_gudev}
         LCMS2 DICT support:        ${has_new_lcms}
