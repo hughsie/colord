@@ -215,6 +215,13 @@ if test x$has_sane = xyes; then
 	AC_DEFINE(HAVE_SANE,1,[Use SANE support for detecting scanners])
 fi
 
+dnl **** Daemon is allowed to do FD fallback  ****
+AC_ARG_ENABLE(fd_fallback, AS_HELP_STRING([--enable-fd-fallback],[Enable file descriptor fallback]),
+	      enable_fd_fallback=$enableval, enable_fd_fallback=yes)
+if test x$enable_fd_fallback != xno; then
+	AC_DEFINE(HAVE_FD_FALLBACK,1,[Use FD fallback])
+fi
+
 dnl ---------------------------------------------------------------------------
 dnl - Build VALA support
 dnl ---------------------------------------------------------------------------
@@ -281,6 +288,7 @@ echo "
         gobject-introspection:     ${found_introspection}
         PolicyKit support:         ${enable_polkit}
         Reverse engineering tools: ${enable_reverse}
+        File descriptor fallback:  ${enable_fd_fallback}
         SANE support:              ${has_sane}
         GUDEV support:             ${enable_gudev}
         LCMS2 DICT support:        ${has_new_lcms}

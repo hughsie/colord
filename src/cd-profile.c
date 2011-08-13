@@ -944,6 +944,18 @@ cd_profile_set_filename (CdProfile *profile,
 		g_debug ("profile '%s' already set",
 			 priv->object_path);
 		goto out;
+	} else {
+#ifndef HAVE_FD_FALLBACK
+		/* we're not allowing the dameon to open the file */
+		ret = FALSE;
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "Failed to open %s as client did not send FD and "
+			     "daemon is not compiled with --enable-fd-fallback",
+			     filename);
+		goto out;
+#endif
 	}
 
 	/* parse the ICC file */
