@@ -145,11 +145,14 @@ if test x$enable_gudev != xno; then
 fi
 AM_CONDITIONAL(HAVE_GUDEV, test x$enable_gudev = xyes)
 
-PKG_CHECK_MODULES(USB, libusb-1.0 >= 1.0.9, has_new_libusb=yes, has_new_libusb=no)
+dnl **** Check for libusb1 ****
+PKG_CHECK_MODULES(USB, libusb-1.0 >= 1.0.0)
+AC_CHECK_LIB(usb-1.0,
+	     libusb_strerror,
+	     has_new_libusb=yes,
+	     has_new_libusb=no)
 if test x$has_new_libusb = xyes; then
 	AC_DEFINE(HAVE_NEW_USB,1,[Got new libusb])
-else
-	PKG_CHECK_MODULES(USB, libusb-1.0 >= 1.0.0)
 fi
 
 dnl ---------------------------------------------------------------------------
