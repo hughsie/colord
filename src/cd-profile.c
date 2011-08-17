@@ -944,7 +944,7 @@ cd_profile_set_filename (CdProfile *profile,
 		g_debug ("profile '%s' already set",
 			 priv->object_path);
 		goto out;
-	} else {
+	} else if (!priv->is_system_wide) {
 #ifndef HAVE_FD_FALLBACK
 		/* we're not allowing the dameon to open the file */
 		ret = FALSE;

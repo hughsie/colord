@@ -191,8 +191,13 @@ cd_profile_store_add_profile (CdProfileStore *profile_store,
 	if (profile != NULL)
 		goto out;
 
-	/* parse the profile name */
+	/* is system wide? */
 	profile = cd_profile_new ();
+	if (g_str_has_prefix (filename, "/usr/share/color") ||
+	    g_str_has_prefix (filename, "/var/lib/color"))
+		cd_profile_set_is_system_wide (profile, TRUE);
+
+	/* parse the profile name */
 	ret = cd_profile_set_filename (profile, filename, &error);
 	if (!ret) {
 		g_warning ("CdProfileStore: failed to add profile '%s': %s",

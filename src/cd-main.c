@@ -1178,7 +1178,6 @@ cd_main_profile_store_added_cb (CdProfileStore *_profile_store,
 	profile_id = g_strdup_printf ("icc-%s",
 				      cd_profile_get_checksum (profile));
 	cd_profile_set_id (profile, profile_id);
-	cd_profile_set_is_system_wide (profile, TRUE);
 	ret = cd_main_add_profile (profile, &error);
 	if (!ret) {
 		g_warning ("CdMain: failed to add profile: %s",
