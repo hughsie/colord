@@ -670,7 +670,9 @@ cd_profile_set_metadata_from_profile (CdProfile *profile,
 	/* does profile have metadata? */
 	dict = cmsReadTag (lcms_profile, cmsSigMetaTag);
 	if (dict == NULL) {
-		g_debug ("%s (%s) has no DICT tag", priv->id, priv->filename);
+		g_debug ("%s (%s) has no DICT tag",
+			 priv->id ? priv->id : "new profile",
+			 priv->filename);
 		return;
 	}
 
@@ -913,31 +915,6 @@ cd_profile_set_filename (CdProfile *profile,
 		}
 	}
 
-	/* try the metadata if available */
-	if (priv->checksum == NULL) {
-		tmp = g_hash_table_lookup (profile->priv->metadata,
-					   CD_PROFILE_METADATA_FILE_CHECKSUM);
-		if (tmp != NULL &&
-		    strlen (tmp) == 32) {
-			priv->checksum = g_strdup (tmp);
-		}
-	}
-
-	/* fall back to calculating it ourselves */
-	if (priv->checksum == NULL) {
-		g_debug ("%s has no profile-id nor %s, falling back "
-			 "to slow MD5",
-			 priv->filename,
-			 CD_PROFILE_METADATA_FILE_CHECKSUM);
-		ret = g_file_get_contents (priv->filename,
-					   &data, &len, error);
-		if (!ret)
-			goto out;
-		priv->checksum = g_compute_checksum_for_data (G_CHECKSUM_MD5,
-							      (const guchar *) data,
-							      len);
-	}
-
 	/* check we're not already set using the fd */
 	if (priv->kind != CD_PROFILE_KIND_UNKNOWN) {
 		ret = TRUE;
@@ -973,6 +950,31 @@ cd_profile_set_filename (CdProfile *profile,
 	ret = cd_profile_set_from_profile (profile, lcms_profile, error);
 	if (!ret)
 		goto out;
+
+	/* try the metadata if available */
+	if (priv->checksum == NULL) {
+		tmp = g_hash_table_lookup (profile->priv->metadata,
+					   CD_PROFILE_METADATA_FILE_CHECKSUM);
+		if (tmp != NULL &&
+		    strlen (tmp) == 32) {
+			priv->checksum = g_strdup (tmp);
+		}
+	}
+
+	/* fall back to calculating it ourselves */
+	if (priv->checksum == NULL) {
+		g_debug ("%s has no profile-id nor %s, falling back "
+			 "to slow MD5",
+			 priv->filename,
+			 CD_PROFILE_METADATA_FILE_CHECKSUM);
+		ret = g_file_get_contents (priv->filename,
+					   &data, &len, error);
+		if (!ret)
+			goto out;
+		priv->checksum = g_compute_checksum_for_data (G_CHECKSUM_MD5,
+							      (const guchar *) data,
+							      len);
+	}
 
 	/* emit all the things that could have changed */
 	cd_profile_emit_parsed_property_changed (profile);
