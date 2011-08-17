@@ -962,12 +962,6 @@ colord_client_func (void)
 	gboolean ret;
 	GError *error = NULL;
 
-	/* no running colord to use */
-	if (!has_colord_process) {
-		g_print ("[DISABLED] ");
-		return;
-	}
-
 	client = cd_client_new ();
 
 	/* check not connected */
