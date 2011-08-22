@@ -365,6 +365,60 @@ cd_client_create_profile_sync (CdClient *client,
 /**********************************************************************/
 
 static void
+cd_client_import_profile_finish_sync (CdClient *client,
+				      GAsyncResult *res,
+				      CdClientHelper *helper)
+{
+	helper->profile = cd_client_import_profile_finish (client,
+							   res,
+							   helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_import_profile_sync:
+ * @client: a #CdClient instance.
+ * @file: A #GFile
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Imports a color profile into the users home directory.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: (transfer full): A #CdProfile object, or %NULL for error
+ *
+ * Since: 0.1.12
+ **/
+CdProfile *
+cd_client_import_profile_sync (CdClient *client,
+			       GFile *file,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	CdClientHelper helper;
+
+	/* import temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.profile = NULL;
+
+	/* run async method */
+	cd_client_import_profile (client, file, cancellable,
+				  (GAsyncReadyCallback) cd_client_import_profile_finish_sync,
+				  &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.profile;
+}
+
+/**********************************************************************/
+
+static void
 cd_client_create_device_finish_sync (CdClient *client,
 				      GAsyncResult *res,
 				      CdClientHelper *helper)

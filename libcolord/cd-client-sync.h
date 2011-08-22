@@ -59,6 +59,10 @@ CdProfile	*cd_client_create_profile_sync		(CdClient	*client,
 							 GHashTable	*properties,
 							 GCancellable	*cancellable,
 							 GError		**error);
+CdProfile	*cd_client_import_profile_sync		(CdClient	*client,
+							 GFile		*file,
+							 GCancellable	*cancellable,
+							 GError		**error);
 CdDevice	*cd_client_create_device_sync		(CdClient	*client,
 							 const gchar	*id,
 							 CdObjectScope	 scope,

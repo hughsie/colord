@@ -1227,6 +1227,109 @@ colord_client_fd_pass_func (void)
 	g_object_unref (client);
 }
 
+/**
+ * colord_get_profile_destination:
+ **/
+static GFile *
+colord_get_profile_destination (GFile *file)
+{
+	gchar *basename;
+	gchar *destination;
+	GFile *dest;
+
+	g_return_val_if_fail (file != NULL, NULL);
+
+	/* get destination filename for this source file */
+	basename = g_file_get_basename (file);
+	destination = g_build_filename (g_get_user_data_dir (), "icc", basename, NULL);
+	dest = g_file_new_for_path (destination);
+
+	g_free (basename);
+	g_free (destination);
+	return dest;
+}
+
+static void
+colord_client_import_func (void)
+{
+	CdClient *client;
+	CdProfile *profile;
+	CdProfile *profile2;
+	gboolean ret;
+	GFile *file;
+	GFile *dest;
+	GError *error = NULL;
+	gchar full_path[PATH_MAX];
+	gchar *dest_path;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
+	/* create */
+	client = cd_client_new ();
+	g_assert (client != NULL);
+
+	/* connect */
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create extra profile */
+	realpath (TESTDATADIR "/ibm-t61.icc", full_path);
+	file = g_file_new_for_path (full_path);
+
+	/* ensure it's deleted */
+	dest = colord_get_profile_destination (file);
+	if (g_file_query_exists (dest, NULL)) {
+		ret = g_file_delete (dest, NULL, &error);
+		g_assert_no_error (error);
+		g_assert (ret);
+
+		/* wait for daemon to DTRT */
+		_g_test_loop_run_with_timeout (2000);
+	}
+
+	/* import it */
+	profile = cd_client_import_profile_sync (client,
+						 file,
+						 NULL,
+						 &error);
+	g_assert_no_error (error);
+	g_assert (profile != NULL);
+
+	/* connect */
+	ret = cd_profile_connect_sync (profile, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* make sure it's now installed in the right place */
+	dest_path = g_file_get_path (dest);
+	g_assert_cmpstr (cd_profile_get_filename (profile), ==, dest_path);
+
+	/* make sure we can't import it again */
+	profile2 = cd_client_import_profile_sync (client,
+						  file,
+						  NULL,
+						  &error);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_ALREADY_EXISTS);
+	g_assert (profile2 == NULL);
+	g_clear_error (&error);
+
+	/* delete it */
+	ret = g_file_delete (dest, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_free (dest_path);
+	g_object_unref (file);
+	g_object_unref (dest);
+	g_object_unref (profile);
+	g_object_unref (client);
+}
+
 static void
 colord_delete_profile_good_cb (GObject *object, GAsyncResult *res, gpointer user_data)
 {
@@ -1574,6 +1677,7 @@ main (int argc, char **argv)
 	if (g_test_thorough ())
 		g_test_add_func ("/colord/client-systemwide", colord_client_systemwide_func);
 	g_test_add_func ("/colord/client-fd-pass", colord_client_fd_pass_func);
+	g_test_add_func ("/colord/client-import", colord_client_import_func);
 	return g_test_run ();
 }
 
