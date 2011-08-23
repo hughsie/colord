@@ -235,6 +235,17 @@ fi
 AC_DEFINE_UNQUOTED(ENABLE_VOLUME_SEARCH, "$tmp", [enable volume search])
 AC_SUBST(ENABLE_VOLUME_SEARCH, "$tmp")
 
+# custom daemon user
+AC_ARG_WITH(
+    [daemon_user],
+    AC_HELP_STRING([--with-daemon-user],
+                   [User for running the colord daemon (root)]),
+    [daemon_user=$withval],
+    [daemon_user=root]
+)
+AC_SUBST(daemon_user)
+AC_DEFINE_UNQUOTED([DAEMON_USER], ["$daemon_user"], [Daemon user])
+
 dnl ---------------------------------------------------------------------------
 dnl - Build VALA support
 dnl ---------------------------------------------------------------------------
@@ -276,6 +287,7 @@ doc/api/Makefile
 doc/api/dbus/Makefile
 doc/api/version.xml
 data/Makefile
+data/org.freedesktop.ColorManager.conf
 data/tests/Makefile
 policy/Makefile
 rules/Makefile
@@ -307,6 +319,7 @@ echo "
         GUDEV support:             ${enable_gudev}
         LCMS2 DICT support:        ${has_new_lcms}
         Vala API generator:        ${has_vapigen}
+        Daemon user:               ${daemon_user}
 "
 
 

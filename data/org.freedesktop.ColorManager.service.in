@@ -1,4 +1,4 @@
 [D-BUS Service]
 Name=org.freedesktop.ColorManager
 Exec=@servicedir@/colord
-User=root
+User=@daemon_user@

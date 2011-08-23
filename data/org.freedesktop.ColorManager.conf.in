@@ -8,8 +8,11 @@
   <!-- This configuration file specifies the required security policies
        for the ColorManager to work. -->
 
-  <!-- Only user root can own the ColorManager service -->
+  <!-- Only user root or user @daemon_user@ can own the colord service -->
   <policy user="root">
+    <allow own="org.freedesktop.ColorManager"/>
+  </policy>
+  <policy user="@daemon_user@">
     <allow own="org.freedesktop.ColorManager"/>
   </policy>
 
