@@ -887,9 +887,9 @@ cd_client_import_hangcheck_cb (gpointer user_data)
 }
 
 static void
-cd_client_import_profile_cb (GObject *source_object,
-			     GAsyncResult *res,
-			     gpointer user_data)
+cd_client_import_profile_find_filename_cb (GObject *source_object,
+					   GAsyncResult *res,
+					   gpointer user_data)
 {
 	CdProfile *profile;
 	gboolean ret;
@@ -959,6 +959,60 @@ out:
 		g_object_unref (profile);
 }
 
+static void
+cd_client_import_profile_query_info_cb (GObject *source_object,
+					GAsyncResult *res,
+					gpointer user_data)
+{
+	const gchar *type;
+	gchar *filename = NULL;
+	GError *error = NULL;
+	GFileInfo *info;
+	CdClientImportHelper *helper = (CdClientImportHelper *) user_data;
+
+	/* get the file info */
+	filename = g_file_get_path (helper->dest);
+	info = g_file_query_info_finish (G_FILE (source_object),
+					 res,
+					 &error);
+	if (info == NULL) {
+		g_simple_async_result_set_error (helper->res,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Cannot get content type for %s: %s",
+						 filename,
+						 error->message);
+		g_error_free (error);
+		g_simple_async_result_complete_in_idle (helper->res);
+		cd_client_import_free_helper (helper);
+		goto out;
+	}
+
+	/* check the content type */
+	type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+	if (g_strcmp0 (type, "application/vnd.iccprofile") != 0) {
+		g_simple_async_result_set_error (helper->res,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FILE_INVALID,
+						 "Incorrect content type for %s, got %s",
+						 filename, type);
+		g_simple_async_result_complete_in_idle (helper->res);
+		cd_client_import_free_helper (helper);
+		goto out;
+	}
+
+	/* does this profile already exist? */
+	cd_client_find_profile_by_filename (helper->client,
+					    filename,
+					    helper->cancellable,
+					    cd_client_import_profile_find_filename_cb,
+					    helper);
+out:
+	if (info != NULL)
+		g_object_unref (info);
+	g_free (filename);
+}
+
 /**
  * cd_client_import_profile:
  * @client: a #CdClient instance.
@@ -982,7 +1036,6 @@ cd_client_import_profile (CdClient *client,
 			  gpointer user_data)
 {
 	CdClientImportHelper *helper;
-	gchar *filename;
 
 	helper = g_new0 (CdClientImportHelper, 1);
 	helper->client = g_object_ref (client);
@@ -995,14 +1048,14 @@ cd_client_import_profile (CdClient *client,
 	if (cancellable != NULL)
 		helper->cancellable = g_object_ref (cancellable);
 
-	/* does this profile already exist? */
-	filename = g_file_get_path (helper->dest);
-	cd_client_find_profile_by_filename (client,
-					    filename,
-					    cancellable,
-					    cd_client_import_profile_cb,
-					    helper);
-	g_free (filename);
+	/* check the file really is an ICC file */
+	g_file_query_info_async (helper->file,
+				 G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+				 G_FILE_QUERY_INFO_NONE,
+				 G_PRIORITY_DEFAULT,
+				 helper->cancellable,
+				 cd_client_import_profile_query_info_cb,
+				 helper);
 }
 
 /**********************************************************************/

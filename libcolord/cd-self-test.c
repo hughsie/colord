@@ -1257,6 +1257,7 @@ colord_client_import_func (void)
 	CdProfile *profile2;
 	gboolean ret;
 	GFile *file;
+	GFile *invalid_file;
 	GFile *dest;
 	GError *error = NULL;
 	gchar full_path[PATH_MAX];
@@ -1276,6 +1277,19 @@ colord_client_import_func (void)
 	ret = cd_client_connect_sync (client, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+
+	/* check we can't import random files */
+	realpath (TESTDATADIR "/Makefile.am", full_path);
+	invalid_file = g_file_new_for_path (full_path);
+	profile2 = cd_client_import_profile_sync (client,
+						  invalid_file,
+						  NULL,
+						  &error);
+	g_assert_error (error,
+			CD_CLIENT_ERROR,
+			CD_CLIENT_ERROR_FILE_INVALID);
+	g_assert (profile2 == NULL);
+	g_clear_error (&error);
 
 	/* create extra profile */
 	realpath (TESTDATADIR "/ibm-t61.icc", full_path);
@@ -1324,6 +1338,7 @@ colord_client_import_func (void)
 	g_assert (ret);
 
 	g_free (dest_path);
+	g_object_unref (invalid_file);
 	g_object_unref (file);
 	g_object_unref (dest);
 	g_object_unref (profile);
