@@ -1557,6 +1557,26 @@ colord_client_systemwide_func (void)
 }
 
 static void
+colord_device_func (void)
+{
+	CdDevice *device;
+	gboolean ret;
+	GError *error = NULL;
+
+	/* create a device with an invlid object path */
+	device = cd_device_new_with_object_path ("/garbage");
+	g_assert (device != NULL);
+
+	/* connect */
+	ret = cd_device_connect_sync (device, NULL, &error);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert (!ret);
+	g_clear_error (&error);
+
+	g_object_unref (device);
+}
+
+static void
 colord_device_modified_func (void)
 {
 	CdClient *client;
@@ -1681,6 +1701,7 @@ main (int argc, char **argv)
 
 	/* tests go here */
 	g_test_add_func ("/colord/color", colord_color_func);
+	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/client", colord_client_func);
 	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
 	g_test_add_func ("/colord/device-mapping", colord_device_mapping_func);

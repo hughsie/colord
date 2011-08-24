@@ -585,6 +585,16 @@ cd_profile_connect_cb (GObject *source_object,
 	if (id != NULL)
 		profile->priv->id = g_variant_dup_string (id, NULL);
 
+	/* if the profile is missing, then fail */
+	if (id == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_PROFILE_ERROR,
+						 CD_PROFILE_ERROR_FAILED,
+						 "Failed to connect to missing profile %s",
+						 cd_profile_get_object_path (profile));
+		goto out;
+	}
+
 	/* get filename */
 	filename = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						     CD_PROFILE_PROPERTY_FILENAME);

@@ -622,6 +622,16 @@ cd_device_connect_cb (GObject *source_object,
 	if (id != NULL)
 		device->priv->id = g_variant_dup_string (id, NULL);
 
+	/* if the device is missing, then fail */
+	if (id == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_DEVICE_ERROR,
+						 CD_DEVICE_ERROR_FAILED,
+						 "Failed to connect to missing device %s",
+						 cd_device_get_object_path (device));
+		goto out;
+	}
+
 	/* get kind */
 	kind = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						 CD_DEVICE_PROPERTY_KIND);
