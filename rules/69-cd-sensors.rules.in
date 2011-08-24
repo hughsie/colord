@@ -66,4 +66,7 @@ ENV{COLORD_SENSOR}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"
 ENV{COLORD_SENSOR}=="*?", ENV{ID_MODEL}=="", IMPORT{program}="usb_id --export %p"
 ENV{COLORD_SENSOR}=="*?", ENV{ID_MODEL_FROM_DATABASE}=="", IMPORT{program}="usb-db %p"
 
+# Add daemon user to device acl
+ENV{COLORD_SENSOR}=="*?", RUN+="/bin/setfacl -m u:@daemon_user@:rw $env{DEVNAME}"
+
 LABEL="gcm_rules_end"

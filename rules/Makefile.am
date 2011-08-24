@@ -6,4 +6,7 @@ udevrules_DATA =						\
 EXTRA_DIST =							\
 	$(udevrules_DATA)
 
+MAINTAINERCLEANFILES =						\
+	69-cd-sensors.rules
+
 -include $(top_srcdir)/git.mk

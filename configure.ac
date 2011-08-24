@@ -291,6 +291,7 @@ data/org.freedesktop.ColorManager.conf
 data/tests/Makefile
 policy/Makefile
 rules/Makefile
+rules/69-cd-sensors.rules
 po/Makefile.in
 src/Makefile
 client/Makefile
