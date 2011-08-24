@@ -772,6 +772,7 @@ cd_device_connect (CdDevice *device,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	res = g_simple_async_result_new (G_OBJECT (device),
 					 callback,
@@ -795,8 +796,6 @@ cd_device_connect (CdDevice *device,
 				  cd_device_connect_cb,
 				  res);
 }
-
-/**********************************************************************/
 
 /**********************************************************************/
 
@@ -884,6 +883,9 @@ cd_device_set_property (CdDevice *device,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (value != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (device),
@@ -988,6 +990,7 @@ cd_device_add_profile (CdDevice *device,
 
 	g_return_if_fail (CD_IS_DEVICE (device));
 	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (device),
@@ -1090,6 +1093,8 @@ cd_device_remove_profile (CdDevice *device,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (device),
@@ -1191,6 +1196,8 @@ cd_device_make_profile_default (CdDevice *device,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (device),
@@ -1291,6 +1298,7 @@ cd_device_profiling_inhibit (CdDevice *device,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (device),
@@ -1390,6 +1398,7 @@ cd_device_profiling_uninhibit (CdDevice *device,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (device),
@@ -1503,6 +1512,8 @@ cd_device_get_profile_for_qualifiers (CdDevice *device,
 	GVariantBuilder builder;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (qualifiers != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	/* squash char** into an array of strings */
@@ -1616,6 +1627,8 @@ cd_device_get_profile_relation (CdDevice *device,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (device->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (device),

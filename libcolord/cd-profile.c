@@ -726,6 +726,7 @@ cd_profile_connect (CdProfile *profile,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	res = g_simple_async_result_new (G_OBJECT (profile),
 					 callback,
@@ -836,6 +837,9 @@ cd_profile_set_property (CdProfile *profile,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (value != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (profile->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (profile),
@@ -936,6 +940,7 @@ cd_profile_install_system_wide (CdProfile *profile,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (profile->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (profile),

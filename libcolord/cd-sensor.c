@@ -692,6 +692,7 @@ cd_sensor_lock (CdSensor *sensor,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (sensor->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (sensor),
@@ -790,6 +791,7 @@ cd_sensor_unlock (CdSensor *sensor,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (sensor->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (sensor),
@@ -900,6 +902,7 @@ cd_sensor_get_sample (CdSensor *sensor,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (sensor->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (sensor),

@@ -273,8 +273,6 @@ cd_client_owner_notify_cb (GObject *object,
 
 /**********************************************************************/
 
-/**********************************************************************/
-
 /**
  * cd_client_connect_finish:
  * @client: a #CdClient instance.
@@ -372,6 +370,7 @@ cd_client_connect (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
@@ -498,6 +497,7 @@ cd_client_create_device (CdClient *client,
 	GList *list, *l;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -657,6 +657,10 @@ cd_client_create_profile (CdClient *client,
 	GVariant *body;
 	GVariantBuilder builder;
 	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (id != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
@@ -1037,6 +1041,10 @@ cd_client_import_profile (CdClient *client,
 {
 	CdClientImportHelper *helper;
 
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (G_IS_FILE (file));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
 	helper = g_new0 (CdClientImportHelper, 1);
 	helper->client = g_object_ref (client);
 	helper->res = g_simple_async_result_new (G_OBJECT (client),
@@ -1142,6 +1150,8 @@ cd_client_delete_device (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -1243,6 +1253,8 @@ cd_client_delete_profile (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (CD_IS_PROFILE (profile));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -1355,6 +1367,8 @@ cd_client_find_device (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (id != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -1468,6 +1482,8 @@ cd_client_find_device_by_property (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -1579,6 +1595,8 @@ cd_client_find_profile (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (id != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -1690,6 +1708,8 @@ cd_client_find_profile_by_filename (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -1801,6 +1821,7 @@ cd_client_get_standard_space (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -1939,6 +1960,7 @@ cd_client_get_devices (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -2048,6 +2070,7 @@ cd_client_get_devices_by_kind (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -2186,6 +2209,7 @@ cd_client_get_profiles (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
@@ -2323,6 +2347,7 @@ cd_client_get_sensors (CdClient *client,
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (client->priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
