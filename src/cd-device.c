@@ -64,9 +64,7 @@ struct _CdDevicePrivate
 	gchar				*kind;
 	gchar				*object_path;
 	GDBusConnection			*connection;
-	GPtrArray			*profiles;
-	GPtrArray			*profiles_soft;
-	GPtrArray			*profiles_hard;
+	GPtrArray			*profiles; /* of CdDeviceProfileItem */
 	guint				 registration_id;
 	guint				 watcher_id;
 	guint64				 created;
@@ -86,6 +84,12 @@ enum {
 	PROP_ID,
 	PROP_LAST
 };
+
+typedef struct {
+	CdProfile		*profile;
+	CdDeviceRelation	 relation;
+	guint64			 timestamp;
+} CdDeviceProfileItem;
 
 static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdDevice, cd_device, G_TYPE_OBJECT)
@@ -333,31 +337,35 @@ out:
  * cd_device_find_by_qualifier:
  **/
 static CdProfile *
-cd_device_find_by_qualifier (const gchar *regex, GPtrArray *array)
+cd_device_find_by_qualifier (const gchar *regex,
+			     GPtrArray *array,
+			     CdDeviceRelation relation)
 {
+	CdDeviceProfileItem *item;
 	CdProfile *profile = NULL;
-	CdProfile *profile_tmp;
 	const gchar *qualifier;
 	gboolean ret;
 	guint i;
 
 	/* find using a wildcard */
 	for (i=0; i<array->len; i++) {
-		profile_tmp = g_ptr_array_index (array, i);
+		item = g_ptr_array_index (array, i);
+		if (item->relation != relation)
+			continue;
 
 		/* '*' matches anything, including a blank qualifier */
 		if (g_strcmp0 (regex, "*") == 0) {
 			g_debug ("anything matches, returning %s",
-				 cd_profile_get_id (profile_tmp));
-			profile = profile_tmp;
+				 cd_profile_get_id (item->profile));
+			profile = item->profile;
 			goto out;
 		}
 
 		/* match with a regex */
-		qualifier = cd_profile_get_qualifier (profile_tmp);
+		qualifier = cd_profile_get_qualifier (item->profile);
 		if (qualifier == NULL) {
 			g_debug ("no qualifier for %s, skipping",
-				 cd_profile_get_id (profile_tmp));
+				 cd_profile_get_id (item->profile));
 			continue;
 		}
 		ret = cd_device_match_qualifier (regex,
@@ -367,7 +375,7 @@ cd_device_find_by_qualifier (const gchar *regex, GPtrArray *array)
 			 regex,
 			 qualifier);
 		if (ret) {
-			profile = profile_tmp;
+			profile = item->profile;
 			goto out;
 		}
 	}
@@ -381,18 +389,18 @@ out:
 static CdProfile *
 cd_device_find_profile_by_object_path (GPtrArray *array, const gchar *object_path)
 {
+	CdDeviceProfileItem *item;
 	CdProfile *profile = NULL;
-	CdProfile *profile_tmp;
-	guint i;
 	gboolean ret;
+	guint i;
 
 	/* find using an object path */
 	for (i=0; i<array->len; i++) {
-		profile_tmp = g_ptr_array_index (array, i);
+		item = g_ptr_array_index (array, i);
 		ret = (g_strcmp0 (object_path,
-				  cd_profile_get_object_path (profile_tmp)) == 0);
+				  cd_profile_get_object_path (item->profile)) == 0);
 		if (ret) {
-			profile = profile_tmp;
+			profile = item->profile;
 			goto out;
 		}
 	}
@@ -406,21 +414,28 @@ out:
 static GVariant *
 cd_device_get_profiles_as_variant (CdDevice *device)
 {
-	CdProfile *profile;
 	guint i;
 	guint idx = 0;
 	GVariant **profiles = NULL;
 	GVariant *value;
+	const gchar *tmp;
+	CdDeviceProfileItem *item;
 
 	/* copy the object paths, hard then soft */
 	profiles = g_new0 (GVariant *, device->priv->profiles->len + 1);
-	for (i=0; i<device->priv->profiles_hard->len; i++) {
-		profile = g_ptr_array_index (device->priv->profiles_hard, i);
-		profiles[idx++] = g_variant_new_object_path (cd_profile_get_object_path (profile));
+	for (i=0; i<device->priv->profiles->len; i++) {
+		item = g_ptr_array_index (device->priv->profiles, i);
+		if (item->relation == CD_DEVICE_RELATION_SOFT)
+			continue;
+		tmp = cd_profile_get_object_path (item->profile);
+		profiles[idx++] = g_variant_new_object_path (tmp);
 	}
-	for (i=0; i<device->priv->profiles_soft->len; i++) {
-		profile = g_ptr_array_index (device->priv->profiles_soft, i);
-		profiles[idx++] = g_variant_new_object_path (cd_profile_get_object_path (profile));
+	for (i=0; i<device->priv->profiles->len; i++) {
+		item = g_ptr_array_index (device->priv->profiles, i);
+		if (item->relation == CD_DEVICE_RELATION_HARD)
+			continue;
+		tmp = cd_profile_get_object_path (item->profile);
+		profiles[idx++] = g_variant_new_object_path (tmp);
 	}
 
 	/* format the value */
@@ -440,15 +455,15 @@ cd_device_remove_profile (CdDevice *device,
 			  GError **error)
 {
 	CdDevicePrivate *priv = device->priv;
-	CdProfile *profile_tmp;
+	CdDeviceProfileItem *item;
 	gboolean ret = FALSE;
 	guint i;
 
 	/* check the profile exists on this device */
 	for (i=0; i<priv->profiles->len; i++) {
-		profile_tmp = g_ptr_array_index (priv->profiles, i);
+		item = g_ptr_array_index (priv->profiles, i);
 		if (g_strcmp0 (profile_object_path,
-			       cd_profile_get_object_path (profile_tmp)) == 0) {
+			       cd_profile_get_object_path (item->profile)) == 0) {
 			ret = TRUE;
 			break;
 		}
@@ -464,9 +479,7 @@ cd_device_remove_profile (CdDevice *device,
 	}
 
 	/* remove from the arrays */
-	g_ptr_array_remove (priv->profiles_soft, profile_tmp);
-	g_ptr_array_remove (priv->profiles_hard, profile_tmp);
-	ret = g_ptr_array_remove (priv->profiles, profile_tmp);
+	ret = g_ptr_array_remove (priv->profiles, item);
 	g_assert (ret);
 
 	/* emit */
@@ -491,26 +504,16 @@ cd_device_find_profile_relation (CdDevice *device,
 				 const gchar *profile_object_path)
 {
 	CdDevicePrivate *priv = device->priv;
+	CdDeviceProfileItem *item;
 	CdDeviceRelation relation = CD_DEVICE_RELATION_UNKNOWN;
-	CdProfile *profile_tmp;
 	guint i;
 
-	/* search hard */
-	for (i=0; i<priv->profiles_hard->len; i++) {
-		profile_tmp = g_ptr_array_index (priv->profiles_hard, i);
+	/* search profiles */
+	for (i=0; i<priv->profiles->len; i++) {
+		item = g_ptr_array_index (priv->profiles, i);
 		if (g_strcmp0 (profile_object_path,
-			       cd_profile_get_object_path (profile_tmp)) == 0) {
-			relation = CD_DEVICE_RELATION_HARD;
-			goto out;
-		}
-	}
-
-	/* search soft */
-	for (i=0; i<priv->profiles_soft->len; i++) {
-		profile_tmp = g_ptr_array_index (priv->profiles_soft, i);
-		if (g_strcmp0 (profile_object_path,
-			       cd_profile_get_object_path (profile_tmp)) == 0) {
-			relation = CD_DEVICE_RELATION_SOFT;
+			       cd_profile_get_object_path (item->profile)) == 0) {
+			relation = item->relation;
 			goto out;
 		}
 	}
@@ -531,16 +534,22 @@ _cd_device_relation_to_string (CdDeviceRelation device_relation)
 	return "unknown";
 }
 
-static void
-_g_ptr_array_insert (GPtrArray *array, guint idx, gpointer data)
+/**
+ * cd_device_add_profile:
+ **/
+static gint
+cd_device_profile_item_sort_cb (gconstpointer a, gconstpointer b)
 {
-	g_return_if_fail (idx <= array->len);
+	gint64 tmp;
+	CdDeviceProfileItem **item_a = (CdDeviceProfileItem **) a;
+	CdDeviceProfileItem **item_b = (CdDeviceProfileItem **) b;
 
-	g_ptr_array_add (array, NULL);
-	g_memmove (&array->pdata[idx+1],
-		   &array->pdata[idx+0],
-		   (array->len - idx - 1) * sizeof (gpointer));
-	array->pdata[idx] = data;
+	tmp = (gint64) (*item_b)->timestamp - (gint64) (*item_a)->timestamp;
+	if (tmp < 0)
+		return -1;
+	if (tmp > 0)
+		return 1;
+	return 0;
 }
 
 /**
@@ -550,11 +559,12 @@ gboolean
 cd_device_add_profile (CdDevice *device,
 		       CdDeviceRelation relation,
 		       const gchar *profile_object_path,
+		       guint64 timestamp,
 		       GError **error)
 {
 	CdDevicePrivate *priv = device->priv;
+	CdDeviceProfileItem *item;
 	CdProfile *profile;
-	CdProfile *profile_tmp;
 	gboolean ret = TRUE;
 	guint i;
 
@@ -573,9 +583,9 @@ cd_device_add_profile (CdDevice *device,
 
 	/* check it does not already exist */
 	for (i=0; i<priv->profiles->len; i++) {
-		profile_tmp = g_ptr_array_index (priv->profiles, i);
+		item = g_ptr_array_index (priv->profiles, i);
 		if (g_strcmp0 (cd_profile_get_object_path (profile),
-			       cd_profile_get_object_path (profile_tmp)) == 0) {
+			       cd_profile_get_object_path (item->profile)) == 0) {
 			ret = FALSE;
 			g_set_error (error,
 				     CD_MAIN_ERROR,
@@ -591,11 +601,13 @@ cd_device_add_profile (CdDevice *device,
 		 cd_profile_get_id (profile),
 		 _cd_device_relation_to_string (relation),
 		 device->priv->id);
-	_g_ptr_array_insert (priv->profiles, 0, g_object_ref (profile));
-	if (relation == CD_DEVICE_RELATION_SOFT)
-		_g_ptr_array_insert (priv->profiles_soft, 0, g_object_ref (profile));
-	if (relation == CD_DEVICE_RELATION_HARD)
-		_g_ptr_array_insert (priv->profiles_hard, 0, g_object_ref (profile));
+	item = g_new0 (CdDeviceProfileItem, 1);
+	item->profile = g_object_ref (profile);
+	item->relation = relation;
+	item->timestamp = timestamp;
+	g_ptr_array_add (priv->profiles, item);
+	g_ptr_array_sort (priv->profiles,
+			  cd_device_profile_item_sort_cb);
 
 	/* emit */
 	cd_device_dbus_emit_property_changed (device,
@@ -829,8 +841,8 @@ cd_device_make_default (CdDevice *device,
 		        const gchar *profile_object_path,
 		        GError **error)
 {
+	CdDeviceProfileItem *item;
 	CdProfile *profile;
-	CdProfile *profile_tmp;
 	guint i;
 	gboolean ret = FALSE;
 	CdDevicePrivate *priv = device->priv;
@@ -847,32 +859,12 @@ cd_device_make_default (CdDevice *device,
 
 	/* make the profile first in the array */
 	for (i=1; i<priv->profiles->len; i++) {
-		profile_tmp = g_ptr_array_index (priv->profiles, i);
-		if (profile_tmp == profile) {
-			/* swap [0] and [i] */
-			g_debug ("CdDevice: making %s the default on %s",
-				 profile_object_path,
-				 priv->object_path);
-			profile_tmp = priv->profiles->pdata[0];
-			priv->profiles->pdata[0] = profile;
-			priv->profiles->pdata[i] = profile_tmp;
-			break;
-		}
-	}
-
-	/* ensure profile is in the 'hard' relation array */
-	ret = g_ptr_array_remove (priv->profiles_soft, profile);
-	if (ret)
-		g_ptr_array_add (priv->profiles_hard, g_object_ref (profile));
-
-	/* make the profile first in the hard array */
-	for (i=1; i<priv->profiles_hard->len; i++) {
-		profile_tmp = g_ptr_array_index (priv->profiles_hard, i);
-		if (profile_tmp == profile) {
-			/* swap [0] and [i] */
-			profile_tmp = priv->profiles_hard->pdata[0];
-			priv->profiles_hard->pdata[0] = profile;
-			priv->profiles_hard->pdata[i] = profile_tmp;
+		item = g_ptr_array_index (priv->profiles, i);
+		if (item->profile == profile) {
+			item->timestamp = g_get_real_time ();
+			item->relation = CD_DEVICE_RELATION_HARD;
+			g_ptr_array_sort (priv->profiles,
+					  cd_device_profile_item_sort_cb);
 			break;
 		}
 	}
@@ -954,6 +946,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		ret = cd_device_add_profile (device,
 					     relation,
 					     profile_object_path,
+					     g_get_real_time (),
 					     &error);
 		if (!ret) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -1088,13 +1081,15 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			if (i == 0)
 				g_debug ("searching [hard]");
 			profile = cd_device_find_by_qualifier (regexes[i],
-							       priv->profiles_hard);
+							       priv->profiles,
+							       CD_DEVICE_RELATION_HARD);
 		}
 		for (i=0; profile == NULL && regexes[i] != NULL; i++) {
 			if (i == 0)
 				g_debug ("searching [soft]");
 			profile = cd_device_find_by_qualifier (regexes[i],
-							       priv->profiles_soft);
+							       priv->profiles,
+							       CD_DEVICE_RELATION_SOFT);
 		}
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -1526,15 +1521,23 @@ cd_device_class_init (CdDeviceClass *klass)
 }
 
 /**
+ * cd_device_profiles_item_free:
+ **/
+static void
+cd_device_profiles_item_free (CdDeviceProfileItem *item)
+{
+	g_object_unref (item->profile);
+	g_free (item);
+}
+
+/**
  * cd_device_init:
  **/
 static void
 cd_device_init (CdDevice *device)
 {
 	device->priv = CD_DEVICE_GET_PRIVATE (device);
-	device->priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
-	device->priv->profiles_soft = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
-	device->priv->profiles_hard = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	device->priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_device_profiles_item_free);
 	device->priv->profile_array = cd_profile_array_new ();
 	device->priv->created = g_get_real_time ();
 	device->priv->modified = g_get_real_time ();
@@ -1579,8 +1582,6 @@ cd_device_finalize (GObject *object)
 	g_free (priv->kind);
 	g_free (priv->object_path);
 	g_ptr_array_unref (priv->profiles);
-	g_ptr_array_unref (priv->profiles_soft);
-	g_ptr_array_unref (priv->profiles_hard);
 	g_object_unref (priv->profile_array);
 	g_object_unref (priv->mapping_db);
 	g_object_unref (priv->device_db);

@@ -69,6 +69,7 @@ void		 cd_device_set_id			(CdDevice	*device,
 gboolean	 cd_device_add_profile			(CdDevice	*device,
 							 CdDeviceRelation relation,
 							 const gchar	*profile_object_path,
+							 guint64	 timestamp,
 							 GError		**error);
 gboolean	 cd_device_remove_profile		(CdDevice	*device,
 							 const gchar	*profile_object_path,

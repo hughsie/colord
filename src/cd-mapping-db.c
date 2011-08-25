@@ -409,7 +409,7 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
-	guint64 timestamp = 0;
+	guint64 timestamp = G_MAXUINT64;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);

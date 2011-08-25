@@ -239,6 +239,44 @@ out:
 }
 
 /**
+ * cd_main_device_auto_add_profile:
+ **/
+static gboolean
+cd_main_device_auto_add_profile (CdDevice *device, CdProfile *profile)
+{
+	gboolean ret = FALSE;
+	GError *error = NULL;
+	guint64 timestamp;
+
+	g_debug ("CdMain: Automatically add %s to %s",
+		 cd_profile_get_id (profile),
+		 cd_device_get_object_path (device));
+	timestamp = cd_mapping_db_get_timestamp (mapping_db,
+						 cd_device_get_id (device),
+						 cd_profile_get_id (profile),
+						 &error);
+	if (timestamp == G_MAXUINT64) {
+		g_debug ("CdMain: failed to assign, non-fatal: %s",
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
+	ret = cd_device_add_profile (device,
+				     CD_DEVICE_RELATION_HARD,
+				     cd_profile_get_object_path (profile),
+				     timestamp,
+				     &error);
+	if (!ret) {
+		g_debug ("CdMain: failed to assign, non-fatal: %s",
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	return ret;
+}
+
+/**
  * cd_main_device_auto_add_profiles:
  **/
 static void
@@ -246,7 +284,6 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 {
 	CdProfile *profile_tmp;
 	const gchar *object_id_tmp;
-	gboolean ret;
 	GError *error = NULL;
 	GPtrArray *array;
 	guint i;
@@ -268,18 +305,7 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 		profile_tmp = cd_profile_array_get_by_id (profiles_array,
 							  object_id_tmp);
 		if (profile_tmp != NULL) {
-			g_debug ("CdMain: Automatically add %s to %s",
-				 object_id_tmp,
-				 cd_device_get_object_path (device));
-			ret = cd_device_add_profile (device,
-						     CD_DEVICE_RELATION_HARD,
-						     cd_profile_get_object_path (profile_tmp),
-						     &error);
-			if (!ret) {
-				g_debug ("CdMain: failed to assign, non-fatal: %s",
-					 error->message);
-				g_clear_error (&error);
-			}
+			cd_main_device_auto_add_profile (device, profile_tmp);
 			g_object_unref (profile_tmp);
 		} else {
 			g_debug ("CdMain: profile %s is not (yet) available",
@@ -502,7 +528,6 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 {
 	CdDevice *device_tmp;
 	const gchar *device_id_tmp;
-	gboolean ret;
 	GError *error = NULL;
 	GPtrArray *array;
 	guint i;
@@ -531,18 +556,7 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 		device_tmp = cd_device_array_get_by_id (devices_array,
 							device_id_tmp);
 		if (device_tmp != NULL) {
-			g_debug ("CdMain: Automatically add %s to %s",
-				 cd_profile_get_object_path (profile),
-				 device_id_tmp);
-			ret = cd_device_add_profile (device_tmp,
-						     CD_DEVICE_RELATION_HARD,
-						     cd_profile_get_object_path (profile),
-						     &error);
-			if (!ret) {
-				g_debug ("CdMain: failed to assign, non-fatal: %s",
-					 error->message);
-				g_clear_error (&error);
-			}
+			cd_main_device_auto_add_profile (device_tmp, profile);
 			g_object_unref (device_tmp);
 		} else {
 			g_debug ("CdMain: device %s is not (yet) available",
