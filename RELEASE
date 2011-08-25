@@ -16,8 +16,13 @@ Write release date to doc/website/download.html
 
 2. Commit changes to git:
 
-git commit -a -m "Release colord 0.1.12"
-git tag -s -f -m "Release colord 0.1.12" COLORD_0_1_12
+# MAKE SURE THESE ARE CORRECT
+export release_version="0.1.12"
+export release_tag="COLORD_0_1_12"
+
+echo "Hello ${release_version}"
+git commit -a -m "Release colord ${release_version}"
+git tag -s -f -m "Release colord ${release_version}" "$(release_tag)"
 <wait>
 git push --tags
 git push
@@ -26,9 +31,14 @@ git push
 
 make dist
 
+3a. Generate the additon verification metadata
+
+sha1sum colord-${release_version}.tar.xz > colord-${release_version}.tar.xz.sha1
+gpg -b -a colord-${release_version}.tar.xz
+
 4. Upload tarball:
 
-scp *.tar.* hughsient@annarchy.freedesktop.org:/srv/www.freedesktop.org/www/software/colord/releases/
+scp colord-${release_version}.tar.* hughsient@annarchy.freedesktop.org:/srv/www.freedesktop.org/www/software/colord/releases/
 
 5. Do post release version bump in configure.ac
 
