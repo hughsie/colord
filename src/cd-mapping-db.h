@@ -72,6 +72,10 @@ GPtrArray	*cd_mapping_db_get_profiles	(CdMappingDb	*mdb,
 GPtrArray	*cd_mapping_db_get_devices	(CdMappingDb	*mdb,
 						 const gchar	*profile_id,
 						 GError		**error);
+guint64		 cd_mapping_db_get_timestamp	(CdMappingDb	*mdb,
+						 const gchar	*device_id,
+						 const gchar	*profile_id,
+						 GError		**error);
 
 G_END_DECLS
 

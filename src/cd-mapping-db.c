@@ -379,6 +379,68 @@ out:
 }
 
 /**
+ * cd_mapping_db_sqlite_timestamp_cb:
+ **/
+static gint
+cd_mapping_db_sqlite_timestamp_cb (void *data,
+				   gint argc,
+				   gchar **argv,
+				   gchar **col_name)
+{
+	guint64 *timestamp = (guint64 *) data;
+
+	/* should only be one entry */
+	g_debug ("CdMappingDb: got sql entry %s", argv[0]);
+	*timestamp = g_ascii_strtoull (argv[0], NULL, 10);
+	return 0;
+}
+
+/**
+ * cd_mapping_db_get_timestamp:
+ *
+ * Gets when the profile was added to the device.
+ **/
+guint64
+cd_mapping_db_get_timestamp (CdMappingDb *mdb,
+			     const gchar *device_id,
+			     const gchar *profile_id,
+			     GError  **error)
+{
+	gchar *error_msg = NULL;
+	gchar *statement;
+	gint rc;
+	guint64 timestamp = 0;
+
+	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
+	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+
+	g_debug ("CdMappingDb: get checksum for %s<->%s",
+		 device_id, profile_id);
+	statement = g_strdup_printf ("SELECT timestamp FROM mappings WHERE "
+				     "device = '%s' AND profile = '%s' "
+				     "LIMIT 1;", device_id, profile_id);
+
+	/* query the checksum */
+	rc = sqlite3_exec (mdb->priv->db,
+			   statement,
+			   cd_mapping_db_sqlite_timestamp_cb,
+			   &timestamp,
+			   &error_msg);
+	if (rc != SQLITE_OK) {
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "SQL error: %s",
+			     error_msg);
+		sqlite3_free (error_msg);
+		goto out;
+	}
+out:
+	g_free (statement);
+	return timestamp;
+}
+
+/**
  * cd_mapping_db_class_init:
  * @klass: The CdMappingDbClass
  **/
