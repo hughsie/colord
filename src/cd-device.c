@@ -90,6 +90,16 @@ enum {
 static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdDevice, cd_device, G_TYPE_OBJECT)
 
+#if !GLIB_CHECK_VERSION (2, 25, 0)
+static guint64
+g_get_real_time (void)
+{
+	struct timeval tm;
+	gettimeofday (&tm, NULL);
+	return tm.tv_sec;
+}
+#endif
+
 /**
  * cd_device_get_scope:
  **/
@@ -1526,17 +1536,8 @@ cd_device_init (CdDevice *device)
 	device->priv->profiles_soft = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	device->priv->profiles_hard = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	device->priv->profile_array = cd_profile_array_new ();
-#if !GLIB_CHECK_VERSION (2, 25, 0)
 	device->priv->created = g_get_real_time ();
 	device->priv->modified = g_get_real_time ();
-#else
-	{
-		struct timeval tm;
-		gettimeofday (&tm, NULL);
-		device->priv->created = tm.tv_sec;
-		device->priv->modified = tm.tv_sec;
-	}
-#endif
 	device->priv->mapping_db = cd_mapping_db_new ();
 	device->priv->device_db = cd_device_db_new ();
 	device->priv->inhibit = cd_inhibit_new ();
