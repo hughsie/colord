@@ -1130,7 +1130,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
 							       CD_MAIN_ERROR_FAILED,
-							       "failed to make profile default",
+							       "failed to make profile default: %s",
 							       error->message);
 			g_error_free (error);
 			goto out;
