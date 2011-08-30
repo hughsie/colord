@@ -4,7 +4,7 @@ colord Release Notes
 
 git shortlog COLORD_0_1_11.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
-Version 0.1.12
+Version 0.1.13
 ~~~~~~~~~~~~~~
 Released: 2011-xx-xx
 
@@ -17,8 +17,8 @@ Write release date to doc/website/download.html
 2. Commit changes to git:
 
 # MAKE SURE THESE ARE CORRECT
-export release_version="0.1.12"
-export release_tag="COLORD_0_1_12"
+export release_version="0.1.13"
+export release_tag="COLORD_0_1_13"
 
 git commit -a -m "Release colord ${release_version}"
 git tag -s -f -m "Release colord ${release_version}" "${release_tag}"
