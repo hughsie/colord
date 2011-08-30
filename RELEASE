@@ -20,9 +20,8 @@ Write release date to doc/website/download.html
 export release_version="0.1.12"
 export release_tag="COLORD_0_1_12"
 
-echo "Hello ${release_version}"
 git commit -a -m "Release colord ${release_version}"
-git tag -s -f -m "Release colord ${release_version}" "$(release_tag)"
+git tag -s -f -m "Release colord ${release_version}" "${release_tag}"
 <wait>
 git push --tags
 git push

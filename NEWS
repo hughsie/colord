@@ -1,3 +1,25 @@
+Version 0.1.12
+~~~~~~~~~~~~~~
+Released: 2011-08-30
+
+New Features:
+ - Add a configure argument --enable-volume-search (Richard Hughes)
+ - Add a configure argument of --enable-fd-fallback (Richard Hughes)
+ - Add cd_client_import_profile() to be able to easily import a GFile (Richard Hughes)
+ - Allow the daemon to run with a different user (Richard Hughes)
+
+Bugfixes:
+ - Add daemon user to acl of sensor devices (Christopher James Halse Rogers)
+ - Add lcms2 to Requires.private (Richard Hughes)
+ - Check if a file is really an ICC profile before importing it (Richard Hughes)
+ - Detect libusb_strerror in configure rather than relying on the version (Richard Hughes)
+ - Do not fail make check if there is no available local colord process to use (Richard Hughes)
+ - Ensure the profiles are sorted by thier timestamp during login (Richard Hughes)
+ - Ensure the volume-sourced profiles are not marked as systemwide profiles (Richard Hughes)
+ - Exit with an error when trying to connect to a device that does not exist (Richard Hughes)
+ - Remove duplicate call to complete in libcolord (Alban Browaeys)
+ - Try harder to use the ICC profile checksum (Richard Hughes)
+
 Version 0.1.11
 ~~~~~~~~~~~~~~
 Released: 2011-08-01
