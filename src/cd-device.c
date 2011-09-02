@@ -914,7 +914,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.modify-device");
 		if (!ret)
 			goto out;
@@ -984,7 +983,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.modify-device");
 		if (!ret)
 			goto out;
@@ -1111,7 +1109,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.modify-device");
 		if (!ret)
 			goto out;
@@ -1162,7 +1159,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.modify-device");
 		if (!ret)
 			goto out;
@@ -1195,7 +1191,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.device-inhibit");
 		if (!ret)
 			goto out;

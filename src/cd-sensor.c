@@ -598,7 +598,6 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.sensor-lock");
 		if (!ret)
 			goto out;
@@ -651,7 +650,6 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.sensor-lock");
 		if (!ret)
 			goto out;

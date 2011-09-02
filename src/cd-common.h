@@ -44,7 +44,6 @@ typedef enum {
 
 GQuark		 cd_main_error_quark		(void);
 gboolean	 cd_main_sender_authenticated	(GDBusMethodInvocation *invocation,
-						 const gchar	*sender,
 						 const gchar	*action_id);
 gchar		*cd_main_ensure_dbus_path	(const gchar	*object_path);
 gboolean	 cd_main_mkdir_with_parents	(const gchar	*filename,

@@ -427,7 +427,6 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.modify-profile");
 		if (!ret)
 			goto out;
@@ -461,7 +460,6 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_debug ("CdProfile %s:InstallSystemWide() on %s",
 			 sender, profile->priv->object_path);
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.install-system-wide");
 		if (!ret)
 			goto out;

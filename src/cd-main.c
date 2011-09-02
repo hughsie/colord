@@ -871,7 +871,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.create-device");
 		if (!ret)
 			goto out;
@@ -951,7 +950,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.delete-device");
 		if (!ret)
 			goto out;
@@ -987,7 +985,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.create-profile");
 		if (!ret)
 			goto out;
@@ -1023,7 +1020,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
-						    sender,
 						    "org.freedesktop.color-manager.create-profile");
 		if (!ret)
 			goto out;

@@ -62,9 +62,9 @@ cd_main_ensure_dbus_path (const gchar *object_path)
  **/
 gboolean
 cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
-			      const gchar *sender,
 			      const gchar *action_id)
 {
+	const gchar *sender;
 #ifdef USE_POLKIT
 	gboolean ret = FALSE;
 	GError *error = NULL;
@@ -81,6 +81,7 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 	}
 
 	/* do authorization async */
+	sender = g_dbus_method_invocation_get_sender (invocation);
 	subject = polkit_system_bus_name_new (sender);
 	result = polkit_authority_check_authorization_sync (authority, subject,
 			action_id,
@@ -122,6 +123,7 @@ out:
 		g_object_unref (subject);
 	return ret;
 #else
+	sender = g_dbus_method_invocation_get_sender (invocation);
 	g_warning ("CdCommon: not checking %s for %s as no PolicyKit support",
 		   action_id, sender);
 	return TRUE;
