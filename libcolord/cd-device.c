@@ -229,7 +229,7 @@ cd_device_get_format (CdDevice *device)
  *
  * Gets the device creation date.
  *
- * Return value: A value in seconds, or 0 for invalid
+ * Return value: A value in microseconds, or 0 for invalid
  *
  * Since: 0.1.0
  **/
@@ -247,7 +247,7 @@ cd_device_get_created (CdDevice *device)
  *
  * Gets the device modified date.
  *
- * Return value: A value in seconds, or 0 for invalid
+ * Return value: A value in microseconds, or 0 for invalid
  *
  * Since: 0.1.1
  **/
