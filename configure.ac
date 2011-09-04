@@ -207,7 +207,7 @@ if test x$enable_sane != xno; then
 			AC_SUBST(SANE_CFLAGS)
 			AC_SUBST(SANE_LIBS)
 		fi
-		if test $enable_sane = "yes" -a $has_sane = "no"; then
+		if test x$enable_sane = xyes -a $has_sane = "no"; then
 			AC_MSG_ERROR([--enable-sane was specified and SANE was not found])
 		fi
 
