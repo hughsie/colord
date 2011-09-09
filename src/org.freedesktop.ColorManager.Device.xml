@@ -165,6 +165,17 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Owner' type='u' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The user ID of the account that created the device.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Metadata' type='a{ss}' access='read'>
       <doc:doc>
         <doc:description>

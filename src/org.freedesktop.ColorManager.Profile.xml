@@ -160,6 +160,17 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Owner' type='u' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The user ID of the account that created the profile.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <method name='SetProperty'>
       <doc:doc>
         <doc:description>

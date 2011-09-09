@@ -71,6 +71,7 @@ struct _CdDevicePrivate
 	guint64				 modified;
 	gboolean			 is_virtual;
 	GHashTable			*metadata;
+	guint				 owner;
 };
 
 enum {
@@ -122,6 +123,16 @@ cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
 {
 	g_return_if_fail (CD_IS_DEVICE (device));
 	device->priv->object_scope = object_scope;
+}
+
+/**
+ * cd_device_set_owner:
+ **/
+void
+cd_device_set_owner (CdDevice *device, guint owner)
+{
+	g_return_if_fail (CD_IS_DEVICE (device));
+	device->priv->owner = owner;
 }
 
 /**
@@ -1345,6 +1356,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SCOPE) == 0) {
 		retval = g_variant_new_string (cd_object_scope_to_string (priv->object_scope));
+		goto out;
+	}
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_OWNER) == 0) {
+		retval = g_variant_new_uint32 (priv->owner);
 		goto out;
 	}
 

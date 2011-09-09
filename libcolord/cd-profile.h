@@ -118,6 +118,7 @@ const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);
 CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 CdObjectScope	 cd_profile_get_scope			(CdProfile	*profile);
+guint		 cd_profile_get_owner			(CdProfile	*profile);
 gint64		 cd_profile_get_created			(CdProfile	*profile);
 gint64		 cd_profile_get_age			(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);

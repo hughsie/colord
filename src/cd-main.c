@@ -671,6 +671,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	gint fd = -1;
+	guint uid;
 	const gchar *metadata_key = NULL;
 	const gchar *metadata_value = NULL;
 	GDBusMessage *message;
@@ -909,6 +910,19 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			register_on_bus = FALSE;
 		}
 
+		/* set the owner */
+		uid = cd_main_get_sender_uid (invocation, &error);
+		if (uid == G_MAXUINT) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "failed to get owner: %s",
+							       error->message);
+			g_error_free (error);
+			goto out;
+		}
+		cd_device_set_owner (device, uid);
+
 		/* set the properties */
 		while (g_variant_iter_next (iter, "{&s&s}",
 					    &prop_key, &prop_value)) {
@@ -1047,6 +1061,19 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			/* not new profile */
 			register_on_bus = FALSE;
 		}
+
+		/* set the owner */
+		uid = cd_main_get_sender_uid (invocation, &error);
+		if (uid == G_MAXUINT) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "failed to get owner: %s",
+							       error->message);
+			g_error_free (error);
+			goto out;
+		}
+		cd_profile_set_owner (profile, uid);
 
 		/* auto add profiles from the database */
 		cd_main_profile_auto_add_to_device (profile);

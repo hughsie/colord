@@ -24,6 +24,7 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <locale.h>
+#include <pwd.h>
 
 #include "cd-client-sync.h"
 #include "cd-device-sync.h"
@@ -48,6 +49,19 @@ typedef struct {
 } CdUtilItem;
 
 /**
+ * cd_util_show_owner:
+ **/
+static void
+cd_util_show_owner (guint uid)
+{
+	struct passwd *pw;
+	pw = getpwuid (uid);
+	/* TRANSLATORS: profile owner */
+	g_print ("%s:\t%s\n", _("Owner"),
+		 pw->pw_name);
+}
+
+/**
  * cd_util_show_profile:
  **/
 static void
@@ -63,6 +77,7 @@ cd_util_show_profile (CdProfile *profile)
 	/* TRANSLATORS: the internal DBus path */
 	g_print ("%s:\t%s\n", _("Object Path"),
 		 cd_profile_get_object_path (profile));
+	cd_util_show_owner (cd_profile_get_owner (profile));
 	tmp = cd_profile_get_format (profile);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the profile format, e.g.
@@ -138,6 +153,7 @@ cd_util_show_device (CdDevice *device)
 	/* TRANSLATORS: the internal DBus path */
 	g_print ("%s: %s\n", _("Object Path"),
 		 cd_device_get_object_path (device));
+	cd_util_show_owner (cd_device_get_owner (device));
 
 	/* TRANSLATORS: this is the time the device was registered
 	 * with colord, and probably is the same as the system startup

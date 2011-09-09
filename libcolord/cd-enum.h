@@ -231,6 +231,7 @@ typedef enum {
 #define CD_PROFILE_PROPERTY_METADATA		"Metadata"
 #define CD_PROFILE_PROPERTY_ID			"ProfileId"
 #define CD_PROFILE_PROPERTY_SCOPE		"Scope"
+#define CD_PROFILE_PROPERTY_OWNER		"Owner"
 
 /* defined in metadata-spec.txt */
 #define CD_DEVICE_METADATA_XRANDR_NAME		"XRANDR_name"
@@ -249,6 +250,7 @@ typedef enum {
 #define CD_DEVICE_PROPERTY_METADATA		"Metadata"
 #define CD_DEVICE_PROPERTY_ID			"DeviceId"
 #define CD_DEVICE_PROPERTY_SCOPE		"Scope"
+#define CD_DEVICE_PROPERTY_OWNER		"Owner"
 
 const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string		(const gchar		*kind);

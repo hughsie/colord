@@ -57,7 +57,10 @@ cd_main_ensure_dbus_path (const gchar *object_path)
 	return object_path_tmp;
 }
 
-static guint
+/**
+ * cd_main_get_sender_uid:
+ **/
+guint
 cd_main_get_sender_uid (GDBusMethodInvocation *invocation, GError **error)
 {
 	const gchar *sender;

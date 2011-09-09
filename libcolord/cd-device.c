@@ -70,6 +70,7 @@ struct _CdDevicePrivate
 	CdColorspace		 colorspace;
 	CdDeviceMode		 mode;
 	CdObjectScope		 scope;
+	guint			 owner;
 	GHashTable		*metadata;
 };
 
@@ -88,6 +89,7 @@ enum {
 	PROP_COLORSPACE,
 	PROP_MODE,
 	PROP_SCOPE,
+	PROP_OWNER,
 	PROP_LAST
 };
 
@@ -329,6 +331,24 @@ cd_device_get_scope (CdDevice *device)
 	g_return_val_if_fail (CD_IS_DEVICE (device), CD_OBJECT_SCOPE_UNKNOWN);
 	g_return_val_if_fail (device->priv->proxy != NULL, CD_OBJECT_SCOPE_UNKNOWN);
 	return device->priv->scope;
+}
+
+/**
+ * cd_device_get_owner:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device owner.
+ *
+ * Return value: The UID of the user that created the device
+ *
+ * Since: 0.1.13
+ **/
+guint
+cd_device_get_owner (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), G_MAXUINT);
+	g_return_val_if_fail (device->priv->proxy != NULL, G_MAXUINT);
+	return device->priv->owner;
 }
 
 /**
@@ -596,6 +616,7 @@ cd_device_connect_cb (GObject *source_object,
 	GVariant *vendor = NULL;
 	GVariant *colorspace = NULL;
 	GVariant *scope = NULL;
+	GVariant *owner = NULL;
 	GVariant *mode = NULL;
 	GVariant *profiles = NULL;
 	GVariant *metadata = NULL;
@@ -652,6 +673,12 @@ cd_device_connect_cb (GObject *source_object,
 	if (scope != NULL)
 		device->priv->scope =
 			cd_object_scope_from_string (g_variant_get_string (scope, NULL));
+
+	/* get owner */
+	owner = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						  CD_DEVICE_PROPERTY_OWNER);
+	if (owner != NULL)
+		device->priv->owner = g_variant_get_uint32 (owner);
 
 	/* get mode */
 	mode = g_dbus_proxy_get_cached_property (device->priv->proxy,
@@ -736,6 +763,8 @@ out:
 		g_variant_unref (colorspace);
 	if (scope != NULL)
 		g_variant_unref (scope);
+	if (owner != NULL)
+		g_variant_unref (owner);
 	if (mode != NULL)
 		g_variant_unref (mode);
 	if (created != NULL)
@@ -1802,6 +1831,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_SCOPE:
 		g_value_set_uint (value, device->priv->scope);
 		break;
+	case PROP_OWNER:
+		g_value_set_uint (value, device->priv->owner);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -2008,6 +2040,22 @@ cd_device_class_init (CdDeviceClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_SCOPE,
 					 g_param_spec_uint ("scope",
+							    NULL, NULL,
+							    0,
+							    G_MAXUINT,
+							    0,
+							    G_PARAM_READABLE));
+
+	/**
+	 * CdDevice:owner:
+	 *
+	 * The device owner, e.g. 500.
+	 *
+	 * Since: 0.1.13
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_OWNER,
+					 g_param_spec_uint ("owner",
 							    NULL, NULL,
 							    0,
 							    G_MAXUINT,

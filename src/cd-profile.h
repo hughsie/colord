@@ -61,6 +61,8 @@ void		 cd_profile_set_id			(CdProfile	*profile,
 CdObjectScope	 cd_profile_get_scope			(CdProfile	*profile);
 void		 cd_profile_set_scope			(CdProfile	*profile,
 							 CdObjectScope	 object_scope);
+void		 cd_profile_set_owner			(CdProfile	*profile,
+							 guint		 owner);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
 void		 cd_profile_set_is_system_wide		(CdProfile	*profile,
 							 gboolean	 is_system_wide);
