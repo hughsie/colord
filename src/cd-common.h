@@ -39,6 +39,7 @@
 
 typedef enum {
 	CD_MAIN_ERROR_FAILED,
+	CD_MAIN_ERROR_ALREADY_EXISTS,
 	CD_MAIN_ERROR_LAST
 } CdMainError;
 

@@ -37,6 +37,9 @@ cd_main_error_quark (void)
 		g_dbus_error_register_error (quark,
 					     CD_MAIN_ERROR_FAILED,
 					     COLORD_DBUS_SERVICE ".Failed");
+		g_dbus_error_register_error (quark,
+					     CD_MAIN_ERROR_ALREADY_EXISTS,
+					     COLORD_DBUS_SERVICE ".AlreadyExists");
 	}
 	return quark;
 }

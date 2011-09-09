@@ -115,6 +115,9 @@ cd_client_error_quark (void)
 		g_dbus_error_register_error (quark,
 					     CD_CLIENT_ERROR_FAILED,
 					     COLORD_DBUS_SERVICE ".Failed");
+		g_dbus_error_register_error (quark,
+					     CD_CLIENT_ERROR_ALREADY_EXISTS,
+					     COLORD_DBUS_SERVICE ".AlreadyExists");
 	}
 	return quark;
 }

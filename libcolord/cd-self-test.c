@@ -1883,6 +1883,72 @@ colord_profile_ordering_func (void)
 	g_object_unref (client);
 }
 
+/* ensure duplicate profiles have the correct error code */
+static void
+colord_profile_duplicate_func (void)
+{
+	CdClient *client;
+	CdProfile *profile1;
+	CdProfile *profile2;
+	gboolean ret;
+	gchar full_path[PATH_MAX];
+	GError *error = NULL;
+	GHashTable *profile_props;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
+	/* create */
+	client = cd_client_new ();
+	g_assert (client != NULL);
+
+	/* create extra profile */
+	realpath (TESTDATADIR "/ibm-t61.icc", full_path);
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (profile_props,
+			     g_strdup ("Filename"),
+			     g_strdup (full_path));
+
+	/* create profile */
+	profile2 = cd_client_create_profile_sync (client,
+						  "profile_duplicate",
+						  CD_OBJECT_SCOPE_TEMP,
+						  profile_props,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert (profile2 != NULL);
+
+	/* create same profile */
+	profile1 = cd_client_create_profile_sync (client,
+						  "profile_duplicate",
+						  CD_OBJECT_SCOPE_TEMP,
+						  profile_props,
+						  NULL,
+						  &error);
+	g_assert_error (error,
+			CD_CLIENT_ERROR,
+			CD_CLIENT_ERROR_ALREADY_EXISTS);
+	g_assert (profile1 == NULL);
+	g_clear_error (&error);
+
+	/* delete profile */
+	ret = cd_client_delete_profile_sync (client,
+					     profile2,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_hash_table_unref (profile_props);
+	g_object_unref (profile2);
+	g_object_unref (client);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1899,6 +1965,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/client", colord_client_func);
 	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
 	g_test_add_func ("/colord/profile-ordering", colord_profile_ordering_func);
+	g_test_add_func ("/colord/profile-duplicate", colord_profile_duplicate_func);
 	g_test_add_func ("/colord/device-mapping", colord_device_mapping_func);
 	g_test_add_func ("/colord/client-random", colord_client_random_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
