@@ -110,8 +110,12 @@ GQuark
 cd_client_error_quark (void)
 {
 	static GQuark quark = 0;
-	if (!quark)
+	if (!quark) {
 		quark = g_quark_from_static_string ("cd_client_error");
+		g_dbus_error_register_error (quark,
+					     CD_CLIENT_ERROR_FAILED,
+					     COLORD_DBUS_SERVICE ".Failed");
+	}
 	return quark;
 }
 
@@ -597,11 +601,7 @@ cd_client_create_profile_cb (GObject *source_object,
 	/* this is an error message */
 	if (g_dbus_message_get_message_type (reply) == G_DBUS_MESSAGE_TYPE_ERROR) {
 		g_dbus_message_to_gerror (reply, &error);
-		g_simple_async_result_set_error (res_source,
-						 CD_CLIENT_ERROR,
-						 CD_CLIENT_ERROR_FAILED,
-						 "Failed to CreateProfile: %s",
-						 error->message);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -2595,6 +2595,9 @@ static void
 cd_client_init (CdClient *client)
 {
 	client->priv = CD_CLIENT_GET_PRIVATE (client);
+
+	/* ensure the remote errors are registered */
+	cd_client_error_quark ();
 }
 
 /*
