@@ -117,6 +117,39 @@ out:
 	return ret;
 }
 
+/* create a Lab profile of named colors */
+static cmsHPROFILE
+create_srgb_palette (const gchar *filename,
+		     const gchar *nc_prefix,
+		     const gchar *nc_suffix)
+{
+	cmsHPROFILE profile;
+	cmsNAMEDCOLORLIST *nc2 = NULL;
+
+	profile = cmsCreateNULLProfile ();
+	if (profile == NULL || lcms_error_code != 0) {
+		g_warning ("failed to open profile");
+		goto out;
+	}
+
+	cmsSetDeviceClass(profile, cmsSigNamedColorClass);
+	cmsSetPCS (profile, cmsSigLabData);
+	cmsSetColorSpace (profile, cmsSigLabData);
+	cmsSetProfileVersion (profile, 3.4);
+
+	/* create a named color structure */
+	nc2 = cmsAllocNamedColorList (NULL, 1, /* will realloc more as required */
+				      3,
+				      nc_prefix != NULL ? nc_prefix : "",
+				      nc_suffix != NULL ? nc_suffix : "");
+	add_srgb_palette (nc2, filename);
+	cmsWriteTag (profile, cmsSigNamedColor2Tag, nc2);
+out:
+	if (nc2 != NULL)
+		cmsFreeNamedColorList (nc2);
+	return profile;
+}
+
 /*
  * main:
  */
@@ -124,7 +157,6 @@ int
 main (int argc, char **argv)
 {
 	cmsHPROFILE lcms_profile = NULL;
-	cmsNAMEDCOLORLIST *nc2 = NULL;
 	gboolean ret;
 	gchar *copyright = NULL;
 	gchar *description = NULL;
@@ -200,25 +232,14 @@ main (int argc, char **argv)
 	/* setup LCMS */
 	cmsSetLogErrorHandler (cd_fix_profile_error_cb);
 
-	lcms_profile = cmsCreateNULLProfile ();
-	if (lcms_profile == NULL || lcms_error_code != 0) {
-		g_warning ("failed to open profile");
-		goto out;
-	}
-
-	cmsSetDeviceClass(lcms_profile, cmsSigNamedColorClass);
-	cmsSetPCS (lcms_profile, cmsSigLabData);
-	cmsSetColorSpace (lcms_profile, cmsSigLabData);
-	cmsSetProfileVersion (lcms_profile, 3.4);
-
 	if (srgb_palette != NULL) {
-		/* create a named color structure */
-		nc2 = cmsAllocNamedColorList (NULL, 1, /* will realloc more as required */
-					      3,
-					      nc_prefix != NULL ? nc_prefix : "",
-					      nc_suffix != NULL ? nc_suffix : "");
-		add_srgb_palette (nc2, srgb_palette);
-		cmsWriteTag (lcms_profile, cmsSigNamedColor2Tag, nc2);
+		lcms_profile = create_srgb_palette (srgb_palette,
+						    nc_prefix,
+						    nc_suffix);
+	} else {
+		/* TRANSLATORS: the user forgot to use an action */
+		g_print ("%s\n", _("No data to create profile"));
+		goto out;
 	}
 
 	if (description != NULL) {
@@ -281,8 +302,6 @@ main (int argc, char **argv)
 	retval = EXIT_SUCCESS;
 	cmsSaveProfileToFile (lcms_profile, filename);
 out:
-	if (nc2 != NULL)
-		cmsFreeNamedColorList (nc2);
 	if (lcms_profile != NULL)
 		cmsCloseProfile (lcms_profile);
 	g_free (description);
