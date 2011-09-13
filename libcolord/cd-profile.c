@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <string.h>
 
 #include "cd-profile.h"
@@ -166,6 +167,24 @@ cd_profile_get_filename (CdProfile *profile)
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
 	return profile->priv->filename;
+}
+
+/**
+ * cd_profile_has_access:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets if the current user has access permissions to the profile.
+ *
+ * Return value: A string, or %NULL for invalid
+ *
+ * Since: 0.1.13
+ **/
+gboolean
+cd_profile_has_access (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+	g_return_val_if_fail (profile->priv->proxy != NULL, FALSE);
+	return g_access (profile->priv->filename, R_OK) == 0;
 }
 
 /**
