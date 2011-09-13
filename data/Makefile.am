@@ -22,6 +22,9 @@ EXTRA_DIST =						\
 x11-colors.icc:
 	$(top_builddir)/client/cd-create-profile --output $@ --srgb-palette ./x11-colors.csv --nc-prefix="X11" -d "X11 Colors" -c "No copyright" -n "Richard Hughes"
 
+gamma-90.icc:
+	$(top_builddir)/client/cd-create-profile --output $@ --xorg-gamma "0.9,0.9,0.9" -d "sRGB display 90% Gamma" -c "No copyright" -n "Richard Hughes"
+
 DISTCLEANFILES =					\
 	org.freedesktop.ColorManager.service		\
 	$(dist_profile_DATA)

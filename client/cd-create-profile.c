@@ -150,6 +150,94 @@ out:
 	return profile;
 }
 
+static gboolean
+set_vcgt_from_data (cmsHPROFILE profile,
+		    const guint16 *red,
+		    const guint16 *green,
+		    const guint16 *blue,
+		    guint size)
+{
+	guint i;
+	gboolean ret = FALSE;
+	cmsToneCurve *vcgt_curve[3];
+
+	/* build tone curve */
+	vcgt_curve[0] = cmsBuildTabulatedToneCurve16 (NULL, size, red);
+	vcgt_curve[1] = cmsBuildTabulatedToneCurve16 (NULL, size, green);
+	vcgt_curve[2] = cmsBuildTabulatedToneCurve16 (NULL, size, blue);
+
+	/* smooth it */
+	for (i=0; i<3; i++)
+		cmsSmoothToneCurve (vcgt_curve[i], 5);
+
+	/* write the tag */
+	ret = cmsWriteTag (profile, cmsSigVcgtType, vcgt_curve);
+
+	/* free the tonecurves */
+	for (i=0; i<3; i++)
+		cmsFreeToneCurve (vcgt_curve[i]);
+	return ret;
+}
+
+/* create a Lab profile of named colors */
+static cmsHPROFILE
+create_xorg_gamma (const gchar *points_str)
+{
+	cmsHPROFILE profile = NULL;
+	gboolean ret;
+	gchar **points_split = NULL;
+	gdouble points[3];
+	guint16 data[3][256];
+	guint i, j;
+
+	/* split into parts */
+	points_split = g_strsplit (points_str, ",", -1);
+	if (g_strv_length (points_split) != 3) {
+		g_warning ("incorrect points string");
+		goto out;
+	}
+
+	/* parse floats */
+	for (j=0; j<3; j++)
+		points[j] = atof (points_split[j]);
+
+	/* create a bog-standard sRGB profile */
+	profile = cmsCreate_sRGBProfile ();
+	if (profile == NULL || lcms_error_code != 0) {
+		g_warning ("failed to open profile");
+		goto out;
+	}
+
+	/* write header */
+	cmsSetDeviceClass (profile, cmsSigDisplayClass);
+	cmsSetPCS (profile, cmsSigXYZData);
+	cmsSetColorSpace (profile, cmsSigRgbData);
+	cmsSetProfileVersion (profile, 3.4);
+	cmsSetHeaderRenderingIntent (profile,
+				     INTENT_RELATIVE_COLORIMETRIC);
+
+	/* scale all the values by the floating point values */
+	for (i=0; i<256; i++) {
+		for (j=0; j<3; j++) {
+			data[j][i] = ((0xffff / 255) * i) * points[j];
+		}
+	}
+
+	/* write vcgt */
+	ret = set_vcgt_from_data (profile,
+				  data[0],
+				  data[1],
+				  data[2],
+				  256);
+	if (!ret) {
+		g_warning ("failed to write VCGT");
+		goto out;
+	}
+out:
+	g_strfreev (points_split);
+	return profile;
+}
+
 /*
  * main:
  */
@@ -167,6 +255,7 @@ main (int argc, char **argv)
 	gchar *nc_prefix = NULL;
 	gchar *nc_suffix = NULL;
 	gchar *srgb_palette = NULL;
+	gchar *xorg_gamma = NULL;
 	GError *error = NULL;
 	GOptionContext *context;
 	guint retval = EXIT_FAILURE;
@@ -190,6 +279,9 @@ main (int argc, char **argv)
 		{ "srgb-palette", '\0', 0, G_OPTION_ARG_STRING, &srgb_palette,
 		/* TRANSLATORS: command line option */
 		  _("sRGB CSV filename"), NULL },
+		{ "xorg-gamma", '\0', 0, G_OPTION_ARG_STRING, &xorg_gamma,
+		/* TRANSLATORS: command line option */
+		  _("A gamma string, e.g. '0.8,0.8,0.6'"), NULL },
 		{ "nc-prefix", '\0', 0, G_OPTION_ARG_STRING, &nc_prefix,
 		/* TRANSLATORS: command line option */
 		  _("Named color prefix"), NULL },
@@ -236,6 +328,8 @@ main (int argc, char **argv)
 		lcms_profile = create_srgb_palette (srgb_palette,
 						    nc_prefix,
 						    nc_suffix);
+	} else if (xorg_gamma != NULL) {
+		lcms_profile = create_xorg_gamma (xorg_gamma);
 	} else {
 		/* TRANSLATORS: the user forgot to use an action */
 		g_print ("%s\n", _("No data to create profile"));
@@ -311,6 +405,7 @@ out:
 	g_free (metadata);
 	g_free (filename);
 	g_free (srgb_palette);
+	g_free (xorg_gamma);
 	g_free (nc_prefix);
 	g_free (nc_suffix);
 	return retval;
