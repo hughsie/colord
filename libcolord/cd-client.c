@@ -450,11 +450,8 @@ cd_client_create_device_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_CLIENT_ERROR,
-						 CD_CLIENT_ERROR_FAILED,
-						 "Failed to CreateDevice: %s",
-						 error->message);
+		g_simple_async_result_set_from_error (res_source,
+						      error);
 		g_error_free (error);
 		goto out;
 	}

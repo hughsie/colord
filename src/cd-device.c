@@ -149,6 +149,19 @@ _cd_device_mode_to_string (CdDeviceMode device_mode)
 }
 
 /**
+ * _cd_device_mode_from_string:
+ **/
+static CdDeviceMode
+_cd_device_mode_from_string (const gchar *device_mode)
+{
+	if (g_strcmp0 (device_mode, "physical") == 0)
+		return CD_DEVICE_MODE_PHYSICAL;
+	if (g_strcmp0 (device_mode, "virtual") == 0)
+		return CD_DEVICE_MODE_VIRTUAL;
+	return CD_DEVICE_MODE_UNKNOWN;
+}
+
+/**
  * cd_device_set_mode:
  **/
 void
@@ -157,6 +170,16 @@ cd_device_set_mode (CdDevice *device, CdDeviceMode mode)
 	g_return_if_fail (CD_IS_DEVICE (device));
 	g_free (device->priv->mode);
 	device->priv->mode = g_strdup (_cd_device_mode_to_string (mode));
+}
+
+/**
+ * cd_device_get_mode:
+ **/
+CdDeviceMode
+cd_device_get_mode (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_MODE_UNKNOWN);
+	return _cd_device_mode_from_string (device->priv->mode);
 }
 
 /**

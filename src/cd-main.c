@@ -885,29 +885,37 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_debug ("CdMain: %s:CreateDevice(%s)", sender, device_id);
 		scope = cd_object_scope_from_string (scope_tmp);
 		device = cd_device_array_get_by_id (devices_array, device_id);
-		if (device == NULL) {
-			device = cd_main_create_device (sender,
-							device_id,
-							scope,
-							CD_DEVICE_MODE_UNKNOWN,
-							&error);
-			if (device == NULL) {
-				g_warning ("CdMain: failed to create device: %s",
-					   error->message);
-				g_dbus_method_invocation_return_gerror (invocation,
-									error);
-				g_error_free (error);
-				goto out;
-			}
-		} else {
+		if (device != NULL) {
 			/* where we try to manually add an existing
 			 * virtual device, which means promoting it to
 			 * an actual physical device */
-			cd_device_set_mode (device,
-					    CD_DEVICE_MODE_PHYSICAL);
+			if (cd_device_get_mode (device) == CD_DEVICE_MODE_VIRTUAL) {
+				cd_device_set_mode (device,
+						    CD_DEVICE_MODE_PHYSICAL);
+				register_on_bus = FALSE;
+			} else {
+				g_dbus_method_invocation_return_error (invocation,
+								       CD_MAIN_ERROR,
+								       CD_MAIN_ERROR_ALREADY_EXISTS,
+								       "device id '%s' already exists",
+								       device_id);
+				goto out;
+			}
+		}
 
-			/* not new device */
-			register_on_bus = FALSE;
+		/* create device */
+		device = cd_main_create_device (sender,
+						device_id,
+						scope,
+						CD_DEVICE_MODE_UNKNOWN,
+						&error);
+		if (device == NULL) {
+			g_warning ("CdMain: failed to create device: %s",
+				   error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
 		}
 
 		/* set the owner */

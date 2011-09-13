@@ -1949,6 +1949,54 @@ colord_profile_duplicate_func (void)
 	g_object_unref (client);
 }
 
+static void
+colord_device_duplicate_func (void)
+{
+	CdClient *client;
+	CdDevice *device1;
+	CdDevice *device2;
+	GError *error = NULL;
+	gchar *device_id;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
+	/* create */
+	client = cd_client_new ();
+	g_assert (client != NULL);
+
+	/* create device */
+	device_id = colord_get_random_device_id ();
+	device1 = cd_client_create_device_sync (client,
+						device_id,
+						CD_OBJECT_SCOPE_TEMP,
+						NULL,
+						NULL,
+						&error);
+	g_assert_no_error (error);
+	g_assert (device1 != NULL);
+
+	/* create duplicate device */
+	device2 = cd_client_create_device_sync (client,
+						device_id,
+						CD_OBJECT_SCOPE_TEMP,
+						NULL,
+						NULL,
+						&error);
+	g_assert_error (error,
+			CD_CLIENT_ERROR,
+			CD_CLIENT_ERROR_ALREADY_EXISTS);
+	g_assert (device2 == NULL);
+	g_clear_error (&error);
+
+	g_free (device_id);
+	g_object_unref (device1);
+	g_object_unref (client);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1963,6 +2011,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/client", colord_client_func);
+	g_test_add_func ("/colord/device-duplicate", colord_device_duplicate_func);
 	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
 	g_test_add_func ("/colord/profile-ordering", colord_profile_ordering_func);
 	g_test_add_func ("/colord/profile-duplicate", colord_profile_duplicate_func);
