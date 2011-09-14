@@ -25,6 +25,7 @@
 #include <locale.h>
 #include <lcms2.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "cd-color.h"
 #include "cd-common.h"
@@ -186,6 +187,7 @@ create_xorg_gamma (const gchar *points_str)
 	cmsHPROFILE profile = NULL;
 	gboolean ret;
 	gchar **points_split = NULL;
+	gdouble fraction;
 	gdouble points[3];
 	guint16 data[3][256];
 	guint i, j;
@@ -218,8 +220,9 @@ create_xorg_gamma (const gchar *points_str)
 
 	/* scale all the values by the floating point values */
 	for (i=0; i<256; i++) {
+		fraction = (gdouble)i / 256.0f;
 		for (j=0; j<3; j++) {
-			data[j][i] = ((0xffff / 255) * i) * points[j];
+			data[j][i] = pow (fraction, 1.0f / points[j]) * 0xffff;
 		}
 	}
 
