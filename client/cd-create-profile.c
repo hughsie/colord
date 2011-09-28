@@ -48,7 +48,7 @@ cd_fix_profile_error_cb (cmsContext ContextID,
 }
 
 static gboolean
-add_srgb_palette (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
+add_nc_palette_srgb (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
 {
 	CdColorRGB8 rgb;
 	cmsCIELab lab;
@@ -118,11 +118,67 @@ out:
 	return ret;
 }
 
+static gboolean
+add_nc_palette_lab (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
+{
+	cmsCIELab lab;
+	cmsUInt16Number pcs[3];
+	gboolean ret;
+	gchar *data = NULL;
+	gchar **lines = NULL;
+	gchar *name;
+	gchar **split = NULL;
+	GError *error = NULL;
+	guint i;
+
+	ret = g_file_get_contents (filename, &data, NULL, &error);
+	if (!ret)
+		goto out;
+	lines = g_strsplit (data, "\n", -1);
+
+	for (i=0; lines[i] != NULL; i++) {
+		/* ignore blank lines */
+		if (lines[i][0] == '\0')
+			continue;
+		split = g_strsplit (lines[i], ",", -1);
+		if (g_strv_length (split) == 4) {
+			g_strdelimit (split[0], "\"", ' ');
+			name = g_strstrip (split[0]);
+			lab.L = atof (split[1]);
+			lab.a = atof (split[2]);
+			lab.b = atof (split[3]);
+
+			g_debug ("add %s, %f,%f,%f",
+				 name,
+				 lab.L,
+				 lab.a,
+				 lab.b);
+
+			/*
+			 * PCS = colours in PCS colour space CIE*Lab
+			 * Colorant = colours in device colour space
+			 */
+			cmsFloat2LabEncoded (pcs, &lab);
+			ret = cmsAppendNamedColor (nc2, name, pcs, pcs);
+			g_assert (ret);
+
+		} else {
+			g_warning ("invalid line: %s", lines[i]);
+		}
+		g_strfreev (split);
+	}
+out:
+	g_free (data);
+	g_strfreev (lines);
+	return ret;
+}
+
 /* create a Lab profile of named colors */
 static cmsHPROFILE
-create_srgb_palette (const gchar *filename,
-		     const gchar *nc_prefix,
-		     const gchar *nc_suffix)
+create_nc_palette (const gchar *filename,
+		   const gchar *nc_prefix,
+		   const gchar *nc_suffix,
+		   const gchar *nc_type)
 {
 	cmsHPROFILE profile;
 	cmsNAMEDCOLORLIST *nc2 = NULL;
@@ -143,7 +199,10 @@ create_srgb_palette (const gchar *filename,
 				      3,
 				      nc_prefix != NULL ? nc_prefix : "",
 				      nc_suffix != NULL ? nc_suffix : "");
-	add_srgb_palette (nc2, filename);
+	if (g_strcmp0 (nc_type, "srgb") == 0)
+		add_nc_palette_srgb (nc2, filename);
+	else if (g_strcmp0 (nc_type, "lab") == 0)
+		add_nc_palette_lab (nc2, filename);
 	cmsWriteTag (profile, cmsSigNamedColor2Tag, nc2);
 out:
 	if (nc2 != NULL)
@@ -257,7 +316,8 @@ main (int argc, char **argv)
 	gchar *model = NULL;
 	gchar *nc_prefix = NULL;
 	gchar *nc_suffix = NULL;
-	gchar *srgb_palette = NULL;
+	gchar *nc_palette = NULL;
+	gchar *nc_type = NULL;
 	gchar *xorg_gamma = NULL;
 	GError *error = NULL;
 	GOptionContext *context;
@@ -279,9 +339,12 @@ main (int argc, char **argv)
 		{ "output", 'o', 0, G_OPTION_ARG_STRING, &filename,
 		/* TRANSLATORS: command line option */
 		  _("Profile to create"), NULL },
-		{ "srgb-palette", '\0', 0, G_OPTION_ARG_STRING, &srgb_palette,
+		{ "named-color-palette", '\0', 0, G_OPTION_ARG_STRING, &nc_palette,
 		/* TRANSLATORS: command line option */
-		  _("sRGB CSV filename"), NULL },
+		  _("Named color CSV filename"), NULL },
+		{ "named-color-type", '\0', 0, G_OPTION_ARG_STRING, &nc_type,
+		/* TRANSLATORS: command line option */
+		  _("Named color type, e.g. 'lab' or 'srgb'"), NULL },
 		{ "xorg-gamma", '\0', 0, G_OPTION_ARG_STRING, &xorg_gamma,
 		/* TRANSLATORS: command line option */
 		  _("A gamma string, e.g. '0.8,0.8,0.6'"), NULL },
@@ -327,10 +390,11 @@ main (int argc, char **argv)
 	/* setup LCMS */
 	cmsSetLogErrorHandler (cd_fix_profile_error_cb);
 
-	if (srgb_palette != NULL) {
-		lcms_profile = create_srgb_palette (srgb_palette,
-						    nc_prefix,
-						    nc_suffix);
+	if (nc_palette != NULL) {
+		lcms_profile = create_nc_palette (nc_palette,
+						  nc_prefix,
+						  nc_suffix,
+						  nc_type);
 	} else if (xorg_gamma != NULL) {
 		lcms_profile = create_xorg_gamma (xorg_gamma);
 	} else {
@@ -407,7 +471,8 @@ out:
 	g_free (manufacturer);
 	g_free (metadata);
 	g_free (filename);
-	g_free (srgb_palette);
+	g_free (nc_palette);
+	g_free (nc_type);
 	g_free (xorg_gamma);
 	g_free (nc_prefix);
 	g_free (nc_suffix);
