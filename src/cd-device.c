@@ -69,6 +69,7 @@ struct _CdDevicePrivate
 	guint				 watcher_id;
 	guint64				 created;
 	guint64				 modified;
+	gboolean			 require_modified_signal;
 	gboolean			 is_virtual;
 	GHashTable			*metadata;
 	guint				 owner;
@@ -253,9 +254,7 @@ cd_device_reset_modified (CdDevice *device)
 #if !GLIB_CHECK_VERSION (2, 25, 0)
 	device->priv->modified = g_get_real_time ();
 #endif
-	cd_device_dbus_emit_property_changed (device,
-					      "Modified",
-					      g_variant_new_uint64 (device->priv->modified));
+	device->priv->require_modified_signal = TRUE;
 }
 
 /**
@@ -280,6 +279,13 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 			       "{sv}",
 			       property_name,
 			       property_value);
+	if (device->priv->require_modified_signal) {
+		g_variant_builder_add (&builder,
+				       "{sv}",
+				       CD_DEVICE_PROPERTY_MODIFIED,
+				       g_variant_new_uint64 (device->priv->modified));
+		device->priv->require_modified_signal = FALSE;
+	}
 	g_dbus_connection_emit_signal (device->priv->connection,
 				       NULL,
 				       device->priv->object_path,
@@ -516,13 +522,13 @@ cd_device_remove_profile (CdDevice *device,
 	ret = g_ptr_array_remove (priv->profiles, item);
 	g_assert (ret);
 
+	/* reset modification time */
+	cd_device_reset_modified (device);
+
 	/* emit */
 	cd_device_dbus_emit_property_changed (device,
 					      "Profiles",
 					      cd_device_get_profiles_as_variant (device));
-
-	/* reset modification time */
-	cd_device_reset_modified (device);
 
 	/* emit global signal */
 	cd_device_dbus_emit_device_changed (device);
@@ -643,13 +649,13 @@ cd_device_add_profile (CdDevice *device,
 	g_ptr_array_sort (priv->profiles,
 			  cd_device_profile_item_sort_cb);
 
+	/* reset modification time */
+	cd_device_reset_modified (device);
+
 	/* emit */
 	cd_device_dbus_emit_property_changed (device,
 					      "Profiles",
 					      cd_device_get_profiles_as_variant (device));
-
-	/* reset modification time */
-	cd_device_reset_modified (device);
 
 	/* emit global signal */
 	cd_device_dbus_emit_device_changed (device);
@@ -831,8 +837,8 @@ cd_device_set_property_internal (CdDevice *device,
 				     g_strdup (property),
 				     g_strdup (value));
 		cd_device_dbus_emit_property_changed (device,
-						       CD_DEVICE_PROPERTY_METADATA,
-						       cd_device_get_metadata_as_variant (device));
+						      CD_DEVICE_PROPERTY_METADATA,
+						      cd_device_get_metadata_as_variant (device));
 	}
 
 	/* set this externally so we can add disk devices at startup
@@ -902,6 +908,9 @@ cd_device_make_default (CdDevice *device,
 			break;
 		}
 	}
+
+	/* reset modification time */
+	cd_device_reset_modified (device);
 
 	/* emit */
 	cd_device_dbus_emit_property_changed (device,
