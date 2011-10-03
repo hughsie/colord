@@ -810,7 +810,7 @@ cd_util_find_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	CdDevice *device = NULL;
 	gboolean ret = TRUE;
 
-	if (g_strv_length (values) < 2) {
+	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
 				     1, 0,
