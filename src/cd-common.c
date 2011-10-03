@@ -21,7 +21,9 @@
 
 #include "config.h"
 
+#ifdef USE_POLKIT
 #include <polkit/polkit.h>
+#endif
 
 #include "cd-common.h"
 
