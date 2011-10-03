@@ -1,3 +1,25 @@
+Version 0.1.13
+~~~~~~~~~~~~~~
+Released: 2011-10-03
+
+New Features:
+ - Add an 'Owner' property on device and profile objects (Richard Hughes)
+ - Add cd_profile_has_access() to filter profiles from other user accounts (Richard Hughes)
+ - Add the crayon named color palette (Richard Hughes)
+ - Add --xorg-gamma to cd-create-profile to create custom gamma ramps (Richard Hughes)
+
+Bugfixes:
+ - Add a note in the naming specification about the username suffix (Richard Hughes)
+ - colormgr only needs one argument for find-device (Richard Hughes)
+ - Ensure remote DBus errors are registered at startup (Richard Hughes)
+ - Ensure uid 0 can always create devices and profiles (Richard Hughes)
+ - Fix an error in configure if there is no sane .pc file (Richard Hughes)
+ - Fix the --disable-polkit build (Richard Hughes)
+ - Fix up the docs; cd_device_get_modified() returns microseconds (Richard Hughes)
+ - Reduce the CPU load of clients when assigning profiles from the session (Richard Hughes)
+ - Return an error if a client tries to create a duplicate device (Richard Hughes)
+ - Return an error when trying to register a duplicate profile (Richard Hughes)
+
 Version 0.1.12
 ~~~~~~~~~~~~~~
 Released: 2011-08-30
