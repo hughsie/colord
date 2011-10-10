@@ -240,10 +240,10 @@ cd_udev_client_sensor_add (CdUdevClient *udev_client,
 	/* load the sensor */
 	ret = cd_sensor_load (sensor, &error);
 	if (!ret) {
-		g_warning ("CdUdevClient: failed to load sensor: %s",
-			    error->message);
-		g_error_free (error);
-		goto out;
+		/* not fatal, non-native devices are still useable */
+		g_debug ("CdUdevClient: failed to load native sensor: %s",
+			 error->message);
+		g_clear_error (&error);
 	}
 
 	/* signal the addition */
