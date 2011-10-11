@@ -21,7 +21,9 @@ BuildRequires: sane-backends-devel
 BuildRequires: sqlite-devel
 BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
+
 Requires: shared-color-profiles
+Requires: color-filesystem
 
 %description
 colord is a low level system activated daemon that maps color devices
