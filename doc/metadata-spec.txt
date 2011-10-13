@@ -34,8 +34,10 @@ CMF_binary		The color management framework binary that
 CMF_version		The color management framework version that
 			generated this profile, e.g. "3.1.1"
 DATA_source		The data source of the profile, where:
-			"edid"	: From a display EDID blob
-			"calib"	: From a calibration using hardware
+			"edid"		: From a display EDID blob
+			"calib"		: From a calibration
+			"standard"	: From a standard, e.g. "sRGB"
+			"test"		: For testing, e.g. "BGR"
 MAPPING_format		The format used for matching, e.g.
 			"ColorModel.OutputMode.OutputResolution"
 MAPPING_qualifier	The qualifiers the profile should adopt by
