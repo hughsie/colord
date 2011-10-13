@@ -27,7 +27,38 @@
 #include "cd-common.h"
 #include "cd-lcms-helpers.h"
 
-/*
+#ifdef HAVE_NEW_LCMS
+/**
+ * cd_profile_copy_metadata_dict:
+ */
+static void
+cd_profile_copy_metadata_dict (cmsHANDLE dict,
+			       cmsHANDLE dict_tmp)
+{
+	const cmsDICTentry* entry;
+	gchar name[1024];
+
+	/* copy, but ignore some metadata we're about to write */
+	for (entry = cmsDictGetEntryList (dict_tmp);
+	     entry != NULL;
+	     entry = cmsDictNextEntry (entry)) {
+		wcstombs (name, entry->Name, sizeof (name));
+		if (g_strcmp0 (name, CD_PROFILE_METADATA_CMF_PRODUCT) == 0)
+			continue;
+		if (g_strcmp0 (name, CD_PROFILE_METADATA_CMF_BINARY) == 0)
+			continue;
+		if (g_strcmp0 (name, CD_PROFILE_METADATA_CMF_VERSION) == 0)
+			continue;
+		cmsDictAddEntry (dict,
+				 entry->Name,
+				 entry->Value,
+				 NULL,
+				 NULL);
+	}
+}
+#endif
+
+/**
  * cd_profile_write_metadata_string:
  */
 gboolean
@@ -40,19 +71,19 @@ cd_profile_write_metadata_string (cmsHPROFILE lcms_profile,
 	gboolean ret = FALSE;
 #ifdef HAVE_NEW_LCMS
 	cmsHANDLE dict = NULL;
+	cmsHANDLE dict_tmp = NULL;
 	gchar **metadata_split = NULL;
 	gchar *tmp;
 	guint i;
-	gboolean own_dict = FALSE;
+
+	/* always write metadata */
+	dict = cmsDictAlloc (NULL);
 
 	/* read existing metadata */
-	if (!clear_existing)
-		dict = cmsReadTag (lcms_profile, cmsSigMetaTag);
-
-	/* just create a new dict if one does not exist */
-	if (dict == NULL) {
-		own_dict = TRUE;
-		dict = cmsDictAlloc (NULL);
+	if (!clear_existing) {
+		dict_tmp = cmsReadTag (lcms_profile, cmsSigMetaTag);
+		if (dict_tmp != NULL)
+			cd_profile_copy_metadata_dict (dict, dict_tmp);
 	}
 
 	/* parse string */
@@ -92,8 +123,7 @@ cd_profile_write_metadata_string (cmsHPROFILE lcms_profile,
 			     "cannot write %s", metadata);
 	}
 out:
-	if (own_dict)
-		cmsDictFree (dict);
+	cmsDictFree (dict);
 	g_strfreev (metadata_split);
 #else
 	if (metadata != NULL) {
