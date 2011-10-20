@@ -26,7 +26,6 @@
 #include <gudev/gudev.h>
 
 #include "cd-udev-client.h"
-#include "cd-sensor.h"
 
 static void     cd_udev_client_finalize	(GObject	*object);
 
@@ -39,14 +38,11 @@ struct _CdUdevClientPrivate
 {
 	GUdevClient			*gudev_client;
 	GPtrArray			*array_devices;
-	GPtrArray			*array_sensors;
 };
 
 enum {
 	SIGNAL_DEVICE_ADDED,
 	SIGNAL_DEVICE_REMOVED,
-	SIGNAL_SENSOR_ADDED,
-	SIGNAL_SENSOR_REMOVED,
 	SIGNAL_LAST
 };
 
@@ -105,11 +101,11 @@ cd_udev_client_get_by_id (CdUdevClient *udev_client,
 }
 
 /**
- * cd_udev_client_device_add:
+ * cd_udev_client_add:
  **/
 static void
-cd_udev_client_device_add (CdUdevClient *udev_client,
-			   GUdevDevice *udev_device)
+cd_udev_client_add (CdUdevClient *udev_client,
+		    GUdevDevice *udev_device)
 {
 	CdDevice *device;
 	gboolean ret;
@@ -181,11 +177,11 @@ cd_udev_client_device_add (CdUdevClient *udev_client,
 }
 
 /**
- * cd_udev_client_device_remove:
+ * cd_udev_client_remove:
  **/
 static void
-cd_udev_client_device_remove (CdUdevClient *udev_client,
-			      GUdevDevice *udev_device)
+cd_udev_client_remove (CdUdevClient *udev_client,
+		       GUdevDevice *udev_device)
 {
 	gchar *id;
 	CdDevice *device;
@@ -200,105 +196,6 @@ cd_udev_client_device_remove (CdUdevClient *udev_client,
 	/* we don't care anymore */
 	g_ptr_array_remove (udev_client->priv->array_devices, device);
 	g_free (id);
-}
-
-/**
- * cd_udev_client_sensor_add:
- **/
-static gboolean
-cd_udev_client_sensor_add (CdUdevClient *udev_client,
-			   GUdevDevice *device)
-{
-	gboolean ret;
-	CdSensor *sensor = NULL;
-	const gchar *device_file;
-	GError *error = NULL;
-
-	/* interesting device? */
-	ret = g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR");
-	if (!ret)
-		goto out;
-
-	/* actual device? */
-	device_file = g_udev_device_get_device_file (device);
-	if (device_file == NULL)
-		goto out;
-
-	/* get data */
-	g_debug ("adding color management device: %s [%s]",
-		 g_udev_device_get_sysfs_path (device),
-		 device_file);
-	sensor = cd_sensor_new ();
-	ret = cd_sensor_set_from_device (sensor, device, &error);
-	if (!ret) {
-		g_warning ("CdUdevClient: failed to set CM sensor: %s",
-			   error->message);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* load the sensor */
-	ret = cd_sensor_load (sensor, &error);
-	if (!ret) {
-		/* not fatal, non-native devices are still useable */
-		g_debug ("CdUdevClient: failed to load native sensor: %s",
-			 error->message);
-		g_clear_error (&error);
-	}
-
-	/* signal the addition */
-	g_debug ("emit: added");
-	g_signal_emit (udev_client, signals[SIGNAL_SENSOR_ADDED], 0, sensor);
-
-	/* keep track so we can remove with the same device */
-	g_ptr_array_add (udev_client->priv->array_sensors, g_object_ref (sensor));
-out:
-	if (sensor != NULL)
-		g_object_unref (sensor);
-	return ret;
-}
-
-/**
- * cd_udev_client_sensor_remove:
- **/
-static gboolean
-cd_udev_client_sensor_remove (CdUdevClient *udev_client,
-			      GUdevDevice *device)
-{
-	CdSensor *sensor;
-	const gchar *device_file;
-	const gchar *id;
-	gboolean ret;
-	guint i;
-
-	/* interesting device? */
-	ret = g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR");
-	if (!ret)
-		goto out;
-
-	/* actual device? */
-	device_file = g_udev_device_get_device_file (device);
-	if (device_file == NULL)
-		goto out;
-
-	/* get data */
-	g_debug ("removing color management device: %s",
-		 g_udev_device_get_sysfs_path (device));
-	id = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
-	for (i=0; i<udev_client->priv->array_sensors->len; i++) {
-		sensor = g_ptr_array_index (udev_client->priv->array_sensors, i);
-		if (g_strcmp0 (cd_sensor_get_id (sensor), id) == 0) {
-			g_debug ("emit: removed");
-			g_signal_emit (udev_client, signals[SIGNAL_SENSOR_REMOVED], 0, sensor);
-			g_ptr_array_remove_index_fast (udev_client->priv->array_sensors, i);
-			goto out;
-		}
-	}
-
-	/* nothing found */
-	g_warning ("removed CM sensor that was never added");
-out:
-	return ret;
 }
 
 /**
@@ -318,13 +215,7 @@ cd_udev_client_uevent_cb (GUdevClient *gudev_client,
 			 g_udev_device_get_sysfs_path (udev_device));
 		ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
 		if (ret) {
-			cd_udev_client_device_remove (udev_client,
-						      udev_device);
-			goto out;
-		}
-		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR");
-		if (ret) {
-			cd_udev_client_sensor_remove (udev_client,
+			cd_udev_client_remove (udev_client,
 						      udev_device);
 			goto out;
 		}
@@ -337,13 +228,7 @@ cd_udev_client_uevent_cb (GUdevClient *gudev_client,
 			 g_udev_device_get_sysfs_path (udev_device));
 		ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
 		if (ret) {
-			cd_udev_client_device_add (udev_client,
-						   udev_device);
-			goto out;
-		}
-		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR");
-		if (ret) {
-			cd_udev_client_sensor_add (udev_client,
+			cd_udev_client_add (udev_client,
 						   udev_device);
 			goto out;
 		}
@@ -354,10 +239,10 @@ out:
 }
 
 /**
- * cd_udev_client_devices_coldplug:
+ * cd_udev_client_coldplug:
  **/
-static void
-cd_udev_client_devices_coldplug (CdUdevClient *udev_client)
+void
+cd_udev_client_coldplug (CdUdevClient *udev_client)
 {
 	GList *devices;
 	GList *l;
@@ -371,7 +256,7 @@ cd_udev_client_devices_coldplug (CdUdevClient *udev_client)
 		udev_device = l->data;
 		ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
 		if (ret)
-			cd_udev_client_device_add (udev_client, udev_device);
+			cd_udev_client_add (udev_client, udev_device);
 	}
 	g_list_foreach (devices, (GFunc) g_object_unref, NULL);
 	g_list_free (devices);
@@ -383,41 +268,10 @@ cd_udev_client_devices_coldplug (CdUdevClient *udev_client)
 		udev_device = l->data;
 		ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
 		if (ret)
-			cd_udev_client_device_add (udev_client, udev_device);
+			cd_udev_client_add (udev_client, udev_device);
 	}
 	g_list_foreach (devices, (GFunc) g_object_unref, NULL);
 	g_list_free (devices);
-}
-
-/**
- * cd_udev_client_sensors_coldplug:
- **/
-static void
-cd_udev_client_sensors_coldplug (CdUdevClient *udev_client)
-{
-	GList *devices;
-	GList *l;
-	GUdevDevice *udev_device;
-
-	/* get all video4linux devices */
-	devices = g_udev_client_query_by_subsystem (udev_client->priv->gudev_client,
-						    "usb");
-	for (l = devices; l != NULL; l = l->next) {
-		udev_device = l->data;
-		cd_udev_client_sensor_add (udev_client, udev_device);
-	}
-	g_list_foreach (devices, (GFunc) g_object_unref, NULL);
-	g_list_free (devices);
-}
-
-/**
- * cd_udev_client_coldplug:
- **/
-void
-cd_udev_client_coldplug (CdUdevClient *udev_client)
-{
-	cd_udev_client_devices_coldplug (udev_client);
-	cd_udev_client_sensors_coldplug (udev_client);
 }
 
 /**
@@ -440,18 +294,6 @@ cd_udev_client_class_init (CdUdevClientClass *klass)
 			      G_STRUCT_OFFSET (CdUdevClientClass, device_removed),
 			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1, CD_TYPE_DEVICE);
-	signals[SIGNAL_SENSOR_ADDED] =
-		g_signal_new ("sensor-added",
-			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (CdUdevClientClass, sensor_added),
-			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
-	signals[SIGNAL_SENSOR_REMOVED] =
-		g_signal_new ("sensor-removed",
-			      G_TYPE_FROM_CLASS (object_class), G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (CdUdevClientClass, sensor_removed),
-			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
 
 	g_type_class_add_private (klass, sizeof (CdUdevClientPrivate));
 }
@@ -465,7 +307,6 @@ cd_udev_client_init (CdUdevClient *udev_client)
 	const gchar *subsystems[] = {"usb", "video4linux", NULL};
 	udev_client->priv = CD_UDEV_CLIENT_GET_PRIVATE (udev_client);
 	udev_client->priv->array_devices = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
-	udev_client->priv->array_sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	udev_client->priv->gudev_client = g_udev_client_new (subsystems);
 	g_signal_connect (udev_client->priv->gudev_client, "uevent",
 			  G_CALLBACK (cd_udev_client_uevent_cb), udev_client);
@@ -482,7 +323,6 @@ cd_udev_client_finalize (GObject *object)
 
 	g_object_unref (priv->gudev_client);
 	g_ptr_array_unref (udev_client->priv->array_devices);
-	g_ptr_array_unref (udev_client->priv->array_sensors);
 
 	G_OBJECT_CLASS (cd_udev_client_parent_class)->finalize (object);
 }

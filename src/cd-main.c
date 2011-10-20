@@ -37,6 +37,7 @@
 #include "cd-profile.h"
 #include "cd-profile-store.h"
 #include "cd-sane-client.h"
+#include "cd-sensor-client.h"
 #include "cd-udev-client.h"
 
 static GDBusConnection *connection = NULL;
@@ -52,6 +53,7 @@ static CdMappingDb *mapping_db = NULL;
 static CdDeviceDb *device_db = NULL;
 #ifdef HAVE_GUDEV
 static CdUdevClient *udev_client = NULL;
+static CdSensorClient *sensor_client = NULL;
 #endif
 static CdSaneClient *sane_client = NULL;
 static CdConfig *config = NULL;
@@ -1521,6 +1523,9 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 #ifdef HAVE_GUDEV
 	/* add GUdev devices */
 	cd_udev_client_coldplug (udev_client);
+
+	/* add sensor devices */
+	cd_sensor_client_coldplug (sensor_client);
 #endif
 
 	/* add dummy sensor */
@@ -1620,7 +1625,7 @@ cd_main_client_device_removed_cb (GObject *source,
  * cd_main_client_sensor_added_cb:
  **/
 static void
-cd_main_client_sensor_added_cb (CdUdevClient *udev_client_,
+cd_main_client_sensor_added_cb (CdSensorClient *sensor_client_,
 				CdSensor *sensor,
 				gpointer user_data)
 {
@@ -1631,7 +1636,7 @@ cd_main_client_sensor_added_cb (CdUdevClient *udev_client_,
  * cd_main_client_sensor_removed_cb:
  **/
 static void
-cd_main_client_sensor_removed_cb (CdUdevClient *udev_client_,
+cd_main_client_sensor_removed_cb (CdSensorClient *sensor_client_,
 				  CdSensor *sensor,
 				  gpointer user_data)
 {
@@ -1756,10 +1761,11 @@ main (int argc, char *argv[])
 	g_signal_connect (udev_client, "device-removed",
 			  G_CALLBACK (cd_main_client_device_removed_cb),
 			  NULL);
-	g_signal_connect (udev_client, "sensor-added",
+	sensor_client = cd_sensor_client_new ();
+	g_signal_connect (sensor_client, "sensor-added",
 			  G_CALLBACK (cd_main_client_sensor_added_cb),
 			  NULL);
-	g_signal_connect (udev_client, "sensor-removed",
+	g_signal_connect (sensor_client, "sensor-removed",
 			  G_CALLBACK (cd_main_client_sensor_removed_cb),
 			  NULL);
 #endif
@@ -1854,6 +1860,8 @@ out:
 #ifdef HAVE_GUDEV
 	if (udev_client != NULL)
 		g_object_unref (udev_client);
+	if (sensor_client != NULL)
+		g_object_unref (sensor_client);
 #endif
 	if (config != NULL)
 		g_object_unref (config);

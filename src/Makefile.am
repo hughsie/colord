@@ -71,6 +71,8 @@ colord_SOURCES =					\
 
 if HAVE_GUDEV
 colord_SOURCES +=					\
+	cd-sensor-client.c				\
+	cd-sensor-client.h				\
 	cd-udev-client.c				\
 	cd-udev-client.h
 endif

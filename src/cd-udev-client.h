@@ -25,7 +25,6 @@
 #include <glib-object.h>
 
 #include "cd-device.h"
-#include "cd-sensor.h"
 #include "cd-udev-client.h"
 
 G_BEGIN_DECLS
@@ -54,10 +53,6 @@ struct _CdUdevClientClass
 						 CdDevice	*device);
 	void		(* device_removed)	(CdUdevClient	*udev_client,
 						 CdDevice	*device);
-	void		(* sensor_added)	(CdUdevClient	*udev_client,
-						 CdSensor	*sensor);
-	void		(* sensor_removed)	(CdUdevClient	*udev_client,
-						 CdSensor	*sensor);
 };
 
 GType		 cd_udev_client_get_type	(void);
