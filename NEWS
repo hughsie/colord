@@ -1,3 +1,18 @@
+Version 0.1.14
+~~~~~~~~~~~~~~
+Released: 2011-11-01
+
+Translations:
+New Features:
+ - Add defines for the i1 Display 3 (Richard Hughes)
+ - Add two more DATA_source values to the specification (Richard Hughes)
+ - Align the output from colormgr get-devices and get-profiles (Richard Hughes)
+ - Allow cd-fix-profile to append and edit new metadata (Richard Hughes)
+
+Bugfixes:
+ - Ensure non-native device are added with no driver module (Richard Hughes)
+ - Split the sensor and device udev code (Richard Hughes)
+
 Version 0.1.13
 ~~~~~~~~~~~~~~
 Released: 2011-10-03
