@@ -2092,6 +2092,7 @@ cd_device_finalize (GObject *object)
 
 	device = CD_DEVICE (object);
 
+	g_hash_table_destroy (device->priv->metadata);
 	g_free (device->priv->object_path);
 	g_free (device->priv->id);
 	g_free (device->priv->model);
