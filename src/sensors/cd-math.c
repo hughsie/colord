@@ -85,7 +85,7 @@ cd_vec3_scalar_multiply (const CdVec3 *src, gdouble value, CdVec3 *dest)
 }
 
 /**
- * cd_vec3_scalar_copy:
+ * cd_vec3_copy:
  * @src: the source
  * @dest: the destination
  *
@@ -93,7 +93,7 @@ cd_vec3_scalar_multiply (const CdVec3 *src, gdouble value, CdVec3 *dest)
  * The arguments @src and @dest cannot be the same value.
  **/
 void
-cd_vec3_scalar_copy (const CdVec3 *src, CdVec3 *dest)
+cd_vec3_copy (const CdVec3 *src, CdVec3 *dest)
 {
 	g_return_if_fail (src != dest);
 	memcpy (dest, src, sizeof (CdVec3));
