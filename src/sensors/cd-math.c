@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <math.h>
+#include <string.h>
 #include <glib-object.h>
 
 #include <cd-math.h>
@@ -81,6 +82,21 @@ cd_vec3_scalar_multiply (const CdVec3 *src, gdouble value, CdVec3 *dest)
 	dest->v0 = src->v0 * value;
 	dest->v1 = src->v1 * value;
 	dest->v2 = src->v2 * value;
+}
+
+/**
+ * cd_vec3_scalar_copy:
+ * @src: the source
+ * @dest: the destination
+ *
+ * Copies the vector into another vector.
+ * The arguments @src and @dest cannot be the same value.
+ **/
+void
+cd_vec3_scalar_copy (const CdVec3 *src, CdVec3 *dest)
+{
+	g_return_if_fail (src != dest);
+	memcpy (dest, src, sizeof (CdVec3));
 }
 
 /**
@@ -302,4 +318,21 @@ cd_mat33_reciprocal (const CdMat3x3 *src, CdMat3x3 *dest)
 	dest->m22 = (src->m00 * src->m11 - src->m01 * src->m10) / det;
 
 	return TRUE;
+}
+
+/**
+ * cd_mat33_copy:
+ * @src: the source
+ * @dest: the destination
+ *
+ * Copies the matrix.
+ * The arguments @src and @dest cannot be the same value.
+ *
+ * Return value: %FALSE if det is zero (singular).
+ **/
+void
+cd_mat33_copy (const CdMat3x3 *src, CdMat3x3 *dest)
+{
+	g_return_if_fail (src != dest);
+	memcpy (dest, src, sizeof (CdMat3x3));
 }
