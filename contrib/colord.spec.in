@@ -21,6 +21,7 @@ BuildRequires: sane-backends-devel
 BuildRequires: sqlite-devel
 BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
+BuildRequires: libgusb-devel
 
 Requires: shared-color-profiles
 Requires: color-filesystem

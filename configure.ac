@@ -126,6 +126,7 @@ dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gio-unix-2.0 gmodule-2.0)
+PKG_CHECK_MODULES(GUSB, gusb >= 0.1.1)
 
 PKG_CHECK_MODULES(LCMS, lcms2 >= 2.2, has_new_lcms=yes, has_new_lcms=no)
 if test x$has_new_lcms = xyes; then

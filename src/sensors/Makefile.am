@@ -1,5 +1,6 @@
 INCLUDES =						\
 	$(GLIB_CFLAGS)					\
+	$(GUSB_CFLAGS)					\
 	$(POLKIT_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
 	$(GUDEV_CFLAGS)					\
@@ -17,6 +18,7 @@ INCLUDES =						\
 	-DVERSION="\"$(VERSION)\""			\
 	-DCD_COMPILATION				\
 	-DG_UDEV_API_IS_SUBJECT_TO_CHANGE		\
+	-DG_USB_API_IS_SUBJECT_TO_CHANGE		\
 	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DLOCALEDIR=\""$(localedir)"\"
 
