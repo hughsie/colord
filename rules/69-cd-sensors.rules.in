@@ -64,6 +64,9 @@ ATTRS{idVendor}=="085c", ATTRS{idProduct}=="0300", ENV{COLORD_SENSOR}="1", ENV{C
 # Huey
 ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2005", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="huey", ENV{COLORD_SENSOR_CAP_LCD}="1", ENV{COLORD_SENSOR_CAP_CRT}="1", ENV{COLORD_SENSOR_CAP_AMBIENT}="1"
 
+# ColorHug
+ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="f8da", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_SENSOR_CAP_LCD}="1"
+
 # color calibration device
 ENV{COLORD_SENSOR}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"
 ENV{COLORD_SENSOR}=="*?", ENV{ID_MODEL}=="", IMPORT{program}="usb_id --export %p"
