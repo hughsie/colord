@@ -771,8 +771,10 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 						 cap,
 						 NULL,
 						 error);
-		if (!ret)
+		if (xyz == NULL) {
+			ret = FALSE;
 			goto out;
+		}
 
 		/* unlock */
 		ret = cd_sensor_unlock_sync (sensor,
