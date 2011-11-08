@@ -1390,6 +1390,7 @@ cd_main_add_sensor (CdSensor *sensor)
 	/* register on bus */
 	ret = cd_main_sensor_register_on_bus (sensor, &error);
 	if (!ret) {
+		g_ptr_array_remove (sensors, sensor);
 		g_warning ("CdMain: failed to emit SensorAdded: %s",
 			   error->message);
 		g_error_free (error);
