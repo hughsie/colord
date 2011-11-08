@@ -24,6 +24,7 @@
 # Skip all this to speed things up if it'a not a usb add.
 ACTION!="add", GOTO="gcm_rules_end"
 SUBSYSTEM!="usb", GOTO="gcm_rules_end"
+DRIVER!="usb", GOTO="gcm_rules_end"
 
 # DTP20
 ATTRS{idVendor}=="0765", ATTRS{idProduct}=="d020", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="dtp20", ENV{COLORD_SENSOR_CAP_PRINTER}="1", ENV{COLORD_SENSOR_CAP_SPOT}="1"
