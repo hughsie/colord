@@ -870,22 +870,43 @@ cd_sensor_set_from_device (CdSensor *sensor,
 {
 	gboolean ret;
 	guint idx = 0;
+	const gchar *vendor_tmp = NULL;
+	const gchar *model_tmp = NULL;
 	const gchar *kind_str;
+	gboolean use_database;
 	CdSensorPrivate *priv = sensor->priv;
 
+	/* only use the database if we found both the VID and the PID */
+	use_database = g_udev_device_has_property (device, "ID_VENDOR_FROM_DATABASE") &&
+			g_udev_device_has_property (device, "ID_MODEL_FROM_DATABASE");
+
 	/* vendor */
-	priv->vendor = g_strdup (g_udev_device_get_property (device, "ID_VENDOR_FROM_DATABASE"));
-	if (priv->vendor == NULL)
-		priv->vendor = g_strdup (g_udev_device_get_property (device, "ID_VENDOR"));
-	if (priv->vendor == NULL)
-		priv->vendor = g_strdup (g_udev_device_get_sysfs_attr (device, "manufacturer"));
+	if (use_database)
+		vendor_tmp = g_udev_device_get_property (device, "ID_VENDOR_FROM_DATABASE");
+	if (vendor_tmp == NULL)
+		vendor_tmp = g_udev_device_get_property (device, "ID_VENDOR");
+	if (vendor_tmp == NULL)
+		vendor_tmp = g_udev_device_get_sysfs_attr (device, "manufacturer");
+	if (vendor_tmp == NULL)
+		vendor_tmp = "unknown";
+	priv->vendor = g_strdup (vendor_tmp);
+
+	/* make name sane */
+	g_strdelimit (priv->vendor, "_", ' ');
 
 	/* model */
-	priv->model = g_strdup (g_udev_device_get_property (device, "ID_MODEL_FROM_DATABASE"));
-	if (priv->model == NULL)
-		priv->model = g_strdup (g_udev_device_get_property (device, "ID_MODEL"));
-	if (priv->model == NULL)
-		priv->model = g_strdup (g_udev_device_get_sysfs_attr (device, "product"));
+	if (use_database)
+		model_tmp = g_strdup (g_udev_device_get_property (device, "ID_MODEL_FROM_DATABASE"));
+	if (model_tmp == NULL)
+		model_tmp = g_strdup (g_udev_device_get_property (device, "ID_MODEL"));
+	if (model_tmp == NULL)
+		model_tmp = g_strdup (g_udev_device_get_sysfs_attr (device, "product"));
+	if (model_tmp == NULL)
+		model_tmp = "unknown";
+	priv->model = g_strdup (model_tmp);
+
+	/* make name sane */
+	g_strdelimit (priv->model, "_", ' ');
 
 	/* try to get type */
 	kind_str = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
