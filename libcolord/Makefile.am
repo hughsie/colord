@@ -18,7 +18,8 @@ INCLUDES = \
 noinst_LIBRARIES = libcolordprivate.a
 libcolordprivate_a_SOURCES =					\
 	cd-color.c						\
-	cd-enum.c
+	cd-enum.c						\
+	cd-math.c
 
 libcolordprivate_a_CFLAGS =					\
 	$(WARNINGFLAGS_C)
@@ -32,29 +33,31 @@ libcolord_include_HEADERS =					\
 
 libcolordbase_includedir = $(libcolord_includedir)/colord
 libcolordbase_include_HEADERS =					\
-	cd-version.h						\
-	cd-enum.h						\
+	cd-client.h						\
+	cd-client-sync.h					\
+	cd-color.h						\
 	cd-device.h						\
 	cd-device-sync.h					\
-	cd-sensor.h						\
-	cd-sensor-sync.h					\
+	cd-enum.h						\
+	cd-math.h						\
 	cd-profile.h						\
 	cd-profile-sync.h					\
-	cd-color.h						\
-	cd-client.h						\
-	cd-client-sync.h
+	cd-sensor.h						\
+	cd-sensor-sync.h					\
+	cd-version.h
 
 libcolord_la_SOURCES =						\
-	cd-enum.c						\
 	cd-client.c						\
 	cd-client-sync.c					\
+	cd-color.c						\
+	cd-device.c						\
+	cd-device-sync.c					\
+	cd-enum.c						\
+	cd-math.c						\
 	cd-profile.c						\
 	cd-profile-sync.c					\
 	cd-sensor.c						\
-	cd-sensor-sync.c					\
-	cd-color.c						\
-	cd-device.c						\
-	cd-device-sync.c
+	cd-sensor-sync.c
 
 libcolord_la_LIBADD =						\
 	$(GLIB_LIBS)

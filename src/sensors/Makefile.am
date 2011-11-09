@@ -33,8 +33,6 @@ check_PROGRAMS =					\
 cd_self_test_SOURCES =					\
 	cd-buffer.c					\
 	cd-buffer.h					\
-	cd-math.c					\
-	cd-math.h					\
 	cd-usb.c					\
 	cd-usb.h					\
 	cd-self-test.c
@@ -100,8 +98,6 @@ cd_sensor_dump_SOURCES =				\
 	cd-buffer.h					\
 	../cd-common.c					\
 	../cd-common.h					\
-	cd-math.c					\
-	cd-math.h					\
 	../cd-sensor.c					\
 	../cd-sensor.h					\
 	cd-sensor-huey.c				\
@@ -144,14 +140,13 @@ libcolord_sensor_huey_la_SOURCES =			\
 	cd-sensor-huey.h				\
 	cd-sensor-huey-private.c			\
 	cd-sensor-huey-private.h			\
-	cd-math.c					\
 	cd-buffer.c					\
 	cd-usb.c
 libcolord_sensor_huey_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
 libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
 
-libcolord_sensor_munki_la_SOURCES = cd-sensor-munki.c cd-math.c
+libcolord_sensor_munki_la_SOURCES = cd-sensor-munki.c
 libcolord_sensor_munki_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
 libcolord_sensor_munki_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_munki_la_CFLAGS = $(WARNINGFLAGS_C)
