@@ -47,6 +47,7 @@
 #define	CH_CMD_SET_MULTIPLIER			0x04
 #define	CH_CMD_SET_INTEGRAL_TIME		0x06
 #define	CH_CMD_GET_SERIAL_NUMBER		0x0b
+#define	CH_CMD_SET_LEDS				0x0e
 #define	CH_CMD_TAKE_READING_XYZ			0x23
 
 #define	CH_USB_TIMEOUT_DEFAULT			2000 /* ms */
@@ -619,12 +620,95 @@ out:
 	return;
 }
 
+static void
+cd_sensor_colorhug_set_leds_reply_cb (GObject *object,
+				      GAsyncResult *res,
+				      gpointer user_data)
+{
+	gboolean ret = FALSE;
+	GError *error = NULL;
+	gchar *serial_number_tmp = NULL;
+	guint64 serial_number;
+	gsize len;
+	GUsbDevice *device = G_USB_DEVICE (object);
+	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+
+	/* get result of request */
+	len = g_usb_device_interrupt_transfer_finish (device, res, &error);
+	if (len == (gsize) -1) {
+		cd_sensor_colorhug_lock_state_finish (state, error);
+		goto out;
+	}
+
+	/* parse output packet */
+	ret = ch_client_packet_parse (state,
+				      (guint8 *) &serial_number,
+				      4,
+				      &error);
+	if (!ret) {
+		cd_sensor_colorhug_lock_state_finish (state, error);
+		goto out;
+	}
+
+	serial_number_tmp = g_strdup_printf ("%" G_GUINT64_FORMAT,
+					     serial_number);
+	cd_sensor_set_serial (state->sensor, serial_number_tmp);
+	g_debug ("Serial number: %s", serial_number_tmp);
+
+	/* request, set integral time */
+	state->buffer[CH_BUFFER_INPUT_CMD] = CH_CMD_GET_SERIAL_NUMBER;
+	g_usb_device_interrupt_transfer_async (device,
+					       CH_USB_HID_EP_OUT,
+					       state->buffer,
+					       CH_USB_HID_EP_SIZE,
+					       CH_USB_TIMEOUT_DEFAULT,
+					       state->cancellable,
+					       cd_sensor_colorhug_get_serial_number_request_cb,
+					       state);
+out:
+	return;
+}
+
+static void
+cd_sensor_colorhug_set_leds_request_cb (GObject *object,
+					GAsyncResult *res,
+					gpointer user_data)
+{
+	GError *error = NULL;
+	gsize len;
+	GUsbDevice *device = G_USB_DEVICE (object);
+	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+
+	/* get result of request */
+	len = g_usb_device_interrupt_transfer_finish (device, res, &error);
+	if (len == (gsize) -1) {
+		cd_sensor_colorhug_lock_state_finish (state, error);
+		goto out;
+	}
+
+	/* now waiting for sample */
+	cd_sensor_set_state (state->sensor, CD_SENSOR_STATE_MEASURING);
+
+	/* read reply */
+	g_usb_device_interrupt_transfer_async (device,
+					       CH_USB_HID_EP_IN,
+					       state->buffer,
+					       CH_USB_HID_EP_SIZE,
+					       CH_USB_TIMEOUT_DEFAULT,
+					       state->cancellable,
+					       cd_sensor_colorhug_set_leds_reply_cb,
+					       state);
+out:
+	return;
+}
+
 /**
  * cd_sensor_lock_async:
  *
  * What we do:
  *
  * - Connect to the USB device
+ * - Flash the LEDs
  * - Get the serial number
  * - Set the integral time to 50ms
  * - Turn the sensor on to 100%
@@ -706,15 +790,19 @@ cd_sensor_lock_async (CdSensor *sensor,
 	state->sensor = g_object_ref (sensor);
 	state->buffer = g_new0 (guint8, CH_USB_HID_EP_SIZE);
 
-	/* request serial number */
-	state->buffer[CH_BUFFER_INPUT_CMD] = CH_CMD_GET_SERIAL_NUMBER;
+	/* set leds */
+	state->buffer[CH_BUFFER_INPUT_CMD] = CH_CMD_SET_LEDS;
+	state->buffer[CH_BUFFER_INPUT_DATA+0] = 0x01;
+	state->buffer[CH_BUFFER_INPUT_DATA+1] = 0x03;
+	state->buffer[CH_BUFFER_INPUT_DATA+2] = 0x10;
+	state->buffer[CH_BUFFER_INPUT_DATA+3] = 0x20;
 	g_usb_device_interrupt_transfer_async (priv->device,
 					       CH_USB_HID_EP_OUT,
 					       state->buffer,
 					       CH_USB_HID_EP_SIZE,
 					       CH_USB_TIMEOUT_DEFAULT,
 					       cancellable,
-					       cd_sensor_colorhug_get_serial_number_request_cb,
+					       cd_sensor_colorhug_set_leds_request_cb,
 					       state);
 out:
 	return;
