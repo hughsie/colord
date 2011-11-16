@@ -60,6 +60,9 @@ void		 cd_mat33_clear			(const CdMat3x3		*src);
 gchar		*cd_mat33_to_string		(const CdMat3x3		*src);
 gdouble		*cd_mat33_get_data		(const CdMat3x3		*src);
 void		 cd_mat33_set_identity		(CdMat3x3		*src);
+void		 cd_mat33_scalar_multiply	(const CdMat3x3		*mat_src,
+						 gdouble		 value,
+						 CdMat3x3		*mat_dest);
 void		 cd_mat33_vector_multiply	(const CdMat3x3		*mat_src,
 						 const CdVec3		*vec_src,
 						 CdVec3			*vec_dest);

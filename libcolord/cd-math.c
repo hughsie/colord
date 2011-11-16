@@ -271,6 +271,29 @@ cd_mat33_vector_multiply (const CdMat3x3 *mat_src, const CdVec3 *vec_src, CdVec3
 }
 
 /**
+ * cd_mat33_scalar_multiply:
+ * @mat_src: the source
+ * @value: the scalar
+ * @mat_dest: the destination
+ *
+ * Multiplies a matrix with a scalar.
+ * The arguments @vec_src and @vec_dest can be the same value.
+ **/
+void
+cd_mat33_scalar_multiply (const CdMat3x3 *mat_src,
+			  gdouble value,
+			  CdMat3x3 *mat_dest)
+{
+	gdouble *tmp_src;
+	gdouble *tmp_dest;
+	guint i;
+	tmp_src = cd_mat33_get_data (mat_src);
+	tmp_dest = cd_mat33_get_data (mat_dest);
+	for (i = 0; i < 9; i++)
+		tmp_dest[i] = tmp_src[i] * value;
+}
+
+/**
  * cd_mat33_matrix_multiply:
  * @mat_src1: the matrix source
  * @mat_src2: the other matrix source
