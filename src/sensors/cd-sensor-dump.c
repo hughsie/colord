@@ -26,6 +26,24 @@
 
 #include "cd-sensor.h"
 
+static void
+cd_sensor_dump_lock_cb (GObject *source_object,
+			GAsyncResult *res,
+			gpointer user_data)
+{
+	gboolean ret;
+	GError *error = NULL;
+	CdSensor *sensor = CD_SENSOR (source_object);
+	GMainLoop *loop = (GMainLoop *) user_data;
+
+	ret = cd_sensor_lock_finish (sensor, res, &error);
+	if (!ret) {
+		g_warning ("failed to lock: %s", error->message);
+		g_error_free (error);
+	}
+	g_main_loop_quit (loop);
+}
+
 /**
  * main:
  **/
@@ -39,6 +57,7 @@ main (int argc, char **argv)
 	GOptionContext *context;
 	CdSensor *sensor;
 	gchar *filename = NULL;
+	GMainLoop *loop = NULL;
 
 	setlocale (LC_ALL, "");
 
@@ -63,6 +82,11 @@ main (int argc, char **argv)
 		goto out;
 	}
 
+	/* lock the sensor */
+	loop = g_main_loop_new (NULL, FALSE);
+	cd_sensor_lock_async (sensor, NULL, cd_sensor_dump_lock_cb, loop);
+	g_main_loop_run (loop);
+
 	/* dump details */
 	filename = g_strdup ("./sensor-dump.txt");
 	g_print ("Dumping sensor details to %s... ", filename);
@@ -86,6 +110,8 @@ main (int argc, char **argv)
 	g_print ("SUCCESS!!\n");
 out:
 	g_free (filename);
+	if (loop != NULL)
+		g_main_loop_unref (loop);
 	if (data != NULL)
 		g_string_free (data, TRUE);
 	g_object_unref (sensor);
