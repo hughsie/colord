@@ -1039,6 +1039,7 @@ cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 	gboolean ret;
 	guint i;
 	guint8 value;
+	gchar *tmp;
 
 	/* dump the unlock string */
 	g_string_append_printf (data, "huey-dump-version:%i\n", 2);
@@ -1050,6 +1051,16 @@ cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 				priv->dark_offset.v0,
 				priv->dark_offset.v1,
 				priv->dark_offset.v2);
+
+	/* dump the DeviceRGB to XYZ matrix */
+	tmp = cd_mat33_to_string (&priv->calibration_lcd);
+	g_string_append_printf (data, "calibration-lcd:%s\n", tmp);
+	g_free (tmp);
+	tmp = cd_mat33_to_string (&priv->calibration_crt);
+	g_string_append_printf (data, "calibration-crt:%s\n", tmp);
+	g_free (tmp);
+	g_string_append_printf (data, "post-scale-value:%f\n",
+				HUEY_XYZ_POST_MULTIPLY_SCALE_FACTOR);
 
 	/* read all the register space */
 	for (i=0; i<0xff; i++) {
