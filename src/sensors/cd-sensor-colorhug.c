@@ -200,6 +200,15 @@ out:
 	return ret;
 }
 
+/**
+ * cd_sensor_colorhug_int16le_to_double:
+ **/
+static gdouble
+cd_sensor_colorhug_int16le_to_double (gint16 value_le, gint16 divisor)
+{
+	return (gdouble) GINT16_FROM_LE (value_le) / (gdouble) divisor;
+}
+
 static void
 cd_sensor_colorhug_get_sample_reply_cb (GObject *object,
 					GAsyncResult *res,
@@ -208,7 +217,7 @@ cd_sensor_colorhug_get_sample_reply_cb (GObject *object,
 	CdColorXYZ color_result;
 	gboolean ret = FALSE;
 	GError *error = NULL;
-	gfloat buffer[3];
+	gint16 buffer[3];
 	gsize len;
 	GUsbDevice *device = G_USB_DEVICE (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
@@ -230,11 +239,10 @@ cd_sensor_colorhug_get_sample_reply_cb (GObject *object,
 		goto out;
 	}
 
-	/* this is only possible as the PIC has the same floating point
-	 * layout as i386 */
-	color_result.X = buffer[0];
-	color_result.Y = buffer[1];
-	color_result.Z = buffer[2];
+	/* convert from LE to host */
+	color_result.X = cd_sensor_colorhug_int16le_to_double (buffer[0], 0x7fff);
+	color_result.Y = cd_sensor_colorhug_int16le_to_double (buffer[1], 0x7fff);
+	color_result.Z = cd_sensor_colorhug_int16le_to_double (buffer[2], 0x7fff);
 
 	g_debug ("finished values: red=%0.6lf, green=%0.6lf, blue=%0.6lf",
 		 color_result.X, color_result.Y, color_result.Z);
