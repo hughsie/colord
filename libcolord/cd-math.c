@@ -165,6 +165,25 @@ cd_vec3_get_data (const CdVec3 *src)
 }
 
 /**
+ * cd_vec3_squared_error:
+ * @src1: the vector source
+ * @src1: another vector source
+ *
+ * Gets the mean squared error for a pair of vectors
+ *
+ * Return value: the floating point MSE.
+ **/
+gdouble
+cd_vec3_squared_error (const CdVec3 *src1, const CdVec3 *src2)
+{
+	CdVec3 tmp;
+	cd_vec3_subtract (src1, src2, &tmp);
+	return (tmp.v0 * tmp.v0) +
+	       (tmp.v1 * tmp.v1) +
+	       (tmp.v2 * tmp.v2);
+}
+
+/**
  * cd_mat33_clear:
  * @src: the source
  *

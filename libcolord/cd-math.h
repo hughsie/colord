@@ -48,6 +48,8 @@ void		 cd_vec3_scalar_multiply	(const CdVec3		*src,
 						 CdVec3			*dest);
 void		 cd_vec3_copy			(const CdVec3		*src,
 						 CdVec3			*dest);
+gdouble		 cd_vec3_squared_error		(const CdVec3		*src1,
+						 const CdVec3		*src2);
 gchar		*cd_vec3_to_string		(const CdVec3		*src);
 gdouble		*cd_vec3_get_data		(const CdVec3		*src);
 void		 cd_vec3_init			(CdVec3			*dest,
