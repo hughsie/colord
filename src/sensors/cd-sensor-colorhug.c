@@ -45,7 +45,7 @@
 
 /* commands */
 #define	CH_CMD_SET_MULTIPLIER			0x04
-#define	CH_CMD_SET_INTERGRAL_TIME		0x06
+#define	CH_CMD_SET_INTEGRAL_TIME		0x06
 #define	CH_CMD_GET_SERIAL_NUMBER		0x0b
 #define	CH_CMD_TAKE_READING_XYZ			0x23
 
@@ -563,7 +563,7 @@ cd_sensor_colorhug_get_serial_number_reply_cb (GObject *object,
 	g_debug ("Serial number: %s", serial_number_tmp);
 
 	/* request, set integral time */
-	state->buffer[CH_BUFFER_INPUT_CMD] = CH_CMD_SET_INTERGRAL_TIME;
+	state->buffer[CH_BUFFER_INPUT_CMD] = CH_CMD_SET_INTEGRAL_TIME;
 	state->buffer[CH_BUFFER_INPUT_DATA+0] = 0xff;
 	state->buffer[CH_BUFFER_INPUT_DATA+1] = 0xff;
 	g_usb_device_interrupt_transfer_async (device,
