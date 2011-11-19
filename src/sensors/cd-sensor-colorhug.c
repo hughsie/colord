@@ -71,6 +71,18 @@ typedef enum {
 	CH_FATAL_ERROR_LAST
 } ChFatalError;
 
+/* a 32 bit struct to hold numbers from the range -32767 to +32768
+ * with a precision of at least 0.000015 */
+typedef union {
+	struct {
+		guint16	fraction;
+		gint16	offset;
+	};
+	struct {
+		gint32	raw;
+	};
+} ChPackedFloat;
+
 typedef struct
 {
 	GUsbContext			*usb_ctx;
@@ -95,6 +107,23 @@ typedef struct {
 #define	CH_BUFFER_OUTPUT_RETVAL			0x00
 #define	CH_BUFFER_OUTPUT_CMD			0x01
 #define	CH_BUFFER_OUTPUT_DATA			0x02
+
+
+/**
+ * ch_packed_float_to_double:
+ *
+ * @pf: A %ChPackedFloat
+ * @value: a value in IEEE floating point format
+ *
+ * Converts a packed float to a double.
+ **/
+static void
+ch_packed_float_to_double (const ChPackedFloat *pf, gdouble *value)
+{
+	g_return_if_fail (value != NULL);
+	g_return_if_fail (pf != NULL);
+	*value = pf->raw / (gdouble) 0xffff;
+}
 
 /**
  * ch_client_strerror:
@@ -201,15 +230,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_colorhug_int16le_to_double:
- **/
-static gdouble
-cd_sensor_colorhug_int16le_to_double (gint16 value_le, gint16 divisor)
-{
-	return (gdouble) GINT16_FROM_LE (value_le) / (gdouble) divisor;
-}
-
 static void
 cd_sensor_colorhug_get_sample_reply_cb (GObject *object,
 					GAsyncResult *res,
@@ -218,7 +238,7 @@ cd_sensor_colorhug_get_sample_reply_cb (GObject *object,
 	CdColorXYZ color_result;
 	gboolean ret = FALSE;
 	GError *error = NULL;
-	gint16 buffer[3];
+	ChPackedFloat buffer[3];
 	gsize len;
 	GUsbDevice *device = G_USB_DEVICE (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
@@ -241,9 +261,9 @@ cd_sensor_colorhug_get_sample_reply_cb (GObject *object,
 	}
 
 	/* convert from LE to host */
-	color_result.X = cd_sensor_colorhug_int16le_to_double (buffer[0], 0x7fff);
-	color_result.Y = cd_sensor_colorhug_int16le_to_double (buffer[1], 0x7fff);
-	color_result.Z = cd_sensor_colorhug_int16le_to_double (buffer[2], 0x7fff);
+	ch_packed_float_to_double (&buffer[0], &color_result.X);
+	ch_packed_float_to_double (&buffer[1], &color_result.Y);
+	ch_packed_float_to_double (&buffer[2], &color_result.Z);
 
 	g_debug ("finished values: red=%0.6lf, green=%0.6lf, blue=%0.6lf",
 		 color_result.X, color_result.Y, color_result.Z);
@@ -329,6 +349,8 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 
 	/* request */
 	state->buffer[CH_BUFFER_INPUT_CMD] = CH_CMD_TAKE_READING_XYZ;
+	state->buffer[CH_BUFFER_INPUT_DATA + 0] = 0x00; // FIXME: map 'lcd' to index
+	state->buffer[CH_BUFFER_INPUT_DATA + 1] = 0x00;
 	g_usb_device_interrupt_transfer_async (priv->device,
 					       CH_USB_HID_EP_OUT,
 					       state->buffer,
