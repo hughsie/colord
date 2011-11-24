@@ -1039,7 +1039,7 @@ cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	gboolean ret = TRUE;
 	guint mask;
 
-	if (g_strv_length (values) < 3) {
+	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
 				     1, 0,
@@ -1335,6 +1335,9 @@ cd_util_profile_set_filename (CdUtilPrivate *priv, gchar **values, GError **erro
 	}
 
 	profile = cd_profile_new_with_object_path (values[0]);
+	ret = cd_profile_connect_sync (profile, NULL, error);
+	if (!ret)
+		goto out;
 	ret = cd_profile_set_filename_sync (profile, values[1],
 					    NULL, error);
 	if (!ret)
@@ -1433,6 +1436,9 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 			     values[0]);
 		goto out;
 	}
+	ret = cd_profile_connect_sync (profile, NULL, error);
+	if (!ret)
+		goto out;
 	cd_util_show_profile (profile);
 out:
 	if (device != NULL)
