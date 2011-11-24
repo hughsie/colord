@@ -1293,13 +1293,15 @@ out:
  * cd_util_device_get_default_profile:
  **/
 static gboolean
-cd_util_device_get_default_profile (CdUtilPrivate *priv, gchar **values, GError **error)
+cd_util_device_get_default_profile (CdUtilPrivate *priv,
+				    gchar **values,
+				    GError **error)
 {
 	CdDevice *device = NULL;
 	CdProfile *profile = NULL;
 	gboolean ret = TRUE;
 
-	if (g_strv_length (values) < 2) {
+	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
 				     1, 0,
@@ -1310,9 +1312,16 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv, gchar **values, GError 
 	}
 
 	device = cd_device_new_with_object_path (values[0]);
+	ret = cd_device_connect_sync (device, NULL, error);
+	if (!ret)
+		goto out;
 	profile = cd_device_get_default_profile (device);
 	if (profile == NULL) {
 		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "There is no assigned profile for %s",
+			     values[0]);
 		goto out;
 	}
 	cd_util_show_profile (profile);
