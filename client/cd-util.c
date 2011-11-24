@@ -1088,6 +1088,26 @@ cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[1])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[1]);
+		goto out;
+	}
+
 	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
@@ -1128,6 +1148,26 @@ cd_util_device_make_profile_default (CdUtilPrivate *priv, gchar **values, GError
 		goto out;
 	}
 
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[1])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[1]);
+		goto out;
+	}
+
 	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
@@ -1164,6 +1204,16 @@ cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
 	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_client_delete_device_sync (priv->client, device,
 					    NULL, error);
@@ -1191,6 +1241,16 @@ cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 				     "Not enough arguments, "
 				     "expected profile id "
 				     "e.g. 'epson-rgb'");
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
 		goto out;
 	}
 
@@ -1224,6 +1284,16 @@ cd_util_profile_set_qualifier (CdUtilPrivate *priv, gchar **values, GError **err
 		goto out;
 	}
 
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
 	profile = cd_profile_new_with_object_path (values[0]);
 	ret = cd_profile_set_qualifier_sync (profile, values[1],
 					     NULL, error);
@@ -1254,6 +1324,16 @@ cd_util_profile_set_filename (CdUtilPrivate *priv, gchar **values, GError **erro
 		goto out;
 	}
 
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
 	profile = cd_profile_new_with_object_path (values[0]);
 	ret = cd_profile_set_filename_sync (profile, values[1],
 					    NULL, error);
@@ -1281,6 +1361,16 @@ cd_util_device_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 				     "Not enough arguments, "
 				     "expected device path, model "
 				     "e.g. '/org/devices/bar \"Stylus 800\"'");
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
 		goto out;
 	}
 
@@ -1317,6 +1407,16 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 				     "Not enough arguments, "
 				     "expected device path "
 				     "e.g. '/org/devices/bar'");
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
 		goto out;
 	}
 
@@ -1361,6 +1461,16 @@ cd_util_device_set_vendor (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
 	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
@@ -1391,6 +1501,16 @@ cd_util_device_set_serial (CdUtilPrivate *priv, gchar **values, GError **error)
 				     "Not enough arguments, "
 				     "expected device path, serial "
 				     "e.g. '/org/devices/bar 00001234'");
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
 		goto out;
 	}
 
@@ -1427,6 +1547,16 @@ cd_util_device_set_kind (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
 	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
@@ -1460,6 +1590,16 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 				     "Not enough arguments, "
 				     "expected device path, qualifier "
 				     "e.g. '/org/devices/bar *.*.300dpi'");
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
 		goto out;
 	}
 
