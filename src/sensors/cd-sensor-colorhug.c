@@ -304,7 +304,7 @@ cd_sensor_colorhug_set_integral_time_cb (GObject *object,
 
 	/* set the multiplier */
 	ch_device_write_command_async (priv->device,
-				       CH_CMD_SET_INTEGRAL_TIME,
+				       CH_CMD_SET_MULTIPLIER,
 				       (const guint8 *) &multiplier,
 				       sizeof(multiplier),
 				       NULL,	/* buffer_out */
