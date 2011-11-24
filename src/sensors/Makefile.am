@@ -152,6 +152,8 @@ libcolord_sensor_munki_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_munki_la_CFLAGS = $(WARNINGFLAGS_C)
 
 libcolord_sensor_colorhug_la_SOURCES =			\
+	cd-sensor-colorhug-private.c			\
+	cd-sensor-colorhug-private.h			\
 	cd-sensor-colorhug.c				\
 	cd-sensor-colorhug.h
 libcolord_sensor_colorhug_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS) $(COLORD_LIBS)
