@@ -125,10 +125,14 @@ if HAVE_GUDEV
 # sensor plugins
 plugindir = $(libdir)/colord-sensors
 plugin_LTLIBRARIES =					\
-	libcolord_sensor_colorhug.la			\
 	libcolord_sensor_dummy.la			\
 	libcolord_sensor_munki.la			\
 	libcolord_sensor_huey.la
+
+if HAVE_GUSB
+plugin_LTLIBRARIES +=					\
+	libcolord_sensor_colorhug.la
+endif
 
 libcolord_sensor_dummy_la_SOURCES = cd-sensor-dummy.c
 libcolord_sensor_dummy_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
