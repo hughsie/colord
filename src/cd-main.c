@@ -375,12 +375,8 @@ cd_main_device_add (CdDevice *device,
 		ret = cd_device_db_add (device_db,
 					cd_device_get_id (device),
 					&error_local);
-		if (!ret) {
-			g_warning ("CdMain: failed to add device %s to db: %s",
-				   cd_device_get_object_path (device),
-				   error_local->message);
-			g_clear_error (&error_local);
-		}
+		if (!ret)
+			goto out;
 	}
 
 	/* profile is no longer valid */
@@ -393,7 +389,7 @@ cd_main_device_add (CdDevice *device,
 
 	/* auto add profiles from the database */
 	cd_main_device_auto_add_profiles (device);
-
+out:
 	return ret;
 }
 
