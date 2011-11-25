@@ -160,7 +160,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 			    GAsyncReadyCallback callback,
 			    gpointer user_data)
 {
-	guint16 calibration_index = 0; //FIXME: map 'lcd' to index
+	guint16 calibration_index;
 	CdSensorAsyncState *state;
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
 	GError *error = NULL;
@@ -168,10 +168,20 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
 	/* no hardware support */
-	if (cap == CD_SENSOR_CAP_PROJECTOR) {
+	switch (cap) {
+	case CD_SENSOR_CAP_LCD:
+		calibration_index = CH_CALIBRATION_INDEX_LCD;
+		break;
+	case CD_SENSOR_CAP_CRT:
+		calibration_index = CH_CALIBRATION_INDEX_CRT;
+		break;
+	case CD_SENSOR_CAP_PROJECTOR:
+		calibration_index = CH_CALIBRATION_INDEX_PROJECTOR;
+		break;
+	default:
 		g_set_error_literal (&error, CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_NO_SUPPORT,
-				     "ColorHug cannot measure in projector mode");
+				     "ColorHug cannot measure in this mode");
 		g_simple_async_report_gerror_in_idle (G_OBJECT (sensor),
 						      callback,
 						      user_data,

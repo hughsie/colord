@@ -229,8 +229,9 @@
  * Take a reading taking into account:
  *  1. dark offsets
  *  2. the calibration matrix
- * All of @red, @green and @blue are _signed_ values
- * ranging from -1.0 to +1.0.
+ *
+ * If the calibration index > %CH_CALIBRATION_MAX then the calibration
+ * map is used to find the default calibration index to use.
  *
  * IN:  [1:cmd][2:calibration-index]
  * OUT: [1:retval][1:cmd][2:red][2:green][2:blue]
@@ -264,7 +265,7 @@
  * Erasing flash can only be done in 1k byte chunks and should be
  * aligned to 1k.
  *
- * IN:  [1:cmd][2:address][1:length]
+ * IN:  [1:cmd][2:address][2:length]
  * OUT: [1:retval][1:cmd]
  **/
 #define	CH_CMD_ERASE_FLASH			0x29
@@ -353,6 +354,38 @@
  **/
 #define	CH_CMD_SET_POST_SCALE			0x2b
 
+/**
+ * CH_CMD_GET_CALIBRATION_MAP:
+ *
+ * Get the mappings from default calibration type to calibration
+ * indexes.
+ *
+ * The calibration types are as follows:
+ * LCD		= 0
+ * CRT		= 1
+ * Projector	= 2
+ * Custom1	= 3
+ * Custom2	= 4
+ * Custom3	= 5
+ *
+ * In the future CustomX may be renamed to another display technology,
+ * e.g. LED or e-ink.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][6*2:types]
+ **/
+#define	CH_CMD_GET_CALIBRATION_MAP		0x2e
+
+/**
+ * CH_CMD_SET_CALIBRATION_MAP:
+ *
+ * Set the calibration type to index map.
+ *
+ * IN:  [1:cmd][6*2:types]
+ * OUT: [1:retval][1:cmd]
+ **/
+#define	CH_CMD_SET_CALIBRATION_MAP		0x2f
+
 /* secret code */
 #define	CH_WRITE_EEPROM_MAGIC			"Un1c0rn2"
 
@@ -381,6 +414,11 @@
 #define	CH_FLASH_ERASE_BLOCK_SIZE		0x400	/* 1024 */
 #define	CH_FLASH_WRITE_BLOCK_SIZE		0x040	/* 64 */
 #define	CH_FLASH_TRANSFER_BLOCK_SIZE		0x020	/* 32 */
+
+/* calibration remapping contants */
+#define	CH_CALIBRATION_INDEX_LCD		(CH_CALIBRATION_MAX + 0)
+#define	CH_CALIBRATION_INDEX_CRT		(CH_CALIBRATION_MAX + 1)
+#define	CH_CALIBRATION_INDEX_PROJECTOR		(CH_CALIBRATION_MAX + 2)
 
 /* which color to select */
 typedef enum {
@@ -416,6 +454,7 @@ typedef enum {
 	CH_ERROR_OVERFLOW_MULTIPLY,
 	CH_ERROR_OVERFLOW_ADDITION,
 	CH_ERROR_OVERFLOW_SENSOR,
+	CH_ERROR_OVERFLOW_STACK,
 	CH_ERROR_LAST
 } ChError;
 
