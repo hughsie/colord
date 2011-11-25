@@ -1199,8 +1199,8 @@ cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 		g_set_error_literal (error,
 				     1, 0,
 				     "Not enough arguments, "
-				     "expected device id "
-				     "e.g. 'epson-stylus-800'");
+				     "expected device path "
+				     "e.g. '/org/devices/foo'");
 		goto out;
 	}
 
@@ -1239,8 +1239,8 @@ cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 		g_set_error_literal (error,
 				     1, 0,
 				     "Not enough arguments, "
-				     "expected profile id "
-				     "e.g. 'epson-rgb'");
+				     "expected profile path "
+				     "e.g. '/org/profiles/bar'");
 		goto out;
 	}
 

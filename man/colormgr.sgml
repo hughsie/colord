@@ -72,6 +72,8 @@
       <varlistentry>
         <term>
           <option>create-device</option>
+	  <parameter>device_id</parameter>
+	  <parameter>scope</parameter>
         </term>
         <listitem>
           <para>Creates a color managed device</para>
@@ -80,6 +82,8 @@
       <varlistentry>
         <term>
           <option>create-profile</option>
+	  <parameter>profile_id</parameter>
+	  <parameter>scope</parameter>
         </term>
         <listitem>
           <para>Create a color profile</para>
@@ -88,6 +92,7 @@
       <varlistentry>
         <term>
           <option>delete-device</option>
+	  <parameter>device_path</parameter>
         </term>
         <listitem>
           <para>Deletes a color managed device</para>
@@ -96,6 +101,7 @@
       <varlistentry>
         <term>
           <option>delete-profile</option>
+	  <parameter>profile_path</parameter>
         </term>
         <listitem>
           <para>Deletes a color profile</para>
@@ -104,6 +110,8 @@
       <varlistentry>
         <term>
           <option>device-add-profile</option>
+	  <parameter>device_path</parameter>
+	  <parameter>profile_path</parameter>
         </term>
         <listitem>
           <para>Add a profile to a device that already exists</para>
@@ -112,6 +120,7 @@
       <varlistentry>
         <term>
           <option>device-get-default-profile</option>
+	  <parameter>device_path</parameter>
         </term>
         <listitem>
           <para>Gets the default color profile for a device</para>
@@ -120,6 +129,8 @@
       <varlistentry>
         <term>
           <option>device-get-profile-for-qualifier</option>
+	  <parameter>device_path</parameter>
+	  <parameter>qualifier</parameter>
         </term>
         <listitem>
           <para>Returns all the profiles that match a given qualifier</para>
@@ -128,6 +139,8 @@
       <varlistentry>
         <term>
           <option>device-make-profile-default</option>
+	  <parameter>device_path</parameter>
+	  <parameter>profile_path</parameter>
         </term>
         <listitem>
           <para>Makes a profile default for a specific device</para>
@@ -136,6 +149,8 @@
       <varlistentry>
         <term>
           <option>device-set-kind</option>
+	  <parameter>device_path</parameter>
+	  <parameter>kind</parameter>
         </term>
         <listitem>
           <para>Sets the device kind</para>
@@ -144,6 +159,8 @@
       <varlistentry>
         <term>
           <option>device-set-model</option>
+	  <parameter>device_path</parameter>
+	  <parameter>model</parameter>
         </term>
         <listitem>
           <para>Sets the device model</para>
@@ -152,6 +169,8 @@
       <varlistentry>
         <term>
           <option>device-set-serial</option>
+	  <parameter>device_path</parameter>
+	  <parameter>serial</parameter>
         </term>
         <listitem>
           <para>Sets the device serial</para>
@@ -160,6 +179,8 @@
       <varlistentry>
         <term>
           <option>device-set-vendor</option>
+	  <parameter>device_path</parameter>
+	  <parameter>vendor</parameter>
         </term>
         <listitem>
           <para>Sets the device vendor</para>
@@ -168,6 +189,7 @@
       <varlistentry>
         <term>
           <option>find-device</option>
+	  <parameter>device_id</parameter>
         </term>
         <listitem>
           <para>Find a device from the device ID</para>
@@ -175,10 +197,30 @@
       </varlistentry>
       <varlistentry>
         <term>
+          <option>find-device-by-property</option>
+	  <parameter>key</parameter>
+	  <parameter>value</parameter>
+        </term>
+        <listitem>
+          <para>Find a device with a given property value</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
           <option>find-profile</option>
+	  <parameter>profile_id</parameter>
         </term>
         <listitem>
           <para>Find a profile from the profile ID</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>find-profile-by-filename</option>
+	  <parameter>filename</parameter>
+        </term>
+        <listitem>
+          <para>Find a profile from the filename</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -192,6 +234,7 @@
       <varlistentry>
         <term>
           <option>get-devices-by-kind</option>
+	  <parameter>kind</parameter>
         </term>
         <listitem>
           <para>Gets all the color managed devices of a specific kind</para>
@@ -208,6 +251,8 @@
       <varlistentry>
         <term>
           <option>profile-set-filename</option>
+	  <parameter>profile_path</parameter>
+	  <parameter>filename</parameter>
         </term>
         <listitem>
           <para>Sets the profile filename</para>
@@ -216,6 +261,8 @@
       <varlistentry>
         <term>
           <option>profile-set-qualifier</option>
+	  <parameter>profile_path</parameter>
+	  <parameter>qualifier</parameter>
         </term>
         <listitem>
           <para>Sets the profile qualifier</para>
