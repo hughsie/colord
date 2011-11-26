@@ -1,3 +1,31 @@
+Version 0.1.15
+~~~~~~~~~~~~~~
+Released: 2011-11-26
+
+Notes:
+ - This release fixes an important security bug: CVE-2011-4349.
+ - It is recommended all users update to this version, or backport
+   these patches:
+    * http://gitorious.org/colord/master/commit/1fadd90afcb4bbc47513466ee9bb1e4a8632ac3b
+    * http://gitorious.org/colord/master/commit/36549e0ed255e7dfa7852d08a75dd5f00cbd270e
+
+New Features:
+ - Add a native driver for the Hughski ColorHug hardware (Richard Hughes)
+ - Export cd-math as three projects are now using it (Richard Hughes)
+
+Bugfixes:
+ - Documentation fixes and improvements (Laurent Martelli)
+ - Do not crash the daemon if adding the device to the db failed (Richard Hughes)
+ - Do not match any sensor device with a kernel driver (Richard Hughes)
+ - Don't be obscure when the user passes a device-id to colormgr (Richard Hughes)
+ - Fix a memory leak when getting properties from a device (Richard Hughes)
+ - Fix colormgr device-get-default-profile (Richard Hughes)
+ - Fix some conection bugs in colormgr (Florian Höch, Richard Hughes)
+ - Fix some potential SQL injections (Ludwig Nussel, Vincent Untz)
+ - Make gusb optional (Ludwig Nussel)
+ - Only use the udev USB helper if the PID and VID have matches (Richard Hughes)
+ - Output the Huey calibration matrices when dumping the sensor (Richard Hughes)
+
 Version 0.1.14
 ~~~~~~~~~~~~~~
 Released: 2011-11-01
