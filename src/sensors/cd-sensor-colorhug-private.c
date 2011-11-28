@@ -304,7 +304,8 @@ ch_device_reply_cb (GObject *source_object,
 		error_enum = helper->buffer[CH_BUFFER_OUTPUT_RETVAL];
 		msg = g_strdup_printf ("Invalid read: retval=0x%02x [%s] "
 				       "cmd=0x%02x (expected 0x%x [%s]) "
-				       "len=%li (expected %li)",
+				       "len=%"G_GSIZE_FORMAT" "
+				       "(expected %"G_GSIZE_FORMAT")",
 				       error_enum,
 				       ch_strerror (error_enum),
 				       helper->buffer[CH_BUFFER_OUTPUT_CMD],
