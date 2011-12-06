@@ -260,8 +260,14 @@ cd_profile_store_file_monitor_changed_cb (GFileMonitor *monitor,
 	/* just rescan the correct directory */
 	parent = g_file_get_parent (file);
 	parent_path = g_file_get_path (parent);
-	g_debug ("CdProfileStore: %s was added, rescanning %s", path, parent_path);
-	cd_profile_store_search_path (profile_store, parent_path);
+	if (g_strcmp0 (parent_path, DATADIR) == 0) {
+		g_debug ("CdProfileStore: %s was added, rescanning", path);
+		cd_profile_store_search_path (profile_store, path);
+	} else {
+		g_debug ("CdProfileStore: %s was added, rescanning parent %s",
+			 path, parent_path);
+		cd_profile_store_search_path (profile_store, parent_path);
+	}
 out:
 	if (parent != NULL)
 		g_object_unref (parent);
