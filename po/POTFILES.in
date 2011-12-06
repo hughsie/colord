@@ -1,6 +1,6 @@
 client/cd-create-profile.c
 client/cd-fix-profile.c
 client/cd-util.c
-policy/org.freedesktop.color.policy.in
+policy/org.freedesktop.color.policy.in.in
 src/cd-debug.c
 src/cd-main.c

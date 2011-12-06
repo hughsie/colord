@@ -176,7 +176,7 @@ AC_ARG_ENABLE(polkit, AS_HELP_STRING([--enable-polkit],[enable PolicyKit]),
 	      enable_polkit=$enableval,enable_polkit=yes)
 AM_CONDITIONAL(CD_BUILD_POLKIT, test x$enable_polkit = xyes)
 if test x$enable_polkit = xyes; then
-	PKG_CHECK_MODULES(POLKIT, polkit-gobject-1 >= 0.97)
+	PKG_CHECK_MODULES(POLKIT, polkit-gobject-1 >= 0.103)
 	AC_DEFINE(USE_POLKIT, 1, [if we should use PolicyKit])
 fi
 
