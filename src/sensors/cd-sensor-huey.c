@@ -26,10 +26,9 @@
 #include "config.h"
 
 #include <glib-object.h>
-#include <libusb-1.0/libusb.h>
+#include <gusb.h>
 
 #include "cd-buffer.h"
-#include "cd-usb.h"
 #include "cd-math.h"
 #include "cd-sensor.h"
 #include "cd-sensor-huey-private.h"
@@ -37,7 +36,9 @@
 typedef struct
 {
 	gboolean			 done_startup;
-	CdUsb				*usb;
+	GUsbContext			*usb_ctx;
+	GUsbDevice			*device;
+	GUsbDeviceList			*device_list;
 	CdMat3x3			 calibration_lcd;
 	CdMat3x3			 calibration_crt;
 	gfloat				 calibration_value;
@@ -107,11 +108,8 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 			  guchar *reply, gsize reply_len,
 			  gsize *reply_read, GError **error)
 {
-	gint retval;
-	gboolean ret = FALSE;
+	gboolean ret;
 	guint i;
-	gint reply_read_raw;
-	libusb_device_handle *handle;
 
 	g_return_val_if_fail (request != NULL, FALSE);
 	g_return_val_if_fail (request_len != 0, FALSE);
@@ -122,43 +120,37 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 	/* show what we've got */
 	cd_sensor_huey_print_data ("request", request, request_len);
 
-	/* do sync request */
-	handle = cd_usb_get_device_handle (priv->usb);
-	if (handle == NULL) {
-		g_set_error_literal (error, CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_INTERNAL,
-				     "failed to get device handle");
+	/* control transfer */
+	ret = g_usb_device_control_transfer (priv->device,
+					     G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     0x09,
+					     0x0200,
+					     0,
+					     (guint8 *) request,
+					     request_len,
+					     NULL,
+					     HUEY_CONTROL_MESSAGE_TIMEOUT,
+					     NULL,
+					     error);
+	if (!ret)
 		goto out;
-	}
-	retval = libusb_control_transfer (handle,
-					  LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_CLASS | LIBUSB_RECIPIENT_INTERFACE,
-					  0x09, 0x0200, 0,
-					  (guchar *) request, request_len,
-					  HUEY_CONTROL_MESSAGE_TIMEOUT);
-	if (retval < 0) {
-		g_set_error (error, CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_INTERNAL,
-			     "failed to send request: %s", libusb_strerror (retval));
-		goto out;
-	}
 
 	/* some commands need to retry the read */
 	for (i=0; i<HUEY_MAX_READ_RETRIES; i++) {
 
 		/* get sync response */
-		retval = libusb_interrupt_transfer (handle, 0x81,
-						    reply, (gint) reply_len, &reply_read_raw,
-						    HUEY_CONTROL_MESSAGE_TIMEOUT);
-		if (retval < 0) {
-			g_set_error (error, CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_INTERNAL,
-				     "failed to get reply: %s", libusb_strerror (retval));
+		ret = g_usb_device_interrupt_transfer (priv->device,
+						       0x81,
+						       (guint8 *) reply,
+						       reply_len,
+						       reply_read,
+						       HUEY_CONTROL_MESSAGE_TIMEOUT,
+						       NULL,
+						       error);
+		if (!ret)
 			goto out;
-		}
-
-		/* on 64bit we can't just cast a gsize pointer to a
-		 * gint pointer, we have to copy */
-		*reply_read = reply_read_raw;
 
 		/* show what we've got */
 		cd_sensor_huey_print_data ("reply", reply, *reply_read);
@@ -810,23 +802,55 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	guint32 serial_number;
 	guint i;
 
-	/* connect */
-	ret = cd_usb_connect (priv->usb,
-			      CD_SENSOR_HUEY_VENDOR_ID,
-			      CD_SENSOR_HUEY_PRODUCT_ID,
-			      0x01, 0x00, &error);
-	if (!ret) {
-		/* try to find newer device */
+	/* try to find the device */
+	priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
+							  CD_SENSOR_HUEY_VENDOR_ID,
+							  CD_SENSOR_HUEY_PRODUCT_ID,
+							  &error);
+	if (priv->device == NULL) {
+		/* try to find 2nd generation device */
 		g_clear_error (&error);
-		ret = cd_usb_connect (priv->usb,
-				      CD_SENSOR_HUEY_VENDOR_ID2,
-				      CD_SENSOR_HUEY_PRODUCT_ID2,
-				      0x01, 0x00, &error);
-		if (!ret) {
-			g_simple_async_result_set_from_error (res, error);
-			g_error_free (error);
-			goto out;
-		}
+		priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
+								  CD_SENSOR_HUEY_VENDOR_ID2,
+								  CD_SENSOR_HUEY_PRODUCT_ID2,
+								  &error);
+	}
+	if (priv->device == NULL) {
+		g_simple_async_result_set_from_error (res,
+						      error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* load device */
+	ret = g_usb_device_open (priv->device, &error);
+	if (!ret) {
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+		g_simple_async_result_set_from_error (res,
+						      error);
+		g_error_free (error);
+		goto out;
+	}
+	ret = g_usb_device_set_configuration (priv->device,
+					      0x01,
+					      &error);
+	if (!ret) {
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+		g_simple_async_result_set_from_error (res,
+						      error);
+		g_error_free (error);
+		goto out;
+	}
+	ret = g_usb_device_claim_interface (priv->device,
+					    0x00,
+					    G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
+					    &error);
+	if (!ret) {
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+		g_simple_async_result_set_from_error (res,
+						      error);
+		g_error_free (error);
+		goto out;
 	}
 
 	/* set state */
@@ -986,13 +1010,18 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 	gboolean ret = FALSE;
 	GError *error = NULL;
 
-	/* connect */
-	ret = cd_usb_disconnect (priv->usb,
-			         &error);
-	if (!ret) {
-		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
-		goto out;
+	/* close */
+	if (priv->device != NULL) {
+		ret = g_usb_device_close (priv->device, &error);
+		if (!ret) {
+			g_simple_async_result_set_from_error (res, error);
+			g_error_free (error);
+			goto out;
+		}
+
+		/* clear */
+		g_object_unref (priv->device);
+		priv->device = NULL;
 	}
 out:
 	return;
@@ -1093,7 +1122,8 @@ out:
 static void
 cd_sensor_unref_private (CdSensorHueyPrivate *priv)
 {
-	g_object_unref (priv->usb);
+	g_object_unref (priv->usb_ctx);
+	g_object_unref (priv->device_list);
 	g_free (priv);
 }
 
@@ -1109,7 +1139,8 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 	priv = g_new0 (CdSensorHueyPrivate, 1);
 	g_object_set_data_full (G_OBJECT (sensor), "priv", priv,
 				(GDestroyNotify) cd_sensor_unref_private);
-	priv->usb = cd_usb_new ();
+	priv->usb_ctx = g_usb_context_new (NULL);
+	priv->device_list = g_usb_device_list_new (priv->usb_ctx);
 	cd_mat33_clear (&priv->calibration_lcd);
 	cd_mat33_clear (&priv->calibration_crt);
 	priv->unlock_string[0] = '\0';

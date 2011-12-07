@@ -15,7 +15,6 @@ INCLUDES =						\
 	$(GUDEV_CFLAGS)					\
 	$(SANE_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
-	$(USB_CFLAGS)					\
 	-I$(top_srcdir)/libcolord			\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
@@ -81,7 +80,6 @@ colord_LDADD =						\
 	$(LCMS_LIBS)					\
 	$(GUDEV_LIBS)					\
 	$(SANE_LIBS)					\
-	$(USB_LIBS)					\
 	$(GLIB_LIBS)
 
 colord_CFLAGS =						\
@@ -114,7 +112,6 @@ cd_self_test_LDADD =					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(SQLITE_LIBS)					\
-	$(USB_LIBS)					\
 	$(GLIB_LIBS)
 
 cd_self_test_CFLAGS = $(WARNINGFLAGS_C)

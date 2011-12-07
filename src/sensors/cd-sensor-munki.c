@@ -26,17 +26,18 @@
 #include "config.h"
 
 #include <glib-object.h>
-#include <libusb-1.0/libusb.h>
+#include <gusb.h>
 
 #include "cd-buffer.h"
-#include "cd-usb.h"
 #include "cd-sensor.h"
 #include "cd-sensor-munki-private.h"
 
 typedef struct
 {
 	gboolean			 done_startup;
-	CdUsb				*usb;
+	GUsbContext			*usb_ctx;
+	GUsbDevice			*device;
+	GUsbDeviceList			*device_list;
 	struct libusb_transfer		*transfer_interrupt;
 	struct libusb_transfer		*transfer_state;
 	gchar				*version_string;
@@ -496,13 +497,45 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 	guchar buffer[36];
 	libusb_device_handle *handle;
 
-	/* connect */
-	ret = cd_usb_connect (priv->usb,
-			       CD_SENSOR_MUNKI_VENDOR_ID,
-			       CD_SENSOR_MUNKI_PRODUCT_ID,
-			       0x01, 0x00, &error);
+	/* try to find the device */
+	priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
+							  CD_SENSOR_MUNKI_VENDOR_ID,
+							  CD_SENSOR_MUNKI_PRODUCT_ID,
+							  &error);
+	if (priv->device == NULL) {
+		g_simple_async_result_set_from_error (res,
+						      error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* load device */
+	ret = g_usb_device_open (priv->device, &error);
 	if (!ret) {
-		g_simple_async_result_set_from_error (res, error);
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+		g_simple_async_result_set_from_error (res,
+						      error);
+		g_error_free (error);
+		goto out;
+	}
+	ret = g_usb_device_set_configuration (priv->device,
+					      0x01,
+					      &error);
+	if (!ret) {
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+		g_simple_async_result_set_from_error (res,
+						      error);
+		g_error_free (error);
+		goto out;
+	}
+	ret = g_usb_device_claim_interface (priv->device,
+					    0x00,
+					    G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
+					    &error);
+	if (!ret) {
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+		g_simple_async_result_set_from_error (res,
+						      error);
 		g_error_free (error);
 		goto out;
 	}
@@ -657,13 +690,18 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 	libusb_cancel_transfer (priv->transfer_interrupt);
 	libusb_cancel_transfer (priv->transfer_state);
 
-	/* connect */
-	ret = cd_usb_disconnect (priv->usb,
-			         &error);
-	if (!ret) {
-		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
-		goto out;
+	/* close */
+	if (priv->device != NULL) {
+		ret = g_usb_device_close (priv->device, &error);
+		if (!ret) {
+			g_simple_async_result_set_from_error (res, error);
+			g_error_free (error);
+			goto out;
+		}
+
+		/* clear */
+		g_object_unref (priv->device);
+		priv->device = NULL;
 	}
 out:
 	return;
@@ -757,7 +795,8 @@ cd_sensor_unref_private (CdSensorMunkiPrivate *priv)
 	/* FIXME: cancel transfers if in progress */
 
 	/* detach from the main loop */
-	g_object_unref (priv->usb);
+	g_object_unref (priv->usb_ctx);
+	g_object_unref (priv->device_list);
 
 	/* free transfers */
 	libusb_free_transfer (priv->transfer_interrupt);
@@ -781,7 +820,8 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 	priv = g_new0 (CdSensorMunkiPrivate, 1);
 	g_object_set_data_full (G_OBJECT (sensor), "priv", priv,
 				(GDestroyNotify) cd_sensor_unref_private);
-	priv->usb = cd_usb_new ();
+	priv->usb_ctx = g_usb_context_new (NULL);
+	priv->device_list = g_usb_device_list_new (priv->usb_ctx);
 	priv->transfer_interrupt = libusb_alloc_transfer (0);
 	priv->transfer_state = libusb_alloc_transfer (0);
 	return TRUE;
