@@ -27,9 +27,13 @@
 G_BEGIN_DECLS
 
 
-/* All hueys have this VID/PID */
+/* external hueys */
 #define CD_SENSOR_HUEY_VENDOR_ID				0x0971
 #define CD_SENSOR_HUEY_PRODUCT_ID				0x2005
+
+/* integrated and newer devices */
+#define CD_SENSOR_HUEY_VENDOR_ID2				0x0765
+#define CD_SENSOR_HUEY_PRODUCT_ID2				0x5001
 
 /* Return values from the commands */
 #define CD_SENSOR_HUEY_RETURN_SUCCESS				0x00

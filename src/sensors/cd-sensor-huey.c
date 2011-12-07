@@ -812,12 +812,21 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 
 	/* connect */
 	ret = cd_usb_connect (priv->usb,
-			      CD_SENSOR_HUEY_VENDOR_ID, CD_SENSOR_HUEY_PRODUCT_ID,
+			      CD_SENSOR_HUEY_VENDOR_ID,
+			      CD_SENSOR_HUEY_PRODUCT_ID,
 			      0x01, 0x00, &error);
 	if (!ret) {
-		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
-		goto out;
+		/* try to find newer device */
+		g_clear_error (&error);
+		ret = cd_usb_connect (priv->usb,
+				      CD_SENSOR_HUEY_VENDOR_ID2,
+				      CD_SENSOR_HUEY_PRODUCT_ID2,
+				      0x01, 0x00, &error);
+		if (!ret) {
+			g_simple_async_result_set_from_error (res, error);
+			g_error_free (error);
+			goto out;
+		}
 	}
 
 	/* set state */
