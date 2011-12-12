@@ -341,6 +341,10 @@ cd_sensor_kind_to_string (CdSensorKind sensor_kind)
 		return "color-munki";
 	if (sensor_kind == CD_SENSOR_KIND_SPYDER)
 		return "spyder";
+	if (sensor_kind == CD_SENSOR_KIND_SPYDER2)
+		return "spyder2";
+	if (sensor_kind == CD_SENSOR_KIND_SPYDER3)
+		return "spyder3";
 	if (sensor_kind == CD_SENSOR_KIND_DTP20)
 		return "dtp20";
 	if (sensor_kind == CD_SENSOR_KIND_DTP22)
