@@ -76,10 +76,7 @@ ENV{COLORD_SENSOR}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"
 ENV{COLORD_SENSOR}=="*?", ENV{ID_MODEL}=="", IMPORT{program}="usb_id --export %p"
 ENV{COLORD_SENSOR}=="*?", ENV{ID_MODEL_FROM_DATABASE}=="", IMPORT{program}="usb-db %p"
 
-# Add daemon user to device acl
-# FIXME: this isn't right. We should:
-# * create a system group called colord
-# * set GROUP="colord" in the line below
-ENV{COLORD_SENSOR}=="*?", RUN+="/bin/setfacl -m u:@daemon_user@:rw $env{DEVNAME}"
+# Allow the daemon to access the color devices
+ENV{COLORD_SENSOR}=="*?", GROUP="@daemon_user@"
 
 LABEL="gcm_rules_end"
