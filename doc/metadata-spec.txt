@@ -42,6 +42,20 @@ MAPPING_format		The format used for matching, e.g.
 			"ColorModel.OutputMode.OutputResolution"
 MAPPING_qualifier	The qualifiers the profile should adopt by
 			default, e.g. "RGB.Plain.300dpi"
+ACCURACY_dE76_avg	The calibration delta-E average value
+ACCURACY_dE76_max	The calibration delta-E maximum error value
+ACCURACY_dE76_rms	The calibration delta-E RMS error value
+MEASUREMENT_device	The device used to create the profile, e.g.
+			"colormunki" or "huey"
+SCREEN_surface		The screen panel surface type, ehere:
+			"matte"		: Matte, textured surface
+			"glossy"	: Glossy, shiny surface
+CONNECTION_type		The connection type of the video output, where:
+			"internal"	: Internal digital, e.g. LVDS
+			"vga"		: Analogue VGA
+			"dvi"		: Digital DVI
+			"hdmi"		: Digital HDMI
+			"displayport"	: Digital DisplayPort
 
 == Virtual Profile Metadata ==
 
