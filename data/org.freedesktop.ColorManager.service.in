@@ -2,3 +2,4 @@
 Name=org.freedesktop.ColorManager
 Exec=@servicedir@/colord
 User=@daemon_user@
+SystemdService=colord.service

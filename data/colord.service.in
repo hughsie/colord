@@ -1,0 +1,15 @@
+[Unit]
+Description=Daemon for managing, installing and generating color profiles
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.ColorManager
+ExecStart=@servicedir@/colord
+User=@daemon_user@
+
+[Install]
+# We pull this in by graphical.target instead of waiting for the bus
+# activation, to speed things up a little: gdm uses this anyway so it is nice
+# if it is already around when gdm wants to use it and doesn't have to wait for
+# it.
+WantedBy=graphical.target

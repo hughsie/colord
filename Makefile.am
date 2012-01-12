@@ -22,7 +22,8 @@ snapshot:
 
 DISTCHECK_CONFIGURE_FLAGS =				\
 	--enable-introspection				\
-	--enable-fd-fallback
+	--enable-fd-fallback				\
+	--with-systemdsystemunitdir=$$dc_install_base/$(systemdsystemunitdir)
 
 EXTRA_DIST =						\
 	COPYING						\

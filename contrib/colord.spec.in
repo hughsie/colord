@@ -92,6 +92,7 @@ exit 0
 %{_libdir}/colord-sensors
 %{_libdir}/girepository-1.0/*.typelib
 %ghost %{_localstatedir}/lib/colord/*.db
+/lib/systemd/system/*.service
 
 %files devel
 %defattr(-,root,root,-)
