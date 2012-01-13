@@ -1111,6 +1111,16 @@ cd_profile_get_metadata (CdProfile *profile)
 }
 
 /**
+ * cd_profile_get_metadata_item:
+ **/
+const gchar *
+cd_profile_get_metadata_item (CdProfile *profile, const gchar *key)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
+	return g_hash_table_lookup (profile->priv->metadata, key);
+}
+
+/**
  * cd_profile_get_kind:
  **/
 CdProfileKind

@@ -86,6 +86,8 @@ const gchar	*cd_profile_get_checksum		(CdProfile	*profile);
 const gchar	*cd_profile_get_title			(CdProfile	*profile);
 const gchar	*cd_profile_get_object_path		(CdProfile	*profile);
 GHashTable	*cd_profile_get_metadata		(CdProfile	*profile);
+const gchar	*cd_profile_get_metadata_item		(CdProfile	*profile,
+							 const gchar	*key);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);
 CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);
