@@ -241,16 +241,55 @@ out:
 }
 
 /**
- * cd_main_device_auto_add_profile:
+ * cd_main_device_auto_add_profile_md:
  **/
 static gboolean
-cd_main_device_auto_add_profile (CdDevice *device, CdProfile *profile)
+cd_main_device_auto_add_profile_md (CdDevice *device, CdProfile *profile)
+{
+	const gchar *device_id;
+	gboolean ret = FALSE;
+	GError *error = NULL;
+
+	/* does the profile have device metadata */
+	device_id = cd_profile_get_metadata_item (profile,
+						  CD_PROFILE_METADATA_MAPPING_DEVICE_ID);
+	if (device_id == NULL)
+		goto out;
+
+	/* does this device match? */
+	if (g_strcmp0 (cd_device_get_id (device), device_id) != 0)
+		goto out;
+
+	/* auto-add soft relationship */
+	g_debug ("CdMain: Automatically MD add %s to %s",
+		 cd_profile_get_id (profile),
+		 cd_device_get_object_path (device));
+	ret = cd_device_add_profile (device,
+				     CD_DEVICE_RELATION_SOFT,
+				     cd_profile_get_object_path (profile),
+				     g_get_real_time (),
+				     &error);
+	if (!ret) {
+		g_debug ("CdMain: failed to assign, non-fatal: %s",
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	return ret;
+}
+
+/**
+ * cd_main_device_auto_add_profile_db:
+ **/
+static gboolean
+cd_main_device_auto_add_profile_db (CdDevice *device, CdProfile *profile)
 {
 	gboolean ret = FALSE;
 	GError *error = NULL;
 	guint64 timestamp;
 
-	g_debug ("CdMain: Automatically add %s to %s",
+	g_debug ("CdMain: Automatically DB add %s to %s",
 		 cd_profile_get_id (profile),
 		 cd_device_get_object_path (device));
 	timestamp = cd_mapping_db_get_timestamp (mapping_db,
@@ -274,6 +313,29 @@ cd_main_device_auto_add_profile (CdDevice *device, CdProfile *profile)
 		g_error_free (error);
 		goto out;
 	}
+out:
+	return ret;
+}
+
+/**
+ * cd_main_device_auto_add_profile:
+ **/
+static gboolean
+cd_main_device_auto_add_profile (CdDevice *device, CdProfile *profile)
+{
+	gboolean ret;
+
+	/* try adding devices from the mapping db -- we do this first
+	 * as the database entries might be hard */
+	ret = cd_main_device_auto_add_profile_db (device, profile);
+	if (ret)
+		goto out;
+
+	/* first try finding profile metadata to the device,
+	 * which will be added soft */
+	ret = cd_main_device_auto_add_profile_md (device, profile);
+	if (ret)
+		goto out;
 out:
 	return ret;
 }

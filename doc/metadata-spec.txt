@@ -42,6 +42,8 @@ MAPPING_format		The format used for matching, e.g.
 			"ColorModel.OutputMode.OutputResolution"
 MAPPING_qualifier	The qualifiers the profile should adopt by
 			default, e.g. "RGB.Plain.300dpi"
+MAPPING_device_id	The device this profile should be paired with,
+			e.g. "cups-Photosmart-B109a-m"
 ACCURACY_dE76_avg	The calibration delta-E average value
 ACCURACY_dE76_max	The calibration delta-E maximum error value
 ACCURACY_dE76_rms	The calibration delta-E RMS error value
