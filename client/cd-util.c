@@ -25,6 +25,7 @@
 #include <gio/gio.h>
 #include <locale.h>
 #include <pwd.h>
+#include <stdlib.h>
 
 #include "cd-client-sync.h"
 #include "cd-device-sync.h"
@@ -1578,6 +1579,73 @@ out:
 }
 
 /**
+ * cd_util_device_inhibit:
+ **/
+static gboolean
+cd_util_device_inhibit (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdDevice *device = NULL;
+	gboolean ret = TRUE;
+	GMainLoop *loop = NULL;
+	gint timeout;
+
+	if (g_strv_length (values) < 2) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     1, 0,
+				     "Not enough arguments, "
+				     "expected device path timeout (use 0 for 'never') "
+				     "e.g. '/org/devices/epson-800' 60");
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
+	/* check timeout is valid */
+	timeout = atoi (values[1]);
+	if (timeout < 0) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid timeout: %s",
+			     values[1]);
+		goto out;
+	}
+
+	device = cd_device_new_with_object_path (values[0]);
+	ret = cd_device_connect_sync (device, NULL, error);
+	if (!ret)
+		goto out;
+	ret = cd_device_profiling_inhibit_sync (device, NULL, error);
+	if (!ret)
+		goto out;
+
+	/* wait for ctrl-c, as inhibit will be destroyed when the
+	 * colormgr tool is finished */
+	loop = g_main_loop_new (NULL, FALSE);
+	if (timeout > 0) {
+		g_timeout_add_seconds (timeout,
+				       cd_util_idle_loop_quit_cb,
+				       loop);
+	}
+	g_main_loop_run (loop);
+out:
+	if (loop != NULL)
+		g_main_loop_unref (loop);
+	if (device != NULL)
+		g_object_unref (device);
+	return ret;
+}
+
+/**
  * cd_util_device_get_profile_for_qualifiers:
  **/
 static gboolean
@@ -1775,6 +1843,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Sets the device kind"),
 		     cd_util_device_set_kind);
+	cd_util_add (priv->cmd_array,
+		     "device-inhibit",
+		     /* TRANSLATORS: command description */
+		     _("Inhibits color profiles for this device"),
+		     cd_util_device_inhibit);
 	cd_util_add (priv->cmd_array,
 		     "device-get-profile-for-qualifier",
 		     /* TRANSLATORS: command description */
