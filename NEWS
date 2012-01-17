@@ -1,3 +1,22 @@
+Version 0.1.16
+~~~~~~~~~~~~~~
+Released: 2011-01-17
+
+New Features:
+ - Add a device-inhibit command to the colormgr client (Richard Hughes)
+ - Add org.freedesktop.policykit.owner annotations to .policy file (Vincent Untz)
+ - Add profile metadata MAPPING_device_id for automatic profile mapping (Richard Hughes)
+ - Add some profile metadata keys discussed with Florian Höch (Richard Hughes)
+ - Install a systemd service file if systemd is used (Benedikt Morbach)
+ - Support 2nd generation Huey hardware (Richard Hughes)
+ - Use GUsb for the Huey sensor (Richard Hughes)
+
+Bugfixes:
+ - Fix a Wformat error when printing a gsize (Richard Hughes)
+ - If /usr/share/color appears at runtime, don't rescan the parent dir (Richard Hughes)
+ - Set the colorimeter sensor group so the dameon can access the sensor (Richard Hughes)
+ - Split the spyder hardware into different types (Richard Hughes)
+
 Version 0.1.15
 ~~~~~~~~~~~~~~
 Released: 2011-11-26
