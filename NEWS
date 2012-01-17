@@ -1,6 +1,6 @@
 Version 0.1.16
 ~~~~~~~~~~~~~~
-Released: 2011-01-17
+Released: 2012-01-17
 
 New Features:
  - Add a device-inhibit command to the colormgr client (Richard Hughes)
