@@ -24,6 +24,7 @@ BuildRequires: libgusb-devel
 
 Requires: shared-color-profiles
 Requires: color-filesystem
+Requires: systemd-units
 Requires(pre): shadow-utils
 
 %description
