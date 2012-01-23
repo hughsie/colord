@@ -120,6 +120,12 @@ cd_util_show_profile (CdProfile *profile)
 		 * ColorModel.OutputMode.OutputResolution */
 		cd_util_print_field (_("Format"), tmp);
 	}
+	tmp = cd_profile_get_title (profile);
+	if (tmp != NULL && tmp[0] != '\0') {
+		/* TRANSLATORS: the profile title, e.g.
+		 * "ColorMunki, HP Deskjet d1300 Series" */
+		cd_util_print_field (_("Title"), tmp);
+	}
 	tmp = cd_profile_get_qualifier (profile);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi */
