@@ -736,6 +736,9 @@ cd_profile_set_from_profile (CdProfile *profile,
 		if (tmp != NULL)
 			*tmp = '\0';
 
+		/* make underscores into spaces */
+		g_strdelimit (priv->title, "_", ' ');
+
 		/* remove any shitty prefix */
 		if (g_str_has_suffix (priv->title, ".icc") ||
 		    g_str_has_suffix (priv->title, ".ICC") ||
