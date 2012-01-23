@@ -214,7 +214,7 @@ ch_print_data_buffer (const gchar *title,
 }
 
 /* the default timeout */
-#define CH_DEVICE_USB_TIMEOUT	2000
+#define CH_DEVICE_USB_TIMEOUT	5000
 
 typedef struct {
 	GUsbDevice		*device;
