@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -231,6 +231,7 @@ typedef enum {
 #define CD_PROFILE_METADATA_SCREEN_SURFACE	"SCREEN_surface"	/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_SCREEN_SURFACE_MATTE 	"matte"		/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_SCREEN_SURFACE_GLOSSY	"glossy"	/* Since: 0.1.16 */
+#define CD_PROFILE_METADATA_SCREEN_BRIGHTNESS	"SCREEN_brightness"	/* Since: 0.1.17 */
 #define CD_PROFILE_METADATA_CONNECTION_TYPE	"CONNECTION_type"	/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_CONNECTION_TYPE_INTERNAL	"internal"	/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_CONNECTION_TYPE_VGA		"vga"		/* Since: 0.1.16 */
