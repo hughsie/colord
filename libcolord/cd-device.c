@@ -404,12 +404,11 @@ cd_device_set_profiles_array_from_variant (CdDevice *device,
 	gchar *object_path_tmp;
 	gsize len;
 	guint i;
-	GVariantIter iter;
 
 	g_ptr_array_set_size (device->priv->profiles, 0);
 	if (profiles == NULL)
 		goto out;
-	len = g_variant_iter_init (&iter, profiles);
+	len = g_variant_n_children (profiles);
 	for (i=0; i<len; i++) {
 		g_variant_get_child (profiles, i,
 				     "o", &object_path_tmp);
