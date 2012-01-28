@@ -52,6 +52,8 @@ MEASUREMENT_device	The device used to create the profile, e.g.
 SCREEN_surface		The screen panel surface type, ehere:
 			"matte"		: Matte, textured surface
 			"glossy"	: Glossy, shiny surface
+SCREEN_brightness	The screen brightness as set during calibration
+			as a percentage, e.g. "50"
 CONNECTION_type		The connection type of the video output, where:
 			"internal"	: Internal digital, e.g. LVDS
 			"vga"		: Analogue VGA
