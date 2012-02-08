@@ -247,6 +247,23 @@ cd_mat33_set_identity (CdMat3x3 *src)
 }
 
 /**
+ * cd_mat33_determinant:
+ * @src: the source
+ *
+ * Gets the determinant of the matrix.
+ **/
+gdouble
+cd_mat33_determinant (const CdMat3x3 *src)
+{
+	return src->m00 * src->m11 * src->m22 +
+	       src->m01 * src->m12 * src->m20 +
+	       src->m02 * src->m10 * src->m21 -
+	       src->m02 * src->m11 * src->m20 -
+	       src->m01 * src->m10 * src->m22 -
+	       src->m00 * src->m12 * src->m21;
+}
+
+/**
  * cd_mat33_vector_multiply:
  * @mat_src: the matrix source
  * @vec_src: the vector source

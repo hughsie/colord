@@ -71,6 +71,7 @@ void		 cd_mat33_matrix_multiply	(const CdMat3x3		*mat_src1,
 						 CdMat3x3		*mat_dest);
 gboolean	 cd_mat33_reciprocal		(const CdMat3x3		*src,
 						 CdMat3x3		*dest);
+gdouble		 cd_mat33_determinant		(const CdMat3x3		*src);
 void		 cd_mat33_copy			(const CdMat3x3		*src,
 						 CdMat3x3		*dest);
 
