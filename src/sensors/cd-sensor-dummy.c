@@ -121,6 +121,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 	/* just complete in idle */
 	if (cap == CD_SENSOR_CAP_LCD ||
 	    cap == CD_SENSOR_CAP_CRT ||
+	    cap == CD_SENSOR_CAP_LED ||
 	    cap == CD_SENSOR_CAP_PROJECTOR)
 		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_get_sample_wait_cb, state);
 	else

@@ -159,8 +159,8 @@
           <doc:summary>
             <doc:para>
               The capability we are using, e.g. <doc:tt>crt</doc:tt>,
-              <doc:tt>ambient</doc:tt>, <doc:tt>lcd</doc:tt> or
-              <doc:tt>projector</doc:tt>.
+              <doc:tt>ambient</doc:tt>, <doc:tt>lcd</doc:tt>,
+              <doc:tt>led</doc:tt> or <doc:tt>projector</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>

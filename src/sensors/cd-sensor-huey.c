@@ -730,6 +730,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 						     0,
 						     (GCancellable*) tmp);
 	} else if (cap == CD_SENSOR_CAP_LCD ||
+		   cap == CD_SENSOR_CAP_LED ||
 		   cap == CD_SENSOR_CAP_CRT) {
 		g_simple_async_result_run_in_thread (G_SIMPLE_ASYNC_RESULT (state->res),
 						     cd_sensor_huey_sample_thread_cb,

@@ -172,6 +172,9 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 	case CD_SENSOR_CAP_LCD:
 		calibration_index = CH_CALIBRATION_INDEX_LCD;
 		break;
+	case CD_SENSOR_CAP_LED:
+		calibration_index = CH_CALIBRATION_INDEX_LED;
+		break;
 	case CD_SENSOR_CAP_CRT:
 		calibration_index = CH_CALIBRATION_INDEX_CRT;
 		break;
