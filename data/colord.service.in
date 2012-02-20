@@ -6,6 +6,8 @@ Type=dbus
 BusName=org.freedesktop.ColorManager
 ExecStart=@servicedir@/colord
 User=@daemon_user@
+PrivateNetwork=yes
+PrivateTmp=yes
 
 [Install]
 # We pull this in by graphical.target instead of waiting for the bus
