@@ -259,9 +259,10 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 	GError *error_local = NULL;
 	GFile *file_dest = NULL;
 	GFile *file = NULL;
+	CdProfilePrivate *priv = profile->priv;
 
 	/* is icc filename set? */
-	if (profile->priv->filename == NULL) {
+	if (priv->filename == NULL) {
 		ret = FALSE;
 		g_set_error (error,
 			     CD_MAIN_ERROR,
@@ -271,31 +272,31 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 	}
 
 	/* is profile already installed in /var/lib/color */
-	if (g_str_has_prefix (profile->priv->filename,
+	if (g_str_has_prefix (priv->filename,
 			      CD_SYSTEM_PROFILES_DIR)) {
 		ret = FALSE;
 		g_set_error (error,
 			     CD_MAIN_ERROR,
 			     CD_MAIN_ERROR_FAILED,
 			     "file %s already installed in /var",
-			     profile->priv->filename);
+			     priv->filename);
 		goto out;
 	}
 
 	/* is profile already installed in /usr/share/color */
-	if (g_str_has_prefix (profile->priv->filename,
+	if (g_str_has_prefix (priv->filename,
 			      DATADIR "/color")) {
 		ret = FALSE;
 		g_set_error (error,
 			     CD_MAIN_ERROR,
 			     CD_MAIN_ERROR_FAILED,
 			     "file %s already installed in /usr",
-			     profile->priv->filename);
+			     priv->filename);
 		goto out;
 	}
 
 	/* copy */
-	basename = g_path_get_basename (profile->priv->filename);
+	basename = g_path_get_basename (priv->filename);
 	filename = g_build_filename (CD_SYSTEM_PROFILES_DIR,
 				     basename, NULL);
 	file = g_file_new_for_path (profile->priv->filename);
