@@ -1,3 +1,21 @@
+Version 0.1.17
+~~~~~~~~~~~~~~
+Released: 2012-02-22
+
+New Features:
+ - Add an LED sample type (Richard Hughes)
+ - Add a metadata key to store the calibration brightness (Richard Hughes)
+ - Show the profile title when using colormgr get-profiles (Richard Hughes)
+
+Bugfixes:
+ - Add PrivateNetwork and PrivateTmp to the systemd service file (Richard Hughes)
+ - Don't leak a GVariantIter when setting the device metadata (Richard Hughes)
+ - Fix a critical warning if a client tries to get the profile metadata (Matthias Clasen)
+ - Fix InstallSystemWide() when running as the colord user (Richard Hughes)
+ - Increase the colorhug sample timeout to 5 seconds (Richard Hughes)
+ - Make underscores into spaces for the profile title (Richard Hughes)
+ - Return from cd_profile_has_access() with TRUE for virtual profiles (Richard Hughes)
+
 Version 0.1.16
 ~~~~~~~~~~~~~~
 Released: 2012-01-17
