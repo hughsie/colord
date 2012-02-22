@@ -46,6 +46,7 @@ AC_SUBST(LT_AGE)
 # enable nice build output on automake1.11
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
+AS_ALL_LINGUAS
 AC_PROG_CC
 AC_PROG_INSTALL
 LT_INIT
