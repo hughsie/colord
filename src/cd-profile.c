@@ -1066,7 +1066,17 @@ cd_profile_set_fd (CdProfile *profile,
 	}
 
 	/* create a mapped file */
+#if GLIB_CHECK_VERSION(2,31,0)
 	priv->mapped_file = g_mapped_file_new_from_fd (fd, FALSE, error);
+	if (priv->mapped_file == NULL) {
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED,
+			     "failed to create mapped file from fd %i",
+			     fd);
+		goto out;
+	}
+#endif
 
 	/* parse the ICC file */
 	lcms_profile = cmsOpenProfileFromStream (stream, "r");
