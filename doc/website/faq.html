@@ -31,6 +31,7 @@
 <li><a href="#cups">How would a system daemon like CUPS use colord?</a></li>
 <li><a href="#translation">How do I translate gnome-color-manager?</a></li>
 <li><a href="#corporate-sponsor">Is there an organization sponsoring development of colord?</a></li>
+<li><a href="#oyranos">Why did you start a new project instead of fixing Oyranos?</a></li>
 </ul>
 
 <hr/>
@@ -330,6 +331,68 @@ web pages for how to contribute to GNOME localisation.
 colord is not sponsored by anyone, although
 <a href="http://www.redhat.com">Red Hat</a> gives me the time to
 work on random open source projects. Thanks!
+</p>
+
+<hr/>
+<h3><a name="oyranos">Why did you start a new project instead of fixing Oyranos?</a></h3>
+<p>
+On the surface, <a href="http://www.oyranos.org/">Oyranos</a> and colord
+look like similar projects.
+Oyranos has been around for over 3 years, whilst colord has been designed
+and developed for just over a year.
+So why start something from scratch rather than just fix Oyranos?
+</p>
+<p>
+Oyranos is a huge project with hundreds of thousands of lines of code.
+It has a hard dependency of <a href="http://elektra.g4ii.com/Main_Page">elektra</a>,
+which is <a href="https://www.ohloh.net/p/7750">dead upstream</a>.
+Elektra could be replaced by an other configuration engine, although the
+maintainer is unwilling to do so.
+Elektra is not a supported library in any mainstream distribution and
+is not used by any modern open source projects or frameworks.
+</p>
+<p>
+Oyranos also uses FLTK widgets rather than integrating with the native
+toolkit and includes a huge amount of code for a custom type and object
+system and even includes its own memory allocation framework.
+It wraps LCMS and expects all application code to use liboyranos rather
+than doing the transform on the GPU or in a GLSL shader.
+</p>
+<p>
+Oyranos also has the concept of profiles: <i>office</i>,
+<i>photographer</i>, <i>prepress</i> and <i>designer</i>.
+colord has no such distinction.
+This is a deliberate choice as users vary rarely sit into well defined
+groups and putting profiles in the UI abstracts the settings one stage
+further from what the user is trying to achieve.
+</p>
+<p>
+To do full screen color management, Oyranos also relies on the Compiz
+display manager, rather than using GNOME Shell or KWin.
+Oyranos also does not use DBus, as it aims to be portable to Linux, OSX
+and Windows.
+In my opinion, it is better to leverage the native color management
+stack for each operating system, for instance, using Windows Color
+System on win32, and ColorSync on OSX rather than try to install
+alongside the existing frameworks.
+</p>
+<p>
+So, in summary: Oyranos tries to to be a <i>thick</i> solution where it
+tries to do everything, but relies on several of obsolete or undesirable
+toolkits.
+By comparison, colord is a <i>thin</i> framework composed of a simple
+DBus daemon that aims to provide just the configuration and policy just
+for Linux.
+By using GLib and DBus, colord is a very small code base that is easy to
+maintain, fix and audit.
+No distribution currently includes Oyranos on the default install.
+</p>
+<p>
+I do think the concept of a <i>monolithic</i> CMS is flawed.
+Color management has to be integral to the stack, so Xorg, GTK, Cairo,
+etc. all have to be patched so this stuff <b>"just works"</b>.
+You can't really push an external monolithic library when you need to
+interface with so many parts of the stack.
 </p>
 
 <p>Back to the <a href="index.html">main page</a></p>
