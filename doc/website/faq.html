@@ -32,6 +32,7 @@
 <li><a href="#translation">How do I translate gnome-color-manager?</a></li>
 <li><a href="#corporate-sponsor">Is there an organization sponsoring development of colord?</a></li>
 <li><a href="#oyranos">Why did you start a new project instead of fixing Oyranos?</a></li>
+<li><a href="#why-root">Why does the daemon run as root?</a></li>
 </ul>
 
 <hr/>
@@ -393,6 +394,20 @@ Color management has to be integral to the stack, so Xorg, GTK, Cairo,
 etc. all have to be patched so this stuff <b>"just works"</b>.
 You can't really push an external monolithic library when you need to
 interface with so many parts of the stack.
+</p>
+
+<hr/>
+<h3><a name="why-root">Why does the daemon run as root?</a></h3>
+<p>
+Since version 0.1.12 (released August 2011) colord runs as the
+<i>colord</i> user, not <i>root</i> &#151; if you're still running this or
+an older version please file a bug with your distribution to get it to
+upgrade the package to something more modern!
+</p>
+<p>
+The original reason for running as the root user was to check the PolicyKit
+authorisation request, but PolicyKit 0.104 (released October 2011)
+added functionality to allow non-root daemons to do this as well.
 </p>
 
 <p>Back to the <a href="index.html">main page</a></p>
