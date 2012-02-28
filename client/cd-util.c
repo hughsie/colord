@@ -59,6 +59,10 @@ cd_util_print_field (const gchar *title, const gchar *message)
 	guint i;
 	guint len;
 
+	/* nothing useful to print */
+	if (message == NULL || message[0] == '\0')
+		return;
+
 	g_print ("%s:", title);
 	len = strlen (title);
 	for (i = len; i < padding; i++)
