@@ -227,6 +227,11 @@ cd_util_show_device (CdDevice *device)
 	cd_util_print_field (_("Vendor"),
 			     cd_device_get_vendor (device));
 
+	/* TRANSLATORS: the device inhibitors */
+	str_tmp = g_strjoinv (", ", (gchar **) cd_device_get_profiling_inhibitors (device));
+	cd_util_print_field (_("Inhibitors"), str_tmp);
+	g_free (str_tmp);
+
 	/* TRANSLATORS: the device serial number */
 	cd_util_print_field (_("Serial"),
 			     cd_device_get_serial (device));

@@ -66,6 +66,26 @@ cd_inhibit_valid (CdInhibit *inhibit)
 }
 
 /**
+ * cd_inhibit_get_bus_names:
+ **/
+gchar **
+cd_inhibit_get_bus_names (CdInhibit *inhibit)
+{
+	CdInhibitItem *item_tmp;
+	CdInhibitPrivate *priv = inhibit->priv;
+	gchar **bus_names;
+	guint i;
+
+	/* just copy senders */
+	bus_names = g_new0 (gchar *, priv->array->len + 1);
+	for (i = 0; i < priv->array->len; i++) {
+		item_tmp = g_ptr_array_index (priv->array, i);
+		bus_names[i] = g_strdup (item_tmp->sender);
+	}
+	return bus_names;
+}
+
+/**
  * cd_inhibit_valid:
  **/
 static void

@@ -1326,6 +1326,7 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	CdDevice *device = CD_DEVICE (user_data);
 	CdDevicePrivate *priv = device->priv;
 	gboolean ret;
+	gchar **bus_names = NULL;
 	GVariant *retval = NULL;
 
 	g_debug ("CdDevice %s:GetProperty '%s'",
@@ -1394,9 +1395,15 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = g_variant_new_uint32 (priv->owner);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILING_INHIBITORS) == 0) {
+		bus_names = cd_inhibit_get_bus_names (priv->inhibit);
+		retval = g_variant_new_strv ((const gchar * const *) bus_names, -1);
+		goto out;
+	}
 
 	g_critical ("failed to get property %s", property_name);
 out:
+	g_strfreev (bus_names);
 	return retval;
 }
 

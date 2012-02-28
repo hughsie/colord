@@ -188,6 +188,18 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='ProfilingInhibitors' type='as' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The bus names of all the clients that have inhibited the
+            device for profiling. e.g. <doc:tt>[ ":1.99", ":1.109" ]</doc:tt>
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <method name='SetProperty'>
       <doc:doc>
         <doc:description>

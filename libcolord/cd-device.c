@@ -63,6 +63,7 @@ struct _CdDevicePrivate
 	gchar			*serial;
 	gchar			*format;
 	gchar			*vendor;
+	gchar			**profiling_inhibitors;
 	guint64			 created;
 	guint64			 modified;
 	GPtrArray		*profiles;
@@ -90,6 +91,7 @@ enum {
 	PROP_MODE,
 	PROP_SCOPE,
 	PROP_OWNER,
+	PROP_PROFILING_INHIBITORS,
 	PROP_LAST
 };
 
@@ -223,6 +225,24 @@ cd_device_get_format (CdDevice *device)
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return device->priv->format;
+}
+
+/**
+ * cd_device_get_profiling_inhibitors:
+ * @device: a #CdDevice instance.
+ *
+ * Gets any profiling inhibitors for the device.
+ *
+ * Return value: A strv, or %NULL for invalid
+ *
+ * Since: 0.1.17
+ **/
+const gchar **
+cd_device_get_profiling_inhibitors (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
+	return (const gchar **) device->priv->profiling_inhibitors;
 }
 
 /**
@@ -516,6 +536,9 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_VENDOR) == 0) {
 			g_free (device->priv->vendor);
 			device->priv->vendor = g_variant_dup_string (property_value, NULL);
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILING_INHIBITORS) == 0) {
+			g_free (device->priv->profiling_inhibitors);
+			device->priv->profiling_inhibitors = g_variant_dup_strv (property_value, NULL);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_KIND) == 0) {
 			device->priv->kind =
 				cd_device_kind_from_string (g_variant_get_string (property_value, NULL));
@@ -612,6 +635,7 @@ cd_device_connect_cb (GObject *source_object,
 	GVariant *serial = NULL;
 	GVariant *format = NULL;
 	GVariant *vendor = NULL;
+	GVariant *profiling_inhibitors = NULL;
 	GVariant *colorspace = NULL;
 	GVariant *scope = NULL;
 	GVariant *owner = NULL;
@@ -709,6 +733,12 @@ cd_device_connect_cb (GObject *source_object,
 	if (vendor != NULL)
 		device->priv->vendor = g_variant_dup_string (vendor, NULL);
 
+	/* get profiling inhibitors */
+	profiling_inhibitors = g_dbus_proxy_get_cached_property (device->priv->proxy,
+								 CD_DEVICE_PROPERTY_PROFILING_INHIBITORS);
+	if (profiling_inhibitors != NULL)
+		device->priv->profiling_inhibitors = g_variant_dup_strv (profiling_inhibitors, NULL);
+
 	/* get created */
 	created = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						    CD_DEVICE_PROPERTY_CREATED);
@@ -753,6 +783,8 @@ out:
 		g_variant_unref (model);
 	if (vendor != NULL)
 		g_variant_unref (vendor);
+	if (profiling_inhibitors != NULL)
+		g_variant_unref (profiling_inhibitors);
 	if (serial != NULL)
 		g_variant_unref (serial);
 	if (format != NULL)
@@ -1817,6 +1849,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_VENDOR:
 		g_value_set_string (value, device->priv->vendor);
 		break;
+	case PROP_PROFILING_INHIBITORS:
+		g_value_set_boxed (value, device->priv->profiling_inhibitors);
+		break;
 	case PROP_KIND:
 		g_value_set_uint (value, device->priv->kind);
 		break;
@@ -1982,6 +2017,19 @@ cd_device_class_init (CdDeviceClass *klass)
 							      NULL,
 							      G_PARAM_READABLE));
 	/**
+	 * CdDevice:profiling_inhibitors:
+	 *
+	 * Any profiling inhibitors.
+	 *
+	 * Since: 0.1.17
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_PROFILING_INHIBITORS,
+					 g_param_spec_boxed ("profiling-inhibitors",
+							      NULL, NULL,
+							      G_TYPE_STRV,
+							      G_PARAM_READABLE));
+	/**
 	 * CdDevice:kind:
 	 *
 	 * The device kind, e.g. %CD_DEVICE_KIND_KEYBOARD.
@@ -2097,6 +2145,7 @@ cd_device_finalize (GObject *object)
 	g_free (device->priv->serial);
 	g_free (device->priv->format);
 	g_free (device->priv->vendor);
+	g_strfreev (device->priv->profiling_inhibitors);
 	g_ptr_array_unref (device->priv->profiles);
 	if (device->priv->proxy != NULL) {
 		ret = g_signal_handlers_disconnect_by_func (device->priv->proxy,

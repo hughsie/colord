@@ -59,6 +59,7 @@ gboolean	 cd_inhibit_remove		(CdInhibit	*inhibit,
 						 const gchar	*sender,
 						 GError		**error);
 gboolean	 cd_inhibit_valid		(CdInhibit	*inhibit);
+gchar		**cd_inhibit_get_bus_names	(CdInhibit	*inhibit);
 
 G_END_DECLS
 
