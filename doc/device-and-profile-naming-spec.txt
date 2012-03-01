@@ -65,7 +65,8 @@ Format:		xrandr[-{%edid_vendor}][-{%edid_model][-{%edid_serial}]
 Example:	xrandr-Hewlett Packard-HP LP2480zx-3CM82200KV
 Example:	xrandr-3CM82200KV
 
-For some displays, the EDID may be corrupt or not available.
+For some displays, the EDID may be corrupt or not available, or none of
+the vendor, model or serial text data may be present.
 In this case, the fallback scheme is used using the XRandR device name.
 
 Format:		xrandr-{%xrandr_name}
