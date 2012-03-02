@@ -2,15 +2,17 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # 
-# Richard Hughes <richard@hughsie.com>, 2011.
+# Translators:
+# Lazăr Samuel <lazar.samuel@gmail.com>, 2011.
+# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: PackageKit\n"
+"Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-20 12:43+0100\n"
-"PO-Revision-Date: 2011-07-20 11:44+0000\n"
-"Last-Translator: hughsie <richard@hughsie.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"POT-Creation-Date: 2012-03-02 10:23+0000\n"
+"PO-Revision-Date: 2012-03-02 10:30+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"Language-Team: Romanian (http://www.transifex.net/projects/p/freedesktop/language/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,62 +20,77 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1))\n"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:145 ../client/cd-fix-profile.c:169
+#: ../client/cd-create-profile.c:329 ../client/cd-fix-profile.c:169
 msgid "The profile description"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:148 ../client/cd-fix-profile.c:172
+#: ../client/cd-create-profile.c:332 ../client/cd-fix-profile.c:172
 msgid "The profile copyright"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:151 ../client/cd-fix-profile.c:175
+#: ../client/cd-create-profile.c:335 ../client/cd-fix-profile.c:175
 msgid "The device model"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:154 ../client/cd-fix-profile.c:178
+#: ../client/cd-create-profile.c:338 ../client/cd-fix-profile.c:178
 msgid "The device manufacturer"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:157
+#: ../client/cd-create-profile.c:341
 msgid "Profile to create"
+msgstr "Profil de creat"
+
+#. TRANSLATORS: command line option
+#: ../client/cd-create-profile.c:344
+msgid "Named color CSV filename"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:160
-msgid "sRGB CSV filename"
+#: ../client/cd-create-profile.c:347
+msgid "Named color type, e.g. 'lab' or 'srgb'"
 msgstr ""
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:163
+#: ../client/cd-create-profile.c:350
+msgid "A gamma string, e.g. '0.8,0.8,0.6'"
+msgstr ""
+
+#. TRANSLATORS: command line option
+#: ../client/cd-create-profile.c:353
 msgid "Named color prefix"
-msgstr ""
+msgstr "Prefixul culorilor numite"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:166
+#: ../client/cd-create-profile.c:356
 msgid "Named color suffix"
-msgstr ""
+msgstr "Sufixul culorilor numite"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:169
+#: ../client/cd-create-profile.c:359
 msgid "The metadata in 'key1=value1,key2=value2' format"
 msgstr ""
 
 #. TRANSLATORS: command line tool
-#: ../client/cd-create-profile.c:180
+#: ../client/cd-create-profile.c:370
 msgid "ICC profile creation program"
-msgstr ""
+msgstr "Program de creare de profiluri ICC"
 
-#: ../client/cd-create-profile.c:186
+#: ../client/cd-create-profile.c:376
 msgid "Failed to parse arguments"
-msgstr ""
+msgstr "Nu s-au putut parsa argumentele"
 
 #. TRANSLATORS: the user forgot to use -o
-#: ../client/cd-create-profile.c:196
+#: ../client/cd-create-profile.c:386
 msgid "No output filename specified"
+msgstr "Numele fișierului de ieșire nu este specificat"
+
+#. TRANSLATORS: the user forgot to use an action
+#: ../client/cd-create-profile.c:402
+msgid "No data to create profile"
 msgstr ""
 
 #. TRANSLATORS: command line option
@@ -89,375 +106,407 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: ../client/cd-fix-profile.c:187
 msgid "Profiles to fix"
-msgstr ""
+msgstr "Profiluri de reparat"
 
 #. TRANSLATORS: command line tool
 #: ../client/cd-fix-profile.c:198
 msgid "ICC profile fix program"
+msgstr "Program de reparat profiluri ICC"
+
+#. TRANSLATORS: this is the profile creation date strftime format
+#: ../client/cd-util.c:84
+msgid "%B %e %Y, %I:%M:%S %p"
+msgstr ""
+
+#. TRANSLATORS: profile owner
+#: ../client/cd-util.c:99
+msgid "Owner"
 msgstr ""
 
 #. TRANSLATORS: the internal DBus path
-#: ../client/cd-util.c:64 ../client/cd-util.c:139 ../client/cd-util.c:240
+#: ../client/cd-util.c:118 ../client/cd-util.c:203 ../client/cd-util.c:313
 msgid "Object Path"
-msgstr ""
+msgstr "Calea obiectului"
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
 #. TRANSLATORS: the device format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
-#: ../client/cd-util.c:70 ../client/cd-util.c:173
+#: ../client/cd-util.c:125 ../client/cd-util.c:243
 msgid "Format"
 msgstr ""
 
-#. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
-#: ../client/cd-util.c:75
-msgid "Qualifier"
+#. TRANSLATORS: the profile title, e.g.
+#. * "ColorMunki, HP Deskjet d1300 Series"
+#: ../client/cd-util.c:131
+msgid "Title"
 msgstr ""
+
+#. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
+#: ../client/cd-util.c:136
+msgid "Qualifier"
+msgstr "Calificativ"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
-#: ../client/cd-util.c:80 ../client/cd-util.c:154 ../client/cd-util.c:262
+#: ../client/cd-util.c:141 ../client/cd-util.c:219 ../client/cd-util.c:335
 msgid "Type"
-msgstr "Tip"
+msgstr ""
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
-#: ../client/cd-util.c:86 ../client/cd-util.c:184
+#: ../client/cd-util.c:147 ../client/cd-util.c:254
 msgid "Colorspace"
-msgstr ""
+msgstr "Spațiu de culoare"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
-#: ../client/cd-util.c:92 ../client/cd-util.c:179
+#: ../client/cd-util.c:153 ../client/cd-util.c:249
 msgid "Scope"
 msgstr ""
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
-#: ../client/cd-util.c:97
-msgid "Has video gamma table"
+#: ../client/cd-util.c:158
+msgid "Gamma Table"
 msgstr ""
 
 #. TRANSLATORS: profile filename
-#: ../client/cd-util.c:101
+#: ../client/cd-util.c:162
 msgid "Filename"
-msgstr ""
+msgstr "Nume de fișier"
 
 #. TRANSLATORS: profile identifier
-#: ../client/cd-util.c:105
+#: ../client/cd-util.c:166
 msgid "Profile ID"
-msgstr ""
+msgstr "ID profil"
 
-#. TRANSLATORS: the metadata contiained in the profile
 #. TRANSLATORS: the metadata for the device
-#: ../client/cd-util.c:115 ../client/cd-util.c:206
+#: ../client/cd-util.c:180 ../client/cd-util.c:281
 msgid "Metadata"
-msgstr ""
+msgstr "Metadate"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
-#: ../client/cd-util.c:145
+#: ../client/cd-util.c:210
 msgid "Created"
-msgstr ""
+msgstr "Creat"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
-#: ../client/cd-util.c:150
+#: ../client/cd-util.c:215
 msgid "Modified"
-msgstr ""
+msgstr "Modificat"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
-#: ../client/cd-util.c:158 ../client/cd-util.c:283
+#: ../client/cd-util.c:223 ../client/cd-util.c:356
 msgid "Model"
-msgstr ""
+msgstr "Model"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
-#: ../client/cd-util.c:162 ../client/cd-util.c:290
+#: ../client/cd-util.c:227 ../client/cd-util.c:363
 msgid "Vendor"
 msgstr "Vânzător"
 
-#. TRANSLATORS: the device serial number
-#: ../client/cd-util.c:166
-msgid "Serial"
+#: ../client/cd-util.c:232
+msgid "Inhibitors"
 msgstr ""
+
+#. TRANSLATORS: the device serial number
+#: ../client/cd-util.c:236
+msgid "Serial"
+msgstr "Serie"
 
 #. TRANSLATORS: the device identifier
-#: ../client/cd-util.c:188
+#: ../client/cd-util.c:258
 msgid "Device ID"
-msgstr ""
+msgstr "ID dispozitiv"
 
 #. TRANSLATORS: the profile for the device
-#: ../client/cd-util.c:196
+#: ../client/cd-util.c:266
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
-#: ../client/cd-util.c:269
+#: ../client/cd-util.c:342
 msgid "State"
 msgstr "Stare"
 
 #. TRANSLATORS: sensor serial
-#: ../client/cd-util.c:276
+#: ../client/cd-util.c:349
 msgid "Serial number"
-msgstr ""
+msgstr "Număr de serie"
 
 #. TRANSLATORS: if the sensor has a colord native driver
-#: ../client/cd-util.c:295
+#: ../client/cd-util.c:368
 msgid "Native"
-msgstr ""
+msgstr "Nativ"
 
 #. TRANSLATORS: if the sensor is locked
-#: ../client/cd-util.c:299
+#: ../client/cd-util.c:372
 msgid "Locked"
-msgstr ""
+msgstr "Blocat"
 
 #. TRANSLATORS: if the sensor supports calibrating an LCD display
-#: ../client/cd-util.c:303
+#: ../client/cd-util.c:376
 msgid "LCD"
-msgstr ""
+msgstr "LCD"
 
 #. TRANSLATORS: if the sensor supports calibrating a CRT display
-#: ../client/cd-util.c:307
+#: ../client/cd-util.c:380
 msgid "CRT"
-msgstr ""
+msgstr "CRT"
 
 #. TRANSLATORS: if the sensor supports calibrating a printer
-#: ../client/cd-util.c:311
+#: ../client/cd-util.c:384
 msgid "Printer"
-msgstr ""
+msgstr "Imprimantă"
 
 #. TRANSLATORS: if the sensor supports spot measurements
-#: ../client/cd-util.c:315
+#: ../client/cd-util.c:388
 msgid "Spot"
-msgstr ""
+msgstr "Spot"
 
 #. TRANSLATORS: if the sensor supports calibrating a projector
-#: ../client/cd-util.c:319
+#: ../client/cd-util.c:392
 msgid "Projector"
-msgstr ""
+msgstr "Proiector"
 
 #. TRANSLATORS: if the sensor supports getting the ambient light level
-#: ../client/cd-util.c:323
+#: ../client/cd-util.c:396
 msgid "Ambient"
-msgstr ""
+msgstr "Ambient"
 
 #. TRANSLATORS: this is a command alias
-#: ../client/cd-util.c:380
+#: ../client/cd-util.c:453
 #, c-format
 msgid "Alias to %s"
-msgstr ""
+msgstr "Alias către %s"
 
-#: ../client/cd-util.c:458
+#: ../client/cd-util.c:531
 msgid "Command not found, valid commands are:"
-msgstr ""
+msgstr "Comandă nerecunoscută, comenzile valide sunt:"
 
-#: ../client/cd-util.c:593 ../client/cd-util.c:631 ../client/cd-util.c:694
+#: ../client/cd-util.c:666 ../client/cd-util.c:704 ../client/cd-util.c:767
 msgid "There are no supported sensors attached"
-msgstr ""
+msgstr "Nu este atașat niciun senzor compatibil"
 
 #. TRANSLATORS: this is the sensor title
-#: ../client/cd-util.c:728
+#: ../client/cd-util.c:803
 msgid "Sensor"
-msgstr ""
+msgstr "Senzor"
 
-#: ../client/cd-util.c:739
+#: ../client/cd-util.c:814
 msgid "Color"
-msgstr ""
+msgstr "Culoare"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1426
+#: ../client/cd-util.c:1744
 msgid "Gets all the color managed devices"
-msgstr ""
+msgstr "Obține toate dispozitivele a căror culoare este gestionată"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1431
+#: ../client/cd-util.c:1749
 msgid "Gets all the color managed devices of a specific kind"
-msgstr ""
+msgstr "Obține toate dispozitivele de un anumit tip a căror culoare este gestionată"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1436
+#: ../client/cd-util.c:1754
 msgid "Gets all the available color profiles"
-msgstr ""
+msgstr "Obține toate profilurile de culoare disponibile"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1441
+#: ../client/cd-util.c:1759
 msgid "Gets all the available color sensors"
-msgstr ""
+msgstr "Obține toți senzorii de culoare disponibili"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1446
+#: ../client/cd-util.c:1764
 msgid "Gets a reading from a sensor"
-msgstr ""
+msgstr "Obține o citire de la un senzor"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1451
+#: ../client/cd-util.c:1769
 msgid "Locks the color sensor"
-msgstr ""
+msgstr "Blochează senzorul de culoare"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1456
+#: ../client/cd-util.c:1774
 msgid "Create a device"
-msgstr ""
+msgstr "Creează un dispozitiv"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1461
+#: ../client/cd-util.c:1779
 msgid "Find a device"
-msgstr ""
+msgstr "Găsește un dispozitiv"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1466
+#: ../client/cd-util.c:1784
 msgid "Find a device that has a specific property"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1471
+#: ../client/cd-util.c:1789
 msgid "Find a profile"
-msgstr ""
+msgstr "Găsește un profil"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1476
+#: ../client/cd-util.c:1794
 msgid "Find a profile by filename"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1481
+#: ../client/cd-util.c:1799
 msgid "Get a standard colorspace"
-msgstr ""
+msgstr "Obține un spațiu de culoare standard"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1486
+#: ../client/cd-util.c:1804
 msgid "Create a profile"
-msgstr ""
+msgstr "Creează un profil"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1491
+#: ../client/cd-util.c:1809
 msgid "Add a profile to a device"
-msgstr ""
+msgstr "Adaugă un profil unui dispozitiv"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1496
+#: ../client/cd-util.c:1814
 msgid "Makes a profile default for a device"
-msgstr ""
+msgstr "Realizează un profil implicit pentru un dispozitiv"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1501
+#: ../client/cd-util.c:1819
 msgid "Deletes a device"
-msgstr ""
+msgstr "Șterge un dispozitiv"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1506
+#: ../client/cd-util.c:1824
 msgid "Deletes a profile"
-msgstr ""
+msgstr "Șterge un profil"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1511
+#: ../client/cd-util.c:1829
 msgid "Sets the profile qualifier"
-msgstr ""
+msgstr "Setează calificativul profilului"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1516
+#: ../client/cd-util.c:1834
 msgid "Sets the profile filename"
-msgstr ""
+msgstr "Setează numele de fișier al profilului"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1521
+#: ../client/cd-util.c:1839
 msgid "Sets the device model"
-msgstr ""
+msgstr "Setează modelul dispozitivului"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1526
+#: ../client/cd-util.c:1844
 msgid "Gets the default profile for a device"
-msgstr ""
+msgstr "Obține profilul implicit pentru un dispozitiv"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1531
+#: ../client/cd-util.c:1849
 msgid "Sets the device vendor"
-msgstr ""
+msgstr "Setează furnizorul dispozitivului"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1536
+#: ../client/cd-util.c:1854
 msgid "Sets the device serial"
-msgstr ""
+msgstr "Setează seria dispozitivului"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1541
+#: ../client/cd-util.c:1859
 msgid "Sets the device kind"
+msgstr "Setează tipul dispozitivului"
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1864
+msgid "Inhibits color profiles for this device"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1546
+#: ../client/cd-util.c:1869
 msgid "Returns all the profiles that match a qualifier"
-msgstr ""
+msgstr "Returnează toate profilurile care se potrivesc unui calificativ"
 
 #. TRANSLATORS: program name
-#: ../client/cd-util.c:1559 ../src/cd-main.c:1678
+#: ../client/cd-util.c:1882 ../src/cd-main.c:1787
 msgid "Color Management"
-msgstr ""
+msgstr "Administrarea culorii"
 
 #. TRANSLATORS: no colord available
-#: ../client/cd-util.c:1567
+#: ../client/cd-util.c:1890
 msgid "No connection to colord:"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:1
-msgid "Authentication is required to create a color managed device"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:2
-msgid "Authentication is required to create a color profile"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:3
-msgid "Authentication is required to disable profile matching for a device"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:4
-msgid "Authentication is required to install the color profile for all users"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:5
-msgid "Authentication is required to modify a color profile"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:6
-msgid "Authentication is required to modify the color settings for a device"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:7
-msgid "Authentication is required to remove a color managed device"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:8
-msgid "Authentication is required to remove a color profile"
-msgstr ""
-
-#: ../policy/org.freedesktop.color.policy.in.h:9
-msgid "Authentication is required to use the color sensor"
-msgstr ""
+msgstr "Nicio conexiune către colord:"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #. 
-#: ../policy/org.freedesktop.color.policy.in.h:13
+#: ../policy/org.freedesktop.color.policy.in.in.h:4
 msgid "Create a color managed device"
-msgstr ""
+msgstr "Creează un dispozitiv gestionat de culoare"
+
+#: ../policy/org.freedesktop.color.policy.in.in.h:5
+msgid "Authentication is required to create a color managed device"
+msgstr "Este necesară autentificarea pentru a crea un dispozitiv gestionat de culoare"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #. 
-#: ../policy/org.freedesktop.color.policy.in.h:17
+#: ../policy/org.freedesktop.color.policy.in.in.h:9
 msgid "Create a color profile"
-msgstr ""
+msgstr "Creează un profil de culoare"
+
+#: ../policy/org.freedesktop.color.policy.in.in.h:10
+msgid "Authentication is required to create a color profile"
+msgstr "Este necesară autentificarea pentru a crea un profil de culoare"
 
 #. SECURITY:
-#. - Normal users should not have to authenticate to profile
-#. devices.
+#. - Normal users should not have to authenticate to delete devices
 #. 
-#: ../policy/org.freedesktop.color.policy.in.h:22
-msgid "Inhibit color profile selection"
-msgstr ""
+#: ../policy/org.freedesktop.color.policy.in.in.h:14
+msgid "Remove a color managed device"
+msgstr "Elimină un dispozitiv gestionat de culoare"
+
+#: ../policy/org.freedesktop.color.policy.in.in.h:15
+msgid "Authentication is required to remove a color managed device"
+msgstr "Este necesară autentificarea pentru a elimina un dispozitiv gestionat de culoare"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to delete profiles
+#. 
+#: ../policy/org.freedesktop.color.policy.in.in.h:19
+msgid "Remove a color profile"
+msgstr "Elimină un profil de culoare"
+
+#: ../policy/org.freedesktop.color.policy.in.in.h:20
+msgid "Authentication is required to remove a color profile"
+msgstr "Este necesară autentificarea pentru a elimina un profil de culoare"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to modify devices
+#. 
+#: ../policy/org.freedesktop.color.policy.in.in.h:24
+msgid "Modify color settings for a device"
+msgstr "Modifică setările de culoare pentru un dispozitiv"
+
+#: ../policy/org.freedesktop.color.policy.in.in.h:25
+msgid "Authentication is required to modify the color settings for a device"
+msgstr "Este necesară autentificarea pentru a modifica setările de culoare unui dispozitiv"
+
+#. SECURITY:
+#. - Normal users should not have to authenticate to modify profiles
+#. 
+#: ../policy/org.freedesktop.color.policy.in.in.h:29
+msgid "Modify a color profile"
+msgstr "Modifică un profil de culoare"
+
+#: ../policy/org.freedesktop.color.policy.in.in.h:30
+msgid "Authentication is required to modify a color profile"
+msgstr "Este necesară autentificarea pentru a modifica un profil de culoare"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -467,71 +516,61 @@ msgstr ""
 #. set a profile set to all-white or all-black and thus make the
 #. other sessions unusable.
 #. 
-#: ../policy/org.freedesktop.color.policy.in.h:31
+#: ../policy/org.freedesktop.color.policy.in.in.h:39
 msgid "Install system color profiles"
-msgstr ""
+msgstr "Instalează profiluri de culoare de sistem"
+
+#: ../policy/org.freedesktop.color.policy.in.in.h:40
+msgid "Authentication is required to install the color profile for all users"
+msgstr "Este necesară autentificarea pentru a instala profilul de culoare pentru toți utilizatorii"
 
 #. SECURITY:
-#. - Normal users should not have to authenticate to modify profiles
+#. - Normal users should not have to authenticate to profile
+#. devices.
 #. 
-#: ../policy/org.freedesktop.color.policy.in.h:35
-msgid "Modify a color profile"
-msgstr ""
+#: ../policy/org.freedesktop.color.policy.in.in.h:45
+msgid "Inhibit color profile selection"
+msgstr "Dezactivează selectarea profilului de culoare"
 
-#. SECURITY:
-#. - Normal users should not have to authenticate to modify devices
-#. 
-#: ../policy/org.freedesktop.color.policy.in.h:39
-msgid "Modify color settings for a device"
-msgstr ""
-
-#. SECURITY:
-#. - Normal users should not have to authenticate to delete devices
-#. 
-#: ../policy/org.freedesktop.color.policy.in.h:43
-msgid "Remove a color managed device"
-msgstr ""
-
-#. SECURITY:
-#. - Normal users should not have to authenticate to delete profiles
-#. 
-#: ../policy/org.freedesktop.color.policy.in.h:47
-msgid "Remove a color profile"
-msgstr ""
+#: ../policy/org.freedesktop.color.policy.in.in.h:46
+msgid "Authentication is required to disable profile matching for a device"
+msgstr "Este necesară autentificarea pentru a dezactiva potrivirea profilului pentru un dispozitiv "
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
 #. 
-#: ../policy/org.freedesktop.color.policy.in.h:52
+#: ../policy/org.freedesktop.color.policy.in.in.h:51
 msgid "Use color sensor"
-msgstr ""
+msgstr "Folosește senzorul de culoare"
+
+#: ../policy/org.freedesktop.color.policy.in.in.h:52
+msgid "Authentication is required to use the color sensor"
+msgstr "Este necesară autentificarea pentru a folosi senzorul de culoare"
 
 #. TRANSLATORS: turn on all debugging
 #: ../src/cd-debug.c:112
 msgid "Show debugging information for all files"
-msgstr ""
+msgstr "Arată informațiile de depanare pentru toate fișierele"
 
 #: ../src/cd-debug.c:170
 msgid "Debugging Options"
-msgstr ""
+msgstr "Opțiuni de depanare"
 
 #: ../src/cd-debug.c:171
 msgid "Show debugging options"
-msgstr ""
+msgstr "Arată opțiuni de depanare"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:1662
+#: ../src/cd-main.c:1771
 msgid "Exit after a small delay"
-msgstr "Ieși după o mică întârziere"
+msgstr "Ieși după o mică intârziere"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:1665
+#: ../src/cd-main.c:1774
 msgid "Exit after the engine has loaded"
-msgstr "Ieși după ce motorul a fost încărcat"
+msgstr "Ieși după ce motorul s-a încărcat"
 
-#: ../src/cd-main.c:1682
+#: ../src/cd-main.c:1791
 msgid "Color Management D-Bus Service"
-msgstr ""
-
-
+msgstr "Serviciul D-Bus de administrare a culorii"

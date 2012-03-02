@@ -14,6 +14,11 @@ Bugfixes:
 
 Write release date to doc/website/download.html
 
+Update translations:
+
+tx pull --all
+git add po/*.po
+
 2. Commit changes to git:
 
 # MAKE SURE THESE ARE CORRECT
@@ -45,6 +50,7 @@ scp colord-${release_version}.tar.* hughsient@annarchy.freedesktop.org:/srv/www.
 
 git commit -a -m "trivial: post release version bump"
 git push
+tx push --source
 
 7. Sync website with ./upload.sh
 
