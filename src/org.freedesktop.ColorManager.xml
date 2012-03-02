@@ -341,7 +341,7 @@
     </method>
 
     <!--***********************************************************-->
-    <method name='CreateProfile'>
+    <method name='CreateProfileWithFd'>
       <doc:doc>
         <doc:description>
           <doc:para>
@@ -409,6 +409,16 @@
           </doc:list>
         </doc:doc>
       </arg>
+      <arg type='h' name='handle' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              An index into the array of file descriptors that may have
+              been sent with the DBus message.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
       <arg type='a{ss}' name='properties' direction='in'>
         <doc:doc>
           <doc:summary>
@@ -424,6 +434,58 @@
               Any properties not interstood by colord will be added as
               dictionary values to the <doc:tt>Metadata</doc:tt>
               property.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='o' name='object_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--***********************************************************-->
+    <method name='CreateProfile'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Creates a profile without using a file descriptor.
+            It is recomended you use CreateProfileWithFd() as the
+            daemon may not be running as root and have read access
+            to profiles in the users home directory.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='profile_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A unique profile ID that is used to map to the profile.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='s' name='scope' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              Options for creating the profile.
+              See CreateProfileWithFd() for the allowed values.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='a{ss}' name='properties' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              Properties to be used when constructing the profile.
+              See CreateProfileWithFd() for the allowed values.
             </doc:para>
           </doc:summary>
         </doc:doc>

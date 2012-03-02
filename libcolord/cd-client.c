@@ -692,7 +692,7 @@ cd_client_create_profile (CdClient *client,
 	request = g_dbus_message_new_method_call (COLORD_DBUS_SERVICE,
 						  COLORD_DBUS_PATH,
 						  COLORD_DBUS_INTERFACE,
-						  "CreateProfile");
+						  "CreateProfileWithFd");
 
 	/* get fd if possible top avoid open() in daemon */
 	if (properties != NULL) {
@@ -722,9 +722,10 @@ cd_client_create_profile (CdClient *client,
 	}
 
 	/* set parameters */
-	body = g_variant_new ("(ssa{ss})",
+	body = g_variant_new ("(ssha{ss})",
 			      id,
 			      cd_object_scope_to_string (scope),
+			      fd > -1 ? 0 : -1,
 			      &builder);
 	g_dbus_message_set_body (request, body);
 

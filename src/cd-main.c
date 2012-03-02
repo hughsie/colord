@@ -732,6 +732,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	GVariant *value = NULL;
 	gint fd = -1;
 	guint uid;
+	gint32 fd_handle = 0;
 	const gchar *metadata_key = NULL;
 	const gchar *metadata_value = NULL;
 	GDBusMessage *message;
@@ -1097,8 +1098,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
-	/* return 's' */
-	if (g_strcmp0 (method_name, "CreateProfile") == 0) {
+	/* return 'o' */
+	if (g_strcmp0 (method_name, "CreateProfile") == 0 ||
+	    g_strcmp0 (method_name, "CreateProfileWithFd") == 0) {
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (invocation,
@@ -1106,12 +1108,23 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		if (!ret)
 			goto out;
 
-		/* does already exist */
-		g_variant_get (parameters, "(&s&sa{ss})",
-			       &device_id,
-			       &scope_tmp,
-			       &iter);
-		g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
+		if (g_strcmp0 (g_variant_get_type_string (parameters),
+			       "(ssha{ss})") == 0) {
+			g_variant_get (parameters, "(&s&sha{ss})",
+				       &device_id,
+				       &scope_tmp,
+				       &fd_handle,
+				       &iter);
+			g_debug ("CdMain: %s:CreateProfileWithFd(%s,%i)",
+				 g_dbus_method_invocation_get_sender (invocation),
+				 device_id, fd_handle);
+		} else {
+			g_variant_get (parameters, "(&s&sa{ss})",
+				       &device_id,
+				       &scope_tmp,
+				       &iter);
+			g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
+		}
 		profile = cd_profile_array_get_by_id (profiles_array,
 						      device_id);
 		if (profile != NULL) {
@@ -1153,7 +1166,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		message = g_dbus_method_invocation_get_message (invocation);
 		fd_list = g_dbus_message_get_unix_fd_list (message);
 		if (fd_list != NULL && g_unix_fd_list_get_length (fd_list) == 1) {
-			fd = g_unix_fd_list_get (fd_list, 0, &error);
+			fd = g_unix_fd_list_get (fd_list, fd_handle, &error);
 			if (fd < 0) {
 				g_warning ("CdMain: failed to get fd from message: %s",
 					   error->message);
