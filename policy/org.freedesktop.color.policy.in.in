@@ -25,7 +25,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
   <action id="org.freedesktop.color-manager.create-profile">
@@ -40,7 +40,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
   <action id="org.freedesktop.color-manager.delete-device">
@@ -55,7 +55,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
   <action id="org.freedesktop.color-manager.delete-profile">
@@ -70,7 +70,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
   <action id="org.freedesktop.color-manager.modify-device">
@@ -85,7 +85,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
   <action id="org.freedesktop.color-manager.modify-profile">
@@ -100,7 +100,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
   <action id="org.freedesktop.color-manager.install-system-wide">
@@ -120,7 +120,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
   <action id="org.freedesktop.color-manager.device-inhibit">
@@ -136,7 +136,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
   <action id="org.freedesktop.color-manager.sensor-lock">
@@ -152,7 +152,7 @@
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <@ANNOTATE_OWNER@/>
+    <!--@ANNOTATE_OWNER@-->
   </action>
 
 </policyconfig>
