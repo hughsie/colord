@@ -233,7 +233,7 @@ cd_device_get_format (CdDevice *device)
  *
  * Gets any profiling inhibitors for the device.
  *
- * Return value: A strv, or %NULL for invalid
+ * Return value: (transfer none): A strv, or %NULL for invalid
  *
  * Since: 0.1.17
  **/
