@@ -6,7 +6,6 @@ NULL =
 
 SUBDIRS = 						\
 	etc						\
-	po						\
 	policy						\
 	man						\
 	libcolord					\
@@ -15,7 +14,8 @@ SUBDIRS = 						\
 	examples					\
 	rules						\
 	doc						\
-	src
+	src						\
+	po
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`
@@ -32,11 +32,11 @@ EXTRA_DIST =						\
 	INSTALL						\
 	README						\
 	NEWS						\
-        autogen.sh					\
+	autogen.sh					\
 	config.h					\
-        intltool-extract.in				\
-        intltool-merge.in				\
-        intltool-update.in
+	intltool-extract.in				\
+	intltool-merge.in				\
+	intltool-update.in
 
 MAINTAINERCLEANFILES =					\
 	$(srcdir)/INSTALL				\
