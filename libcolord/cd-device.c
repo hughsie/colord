@@ -502,6 +502,23 @@ cd_device_set_metadata_from_variant (CdDevice *device, GVariant *variant)
 }
 
 /**
+ * cd_device_get_nullable_str:
+ *
+ * We can't get nullable types from a GVariant yet. Work around...
+ **/
+static gchar *
+cd_device_get_nullable_str (GVariant *value)
+{
+	const gchar *tmp;
+	tmp = g_variant_get_string (value, NULL);
+	if (tmp == NULL)
+		return NULL;
+	if (tmp[0] == '\0')
+		return NULL;
+	return g_strdup (tmp);
+}
+
+/**
  * cd_device_dbus_properties_changed_cb:
  **/
 static void
@@ -526,16 +543,16 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 				     &property_value);
 		if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODEL) == 0) {
 			g_free (device->priv->model);
-			device->priv->model = g_variant_dup_string (property_value, NULL);
+			device->priv->model = cd_device_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SERIAL) == 0) {
 			g_free (device->priv->serial);
-			device->priv->serial = g_variant_dup_string (property_value, NULL);
+			device->priv->serial = cd_device_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_FORMAT) == 0) {
 			g_free (device->priv->format);
-			device->priv->format = g_variant_dup_string (property_value, NULL);
+			device->priv->format = cd_device_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_VENDOR) == 0) {
 			g_free (device->priv->vendor);
-			device->priv->vendor = g_variant_dup_string (property_value, NULL);
+			device->priv->vendor = cd_device_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILING_INHIBITORS) == 0) {
 			g_free (device->priv->profiling_inhibitors);
 			device->priv->profiling_inhibitors = g_variant_dup_strv (property_value, NULL);
@@ -663,7 +680,7 @@ cd_device_connect_cb (GObject *source_object,
 	id = g_dbus_proxy_get_cached_property (device->priv->proxy,
 					       CD_DEVICE_PROPERTY_ID);
 	if (id != NULL)
-		device->priv->id = g_variant_dup_string (id, NULL);
+		device->priv->id = cd_device_get_nullable_str (id);
 
 	/* if the device is missing, then fail */
 	if (id == NULL) {
@@ -713,25 +730,25 @@ cd_device_connect_cb (GObject *source_object,
 	model = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						  CD_DEVICE_PROPERTY_MODEL);
 	if (model != NULL)
-		device->priv->model = g_variant_dup_string (model, NULL);
+		device->priv->model = cd_device_get_nullable_str (model);
 
 	/* get serial */
 	serial = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						   CD_DEVICE_PROPERTY_SERIAL);
 	if (serial != NULL)
-		device->priv->serial = g_variant_dup_string (serial, NULL);
+		device->priv->serial = cd_device_get_nullable_str (serial);
 
 	/* get format */
 	format = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						   CD_DEVICE_PROPERTY_FORMAT);
 	if (format != NULL)
-		device->priv->format = g_variant_dup_string (format, NULL);
+		device->priv->format = cd_device_get_nullable_str (format);
 
 	/* get vendor */
 	vendor = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						   CD_DEVICE_PROPERTY_VENDOR);
 	if (vendor != NULL)
-		device->priv->vendor = g_variant_dup_string (vendor, NULL);
+		device->priv->vendor = cd_device_get_nullable_str (vendor);
 
 	/* get profiling inhibitors */
 	profiling_inhibitors = g_dbus_proxy_get_cached_property (device->priv->proxy,
