@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -35,6 +35,12 @@
 #define	CH_USB_HID_EP_OUT			(CH_USB_HID_EP | 0x00)
 #define	CH_USB_HID_EP_SIZE			64
 
+/* the default timeout in client tools */
+#define CH_DEVICE_USB_TIMEOUT			5000 /* ms */
+
+/* constants for ownership tags */
+#define CH_OWNER_LENGTH_MAX			60
+
 /**
  * CH_CMD_GET_COLOR_SELECT:
  *
@@ -42,6 +48,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:color_select]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_COLOR_SELECT			0x01
 
@@ -52,6 +60,8 @@
  *
  * IN:  [1:cmd][1:color_select]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_COLOR_SELECT			0x02
 
@@ -62,6 +72,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:multiplier_value]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_MULTIPLIER			0x03
 
@@ -72,6 +84,8 @@
  *
  * IN:  [1:cmd][1:multiplier_value]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_MULTIPLIER			0x04
 
@@ -82,6 +96,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:integral_time]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_INTEGRAL_TIME		0x05
 
@@ -92,6 +108,8 @@
  *
  * IN:  [1:cmd][2:integral_time]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_INTEGRAL_TIME		0x06
 
@@ -102,27 +120,42 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:major][2:minor][2:micro]
+ *
+ * This command is available in bootloader and firmware mode.
  **/
 #define	CH_CMD_GET_FIRMWARE_VERSION		0x07
 
 /**
  * CH_CMD_GET_CALIBRATION:
  *
- * Gets the calibration matrix. The description does not have to be NULL terminated.
+ * Gets the calibration matrix. The description does not have to be NULL
+ * terminated.
+ *
+ * @types is a bitmask which corresponds to:
+ *
+ * bit:
+ *  0     Can be used with LCD panels
+ *  1     Can be used with CRT monitors
+ *  2     Can be used with projectors
+ *  3     Can be used with LED panels
+ *  4-7   Reserved for future use
  *
  * IN:  [1:cmd][2:index]
- * OUT: [1:retval][1:cmd][2*9:matrix_value][24:description]
+ * OUT: [1:retval][1:cmd][2*9:matrix_value][1:types][23:description]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_CALIBRATION			0x09
 
 /**
  * CH_CMD_SET_CALIBRATION:
  *
- * Sets the calibration matrix. The @matrix_value parameter is a 16 bit
- * _signed_ value that scales from -1.0 to +1.0.
+ * Sets the calibration matrix.
  *
- * IN:  [1:cmd][2:index][4*9:matrix_value][24:description]
+ * IN:  [1:cmd][2:index][4*9:matrix_value][1:types][23:description]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_CALIBRATION			0x0a
 
@@ -133,6 +166,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:serial_number]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_SERIAL_NUMBER		0x0b
 
@@ -143,6 +178,8 @@
  *
  * IN:  [1:cmd][4:serial_number]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_SERIAL_NUMBER		0x0c
 
@@ -153,6 +190,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:led_state]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_LEDS				0x0d
 
@@ -167,6 +206,8 @@
  *
  * IN:  [1:cmd][1:led_state][1:repeat][1:on-time][1:off-time]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_LEDS				0x0e
 
@@ -177,6 +218,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:red][2:green][2:blue]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_DARK_OFFSETS			0x0f
 
@@ -187,8 +230,58 @@
  *
  * IN:  [1:cmd][2:red][2:green][2:blue]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_DARK_OFFSETS			0x10
+
+/**
+ * CH_CMD_GET_OWNER_NAME:
+ *
+ * Get User's Name
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][60:owner-name]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_GET_OWNER_NAME			0x11
+
+/**
+ * CH_CMD_SET_OWNER_NAME:
+ *
+ * Set User's Name
+ *
+ * IN:  [1:cmd][60:owner-name]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_SET_OWNER_NAME			0x12
+
+/**
+ * CH_CMD_GET_OWNER_EMAIL:
+ *
+ * Get User's Email Address
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][60:owner-email]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_GET_OWNER_EMAIL			0x13
+
+/**
+ * CH_CMD_SET_OWNER_NAME:
+ *
+ * Set User's Email Address
+ *
+ * IN:  [1:cmd][60:owner-email]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_SET_OWNER_EMAIL			0x14
 
 /**
  * CH_CMD_WRITE_EEPROM:
@@ -197,6 +290,8 @@
  *
  * IN:  [1:cmd][8:eeprom_magic]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_WRITE_EEPROM			0x20
 
@@ -207,6 +302,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:count]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_TAKE_READING_RAW			0x21
 
@@ -220,6 +317,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:red][2:green][2:blue]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_TAKE_READINGS			0x22
 
@@ -234,7 +333,9 @@
  * map is used to find the default calibration index to use.
  *
  * IN:  [1:cmd][2:calibration-index]
- * OUT: [1:retval][1:cmd][2:red][2:green][2:blue]
+ * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_TAKE_READING_XYZ			0x23
 
@@ -245,6 +346,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd] (but with success the device will disconnect)
+ *
+ * This command is available in bootloader and firmware mode.
  **/
 #define	CH_CMD_RESET				0x24
 
@@ -255,6 +358,8 @@
  *
  * IN:  [1:cmd][2:address][1:length]
  * OUT: [1:retval][1:cmd][1:checksum][1-60:data]
+ *
+ * This command is only available in bootloader mode.
  **/
 #define	CH_CMD_READ_FLASH			0x25
 
@@ -267,6 +372,8 @@
  *
  * IN:  [1:cmd][2:address][2:length]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in bootloader mode.
  **/
 #define	CH_CMD_ERASE_FLASH			0x29
 
@@ -278,6 +385,8 @@
  *
  * IN:  [1:cmd][2:address][1:length][1:checksum][1-32:data]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in bootloader mode.
  **/
 #define	CH_CMD_WRITE_FLASH			0x26
 
@@ -288,6 +397,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in bootloader mode.
  **/
 #define	CH_CMD_BOOT_FLASH			0x27
 
@@ -311,6 +422,9 @@
  *
  * IN:  [1:cmd][1:success]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is available in bootloader and firmware mode, although
+ * different values of @success are permitted in each.
  **/
 #define	CH_CMD_SET_FLASH_SUCCESS		0x28
 
@@ -321,6 +435,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:scale]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_PRE_SCALE			0x2c
 
@@ -331,6 +447,8 @@
  *
  * IN:  [1:cmd][2:scale]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_PRE_SCALE			0x2d
 
@@ -341,6 +459,8 @@
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:scale]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_POST_SCALE			0x2a
 
@@ -351,6 +471,8 @@
  *
  * IN:  [1:cmd][2:scale]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_POST_SCALE			0x2b
 
@@ -364,15 +486,17 @@
  * LCD		= 0
  * CRT		= 1
  * Projector	= 2
- * Custom1	= 3
- * Custom2	= 4
- * Custom3	= 5
+ * LED		= 3
+ * Custom1	= 4
+ * Custom2	= 5
  *
  * In the future CustomX may be renamed to another display technology,
- * e.g. LED or e-ink.
+ * e.g. e-ink.
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][6*2:types]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_GET_CALIBRATION_MAP		0x2e
 
@@ -383,8 +507,78 @@
  *
  * IN:  [1:cmd][6*2:types]
  * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
  **/
 #define	CH_CMD_SET_CALIBRATION_MAP		0x2f
+
+/**
+ * CH_CMD_GET_HARDWARE_VERSION:
+ *
+ * Get the hardware version.
+ *
+ * The hardware versions are as follows:
+ * 0x00		= Pre-production hardware
+ * 0x01		= First generation hardware
+ * 0x02-0x0f	= Reserved for future use
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][1:hw_version]
+ *
+ * This command is available in bootloader and firmware mode.
+ **/
+#define	CH_CMD_GET_HARDWARE_VERSION		0x30
+
+/**
+ * CH_CMD_TAKE_READING_ARRAY:
+ *
+ * Takes 30 raw samples and returns them in an array.
+ *
+ * This command can be used to find the optimum delay between patches
+ * by showing a black sample area, then white, and then using this
+ * command to find out how long the actual hardware delay is.
+ *
+ * It can also be used to find out how stable the device or output is
+ * over a small amount of time, typically ~2.5 seconds for the maximum
+ * integral time.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][30:reading_array]
+ *
+ * This command is available in firmware mode.
+ **/
+#define	CH_CMD_TAKE_READING_ARRAY		0x31
+
+/**
+ * CH_CMD_SET_PCB_ERRATA:
+ *
+ * Sets the board errata value. Board errata is used to correct swapped
+ * LEDs and any future problems discovered that only affect some batches
+ * of hardware version 1.
+ *
+ * The errata bitmask is as follows:
+ * 0x00		= No errata for this PCB
+ * 0x01		= Leds are swapped
+ * 0x02-0xffff	= Reserved for future use
+ *
+ * IN:  [1:cmd][2:pcb_errata]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is available in firmware mode.
+ **/
+#define	CH_CMD_SET_PCB_ERRATA			0x32
+
+/**
+ * CH_CMD_GET_PCB_ERRATA:
+ *
+ * Gets the board errata value.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][2:pcb_errata]
+ *
+ * This command is available in firmware mode.
+ **/
+#define	CH_CMD_GET_PCB_ERRATA			0x33
 
 /* secret code */
 #define	CH_WRITE_EEPROM_MAGIC			"Un1c0rn2"
@@ -402,6 +596,14 @@
 /* although each calibration can be stored in 60 bytes,
  * we use a full 64 byte block */
 #define	CH_CALIBRATION_MAX			64	/* so finishes at device params */
+#define	CH_CALIBRATION_DESCRIPTION_LEN		23	/* 60 - (9*4) - 1 */
+
+/* the supported calibration types bitfield */
+#define	CH_CALIBRATION_TYPE_LCD			0x01
+#define	CH_CALIBRATION_TYPE_CRT			0x02
+#define	CH_CALIBRATION_TYPE_PROJECTOR		0x04
+#define	CH_CALIBRATION_TYPE_LED			0x08
+#define	CH_CALIBRATION_TYPE_ALL			0xff
 
 /* approximate sample times */
 #define CH_INTEGRAL_TIME_VALUE_5MS		0x0300
@@ -414,6 +616,7 @@
 #define	CH_FLASH_ERASE_BLOCK_SIZE		0x400	/* 1024 */
 #define	CH_FLASH_WRITE_BLOCK_SIZE		0x040	/* 64 */
 #define	CH_FLASH_TRANSFER_BLOCK_SIZE		0x020	/* 32 */
+#define	CH_FLASH_RECONNECT_TIMEOUT		2500	/* ms */
 
 /* calibration remapping contants */
 #define	CH_CALIBRATION_INDEX_LCD		(CH_CALIBRATION_MAX + 0)
@@ -428,6 +631,12 @@ typedef enum {
 	CH_COLOR_SELECT_BLUE,
 	CH_COLOR_SELECT_GREEN
 } ChColorSelect;
+
+/* Led colors: possible bitfield values */
+typedef enum {
+	CH_STATUS_LED_GREEN	= 1 << 0,
+	CH_STATUS_LED_RED	= 1 << 1
+} ChStatusLed;
 
 /* what frequency divider to use */
 typedef enum {
@@ -456,8 +665,17 @@ typedef enum {
 	CH_ERROR_OVERFLOW_ADDITION,
 	CH_ERROR_OVERFLOW_SENSOR,
 	CH_ERROR_OVERFLOW_STACK,
+	CH_ERROR_DEVICE_DEACTIVATED,
+	CH_ERROR_INCOMPLETE_REQUEST,
 	CH_ERROR_LAST
 } ChError;
+
+/* any problems with the PCB */
+typedef enum {
+	CH_PCB_ERRATA_NONE		= 0,
+	CH_PCB_ERRATA_SWAPPED_LEDS	= 1 << 0,
+	CH_PCB_ERRATA_LAST		= 1 << 1
+} ChPcbErrata;
 
 /* prototypes */
 const gchar	*ch_strerror			(ChError	 error_enum);

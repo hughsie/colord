@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -86,6 +86,12 @@ ch_strerror (ChError error_enum)
 	case CH_ERROR_NO_CALIBRATION:
 		str = "No calibration";
 		break;
+	case CH_ERROR_DEVICE_DEACTIVATED:
+		str = "Device deactivated";
+		break;
+	case CH_ERROR_INCOMPLETE_REQUEST:
+		str = "Incomplete previous request";
+		break;
 	default:
 		str = "Unknown error, please report";
 		break;
@@ -134,11 +140,29 @@ ch_command_to_string (guint8 cmd)
 	case CH_CMD_SET_SERIAL_NUMBER:
 		str = "set-serial-number";
 		break;
+	case CH_CMD_GET_OWNER_NAME:
+		str = "get-owner-name";
+		break;
+	case CH_CMD_SET_OWNER_NAME:
+		str = "set-owner-name";
+		break;
+	case CH_CMD_GET_OWNER_EMAIL:
+		str = "get-owner-name";
+		break;
+	case CH_CMD_SET_OWNER_EMAIL:
+		str = "set-owner-email";
+		break;
 	case CH_CMD_GET_LEDS:
 		str = "get-leds";
 		break;
 	case CH_CMD_SET_LEDS:
 		str = "set-leds";
+		break;
+	case CH_CMD_GET_PCB_ERRATA:
+		str = "get-pcb-errata";
+		break;
+	case CH_CMD_SET_PCB_ERRATA:
+		str = "set-pcb-errata";
 		break;
 	case CH_CMD_GET_DARK_OFFSETS:
 		str = "get-dark-offsets";
@@ -182,6 +206,9 @@ ch_command_to_string (guint8 cmd)
 	case CH_CMD_SET_CALIBRATION_MAP:
 		str = "set-calibration-map";
 		break;
+	case CH_CMD_GET_HARDWARE_VERSION:
+		str = "get-hardware-version";
+		break;
 	default:
 		str = "unknown-command";
 		break;
@@ -212,9 +239,6 @@ ch_print_data_buffer (const gchar *title,
 
 	g_print ("%c[%dm\n", 0x1B, 0);
 }
-
-/* the default timeout */
-#define CH_DEVICE_USB_TIMEOUT	5000
 
 typedef struct {
 	GUsbDevice		*device;
