@@ -465,7 +465,7 @@ cd_client_create_device_cb (GObject *source_object,
 	/* success */
 	g_simple_async_result_set_op_res_gpointer (res_source,
 						   device,
-						   (GDestroyNotify) g_object_ref);
+						   (GDestroyNotify) g_object_unref);
 	g_variant_unref (result);
 out:
 	g_free (object_path);
@@ -615,7 +615,7 @@ cd_client_create_profile_cb (GObject *source_object,
 	/* success */
 	g_simple_async_result_set_op_res_gpointer (res_source,
 						   profile,
-						   (GDestroyNotify) g_object_ref);
+						   (GDestroyNotify) g_object_unref);
 out:
 	if (reply != NULL)
 		g_object_unref (reply);
