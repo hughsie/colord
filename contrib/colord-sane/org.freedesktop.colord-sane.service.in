@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.freedesktop.colord-sane
+Exec=@servicedir@/colord-sane
+SystemdService=colord-sane.service

@@ -13,7 +13,6 @@ INCLUDES =						\
 	$(POLKIT_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
 	$(GUDEV_CFLAGS)					\
-	$(SANE_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
 	-I$(top_srcdir)/libcolord			\
 	-DG_LOG_DOMAIN=\"Cd\"				\
@@ -59,8 +58,6 @@ colord_SOURCES =					\
 	cd-profile.h					\
 	cd-profile-store.c				\
 	cd-profile-store.h				\
-	cd-sane-client.c				\
-	cd-sane-client.h				\
 	cd-sensor.c					\
 	cd-sensor.h					\
 	cd-main.c
@@ -79,7 +76,6 @@ colord_LDADD =						\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(GUDEV_LIBS)					\
-	$(SANE_LIBS)					\
 	$(GLIB_LIBS)
 
 colord_CFLAGS =						\

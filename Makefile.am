@@ -10,6 +10,7 @@ SUBDIRS = 						\
 	man						\
 	libcolord					\
 	client						\
+	contrib						\
 	data						\
 	examples					\
 	rules						\

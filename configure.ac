@@ -287,6 +287,9 @@ dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
 Makefile
 etc/Makefile
+contrib/Makefile
+contrib/colord-sane/Makefile
+contrib/colord-sane/org.freedesktop.colord-sane.conf
 examples/Makefile
 man/Makefile
 doc/Makefile

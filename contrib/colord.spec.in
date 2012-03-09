@@ -23,6 +23,7 @@ BuildRequires: vala-tools
 BuildRequires: libgusb-devel
 
 Requires: shared-color-profiles
+Requires: colord-sane
 Requires: color-filesystem
 Requires: systemd-units
 Requires(pre): shadow-utils
@@ -37,6 +38,15 @@ Requires: %{name} = %{version}-%{release}
 
 %description devel
 Files for development with %{name}.
+
+%package sane
+Summary: SANE helper package for %{name}
+Requires: %{name} = %{version}-%{release}
+
+%description sane
+SANE helper package for %{name} that monitors scanners that are added
+and removed. This is a seporate process as libsane is craptastic, but
+useful.
 
 %prep
 %setup -q
@@ -93,7 +103,7 @@ exit 0
 %{_libdir}/colord-sensors
 %{_libdir}/girepository-1.0/*.typelib
 %ghost %{_localstatedir}/lib/colord/*.db
-/usr/lib/systemd/system/*.service
+/usr/lib/systemd/system/colord.service
 
 %files devel
 %defattr(-,root,root,-)
@@ -102,6 +112,14 @@ exit 0
 %{_libdir}/pkgconfig/colord.pc
 %{_datadir}/gir-1.0/*.gir
 %{_datadir}/vala/vapi/*.vapi
+
+%files sane
+%defattr(-,root,root,-)
+%{_datadir}/dbus-1/interfaces/org.freedesktop.colord.sane.xml
+%{_datadir}/dbus-1/system-services/org.freedesktop.colord-sane.service
+/usr/lib/systemd/system/colord-sane.service
+%{_libexecdir}/colord-sane
+%{_sysconfdir}/dbus-1/system.d/org.freedesktop.colord-sane.conf
 
 %changelog
 * #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#

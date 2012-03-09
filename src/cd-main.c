@@ -36,7 +36,6 @@
 #include "cd-profile-array.h"
 #include "cd-profile.h"
 #include "cd-profile-store.h"
-#include "cd-sane-client.h"
 #include "cd-sensor-client.h"
 #include "cd-udev-client.h"
 
@@ -55,7 +54,6 @@ static CdDeviceDb *device_db = NULL;
 static CdUdevClient *udev_client = NULL;
 static CdSensorClient *sensor_client = NULL;
 #endif
-static CdSaneClient *sane_client = NULL;
 static CdConfig *config = NULL;
 static GPtrArray *sensors = NULL;
 static GHashTable *standard_spaces = NULL;
@@ -1544,6 +1542,31 @@ out:
 }
 
 /**
+ * cd_main_colord_sane_refresh_cb:
+ **/
+static void
+cd_main_colord_sane_refresh_cb (GObject *source_object,
+				GAsyncResult *res,
+				gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *retval;
+
+	retval = g_dbus_connection_call_finish (connection,
+						res,
+						&error);
+	if (retval == NULL) {
+		g_warning ("failed to contact colord-sane: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	if (retval != NULL)
+		g_variant_unref (retval);
+}
+
+/**
  * cd_main_on_name_acquired_cb:
  **/
 static void
@@ -1618,12 +1641,18 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection_,
 	/* add SANE devices */
 	ret = cd_config_get_boolean (config, "UseSANE");
 	if (ret) {
-		ret = cd_sane_client_refresh (sane_client, &error);
-		if (!ret) {
-			g_warning ("CdMain: failed to refresh SANE devices: %s",
-				    error->message);
-			g_error_free (error);
-		}
+		g_dbus_connection_call (connection,
+					"org.freedesktop.colord-sane",
+					"/org/freedesktop/colord_sane",
+					"org.freedesktop.colord.sane",
+					"Refresh",
+					NULL,
+					NULL,
+					G_DBUS_CALL_FLAGS_NONE,
+					-1,
+					NULL,
+					cd_main_colord_sane_refresh_cb,
+					NULL);
 	}
 
 	/* now we've got the profiles, setup the overrides */
@@ -1817,14 +1846,6 @@ main (int argc, char *argv[])
 						 g_str_equal,
 						 g_free,
 						 (GDestroyNotify) g_object_unref);
-
-	sane_client = cd_sane_client_new ();
-	g_signal_connect (sane_client, "added",
-			  G_CALLBACK (cd_main_client_device_added_cb),
-			  NULL);
-	g_signal_connect (sane_client, "removed",
-			  G_CALLBACK (cd_main_client_device_removed_cb),
-			  NULL);
 #ifdef HAVE_GUDEV
 	udev_client = cd_udev_client_new ();
 	g_signal_connect (udev_client, "device-added",
@@ -1937,8 +1958,6 @@ out:
 #endif
 	if (config != NULL)
 		g_object_unref (config);
-	if (sane_client != NULL)
-		g_object_unref (sane_client);
 	if (profile_store != NULL)
 		g_object_unref (profile_store);
 	if (mapping_db != NULL)
