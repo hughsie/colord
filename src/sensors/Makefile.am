@@ -18,7 +18,6 @@ INCLUDES =						\
 	-DCD_COMPILATION				\
 	-DG_UDEV_API_IS_SUBJECT_TO_CHANGE		\
 	-DG_USB_API_IS_SUBJECT_TO_CHANGE		\
-	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DLOCALEDIR=\""$(localedir)"\"
 
 COLORD_LIBS =						\
@@ -157,12 +156,6 @@ libcolord_sensor_munki_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
 libcolord_sensor_munki_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_munki_la_CFLAGS = $(WARNINGFLAGS_C)
 endif
-
-install-data-hook:
-	if test -w $(DESTDIR)$(prefix)/; then \
-		mkdir -p $(DESTDIR)$(CD_SYSTEM_PROFILES_DIR); \
-		mkdir -p $(DESTDIR)$(localstatedir)/lib/colord; \
-	fi
 
 TESTS = cd-self-test
 
