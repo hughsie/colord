@@ -440,9 +440,11 @@ cd_main_device_add (CdDevice *device,
 	}
 
 	/* profile is no longer valid */
-	g_signal_connect (device, "invalidate",
-			  G_CALLBACK (cd_main_device_invalidate_cb),
-			  NULL);
+	if (scope == CD_OBJECT_SCOPE_TEMP) {
+		g_signal_connect (device, "invalidate",
+				  G_CALLBACK (cd_main_device_invalidate_cb),
+				  NULL);
+	}
 
 	/* add to array */
 	cd_device_array_add (devices_array, device);
