@@ -89,6 +89,7 @@ exit 0
 %doc README AUTHORS NEWS COPYING
 %{_libexecdir}/colord
 %attr(755,colord,colord) %dir %{_localstatedir}/lib/colord
+%attr(755,colord,colord) %dir %{_localstatedir}/lib/colord/icc
 %{_bindir}/*
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml

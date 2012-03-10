@@ -561,6 +561,10 @@ cd_profile_store_search (CdProfileStore *profile_store,
 	/* get machine specific profiles */
 	if (flags & CD_PROFILE_STORE_SEARCH_MACHINE) {
 		ret = cd_profile_store_search_path (profile_store,
+						    CD_SYSTEM_PROFILES_DIR);
+		if (ret)
+			success = TRUE;
+		ret = cd_profile_store_search_path (profile_store,
 						    "/var/lib/color/icc");
 		if (ret)
 			success = TRUE;

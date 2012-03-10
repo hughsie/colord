@@ -115,7 +115,8 @@ cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
 install-data-hook:
 	if test -w $(DESTDIR)$(prefix)/; then \
 		mkdir -p $(DESTDIR)$(CD_SYSTEM_PROFILES_DIR); \
-		mkdir -p $(DESTDIR)$(localstatedir)/lib/colord; \
+		chown $(daemon_user) $(DESTDIR)$(localstatedir)/lib/colord; \
+		chmod 0755 $(DESTDIR)$(localstatedir)/lib/colord; \
 	fi
 
 TESTS = cd-self-test
