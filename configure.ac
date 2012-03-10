@@ -279,7 +279,7 @@ fi
 AC_SUBST(slashlibdir)
 
 # per-machine directory
-AC_SUBST(CD_SYSTEM_PROFILES_DIR, "\$(localstatedir)/lib/color")
+AC_SUBST(CD_SYSTEM_PROFILES_DIR, "\$(localstatedir)/lib/color/icc")
 
 dnl ---------------------------------------------------------------------------
 dnl - Makefiles, etc.
