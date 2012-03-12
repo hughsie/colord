@@ -57,14 +57,16 @@ cd_util_print_field (const gchar *title, const gchar *message)
 {
 	const guint padding = 15;
 	guint i;
-	guint len;
+	guint len = 0;
 
 	/* nothing useful to print */
 	if (message == NULL || message[0] == '\0')
 		return;
 
-	g_print ("%s:", title);
-	len = strlen (title);
+	if (title != NULL) {
+		g_print ("%s:", title);
+		len = strlen (title) + 1;
+	}
 	for (i = len; i < padding; i++)
 		g_print (" ");
 	g_print ("%s\n", message);
@@ -193,7 +195,9 @@ cd_util_show_device (CdDevice *device)
 	CdObjectScope scope;
 	CdProfile *profile_tmp;
 	const gchar *tmp;
+	gboolean ret;
 	gchar *str_tmp;
+	GError *error = NULL;
 	GHashTable *metadata;
 	GList *list, *l;
 	GPtrArray *profiles;
@@ -264,8 +268,19 @@ cd_util_show_device (CdDevice *device)
 		profile_tmp = g_ptr_array_index (profiles, i);
 		/* TRANSLATORS: the profile for the device */
 		str_tmp = g_strdup_printf ("%s %i", _("Profile"), i+1);
-		cd_util_print_field (str_tmp,
-				     cd_profile_get_object_path (profile_tmp));
+		ret = cd_profile_connect_sync (profile_tmp, NULL, &error);
+		if (!ret) {
+			cd_util_print_field (str_tmp,
+					     cd_profile_get_object_path (profile_tmp));
+			cd_util_print_field (NULL,
+					     error->message);
+			g_clear_error (&error);
+		} else {
+			cd_util_print_field (str_tmp,
+					     cd_profile_get_id (profile_tmp));
+			cd_util_print_field (NULL,
+					     cd_profile_get_filename(profile_tmp));
+		}
 		g_free (str_tmp);
 	}
 
