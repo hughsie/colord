@@ -1473,6 +1473,7 @@ void
 cd_device_watch_sender (CdDevice *device, const gchar *sender)
 {
 	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (sender != NULL);
 	device->priv->watcher_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
 						     sender,
 						     G_BUS_NAME_WATCHER_FLAGS_NONE,

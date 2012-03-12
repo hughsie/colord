@@ -481,7 +481,7 @@ cd_main_create_device (const gchar *sender,
 		goto out;
 
 	/* setup DBus watcher */
-	if ((scope & CD_OBJECT_SCOPE_TEMP) > 0) {
+	if (sender != NULL && (scope & CD_OBJECT_SCOPE_TEMP) > 0) {
 		g_debug ("temporary device");
 		cd_device_watch_sender (device_tmp, sender);
 	}
