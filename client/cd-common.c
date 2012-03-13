@@ -27,7 +27,6 @@
 #include "cd-common.h"
 #include "cd-lcms-helpers.h"
 
-#ifdef HAVE_NEW_LCMS
 /**
  * cd_profile_copy_metadata_dict:
  */
@@ -56,7 +55,6 @@ cd_profile_copy_metadata_dict (cmsHANDLE dict,
 				 NULL);
 	}
 }
-#endif
 
 /**
  * cd_profile_write_metadata_string:
@@ -68,10 +66,9 @@ cd_profile_write_metadata_string (cmsHPROFILE lcms_profile,
 				  const gchar *binary_name,
 				  GError **error)
 {
-	gboolean ret = FALSE;
-#ifdef HAVE_NEW_LCMS
 	cmsHANDLE dict = NULL;
 	cmsHANDLE dict_tmp = NULL;
+	gboolean ret = FALSE;
 	gchar **metadata_split = NULL;
 	gchar *tmp;
 	guint i;
@@ -125,17 +122,5 @@ cd_profile_write_metadata_string (cmsHPROFILE lcms_profile,
 out:
 	cmsDictFree (dict);
 	g_strfreev (metadata_split);
-#else
-	if (metadata != NULL) {
-		g_set_error (error, 1, 0,
-			     "no LCMS2 DICT support, so cannot write %s",
-			     metadata);
-		goto out;
-	}
-
-	/* no metadata, so no problem */
-	ret = TRUE;
-out:
-#endif
 	return ret;
 }

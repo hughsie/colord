@@ -133,13 +133,7 @@ if test x$have_gusb = xyes; then
 fi
 AM_CONDITIONAL(HAVE_GUSB, test x$have_gusb = xyes)
 
-PKG_CHECK_MODULES(LCMS, lcms2 >= 2.2, has_new_lcms=yes, has_new_lcms=no)
-if test x$has_new_lcms = xyes; then
-	AC_DEFINE(HAVE_NEW_LCMS,1,[Got new lcms2])
-else
-	PKG_CHECK_MODULES(LCMS, lcms2)
-fi
-
+PKG_CHECK_MODULES(LCMS, lcms2 >= 2.2)
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 
 dnl **** Check for GUDEV ****

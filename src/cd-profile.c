@@ -700,7 +700,6 @@ static void
 cd_profile_set_metadata_from_profile (CdProfile *profile,
 				      cmsHPROFILE lcms_profile)
 {
-#ifdef HAVE_NEW_LCMS
 	cmsHANDLE dict;
 	const cmsDICTentry* entry;
 	gchar ascii_name[1024];
@@ -730,7 +729,6 @@ cd_profile_set_metadata_from_profile (CdProfile *profile,
 				     g_strdup (ascii_name),
 				     g_strdup (ascii_value));
 	}
-#endif
 }
 
 /**

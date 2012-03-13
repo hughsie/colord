@@ -41,8 +41,6 @@ _cmsWriteTagTextAscii (cmsHPROFILE lcms_profile,
 	return ret;
 }
 
-#ifdef HAVE_NEW_LCMS
-
 static wchar_t *
 utf8_to_wchar_t (const char *src)
 {
@@ -88,4 +86,3 @@ out:
 	g_free (mb_value);
 	return ret;
 }
-#endif
