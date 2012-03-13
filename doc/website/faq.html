@@ -343,55 +343,121 @@ Oyranos has been around for over 8 years, whilst colord has been designed
 and developed for just over a year.
 So why start something from scratch rather than just fix Oyranos?
 </p>
+<table class="noteinformation">
+ <tr><th></th><th>Oyranos</th><th>colord</th></tr>
+ <tr><td>Portability</td><td>Windows, Linux, OSX</td><td>Linux <i>[1]</i></td></tr>
+ <tr>
+  <td>Desktop support</td>
+  <td>
+   <a href="http://www.fltk.org/">FLTK</a> (native) and
+   <a href="http://www.oyranos.org/kolormanager/">KDE</a>
+  </td>
+  <td>
+   <a href="http://projects.gnome.org/gnome-color-manager/">GNOME</a> and
+   <a href="https://dantti.wordpress.com/2012/03/12/coloring-you-desktop-with-colord-kde/">KDE</a>
+  </td>
+ </tr>
+ <tr>
+   <td>Client access</td>
+   <td>C</td>
+   <td>
+    C, <a href="http://www.freedesktop.org/wiki/Software/dbus">DBus</a> (native),
+    others via <a href="https://live.gnome.org/GObjectIntrospection">GObject Introspection</a>
+   </td>
+  </tr>
+ <tr><td>Client library</td><td>Synchronous, and not MT-safe</td><td>Synchronous, asynchronous and MT safe</td></tr>
+ <tr>
+   <td>Lines of code</td><td><a href="https://www.ohloh.net/p/oyranos">140k</a></td>
+   <td><a href="https://www.ohloh.net/p/colord">42k</a></td>
+  </tr>
+ <tr>
+  <td>Memory allocation</td>
+  <td>custom</td>
+  <td><a href="https://en.wikipedia.org/wiki/GLib">GLib</a></td>
+ </tr>
+ <tr>
+  <td>Object system</td>
+  <td>custom</td>
+  <td><a href="https://en.wikipedia.org/wiki/GObject">GObject</a></td>
+ </tr>
+ <tr><td>Build system</td><td>custom</td><td>automake</td></tr>
+ <tr>
+  <td>Settings store</td>
+  <td><a href="https://www.ohloh.net/p/7750">elektra</a> <i>[2]</i></td>
+  <td><a href="https://www.sqlite.org/">sqlite</a></td>
+ </tr>
+ <tr>
+  <td>Session presentation</td>
+  <td><i>photographer</i>, <i>prepress</i> and <i>designer</i></td>
+  <td>None <i>[3]</i></td>
+  </tr>
+ <tr>
+  <td>Full screen color management</td>
+  <td><a href="http://www.compiz.org/">Compiz</a>, using X atoms as IPC</td>
+  <td><a href="http://wayland.freedesktop.org/">Wayland</a> (planned)</td>
+ </tr>
+ <tr><td>Project age</td><td>8 years</td><td>1 year</td></tr>
+ <tr>
+  <td>Required by</td>
+  <td valign="top">
+   <ul>
+    <li><a href="http://www.oyranos.org/wiki/index.php?title=ICC_Examin">icc_examin</a></li>
+    <li><a href="http://www.oyranos.org/kolormanager/">Kolor Manager</a></li>
+    <li><a href="http://www.cinepaint.org/">CinePaint</a></li>
+   </ul>
+  </td>
+  <td>
+   <ul>
+    <li><a href="http://www.cups.org/">CUPS</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Foomatic">Foomatic</a></li>
+    <li><a href="http://www.gtk.org/">GTK+</a></li>
+    <li><a href="https://dantti.wordpress.com/2012/03/12/coloring-you-desktop-with-colord-kde/">colord-kde</a></li>
+    <li><a href="http://www.gnome.org/">gnome-control-center</a></li>
+    <li><a href="http://www.gnome.org/">gnome-settings-daemon</a></li>
+    <li><a href="http://projects.gnome.org/gnome-color-manager/">GNOME Color Manager</a></li>
+    <li><a href="https://lwn.net/Articles/377063/">Simple Scan</a></li>
+    <li><a href="http://www.hughski.com">colorhug-client</a></li>
+   </ul>
+  </td>
+ </tr>
+ <tr>
+  <td>Project design</td>
+  <td>Monolithic</td>
+  <td>Distributed <i>[4]</i></td>
+  </tr>
+</table>
 <p>
-Oyranos is a huge project with hundreds of thousands of lines of code.
-It has a hard dependency of <a href="http://elektra.g4ii.com/Main_Page">elektra</a>,
-which is <a href="https://www.ohloh.net/p/7750">dead upstream</a>.
-Elektra could be replaced by an other configuration engine, although the
-maintainer is unwilling to do so.
-Elektra is not a supported library in any mainstream distribution and
-is not used by any modern open source projects or frameworks.
+ Notes:
+</p>
+<ol>
+ <li>
+  In my opinion, it is better to leverage the native color management
+  stack for each operating system, for instance, using Windows Color
+  System on win32, and ColorSync on OSX rather than try to install
+  alongside the existing frameworks.
+ </li>
+ <li>
+   Elektra could be replaced by an other configuration engine, although
+   the maintainer is unwilling to do so.
+   It's not a supported library in any mainstream distribution and
+   is not used by any modern open source projects or frameworks.
+  </li>
+ <li>
+  This no user profile system in colord as users vary rarely sit into
+  well defined groups and putting profiles in the UI abstracts the
+  settings one stage further from what the user is trying to achieve.
+ </li>
+ <li>
+  I do think the concept of a <i>monolithic</i> CMS is flawed.
+  Color management has to be integral to the stack, so Xorg, GTK, Cairo,
+  etc. all have to be patched so this stuff <b>"just works"</b>.
+  You can't really push a cross distro self-contained library when you
+  need to interface with so many parts of the stack.
+ </li>
+</ol>
+<p>
 </p>
 <p>
-Oyranos also uses FLTK widgets rather than integrating with the native
-toolkit and includes a huge amount of code for a custom type and object
-system and even includes its own memory allocation framework.
-</p>
-<p>
-Oyranos also has the concept of profiles: <i>office</i>,
-<i>photographer</i>, <i>prepress</i> and <i>designer</i>.
-colord has no such distinction.
-This is a deliberate choice as users vary rarely sit into well defined
-groups and putting profiles in the UI abstracts the settings one stage
-further from what the user is trying to achieve.
-</p>
-<p>
-To do full screen color management, Oyranos also relies on the Compiz
-display manager, rather than using GNOME Shell or KWin.
-Oyranos also does not use DBus, as it aims to be portable to Linux, OSX
-and Windows.
-In my opinion, it is better to leverage the native color management
-stack for each operating system, for instance, using Windows Color
-System on win32, and ColorSync on OSX rather than try to install
-alongside the existing frameworks.
-</p>
-<p>
-So, in summary: Oyranos tries to to be a <i>thick</i> solution where it
-tries to do everything, but relies on several of obsolete or undesirable
-toolkits.
-By comparison, colord is a <i>thin</i> framework composed of a simple
-DBus daemon that aims to provide just the configuration and policy just
-for Linux.
-By using GLib and DBus, colord is a very small code base that is easy to
-maintain, fix and audit.
-No distribution currently includes Oyranos on the default install.
-</p>
-<p>
-I do think the concept of a <i>monolithic</i> CMS is flawed.
-Color management has to be integral to the stack, so Xorg, GTK, Cairo,
-etc. all have to be patched so this stuff <b>"just works"</b>.
-You can't really push an external monolithic library when you need to
-interface with so many parts of the stack.
 </p>
 
 <hr/>
