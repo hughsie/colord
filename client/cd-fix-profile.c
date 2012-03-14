@@ -37,23 +37,23 @@ typedef struct {
 	GOptionContext		*context;
 	GPtrArray		*cmd_array;
 	CdClient		*client;
-} ChUtilPrivate;
+} CdUtilPrivate;
 
-typedef gboolean (*ChUtilPrivateCb)	(ChUtilPrivate	*util,
+typedef gboolean (*CdUtilPrivateCb)	(CdUtilPrivate	*util,
 					 gchar		**values,
 					 GError		**error);
 
 typedef struct {
 	gchar		*name;
 	gchar		*description;
-	ChUtilPrivateCb	 callback;
-} ChUtilItem;
+	CdUtilPrivateCb	 callback;
+} CdUtilItem;
 
 /**
- * ch_util_item_free:
+ * cd_util_item_free:
  **/
 static void
-ch_util_item_free (ChUtilItem *item)
+cd_util_item_free (CdUtilItem *item)
 {
 	g_free (item->name);
 	g_free (item->description);
@@ -64,25 +64,25 @@ ch_util_item_free (ChUtilItem *item)
  * cd_sort_command_name_cb:
  */
 static gint
-cd_sort_command_name_cb (ChUtilItem **item1, ChUtilItem **item2)
+cd_sort_command_name_cb (CdUtilItem **item1, CdUtilItem **item2)
 {
 	return g_strcmp0 ((*item1)->name, (*item2)->name);
 }
 
 /**
- * ch_util_add:
+ * cd_util_add:
  **/
 static void
-ch_util_add (GPtrArray *array, const gchar *name, const gchar *description, ChUtilPrivateCb callback)
+cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUtilPrivateCb callback)
 {
-	ChUtilItem *item;
+	CdUtilItem *item;
 	gchar **names;
 	guint i;
 
 	/* add each one */
 	names = g_strsplit (name, ",", -1);
 	for (i=0; names[i] != NULL; i++) {
-		item = g_new0 (ChUtilItem, 1);
+		item = g_new0 (CdUtilItem, 1);
 		item->name = g_strdup (names[i]);
 		if (i == 0) {
 			item->description = g_strdup (description);
@@ -98,12 +98,12 @@ ch_util_add (GPtrArray *array, const gchar *name, const gchar *description, ChUt
 }
 
 /**
- * ch_util_get_descriptions:
+ * cd_util_get_descriptions:
  **/
 static gchar *
-ch_util_get_descriptions (GPtrArray *array)
+cd_util_get_descriptions (GPtrArray *array)
 {
-	ChUtilItem *item;
+	CdUtilItem *item;
 	GString *string;
 	guint i;
 	guint j;
@@ -143,12 +143,12 @@ ch_util_get_descriptions (GPtrArray *array)
 }
 
 /**
- * ch_util_run:
+ * cd_util_run:
  **/
 static gboolean
-ch_util_run (ChUtilPrivate *priv, const gchar *command, gchar **values, GError **error)
+cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError **error)
 {
-	ChUtilItem *item;
+	CdUtilItem *item;
 	gboolean ret = FALSE;
 	GString *string;
 	guint i;
@@ -178,10 +178,10 @@ out:
 }
 
 /**
- * ch_util_profile_read:
+ * cd_util_profile_read:
  **/
 static cmsHPROFILE
-ch_util_profile_read (const gchar *filename, GError **error)
+cd_util_profile_read (const gchar *filename, GError **error)
 {
 	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret;
@@ -205,10 +205,10 @@ out:
 }
 
 /**
- * ch_util_profile_write:
+ * cd_util_profile_write:
  **/
 static gboolean
-ch_util_profile_write (cmsHPROFILE lcms_profile, const gchar *filename, GError **error)
+cd_util_profile_write (cmsHPROFILE lcms_profile, const gchar *filename, GError **error)
 {
 	gboolean ret;
 
@@ -234,10 +234,10 @@ out:
 }
 
 /**
- * ch_util_profile_set_text_acsii:
+ * cd_util_profile_set_text_acsii:
  **/
 static gboolean
-ch_util_profile_set_text_acsii (cmsHPROFILE lcms_profile,
+cd_util_profile_set_text_acsii (cmsHPROFILE lcms_profile,
 				cmsTagSignature sig,
 				const gchar *value,
 				GError **error)
@@ -256,10 +256,10 @@ out:
 }
 
 /**
- * ch_util_set_info_text:
+ * cd_util_set_info_text:
  **/
 static gboolean
-ch_util_set_info_text (ChUtilPrivate *priv, cmsTagSignature sig, gchar **values, GError **error)
+cd_util_set_info_text (CdUtilPrivate *priv, cmsTagSignature sig, gchar **values, GError **error)
 {
 	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret = TRUE;
@@ -273,14 +273,14 @@ ch_util_set_info_text (ChUtilPrivate *priv, cmsTagSignature sig, gchar **values,
 	}
 
 	/* open profile */
-	lcms_profile = ch_util_profile_read (values[1], error);
+	lcms_profile = cd_util_profile_read (values[1], error);
 	if (lcms_profile == NULL) {
 		ret = FALSE;
 		goto out;
 	}
 
 	/* update value */
-	ret = ch_util_profile_set_text_acsii (lcms_profile,
+	ret = cd_util_profile_set_text_acsii (lcms_profile,
 					      sig,
 					      values[0],
 					      error);
@@ -288,7 +288,7 @@ ch_util_set_info_text (ChUtilPrivate *priv, cmsTagSignature sig, gchar **values,
 		goto out;
 
 	/* write new file */
-	ret = ch_util_profile_write (lcms_profile, values[1], error);
+	ret = cd_util_profile_write (lcms_profile, values[1], error);
 	if (!ret)
 		goto out;
 out:
@@ -298,46 +298,46 @@ out:
 }
 
 /**
- * ch_util_set_copyright:
+ * cd_util_set_copyright:
  **/
 static gboolean
-ch_util_set_copyright (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_set_copyright (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	return ch_util_set_info_text (priv, cmsInfoCopyright, values, error);
+	return cd_util_set_info_text (priv, cmsInfoCopyright, values, error);
 }
 
 /**
- * ch_util_set_description:
+ * cd_util_set_description:
  **/
 static gboolean
-ch_util_set_description (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_set_description (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	return ch_util_set_info_text (priv, cmsInfoDescription, values, error);
+	return cd_util_set_info_text (priv, cmsInfoDescription, values, error);
 }
 
 /**
- * ch_util_set_manufacturer:
+ * cd_util_set_manufacturer:
  **/
 static gboolean
-ch_util_set_manufacturer (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_set_manufacturer (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	return ch_util_set_info_text (priv, cmsInfoManufacturer, values, error);
+	return cd_util_set_info_text (priv, cmsInfoManufacturer, values, error);
 }
 
 /**
- * ch_util_set_model:
+ * cd_util_set_model:
  **/
 static gboolean
-ch_util_set_model (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	return ch_util_set_info_text (priv, cmsInfoModel, values, error);
+	return cd_util_set_info_text (priv, cmsInfoModel, values, error);
 }
 
 /**
- * ch_util_clear_metadata:
+ * cd_util_clear_metadata:
  **/
 static gboolean
-ch_util_clear_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_clear_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	cmsHANDLE dict = NULL;
 	cmsHPROFILE lcms_profile = NULL;
@@ -352,7 +352,7 @@ ch_util_clear_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* open profile */
-	lcms_profile = ch_util_profile_read (values[0], error);
+	lcms_profile = cd_util_profile_read (values[0], error);
 	if (lcms_profile == NULL) {
 		ret = FALSE;
 		goto out;
@@ -367,7 +367,7 @@ ch_util_clear_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* write new file */
-	ret = ch_util_profile_write (lcms_profile, values[0], error);
+	ret = cd_util_profile_write (lcms_profile, values[0], error);
 	if (!ret)
 		goto out;
 out:
@@ -377,10 +377,10 @@ out:
 }
 
 /**
- * ch_util_get_standard_space_filename:
+ * cd_util_get_standard_space_filename:
  **/
 static gchar *
-ch_util_get_standard_space_filename (ChUtilPrivate *priv,
+cd_util_get_standard_space_filename (CdUtilPrivate *priv,
 				     CdStandardSpace standard_space,
 				     GError **error)
 {
@@ -410,17 +410,17 @@ out:
 typedef struct {
 	guint			 idx;
 	cmsFloat32Number	*data;
-} CdUtilGamutCheckHelper;
+} CdUtilGamutCdeckHelper;
 
 /**
- * ch_util_get_coverage_sample_cb:
+ * cd_util_get_coverage_sample_cb:
  **/
 static cmsInt32Number
-ch_util_get_coverage_sample_cb (const cmsFloat32Number in[],
+cd_util_get_coverage_sample_cb (const cmsFloat32Number in[],
 				cmsFloat32Number out[],
 				void *user_data)
 {
-	CdUtilGamutCheckHelper *helper = (CdUtilGamutCheckHelper *) user_data;
+	CdUtilGamutCdeckHelper *helper = (CdUtilGamutCdeckHelper *) user_data;
 	helper->data[helper->idx++] = in[0];
 	helper->data[helper->idx++] = in[1];
 	helper->data[helper->idx++] = in[2];
@@ -428,7 +428,7 @@ ch_util_get_coverage_sample_cb (const cmsFloat32Number in[],
 }
 
 /**
- * ch_util_get_coverage:
+ * cd_util_get_coverage:
  * @profile: A valid #CdUtil
  * @filename_in: A filename to proof against
  * @error: A #GError, or %NULL
@@ -438,7 +438,7 @@ ch_util_get_coverage_sample_cb (const cmsFloat32Number in[],
  * Return value: A positive value for success, or -1.0 for error.
  **/
 static gdouble
-ch_util_get_coverage (cmsHPROFILE profile_proof,
+cd_util_get_coverage (cmsHPROFILE profile_proof,
 		      const gchar *filename_in,
 		      GError **error)
 {
@@ -449,7 +449,7 @@ ch_util_get_coverage (cmsHPROFILE profile_proof,
 	cmsHTRANSFORM transform = NULL;
 	cmsUInt16Number *alarm_codes = NULL;
 	cmsUInt32Number dimensions[] = { cube_size, cube_size, cube_size };
-	CdUtilGamutCheckHelper helper;
+	CdUtilGamutCdeckHelper helper;
 	gboolean ret;
 	gdouble coverage = -1.0;
 	guint cnt = 0;
@@ -491,7 +491,7 @@ ch_util_get_coverage (cmsHPROFILE profile_proof,
 	helper.data = data;
 	helper.idx = 0;
 	ret = cmsSliceSpaceFloat (3, dimensions,
-				  ch_util_get_coverage_sample_cb,
+				  cd_util_get_coverage_sample_cb,
 				  &helper);
 	if (!ret) {
 		g_set_error_literal (error, 1, 0, "Failed to slice data");
@@ -522,10 +522,10 @@ out:
 }
 
 /**
- * ch_util_get_profile_coverage:
+ * cd_util_get_profile_coverage:
  **/
 static gdouble
-ch_util_get_profile_coverage (ChUtilPrivate *priv,
+cd_util_get_profile_coverage (CdUtilPrivate *priv,
 			      cmsHPROFILE profile,
 			      CdStandardSpace standard_space,
 			      GError **error)
@@ -534,14 +534,14 @@ ch_util_get_profile_coverage (ChUtilPrivate *priv,
 	gdouble coverage = -1.0f;
 
 	/* get the correct standard space */
-	filename = ch_util_get_standard_space_filename (priv,
+	filename = cd_util_get_standard_space_filename (priv,
 							standard_space,
 							error);
 	if (filename == NULL)
 		goto out;
 
 	/* work out the coverage */
-	coverage = ch_util_get_coverage (profile, filename, error);
+	coverage = cd_util_get_coverage (profile, filename, error);
 	if (coverage < 0.0f)
 		goto out;
 out:
@@ -550,10 +550,10 @@ out:
 }
 
 /**
- * ch_util_set_fix_metadata:
+ * cd_util_set_fix_metadata:
  **/
 static gboolean
-ch_util_set_fix_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	cmsHANDLE dict_new = NULL;
 	cmsHANDLE dict_old = NULL;
@@ -573,7 +573,7 @@ ch_util_set_fix_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* open profile */
-	lcms_profile = ch_util_profile_read (values[0], error);
+	lcms_profile = cd_util_profile_read (values[0], error);
 	if (lcms_profile == NULL) {
 		ret = FALSE;
 		goto out;
@@ -607,7 +607,7 @@ ch_util_set_fix_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	if (cmsGetColorSpace (lcms_profile) == cmsSigRgbData) {
 
 		/* get the gamut coverage for sRGB */
-		coverage = ch_util_get_profile_coverage (priv,
+		coverage = cd_util_get_profile_coverage (priv,
 							  lcms_profile,
 							  CD_STANDARD_SPACE_ADOBE_RGB,
 							  error);
@@ -623,7 +623,7 @@ ch_util_set_fix_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 		g_debug ("coverage of AdobeRGB: %f%%", coverage * 100.0f);
 
 		/* get the gamut coverage for AdobeRGB */
-		coverage = ch_util_get_profile_coverage (priv,
+		coverage = cd_util_get_profile_coverage (priv,
 							 lcms_profile,
 							 CD_STANDARD_SPACE_SRGB,
 							 error);
@@ -651,7 +651,7 @@ ch_util_set_fix_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* write new file */
-	ret = ch_util_profile_write (lcms_profile, values[0], error);
+	ret = cd_util_profile_write (lcms_profile, values[0], error);
 	if (!ret)
 		goto out;
 out:
@@ -663,10 +663,10 @@ out:
 }
 
 /**
- * ch_util_init_metadata:
+ * cd_util_init_metadata:
  **/
 static gboolean
-ch_util_init_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_init_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	cmsHANDLE dict_new = NULL;
 	cmsHANDLE dict_old = NULL;
@@ -684,7 +684,7 @@ ch_util_init_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* open profile */
-	lcms_profile = ch_util_profile_read (values[0], error);
+	lcms_profile = cd_util_profile_read (values[0], error);
 	if (lcms_profile == NULL) {
 		ret = FALSE;
 		goto out;
@@ -736,7 +736,7 @@ ch_util_init_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* write new file */
-	ret = ch_util_profile_write (lcms_profile, values[0], error);
+	ret = cd_util_profile_write (lcms_profile, values[0], error);
 	if (!ret)
 		goto out;
 out:
@@ -748,10 +748,10 @@ out:
 }
 
 /**
- * ch_util_remove_metadata:
+ * cd_util_remove_metadata:
  **/
 static gboolean
-ch_util_remove_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_remove_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	cmsHANDLE dict_new = NULL;
 	cmsHANDLE dict_old = NULL;
@@ -769,7 +769,7 @@ ch_util_remove_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* open profile */
-	lcms_profile = ch_util_profile_read (values[1], error);
+	lcms_profile = cd_util_profile_read (values[1], error);
 	if (lcms_profile == NULL) {
 		ret = FALSE;
 		goto out;
@@ -808,7 +808,7 @@ ch_util_remove_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* write new file */
-	ret = ch_util_profile_write (lcms_profile, values[1], error);
+	ret = cd_util_profile_write (lcms_profile, values[1], error);
 	if (!ret)
 		goto out;
 out:
@@ -820,10 +820,10 @@ out:
 }
 
 /**
- * ch_util_add_metadata:
+ * cd_util_add_metadata:
  **/
 static gboolean
-ch_util_add_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_add_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	cmsHANDLE dict_new = NULL;
 	cmsHANDLE dict_old = NULL;
@@ -841,7 +841,7 @@ ch_util_add_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* open profile */
-	lcms_profile = ch_util_profile_read (values[2], error);
+	lcms_profile = cd_util_profile_read (values[2], error);
 	if (lcms_profile == NULL) {
 		ret = FALSE;
 		goto out;
@@ -879,7 +879,7 @@ ch_util_add_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* write new file */
-	ret = ch_util_profile_write (lcms_profile, values[2], error);
+	ret = cd_util_profile_write (lcms_profile, values[2], error);
 	if (!ret)
 		goto out;
 out:
@@ -891,10 +891,10 @@ out:
 }
 
 /**
- * ch_util_dump:
+ * cd_util_dump:
  **/
 static gboolean
-ch_util_dump (ChUtilPrivate *priv, gchar **values, GError **error)
+cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	cmsHANDLE dict;
 	cmsHPROFILE lcms_profile = NULL;
@@ -958,19 +958,19 @@ out:
 }
 
 /**
- * ch_util_ignore_cb:
+ * cd_util_ignore_cb:
  **/
 static void
-ch_util_ignore_cb (const gchar *log_domain, GLogLevelFlags log_level,
+cd_util_ignore_cb (const gchar *log_domain, GLogLevelFlags log_level,
 		   const gchar *message, gpointer user_data)
 {
 }
 
 /**
- * ch_util_lcms_error_cb:
+ * cd_util_lcms_error_cb:
  **/
 static void
-ch_util_lcms_error_cb (cmsContext ContextID,
+cd_util_lcms_error_cb (cmsContext ContextID,
 		       cmsUInt32Number errorcode,
 		       const char *text)
 {
@@ -983,7 +983,7 @@ ch_util_lcms_error_cb (cmsContext ContextID,
 int
 main (int argc, char *argv[])
 {
-	ChUtilPrivate *priv;
+	CdUtilPrivate *priv;
 	gboolean ret;
 	gboolean verbose = FALSE;
 	gchar *cmd_descriptions = NULL;
@@ -1001,12 +1001,12 @@ main (int argc, char *argv[])
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
-	cmsSetLogErrorHandler (ch_util_lcms_error_cb);
+	cmsSetLogErrorHandler (cd_util_lcms_error_cb);
 
 	g_type_init ();
 
 	/* create helper object */
-	priv = g_new0 (ChUtilPrivate, 1);
+	priv = g_new0 (CdUtilPrivate, 1);
 	priv->client = cd_client_new ();
 	ret = cd_client_connect_sync (priv->client, NULL, &error);
 	if (!ret) {
@@ -1016,57 +1016,57 @@ main (int argc, char *argv[])
 	}
 
 	/* add commands */
-	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) ch_util_item_free);
-	ch_util_add (priv->cmd_array,
+	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_util_item_free);
+	cd_util_add (priv->cmd_array,
 		     "dump",
 		     /* TRANSLATORS: command description */
 		     _("Show all the details about the profile"),
-		     ch_util_dump);
-	ch_util_add (priv->cmd_array,
+		     cd_util_dump);
+	cd_util_add (priv->cmd_array,
 		     "md-clear",
 		     /* TRANSLATORS: command description */
 		     _("Clear any metadata in the profile"),
-		     ch_util_clear_metadata);
-	ch_util_add (priv->cmd_array,
+		     cd_util_clear_metadata);
+	cd_util_add (priv->cmd_array,
 		     "md-init",
 		     /* TRANSLATORS: command description */
 		     _("Initialize any metadata for the profile"),
-		     ch_util_init_metadata);
-	ch_util_add (priv->cmd_array,
+		     cd_util_init_metadata);
+	cd_util_add (priv->cmd_array,
 		     "md-add",
 		     /* TRANSLATORS: command description */
 		     _("Add a metadata item to the profile"),
-		     ch_util_add_metadata);
-	ch_util_add (priv->cmd_array,
+		     cd_util_add_metadata);
+	cd_util_add (priv->cmd_array,
 		     "md-remove",
 		     /* TRANSLATORS: command description */
 		     _("Remove a metadata item from the profile"),
-		     ch_util_remove_metadata);
-	ch_util_add (priv->cmd_array,
+		     cd_util_remove_metadata);
+	cd_util_add (priv->cmd_array,
 		     "set-copyright",
 		     /* TRANSLATORS: command description */
 		     _("Sets the copyright string"),
-		     ch_util_set_copyright);
-	ch_util_add (priv->cmd_array,
+		     cd_util_set_copyright);
+	cd_util_add (priv->cmd_array,
 		     "set-description",
 		     /* TRANSLATORS: command description */
 		     _("Sets the description string"),
-		     ch_util_set_description);
-	ch_util_add (priv->cmd_array,
+		     cd_util_set_description);
+	cd_util_add (priv->cmd_array,
 		     "set-manufacturer",
 		     /* TRANSLATORS: command description */
 		     _("Sets the manufacturer string"),
-		     ch_util_set_manufacturer);
-	ch_util_add (priv->cmd_array,
+		     cd_util_set_manufacturer);
+	cd_util_add (priv->cmd_array,
 		     "set-model",
 		     /* TRANSLATORS: command description */
 		     _("Sets the model string"),
-		     ch_util_set_model);
-	ch_util_add (priv->cmd_array,
+		     cd_util_set_model);
+	cd_util_add (priv->cmd_array,
 		     "md-fix",
 		     /* TRANSLATORS: command description */
 		     _("Automatically fix metadata in the profile"),
-		     ch_util_set_fix_metadata);
+		     cd_util_set_fix_metadata);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,
@@ -1074,7 +1074,7 @@ main (int argc, char *argv[])
 
 	/* get a list of the commands */
 	priv->context = g_option_context_new (NULL);
-	cmd_descriptions = ch_util_get_descriptions (priv->cmd_array);
+	cmd_descriptions = cd_util_get_descriptions (priv->cmd_array);
 	g_option_context_set_summary (priv->context, cmd_descriptions);
 
 	/* TRANSLATORS: program name */
@@ -1087,13 +1087,13 @@ main (int argc, char *argv[])
 		g_setenv ("COLORD_VERBOSE", "1", FALSE);
 	} else {
 		g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
-				   ch_util_ignore_cb, NULL);
+				   cd_util_ignore_cb, NULL);
 	}
 
 	/* get connection to colord */
 
 	/* run the specified command */
-	ret = ch_util_run (priv, argv[1], (gchar**) &argv[2], &error);
+	ret = cd_util_run (priv, argv[1], (gchar**) &argv[2], &error);
 	if (!ret) {
 		g_print ("%s\n", error->message);
 		g_error_free (error);
