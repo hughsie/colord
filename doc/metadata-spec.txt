@@ -60,6 +60,8 @@ CONNECTION_type		The connection type of the video output, where:
 			"dvi"		: Digital DVI
 			"hdmi"		: Digital HDMI
 			"displayport"	: Digital DisplayPort
+GAMUT_volume		The volume of the gamut, (scaled to sRGB = 1.0)
+			expressed as a positive floating point value.
 
 == Virtual Profile Metadata ==
 
