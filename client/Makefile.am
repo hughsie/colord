@@ -43,6 +43,7 @@ cd_fix_profile_LDADD =					\
 	libclientprivate.a				\
 	$(GLIB_LIBS)					\
 	$(LCMS_LIBS)					\
+	$(COLORD_LIBS)					\
 	-lm
 
 cd_fix_profile_CFLAGS =					\

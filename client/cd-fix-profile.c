@@ -27,13 +27,16 @@
 #include <lcms2.h>
 #include <stdlib.h>
 
-#include "cd-enum.h"
+#include "cd-client-sync.h"
 #include "cd-common.h"
+#include "cd-enum.h"
 #include "cd-lcms-helpers.h"
+#include "cd-profile-sync.h"
 
 typedef struct {
 	GOptionContext		*context;
 	GPtrArray		*cmd_array;
+	CdClient		*client;
 } ChUtilPrivate;
 
 typedef gboolean (*ChUtilPrivateCb)	(ChUtilPrivate	*util,
@@ -368,6 +371,292 @@ ch_util_clear_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
 	if (!ret)
 		goto out;
 out:
+	if (lcms_profile != NULL)
+		cmsCloseProfile (lcms_profile);
+	return ret;
+}
+
+/**
+ * ch_util_get_standard_space_filename:
+ **/
+static gchar *
+ch_util_get_standard_space_filename (ChUtilPrivate *priv,
+				     CdStandardSpace standard_space,
+				     GError **error)
+{
+	CdProfile *profile_tmp;
+	gboolean ret;
+	gchar *filename = NULL;
+
+	/* try to find */
+	profile_tmp = cd_client_get_standard_space_sync (priv->client,
+							 standard_space,
+							 NULL,
+							 error);
+	if (profile_tmp == NULL)
+		goto out;
+
+	/* get filename */
+	ret = cd_profile_connect_sync (profile_tmp, NULL, error);
+	if (!ret)
+		goto out;
+	filename = g_strdup (cd_profile_get_filename (profile_tmp));
+out:
+	if (profile_tmp != NULL)
+		g_object_unref (profile_tmp);
+	return filename;
+}
+
+typedef struct {
+	guint			 idx;
+	cmsFloat32Number	*data;
+} CdUtilGamutCheckHelper;
+
+/**
+ * ch_util_get_coverage_sample_cb:
+ **/
+static cmsInt32Number
+ch_util_get_coverage_sample_cb (const cmsFloat32Number in[],
+				cmsFloat32Number out[],
+				void *user_data)
+{
+	CdUtilGamutCheckHelper *helper = (CdUtilGamutCheckHelper *) user_data;
+	helper->data[helper->idx++] = in[0];
+	helper->data[helper->idx++] = in[1];
+	helper->data[helper->idx++] = in[2];
+	return 1;
+}
+
+/**
+ * ch_util_get_coverage:
+ * @profile: A valid #CdUtil
+ * @filename_in: A filename to proof against
+ * @error: A #GError, or %NULL
+ *
+ * Gets the gamut coverage of two profiles
+ *
+ * Return value: A positive value for success, or -1.0 for error.
+ **/
+static gdouble
+ch_util_get_coverage (cmsHPROFILE profile_proof,
+		      const gchar *filename_in,
+		      GError **error)
+{
+	const guint cube_size = 33;
+	cmsFloat32Number *data = NULL;
+	cmsHPROFILE profile_in = NULL;
+	cmsHPROFILE profile_null = NULL;
+	cmsHTRANSFORM transform = NULL;
+	cmsUInt16Number *alarm_codes = NULL;
+	cmsUInt32Number dimensions[] = { cube_size, cube_size, cube_size };
+	CdUtilGamutCheckHelper helper;
+	gboolean ret;
+	gdouble coverage = -1.0;
+	guint cnt = 0;
+	guint data_len = cube_size * cube_size * cube_size;
+	guint i;
+
+	/* load profiles into lcms */
+	profile_null = cmsCreateNULLProfile ();
+	profile_in = cmsOpenProfileFromFile (filename_in, "r");
+	if (profile_in == NULL) {
+		g_set_error (error, 1, 0, "Failed to open %s", filename_in);
+		goto out;
+	}
+
+	/* create a proofing transform with gamut check */
+	transform = cmsCreateProofingTransform (profile_in,
+						TYPE_RGB_FLT,
+						profile_null,
+						TYPE_GRAY_FLT,
+						profile_proof,
+						INTENT_ABSOLUTE_COLORIMETRIC,
+						INTENT_ABSOLUTE_COLORIMETRIC,
+						cmsFLAGS_GAMUTCHECK |
+						cmsFLAGS_SOFTPROOFING);
+	if (transform == NULL) {
+		g_set_error (error, 1, 0,
+			     "Failed to setup transform for %s",
+			     filename_in);
+		goto out;
+	}
+
+	/* set gamut alarm to 0xffff */
+	alarm_codes = g_new0 (cmsUInt16Number, cmsMAXCHANNELS);
+	alarm_codes[0] = 0xffff;
+	cmsSetAlarmCodes (alarm_codes);
+
+	/* slice profile in regular intevals */
+	data = g_new0 (cmsFloat32Number, data_len * 3);
+	helper.data = data;
+	helper.idx = 0;
+	ret = cmsSliceSpaceFloat (3, dimensions,
+				  ch_util_get_coverage_sample_cb,
+				  &helper);
+	if (!ret) {
+		g_set_error_literal (error, 1, 0, "Failed to slice data");
+		goto out;
+	}
+
+	/* transform each one of those nodes across the proofing transform */
+	cmsDoTransform (transform, helper.data, helper.data, data_len);
+
+	/* count the nodes that gives you zero and divide by total number */
+	for (i = 0; i < data_len; i++) {
+		if (helper.data[i] == 0.0)
+			cnt++;
+	}
+
+	/* success */
+	coverage = (gdouble) cnt / (gdouble) data_len;
+	g_assert (coverage >= 0.0);
+out:
+	g_free (data);
+	if (transform != NULL)
+		cmsDeleteTransform (transform);
+	if (profile_null != NULL)
+		cmsCloseProfile (profile_null);
+	if (profile_in != NULL)
+		cmsCloseProfile (profile_in);
+	return coverage;
+}
+
+/**
+ * ch_util_get_profile_coverage:
+ **/
+static gdouble
+ch_util_get_profile_coverage (ChUtilPrivate *priv,
+			      cmsHPROFILE profile,
+			      CdStandardSpace standard_space,
+			      GError **error)
+{
+	gchar *filename = NULL;
+	gdouble coverage = -1.0f;
+
+	/* get the correct standard space */
+	filename = ch_util_get_standard_space_filename (priv,
+							standard_space,
+							error);
+	if (filename == NULL)
+		goto out;
+
+	/* work out the coverage */
+	coverage = ch_util_get_coverage (profile, filename, error);
+	if (coverage < 0.0f)
+		goto out;
+out:
+	g_free (filename);
+	return coverage;
+}
+
+/**
+ * ch_util_set_fix_metadata:
+ **/
+static gboolean
+ch_util_set_fix_metadata (ChUtilPrivate *priv, gchar **values, GError **error)
+{
+	cmsHANDLE dict_new = NULL;
+	cmsHANDLE dict_old = NULL;
+	cmsHPROFILE lcms_profile = NULL;
+	const cmsDICTentry *entry;
+	gboolean ret = TRUE;
+	gchar name[1024];
+	gdouble coverage;
+	gchar *coverage_tmp;
+
+	/* check arguments */
+	if (g_strv_length (values) != 1) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect 'filename'");
+		goto out;
+	}
+
+	/* open profile */
+	lcms_profile = ch_util_profile_read (values[0], error);
+	if (lcms_profile == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+
+	/* copy everything except the CMF keys */
+	dict_old = cmsReadTag (lcms_profile, cmsSigMetaTag);
+	if (dict_old == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "no metadata present");
+		goto out;
+	}
+
+	/* copy, but ignore the gamut keys */
+	dict_new = cmsDictAlloc (NULL);
+	for (entry = cmsDictGetEntryList (dict_old);
+	     entry != NULL;
+	     entry = cmsDictNextEntry (entry)) {
+		wcstombs (name, entry->Name, sizeof (name));
+		if (g_str_has_prefix (name, "GAMUT_volume") == 0)
+			continue;
+		cmsDictAddEntry (dict_new,
+				 entry->Name,
+				 entry->Value,
+				 NULL,
+				 NULL);
+	}
+
+	/* get coverages of common spaces */
+	if (cmsGetColorSpace (lcms_profile) == cmsSigRgbData) {
+
+		/* get the gamut coverage for sRGB */
+		coverage = ch_util_get_profile_coverage (priv,
+							  lcms_profile,
+							  CD_STANDARD_SPACE_ADOBE_RGB,
+							  error);
+		if (coverage < 0.0) {
+			ret = FALSE;
+			goto out;
+		}
+		coverage_tmp = g_strdup_printf ("%f", coverage);
+		_cmsDictAddEntryAscii (dict_new,
+				       "GAMUT_coverage(adobe-rgb)",
+				       coverage_tmp);
+		g_free (coverage_tmp);
+		g_debug ("coverage of AdobeRGB: %f%%", coverage * 100.0f);
+
+		/* get the gamut coverage for AdobeRGB */
+		coverage = ch_util_get_profile_coverage (priv,
+							 lcms_profile,
+							 CD_STANDARD_SPACE_SRGB,
+							 error);
+		if (coverage < 0.0) {
+			ret = FALSE;
+			goto out;
+		}
+		coverage_tmp = g_strdup_printf ("%f", coverage);
+		_cmsDictAddEntryAscii (dict_new,
+				       "GAMUT_coverage(srgb)",
+				       coverage_tmp);
+		g_free (coverage_tmp);
+		g_debug ("coverage of sRGB: %f%%", coverage * 100.0f);
+	}
+
+	/* add CMS defines */
+	_cmsDictAddEntryAscii (dict_new,
+			       CD_PROFILE_METADATA_CMF_VERSION,
+			       PACKAGE_VERSION);
+	ret = cmsWriteTag (lcms_profile, cmsSigMetaTag, dict_new);
+	if (!ret) {
+		g_set_error_literal (error, 1, 0,
+				     "cannot initialize dict tag");
+		goto out;
+	}
+
+	/* write new file */
+	ret = ch_util_profile_write (lcms_profile, values[0], error);
+	if (!ret)
+		goto out;
+out:
+	if (dict_new != NULL)
+		cmsDictFree (dict_new);
 	if (lcms_profile != NULL)
 		cmsCloseProfile (lcms_profile);
 	return ret;
@@ -718,6 +1007,13 @@ main (int argc, char *argv[])
 
 	/* create helper object */
 	priv = g_new0 (ChUtilPrivate, 1);
+	priv->client = cd_client_new ();
+	ret = cd_client_connect_sync (priv->client, NULL, &error);
+	if (!ret) {
+		g_print ("%s\n", error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* add commands */
 	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) ch_util_item_free);
@@ -766,6 +1062,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Sets the model string"),
 		     ch_util_set_model);
+	ch_util_add (priv->cmd_array,
+		     "md-fix",
+		     /* TRANSLATORS: command description */
+		     _("Automatically fix metadata in the profile"),
+		     ch_util_set_fix_metadata);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,
@@ -806,6 +1107,7 @@ out:
 		if (priv->cmd_array != NULL)
 			g_ptr_array_unref (priv->cmd_array);
 		g_option_context_free (priv->context);
+		g_object_unref (priv->client);
 		g_free (priv);
 	}
 	g_free (cmd_descriptions);
