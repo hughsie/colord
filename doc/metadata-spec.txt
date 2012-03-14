@@ -62,6 +62,12 @@ CONNECTION_type		The connection type of the video output, where:
 			"displayport"	: Digital DisplayPort
 GAMUT_volume		The volume of the gamut, (scaled to sRGB = 1.0)
 			expressed as a positive floating point value.
+GAMUT_coverage($x)	The coverage of the gamut compared to a standard
+			gamut, given as $x. The values in $x can be any
+			of the standard spaces allowed in STANDARD_space
+			for example "adobe-rgb".
+			This is expressed as a positive floating point
+			value where 0.0 is none, and 1.0 is full coverage.
 
 == Virtual Profile Metadata ==
 
