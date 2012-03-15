@@ -1,3 +1,24 @@
+Version 0.1.18
+~~~~~~~~~~~~~~
+Released: 2012-03-15
+
+New Features:
+ - Add a Manager.CreateProfileWithFd() method for QtDBus (Richard Hughes)
+ - Add the GAMUT_coverage metadata key to the spec (Richard Hughes)
+ - Add the GAMUT_volume metadata key to the spec (Richard Hughes)
+ - Depend on lcms2 >= 2.2 (Richard Hughes)
+ - Make cd-fix-profile add the GAMUT keys to the ICC file (Richard Hughes)
+ - Split out the SANE support into it's own process (Richard Hughes)
+
+Bugfixes:
+ - Do not delete 'disk' or 'normal' devices when the session exits (Richard Hughes)
+ - Ensure we return NULL for missing device properties (Richard Hughes)
+ - Fix a small leak when creating devices and profiles in clients (Richard Hughes)
+ - Fix cd-fix-profile to add and remove metadata entries (Richard Hughes)
+ - Install per-machine profiles in /var/lib/colord/icc (Richard Hughes)
+ - Show what DBus names have inhibited each device (Richard Hughes)
+ - When doing 'get-devices' show the profile ID and filename (Richard Hughes)
+
 Version 0.1.17
 ~~~~~~~~~~~~~~
 Released: 2012-02-22

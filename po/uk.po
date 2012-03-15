@@ -4,14 +4,14 @@
 # 
 # Translators:
 # Richard Hughes <richard@hughsie.com>, 2011.
-# Yuri Chornoivan <yurchor@ukr.net>, 2009, 2010, 2011.
+# Yuri Chornoivan <yurchor@ukr.net>, 2009, 2010, 2011, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-02 10:23+0000\n"
-"PO-Revision-Date: 2012-03-02 10:30+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2012-03-14 13:59+0000\n"
+"PO-Revision-Date: 2012-03-15 14:13+0000\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,24 +20,24 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:329 ../client/cd-fix-profile.c:169
+#: ../client/cd-create-profile.c:329
 msgid "The profile description"
-msgstr ""
+msgstr "Опис профілю"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:332 ../client/cd-fix-profile.c:172
+#: ../client/cd-create-profile.c:332
 msgid "The profile copyright"
-msgstr ""
+msgstr "Авторські права на профіль"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:335 ../client/cd-fix-profile.c:175
+#: ../client/cd-create-profile.c:335
 msgid "The device model"
-msgstr ""
+msgstr "Модель пристрою"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:338 ../client/cd-fix-profile.c:178
+#: ../client/cd-create-profile.c:338
 msgid "The device manufacturer"
-msgstr ""
+msgstr "Виробник пристрою"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:341
@@ -47,17 +47,17 @@ msgstr "Профіль, який слід створити"
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:344
 msgid "Named color CSV filename"
-msgstr ""
+msgstr "Назва файла з назвами кольорів у форматі CSV"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:347
 msgid "Named color type, e.g. 'lab' or 'srgb'"
-msgstr ""
+msgstr "Тип іменованого кольору, наприклад «lab» або «srgb»"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:350
 msgid "A gamma string, e.g. '0.8,0.8,0.6'"
-msgstr ""
+msgstr "Рядок гами, наприклад «0.8,0.8,0.6»"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:353
@@ -72,7 +72,7 @@ msgstr "Іменований суфікс кольору"
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:359
 msgid "The metadata in 'key1=value1,key2=value2' format"
-msgstr ""
+msgstr "Метадані у форматі «ключ1=значення1,ключ2=значення2»"
 
 #. TRANSLATORS: command line tool
 #: ../client/cd-create-profile.c:370
@@ -91,40 +91,120 @@ msgstr "Не вказано назви файла для виведення да
 #. TRANSLATORS: the user forgot to use an action
 #: ../client/cd-create-profile.c:402
 msgid "No data to create profile"
-msgstr ""
+msgstr "Немає даних для створення профілю"
+
+#. TRANSLATORS: this is a command alias
+#: ../client/cd-fix-profile.c:91 ../client/cd-util.c:468
+#, c-format
+msgid "Alias to %s"
+msgstr "Псевдонім %s"
+
+#: ../client/cd-fix-profile.c:169 ../client/cd-util.c:546
+msgid "Command not found, valid commands are:"
+msgstr "Невідома команда, відомі команди:"
+
+#: ../client/cd-fix-profile.c:924
+msgid "Description"
+msgstr "Опис"
+
+#: ../client/cd-fix-profile.c:927
+msgid "Manufacturer"
+msgstr "Виробник"
+
+#. TRANSLATORS: the device model
+#. TRANSLATORS: sensor model
+#: ../client/cd-fix-profile.c:930 ../client/cd-util.c:227
+#: ../client/cd-util.c:371
+msgid "Model"
+msgstr "Модель"
+
+#: ../client/cd-fix-profile.c:933
+msgid "Copyright"
+msgstr "Авторські права"
+
+#: ../client/cd-fix-profile.c:938
+msgid "No metadata"
+msgstr "Немає метаданих"
+
+#. TRANSLATORS: the metadata for the device
+#: ../client/cd-fix-profile.c:948 ../client/cd-util.c:182
+#: ../client/cd-util.c:296
+msgid "Metadata"
+msgstr "Метадані"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-fix-profile.c:181
-msgid "Clear existing metadata in the profile"
-msgstr ""
+#: ../client/cd-fix-profile.c:995
+msgid "Show extra debugging information"
+msgstr "Показати додаткові діагностичні дані"
 
-#. TRANSLATORS: command line option
-#: ../client/cd-fix-profile.c:184
-msgid "Extra metadata in 'key1=value1,key2=value2' format"
-msgstr ""
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1023
+msgid "Show all the details about the profile"
+msgstr "Показати всі дані щодо профілю"
 
-#. TRANSLATORS: command line option
-#: ../client/cd-fix-profile.c:187
-msgid "Profiles to fix"
-msgstr "Профілі для виправлення"
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1028
+msgid "Clear any metadata in the profile"
+msgstr "Спорожнити всі пункти метаданих профілю"
 
-#. TRANSLATORS: command line tool
-#: ../client/cd-fix-profile.c:198
-msgid "ICC profile fix program"
-msgstr "Програма для виправлення профілів ICC"
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1033
+msgid "Initialize any metadata for the profile"
+msgstr "Записати початкові дані до всіх пунктів метаданих профілю"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1038
+msgid "Add a metadata item to the profile"
+msgstr "Додати пункт метаданих до профілю"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1043
+msgid "Remove a metadata item from the profile"
+msgstr "Вилучити пункт метаданих з профілю"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1048
+msgid "Sets the copyright string"
+msgstr "Встановлює рядок авторських прав"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1053
+msgid "Sets the description string"
+msgstr "Встановлює рядок опису"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1058
+msgid "Sets the manufacturer string"
+msgstr "Встановлює рядок виробника"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1063
+msgid "Sets the model string"
+msgstr "Встановлює рядок моделі"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1068
+msgid "Automatically fix metadata in the profile"
+msgstr "Автоматично виправляти метадані у профілі"
+
+#. TRANSLATORS: program name
+#: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:1897
+#: ../src/cd-main.c:1831
+msgid "Color Management"
+msgstr "Керування кольорами"
 
 #. TRANSLATORS: this is the profile creation date strftime format
-#: ../client/cd-util.c:84
+#: ../client/cd-util.c:86
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr ""
+msgstr "%B %e %Y, %I:%M:%S %p"
 
 #. TRANSLATORS: profile owner
-#: ../client/cd-util.c:99
+#: ../client/cd-util.c:101
 msgid "Owner"
-msgstr ""
+msgstr "Власник"
 
 #. TRANSLATORS: the internal DBus path
-#: ../client/cd-util.c:118 ../client/cd-util.c:203 ../client/cd-util.c:313
+#: ../client/cd-util.c:120 ../client/cd-util.c:207 ../client/cd-util.c:328
 msgid "Object Path"
 msgstr "Шлях до об’єкта"
 
@@ -132,315 +212,308 @@ msgstr "Шлях до об’єкта"
 #. * ColorModel.OutputMode.OutputResolution
 #. TRANSLATORS: the device format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
-#: ../client/cd-util.c:125 ../client/cd-util.c:243
+#: ../client/cd-util.c:127 ../client/cd-util.c:247
 msgid "Format"
-msgstr ""
+msgstr "Формат"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
-#: ../client/cd-util.c:131
+#: ../client/cd-util.c:133
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
-#: ../client/cd-util.c:136
+#: ../client/cd-util.c:138
 msgid "Qualifier"
 msgstr "Специфікатор"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
-#: ../client/cd-util.c:141 ../client/cd-util.c:219 ../client/cd-util.c:335
+#: ../client/cd-util.c:143 ../client/cd-util.c:223 ../client/cd-util.c:350
 msgid "Type"
-msgstr ""
+msgstr "Тип"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
-#: ../client/cd-util.c:147 ../client/cd-util.c:254
+#: ../client/cd-util.c:149 ../client/cd-util.c:258
 msgid "Colorspace"
 msgstr "Простір кольорів"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
-#: ../client/cd-util.c:153 ../client/cd-util.c:249
+#: ../client/cd-util.c:155 ../client/cd-util.c:253
 msgid "Scope"
-msgstr ""
+msgstr "Область дії"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
-#: ../client/cd-util.c:158
+#: ../client/cd-util.c:160
 msgid "Gamma Table"
-msgstr ""
+msgstr "Таблиця гами"
 
 #. TRANSLATORS: profile filename
-#: ../client/cd-util.c:162
+#: ../client/cd-util.c:164
 msgid "Filename"
 msgstr "Назва файла"
 
 #. TRANSLATORS: profile identifier
-#: ../client/cd-util.c:166
+#: ../client/cd-util.c:168
 msgid "Profile ID"
 msgstr "Ід. профілю"
-
-#. TRANSLATORS: the metadata for the device
-#: ../client/cd-util.c:180 ../client/cd-util.c:281
-msgid "Metadata"
-msgstr "Метадані"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
-#: ../client/cd-util.c:210
+#: ../client/cd-util.c:214
 msgid "Created"
 msgstr "Створено"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
-#: ../client/cd-util.c:215
+#: ../client/cd-util.c:219
 msgid "Modified"
 msgstr "Змінено"
 
-#. TRANSLATORS: the device model
-#. TRANSLATORS: sensor model
-#: ../client/cd-util.c:223 ../client/cd-util.c:356
-msgid "Model"
-msgstr "Модель"
-
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
-#: ../client/cd-util.c:227 ../client/cd-util.c:363
+#: ../client/cd-util.c:231 ../client/cd-util.c:378
 msgid "Vendor"
 msgstr "Постачальник"
 
-#: ../client/cd-util.c:232
+#: ../client/cd-util.c:236
 msgid "Inhibitors"
-msgstr ""
+msgstr "Заборони"
 
 #. TRANSLATORS: the device serial number
-#: ../client/cd-util.c:236
+#: ../client/cd-util.c:240
 msgid "Serial"
 msgstr "Серійний номер"
 
 #. TRANSLATORS: the device identifier
-#: ../client/cd-util.c:258
+#: ../client/cd-util.c:262
 msgid "Device ID"
 msgstr "Ід. пристрою"
 
 #. TRANSLATORS: the profile for the device
-#: ../client/cd-util.c:266
+#: ../client/cd-util.c:270
 msgid "Profile"
 msgstr "Профіль"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
-#: ../client/cd-util.c:342
+#: ../client/cd-util.c:357
 msgid "State"
 msgstr "Стан"
 
 #. TRANSLATORS: sensor serial
-#: ../client/cd-util.c:349
+#: ../client/cd-util.c:364
 msgid "Serial number"
 msgstr "Серійний номер"
 
 #. TRANSLATORS: if the sensor has a colord native driver
-#: ../client/cd-util.c:368
+#: ../client/cd-util.c:383
 msgid "Native"
 msgstr "Системний"
 
 #. TRANSLATORS: if the sensor is locked
-#: ../client/cd-util.c:372
+#: ../client/cd-util.c:387
 msgid "Locked"
 msgstr "Заблокований"
 
 #. TRANSLATORS: if the sensor supports calibrating an LCD display
-#: ../client/cd-util.c:376
+#: ../client/cd-util.c:391
 msgid "LCD"
 msgstr "РКД"
 
 #. TRANSLATORS: if the sensor supports calibrating a CRT display
-#: ../client/cd-util.c:380
+#: ../client/cd-util.c:395
 msgid "CRT"
 msgstr "ЕПТ"
 
 #. TRANSLATORS: if the sensor supports calibrating a printer
-#: ../client/cd-util.c:384
+#: ../client/cd-util.c:399
 msgid "Printer"
 msgstr "Принтер"
 
 #. TRANSLATORS: if the sensor supports spot measurements
-#: ../client/cd-util.c:388
+#: ../client/cd-util.c:403
 msgid "Spot"
 msgstr "Точка"
 
 #. TRANSLATORS: if the sensor supports calibrating a projector
-#: ../client/cd-util.c:392
+#: ../client/cd-util.c:407
 msgid "Projector"
 msgstr "Проектор"
 
 #. TRANSLATORS: if the sensor supports getting the ambient light level
-#: ../client/cd-util.c:396
+#: ../client/cd-util.c:411
 msgid "Ambient"
 msgstr "Адаптивний"
 
-#. TRANSLATORS: this is a command alias
-#: ../client/cd-util.c:453
-#, c-format
-msgid "Alias to %s"
-msgstr "Псевдонім %s"
-
-#: ../client/cd-util.c:531
-msgid "Command not found, valid commands are:"
-msgstr "Невідома команда, відомі команди:"
-
-#: ../client/cd-util.c:666 ../client/cd-util.c:704 ../client/cd-util.c:767
+#: ../client/cd-util.c:681 ../client/cd-util.c:719 ../client/cd-util.c:782
 msgid "There are no supported sensors attached"
 msgstr "З комп’ютером не з’єднано підтримуваних датчиків"
 
 #. TRANSLATORS: this is the sensor title
-#: ../client/cd-util.c:803
+#: ../client/cd-util.c:818
 msgid "Sensor"
 msgstr "Датчик"
 
-#: ../client/cd-util.c:814
+#: ../client/cd-util.c:829
 msgid "Color"
 msgstr "Колір"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1744
+#: ../client/cd-util.c:1759
 msgid "Gets all the color managed devices"
 msgstr "Отримати список всіх пристроїв з керуванням кольорами"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1749
+#: ../client/cd-util.c:1764
 msgid "Gets all the color managed devices of a specific kind"
 msgstr "Отримати список всіх пристроїв з керуванням кольорами певного типу"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1754
+#: ../client/cd-util.c:1769
 msgid "Gets all the available color profiles"
 msgstr "Отримати список всіх доступний профілів кольорів"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1759
+#: ../client/cd-util.c:1774
 msgid "Gets all the available color sensors"
 msgstr "Отримати список всіх доступний датчиків кольорів"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1764
+#: ../client/cd-util.c:1779
 msgid "Gets a reading from a sensor"
 msgstr "Виконати спробу читання даних з пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1769
+#: ../client/cd-util.c:1784
 msgid "Locks the color sensor"
 msgstr "Заблокувати датчик кольорів"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1774
+#: ../client/cd-util.c:1789
 msgid "Create a device"
 msgstr "Створити пристрій"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1779
+#: ../client/cd-util.c:1794
 msgid "Find a device"
 msgstr "Знайти пристрій"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1784
+#: ../client/cd-util.c:1799
 msgid "Find a device that has a specific property"
-msgstr ""
+msgstr "Знайти пристрій з певною властивістю"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1789
+#: ../client/cd-util.c:1804
 msgid "Find a profile"
 msgstr "Знайти профіль"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1794
+#: ../client/cd-util.c:1809
 msgid "Find a profile by filename"
-msgstr ""
+msgstr "Знайти профіль за назвою файла"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1799
+#: ../client/cd-util.c:1814
 msgid "Get a standard colorspace"
 msgstr "Отримати стандартний простір кольорів"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1804
+#: ../client/cd-util.c:1819
 msgid "Create a profile"
 msgstr "Створити профіль"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1809
+#: ../client/cd-util.c:1824
 msgid "Add a profile to a device"
 msgstr "Додати профіль до пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1814
+#: ../client/cd-util.c:1829
 msgid "Makes a profile default for a device"
 msgstr "Зробити профіль типовим для пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1819
+#: ../client/cd-util.c:1834
 msgid "Deletes a device"
 msgstr "Вилучити пристрій"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1824
+#: ../client/cd-util.c:1839
 msgid "Deletes a profile"
 msgstr "Вилучити профіль"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1829
+#: ../client/cd-util.c:1844
 msgid "Sets the profile qualifier"
 msgstr "Встановити специфікатор профілю"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1834
+#: ../client/cd-util.c:1849
 msgid "Sets the profile filename"
 msgstr "Встановити назву файла профілю"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1839
+#: ../client/cd-util.c:1854
 msgid "Sets the device model"
 msgstr "Встановити модель пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1844
+#: ../client/cd-util.c:1859
 msgid "Gets the default profile for a device"
 msgstr "Отримати типовий профіль з пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1849
+#: ../client/cd-util.c:1864
 msgid "Sets the device vendor"
 msgstr "Встановити назву виробника пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1854
+#: ../client/cd-util.c:1869
 msgid "Sets the device serial"
 msgstr "Встановлює серійний номер пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1859
+#: ../client/cd-util.c:1874
 msgid "Sets the device kind"
 msgstr "Встановлює тип пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1864
+#: ../client/cd-util.c:1879
 msgid "Inhibits color profiles for this device"
-msgstr ""
+msgstr "Забороняє використання профілів кольорів для цього пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1869
+#: ../client/cd-util.c:1884
 msgid "Returns all the profiles that match a qualifier"
 msgstr "Повертає всі профілі, які відповідають специфікатору"
 
-#. TRANSLATORS: program name
-#: ../client/cd-util.c:1882 ../src/cd-main.c:1787
-msgid "Color Management"
-msgstr "Керування кольорами"
-
 #. TRANSLATORS: no colord available
-#: ../client/cd-util.c:1890
+#: ../client/cd-util.c:1905
 msgid "No connection to colord:"
 msgstr "Немає з’єднання з colord:"
+
+#. TRANSLATORS: exit after we've started up, used for user profiling
+#: ../contrib/colord-sane/cd-main.c:561 ../src/cd-main.c:1815
+msgid "Exit after a small delay"
+msgstr "Завершити роботу з невеличкою затримкою"
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+#: ../contrib/colord-sane/cd-main.c:564 ../src/cd-main.c:1818
+msgid "Exit after the engine has loaded"
+msgstr "Завершити роботу після завантаження рушія"
+
+#. TRANSLATORS: program name
+#: ../contrib/colord-sane/cd-main.c:577
+msgid "Color Management (SANE helper)"
+msgstr "Керування кольорами (допоміжна програма SANE)"
+
+#: ../contrib/colord-sane/cd-main.c:580
+msgid "Color Management D-Bus Service (SANE)"
+msgstr "Служба D-Bus для керування кольорами (SANE)"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -561,16 +634,6 @@ msgstr "Параметри діагностики"
 msgid "Show debugging options"
 msgstr "Показувати параметри діагностики"
 
-#. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:1771
-msgid "Exit after a small delay"
-msgstr "Завершити роботу з невеличкою затримкою"
-
-#. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:1774
-msgid "Exit after the engine has loaded"
-msgstr "Завершити роботу після завантаження рушія"
-
-#: ../src/cd-main.c:1791
+#: ../src/cd-main.c:1835
 msgid "Color Management D-Bus Service"
 msgstr "Служба D-Bus для керування кольорами"

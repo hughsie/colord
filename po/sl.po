@@ -1,47 +1,40 @@
-# Slovenian translation of colord.
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the colord package.
-#
-# Martin Srebotnjak <miles@filmsi.net>, 2011 - 2012.
-#
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Martin Srebotnjak <miles@filmsi.net>, 2011, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: colord master\n"
-"Report-Msgid-Bugs-To: https://bugs.freedesktop.org/enter_bug.cgi?product=colord&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2012-03-02 15:24+0000\n"
-"PO-Revision-Date: 2012-03-03 01:42+0100\n"
-"Last-Translator: filmsi\n"
-"Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
+"Project-Id-Version: colord\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-03-14 13:59+0000\n"
+"PO-Revision-Date: 2012-03-15 14:13+0000\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
+"Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sl\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)\n"
-"X-Poedit-Language: Slovenian\n"
-"X-Poedit-Country: Slovenia\n"
-"X-Poedit-SourceCharset: utf-8\n"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:329
-#: ../client/cd-fix-profile.c:169
 msgid "The profile description"
 msgstr "Opis profila"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:332
-#: ../client/cd-fix-profile.c:172
 msgid "The profile copyright"
 msgstr "Avtorske pravice profila"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:335
-#: ../client/cd-fix-profile.c:175
 msgid "The device model"
 msgstr "Model naprave"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:338
-#: ../client/cd-fix-profile.c:178
 msgid "The device manufacturer"
 msgstr "Proizvajalec naprave"
 
@@ -99,40 +92,118 @@ msgstr "Ime izhodne datoteke ni določeno"
 msgid "No data to create profile"
 msgstr "Ni podatkov za ustvarjanje profila"
 
-#. TRANSLATORS: command line option
-#: ../client/cd-fix-profile.c:181
-msgid "Clear existing metadata in the profile"
-msgstr "Počisti obstoječe metapodatke iz profila"
+#. TRANSLATORS: this is a command alias
+#: ../client/cd-fix-profile.c:91 ../client/cd-util.c:468
+#, c-format
+msgid "Alias to %s"
+msgstr "Vzdevek za %s"
+
+#: ../client/cd-fix-profile.c:169 ../client/cd-util.c:546
+msgid "Command not found, valid commands are:"
+msgstr "Ukaza ni mogoče najti, veljavni ukazi so:"
+
+#: ../client/cd-fix-profile.c:924
+msgid "Description"
+msgstr "Opis"
+
+#: ../client/cd-fix-profile.c:927
+msgid "Manufacturer"
+msgstr "Izdelovalec"
+
+#. TRANSLATORS: the device model
+#. TRANSLATORS: sensor model
+#: ../client/cd-fix-profile.c:930 ../client/cd-util.c:227
+#: ../client/cd-util.c:371
+msgid "Model"
+msgstr "Model"
+
+#: ../client/cd-fix-profile.c:933
+msgid "Copyright"
+msgstr "Avtorske pravice"
+
+#: ../client/cd-fix-profile.c:938
+msgid "No metadata"
+msgstr "Brez metapodatkov"
+
+#. TRANSLATORS: the metadata for the device
+#: ../client/cd-fix-profile.c:948 ../client/cd-util.c:182
+#: ../client/cd-util.c:296
+msgid "Metadata"
+msgstr "Metapodatki"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-fix-profile.c:184
-msgid "Extra metadata in 'key1=value1,key2=value2' format"
-msgstr "Dodatni metapodatki v zapisu 'ključ1=vrednost1,ključ2=vrednost2'"
+#: ../client/cd-fix-profile.c:995
+msgid "Show extra debugging information"
+msgstr "Pokaži dodatne podatke za razhroščevanje"
 
-#. TRANSLATORS: command line option
-#: ../client/cd-fix-profile.c:187
-msgid "Profiles to fix"
-msgstr "Profili za popravljanje"
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1023
+msgid "Show all the details about the profile"
+msgstr "Pokaži vse podrobnosti profila"
 
-#. TRANSLATORS: command line tool
-#: ../client/cd-fix-profile.c:198
-msgid "ICC profile fix program"
-msgstr "Program za popravljanje profilov ICC"
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1028
+msgid "Clear any metadata in the profile"
+msgstr "Počisti vse metapodatke v profilu"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1033
+msgid "Initialize any metadata for the profile"
+msgstr "Inicializiraj metapodatke profila"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1038
+msgid "Add a metadata item to the profile"
+msgstr "Dodaj metapodatek profilu"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1043
+msgid "Remove a metadata item from the profile"
+msgstr "Odstrani metapodatek iz profila"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1048
+msgid "Sets the copyright string"
+msgstr "Določi niz avtorskih pravic"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1053
+msgid "Sets the description string"
+msgstr "Določi niz opisa"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1058
+msgid "Sets the manufacturer string"
+msgstr "Določi niz izdelovalca"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1063
+msgid "Sets the model string"
+msgstr "Določi niz modela"
+
+#. TRANSLATORS: command description
+#: ../client/cd-fix-profile.c:1068
+msgid "Automatically fix metadata in the profile"
+msgstr "Samodejno popravi metapodatke v profilu"
+
+#. TRANSLATORS: program name
+#: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:1897
+#: ../src/cd-main.c:1831
+msgid "Color Management"
+msgstr "Upravljanje barv"
 
 #. TRANSLATORS: this is the profile creation date strftime format
-#: ../client/cd-util.c:84
+#: ../client/cd-util.c:86
 msgid "%B %e %Y, %I:%M:%S %p"
 msgstr "%e.%m.%Y, %H.%M.%S"
 
 #. TRANSLATORS: profile owner
-#: ../client/cd-util.c:99
+#: ../client/cd-util.c:101
 msgid "Owner"
 msgstr "Lastnik"
 
 #. TRANSLATORS: the internal DBus path
-#: ../client/cd-util.c:118
-#: ../client/cd-util.c:203
-#: ../client/cd-util.c:313
+#: ../client/cd-util.c:120 ../client/cd-util.c:207 ../client/cd-util.c:328
 msgid "Object Path"
 msgstr "Pot predmeta"
 
@@ -140,330 +211,312 @@ msgstr "Pot predmeta"
 #. * ColorModel.OutputMode.OutputResolution
 #. TRANSLATORS: the device format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
-#: ../client/cd-util.c:125
-#: ../client/cd-util.c:243
+#: ../client/cd-util.c:127 ../client/cd-util.c:247
 msgid "Format"
 msgstr "Oblika zapisa"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
-#: ../client/cd-util.c:131
+#: ../client/cd-util.c:133
 msgid "Title"
-msgstr "Naslov"
+msgstr "Naziv"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
-#: ../client/cd-util.c:136
+#: ../client/cd-util.c:138
 msgid "Qualifier"
 msgstr "Določilo"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
-#: ../client/cd-util.c:141
-#: ../client/cd-util.c:219
-#: ../client/cd-util.c:335
+#: ../client/cd-util.c:143 ../client/cd-util.c:223 ../client/cd-util.c:350
 msgid "Type"
 msgstr "Vrsta"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
-#: ../client/cd-util.c:147
-#: ../client/cd-util.c:254
+#: ../client/cd-util.c:149 ../client/cd-util.c:258
 msgid "Colorspace"
 msgstr "Barvni prostor"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
-#: ../client/cd-util.c:153
-#: ../client/cd-util.c:249
+#: ../client/cd-util.c:155 ../client/cd-util.c:253
 msgid "Scope"
 msgstr "Obseg"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
-#: ../client/cd-util.c:158
+#: ../client/cd-util.c:160
 msgid "Gamma Table"
 msgstr "Razpredelnica gama"
 
 #. TRANSLATORS: profile filename
-#: ../client/cd-util.c:162
+#: ../client/cd-util.c:164
 msgid "Filename"
 msgstr "Ime datoteke"
 
 #. TRANSLATORS: profile identifier
-#: ../client/cd-util.c:166
+#: ../client/cd-util.c:168
 msgid "Profile ID"
 msgstr "ID profila"
-
-#. TRANSLATORS: the metadata for the device
-#: ../client/cd-util.c:180
-#: ../client/cd-util.c:281
-msgid "Metadata"
-msgstr "Metapodatki"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
-#: ../client/cd-util.c:210
+#: ../client/cd-util.c:214
 msgid "Created"
 msgstr "Ustvarjeno"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
-#: ../client/cd-util.c:215
+#: ../client/cd-util.c:219
 msgid "Modified"
 msgstr "Spremenjeno"
 
-#. TRANSLATORS: the device model
-#. TRANSLATORS: sensor model
-#: ../client/cd-util.c:223
-#: ../client/cd-util.c:356
-msgid "Model"
-msgstr "Model"
-
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
-#: ../client/cd-util.c:227
-#: ../client/cd-util.c:363
+#: ../client/cd-util.c:231 ../client/cd-util.c:378
 msgid "Vendor"
 msgstr "Ponudnik"
 
-#: ../client/cd-util.c:232
+#: ../client/cd-util.c:236
 msgid "Inhibitors"
-msgstr "Preprečevalci"
+msgstr "Preprečevalniki"
 
 #. TRANSLATORS: the device serial number
-#: ../client/cd-util.c:236
+#: ../client/cd-util.c:240
 msgid "Serial"
 msgstr "Zaporedna"
 
 #. TRANSLATORS: the device identifier
-#: ../client/cd-util.c:258
+#: ../client/cd-util.c:262
 msgid "Device ID"
 msgstr "ID naprave"
 
 #. TRANSLATORS: the profile for the device
-#: ../client/cd-util.c:266
+#: ../client/cd-util.c:270
 msgid "Profile"
 msgstr "Profil"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
-#: ../client/cd-util.c:342
+#: ../client/cd-util.c:357
 msgid "State"
 msgstr "Stanje"
 
 #. TRANSLATORS: sensor serial
-#: ../client/cd-util.c:349
+#: ../client/cd-util.c:364
 msgid "Serial number"
 msgstr "Zaporedna številka"
 
 #. TRANSLATORS: if the sensor has a colord native driver
-#: ../client/cd-util.c:368
+#: ../client/cd-util.c:383
 msgid "Native"
 msgstr "Lasten"
 
 #. TRANSLATORS: if the sensor is locked
-#: ../client/cd-util.c:372
+#: ../client/cd-util.c:387
 msgid "Locked"
 msgstr "Zaklenjeno"
 
 #. TRANSLATORS: if the sensor supports calibrating an LCD display
-#: ../client/cd-util.c:376
+#: ../client/cd-util.c:391
 msgid "LCD"
 msgstr "Zaslon LCD"
 
 #. TRANSLATORS: if the sensor supports calibrating a CRT display
-#: ../client/cd-util.c:380
+#: ../client/cd-util.c:395
 msgid "CRT"
 msgstr "Zaslon s katodno cevjo"
 
 #. TRANSLATORS: if the sensor supports calibrating a printer
-#: ../client/cd-util.c:384
+#: ../client/cd-util.c:399
 msgid "Printer"
 msgstr "Tiskalnik"
 
 #. TRANSLATORS: if the sensor supports spot measurements
-#: ../client/cd-util.c:388
+#: ../client/cd-util.c:403
 msgid "Spot"
 msgstr "Točkovno"
 
 #. TRANSLATORS: if the sensor supports calibrating a projector
-#: ../client/cd-util.c:392
+#: ../client/cd-util.c:407
 msgid "Projector"
 msgstr "Projektor"
 
 #. TRANSLATORS: if the sensor supports getting the ambient light level
-#: ../client/cd-util.c:396
+#: ../client/cd-util.c:411
 msgid "Ambient"
 msgstr "Okolje"
 
-#. TRANSLATORS: this is a command alias
-#: ../client/cd-util.c:453
-#, c-format
-msgid "Alias to %s"
-msgstr "Vzdevek za %s"
-
-#: ../client/cd-util.c:531
-msgid "Command not found, valid commands are:"
-msgstr "Ukaza ni mogoče najti, veljavni ukazi so:"
-
-#: ../client/cd-util.c:666
-#: ../client/cd-util.c:704
-#: ../client/cd-util.c:767
+#: ../client/cd-util.c:681 ../client/cd-util.c:719 ../client/cd-util.c:782
 msgid "There are no supported sensors attached"
 msgstr "Podprta tipala niso priključena"
 
 #. TRANSLATORS: this is the sensor title
-#: ../client/cd-util.c:803
+#: ../client/cd-util.c:818
 msgid "Sensor"
 msgstr "Tipalo"
 
-#: ../client/cd-util.c:814
+#: ../client/cd-util.c:829
 msgid "Color"
 msgstr "Barva"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1744
+#: ../client/cd-util.c:1759
 msgid "Gets all the color managed devices"
 msgstr "Pridobi vse naprave, s katerimi je mogoče barvno upravljanje"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1749
+#: ../client/cd-util.c:1764
 msgid "Gets all the color managed devices of a specific kind"
 msgstr "Pridobi vse naprave določene vrste, s katerimi je mogoče barvno upravljanje"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1754
+#: ../client/cd-util.c:1769
 msgid "Gets all the available color profiles"
 msgstr "Pridobi vse barvne profile, ki so na voljo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1759
+#: ../client/cd-util.c:1774
 msgid "Gets all the available color sensors"
 msgstr "Pridobi vsa barvna tipala, ki so na voljo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1764
+#: ../client/cd-util.c:1779
 msgid "Gets a reading from a sensor"
 msgstr "Pridobi meritev tipala"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1769
+#: ../client/cd-util.c:1784
 msgid "Locks the color sensor"
 msgstr "Zaklene barvno tipalo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1774
+#: ../client/cd-util.c:1789
 msgid "Create a device"
 msgstr "Ustvari napravo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1779
+#: ../client/cd-util.c:1794
 msgid "Find a device"
 msgstr "Najdi napravo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1784
+#: ../client/cd-util.c:1799
 msgid "Find a device that has a specific property"
 msgstr "Najdi napravo z določenimi lastnostmi"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1789
+#: ../client/cd-util.c:1804
 msgid "Find a profile"
 msgstr "Najdi profil"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1794
+#: ../client/cd-util.c:1809
 msgid "Find a profile by filename"
 msgstr "Najdi profil po imenu datoteke"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1799
+#: ../client/cd-util.c:1814
 msgid "Get a standard colorspace"
 msgstr "Pridobi standardni barvni prostor"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1804
+#: ../client/cd-util.c:1819
 msgid "Create a profile"
 msgstr "Ustvari profil"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1809
+#: ../client/cd-util.c:1824
 msgid "Add a profile to a device"
 msgstr "Napravi dodaj profil"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1814
+#: ../client/cd-util.c:1829
 msgid "Makes a profile default for a device"
 msgstr "Profil nastavi kot privzet za napravo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1819
+#: ../client/cd-util.c:1834
 msgid "Deletes a device"
 msgstr "Izbriše napravo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1824
+#: ../client/cd-util.c:1839
 msgid "Deletes a profile"
 msgstr "Izbriše profil"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1829
+#: ../client/cd-util.c:1844
 msgid "Sets the profile qualifier"
 msgstr "Nastavi določilo profila"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1834
+#: ../client/cd-util.c:1849
 msgid "Sets the profile filename"
 msgstr "Določi ime datoteke profila"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1839
+#: ../client/cd-util.c:1854
 msgid "Sets the device model"
 msgstr "Določi model naprave"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1844
+#: ../client/cd-util.c:1859
 msgid "Gets the default profile for a device"
 msgstr "Pridobi privzeti profil naprave"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1849
+#: ../client/cd-util.c:1864
 msgid "Sets the device vendor"
 msgstr "Določi ponudnika naprave"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1854
+#: ../client/cd-util.c:1869
 msgid "Sets the device serial"
 msgstr "Določi zapredno številko naprave"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1859
+#: ../client/cd-util.c:1874
 msgid "Sets the device kind"
 msgstr "Določi vrsto naprave"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1864
+#: ../client/cd-util.c:1879
 msgid "Inhibits color profiles for this device"
 msgstr "Prepreči barvne profile za to napravo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1869
+#: ../client/cd-util.c:1884
 msgid "Returns all the profiles that match a qualifier"
 msgstr "Vrne vse profile, ki se ujemajo s pogojem"
 
-#. TRANSLATORS: program name
-#: ../client/cd-util.c:1882
-#: ../src/cd-main.c:1800
-msgid "Color Management"
-msgstr "Upravljanje barv"
-
 #. TRANSLATORS: no colord available
-#: ../client/cd-util.c:1890
+#: ../client/cd-util.c:1905
 msgid "No connection to colord:"
 msgstr "Brez povezave s colord:"
 
+#. TRANSLATORS: exit after we've started up, used for user profiling
+#: ../contrib/colord-sane/cd-main.c:561 ../src/cd-main.c:1815
+msgid "Exit after a small delay"
+msgstr "Končaj po kratki zakasnitvi"
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+#: ../contrib/colord-sane/cd-main.c:564 ../src/cd-main.c:1818
+msgid "Exit after the engine has loaded"
+msgstr "Končaj, ko se programnik naloži"
+
+#. TRANSLATORS: program name
+#: ../contrib/colord-sane/cd-main.c:577
+msgid "Color Management (SANE helper)"
+msgstr "Upravljanje barv (pomočnik SANE)"
+
+#: ../contrib/colord-sane/cd-main.c:580
+msgid "Color Management D-Bus Service (SANE)"
+msgstr "Storitev D-Bus upravljanja barv (SANE)"
+
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:4
 msgid "Create a color managed device"
 msgstr "Ustvari napravo, s katero je mogoče barvno upravljanje"
@@ -474,7 +527,7 @@ msgstr "Za ustvarjanje naprave, s katero lahko je mogoče barvno upravljanje, je
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:9
 msgid "Create a color profile"
 msgstr "Ustvari barvni profil"
@@ -485,7 +538,7 @@ msgstr "Za ustvarjanje barvnega profila je zahtevana overitev"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:14
 msgid "Remove a color managed device"
 msgstr "Odstrani napravo, s katero je mogoče barvno upravljanje"
@@ -496,7 +549,7 @@ msgstr "Za odstranitev naprave, s katero je mogoče barvno upravljanje, je zahte
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:19
 msgid "Remove a color profile"
 msgstr "Odstrani barvni profil"
@@ -507,7 +560,7 @@ msgstr "Za odstranitev barvnega profila je zahtevana overitev"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:24
 msgid "Modify color settings for a device"
 msgstr "Spremeni barvne nastavitve naprave"
@@ -518,7 +571,7 @@ msgstr "Za spremembo barvnih nastavitev naprave je zahtevana overitev"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:29
 msgid "Modify a color profile"
 msgstr "Spremeni barvni profil"
@@ -534,7 +587,7 @@ msgstr "Za spremembo barvnega profila je zahtevana overitev"
 #. - This should not be set to 'yes' as unprivileged users could then
 #. set a profile set to all-white or all-black and thus make the
 #. other sessions unusable.
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:39
 msgid "Install system color profiles"
 msgstr "Namesti sistemske barvne profile"
@@ -546,7 +599,7 @@ msgstr "Za namestitev barvnega profila za vse uporabnike je zahtevana overitev"
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:45
 msgid "Inhibit color profile selection"
 msgstr "Prepreči izbor barvnega profila"
@@ -558,7 +611,7 @@ msgstr "Za onemogočanje ujemanja profilov za napravo je zahtevana overitev"
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
-#.
+#. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:51
 msgid "Use color sensor"
 msgstr "Uporabi barvno tipalo"
@@ -580,17 +633,6 @@ msgstr "Možnosti razhroščevanja"
 msgid "Show debugging options"
 msgstr "Pokaži možnosti razhroščevanja"
 
-#. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:1784
-msgid "Exit after a small delay"
-msgstr "Končaj po kratki zakasnitvi"
-
-#. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:1787
-msgid "Exit after the engine has loaded"
-msgstr "Končaj, ko se programnik naloži"
-
-#: ../src/cd-main.c:1804
+#: ../src/cd-main.c:1835
 msgid "Color Management D-Bus Service"
 msgstr "Storitev D-Bus za upravljanje barv"
-
