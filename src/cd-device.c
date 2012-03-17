@@ -25,6 +25,7 @@
 #include <gio/gio.h>
 #include <sys/time.h>
 #include <string.h>
+#include <pwd.h>
 
 #include "cd-common.h"
 #include "cd-device.h"
@@ -127,6 +128,16 @@ cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
 }
 
 /**
+ * cd_device_get_owner:
+ **/
+guint
+cd_device_get_owner (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), G_MAXUINT);
+	return device->priv->owner;
+}
+
+/**
  * cd_device_set_owner:
  **/
 void
@@ -224,24 +235,49 @@ cd_device_get_kind (CdDevice *device)
 }
 
 /**
+ * cd_device_set_object_path:
+ **/
+static void
+cd_device_set_object_path (CdDevice *device)
+{
+	gchar *path_tmp;
+	gchar *path_owner;
+	struct passwd *pw;
+
+	/* make sure object path is sane */
+	path_tmp = cd_main_ensure_dbus_path (device->priv->id);
+
+	/* append the uid to the object path */
+	pw = getpwuid (device->priv->owner);
+	if (device->priv->owner == 0 ||
+	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
+		path_owner = g_strdup (path_tmp);
+	} else {
+		path_owner = g_strdup_printf ("%s_%s",
+					      path_tmp,
+					      pw->pw_name);
+	}
+	device->priv->object_path = g_build_filename (COLORD_DBUS_PATH,
+						      "devices",
+						      path_owner,
+						      NULL);
+	g_free (path_owner);
+	g_free (path_tmp);
+}
+
+/**
  * cd_device_set_id:
  **/
 void
 cd_device_set_id (CdDevice *device, const gchar *id)
 {
-	gchar *id_tmp;
-
 	g_return_if_fail (CD_IS_DEVICE (device));
-	g_free (device->priv->id);
 
-	/* make sure object path is sane */
-	id_tmp = cd_main_ensure_dbus_path (id);
-	device->priv->object_path = g_build_filename (COLORD_DBUS_PATH,
-						      "devices",
-						      id_tmp,
-						      NULL);
+	g_free (device->priv->id);
 	device->priv->id = g_strdup (id);
-	g_free (id_tmp);
+
+	/* now calculate this again */
+	cd_device_set_object_path (device);
 }
 
 /**

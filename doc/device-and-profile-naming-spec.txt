@@ -133,12 +133,7 @@ duplicated on the filesystem with the exception of user profiles.
 In line with other ICC reccomendations, the embedded profile ID (bytes
 84 to 99) is used, after converting it to a hexadecimal encoding.
 
-The username is optionally appended to the profile ID as it is usually
-not possible to reference profiles in other user accounts.
-Any system-wide profiles added by the daemon will not include the
-username suffix.
-
-Format:		icc-{%embedded-profile-id}[-{%username}]
+Format:		icc-{%embedded-profile-id}
 Example:	icc-3c219b18958837493b586581f8c2a2a4
 
 The ICC do not mandate the embedded profile-id and only recommend it,

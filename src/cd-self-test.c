@@ -117,10 +117,10 @@ colord_device_array_func (void)
 	cd_device_array_add (device_array, device);
 	g_object_unref (device);
 
-	device = cd_device_array_get_by_id (device_array, "does not exist");
+	device = cd_device_array_get_by_id_owner (device_array, "does not exist", 0);
 	g_assert (device == NULL);
 
-	device = cd_device_array_get_by_id (device_array, "dave");
+	device = cd_device_array_get_by_id_owner (device_array, "dave", 0);
 	g_assert (device != NULL);
 	g_assert_cmpstr (cd_device_get_id (device), ==, "dave");
 	g_object_unref (device);

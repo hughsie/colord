@@ -71,11 +71,12 @@ cd_profile_array_remove (CdProfileArray *profile_array, CdProfile *profile)
 }
 
 /**
- * cd_profile_array_get_by_id:
+ * cd_profile_array_get_by_id_owner:
  **/
 CdProfile *
-cd_profile_array_get_by_id (CdProfileArray *profile_array,
-			    const gchar *id)
+cd_profile_array_get_by_id_owner (CdProfileArray *profile_array,
+				  const gchar *id,
+				  guint owner)
 {
 	CdProfileArrayPrivate *priv = profile_array->priv;
 	CdProfile *profile = NULL;
@@ -85,11 +86,21 @@ cd_profile_array_get_by_id (CdProfileArray *profile_array,
 	/* find profile */
 	for (i=0; i<priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
+		if (cd_profile_get_owner (profile_tmp) != owner)
+			continue;
 		if (g_strcmp0 (cd_profile_get_id (profile_tmp), id) == 0) {
 			profile = g_object_ref (profile_tmp);
-			break;
+			goto out;
 		}
 	}
+	for (i=0; i<priv->array->len; i++) {
+		profile_tmp = g_ptr_array_index (priv->array, i);
+		if (g_strcmp0 (cd_profile_get_id (profile_tmp), id) == 0) {
+			profile = g_object_ref (profile_tmp);
+			goto out;
+		}
+	}
+out:
 	return profile;
 }
 

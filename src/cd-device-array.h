@@ -57,8 +57,9 @@ void		 cd_device_array_add			(CdDeviceArray	*device_array,
 							 CdDevice	*device);
 void		 cd_device_array_remove			(CdDeviceArray	*device_array,
 							 CdDevice	*device);
-CdDevice	*cd_device_array_get_by_id		(CdDeviceArray	*device_array,
-							 const gchar	*id);
+CdDevice	*cd_device_array_get_by_id_owner	(CdDeviceArray	*device_array,
+							 const gchar	*id,
+							 guint		 owner);
 CdDevice	*cd_device_array_get_by_object_path	(CdDeviceArray	*device_array,
 							 const gchar	*object_path);
 CdDevice	*cd_device_array_get_by_property	(CdDeviceArray	*device_array,

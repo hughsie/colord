@@ -194,6 +194,7 @@ cd_main_add_profile (CdProfile *profile,
 static CdProfile *
 cd_main_create_profile (const gchar *sender,
 			const gchar *profile_id,
+			guint owner,
 			CdObjectScope scope,
 			GError **error)
 {
@@ -205,6 +206,7 @@ cd_main_create_profile (const gchar *sender,
 
 	/* create an object */
 	profile_tmp = cd_profile_new ();
+	cd_profile_set_owner (profile_tmp, owner);
 	cd_profile_set_id (profile_tmp, profile_id);
 	cd_profile_set_scope (profile_tmp, scope);
 
@@ -364,8 +366,9 @@ cd_main_device_auto_add_profiles (CdDevice *device)
 	/* try to add them */
 	for (i=0; i<array->len; i++) {
 		object_id_tmp = g_ptr_array_index (array, i);
-		profile_tmp = cd_profile_array_get_by_id (profiles_array,
-							  object_id_tmp);
+		profile_tmp = cd_profile_array_get_by_id_owner (profiles_array,
+								object_id_tmp,
+								cd_device_get_owner (device));
 		if (profile_tmp != NULL) {
 			cd_main_device_auto_add_profile (device, profile_tmp);
 			g_object_unref (profile_tmp);
@@ -461,6 +464,7 @@ out:
 static CdDevice *
 cd_main_create_device (const gchar *sender,
 		       const gchar *device_id,
+		       guint owner,
 		       CdObjectScope scope,
 		       CdDeviceMode mode,
 		       GError **error)
@@ -473,6 +477,7 @@ cd_main_create_device (const gchar *sender,
 
 	/* create an object */
 	device_tmp = cd_device_new ();
+	cd_device_set_owner (device_tmp, owner);
 	cd_device_set_id (device_tmp, device_id);
 	cd_device_set_scope (device_tmp, scope);
 	cd_device_set_mode (device_tmp, mode);
@@ -613,8 +618,9 @@ cd_main_profile_auto_add_to_device (CdProfile *profile)
 	/* try to add them */
 	for (i=0; i<array->len; i++) {
 		device_id_tmp = g_ptr_array_index (array, i);
-		device_tmp = cd_device_array_get_by_id (devices_array,
-							device_id_tmp);
+		device_tmp = cd_device_array_get_by_id_owner (devices_array,
+							      device_id_tmp,
+							      cd_profile_get_owner (profile));
 		if (device_tmp != NULL) {
 			cd_main_device_auto_add_profile (device_tmp, profile);
 			g_object_unref (device_tmp);
@@ -738,6 +744,18 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	GDBusMessage *message;
 	GUnixFDList *fd_list;
 
+	/* get the owner of the message */
+	uid = cd_main_get_sender_uid (invocation, &error);
+	if (uid == G_MAXUINT) {
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_MAIN_ERROR,
+						       CD_MAIN_ERROR_FAILED,
+						       "failed to get owner: %s",
+						       error->message);
+		g_error_free (error);
+		goto out;
+	}
+
 	/* return 'as' */
 	if (g_strcmp0 (method_name, "GetDevices") == 0) {
 
@@ -803,7 +821,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(&s)", &device_id);
 		g_debug ("CdMain: %s:FindDeviceById(%s)",
 			 sender, device_id);
-		device = cd_device_array_get_by_id (devices_array, device_id);
+		device = cd_device_array_get_by_id_owner (devices_array,
+							  device_id,
+							  uid);
 		if (device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
@@ -852,7 +872,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(&s)", &device_id);
 		g_debug ("CdMain: %s:FindProfileById(%s)",
 			 sender, device_id);
-		profile = cd_profile_array_get_by_id (profiles_array, device_id);
+		profile = cd_profile_array_get_by_id_owner (profiles_array,
+							    device_id,
+							    uid);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
@@ -942,10 +964,13 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			       &device_id,
 			       &scope_tmp,
 			       &iter);
-
 		g_debug ("CdMain: %s:CreateDevice(%s)", sender, device_id);
+
+		/* check it does not already exist */
 		scope = cd_object_scope_from_string (scope_tmp);
-		device = cd_device_array_get_by_id (devices_array, device_id);
+		device = cd_device_array_get_by_id_owner (devices_array,
+							  device_id,
+							  uid);
 		if (device != NULL) {
 			/* where we try to manually add an existing
 			 * virtual device, which means promoting it to
@@ -967,6 +992,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* create device */
 		device = cd_main_create_device (sender,
 						device_id,
+						uid,
 						scope,
 						CD_DEVICE_MODE_UNKNOWN,
 						&error);
@@ -978,19 +1004,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			g_error_free (error);
 			goto out;
 		}
-
-		/* set the owner */
-		uid = cd_main_get_sender_uid (invocation, &error);
-		if (uid == G_MAXUINT) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "failed to get owner: %s",
-							       error->message);
-			g_error_free (error);
-			goto out;
-		}
-		cd_device_set_owner (device, uid);
 
 		/* set the properties */
 		while (g_variant_iter_next (iter, "{&s&s}",
@@ -1041,7 +1054,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(&o)", &device_id);
 		g_debug ("CdMain: %s:DeleteDevice(%s)",
 			 sender, device_id);
-		device = cd_device_array_get_by_id (devices_array, device_id);
+		device = cd_device_array_get_by_id_owner (devices_array,
+							  device_id,
+							  uid);
 		if (device == NULL) {
 			/* fall back to checking the object path */
 			device = cd_device_array_get_by_object_path (devices_array,
@@ -1076,7 +1091,9 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		g_variant_get (parameters, "(&o)", &device_id);
 		g_debug ("CdMain: %s:DeleteProfile(%s)",
 			 sender, device_id);
-		profile = cd_profile_array_get_by_object_path (profiles_array, device_id);
+		profile = cd_profile_array_get_by_id_owner (profiles_array,
+							    device_id,
+							    uid);
 		if (profile == NULL) {
 			/* fall back to checking the object path */
 			profile = cd_profile_array_get_by_object_path (profiles_array,
@@ -1125,8 +1142,11 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 				       &iter);
 			g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
 		}
-		profile = cd_profile_array_get_by_id (profiles_array,
-						      device_id);
+
+		/* check it does not already exist */
+		profile = cd_profile_array_get_by_id_owner (profiles_array,
+							    device_id,
+							    uid);
 		if (profile != NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
@@ -1135,9 +1155,12 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 							       device_id);
 			goto out;
 		}
+
+		/* create profile */
 		scope = cd_object_scope_from_string (scope_tmp);
 		profile = cd_main_create_profile (sender,
 						  device_id,
+						  uid,
 						  scope,
 						  &error);
 		if (profile == NULL) {
@@ -1145,19 +1168,6 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 								error);
 			goto out;
 		}
-
-		/* set the owner */
-		uid = cd_main_get_sender_uid (invocation, &error);
-		if (uid == G_MAXUINT) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "failed to get owner: %s",
-							       error->message);
-			g_error_free (error);
-			goto out;
-		}
-		cd_profile_set_owner (profile, uid);
 
 		/* auto add profiles from the database */
 		cd_main_profile_auto_add_to_device (profile);
@@ -1344,6 +1354,7 @@ cd_main_add_disk_device (const gchar *device_id)
 
 	device = cd_main_create_device (NULL,
 					device_id,
+					0,
 					CD_OBJECT_SCOPE_DISK,
 					CD_DEVICE_MODE_VIRTUAL,
 					&error);
@@ -1482,8 +1493,9 @@ cd_main_setup_standard_space (const gchar *space,
 
 	/* depending on the prefix, find the profile */
 	if (g_str_has_prefix (search, "icc_")) {
-		profile = cd_profile_array_get_by_id (profiles_array,
-						      search);
+		profile = cd_profile_array_get_by_id_owner (profiles_array,
+							    search,
+							    0);
 	} else if (g_str_has_prefix (search, "/")) {
 		profile = cd_profile_array_get_by_filename (profiles_array,
 							    search);

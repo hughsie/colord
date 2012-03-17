@@ -61,6 +61,7 @@ void		 cd_device_set_scope			(CdDevice	*device,
 							 CdObjectScope	 object_scope);
 void		 cd_device_set_owner			(CdDevice	*device,
 							 guint		 owner);
+guint		 cd_device_get_owner			(CdDevice	*device);
 CdDeviceMode	 cd_device_get_mode			(CdDevice	*device);
 void		 cd_device_set_mode			(CdDevice	*device,
 							 CdDeviceMode	 mode);

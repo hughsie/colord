@@ -26,6 +26,7 @@
 #include <lcms2.h>
 #include <string.h>
 #include <stdlib.h>
+#include <pwd.h>
 
 #include "cd-common.h"
 #include "cd-profile.h"
@@ -101,6 +102,16 @@ cd_profile_set_scope (CdProfile *profile, CdObjectScope object_scope)
 }
 
 /**
+ * cd_profile_get_owner:
+ **/
+guint
+cd_profile_get_owner (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), G_MAXUINT);
+	return profile->priv->owner;
+}
+
+/**
  * cd_profile_set_owner:
  **/
 void
@@ -151,24 +162,49 @@ cd_profile_get_id (CdProfile *profile)
 }
 
 /**
+ * cd_profile_set_object_path:
+ **/
+static void
+cd_profile_set_object_path (CdProfile *profile)
+{
+	gchar *path_tmp;
+	gchar *path_owner;
+	struct passwd *pw;
+
+	/* make sure object path is sane */
+	path_tmp = cd_main_ensure_dbus_path (profile->priv->id);
+
+	/* append the uid to the object path */
+	pw = getpwuid (profile->priv->owner);
+	if (profile->priv->owner == 0 ||
+	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
+		path_owner = g_strdup (path_tmp);
+	} else {
+		path_owner = g_strdup_printf ("%s_%s",
+					      path_tmp,
+					      pw->pw_name);
+	}
+	profile->priv->object_path = g_build_filename (COLORD_DBUS_PATH,
+						       "profiles",
+						       path_owner,
+						       NULL);
+	g_free (path_owner);
+	g_free (path_tmp);
+}
+
+/**
  * cd_profile_set_id:
  **/
 void
 cd_profile_set_id (CdProfile *profile, const gchar *id)
 {
-	gchar *id_tmp;
-
 	g_return_if_fail (CD_IS_PROFILE (profile));
-	g_free (profile->priv->id);
 
-	/* make sure object path is sane */
-	id_tmp = cd_main_ensure_dbus_path (id);
-	profile->priv->object_path = g_build_filename (COLORD_DBUS_PATH,
-						       "profiles",
-						       id_tmp,
-						       NULL);
+	g_free (profile->priv->id);
 	profile->priv->id = g_strdup (id);
-	g_free (id_tmp);
+
+	/* now calculate this again */
+	cd_profile_set_object_path (profile);
 }
 
 /**

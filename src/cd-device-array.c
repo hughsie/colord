@@ -71,11 +71,12 @@ cd_device_array_remove (CdDeviceArray *device_array, CdDevice *device)
 }
 
 /**
- * cd_device_array_get_by_id:
+ * cd_device_array_get_by_id_owner:
  **/
 CdDevice *
-cd_device_array_get_by_id (CdDeviceArray *device_array,
-			    const gchar *id)
+cd_device_array_get_by_id_owner (CdDeviceArray *device_array,
+				 const gchar *id,
+				 guint owner)
 {
 	CdDeviceArrayPrivate *priv = device_array->priv;
 	CdDevice *device = NULL;
@@ -85,11 +86,21 @@ cd_device_array_get_by_id (CdDeviceArray *device_array,
 	/* find device */
 	for (i=0; i<priv->array->len; i++) {
 		device_tmp = g_ptr_array_index (priv->array, i);
+		if (cd_device_get_owner (device_tmp) != owner)
+			continue;
 		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0) {
 			device = g_object_ref (device_tmp);
-			break;
+			goto out;
 		}
 	}
+	for (i=0; i<priv->array->len; i++) {
+		device_tmp = g_ptr_array_index (priv->array, i);
+		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0) {
+			device = g_object_ref (device_tmp);
+			goto out;
+		}
+	}
+out:
 	return device;
 }
 

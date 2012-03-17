@@ -216,8 +216,7 @@ colord_client_random_func (void)
 					       &error);
 	g_assert_no_error (error);
 	g_assert (device != NULL);
-	g_assert_cmpstr (cd_device_get_object_path (device), ==,
-			 device_path);
+	g_assert (g_str_has_prefix (cd_device_get_object_path (device), device_path));
 
 	/* connect */
 	ret = cd_device_connect_sync (device, NULL, &error);
@@ -305,8 +304,7 @@ colord_client_random_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
-	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
-			 profile_path);
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile), profile_path));
 	g_assert_cmpstr (cd_profile_get_id (profile), ==, profile_id);
 	g_assert (!cd_profile_get_is_system_wide (profile));
 
@@ -324,8 +322,7 @@ colord_client_random_func (void)
 						  &error);
 	g_assert_no_error (error);
 	g_assert (profile2 != NULL);
-	g_assert_cmpstr (cd_profile_get_object_path (profile2), ==,
-			 profile2_path);
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile2), profile2_path));
 
 	/* connect */
 	ret = cd_profile_connect_sync (profile2, NULL, &error);
@@ -518,8 +515,7 @@ colord_client_random_func (void)
 								 &error);
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
-	g_assert_cmpstr (cd_profile_get_object_path (profile), ==,
-			 profile_path);
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile), profile_path));
 	g_object_unref (profile_tmp);
 
 	/* check matches wildcarded qualifier */
@@ -529,8 +525,7 @@ colord_client_random_func (void)
 								 &error);
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
-	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp), ==,
-			 profile_path);
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile_tmp), profile_path));
 	g_object_unref (profile_tmp);
 
 	/* check hard profiles beat soft profiles */
@@ -540,8 +535,7 @@ colord_client_random_func (void)
 								 &error);
 	g_assert_no_error (error);
 	g_assert (profile_tmp != NULL);
-	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp), ==,
-			 profile2_path);
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile_tmp), profile2_path));
 	g_object_unref (profile_tmp);
 
 	/* uninhibit device (should fail) */
@@ -1483,7 +1477,7 @@ colord_device_async_func (void)
 	g_debug ("connected to device in %f", g_test_timer_elapsed ());
 
 	/* set a property in another instance */
-	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave");
+	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave_hughsie");
 	ret = cd_device_connect_sync (device_tmp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -1493,7 +1487,7 @@ colord_device_async_func (void)
 	g_object_unref (device_tmp);
 
 	/* delete known device */
-	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave");
+	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave_hughsie");
 	ret = cd_client_delete_device_sync (client, device_tmp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -1624,8 +1618,8 @@ colord_device_modified_func (void)
 					       &error);
 	g_assert_no_error (error);
 	g_assert (device != NULL);
-	g_assert_cmpstr (cd_device_get_object_path (device), ==,
-			 "/org/freedesktop/ColorManager/devices/device_dave");
+	g_assert (g_str_has_prefix (cd_device_get_object_path (device),
+		  "/org/freedesktop/ColorManager/devices/device_dave"));
 
 	/* connect */
 	ret = cd_device_connect_sync (device, NULL, &error);
@@ -1790,13 +1784,11 @@ colord_profile_ordering_func (void)
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 2);
 	profile_tmp = CD_PROFILE (g_ptr_array_index (array, 0));
-	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
-			 ==,
-			 "/org/freedesktop/ColorManager/profiles/profile1");
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile_tmp),
+				    "/org/freedesktop/ColorManager/profiles/profile1"));
 	profile_tmp = CD_PROFILE (g_ptr_array_index (array, 1));
-	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
-			 ==,
-			 "/org/freedesktop/ColorManager/profiles/profile2");
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile_tmp),
+				    "/org/freedesktop/ColorManager/profiles/profile2"));
 	g_ptr_array_unref (array);
 
 	/* delete profiles */
@@ -1840,9 +1832,8 @@ colord_profile_ordering_func (void)
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 1);
 	profile_tmp = CD_PROFILE (g_ptr_array_index (array, 0));
-	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
-			 ==,
-			 "/org/freedesktop/ColorManager/profiles/profile1");
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile_tmp),
+				    "/org/freedesktop/ColorManager/profiles/profile1"));
 	g_ptr_array_unref (array);
 
 	/* create older profile */
@@ -1864,13 +1855,11 @@ colord_profile_ordering_func (void)
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 2);
 	profile_tmp = CD_PROFILE (g_ptr_array_index (array, 0));
-	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
-			 ==,
-			 "/org/freedesktop/ColorManager/profiles/profile1");
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile_tmp),
+				    "/org/freedesktop/ColorManager/profiles/profile1"));
 	profile_tmp = CD_PROFILE (g_ptr_array_index (array, 1));
-	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
-			 ==,
-			 "/org/freedesktop/ColorManager/profiles/profile2");
+	g_assert (g_str_has_prefix (cd_profile_get_object_path (profile_tmp),
+				    "/org/freedesktop/ColorManager/profiles/profile2"));
 	g_ptr_array_unref (array);
 
 	g_free (device_id);
