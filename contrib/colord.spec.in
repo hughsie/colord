@@ -13,7 +13,7 @@ BuildRequires: docbook-utils
 BuildRequires: gettext
 BuildRequires: glib2-devel
 BuildRequires: intltool
-BuildRequires: lcms2-devel
+BuildRequires: lcms2-devel >= 2.2
 BuildRequires: libgudev1-devel
 BuildRequires: polkit-devel >= 0.103
 BuildRequires: sane-backends-devel
