@@ -216,21 +216,25 @@ cd_main_create_profile (const gchar *sender,
 		goto out;
 
 	/* different persistent scope */
-	if (scope == CD_OBJECT_SCOPE_NORMAL) {
+	switch (scope) {
+	case CD_OBJECT_SCOPE_NORMAL:
 		g_debug ("CdMain: normal profile");
-	} else if ((scope & CD_OBJECT_SCOPE_TEMP) > 0) {
+		break;
+	case CD_OBJECT_SCOPE_TEMP:
 		g_debug ("CdMain: temporary profile");
 		/* setup DBus watcher */
 		cd_profile_watch_sender (profile_tmp, sender);
-	} else if ((scope & CD_OBJECT_SCOPE_DISK) > 0) {
+		break;
+	case CD_OBJECT_SCOPE_DISK:
 		g_debug ("CdMain: persistent profile");
 		g_set_error_literal (error,
 				     CD_MAIN_ERROR,
 				     CD_MAIN_ERROR_FAILED,
 				     "persistent profiles are no yet supported");
 		goto out;
-	} else {
+	default:
 		g_warning ("CdMain: Unsupported scope kind: %i", scope);
+		goto out;
 	}
 
 	/* success */
@@ -486,7 +490,7 @@ cd_main_create_device (const gchar *sender,
 		goto out;
 
 	/* setup DBus watcher */
-	if (sender != NULL && (scope & CD_OBJECT_SCOPE_TEMP) > 0) {
+	if (sender != NULL && scope == CD_OBJECT_SCOPE_TEMP) {
 		g_debug ("temporary device");
 		cd_device_watch_sender (device_tmp, sender);
 	}
