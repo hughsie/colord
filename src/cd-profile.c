@@ -768,6 +768,46 @@ cd_profile_set_metadata_from_profile (CdProfile *profile,
 }
 
 /**
+ * cd_profile_fixup_title:
+ **/
+static gchar *
+cd_profile_fixup_title (const gchar *text)
+{
+	gchar *title = NULL;
+	gchar *tmp;
+	guint len;
+
+	/* nothing set */
+	if (text == NULL)
+		goto out;
+
+	/* remove the hardcoded confusing title */
+	if (g_str_has_prefix (text, "Default, "))
+		text += 9;
+	title = g_strdup (text);
+
+	/* hack to make old profiles look nice */
+	tmp = g_strstr_len (title, -1, " (201");
+	if (tmp != NULL)
+		*tmp = '\0';
+
+	/* make underscores into spaces */
+	g_strdelimit (title, "_", ' ');
+
+	/* remove any shitty suffix */
+	if (g_str_has_suffix (title, ".icc") ||
+	    g_str_has_suffix (title, ".ICC") ||
+	    g_str_has_suffix (title, ".icm") ||
+	    g_str_has_suffix (title, ".ICM")) {
+		len = strlen (title);
+		if (len > 4)
+			title[len - 4] = '\0';
+	}
+out:
+	return title;
+}
+
+/**
  * cd_profile_set_from_profile:
  **/
 static gboolean
@@ -778,9 +818,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 	cmsColorSpaceSignature color_space;
 	gboolean ret = FALSE;
 	gchar text[1024];
-	guint len;
 	struct tm created;
-	gchar *tmp;
 	const gchar *value;
 	CdProfilePrivate *priv = profile->priv;
 
@@ -789,27 +827,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 				cmsInfoDescription,
 				"en", "US",
 				text, 1024);
-	priv->title = g_strdup (text);
-
-	/* hack to make old profiles look nice */
-	if (priv->title != NULL) {
-		tmp = g_strstr_len (priv->title, -1, " (201");
-		if (tmp != NULL)
-			*tmp = '\0';
-
-		/* make underscores into spaces */
-		g_strdelimit (priv->title, "_", ' ');
-
-		/* remove any shitty prefix */
-		if (g_str_has_suffix (priv->title, ".icc") ||
-		    g_str_has_suffix (priv->title, ".ICC") ||
-		    g_str_has_suffix (priv->title, ".icm") ||
-		    g_str_has_suffix (priv->title, ".ICM")) {
-			len = strlen (priv->title);
-			if (len > 4)
-				priv->title[len - 4] = '\0';
-		}
-	}
+	priv->title = cd_profile_fixup_title (text);
 
 	/* get the profile kind */
 	switch (cmsGetDeviceClass (lcms_profile)) {
