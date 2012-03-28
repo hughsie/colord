@@ -404,27 +404,13 @@ cd_device_get_profiles (CdDevice *device)
 CdProfile *
 cd_device_get_default_profile (CdDevice *device)
 {
-	CdProfile *profile = NULL;
-	CdProfile *profile_tmp;
-	guint i;
-
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
-
-	/* nothing yet set */
 	if (device->priv->profiles == NULL)
-		goto out;
-
-	/* find a profile we can access */
-	for (i = 0; i < device->priv->profiles->len; i++) {
-		profile_tmp = g_ptr_array_index (device->priv->profiles, i);
-		if (cd_profile_has_access (profile_tmp)) {
-			profile = g_object_ref (profile_tmp);
-			goto out;
-		}
-	}
-out:
-	return profile;
+		return NULL;
+	if (device->priv->profiles->len == 0)
+		return NULL;
+	return g_object_ref (g_ptr_array_index (device->priv->profiles, 0));
 }
 
 /**
