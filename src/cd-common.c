@@ -134,6 +134,14 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 		goto out;
 	}
 
+	/* a client running as the daemon user may also do all actions */
+	if (uid = getuid ()) {
+		g_debug ("CdCommon: not checking %s for %s as running as daemon user",
+			 action_id, sender);
+		ret = TRUE;
+		goto out;
+	}
+
 #ifdef USE_POLKIT
 	/* get authority */
 	authority = polkit_authority_get_sync (NULL, &error);
