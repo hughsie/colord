@@ -6,7 +6,9 @@ Type=dbus
 BusName=org.freedesktop.ColorManager
 ExecStart=@servicedir@/colord
 User=@daemon_user@
-PrivateNetwork=yes
+# We think that udev's AF_NETLINK messages are being filtered when
+# network namespacing is on.
+# PrivateNetwork=yes
 PrivateTmp=yes
 
 [Install]
