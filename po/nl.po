@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-14 13:59+0000\n"
-"PO-Revision-Date: 2012-03-15 14:13+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2012-03-15 17:13+0000\n"
+"PO-Revision-Date: 2012-04-11 14:33+0000\n"
+"Last-Translator: Richard E. van der Luit <nippur@fedoraproject.org>\n"
 "Language-Team: Dutch (http://www.transifex.net/projects/p/freedesktop/language/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -104,11 +104,11 @@ msgstr "Opdracht niet gevonden, geldige opdrachten zijn:"
 
 #: ../client/cd-fix-profile.c:924
 msgid "Description"
-msgstr ""
+msgstr "Beschrijving"
 
 #: ../client/cd-fix-profile.c:927
 msgid "Manufacturer"
-msgstr ""
+msgstr "Fabrikant"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -119,11 +119,11 @@ msgstr "Model"
 
 #: ../client/cd-fix-profile.c:933
 msgid "Copyright"
-msgstr ""
+msgstr "Copyright"
 
 #: ../client/cd-fix-profile.c:938
 msgid "No metadata"
-msgstr ""
+msgstr "Geen metadata"
 
 #. TRANSLATORS: the metadata for the device
 #: ../client/cd-fix-profile.c:948 ../client/cd-util.c:182
@@ -134,57 +134,57 @@ msgstr "Metadata"
 #. TRANSLATORS: command line option
 #: ../client/cd-fix-profile.c:995
 msgid "Show extra debugging information"
-msgstr ""
+msgstr "Toon extra debugging-informatie"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1023
 msgid "Show all the details about the profile"
-msgstr ""
+msgstr "Toon alle details van het profiel"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1028
 msgid "Clear any metadata in the profile"
-msgstr ""
+msgstr "Wis alle metadata in het profiel"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1033
 msgid "Initialize any metadata for the profile"
-msgstr ""
+msgstr "Initialiseer alle metadata voor het profiel"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1038
 msgid "Add a metadata item to the profile"
-msgstr ""
+msgstr "Voeg een metadata-item aan het profiel toe"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1043
 msgid "Remove a metadata item from the profile"
-msgstr ""
+msgstr "Verwijder een metadata-item van het profiel"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1048
 msgid "Sets the copyright string"
-msgstr ""
+msgstr "Stelt de string voor vermelding copyright in."
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1053
 msgid "Sets the description string"
-msgstr ""
+msgstr "Stelt de string voor de beschrijving  in"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1058
 msgid "Sets the manufacturer string"
-msgstr ""
+msgstr "Stelt de string voor vermelding van fabrikant  in"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1063
 msgid "Sets the model string"
-msgstr ""
+msgstr "Stelt de string voor vermelding model in"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1068
 msgid "Automatically fix metadata in the profile"
-msgstr ""
+msgstr "Repareer automatisch metadata in het profiel"
 
 #. TRANSLATORS: program name
 #: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:1897
@@ -508,11 +508,11 @@ msgstr "Afsluiten nadat de engine geladen is"
 #. TRANSLATORS: program name
 #: ../contrib/colord-sane/cd-main.c:577
 msgid "Color Management (SANE helper)"
-msgstr ""
+msgstr "Kleurmanagement (SANE helper)"
 
 #: ../contrib/colord-sane/cd-main.c:580
 msgid "Color Management D-Bus Service (SANE)"
-msgstr ""
+msgstr "Kleurmanagement D-Bus Service (SANE)"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices

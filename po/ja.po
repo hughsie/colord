@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Hajime Taira <htaira@redhat.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-14 13:59+0000\n"
-"PO-Revision-Date: 2012-03-15 14:13+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2012-03-15 17:13+0000\n"
+"PO-Revision-Date: 2012-03-25 12:25+0000\n"
+"Last-Translator: Hajime Taira <htaira@redhat.com>\n"
 "Language-Team: Japanese (http://www.transifex.net/projects/p/freedesktop/language/ja/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,191 +21,191 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:329
 msgid "The profile description"
-msgstr ""
+msgstr "プロファイルの説明"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:332
 msgid "The profile copyright"
-msgstr ""
+msgstr "プロファイルの著作権"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:335
 msgid "The device model"
-msgstr ""
+msgstr "デバイスのモデル名"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:338
 msgid "The device manufacturer"
-msgstr ""
+msgstr "デバイスのメーカー名"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:341
 msgid "Profile to create"
-msgstr ""
+msgstr "プロファイルから生成"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:344
 msgid "Named color CSV filename"
-msgstr ""
+msgstr "名前付きカラーの CSV ファイル名"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:347
 msgid "Named color type, e.g. 'lab' or 'srgb'"
-msgstr ""
+msgstr "カラータイプの名前　例えば 'lab' や 'srgb'"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:350
 msgid "A gamma string, e.g. '0.8,0.8,0.6'"
-msgstr ""
+msgstr "ガンマの文字列はこのように指定してください。例: '0.8, 0.8, 0.6'"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:353
 msgid "Named color prefix"
-msgstr ""
+msgstr "カラープレフィックスの名前"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:356
 msgid "Named color suffix"
-msgstr ""
+msgstr "カラーサフィックスの名前"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:359
 msgid "The metadata in 'key1=value1,key2=value2' format"
-msgstr ""
+msgstr "'key1=value1,key2=value2' という形式でメタデータを指定します"
 
 #. TRANSLATORS: command line tool
 #: ../client/cd-create-profile.c:370
 msgid "ICC profile creation program"
-msgstr ""
+msgstr "ICC プロファイル生成プログラム"
 
 #: ../client/cd-create-profile.c:376
 msgid "Failed to parse arguments"
-msgstr ""
+msgstr "引数をパースできませんでした"
 
 #. TRANSLATORS: the user forgot to use -o
 #: ../client/cd-create-profile.c:386
 msgid "No output filename specified"
-msgstr ""
+msgstr "出力ファイル名が指定されていません。"
 
 #. TRANSLATORS: the user forgot to use an action
 #: ../client/cd-create-profile.c:402
 msgid "No data to create profile"
-msgstr ""
+msgstr "プロファイルを作成するためのデータがありません"
 
 #. TRANSLATORS: this is a command alias
 #: ../client/cd-fix-profile.c:91 ../client/cd-util.c:468
 #, c-format
 msgid "Alias to %s"
-msgstr ""
+msgstr "%s の別名"
 
 #: ../client/cd-fix-profile.c:169 ../client/cd-util.c:546
 msgid "Command not found, valid commands are:"
-msgstr ""
+msgstr "コマンドが見つかりません。有効なコマンド:"
 
 #: ../client/cd-fix-profile.c:924
 msgid "Description"
-msgstr ""
+msgstr "説明"
 
 #: ../client/cd-fix-profile.c:927
 msgid "Manufacturer"
-msgstr ""
+msgstr "メーカー名"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 #: ../client/cd-fix-profile.c:930 ../client/cd-util.c:227
 #: ../client/cd-util.c:371
 msgid "Model"
-msgstr ""
+msgstr "モデル"
 
 #: ../client/cd-fix-profile.c:933
 msgid "Copyright"
-msgstr ""
+msgstr "Copyright"
 
 #: ../client/cd-fix-profile.c:938
 msgid "No metadata"
-msgstr ""
+msgstr "メタデータがありません"
 
 #. TRANSLATORS: the metadata for the device
 #: ../client/cd-fix-profile.c:948 ../client/cd-util.c:182
 #: ../client/cd-util.c:296
 msgid "Metadata"
-msgstr ""
+msgstr "メタデータ"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-fix-profile.c:995
 msgid "Show extra debugging information"
-msgstr ""
+msgstr "拡張デバッグ情報を表示する"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1023
 msgid "Show all the details about the profile"
-msgstr ""
+msgstr "プロファイルについての詳細をすべてを表示します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1028
 msgid "Clear any metadata in the profile"
-msgstr ""
+msgstr "プロファイルからすべてのメタデータを消去する"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1033
 msgid "Initialize any metadata for the profile"
-msgstr ""
+msgstr "プロファイルのすべてのメタデータを初期化します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1038
 msgid "Add a metadata item to the profile"
-msgstr ""
+msgstr "プロファイルにメタデータの項目を追加します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1043
 msgid "Remove a metadata item from the profile"
-msgstr ""
+msgstr "プロファイルからメタデータの項目を削除します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1048
 msgid "Sets the copyright string"
-msgstr ""
+msgstr "著作権の文字列をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1053
 msgid "Sets the description string"
-msgstr ""
+msgstr "説明の文字列をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1058
 msgid "Sets the manufacturer string"
-msgstr ""
+msgstr "メーカー名の文字列をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1063
 msgid "Sets the model string"
-msgstr ""
+msgstr "モデルの文字列をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1068
 msgid "Automatically fix metadata in the profile"
-msgstr ""
+msgstr "プロファイル内のメタデータを自動的に修正する"
 
 #. TRANSLATORS: program name
 #: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:1897
 #: ../src/cd-main.c:1831
 msgid "Color Management"
-msgstr ""
+msgstr "カラーマネジメント"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: ../client/cd-util.c:86
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr ""
+msgstr "%Y年%B%e日 %p %I:%M:%S"
 
 #. TRANSLATORS: profile owner
 #: ../client/cd-util.c:101
 msgid "Owner"
-msgstr ""
+msgstr "所有者"
 
 #. TRANSLATORS: the internal DBus path
 #: ../client/cd-util.c:120 ../client/cd-util.c:207 ../client/cd-util.c:328
 msgid "Object Path"
-msgstr ""
+msgstr "オブジェクトパス"
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -212,372 +213,372 @@ msgstr ""
 #. * ColorModel.OutputMode.OutputResolution
 #: ../client/cd-util.c:127 ../client/cd-util.c:247
 msgid "Format"
-msgstr ""
+msgstr "形式"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: ../client/cd-util.c:133
 msgid "Title"
-msgstr ""
+msgstr "タイトル"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: ../client/cd-util.c:138
 msgid "Qualifier"
-msgstr ""
+msgstr "修飾子"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: ../client/cd-util.c:143 ../client/cd-util.c:223 ../client/cd-util.c:350
 msgid "Type"
-msgstr ""
+msgstr "タイプ"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 #: ../client/cd-util.c:149 ../client/cd-util.c:258
 msgid "Colorspace"
-msgstr ""
+msgstr "色空間"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: ../client/cd-util.c:155 ../client/cd-util.c:253
 msgid "Scope"
-msgstr ""
+msgstr "範囲"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: ../client/cd-util.c:160
 msgid "Gamma Table"
-msgstr ""
+msgstr "ガンマテーブル"
 
 #. TRANSLATORS: profile filename
 #: ../client/cd-util.c:164
 msgid "Filename"
-msgstr ""
+msgstr "ファイル名"
 
 #. TRANSLATORS: profile identifier
 #: ../client/cd-util.c:168
 msgid "Profile ID"
-msgstr ""
+msgstr "プロファイル ID"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 #: ../client/cd-util.c:214
 msgid "Created"
-msgstr ""
+msgstr "作成日"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 #: ../client/cd-util.c:219
 msgid "Modified"
-msgstr ""
+msgstr "更新日"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 #: ../client/cd-util.c:231 ../client/cd-util.c:378
 msgid "Vendor"
-msgstr ""
+msgstr "供給元"
 
 #: ../client/cd-util.c:236
 msgid "Inhibitors"
-msgstr ""
+msgstr "禁止事項"
 
 #. TRANSLATORS: the device serial number
 #: ../client/cd-util.c:240
 msgid "Serial"
-msgstr ""
+msgstr "シリアル"
 
 #. TRANSLATORS: the device identifier
 #: ../client/cd-util.c:262
 msgid "Device ID"
-msgstr ""
+msgstr "デバイスID"
 
 #. TRANSLATORS: the profile for the device
 #: ../client/cd-util.c:270
 msgid "Profile"
-msgstr ""
+msgstr "プロファイル"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:357
 msgid "State"
-msgstr ""
+msgstr "状態"
 
 #. TRANSLATORS: sensor serial
 #: ../client/cd-util.c:364
 msgid "Serial number"
-msgstr ""
+msgstr "シリアル番号"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: ../client/cd-util.c:383
 msgid "Native"
-msgstr ""
+msgstr "ネイティブ"
 
 #. TRANSLATORS: if the sensor is locked
 #: ../client/cd-util.c:387
 msgid "Locked"
-msgstr ""
+msgstr "ロック中"
 
 #. TRANSLATORS: if the sensor supports calibrating an LCD display
 #: ../client/cd-util.c:391
 msgid "LCD"
-msgstr ""
+msgstr "LCD"
 
 #. TRANSLATORS: if the sensor supports calibrating a CRT display
 #: ../client/cd-util.c:395
 msgid "CRT"
-msgstr ""
+msgstr "CRT"
 
 #. TRANSLATORS: if the sensor supports calibrating a printer
 #: ../client/cd-util.c:399
 msgid "Printer"
-msgstr ""
+msgstr "プリンター"
 
 #. TRANSLATORS: if the sensor supports spot measurements
 #: ../client/cd-util.c:403
 msgid "Spot"
-msgstr ""
+msgstr "スポット"
 
 #. TRANSLATORS: if the sensor supports calibrating a projector
 #: ../client/cd-util.c:407
 msgid "Projector"
-msgstr ""
+msgstr "プロジェクター"
 
 #. TRANSLATORS: if the sensor supports getting the ambient light level
 #: ../client/cd-util.c:411
 msgid "Ambient"
-msgstr ""
+msgstr "アンビエント"
 
 #: ../client/cd-util.c:681 ../client/cd-util.c:719 ../client/cd-util.c:782
 msgid "There are no supported sensors attached"
-msgstr ""
+msgstr "サポートされているセンサーは取り付けられておりません。"
 
 #. TRANSLATORS: this is the sensor title
 #: ../client/cd-util.c:818
 msgid "Sensor"
-msgstr ""
+msgstr "センサー"
 
 #: ../client/cd-util.c:829
 msgid "Color"
-msgstr ""
+msgstr "色"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1759
 msgid "Gets all the color managed devices"
-msgstr ""
+msgstr "カラーマネジメントされたデバイスをすべて取得します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1764
 msgid "Gets all the color managed devices of a specific kind"
-msgstr ""
+msgstr "指定された種類のカラーマネジメントされたデバイスをすべて取得します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1769
 msgid "Gets all the available color profiles"
-msgstr ""
+msgstr "利用可能なすべてのカラープロファイルを取得します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1774
 msgid "Gets all the available color sensors"
-msgstr ""
+msgstr "利用可能なすべてのカラーセンサーを取得します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1779
 msgid "Gets a reading from a sensor"
-msgstr ""
+msgstr "センサーから読みだした情報を取得します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1784
 msgid "Locks the color sensor"
-msgstr ""
+msgstr "カラーセンサーをロックします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1789
 msgid "Create a device"
-msgstr ""
+msgstr "デバイスを作成します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1794
 msgid "Find a device"
-msgstr ""
+msgstr "デバイスを検索します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1799
 msgid "Find a device that has a specific property"
-msgstr ""
+msgstr "指定されたプロパティーを持つデバイスを検索します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1804
 msgid "Find a profile"
-msgstr ""
+msgstr "プロファイルを検索します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1809
 msgid "Find a profile by filename"
-msgstr ""
+msgstr "ファイル名からプロファイルを検索します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1814
 msgid "Get a standard colorspace"
-msgstr ""
+msgstr "標準色空間を取得します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1819
 msgid "Create a profile"
-msgstr ""
+msgstr "プロファイルの作成します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1824
 msgid "Add a profile to a device"
-msgstr ""
+msgstr "デバイスにプロファイルを追加します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1829
 msgid "Makes a profile default for a device"
-msgstr ""
+msgstr "デバイスに対するデフォルトのプロファイルに指定します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1834
 msgid "Deletes a device"
-msgstr ""
+msgstr "デバイスを削除します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1839
 msgid "Deletes a profile"
-msgstr ""
+msgstr "プロファイルを削除します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1844
 msgid "Sets the profile qualifier"
-msgstr ""
+msgstr "プロファイルの修飾子をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1849
 msgid "Sets the profile filename"
-msgstr ""
+msgstr "プロファイルのファイル名をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1854
 msgid "Sets the device model"
-msgstr ""
+msgstr "デバイスのモデル名をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1859
 msgid "Gets the default profile for a device"
-msgstr ""
+msgstr "デバイスに対するデフォルトのプロファイルを取得します"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1864
 msgid "Sets the device vendor"
-msgstr ""
+msgstr "デバイスの供給元名をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1869
 msgid "Sets the device serial"
-msgstr ""
+msgstr "デバイスのシリアルをセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1874
 msgid "Sets the device kind"
-msgstr ""
+msgstr "デバイスの種類をセットします"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1879
 msgid "Inhibits color profiles for this device"
-msgstr ""
+msgstr "デバイスに対するカラープロファイルの選択を禁じます"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1884
 msgid "Returns all the profiles that match a qualifier"
-msgstr ""
+msgstr "修飾子でマッチしたすべてのプロファイルを返します"
 
 #. TRANSLATORS: no colord available
 #: ../client/cd-util.c:1905
 msgid "No connection to colord:"
-msgstr ""
+msgstr "colord への接続がありません:"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: ../contrib/colord-sane/cd-main.c:561 ../src/cd-main.c:1815
 msgid "Exit after a small delay"
-msgstr ""
+msgstr "少し遅延して終了します"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: ../contrib/colord-sane/cd-main.c:564 ../src/cd-main.c:1818
 msgid "Exit after the engine has loaded"
-msgstr ""
+msgstr "エンジンを読み込んでから終了します"
 
 #. TRANSLATORS: program name
 #: ../contrib/colord-sane/cd-main.c:577
 msgid "Color Management (SANE helper)"
-msgstr ""
+msgstr "カラーマネジメント (SANE helper)"
 
 #: ../contrib/colord-sane/cd-main.c:580
 msgid "Color Management D-Bus Service (SANE)"
-msgstr ""
+msgstr "Color Management D-Bus Service (SANE)"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:4
 msgid "Create a color managed device"
-msgstr ""
+msgstr "カラーマネジメントされたデバイスの作成します"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:5
 msgid "Authentication is required to create a color managed device"
-msgstr ""
+msgstr "カラーマネジメントされたデバイスを作成するには認証が必要です。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:9
 msgid "Create a color profile"
-msgstr ""
+msgstr "カラープロファイルを作成します"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:10
 msgid "Authentication is required to create a color profile"
-msgstr ""
+msgstr "カラープロファイルを作成するには認証が必要です。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:14
 msgid "Remove a color managed device"
-msgstr ""
+msgstr "カラーマネジメントされたデバイスの削除します"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:15
 msgid "Authentication is required to remove a color managed device"
-msgstr ""
+msgstr "カラーマネジメントされたデバイスを削除するには認証が必要です。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:19
 msgid "Remove a color profile"
-msgstr ""
+msgstr "カラープロファイルを削除します"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:20
 msgid "Authentication is required to remove a color profile"
-msgstr ""
+msgstr "カラープロファイルを削除するには認証が必要です。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:24
 msgid "Modify color settings for a device"
-msgstr ""
+msgstr "デバイスに対するカラー設定を変更します"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:25
 msgid "Authentication is required to modify the color settings for a device"
-msgstr ""
+msgstr "デバイスのカラー設定を変更するには認証が必要です。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:29
 msgid "Modify a color profile"
-msgstr ""
+msgstr "カラープロファイルを変更します"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:30
 msgid "Authentication is required to modify a color profile"
-msgstr ""
+msgstr "カラープロファイルを変更するには認証が必要です。"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -589,11 +590,11 @@ msgstr ""
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:39
 msgid "Install system color profiles"
-msgstr ""
+msgstr "システムのカラープロファイルをインストールします"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:40
 msgid "Authentication is required to install the color profile for all users"
-msgstr ""
+msgstr "すべてのユーザーに対してカラープロファイルをインストールするには認証が必要です。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
@@ -601,11 +602,11 @@ msgstr ""
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:45
 msgid "Inhibit color profile selection"
-msgstr ""
+msgstr "カラープロファイルの選択を禁じます"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:46
 msgid "Authentication is required to disable profile matching for a device"
-msgstr ""
+msgstr "デバイスに対して適用中のプロファイルを無効化するには認証が必要です。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
@@ -613,25 +614,25 @@ msgstr ""
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:51
 msgid "Use color sensor"
-msgstr ""
+msgstr "カラーセンサーを使用します"
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:52
 msgid "Authentication is required to use the color sensor"
-msgstr ""
+msgstr "カラーセンサーを使用するには認証が必要です。"
 
 #. TRANSLATORS: turn on all debugging
 #: ../src/cd-debug.c:112
 msgid "Show debugging information for all files"
-msgstr ""
+msgstr "すべてのファイルのデバッグ情報を表示"
 
 #: ../src/cd-debug.c:170
 msgid "Debugging Options"
-msgstr ""
+msgstr "デバッグオプション"
 
 #: ../src/cd-debug.c:171
 msgid "Show debugging options"
-msgstr ""
+msgstr "デバッグオプションを表示します"
 
 #: ../src/cd-main.c:1835
 msgid "Color Management D-Bus Service"
-msgstr ""
+msgstr "Color Management D-Bus Service"

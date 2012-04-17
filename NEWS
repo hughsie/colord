@@ -1,3 +1,18 @@
+Version 0.1.19
+~~~~~~~~~~~~~~
+Released: 2012-04-17
+
+New Features:
+ - Add a user suffix to the object path of user-created devices and profiles (Richard Hughes)
+
+Bugfixes:
+ - Add User key to colord-sane's DBus service file (Christopher James Halse Rogers)
+ - Do not enable PrivateNetwork=yes as it breaks hotplugging devices (Richard Hughes)
+ - Ensure colord-sane can create devices and profiles (Christopher James Halse Rogers)
+ - Fix usage of CD_OBJECT_SCOPE_* enums (John Sheu)
+ - Honor aclocal flags (Craig Keogh)
+ - Remove the 'Default,' profile title prefix if legacy profiles are installed (Richard Hughes)
+
 Version 0.1.18
 ~~~~~~~~~~~~~~
 Released: 2012-03-15

@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Andika Triwidada <andika@gmail.com>, 2011.
+# Andika Triwidada <andika@gmail.com>, 2011, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-14 13:59+0000\n"
-"PO-Revision-Date: 2012-03-15 14:13+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2012-03-15 17:13+0000\n"
+"PO-Revision-Date: 2012-04-02 21:12+0000\n"
+"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.net/projects/p/freedesktop/language/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,22 +21,22 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:329
 msgid "The profile description"
-msgstr ""
+msgstr "Deskripsi profil"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:332
 msgid "The profile copyright"
-msgstr ""
+msgstr "Hak cipta profil"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:335
 msgid "The device model"
-msgstr ""
+msgstr "Model perangkat"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:338
 msgid "The device manufacturer"
-msgstr ""
+msgstr "Pembuat perangkat"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:341
@@ -46,17 +46,17 @@ msgstr "Profil untuk dibuat"
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:344
 msgid "Named color CSV filename"
-msgstr ""
+msgstr "Nama berkas CSV warna bernama"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:347
 msgid "Named color type, e.g. 'lab' or 'srgb'"
-msgstr ""
+msgstr "Jenis warna bernama, mis. 'lab' atau 'srgb'"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:350
 msgid "A gamma string, e.g. '0.8,0.8,0.6'"
-msgstr ""
+msgstr "Suatu kalimat gamma, mis. '0.8,0.8,0.6'"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:353
@@ -71,7 +71,7 @@ msgstr "Sufiks warna dengan nama"
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:359
 msgid "The metadata in 'key1=value1,key2=value2' format"
-msgstr ""
+msgstr "Metadata dalam bentuk 'kunci1=nilai1,kunci2=nilai2'"
 
 #. TRANSLATORS: command line tool
 #: ../client/cd-create-profile.c:370
@@ -90,7 +90,7 @@ msgstr "Nama berkas keluaran tak dinyatakan"
 #. TRANSLATORS: the user forgot to use an action
 #: ../client/cd-create-profile.c:402
 msgid "No data to create profile"
-msgstr ""
+msgstr "Tak ada data untuk membuat profil"
 
 #. TRANSLATORS: this is a command alias
 #: ../client/cd-fix-profile.c:91 ../client/cd-util.c:468
@@ -104,11 +104,11 @@ msgstr "Perintah tak ditemukan, perintah yang valid adalah:"
 
 #: ../client/cd-fix-profile.c:924
 msgid "Description"
-msgstr ""
+msgstr "Deskripsi"
 
 #: ../client/cd-fix-profile.c:927
 msgid "Manufacturer"
-msgstr ""
+msgstr "Pembuat"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -119,11 +119,11 @@ msgstr "Model"
 
 #: ../client/cd-fix-profile.c:933
 msgid "Copyright"
-msgstr ""
+msgstr "Hak cipta"
 
 #: ../client/cd-fix-profile.c:938
 msgid "No metadata"
-msgstr ""
+msgstr "Tak ada metadata"
 
 #. TRANSLATORS: the metadata for the device
 #: ../client/cd-fix-profile.c:948 ../client/cd-util.c:182
@@ -134,57 +134,57 @@ msgstr "Metadata"
 #. TRANSLATORS: command line option
 #: ../client/cd-fix-profile.c:995
 msgid "Show extra debugging information"
-msgstr ""
+msgstr "Tampilkan informasi pengawakutuan ekstra"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1023
 msgid "Show all the details about the profile"
-msgstr ""
+msgstr "Tampilkan semua rincian tentang profil"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1028
 msgid "Clear any metadata in the profile"
-msgstr ""
+msgstr "Bersihkan metadata dalam profil"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1033
 msgid "Initialize any metadata for the profile"
-msgstr ""
+msgstr "Inisialisasi metadata bagi profil"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1038
 msgid "Add a metadata item to the profile"
-msgstr ""
+msgstr "Tambahkan butir metadata ke profil"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1043
 msgid "Remove a metadata item from the profile"
-msgstr ""
+msgstr "Hapus butir metadata dari profil"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1048
 msgid "Sets the copyright string"
-msgstr ""
+msgstr "Tata kalimat hak cipta"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1053
 msgid "Sets the description string"
-msgstr ""
+msgstr "Tata kalimat deskripsi"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1058
 msgid "Sets the manufacturer string"
-msgstr ""
+msgstr "Tata kalimat pembuat"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1063
 msgid "Sets the model string"
-msgstr ""
+msgstr "Tata kalimat model"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1068
 msgid "Automatically fix metadata in the profile"
-msgstr ""
+msgstr "Otomatis perbaiki metadata dalam profil"
 
 #. TRANSLATORS: program name
 #: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:1897
@@ -200,7 +200,7 @@ msgstr ""
 #. TRANSLATORS: profile owner
 #: ../client/cd-util.c:101
 msgid "Owner"
-msgstr ""
+msgstr "Pemilik"
 
 #. TRANSLATORS: the internal DBus path
 #: ../client/cd-util.c:120 ../client/cd-util.c:207 ../client/cd-util.c:328
@@ -213,13 +213,13 @@ msgstr "Path Objek"
 #. * ColorModel.OutputMode.OutputResolution
 #: ../client/cd-util.c:127 ../client/cd-util.c:247
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: ../client/cd-util.c:133
 msgid "Title"
-msgstr ""
+msgstr "Judul"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: ../client/cd-util.c:138
@@ -231,7 +231,7 @@ msgstr "Kualifier"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: ../client/cd-util.c:143 ../client/cd-util.c:223 ../client/cd-util.c:350
 msgid "Type"
-msgstr ""
+msgstr "Jenis"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -242,12 +242,12 @@ msgstr "Ruang warna"
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: ../client/cd-util.c:155 ../client/cd-util.c:253
 msgid "Scope"
-msgstr ""
+msgstr "Cakupan"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: ../client/cd-util.c:160
 msgid "Gamma Table"
-msgstr ""
+msgstr "Tabel Gamma"
 
 #. TRANSLATORS: profile filename
 #: ../client/cd-util.c:164
@@ -280,7 +280,7 @@ msgstr "Vendor"
 
 #: ../client/cd-util.c:236
 msgid "Inhibitors"
-msgstr ""
+msgstr "Pencegah"
 
 #. TRANSLATORS: the device serial number
 #: ../client/cd-util.c:240
@@ -403,7 +403,7 @@ msgstr "Temukan perangkat"
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1799
 msgid "Find a device that has a specific property"
-msgstr ""
+msgstr "Temukan perangkat yang memiliki properti tertentu"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1804
@@ -413,7 +413,7 @@ msgstr "Temukan profil"
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1809
 msgid "Find a profile by filename"
-msgstr ""
+msgstr "Temukan profil berdasar nama berkas"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1814
@@ -483,7 +483,7 @@ msgstr "Tata jenis perangkat"
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1879
 msgid "Inhibits color profiles for this device"
-msgstr ""
+msgstr "Cegah profil warna bagi perangkat ini"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1884
@@ -508,11 +508,11 @@ msgstr "Keluar setelah mesin dimuat"
 #. TRANSLATORS: program name
 #: ../contrib/colord-sane/cd-main.c:577
 msgid "Color Management (SANE helper)"
-msgstr ""
+msgstr "Manajemen Warna (pembantu SANE)"
 
 #: ../contrib/colord-sane/cd-main.c:580
 msgid "Color Management D-Bus Service (SANE)"
-msgstr ""
+msgstr "Layanan D-Bus Manajemen Warna (SANE)"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
