@@ -120,6 +120,21 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Options' type='a{sv}' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The options currently set on the sensor.
+          </doc:para>
+          <doc:para>
+            This is a dictionary of property keys and values, e.g.
+            <doc:tt>remote-profile-hash = deadbeef</doc:tt>.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <method name='Lock'>
       <doc:doc>
         <doc:description>
@@ -192,6 +207,27 @@
           <doc:summary>
             <doc:para>
               The Z value, or <doc:tt>-1.0</doc:tt> for an error.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--***********************************************************-->
+    <method name='SetOptions'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Sets one or multiple options on the sensor.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='a{sv}' name='values' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A dictionary of property keys and values, e.g.
+              <doc:tt>remote-profile-hash = deadbeef</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>

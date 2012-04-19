@@ -107,6 +107,9 @@ void		 cd_sensor_set_mode		(CdSensor		*sensor,
 CdSensorCap	 cd_sensor_get_mode		(CdSensor		*sensor);
 void		 cd_sensor_set_serial		(CdSensor		*sensor,
 						 const gchar		*serial);
+void		 cd_sensor_add_option		(CdSensor		*sensor,
+						 const gchar		*key,
+						 GVariant		*value);
 
 /* GModule */
 void		 cd_sensor_get_sample_async	(CdSensor		*sensor,
@@ -134,6 +137,14 @@ void		 cd_sensor_unlock_async		(CdSensor		*sensor,
 						 GAsyncReadyCallback	 callback,
 						 gpointer		 user_data);
 gboolean	 cd_sensor_unlock_finish	(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
+void		 cd_sensor_set_options_async	(CdSensor		*sensor,
+						 GHashTable		*options,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+gboolean	 cd_sensor_set_options_finish	(CdSensor		*sensor,
 						 GAsyncResult		*res,
 						 GError			**error);
 
