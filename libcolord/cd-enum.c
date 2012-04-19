@@ -427,6 +427,8 @@ cd_sensor_state_to_string (CdSensorState sensor_state)
 		return "idle";
 	if (sensor_state == CD_SENSOR_STATE_MEASURING)
 		return "measuring";
+	if (sensor_state == CD_SENSOR_STATE_BUSY)
+		return "busy";
 	return "unknown";
 }
 
@@ -447,6 +449,8 @@ cd_sensor_state_from_string (const gchar *sensor_state)
 		return CD_SENSOR_STATE_IDLE;
 	if (g_strcmp0 (sensor_state, "measuring") == 0)
 		return CD_SENSOR_STATE_MEASURING;
+	if (g_strcmp0 (sensor_state, "busy") == 0)
+		return CD_SENSOR_STATE_BUSY;
 	return CD_SENSOR_STATE_UNKNOWN;
 }
 
