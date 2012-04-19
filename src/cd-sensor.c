@@ -453,8 +453,6 @@ cd_sensor_get_sample_cb (GObject *source_object,
 out:
 	if (sample != NULL)
 		cd_color_xyz_free (sample);
-	if (result != NULL)
-		g_variant_unref (result);
 }
 
 /**
