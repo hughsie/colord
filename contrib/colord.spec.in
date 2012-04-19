@@ -105,6 +105,7 @@ exit 0
 %{_libdir}/girepository-1.0/*.typelib
 %ghost %{_localstatedir}/lib/colord/*.db
 /usr/lib/systemd/system/colord.service
+%{_sysconfdir}/bash_completion.d/*-completion.bash
 
 %files devel
 %defattr(-,root,root,-)

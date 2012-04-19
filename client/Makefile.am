@@ -61,6 +61,9 @@ cd_create_profile_LDADD =				\
 cd_create_profile_CFLAGS =				\
 	$(WARNINGFLAGS_C)
 
+bashcompletiondir = ${sysconfdir}/bash_completion.d
+dist_bashcompletion_DATA = colormgr-completion.bash
+
 MAINTAINERCLEANFILES = *.a
 
 -include $(top_srcdir)/git.mk
