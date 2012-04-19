@@ -321,8 +321,13 @@ cd_util_show_sensor (CdSensor *sensor)
 	CdSensorState state;
 	const gchar *tmp;
 	gboolean ret;
+	gchar *str_tmp;
 	GError *error = NULL;
+	GHashTable *options = NULL;
+	GList *l;
+	GList *list = NULL;
 	GMainLoop *loop = NULL;
+	GVariant *value_tmp;
 
 	/* TRANSLATORS: the internal DBus path */
 	cd_util_print_field (_("Object Path"),
@@ -379,6 +384,26 @@ cd_util_show_sensor (CdSensor *sensor)
 			 tmp);
 	}
 
+	/* print sensor options */
+	options = cd_sensor_get_options (sensor);
+	list = g_hash_table_get_keys (options);
+	for (l = list; l != NULL; l = l->next) {
+		value_tmp = (GVariant *) g_hash_table_lookup (options,
+							      l->data);
+		if (g_variant_is_of_type (value_tmp, G_VARIANT_TYPE_STRING)) {
+			str_tmp = g_strdup_printf ("%s=%s",
+						   (const gchar *) l->data,
+						   g_variant_get_string (value_tmp, NULL));
+		} else {
+			str_tmp = g_strdup_printf ("%s=*unknown*",
+						   (const gchar *) l->data);
+		}
+
+		/* TRANSLATORS: the options for the sensor */
+		cd_util_print_field (_("Options"), str_tmp);
+		g_free (str_tmp);
+	}
+
 	/* TRANSLATORS: if the sensor has a colord native driver */
 	cd_util_print_field (_("Native"),
 			     cd_sensor_get_native (sensor) ? "Yes" : "No");
@@ -422,6 +447,8 @@ cd_util_show_sensor (CdSensor *sensor)
 		goto out;
 	}
 out:
+	g_list_free (list);
+	g_hash_table_unref (options);
 	if (loop != NULL)
 		g_main_loop_unref (loop);
 }
