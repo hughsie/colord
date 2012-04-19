@@ -311,12 +311,12 @@
  * CH_CMD_TAKE_READINGS:
  *
  * Take a reading taking into account just dark offsets.
- * All of @red, @green and @blue are _signed_ values.
+ * All of @red, @green and @blue are packed float values.
  *
  * This command is useful if you want to do an ambient reading.
  *
  * IN:  [1:cmd]
- * OUT: [1:retval][1:cmd][2:red][2:green][2:blue]
+ * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
  * This command is only available in firmware mode.
  **/
@@ -431,10 +431,10 @@
 /**
  * CH_CMD_GET_PRE_SCALE:
  *
- * Get the pre XYZ scaling constant.
+ * Get the pre XYZ scaling constant. @scale is a packed float.
  *
  * IN:  [1:cmd]
- * OUT: [1:retval][1:cmd][2:scale]
+ * OUT: [1:retval][1:cmd][4:scale]
  *
  * This command is only available in firmware mode.
  **/
@@ -443,9 +443,9 @@
 /**
  * CH_CMD_SET_PRE_SCALE:
  *
- * Set the pre XYZ scaling constant.
+ * Set the pre XYZ scaling constant. @scale is a packed float.
  *
- * IN:  [1:cmd][2:scale]
+ * IN:  [1:cmd][4:scale]
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
@@ -455,10 +455,10 @@
 /**
  * CH_CMD_GET_POST_SCALE:
  *
- * Get the post XYZ scaling constant.
+ * Get the post XYZ scaling constant. @scale is a packed float.
  *
  * IN:  [1:cmd]
- * OUT: [1:retval][1:cmd][2:scale]
+ * OUT: [1:retval][1:cmd][4:scale]
  *
  * This command is only available in firmware mode.
  **/
@@ -467,9 +467,9 @@
 /**
  * CH_CMD_SET_POST_SCALE:
  *
- * Set the post XYZ scaling constant.
+ * Set the post XYZ scaling constant. @scale is a packed float.
  *
- * IN:  [1:cmd][2:scale]
+ * IN:  [1:cmd][4:scale]
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
