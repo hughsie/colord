@@ -29,7 +29,8 @@ lib_LTLIBRARIES =						\
 
 libcolord_includedir = $(includedir)/colord-1
 libcolord_include_HEADERS =					\
-	colord.h
+	colord.h						\
+	colord-private.h
 
 libcolordbase_includedir = $(libcolord_includedir)/colord
 libcolordbase_include_HEADERS =					\
