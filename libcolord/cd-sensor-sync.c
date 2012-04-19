@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -188,6 +188,58 @@ cd_sensor_unlock_sync (CdSensor *sensor,
 	cd_sensor_unlock (sensor, cancellable,
 			  (GAsyncReadyCallback) cd_sensor_unlock_finish_sync,
 			  &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.ret;
+}
+
+/**********************************************************************/
+
+static void
+cd_sensor_set_options_finish_sync (CdSensor *sensor,
+				   GAsyncResult *res,
+				   CdSensorHelper *helper)
+{
+	helper->ret = cd_sensor_set_options_finish (sensor,
+						    res,
+						    helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_sensor_set_options_sync:
+ * @sensor: a #CdSensor instance.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Sets options on the sensor device.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: %TRUE for success, else %FALSE.
+ *
+ * Since: 0.1.20
+ **/
+gboolean
+cd_sensor_set_options_sync (CdSensor *sensor,
+			    GHashTable *values,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	CdSensorHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+
+	/* run async method */
+	cd_sensor_set_options (sensor, values, cancellable,
+			       (GAsyncReadyCallback) cd_sensor_set_options_finish_sync,
+			       &helper);
 	g_main_loop_run (helper.loop);
 
 	/* free temp object */

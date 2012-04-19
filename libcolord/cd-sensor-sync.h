@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -39,6 +39,10 @@ gboolean	 cd_sensor_lock_sync			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_sensor_unlock_sync			(CdSensor	*sensor,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_sensor_set_options_sync		(CdSensor	*sensor,
+							 GHashTable	*values,
 							 GCancellable	*cancellable,
 							 GError		**error);
 CdColorXYZ	*cd_sensor_get_sample_sync		(CdSensor	*sensor,

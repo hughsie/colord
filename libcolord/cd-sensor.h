@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -106,6 +106,14 @@ void		 cd_sensor_unlock			(CdSensor	*sensor,
 gboolean	 cd_sensor_unlock_finish		(CdSensor	*sensor,
 							 GAsyncResult	*res,
 							 GError		**error);
+void		 cd_sensor_set_options			(CdSensor	*sensor,
+							 GHashTable	*values,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_sensor_set_options_finish		(CdSensor	*sensor,
+							 GAsyncResult	*res,
+							 GError		**error);
 void		 cd_sensor_get_sample			(CdSensor	*sensor,
 							 CdSensorCap	 cap,
 							 GCancellable	*cancellable,
@@ -129,6 +137,9 @@ gboolean	 cd_sensor_get_locked			(CdSensor	*sensor);
 guint		 cd_sensor_get_caps			(CdSensor	*sensor);
 gboolean	 cd_sensor_has_cap			(CdSensor	*sensor,
 							 CdSensorCap	 cap);
+GHashTable	*cd_sensor_get_options			(CdSensor	*sensor);
+const gchar	*cd_sensor_get_option			(CdSensor	*sensor,
+							 const gchar	*key);
 
 /* utilities */
 void		 cd_sensor_set_object_path		(CdSensor	*sensor,

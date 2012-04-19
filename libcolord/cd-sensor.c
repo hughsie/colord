@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -64,6 +64,7 @@ struct _CdSensorPrivate
 	gboolean		 native;
 	gboolean		 locked;
 	guint			 caps;
+	GHashTable		*options;
 	GDBusProxy		*proxy;
 };
 
@@ -327,6 +328,30 @@ cd_sensor_set_caps_from_variant (CdSensor *sensor, GVariant *variant)
 }
 
 /**
+ * cd_sensor_set_options_from_variant:
+ **/
+static void
+cd_sensor_set_options_from_variant (CdSensor *sensor, GVariant *variant)
+{
+	const gchar *prop_key;
+	GVariantIter iter;
+	GVariant *prop_value;
+
+	/* remove old entries */
+	g_hash_table_remove_all (sensor->priv->options);
+
+	/* insert the new options */
+	g_variant_iter_init (&iter, variant);
+	while (g_variant_iter_loop (&iter, "{sv}",
+				    &prop_key, &prop_value)) {
+		g_hash_table_insert (sensor->priv->options,
+				     g_strdup (prop_key),
+				     g_variant_ref (prop_value));
+
+	}
+}
+
+/**
  * cd_sensor_dbus_properties_changed_cb:
  **/
 static void
@@ -379,6 +404,8 @@ cd_sensor_dbus_properties_changed_cb (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, "Capabilities") == 0) {
 			cd_sensor_set_caps_from_variant (sensor, property_value);
 			g_object_notify (G_OBJECT (sensor), "capabilities");
+		} else if (g_strcmp0 (property_name, "Options") == 0) {
+			cd_sensor_set_options_from_variant (sensor, property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
@@ -811,6 +838,122 @@ cd_sensor_unlock (CdSensor *sensor,
 /**********************************************************************/
 
 /**
+ * cd_sensor_set_options_finish:
+ * @sensor: a #CdSensor instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.20
+ **/
+gboolean
+cd_sensor_set_options_finish (CdSensor *sensor,
+			      GAsyncResult *res,
+			      GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_sensor_set_options_cb (GObject *source_object,
+			  GAsyncResult *res,
+			  gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_FAILED,
+						 "Failed to set sensor options: %s",
+						 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
+out:
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+/**
+ * cd_sensor_set_options:
+ * @sensor: a #CdSensor instance.
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Sets options on the sensor device.
+ *
+ * Since: 0.1.20
+ **/
+void
+cd_sensor_set_options (CdSensor *sensor,
+		       GHashTable *values,
+		       GCancellable *cancellable,
+		       GAsyncReadyCallback callback,
+		       gpointer user_data)
+{
+	GList *list, *l;
+	GSimpleAsyncResult *res;
+	GVariantBuilder builder;
+
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (sensor->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (sensor),
+					 callback,
+					 user_data,
+					 cd_sensor_set_options);
+
+	/* convert the hash table to an array of {sv} */
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	list = g_hash_table_get_keys (values);
+	for (l = list; l != NULL; l = l->next) {
+		g_variant_builder_add (&builder,
+				       "{sv}",
+				       l->data,
+				       g_hash_table_lookup (values,
+							    l->data));
+	}
+	g_list_free (list);
+
+	g_dbus_proxy_call (sensor->priv->proxy,
+			   "SetOptions",
+			   g_variant_new ("(a{sv})",
+					  &builder),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_sensor_set_options_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
  * cd_sensor_get_sample_finish:
  * @sensor: a #CdSensor instance.
  * @res: the #GAsyncResult
@@ -954,6 +1097,41 @@ cd_sensor_get_connected (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	return sensor->priv->proxy != NULL;
+}
+
+/**
+ * cd_sensor_get_options:
+ * @sensor: a #CdSensor instance.
+ *
+ * Gets any sensor options.
+ *
+ * Return value: (transfer full): A refcounted #GHashTable of (string, GVariant).
+ *
+ * Since: 0.1.20
+ **/
+GHashTable *
+cd_sensor_get_options (CdSensor *sensor)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	return g_hash_table_ref (sensor->priv->options);
+}
+
+/**
+ * cd_sensor_get_option:
+ * @sensor: a #CdSensor instance.
+ * @key: a key to search for.
+ *
+ * Gets a specific sensor option.
+ *
+ * Return value: A const string, or %NULL of not found.
+ *
+ * Since: 0.1.20
+ **/
+const gchar *
+cd_sensor_get_option (CdSensor *sensor, const gchar *key)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	return g_hash_table_lookup (sensor->priv->options, key);
 }
 
 /**
@@ -1211,6 +1389,10 @@ static void
 cd_sensor_init (CdSensor *sensor)
 {
 	sensor->priv = CD_SENSOR_GET_PRIVATE (sensor);
+	sensor->priv->options = g_hash_table_new_full (g_str_hash,
+						       g_str_equal,
+						       (GDestroyNotify) g_free,
+						       (GDestroyNotify) g_variant_unref);
 }
 
 /*
@@ -1230,6 +1412,7 @@ cd_sensor_finalize (GObject *object)
 	g_free (sensor->priv->serial);
 	g_free (sensor->priv->model);
 	g_free (sensor->priv->vendor);
+	g_hash_table_unref (sensor->priv->options);
 	if (sensor->priv->proxy != NULL) {
 		ret = g_signal_handlers_disconnect_by_func (sensor->priv->proxy,
 							    G_CALLBACK (cd_sensor_dbus_signal_cb),
