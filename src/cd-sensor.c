@@ -573,19 +573,19 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	const gchar *cap_tmp = NULL;
 	GVariant *result = NULL;
 
+	/* check native */
+	if (!priv->native) {
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_MAIN_ERROR,
+						       CD_MAIN_ERROR_FAILED,
+						       "no native driver for sensor");
+		goto out;
+	}
+
 	/* return '' */
 	if (g_strcmp0 (method_name, "Lock") == 0) {
 
 		g_debug ("CdSensor %s:Lock()", sender);
-
-		/* non-native */
-		if (!priv->native) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "cannot lock non-native driver");
-			goto out;
-		}
 
 		/* check locked */
 		if (priv->locked) {
@@ -630,15 +630,6 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		g_debug ("CdSensor %s:Unlock()", sender);
 
-		/* non-native */
-		if (!priv->native) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "cannot unlock non-native driver");
-			goto out;
-		}
-
 		/* check locked */
 		if (!priv->locked) {
 			g_dbus_method_invocation_return_error (invocation,
@@ -679,15 +670,6 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetSample") == 0) {
 
 		g_debug ("CdSensor %s:GetSample()", sender);
-
-		/* check native */
-		if (!priv->native) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "no native driver for sensor");
-			goto out;
-		}
 
 		/* check locked */
 		if (!priv->locked) {
