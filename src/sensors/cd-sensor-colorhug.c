@@ -62,6 +62,8 @@ typedef struct {
 	GSimpleAsyncResult		*res;
 	guint32				 serial_number;
 	gulong				 cancellable_id;
+	GHashTable			*options;
+	ChSha1				 sha1;
 } CdSensorAsyncState;
 
 /**
@@ -271,6 +273,35 @@ cd_sensor_colorhug_lock_state_finish (CdSensorAsyncState *state,
 }
 
 static void
+cd_sensor_colorhug_get_remote_hash_cb (GObject *object,
+				       GAsyncResult *res,
+				       gpointer user_data)
+{
+	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+	gboolean ret;
+	gchar *sha1;
+	GError *error = NULL;
+	GUsbDevice *device = G_USB_DEVICE (object);
+
+	/* get data, although don't fail if it does not exist */
+	ret = ch_device_write_command_finish (device, res, &error);
+	if (!ret) {
+		g_warning ("ignoring error: %s", error->message);
+		g_error_free (error);
+	} else {
+		sha1 = ch_sha1_to_string (&state->sha1);
+		cd_sensor_add_option (state->sensor,
+				      "remote-profile-hash",
+				      g_variant_new_string (sha1));
+		g_free (sha1);
+	}
+
+	/* save result */
+	state->ret = TRUE;
+	cd_sensor_colorhug_lock_state_finish (state, NULL);
+}
+
+static void
 cd_sensor_colorhug_set_multiplier_cb (GObject *object,
 				      GAsyncResult *res,
 				      gpointer user_data)
@@ -279,6 +310,7 @@ cd_sensor_colorhug_set_multiplier_cb (GObject *object,
 	gboolean ret;
 	GError *error = NULL;
 	GUsbDevice *device = G_USB_DEVICE (object);
+	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (state->sensor);
 
 	/* get data */
 	ret = ch_device_write_command_finish (device, res, &error);
@@ -288,9 +320,16 @@ cd_sensor_colorhug_set_multiplier_cb (GObject *object,
 		goto out;
 	}
 
-	/* save result */
-	state->ret = TRUE;
-	cd_sensor_colorhug_lock_state_finish (state, NULL);
+	/* get the remote hash */
+	ch_device_write_command_async (priv->device,
+				       CH_CMD_GET_REMOTE_HASH,
+				       NULL,
+				       0,
+				       (guint8 *) &state->sha1,
+				       sizeof(ChSha1),
+				       state->cancellable,
+				       cd_sensor_colorhug_get_remote_hash_cb,
+				       state);
 out:
 	return;
 }
@@ -415,6 +454,7 @@ out:
  * - Get the serial number
  * - Set the integral time to 50ms
  * - Turn the sensor on to 100%
+ * - Gets the remote profile hash
  **/
 void
 cd_sensor_lock_async (CdSensor *sensor,
@@ -603,6 +643,175 @@ cd_sensor_unlock_finish (CdSensor *sensor,
 out:
 	return ret;
 }
+
+/**********************************************************************/
+
+static void cd_sensor_set_next_option (CdSensorAsyncState *state);
+
+static void
+cd_sensor_colorhug_set_options_state_finish (CdSensorAsyncState *state,
+					     const GError *error)
+{
+	/* set result to temp memory location */
+	if (state->ret) {
+		g_simple_async_result_set_op_res_gboolean(state->res, TRUE);
+	} else {
+		g_simple_async_result_set_from_error (state->res, error);
+	}
+
+	/* deallocate */
+	if (state->cancellable != NULL) {
+		g_cancellable_disconnect (state->cancellable, state->cancellable_id);
+		g_object_unref (state->cancellable);
+	}
+
+	/* set state */
+	cd_sensor_set_state (state->sensor, CD_SENSOR_STATE_IDLE);
+
+	/* complete */
+	g_simple_async_result_complete_in_idle (state->res);
+
+	g_object_unref (state->res);
+	g_object_unref (state->sensor);
+	g_hash_table_unref (state->options);
+	g_slice_free (CdSensorAsyncState, state);
+}
+
+static void
+cd_sensor_colorhug_set_options_cb (GObject *object,
+				  GAsyncResult *res,
+				  gpointer user_data)
+{
+	gboolean ret = FALSE;
+	GError *error = NULL;
+	GUsbDevice *device = G_USB_DEVICE (object);
+	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+
+	/* get data */
+	ret = ch_device_write_command_finish (device, res, &error);
+	if (!ret) {
+		cd_sensor_colorhug_set_options_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* do next option */
+	cd_sensor_set_next_option (state);
+out:
+	return;
+}
+
+static void
+cd_sensor_set_next_option (CdSensorAsyncState *state)
+{
+	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (state->sensor);
+	ChSha1 sha1;
+	const gchar *key = NULL;
+	gboolean ret;
+	GError *error = NULL;
+	GList *keys;
+	GVariant *value;
+
+	/* all done? */
+	keys = g_hash_table_get_keys (state->options);
+	if (keys == NULL) {
+		state->ret = TRUE;
+		cd_sensor_colorhug_set_options_state_finish (state, NULL);
+		return;
+	}
+
+	/* request */
+	key = (const gchar *) keys->data;
+	g_debug ("trying to set key %s", key);
+	value = g_hash_table_lookup (state->options, key);
+	if (g_strcmp0 (key, "remote-profile-hash") == 0) {
+
+		/* parse the hash */
+		ret = ch_sha1_parse (g_variant_get_string (value, NULL),
+				     &sha1,
+				     &error);
+		if (!ret) {
+			cd_sensor_colorhug_set_options_state_finish (state, error);
+			g_error_free (error);
+			goto out;
+		}
+
+		/* set the remote hash */
+		g_debug ("setting remote hash value %s",
+			 g_variant_get_string (value, NULL));
+		cd_sensor_add_option (state->sensor, key, value);
+		ch_device_write_command_async (priv->device,
+					       CH_CMD_SET_REMOTE_HASH,
+					       (const guint8 *) &sha1,
+					       sizeof (ChSha1),
+					       NULL,
+					       0,
+					       state->cancellable,
+					       cd_sensor_colorhug_set_options_cb,
+					       state);
+	} else {
+		g_set_error (&error,
+			     CD_SENSOR_ERROR,
+			     CD_SENSOR_ERROR_NO_SUPPORT,
+			     "Sensor option %s is not supported",
+			     key);
+		cd_sensor_colorhug_set_options_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	g_hash_table_remove (state->options, key);
+	g_list_free (keys);
+}
+
+void
+cd_sensor_set_options_async (CdSensor *sensor,
+			     GHashTable *options,
+			     GCancellable *cancellable,
+			     GAsyncReadyCallback callback,
+			     gpointer user_data)
+{
+	CdSensorAsyncState *state;
+
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+
+	/* set state */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_BUSY);
+
+	/* save state */
+	state = g_slice_new0 (CdSensorAsyncState);
+	if (cancellable != NULL)
+		state->cancellable = g_object_ref (cancellable);
+	state->res = g_simple_async_result_new (G_OBJECT (sensor),
+						callback,
+						user_data,
+						cd_sensor_set_options_async);
+	state->sensor = g_object_ref (sensor);
+	state->options = g_hash_table_ref (options);
+	cd_sensor_set_next_option (state);
+}
+
+gboolean
+cd_sensor_set_options_finish (CdSensor *sensor,
+			      GAsyncResult *res,
+			      GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	/* failed */
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	/* grab detail */
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+/**********************************************************************/
 
 static void
 cd_sensor_unref_private (CdSensorColorhugPrivate *priv)

@@ -580,6 +580,33 @@
  **/
 #define	CH_CMD_GET_PCB_ERRATA			0x33
 
+/**
+ * CH_CMD_SET_REMOTE_HASH:
+ *
+ * Sets the remote SHA1 hash of the profile. This is designed to
+ * be used by the calibration program to indicate the key which allows
+ * the completed profile to be found from a public web service.
+ *
+ * IN:  [1:cmd][20:sha1_hash]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is available in firmware mode.
+ **/
+#define	CH_CMD_SET_REMOTE_HASH			0x34
+
+/**
+ * CH_CMD_GET_REMOTE_HASH:
+ *
+ * Gets the remote hash which is used to get the last profile saved
+ * to a public web service.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][20:sha1_hash]
+ *
+ * This command is available in firmware mode.
+ **/
+#define	CH_CMD_GET_REMOTE_HASH			0x35
+
 /* secret code */
 #define	CH_WRITE_EEPROM_MAGIC			"Un1c0rn2"
 
@@ -693,5 +720,16 @@ void		ch_device_write_command_async	(GUsbDevice	*device,
 gboolean	 ch_device_write_command_finish	(GUsbDevice	*device,
 						 GAsyncResult	*res,
 						 GError		**error);
+
+
+/* SHA1 hash */
+typedef struct {
+	guint8	bytes[20];
+} ChSha1;
+
+gchar		*ch_sha1_to_string		(const ChSha1		*sha1);
+gboolean	 ch_sha1_parse			(const gchar		*value,
+						 ChSha1			*sha1,
+						 GError			**error);
 
 #endif
