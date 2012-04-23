@@ -54,6 +54,7 @@ useful.
 %build
 %configure \
         --with-daemon-user=colord \
+        --enable-gtk-doc \
         --disable-static \
         --disable-rpath \
         --disable-dependency-tracking
@@ -114,6 +115,8 @@ exit 0
 %{_libdir}/pkgconfig/colord.pc
 %{_datadir}/gir-1.0/*.gir
 %{_datadir}/vala/vapi/*.vapi
+%dir %{_datadir}/gtk-doc/html/colord
+%{_datadir}/gtk-doc/html/colord/*
 
 %files sane
 %defattr(-,root,root,-)
