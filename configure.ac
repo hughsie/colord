@@ -323,7 +323,6 @@ echo "
         External volume searching: ${enable_volume_search}
         SANE support:              ${has_sane}
         GUDEV support:             ${enable_gudev}
-        LCMS2 DICT support:        ${has_new_lcms}
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
 "
