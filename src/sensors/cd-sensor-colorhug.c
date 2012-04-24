@@ -702,21 +702,54 @@ out:
 }
 
 static void
+cd_sensor_colorhug_write_eeprom_cb (GObject *object,
+				   GAsyncResult *res,
+				   gpointer user_data)
+{
+	gboolean ret = FALSE;
+	GError *error = NULL;
+	GUsbDevice *device = G_USB_DEVICE (object);
+	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+
+	/* get data */
+	ret = ch_device_write_command_finish (device, res, &error);
+	if (!ret) {
+		cd_sensor_colorhug_set_options_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* all done */
+	state->ret = TRUE;
+	cd_sensor_colorhug_set_options_state_finish (state, NULL);
+out:
+	return;
+}
+
+static void
 cd_sensor_set_next_option (CdSensorAsyncState *state)
 {
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (state->sensor);
 	ChSha1 sha1;
 	const gchar *key = NULL;
+	const guint8 magic[] = { 'U', 'n', '1', 'c', '0', 'r', 'n', '2' };
 	gboolean ret;
 	GError *error = NULL;
 	GList *keys;
 	GVariant *value;
 
-	/* all done? */
+	/* write eeprom to preserve settings */
 	keys = g_hash_table_get_keys (state->options);
 	if (keys == NULL) {
-		state->ret = TRUE;
-		cd_sensor_colorhug_set_options_state_finish (state, NULL);
+		ch_device_write_command_async (priv->device,
+					       CH_CMD_WRITE_EEPROM,
+					       magic,
+					       8,
+					       NULL,
+					       0,
+					       state->cancellable,
+					       cd_sensor_colorhug_write_eeprom_cb,
+					       state);
 		return;
 	}
 
