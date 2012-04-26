@@ -274,8 +274,15 @@ out:
 int
 main (int argc, char **argv)
 {
-	DBusConnection *con;
+	DBusConnection *con = NULL;
 	char *filename = NULL;
+
+	/* check number of arguments */
+	if (argc != 3) {
+		printf("expected [device-id] [qualifier]\n");
+		printf(" e.g. \"cups-Photosmart-B109a-m\" \"RGB.Glossy.300dpi\"\n");
+		goto out;
+	}
 
 	/* connect to system bus */
 	con = dbus_bus_get(DBUS_BUS_SYSTEM, NULL);
@@ -285,7 +292,7 @@ main (int argc, char **argv)
 	}
 
 	/* get the best profile for the device */
-	filename = get_profile_for_device_id (con, "hello-dave", "RGB.Glossy.300dpi");
+	filename = get_profile_for_device_id (con, argv[1], argv[2]);
 	if (filename == NULL) {
 		printf("failed to get profile filename!\n");
 		goto out;
