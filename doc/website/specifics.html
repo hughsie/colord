@@ -35,10 +35,8 @@
 <h2>Mapping the device to the profile</h2>
 
 <p>
-Preferences are per-user and are stored in GConf in GNOME 2-30, or GSettings in newer versions.
-There is need for configuration of devices to profiles, and to store metadata about each device.
-This is stored in the colord mapping database, which is
-<code>/var/lib/colord/mapping.db</code> by default.
+The configuration of devices to profiles is stored in the colord mapping
+database, which is <code>/var/lib/colord/mapping.db</code> by default.
 The schema is really simple, and as follows:
 </p>
 <pre>
@@ -47,9 +45,9 @@ CREATE TABLE mappings (id TEXT PRIMARY KEY,device TEXT,profile TEXT, timestamp I
 
 <p>
 Multiple profiles can of course be assigned to the same device.
-Persistent devices and profiles can also be saved to the storage database, which is
-<code>/var/lib/colord/storage.db</code> by default.
-The schema is really simple, and as follows:
+Persistent devices and profiles can also be saved to the storage database,
+which is <code>/var/lib/colord/storage.db</code> by default.
+The schema is again really simple, and as follows:
 </p>
 <pre>
 CREATE TABLE devices (device_id TEXT PRIMARY KEY,device TEXT);
