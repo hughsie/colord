@@ -1,4 +1,8 @@
 #!/usr/bin/python
+
+# Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
+# Licensed under the GNU General Public License Version 2
+
 from gi.repository import Colord
 from gi.repository import Gio
 
