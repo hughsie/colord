@@ -21,6 +21,7 @@ BuildRequires: sqlite-devel
 BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
 BuildRequires: libgusb-devel
+BuildRequires: gtk3-devel
 
 Requires: shared-color-profiles
 Requires: colord-sane
@@ -39,6 +40,13 @@ Requires: %{name} = %{version}-%{release}
 %description devel
 Files for development with %{name}.
 
+%package gtk-devel
+Summary: GTK development package for %{name}
+Requires: %{name} = %{version}-%{release}
+
+%description gtk-devel
+Files for development with %{name} using GTK.
+
 %package sane
 Summary: SANE helper package for %{name}
 Requires: %{name} = %{version}-%{release}
@@ -47,6 +55,14 @@ Requires: %{name} = %{version}-%{release}
 SANE helper package for %{name} that monitors scanners that are added
 and removed. This is a seporate process as libsane is craptastic, but
 useful.
+
+%package gtk
+Summary: GTK helper library for %{name}
+Requires: %{name} = %{version}-%{release}
+
+%description gtk
+This package contains extra functionality for %{name} that can be used
+when running GTK applications.
 
 %prep
 %setup -q
@@ -113,10 +129,16 @@ exit 0
 %{_includedir}/colord-1
 %{_libdir}/libcolord.so
 %{_libdir}/pkgconfig/colord.pc
-%{_datadir}/gir-1.0/*.gir
-%{_datadir}/vala/vapi/*.vapi
+%{_datadir}/gir-1.0/Colord-1.0.gir
+%{_datadir}/vala/vapi/colord.vapi
 %dir %{_datadir}/gtk-doc/html/colord
 %{_datadir}/gtk-doc/html/colord/*
+
+%files gtk-devel
+%defattr(-,root,root,-)
+%{_libdir}/libcolord-gtk.so
+%{_libdir}/pkgconfig/colord-gtk.pc
+%{_datadir}/gir-1.0/ColordGtk-1.0.gir
 
 %files sane
 %defattr(-,root,root,-)
@@ -125,6 +147,10 @@ exit 0
 /usr/lib/systemd/system/colord-sane.service
 %{_libexecdir}/colord-sane
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.colord-sane.conf
+
+%files gtk
+%defattr(-,root,root,-)
+%{_libdir}/libcolord-gtk.so.*
 
 %changelog
 * #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#

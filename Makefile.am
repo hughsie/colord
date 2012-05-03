@@ -18,12 +18,19 @@ SUBDIRS = 						\
 	src						\
 	po
 
+if HAVE_GTK
+SUBDIRS += 						\
+	libcolord-gtk
+endif
+
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`
 
 DISTCHECK_CONFIGURE_FLAGS =				\
 	--enable-introspection				\
 	--enable-fd-fallback				\
+	--enable-gtk					\
+	--enable-gtk-doc				\
 	--with-systemdsystemunitdir=$$dc_install_base/$(systemdsystemunitdir)
 
 EXTRA_DIST =						\
