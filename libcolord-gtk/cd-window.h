@@ -85,17 +85,17 @@ GQuark		 cd_window_error_quark			(void);
 CdWindow	*cd_window_new				(void);
 
 /* async */
-void		cd_window_set_widget			(CdWindow	*window,
+void		cd_window_get_profile			(CdWindow	*window,
 							 GtkWidget	*widget,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
-CdProfile	*cd_window_set_widget_finish		(CdWindow	*window,
+CdProfile	*cd_window_get_profile_finish		(CdWindow	*window,
 							 GAsyncResult	*res,
 							 GError		**error);
 
 /* getters */
-CdProfile	*cd_window_get_profile			(CdWindow	*window);
+CdProfile	*cd_window_get_last_profile		(CdWindow	*window);
 
 G_END_DECLS
 

@@ -29,18 +29,18 @@
 #include "cd-window.h"
 
 static void
-cd_window_set_widget_cb (GObject *source,
-			 GAsyncResult *res,
-			 gpointer user_data)
+cd_window_get_profile_cb (GObject *source,
+			  GAsyncResult *res,
+			  gpointer user_data)
 {
 	CdWindow *window = CD_WINDOW (source);
 	GtkWidget *widget = GTK_WIDGET (user_data);
 	GError *error = NULL;
 	CdProfile *profile;
 
-	profile = cd_window_set_widget_finish (window,
-					       res,
-					       &error);
+	profile = cd_window_get_profile_finish (window,
+					        res,
+					        &error);
 	g_assert_no_error (error);
 	g_assert (profile != NULL);
 	g_assert (cd_profile_get_has_vcgt (profile));
@@ -58,11 +58,11 @@ map_cb (GtkWidget *this_widget, gpointer user_data)
 	CdWindow *window = CD_WINDOW (user_data);
 
 	/* get the profile for this widget */
-	cd_window_set_widget (window,
-			      this_widget,
-			      NULL,
-			      cd_window_set_widget_cb,
-			      this_widget);
+	cd_window_get_profile (window,
+			       this_widget,
+			       NULL,
+			       cd_window_get_profile_cb,
+			       this_widget);
 }
 
 static void

@@ -95,7 +95,7 @@ cd_window_error_quark (void)
 }
 
 /**
- * cd_window_get_profile:
+ * cd_window_get_last_profile:
  * @window: a #CdWindow instance.
  *
  * Gets the color profile to use for this widget.
@@ -105,7 +105,7 @@ cd_window_error_quark (void)
  * Since: 0.1.20
  **/
 CdProfile *
-cd_window_get_profile (CdWindow *window)
+cd_window_get_last_profile (CdWindow *window)
 {
 	g_return_val_if_fail (CD_IS_WINDOW (window), NULL);
 	return window->priv->profile;
@@ -118,7 +118,7 @@ typedef struct {
 } CdWindowSetWidgetHelper;
 
 /**
- * cd_window_set_widget_finish:
+ * cd_window_get_profile_finish:
  * @window: a #CdWindow instance.
  * @res: the #GAsyncResult
  * @error: A #GError or %NULL
@@ -130,9 +130,9 @@ typedef struct {
  * Since: 0.1.20
  **/
 CdProfile *
-cd_window_set_widget_finish (CdWindow *window,
-			     GAsyncResult *res,
-			     GError **error)
+cd_window_get_profile_finish (CdWindow *window,
+			      GAsyncResult *res,
+			      GError **error)
 {
 	GSimpleAsyncResult *simple;
 
@@ -157,12 +157,12 @@ cd_window_import_free_helper (CdWindowSetWidgetHelper *helper)
 	g_free (helper);
 }
 
-static void cd_window_set_widget_new_data (CdWindowSetWidgetHelper *helper);
+static void cd_window_get_profile_new_data (CdWindowSetWidgetHelper *helper);
 
 static void
-cd_window_set_widget_client_connect_cb (GObject *source,
-					GAsyncResult *res,
-					gpointer user_data)
+cd_window_get_profile_client_connect_cb (GObject *source,
+					 GAsyncResult *res,
+					 gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (source);
 	CdWindowSetWidgetHelper *helper = (CdWindowSetWidgetHelper *) user_data;
@@ -181,13 +181,13 @@ cd_window_set_widget_client_connect_cb (GObject *source,
 		g_error_free (error);
 		return;
 	}
-	cd_window_set_widget_new_data (helper);
+	cd_window_get_profile_new_data (helper);
 }
 
 static void
-cd_window_set_widget_device_connect_cb (GObject *source,
-					GAsyncResult *res,
-					gpointer user_data)
+cd_window_get_profile_device_connect_cb (GObject *source,
+					 GAsyncResult *res,
+					 gpointer user_data)
 {
 	CdDevice *device = CD_DEVICE (source);
 	CdWindowSetWidgetHelper *helper = (CdWindowSetWidgetHelper *) user_data;
@@ -221,13 +221,13 @@ cd_window_set_widget_device_connect_cb (GObject *source,
 		return;
 	}
 
-	cd_window_set_widget_new_data (helper);
+	cd_window_get_profile_new_data (helper);
 }
 
 static void
-cd_window_set_widget_profile_connect_cb (GObject *source,
-					 GAsyncResult *res,
-					 gpointer user_data)
+cd_window_get_profile_profile_connect_cb (GObject *source,
+					  GAsyncResult *res,
+					  gpointer user_data)
 {
 	CdProfile *profile = CD_PROFILE (source);
 	CdWindowSetWidgetHelper *helper = (CdWindowSetWidgetHelper *) user_data;
@@ -270,9 +270,9 @@ cd_window_set_widget_profile_connect_cb (GObject *source,
 }
 
 static void
-cd_window_set_widget_device_find_cb (GObject *source,
-				     GAsyncResult *res,
-				     gpointer user_data)
+cd_window_get_profile_device_find_cb (GObject *source,
+				      GAsyncResult *res,
+				      gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (source);
 	CdWindowSetWidgetHelper *helper = (CdWindowSetWidgetHelper *) user_data;
@@ -293,7 +293,7 @@ cd_window_set_widget_device_find_cb (GObject *source,
 		g_error_free (error);
 		return;
 	}
-	cd_window_set_widget_new_data (helper);
+	cd_window_get_profile_new_data (helper);
 }
 
 static void
@@ -323,7 +323,7 @@ cd_window_device_changed_cb (CdDevice *device, CdWindow *window)
 }
 
 static void
-cd_window_set_widget_new_data (CdWindowSetWidgetHelper *helper)
+cd_window_get_profile_new_data (CdWindowSetWidgetHelper *helper)
 {
 	CdWindowPrivate *priv = helper->window->priv;
 
@@ -336,7 +336,7 @@ cd_window_set_widget_new_data (CdWindowSetWidgetHelper *helper)
 					  helper->window);
 		cd_client_connect (priv->client,
 				   helper->cancellable,
-				   cd_window_set_widget_client_connect_cb,
+				   cd_window_get_profile_client_connect_cb,
 				   helper);
 		goto out;
 	}
@@ -347,7 +347,7 @@ cd_window_set_widget_new_data (CdWindowSetWidgetHelper *helper)
 						   CD_DEVICE_METADATA_XRANDR_NAME,
 						   priv->plug_name,
 						   helper->cancellable,
-						   cd_window_set_widget_device_find_cb,
+						   cd_window_get_profile_device_find_cb,
 						   helper);
 		goto out;
 	}
@@ -356,7 +356,7 @@ cd_window_set_widget_new_data (CdWindowSetWidgetHelper *helper)
 	if (priv->device != NULL && !cd_device_get_connected (priv->device)) {
 		cd_device_connect (priv->device,
 				   helper->cancellable,
-				   cd_window_set_widget_device_connect_cb,
+				   cd_window_get_profile_device_connect_cb,
 				   helper);
 		goto out;
 	}
@@ -365,7 +365,7 @@ cd_window_set_widget_new_data (CdWindowSetWidgetHelper *helper)
 	if (priv->profile != NULL && !cd_profile_get_connected (priv->profile)) {
 		cd_profile_connect (priv->profile,
 				    helper->cancellable,
-				    cd_window_set_widget_profile_connect_cb,
+				    cd_window_get_profile_profile_connect_cb,
 				    helper);
 		goto out;
 	}
@@ -414,7 +414,7 @@ cd_window_update_widget_plug_name (CdWindow *window,
 }
 
 /**
- * cd_window_set_widget:
+ * cd_window_get_profile:
  * @window: a #CdWindow instance.
  * @widget: a #GtkWidget
  * @cancellable: a #GCancellable or %NULL
@@ -433,7 +433,7 @@ cd_window_update_widget_plug_name (CdWindow *window,
  * Since: 0.1.20
  **/
 void
-cd_window_set_widget (CdWindow *window,
+cd_window_get_profile (CdWindow *window,
 		      GtkWidget *widget,
 		      GCancellable *cancellable,
 		      GAsyncReadyCallback callback,
@@ -450,14 +450,14 @@ cd_window_set_widget (CdWindow *window,
 	helper->res = g_simple_async_result_new (G_OBJECT (window),
 						 callback,
 						 user_data,
-						 cd_window_set_widget);
+						 cd_window_get_profile);
 	if (cancellable != NULL)
 		helper->cancellable = g_object_ref (cancellable);
 
 	/* intially set the plug name */
 	window->priv->widget = g_object_ref (widget);
 	cd_window_update_widget_plug_name (window, widget);
-	cd_window_set_widget_new_data (helper);
+	cd_window_get_profile_new_data (helper);
 }
 
 /**********************************************************************/

@@ -26,17 +26,17 @@
 #include <gtk/gtk.h>
 
 static void
-cd_window_set_widget_cb (GObject *source,
-			 GAsyncResult *res,
-			 gpointer user_data)
+cd_window_get_profile_cb (GObject *source,
+			  GAsyncResult *res,
+			  gpointer user_data)
 {
 	CdProfile *profile;
 	CdWindow *window = CD_WINDOW (source);
 	GError *error = NULL;
 
-	profile = cd_window_set_widget_finish (window,
-					       res,
-					       &error);
+	profile = cd_window_get_profile_finish (window,
+					        res,
+					        &error);
 	if (profile == NULL) {
 		g_warning ("failed to get output profile: %s", error->message);
 		g_error_free (error);
@@ -53,11 +53,11 @@ map_cb (GtkWidget *this_widget, gpointer user_data)
 	CdWindow *window = CD_WINDOW (user_data);
 
 	/* get the profile for this widget */
-	cd_window_set_widget (window,
-			      this_widget,
-			      NULL,
-			      cd_window_set_widget_cb,
-			      this_widget);
+	cd_window_get_profile (window,
+			       this_widget,
+			       NULL,
+			       cd_window_get_profile_cb,
+			       this_widget);
 }
 
 int
