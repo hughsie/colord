@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -19,27 +19,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-/**
- * SECTION:colord
- * @short_description: Client objects for accessing colord with GTK
- *
- * These objects allow client programs to get access to profiles.
- *
- * See also: #CdClient, #CdDevice
- */
+#if !defined (__COLORD_H_INSIDE__) && !defined (CD_COMPILATION)
+#error "Only <colord.h> can be included directly."
+#endif
 
-#ifndef __COLORD_GTK_H__
-#define __COLORD_GTK_H__
+#ifndef __CD_WINDOW_SYNC_H
+#define __CD_WINDOW_SYNC_H
 
-#define __COLORD_H_INSIDE__
+#include <glib-object.h>
 
-#include <colord/cd-client.h>
-#include <colord/cd-device.h>
-#include <colord/cd-profile.h>
-#include <colord-gtk/cd-window.h>
-#include <colord-gtk/cd-window-sync.h>
+G_BEGIN_DECLS
 
-#undef __COLORD_H_INSIDE__
+CdProfile	*cd_window_get_profile_sync		(CdWindow	*window,
+							 GtkWidget	*widget,
+							 GCancellable	*cancellable,
+							 GError		**error);
 
-#endif /* __COLORD_GTK_H__ */
+G_END_DECLS
+
+#endif /* __CD_WINDOW_SYNC_H */
 
