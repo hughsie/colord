@@ -379,21 +379,16 @@ cd_window_update_widget_plug_name (CdWindow *window,
 {
 	CdWindowPrivate *priv = window->priv;
 	const gchar *plug_name;
-	GdkRectangle rect;
 	GdkScreen *screen;
 	GdkWindow *gdk_window;
 	gint monitor_num;
 
-	/* get xid */
+	/* use the largest bounding area */
 	gdk_window = gtk_widget_get_window (widget);
 	screen = gdk_window_get_screen (gdk_window);
 
-	gdk_window_get_frame_extents (gdk_window, &rect);
-
-	/* the monitor where the center of the window is */
-	monitor_num = gdk_screen_get_monitor_at_point (screen,
-						       rect.x + (rect.width / 2),
-						       rect.y + (rect.height / 2));
+	monitor_num = gdk_screen_get_monitor_at_window (screen,
+							gdk_window);
 	plug_name = gdk_screen_get_monitor_plug_name (screen, monitor_num);
 
 	/* ignoring MAP as plug_name has not changed */
@@ -422,7 +417,7 @@ cd_window_update_widget_plug_name (CdWindow *window,
  * @user_data: the data to pass to @callback
  *
  * Gets the screen profile that should be used for the widget,
- * which corresponds to the screen output under the center of the widget.
+ * which corresponds to the screen output the widget most covers.
  *
  * This method should be called when the widget has mapped, i.e.
  * g_signal_connect (dialog, "map", G_CALLBACK (map_cb), priv);
