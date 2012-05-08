@@ -353,10 +353,6 @@ cd_color_convert_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
 	g_return_if_fail (src != NULL);
 	g_return_if_fail (dest != NULL);
 
-	g_assert (src->X < 96.0f);
-	g_assert (src->Y < 100.0f);
-	g_assert (src->Z < 109.0f);
-
 	/* prevent division by zero */
 	sum = src->X + src->Y + src->Z;
 	if (fabs (sum) < 1e-6) {
