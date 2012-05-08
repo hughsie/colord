@@ -111,6 +111,8 @@ void		 cd_it8_set_normalized		(CdIt8		*it8,
 						 gboolean	 normalized);
 void		 cd_it8_set_originator		(CdIt8		*it8,
 						 const gchar	*originator);
+void		 cd_it8_set_title		(CdIt8		*it8,
+						 const gchar	*title);
 void		 cd_it8_set_spectral		(CdIt8		*it8,
 						 gboolean	 spectral);
 void		 cd_it8_set_instrument		(CdIt8		*it8,
@@ -130,6 +132,7 @@ const CdMat3x3	*cd_it8_get_matrix		(CdIt8		*it8);
 CdIt8Kind	 cd_it8_get_kind		(CdIt8		*it8);
 gboolean	 cd_it8_get_normalized		(CdIt8		*it8);
 const gchar	*cd_it8_get_originator		(CdIt8		*it8);
+const gchar	*cd_it8_get_title		(CdIt8		*it8);
 gboolean	 cd_it8_get_spectral		(CdIt8		*it8);
 const gchar	*cd_it8_get_instrument		(CdIt8		*it8);
 const gchar	*cd_it8_get_reference		(CdIt8		*it8);

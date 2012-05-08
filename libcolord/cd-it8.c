@@ -56,6 +56,7 @@ struct _CdIt8Private
 	gchar			*instrument;
 	gchar			*reference;
 	gchar			*originator;
+	gchar			*title;
 	GPtrArray		*array_rgb;
 	GPtrArray		*array_xyz;
 	GPtrArray		*options;
@@ -68,6 +69,7 @@ enum {
 	PROP_REFERENCE,
 	PROP_NORMALIZED,
 	PROP_ORIGINATOR,
+	PROP_TITLE,
 	PROP_SPECTRAL,
 	PROP_LAST
 };
@@ -209,6 +211,23 @@ cd_it8_get_originator (CdIt8 *it8)
 {
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
 	return it8->priv->originator;
+}
+
+/**
+ * cd_it8_get_title:
+ * @it8: a #CdIt8 instance.
+ *
+ * Gets the file title.
+ *
+ * Return value: The title, or %NULL if unset
+ *
+ * Since: 0.1.20
+ **/
+const gchar *
+cd_it8_get_title (CdIt8 *it8)
+{
+	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
+	return it8->priv->title;
 }
 
 /**
@@ -493,6 +512,7 @@ cd_it8_load (CdIt8 *it8, GFile *file, GError **error)
 	}
 
 	/* set common bits */
+	cd_it8_set_title (it8, cmsIT8GetProperty (it8_lcms, "DISPLAY"));
 	cd_it8_set_originator (it8, cmsIT8GetProperty (it8_lcms, "ORIGINATOR"));
 	cd_it8_set_reference (it8, cmsIT8GetProperty (it8_lcms, "REFERENCE"));
 out:
@@ -691,6 +711,10 @@ cd_it8_save (CdIt8 *it8, GFile *file, GError **error)
 
 	/* set common data */
 	it8_lcms = cmsIT8Alloc (NULL);
+	if (it8->priv->title != NULL) {
+		cmsIT8SetPropertyStr (it8_lcms, "DISPLAY",
+				      it8->priv->title);
+	}
 	if (it8->priv->originator != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "ORIGINATOR",
 				      it8->priv->originator);
@@ -806,6 +830,24 @@ cd_it8_set_originator (CdIt8 *it8, const gchar *originator)
 
 	g_free (it8->priv->originator);
 	it8->priv->originator = g_strdup (originator);
+}
+
+/**
+ * cd_it8_set_title:
+ * @it8: a #CdIt8 instance.
+ * @title: the title name, e.g. "Factory calibration"
+ *
+ * Sets the display name for the file.
+ *
+ * Since: 0.1.20
+ **/
+void
+cd_it8_set_title (CdIt8 *it8, const gchar *title)
+{
+	g_return_if_fail (CD_IS_IT8 (it8));
+
+	g_free (it8->priv->title);
+	it8->priv->title = g_strdup (title);
 }
 
 /**
@@ -954,6 +996,9 @@ cd_it8_get_property (GObject *object,
 	case PROP_ORIGINATOR:
 		g_value_set_string (value, it8->priv->originator);
 		break;
+	case PROP_TITLE:
+		g_value_set_string (value, it8->priv->title);
+		break;
 	case PROP_INSTRUMENT:
 		g_value_set_string (value, it8->priv->instrument);
 		break;
@@ -1043,6 +1088,20 @@ cd_it8_class_init (CdIt8Class *klass)
 							      G_PARAM_READABLE));
 
 	/**
+	 * CdIt8:title:
+	 *
+	 * The file title, e.g. "Factor calibration".
+	 *
+	 * Since: 0.1.20
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_TITLE,
+					 g_param_spec_string ("title",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READABLE));
+
+	/**
 	 * CdIt8:instrument:
 	 *
 	 * The instrument that created the results, e.g. "huey"
@@ -1117,6 +1176,7 @@ cd_it8_finalize (GObject *object)
 	g_ptr_array_unref (it8->priv->array_xyz);
 	g_ptr_array_unref (it8->priv->options);
 	g_free (it8->priv->originator);
+	g_free (it8->priv->title);
 	g_free (it8->priv->instrument);
 	g_free (it8->priv->reference);
 
