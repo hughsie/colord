@@ -58,6 +58,7 @@ struct _CdIt8Private
 	gchar			*originator;
 	GPtrArray		*array_rgb;
 	GPtrArray		*array_xyz;
+	GPtrArray		*options;
 };
 
 enum {
@@ -383,6 +384,34 @@ out:
 }
 
 /**
+ * cd_it8_has_option:
+ * @it8: a #CdIt8 instance.
+ * @option: a option, e.g. "TYPE_CRT"
+ *
+ * Finds an option in the file.
+ *
+ * Return value: %TRUE if the option is set
+ *
+ * Since: 0.1.20
+ **/
+gboolean
+cd_it8_has_option (CdIt8 *it8, const gchar *option)
+{
+	const gchar *tmp;
+	guint i;
+
+	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
+	g_return_val_if_fail (option != NULL, FALSE);
+
+	for (i = 0; i < it8->priv->options->len; i++) {
+		tmp = g_ptr_array_index (it8->priv->options, i);
+		if (g_strcmp0 (tmp, option) == 0)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+/**
  * cd_it8_load:
  * @it8: a #CdIt8 instance.
  * @file: a #GFile
@@ -401,7 +430,9 @@ cd_it8_load (CdIt8 *it8, GFile *file, GError **error)
 	const gchar *tmp;
 	gboolean ret;
 	gchar *data = NULL;
+	gchar **props = NULL;
 	gsize size = 0;
+	guint i;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
@@ -409,6 +440,7 @@ cd_it8_load (CdIt8 *it8, GFile *file, GError **error)
 	/* clear old data */
 	g_ptr_array_set_size (it8->priv->array_rgb, 0);
 	g_ptr_array_set_size (it8->priv->array_xyz, 0);
+	g_ptr_array_set_size (it8->priv->options, 0);
 	cd_mat33_clear (&it8->priv->matrix);
 
 	/* load file */
@@ -425,6 +457,13 @@ cd_it8_load (CdIt8 *it8, GFile *file, GError **error)
 			     "Cannot open %s",
 			     g_file_get_path (file));
 		goto out;
+	}
+
+	/* add options */
+	cmsIT8EnumProperties (it8_lcms, &props);
+	for (i = 0; props[i] != NULL; i++) {
+		if (g_str_has_prefix (props[i], "TYPE_"))
+			cd_it8_add_option (it8, props[i]);
 	}
 
 	/* get sheet type */
@@ -641,9 +680,11 @@ gboolean
 cd_it8_save (CdIt8 *it8, GFile *file, GError **error)
 {
 	cmsHANDLE it8_lcms = NULL;
+	const gchar *tmp;
 	gboolean ret;
 	gchar *data = NULL;
 	gsize size = 0;
+	guint i;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
@@ -671,6 +712,12 @@ cd_it8_save (CdIt8 *it8, GFile *file, GError **error)
 			goto out;
 	}
 
+	/* save any options */
+	for (i = 0; i < it8->priv->options->len; i++) {
+		tmp = g_ptr_array_index (it8->priv->options, i);
+		cmsIT8SetPropertyStr (it8_lcms, tmp, "TRUE");
+	}
+
 	/* write the file */
 	ret = cmsIT8SaveToMem (it8_lcms, NULL, (cmsUInt32Number *) &size);
 	g_assert (ret);
@@ -693,6 +740,22 @@ out:
 		cmsIT8Free (it8_lcms);
 	g_free (data);
 	return ret;
+}
+
+/**
+ * cd_it8_add_option:
+ * @it8: a #CdIt8 instance.
+ * @option: A IT8 option, e.g. "TYPE_LCD"
+ *
+ * Sets any extra options that have to be set in the CCMX file
+ *
+ * Since: 0.1.20
+ **/
+void
+cd_it8_add_option (CdIt8 *it8, const gchar *option)
+{
+	g_return_if_fail (CD_IS_IT8 (it8));
+	g_ptr_array_add (it8->priv->options, g_strdup (option));
 }
 
 /**
@@ -1034,6 +1097,7 @@ cd_it8_init (CdIt8 *it8)
 
 	it8->priv->array_rgb = g_ptr_array_new_with_free_func (cd_color_rgb_free);
 	it8->priv->array_xyz = g_ptr_array_new_with_free_func (cd_color_xyz_free);
+	it8->priv->options = g_ptr_array_new_with_free_func (g_free);
 
 	/* ensure the remote errors are registered */
 	cd_it8_error_quark ();
@@ -1051,6 +1115,7 @@ cd_it8_finalize (GObject *object)
 
 	g_ptr_array_unref (it8->priv->array_rgb);
 	g_ptr_array_unref (it8->priv->array_xyz);
+	g_ptr_array_unref (it8->priv->options);
 	g_free (it8->priv->originator);
 	g_free (it8->priv->instrument);
 	g_free (it8->priv->reference);

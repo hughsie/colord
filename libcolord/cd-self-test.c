@@ -255,6 +255,8 @@ colord_it8_ccmx_func (void)
 	g_assert_cmpint (cd_it8_get_data_size (it8), ==, 0);
 	g_assert_cmpstr (cd_it8_get_originator (it8), ==, "cd-self-test");
 	g_assert (!cd_it8_get_spectral (it8));
+	g_assert (cd_it8_has_option (it8, "TYPE_FACTORY"));
+	g_assert (!cd_it8_has_option (it8, "TYPE_XXXXXXX"));
 	g_assert_cmpstr (cd_it8_get_instrument (it8), ==, "Huey");
 	matrix = cd_it8_get_matrix (it8);
 	g_assert_cmpfloat (ABS (matrix->m00 - 1.3139f), <, 0.01f);

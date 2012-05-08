@@ -120,6 +120,8 @@ void		 cd_it8_set_reference		(CdIt8		*it8,
 void		 cd_it8_add_data		(CdIt8		*it8,
 						 const CdColorRGB *rgb,
 						 const CdColorXYZ *xyz);
+void		 cd_it8_add_option		(CdIt8		*it8,
+						 const gchar	*option);
 void		 cd_it8_set_matrix		(CdIt8		*it8,
 						 const CdMat3x3 *matrix);
 
@@ -136,6 +138,8 @@ gboolean	 cd_it8_get_data_item		(CdIt8		*it8,
 						 guint		 idx,
 						 CdColorRGB	*rgb,
 						 CdColorXYZ	*xyz);
+gboolean	 cd_it8_has_option		(CdIt8		*it8,
+						 const gchar	*option);
 
 G_END_DECLS
 
