@@ -80,6 +80,7 @@
     <xi:include href="xml/cd-client.xml"/>
     <xi:include href="xml/cd-device.xml"/>
     <xi:include href="xml/cd-profile.xml"/>
+    <xi:include href="xml/cd-it8.xml"/>
   </reference>
 
   <reference id="libcolord-glib-helpers">
