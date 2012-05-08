@@ -299,10 +299,46 @@ cd_it8_get_spectral (CdIt8 *it8)
 }
 
 /**
- * cd_it8_load_ti1_ti3:
+ * cd_it8_load_ti1:
  **/
 static gboolean
-cd_it8_load_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+cd_it8_load_ti1 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+{
+	CdColorRGB *rgb;
+	CdColorXYZ *xyz;
+	const gchar *tmp;
+	gboolean ret = TRUE;
+	guint i;
+	guint number_of_sets = 0;
+
+	tmp = cmsIT8GetProperty (it8_lcms, "COLOR_REP");
+	if (g_strcmp0 (tmp, "RGB") != 0) {
+		ret = FALSE;
+		g_set_error (error, 1, 0, "Invalid data format: %s", tmp);
+		goto out;
+	}
+
+	/* copy out data entries */
+	number_of_sets = cmsIT8GetPropertyDbl (it8_lcms, "NUMBER_OF_SETS");
+	for (i = 0; i < number_of_sets; i++) {
+		rgb = cd_color_rgb_new ();
+		rgb->R = cmsIT8GetDataRowColDbl(it8_lcms, i, 1);
+		rgb->G = cmsIT8GetDataRowColDbl(it8_lcms, i, 2);
+		rgb->B = cmsIT8GetDataRowColDbl(it8_lcms, i, 3);
+		g_ptr_array_add (it8->priv->array_rgb, rgb);
+		xyz = cd_color_xyz_new ();
+		cd_color_set_xyz (xyz, 0.0, 0.0, 0.0);
+		g_ptr_array_add (it8->priv->array_xyz, xyz);
+	}
+out:
+	return ret;
+}
+
+/**
+ * cd_it8_load_ti3:
+ **/
+static gboolean
+cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdColorRGB *rgb;
 	CdColorXYZ luminance;
@@ -497,9 +533,12 @@ cd_it8_load_from_data (CdIt8 *it8,
 	}
 
 	/* get ti1 and ti3 specific data */
-	if (it8->priv->kind == CD_IT8_KIND_TI1 ||
-	    it8->priv->kind == CD_IT8_KIND_TI3) {
-		ret = cd_it8_load_ti1_ti3 (it8, it8_lcms, error);
+	if (it8->priv->kind == CD_IT8_KIND_TI1) {
+		ret = cd_it8_load_ti1 (it8, it8_lcms, error);
+		if (!ret)
+			goto out;
+	} else if (it8->priv->kind == CD_IT8_KIND_TI3) {
+		ret = cd_it8_load_ti3 (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
 	} else if (it8->priv->kind == CD_IT8_KIND_CCMX) {
