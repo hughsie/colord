@@ -2,7 +2,8 @@ if HAVE_INTROSPECTION
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
-INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir) \
+				--includedir=$(top_srcdir)/libcolord
 endif
 
 INCLUDES = \
@@ -83,6 +84,7 @@ ColordGtk_1_0_gir_SCANNERFLAGS = --identifier-prefix=Cd \
 				--symbol-prefix=cd_ \
 				--warn-all \
 				--add-include-path=$(srcdir) \
+				--add-include-path=$(top_srcdir)/libcolord \
 				--c-include="colord-gtk.h"
 ColordGtk_1_0_gir_EXPORT_PACKAGES = colord-gtk
 ColordGtk_1_0_gir_LIBS = libcolord-gtk.la
@@ -102,7 +104,7 @@ if HAVE_VAPIGEN
 colord-gtk.vapi: ColordGtk-1.0.gir
 	$(MAKE) $(AM_MAKEFLAGS) ColordGtk-1.0.gir
 	$(AM_V_GEN)$(VAPIGEN) $(VAPIGENFLAGS)			\
-		--library colord-gtk \
+		--library colord-gtk				\
 		--pkg gio-2.0					\
 		ColordGtk-1.0.gir
 	touch $@
