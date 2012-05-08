@@ -118,18 +118,18 @@ colord_it8_raw_func (void)
 	/* load in file */
 	filename = _g_test_realpath (TESTDATADIR "/raw.ti3");
 	file = g_file_new_for_path (filename);
-	ret = cd_it8_load (it8, file, &error);
+	ret = cd_it8_load_from_file (it8, file, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* write this to a new file */
 	file_new = g_file_new_for_path ("/tmp/test.ti3");
-	ret = cd_it8_save (it8, file_new, &error);
+	ret = cd_it8_save_to_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* load in file again to ensure we save all the required data */
-	ret = cd_it8_load (it8, file_new, &error);
+	ret = cd_it8_load_from_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -178,18 +178,18 @@ colord_it8_normalized_func (void)
 	/* load in file */
 	filename = _g_test_realpath (TESTDATADIR "/normalised.ti3");
 	file = g_file_new_for_path (filename);
-	ret = cd_it8_load (it8, file, &error);
+	ret = cd_it8_load_from_file (it8, file, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* write this to a new file */
 	file_new = g_file_new_for_path ("/tmp/test.ti3");
-	ret = cd_it8_save (it8, file_new, &error);
+	ret = cd_it8_save_to_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* load in file again to ensure we save all the required data */
-	ret = cd_it8_load (it8, file_new, &error);
+	ret = cd_it8_load_from_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -236,18 +236,18 @@ colord_it8_ccmx_func (void)
 	/* load in file */
 	filename = _g_test_realpath (TESTDATADIR "/calibration.ccmx");
 	file = g_file_new_for_path (filename);
-	ret = cd_it8_load (it8, file, &error);
+	ret = cd_it8_load_from_file (it8, file, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* write this to a new file */
 	file_new = g_file_new_for_path ("/tmp/test.ccmx");
-	ret = cd_it8_save (it8, file_new, &error);
+	ret = cd_it8_save_to_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* load in file again to ensure we save all the required data */
-	ret = cd_it8_load (it8, file_new, &error);
+	ret = cd_it8_load_from_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 

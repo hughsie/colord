@@ -431,30 +431,33 @@ cd_it8_has_option (CdIt8 *it8, const gchar *option)
 }
 
 /**
- * cd_it8_load:
+ * cd_it8_load_from_data:
  * @it8: a #CdIt8 instance.
- * @file: a #GFile
+ * @data: text data
+ * @size: the size of text data
  * @error: a #GError, or %NULL
  *
- * Loads a it8 file from disk.
+ * Loads a it8 file from data.
  *
  * Return value: %TRUE if a valid it8 file was read.
  *
  * Since: 0.1.20
  **/
 gboolean
-cd_it8_load (CdIt8 *it8, GFile *file, GError **error)
+cd_it8_load_from_data (CdIt8 *it8,
+		       const gchar *data,
+		       gsize size,
+		       GError **error)
 {
 	cmsHANDLE it8_lcms = NULL;
 	const gchar *tmp;
 	gboolean ret;
-	gchar *data = NULL;
 	gchar **props = NULL;
-	gsize size = 0;
 	guint i;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
-	g_return_val_if_fail (G_IS_FILE (file), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+	g_return_val_if_fail (size > 0, FALSE);
 
 	/* clear old data */
 	g_ptr_array_set_size (it8->priv->array_rgb, 0);
@@ -462,19 +465,13 @@ cd_it8_load (CdIt8 *it8, GFile *file, GError **error)
 	g_ptr_array_set_size (it8->priv->options, 0);
 	cd_mat33_clear (&it8->priv->matrix);
 
-	/* load file */
-	ret = g_file_load_contents (file, NULL, &data, &size, NULL, error);
-	if (!ret)
-		goto out;
-
 	/* load the it8 data */
 	cmsSetLogErrorHandler (cd_it8_lcms_error_cb);
-	it8_lcms = cmsIT8LoadFromMem (NULL, data, size);
+	it8_lcms = cmsIT8LoadFromMem (NULL, (void *) data, size);
 	if (it8_lcms == NULL) {
 		ret = FALSE;
-		g_set_error (error, 1, 0,
-			     "Cannot open %s",
-			     g_file_get_path (file));
+		g_set_error_literal (error, 1, 0,
+				     "Cannot open CCMX file");
 		goto out;
 	}
 
@@ -518,6 +515,41 @@ cd_it8_load (CdIt8 *it8, GFile *file, GError **error)
 out:
 	if (it8_lcms != NULL)
 		cmsIT8Free (it8_lcms);
+	return ret;
+}
+
+/**
+ * cd_it8_load_from_file:
+ * @it8: a #CdIt8 instance.
+ * @file: a #GFile
+ * @error: a #GError, or %NULL
+ *
+ * Loads a it8 file from disk.
+ *
+ * Return value: %TRUE if a valid it8 file was read.
+ *
+ * Since: 0.1.20
+ **/
+gboolean
+cd_it8_load_from_file (CdIt8 *it8, GFile *file, GError **error)
+{
+	gboolean ret;
+	gchar *data = NULL;
+	gsize size = 0;
+
+	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
+	g_return_val_if_fail (G_IS_FILE (file), FALSE);
+
+	/* load file */
+	ret = g_file_load_contents (file, NULL, &data, &size, NULL, error);
+	if (!ret)
+		goto out;
+
+	/* load data */
+	ret = cd_it8_load_from_data (it8, data, size, error);
+	if (!ret)
+		goto out;
+out:
 	g_free (data);
 	return ret;
 }
@@ -538,10 +570,10 @@ cd_it8_color_match (CdColorRGB *rgb, gdouble r, gdouble g, gdouble b)
 }
 
 /**
- * cd_it8_save_ti1_ti3:
+ * cd_it8_save_to_file_ti1_ti3:
  **/
 static gboolean
-cd_it8_save_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdColorRGB *rgb_tmp;
 	CdColorXYZ lumi_xyz;
@@ -646,10 +678,10 @@ out:
 }
 
 /**
- * cd_it8_save_ccmx:
+ * cd_it8_save_to_file_ccmx:
  **/
 static gboolean
-cd_it8_save_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	gboolean ret = TRUE;
 
@@ -685,7 +717,7 @@ cd_it8_save_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 }
 
 /**
- * cd_it8_save:
+ * cd_it8_save_to_file:
  * @it8: a #CdIt8 instance.
  * @file: a #GFile
  * @error: a #GError, or %NULL
@@ -697,7 +729,7 @@ cd_it8_save_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
  * Since: 0.1.20
  **/
 gboolean
-cd_it8_save (CdIt8 *it8, GFile *file, GError **error)
+cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
 {
 	cmsHANDLE it8_lcms = NULL;
 	const gchar *tmp;
@@ -727,11 +759,11 @@ cd_it8_save (CdIt8 *it8, GFile *file, GError **error)
 	/* set ti1 and ti3 specific data */
 	if (it8->priv->kind == CD_IT8_KIND_TI1 ||
 	    it8->priv->kind == CD_IT8_KIND_TI3) {
-		ret = cd_it8_save_ti1_ti3 (it8, it8_lcms, error);
+		ret = cd_it8_save_to_file_ti1_ti3 (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
 	} else if (it8->priv->kind == CD_IT8_KIND_CCMX) {
-		ret = cd_it8_save_ccmx (it8, it8_lcms, error);
+		ret = cd_it8_save_to_file_ccmx (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
 	}

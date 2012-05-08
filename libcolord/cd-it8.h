@@ -97,10 +97,14 @@ CdIt8		*cd_it8_new			(void);
 CdIt8		*cd_it8_new_with_kind		(CdIt8Kind	 kind);
 
 /* sync */
-gboolean	 cd_it8_load			(CdIt8		*it8,
+gboolean	 cd_it8_load_from_data		(CdIt8		*it8,
+						 const gchar	*data,
+						 gsize		 size,
+						 GError		**error);
+gboolean	 cd_it8_load_from_file		(CdIt8		*it8,
 						 GFile		*file,
 						 GError		**error);
-gboolean	 cd_it8_save			(CdIt8		*it8,
+gboolean	 cd_it8_save_to_file		(CdIt8		*it8,
 						 GFile		*file,
 						 GError		**error);
 
