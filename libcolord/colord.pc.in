@@ -8,6 +8,6 @@ Name: colord
 Description: colord is a system daemon for managing color devices
 Version: @VERSION@
 Requires.private: dbus-1, gthread-2.0, lcms2
-Requires: glib-2.0, gobject-2.0
+Requires: glib-2.0, gobject-2.0, gio-2.0
 Libs: -L${libdir} -lcolord
 Cflags: -I${includedir}/colord-1
