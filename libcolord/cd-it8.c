@@ -820,12 +820,8 @@ cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
 	ret = cmsIT8SaveToMem (it8_lcms, data, (cmsUInt32Number *) &size);
 	g_assert (ret);
 
-	/* workaround LCMS bug */
-	if (data[size-1] != '\0')
-		data[size-1] = '\0';
-
-	/* save file */
-	ret = g_file_replace_contents (file, data, size, NULL,
+	/* save file (without the last '\0' byte) */
+	ret = g_file_replace_contents (file, data, size - 1, NULL,
 				       FALSE, G_FILE_CREATE_NONE,
 				       NULL, NULL, error);
 	if (!ret)
