@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -19,37 +19,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-/**
- * SECTION:colord
- * @short_description: Client objects for accessing colord
- *
- * These objects allow client programs to get access to devices that can
- * be color managed and profiles for changing them.
- *
- * See also: #CdClient, #CdDevice
- */
+#if !defined (__COLORD_H_INSIDE__) && !defined (CD_COMPILATION)
+#error "Only <colord.h> can be included directly."
+#endif
 
-#ifndef __COLORD_H__
-#define __COLORD_H__
+#ifndef __CD_IT8_UTILS_H__
+#define __CD_IT8_UTILS_H__
 
-#define __COLORD_H_INSIDE__
+#include <glib-object.h>
 
-#include <colord/cd-client.h>
-#include <colord/cd-client-sync.h>
-#include <colord/cd-color.h>
-#include <colord/cd-device.h>
-#include <colord/cd-device-sync.h>
-#include <colord/cd-enum.h>
-#include <colord/cd-it8.h>
-#include <colord/cd-it8-utils.h>
-#include <colord/cd-math.h>
-#include <colord/cd-profile.h>
-#include <colord/cd-profile-sync.h>
-#include <colord/cd-sensor.h>
-#include <colord/cd-sensor-sync.h>
-#include <colord/cd-version.h>
+#include "cd-it8.h"
 
-#undef __COLORD_H_INSIDE__
+gboolean	 cd_it8_utils_calculate_ccmx		(CdIt8		*it8_reference,
+							 CdIt8		*it8_measured,
+							 CdIt8		*it8_ccmx,
+							 GError		**error);
 
-#endif /* __COLORD_H__ */
+#endif /* __CD_IT8_UTILS_H__ */
 

@@ -42,6 +42,7 @@ libcolordbase_include_HEADERS =					\
 	cd-device-sync.h					\
 	cd-enum.h						\
 	cd-it8.h						\
+	cd-it8-utils.h						\
 	cd-math.h						\
 	cd-profile.h						\
 	cd-profile-sync.h					\
@@ -57,6 +58,7 @@ libcolord_la_SOURCES =						\
 	cd-device-sync.c					\
 	cd-enum.c						\
 	cd-it8.c						\
+	cd-it8-utils.c						\
 	cd-math.c						\
 	cd-profile.c						\
 	cd-profile-sync.c					\
