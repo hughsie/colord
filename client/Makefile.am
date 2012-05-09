@@ -73,6 +73,7 @@ colord_convert_SOURCES =				\
 colord_convert_LDADD =					\
 	$(LCMS_LIBS)					\
 	$(COLORD_LIBS)					\
+	$(GLIB_LIBS)					\
 	-lm
 
 colord_convert_CFLAGS =					\
