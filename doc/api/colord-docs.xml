@@ -64,6 +64,7 @@
 	colord daemon.
       </para>
     </partintro>
+    <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
     <xi:include href="dbus/org.freedesktop.ColorManager.ref.xml"/>
     <xi:include href="dbus/org.freedesktop.ColorManager.Device.ref.xml"/>
     <xi:include href="dbus/org.freedesktop.ColorManager.Profile.ref.xml"/>
@@ -80,6 +81,7 @@
     <xi:include href="xml/cd-client.xml"/>
     <xi:include href="xml/cd-device.xml"/>
     <xi:include href="xml/cd-profile.xml"/>
+    <xi:include href="xml/cd-sensor.xml"/>
     <xi:include href="xml/cd-it8.xml"/>
   </reference>
 
@@ -93,7 +95,10 @@
     <xi:include href="xml/cd-client-sync.xml"/>
     <xi:include href="xml/cd-device-sync.xml"/>
     <xi:include href="xml/cd-profile-sync.xml"/>
+    <xi:include href="xml/cd-sensor-sync.xml"/>
+    <xi:include href="xml/cd-it8-utils.xml"/>
     <xi:include href="xml/cd-version.xml"/>
+    <xi:include href="xml/cd-math.xml"/>
     <xi:include href="xml/cd-color.xml"/>
   </reference>
 
@@ -106,7 +111,7 @@
   <appendix id="license">
     <title>License</title>
     <para>
-<programlisting><xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../COPYING" parse="text"><xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback></xi:include></programlisting>
+<programlisting><xi:include xmlns:xi="http://www.w3.org/2001/XInclude" href="../../COPYING" parse="text"><xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback></xi:include></programlisting>
     </para>
   </appendix>
 </book>

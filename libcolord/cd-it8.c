@@ -1011,6 +1011,9 @@ cd_it8_get_data_size (CdIt8 *it8)
 /**
  * cd_it8_get_data_item:
  * @it8: a #CdIt8 instance.
+ * @idx: the item index
+ * @rgb: the returned RGB value
+ * @xyz: the returned XYZ value
  *
  * Gets a specific bit of data from this object.
  * The returned data are absolute readings and are not normalised.

@@ -20,10 +20,10 @@
  */
 
 /**
- * SECTION:cd-2color
- * @short_description: Color object data functionality
+ * SECTION:cd-it8-utils
+ * @short_description: Utilities for working with CdIt8 objects
  *
- * Functions to manipulate color values.
+ * Functions to do cool things with sets of reference and measurements.
  */
 
 #include "config.h"
@@ -173,9 +173,15 @@ out:
 
 /**
  * cd_it8_utils_calculate_ccmx:
+ * @it8_reference: The reference data
+ * @it8_measured: The measured data
+ * @it8_ccmx: The calculated correction matrix
+ * @error: A #GError, or %NULL
  *
- * This calculates the matrix using the Four-Color Matrix Method
- * (by Yoshihiro Ohno and Jonathan E. Hardis, 1997)
+ * This calculates the colorimter correction matrix using the Four-Color
+ * Matrix Method by Yoshihiro Ohno and Jonathan E. Hardis, 1997.
+ *
+ * Return value: %TRUE if a correction matrix was found.
  **/
 gboolean
 cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,

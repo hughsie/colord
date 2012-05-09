@@ -33,6 +33,8 @@
 
 #define __COLORD_H_INSIDE__
 
+#include <gtk/gtk.h>
+
 #include <colord/cd-client.h>
 #include <colord/cd-device.h>
 #include <colord/cd-profile.h>

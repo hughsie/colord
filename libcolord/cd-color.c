@@ -79,9 +79,10 @@ cd_color_yxy_dup (const CdColorYxy *src)
 
 /**
  * cd_color_xyz_get_type:
- * Return value: a #GType
  *
  * Gets a specific type.
+ *
+ * Return value: a #GType
  **/
 GType
 cd_color_xyz_get_type (void)
@@ -96,9 +97,10 @@ cd_color_xyz_get_type (void)
 
 /**
  * cd_color_rgb_get_type:
- * Return value: a #GType
  *
  * Gets a specific type.
+ *
+ * Return value: a #GType
  **/
 GType
 cd_color_rgb_get_type (void)
@@ -113,9 +115,10 @@ cd_color_rgb_get_type (void)
 
 /**
  * cd_color_yxy_get_type:
- * Return value: a #GType
  *
  * Gets a specific type.
+ *
+ * Return value: a #GType
  **/
 GType
 cd_color_yxy_get_type (void)

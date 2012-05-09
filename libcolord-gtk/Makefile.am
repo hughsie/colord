@@ -80,7 +80,7 @@ introspection_sources =						\
 	$(libcolordgtkbase_include_HEADERS)
 
 ColordGtk-1.0.gir: libcolord-gtk.la
-ColordGtk_1_0_gir_INCLUDES = GObject-2.0 Gio-2.0 Colord-1.0
+ColordGtk_1_0_gir_INCLUDES = GObject-2.0 Gio-2.0 Gtk-3.0 Colord-1.0
 ColordGtk_1_0_gir_CFLAGS = $(INCLUDES)
 ColordGtk_1_0_gir_SCANNERFLAGS = --identifier-prefix=Cd \
 				--symbol-prefix=cd_ \
