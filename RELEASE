@@ -2,9 +2,9 @@ colord Release Notes
 
 1. Write NEWS entries for colord in the same format as usual.
 
-git shortlog COLORD_0_1_19.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog COLORD_0_1_20.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
-Version 0.1.20
+Version 0.1.21
 ~~~~~~~~~~~~~~
 Released: 2012-xx-xx
 
@@ -23,8 +23,8 @@ git add po/*.po
 2. Commit changes to git:
 
 # MAKE SURE THESE ARE CORRECT
-export release_version="0.1.20"
-export release_tag="COLORD_0_1_20"
+export release_version="0.1.21"
+export release_tag="COLORD_0_1_21"
 
 git commit -a -m "Release colord ${release_version}"
 git tag -s -f -m "Release colord ${release_version}" "${release_tag}"
