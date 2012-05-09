@@ -22,6 +22,7 @@ BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
 BuildRequires: libgusb-devel
 BuildRequires: gtk3-devel
+BuildRequires: gtk-doc
 
 Requires: shared-color-profiles
 Requires: colord-sane
