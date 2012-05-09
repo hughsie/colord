@@ -60,6 +60,9 @@ MAINTAINERCLEANFILES =				\
 	colord.types				\
 	colord-*.txt
 
+DISTCLEANFILES =				\
+	org.freedesktop.ColorManager.ref.xml
+
 if ENABLE_GTK_DOC
 include $(top_srcdir)/gtk-doc.make
 CLEANFILES += tmpl
