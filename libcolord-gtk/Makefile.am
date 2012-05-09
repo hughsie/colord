@@ -1,9 +1,11 @@
 if HAVE_INTROSPECTION
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
-INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir) \
-				--includedir=$(top_srcdir)/libcolord
+INTROSPECTION_SCANNER_ARGS =	--add-include-path=$(srcdir)		\
+				--add-include-path=$(top_builddir)/libcolord
+INTROSPECTION_COMPILER_ARGS =	--includedir=$(srcdir)			\
+				--includedir=$(top_srcdir)/libcolord	\
+				--includedir=$(top_builddir)/libcolord
 endif
 
 INCLUDES = \
