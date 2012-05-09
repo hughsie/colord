@@ -3,6 +3,7 @@ INCLUDES =						\
 	$(GTK_CFLAGS)					\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/libcolord			\
+	-I$(top_srcdir)/libcolord-gtk			\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DCD_COMPILATION				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
@@ -11,7 +12,9 @@ INCLUDES =						\
 	-DVERSION="\"$(VERSION)\""			\
 	-DLOCALEDIR=\""$(localedir)"\"
 
-COLORD_LIBS = $(top_builddir)/libcolord/libcolord.la
+COLORD_LIBS =						\
+	$(top_builddir)/libcolord/libcolord.la		\
+	$(top_builddir)/libcolord-gtk/libcolord-gtk.la
 
 noinst_LIBRARIES = libclientprivate.a
 libclientprivate_a_SOURCES =				\
