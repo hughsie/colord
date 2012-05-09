@@ -1,3 +1,28 @@
+Version 0.1.20
+~~~~~~~~~~~~~~
+Released: 2012-05-09
+
+New Features:
+ - Add a bash completion file for colormgr (Richard Hughes)
+ - Add a BUSY state value for sensor devices (Richard Hughes)
+ - Add a GObject Introspection example (Richard Hughes)
+ - Add a sensor-set-options command to the colormgr tool (Richard Hughes)
+ - Add async and sync methods in libcolord to support sensor options (Richard Hughes)
+ - Add CdIt8 as a helper for reading and writing ti1, ti3 and ccmx files (Richard Hughes)
+ - Add cd_it8_utils_calculate_ccmx() to libcolorhug (Richard Hughes)
+ - Add CdSampleWindow to libcolord-gtk (Richard Hughes)
+ - Add CdWindow which allows us to get the color profile for a GtkWidget (Richard Hughes)
+ - Add functionality to colord-convert to sample ti1 -> ti3 files (Richard Hughes)
+ - Add gio-2.0 to the requires line of colord.pc for GFile (Richard Hughes)
+ - Add the concept of 'options' on each color sensor device (Richard Hughes)
+ - colorhug: Allow saving the remote hash as a sensor option (Richard Hughes)
+ - Print any sensor options when doing 'colormgr get-sensors' (Richard Hughes)
+
+Bugfixes:
+ - colorhug: Save the EEPROM after setting sensor options (Richard Hughes)
+ - Enable gtk-doc in the default distro build (Richard Hughes)
+ - Fix build failure when colord is not installed system-wide (Craig Keogh)
+
 Version 0.1.19
 ~~~~~~~~~~~~~~
 Released: 2012-04-17

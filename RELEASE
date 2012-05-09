@@ -16,6 +16,7 @@ Write release date to doc/website/download.html
 
 Update translations:
 
+tx push --source
 tx pull --all
 git add po/*.po
 

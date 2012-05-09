@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-14 13:59+0000\n"
-"PO-Revision-Date: 2012-03-15 14:13+0000\n"
+"POT-Creation-Date: 2012-05-09 22:55+0100\n"
+"PO-Revision-Date: 2012-05-09 21:57+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.net/projects/p/freedesktop/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -19,24 +19,43 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0\n"
 
 #. TRANSLATORS: command line option
+#: ../client/cd-convert.c:273
+msgid "Use this device for profiling"
+msgstr ""
+
+#. TRANSLATORS: command line option
+#: ../client/cd-convert.c:276
+msgid "Make the window modal to this XID"
+msgstr ""
+
+#. TRANSLATORS: just dumps the EDID to disk
+#: ../client/cd-convert.c:289
+msgid "gcm-dispread"
+msgstr ""
+
+#: ../client/cd-convert.c:377
+msgid "Failed to calibrate"
+msgstr ""
+
+#. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:329
 msgid "The profile description"
-msgstr ""
+msgstr "描述檔敘述"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:332
 msgid "The profile copyright"
-msgstr ""
+msgstr "描述檔著作權"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:335
 msgid "The device model"
-msgstr ""
+msgstr "裝置型號"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:338
 msgid "The device manufacturer"
-msgstr ""
+msgstr "裝置製造商"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:341
@@ -46,17 +65,17 @@ msgstr "要建立的描述檔"
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:344
 msgid "Named color CSV filename"
-msgstr ""
+msgstr "命名的色彩 CSV 檔名"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:347
 msgid "Named color type, e.g. 'lab' or 'srgb'"
-msgstr ""
+msgstr "命名的色彩類型，例如：「lab」或「srgb」"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:350
 msgid "A gamma string, e.g. '0.8,0.8,0.6'"
-msgstr ""
+msgstr "Gamma 字串，例如：「0.8,0.8,0.6」"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:353
@@ -71,7 +90,7 @@ msgstr "命名的色彩後綴"
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:359
 msgid "The metadata in 'key1=value1,key2=value2' format"
-msgstr ""
+msgstr "中介資料，格式為「key1=value1,key2=value2」"
 
 #. TRANSLATORS: command line tool
 #: ../client/cd-create-profile.c:370
@@ -90,40 +109,40 @@ msgstr "沒有指定輸出檔名"
 #. TRANSLATORS: the user forgot to use an action
 #: ../client/cd-create-profile.c:402
 msgid "No data to create profile"
-msgstr ""
+msgstr "沒有建立描述檔用的資料"
 
 #. TRANSLATORS: this is a command alias
-#: ../client/cd-fix-profile.c:91 ../client/cd-util.c:468
+#: ../client/cd-fix-profile.c:91 ../client/cd-util.c:495
 #, c-format
 msgid "Alias to %s"
 msgstr "%s 的別名"
 
-#: ../client/cd-fix-profile.c:169 ../client/cd-util.c:546
+#: ../client/cd-fix-profile.c:169 ../client/cd-util.c:573
 msgid "Command not found, valid commands are:"
 msgstr "找不到指令，有效的指令有："
 
 #: ../client/cd-fix-profile.c:924
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 #: ../client/cd-fix-profile.c:927
 msgid "Manufacturer"
-msgstr ""
+msgstr "製造商"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 #: ../client/cd-fix-profile.c:930 ../client/cd-util.c:227
-#: ../client/cd-util.c:371
+#: ../client/cd-util.c:376
 msgid "Model"
 msgstr "型號"
 
 #: ../client/cd-fix-profile.c:933
 msgid "Copyright"
-msgstr ""
+msgstr "著作權"
 
 #: ../client/cd-fix-profile.c:938
 msgid "No metadata"
-msgstr ""
+msgstr "無中介資料"
 
 #. TRANSLATORS: the metadata for the device
 #: ../client/cd-fix-profile.c:948 ../client/cd-util.c:182
@@ -134,76 +153,76 @@ msgstr "中介資料"
 #. TRANSLATORS: command line option
 #: ../client/cd-fix-profile.c:995
 msgid "Show extra debugging information"
-msgstr ""
+msgstr "顯示額外除錯資訊"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1023
 msgid "Show all the details about the profile"
-msgstr ""
+msgstr "顯示有關描述檔的所有詳細資訊"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1028
 msgid "Clear any metadata in the profile"
-msgstr ""
+msgstr "清除任何描述檔中的中介資料"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1033
 msgid "Initialize any metadata for the profile"
-msgstr ""
+msgstr "初始化描述檔的任何中介資料"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1038
 msgid "Add a metadata item to the profile"
-msgstr ""
+msgstr "將中介資料項目加入至描述檔中"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1043
 msgid "Remove a metadata item from the profile"
-msgstr ""
+msgstr "從描述檔移除一項中介資料"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1048
 msgid "Sets the copyright string"
-msgstr ""
+msgstr "設定著作權字串"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1053
 msgid "Sets the description string"
-msgstr ""
+msgstr "設定描述字串"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1058
 msgid "Sets the manufacturer string"
-msgstr ""
+msgstr "設定製造商字串"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1063
 msgid "Sets the model string"
-msgstr ""
+msgstr "設定型號字串"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1068
 msgid "Automatically fix metadata in the profile"
-msgstr ""
+msgstr "自動修正描述檔中的中介資料"
 
 #. TRANSLATORS: program name
-#: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:1897
-#: ../src/cd-main.c:1831
+#: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:2011
+#: ../src/cd-main.c:1847
 msgid "Color Management"
 msgstr "色彩管理"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: ../client/cd-util.c:86
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr ""
+msgstr "%Y年%B%e日，%p %I:%M:%S"
 
 #. TRANSLATORS: profile owner
 #: ../client/cd-util.c:101
 msgid "Owner"
-msgstr ""
+msgstr "擁有者"
 
 #. TRANSLATORS: the internal DBus path
-#: ../client/cd-util.c:120 ../client/cd-util.c:207 ../client/cd-util.c:328
+#: ../client/cd-util.c:120 ../client/cd-util.c:207 ../client/cd-util.c:333
 msgid "Object Path"
 msgstr "物件路徑"
 
@@ -213,13 +232,13 @@ msgstr "物件路徑"
 #. * ColorModel.OutputMode.OutputResolution
 #: ../client/cd-util.c:127 ../client/cd-util.c:247
 msgid "Format"
-msgstr ""
+msgstr "格式"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: ../client/cd-util.c:133
 msgid "Title"
-msgstr ""
+msgstr "標題"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: ../client/cd-util.c:138
@@ -229,9 +248,9 @@ msgstr "修飾子"
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
-#: ../client/cd-util.c:143 ../client/cd-util.c:223 ../client/cd-util.c:350
+#: ../client/cd-util.c:143 ../client/cd-util.c:223 ../client/cd-util.c:355
 msgid "Type"
-msgstr ""
+msgstr "類型"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -242,12 +261,12 @@ msgstr "色彩空間"
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: ../client/cd-util.c:155 ../client/cd-util.c:253
 msgid "Scope"
-msgstr ""
+msgstr "領域"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: ../client/cd-util.c:160
 msgid "Gamma Table"
-msgstr ""
+msgstr "Gamma 表"
 
 #. TRANSLATORS: profile filename
 #: ../client/cd-util.c:164
@@ -274,13 +293,13 @@ msgstr "已修改"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
-#: ../client/cd-util.c:231 ../client/cd-util.c:378
+#: ../client/cd-util.c:231 ../client/cd-util.c:383
 msgid "Vendor"
 msgstr "廠商"
 
 #: ../client/cd-util.c:236
 msgid "Inhibitors"
-msgstr ""
+msgstr "抑制子"
 
 #. TRANSLATORS: the device serial number
 #: ../client/cd-util.c:240
@@ -298,221 +317,232 @@ msgid "Profile"
 msgstr "描述檔"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
-#: ../client/cd-util.c:357
+#: ../client/cd-util.c:362
 msgid "State"
 msgstr "狀態"
 
 #. TRANSLATORS: sensor serial
-#: ../client/cd-util.c:364
+#: ../client/cd-util.c:369
 msgid "Serial number"
 msgstr "序號"
 
+#. TRANSLATORS: the options for the sensor
+#: ../client/cd-util.c:403
+msgid "Options"
+msgstr ""
+
 #. TRANSLATORS: if the sensor has a colord native driver
-#: ../client/cd-util.c:383
+#: ../client/cd-util.c:408
 msgid "Native"
 msgstr "原生"
 
 #. TRANSLATORS: if the sensor is locked
-#: ../client/cd-util.c:387
+#: ../client/cd-util.c:412
 msgid "Locked"
 msgstr "已上鎖"
 
 #. TRANSLATORS: if the sensor supports calibrating an LCD display
-#: ../client/cd-util.c:391
+#: ../client/cd-util.c:416
 msgid "LCD"
 msgstr "LCD"
 
 #. TRANSLATORS: if the sensor supports calibrating a CRT display
-#: ../client/cd-util.c:395
+#: ../client/cd-util.c:420
 msgid "CRT"
 msgstr "CRT"
 
 #. TRANSLATORS: if the sensor supports calibrating a printer
-#: ../client/cd-util.c:399
+#: ../client/cd-util.c:424
 msgid "Printer"
 msgstr "印表機"
 
 #. TRANSLATORS: if the sensor supports spot measurements
-#: ../client/cd-util.c:403
+#: ../client/cd-util.c:428
 msgid "Spot"
 msgstr "聚光"
 
 #. TRANSLATORS: if the sensor supports calibrating a projector
-#: ../client/cd-util.c:407
+#: ../client/cd-util.c:432
 msgid "Projector"
 msgstr "投影機"
 
 #. TRANSLATORS: if the sensor supports getting the ambient light level
-#: ../client/cd-util.c:411
+#: ../client/cd-util.c:436
 msgid "Ambient"
 msgstr "周遭"
 
-#: ../client/cd-util.c:681 ../client/cd-util.c:719 ../client/cd-util.c:782
+#: ../client/cd-util.c:708 ../client/cd-util.c:746 ../client/cd-util.c:809
+#: ../client/cd-util.c:898
 msgid "There are no supported sensors attached"
 msgstr "沒有接上支援的感測器"
 
 #. TRANSLATORS: this is the sensor title
-#: ../client/cd-util.c:818
+#: ../client/cd-util.c:845 ../client/cd-util.c:921
 msgid "Sensor"
 msgstr "感測器"
 
-#: ../client/cd-util.c:829
+#: ../client/cd-util.c:856
 msgid "Color"
 msgstr "色彩"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1759
+#: ../client/cd-util.c:1868
 msgid "Gets all the color managed devices"
 msgstr "取得所有色彩管理裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1764
+#: ../client/cd-util.c:1873
 msgid "Gets all the color managed devices of a specific kind"
 msgstr "取得特定類型的所有色彩管理裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1769
+#: ../client/cd-util.c:1878
 msgid "Gets all the available color profiles"
 msgstr "取得所有可用的色彩描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1774
+#: ../client/cd-util.c:1883
 msgid "Gets all the available color sensors"
 msgstr "取得所有可用的色彩感測器"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1779
+#: ../client/cd-util.c:1888
 msgid "Gets a reading from a sensor"
 msgstr "從感測器取得讀取內容"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1784
+#: ../client/cd-util.c:1893
 msgid "Locks the color sensor"
 msgstr "鎖住色彩感測器"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1789
+#: ../client/cd-util.c:1898
+msgid "Sets one or more sensor options"
+msgstr ""
+
+#. TRANSLATORS: command description
+#: ../client/cd-util.c:1903
 msgid "Create a device"
 msgstr "建立裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1794
+#: ../client/cd-util.c:1908
 msgid "Find a device"
 msgstr "尋找裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1799
+#: ../client/cd-util.c:1913
 msgid "Find a device that has a specific property"
-msgstr ""
+msgstr "尋找含指定屬性的裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1804
+#: ../client/cd-util.c:1918
 msgid "Find a profile"
 msgstr "尋找描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1809
+#: ../client/cd-util.c:1923
 msgid "Find a profile by filename"
-msgstr ""
+msgstr "依檔名尋找描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1814
+#: ../client/cd-util.c:1928
 msgid "Get a standard colorspace"
 msgstr "取得標準色彩空間"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1819
+#: ../client/cd-util.c:1933
 msgid "Create a profile"
 msgstr "建立描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1824
+#: ../client/cd-util.c:1938
 msgid "Add a profile to a device"
 msgstr "將描述檔加入至裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1829
+#: ../client/cd-util.c:1943
 msgid "Makes a profile default for a device"
 msgstr "將描述檔作為裝置的預設"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1834
+#: ../client/cd-util.c:1948
 msgid "Deletes a device"
 msgstr "刪除裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1839
+#: ../client/cd-util.c:1953
 msgid "Deletes a profile"
 msgstr "刪除描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1844
+#: ../client/cd-util.c:1958
 msgid "Sets the profile qualifier"
 msgstr "設定描述檔修飾子"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1849
+#: ../client/cd-util.c:1963
 msgid "Sets the profile filename"
 msgstr "設定描述檔檔名"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1854
+#: ../client/cd-util.c:1968
 msgid "Sets the device model"
 msgstr "設定裝置型號"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1859
+#: ../client/cd-util.c:1973
 msgid "Gets the default profile for a device"
 msgstr "取得裝置的預設描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1864
+#: ../client/cd-util.c:1978
 msgid "Sets the device vendor"
 msgstr "設定裝置廠商"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1869
+#: ../client/cd-util.c:1983
 msgid "Sets the device serial"
 msgstr "設定裝置序號"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1874
+#: ../client/cd-util.c:1988
 msgid "Sets the device kind"
 msgstr "設定裝置類型"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1879
+#: ../client/cd-util.c:1993
 msgid "Inhibits color profiles for this device"
-msgstr ""
+msgstr "抑制此裝置的色彩描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1884
+#: ../client/cd-util.c:1998
 msgid "Returns all the profiles that match a qualifier"
 msgstr "回傳符合修飾子的描述檔"
 
 #. TRANSLATORS: no colord available
-#: ../client/cd-util.c:1905
+#: ../client/cd-util.c:2019
 msgid "No connection to colord:"
 msgstr "無連至 colord 的連線："
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../contrib/colord-sane/cd-main.c:561 ../src/cd-main.c:1815
+#: ../contrib/colord-sane/cd-main.c:561 ../src/cd-main.c:1831
 msgid "Exit after a small delay"
 msgstr "在一小段延遲後離開"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../contrib/colord-sane/cd-main.c:564 ../src/cd-main.c:1818
+#: ../contrib/colord-sane/cd-main.c:564 ../src/cd-main.c:1834
 msgid "Exit after the engine has loaded"
 msgstr "在引擎載入後離開"
 
 #. TRANSLATORS: program name
 #: ../contrib/colord-sane/cd-main.c:577
 msgid "Color Management (SANE helper)"
-msgstr ""
+msgstr "色彩管理 (SANE 輔助器)"
 
 #: ../contrib/colord-sane/cd-main.c:580
 msgid "Color Management D-Bus Service (SANE)"
-msgstr ""
+msgstr "色彩管理 D-Bus 服務 (SANE)"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -633,6 +663,6 @@ msgstr "除錯選項"
 msgid "Show debugging options"
 msgstr "顯示除錯選項"
 
-#: ../src/cd-main.c:1835
+#: ../src/cd-main.c:1851
 msgid "Color Management D-Bus Service"
 msgstr "色彩管理 D-Bus 服務"
