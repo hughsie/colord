@@ -487,7 +487,7 @@ cd_it8_load_from_data (CdIt8 *it8,
 {
 	cmsHANDLE it8_lcms = NULL;
 	const gchar *tmp;
-	gboolean ret;
+	gboolean ret = TRUE;
 	gchar **props = NULL;
 	guint i;
 
