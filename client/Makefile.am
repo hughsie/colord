@@ -64,6 +64,7 @@ cd_create_profile_LDADD =				\
 cd_create_profile_CFLAGS =				\
 	$(WARNINGFLAGS_C)
 
+if HAVE_GTK
 noinst_PROGRAMS =					\
 	colord-convert
 
@@ -73,11 +74,13 @@ colord_convert_SOURCES =				\
 colord_convert_LDADD =					\
 	$(LCMS_LIBS)					\
 	$(COLORD_LIBS)					\
+	$(GTK_LIBS)					\
 	$(GLIB_LIBS)					\
 	-lm
 
 colord_convert_CFLAGS =					\
 	$(WARNINGFLAGS_C)
+endif
 
 bashcompletiondir = ${sysconfdir}/bash_completion.d
 dist_bashcompletion_DATA = colormgr-completion.bash
