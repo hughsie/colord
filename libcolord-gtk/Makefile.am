@@ -25,10 +25,12 @@ libcolord_include_HEADERS =					\
 
 libcolordgtkbase_includedir = $(libcolord_includedir)/colord-gtk
 libcolordgtkbase_include_HEADERS =				\
+	cd-sample-window.h					\
 	cd-window.h						\
 	cd-window-sync.h
 
 libcolord_gtk_la_SOURCES =					\
+	cd-sample-window.c					\
 	cd-window.c						\
 	cd-window-sync.c
 

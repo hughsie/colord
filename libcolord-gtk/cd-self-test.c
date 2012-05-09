@@ -25,7 +25,9 @@
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
+#include "../libcolord/cd-color.h"
 #include "../libcolord/cd-profile.h"
+#include "cd-sample-window.h"
 #include "cd-window.h"
 
 static void
@@ -82,6 +84,39 @@ colord_window_func (void)
 	g_object_unref (window);
 }
 
+static gboolean
+colord_sample_window_loop_cb (GMainLoop *loop)
+{
+	g_main_loop_quit (loop);
+	return FALSE;
+}
+
+static void
+colord_sample_window_func (void)
+{
+	GtkWindow *window;
+	GMainLoop *loop;
+	CdColorRGB source;
+
+	window = cd_sample_window_new ();
+	g_assert (window != NULL);
+	source.R = 1.0f;
+	source.G = 1.0f;
+	source.B = 0.0f;
+	cd_sample_window_set_color (CD_SAMPLE_WINDOW (window), &source);
+	cd_sample_window_set_fraction (CD_SAMPLE_WINDOW (window), -1);
+
+	/* move to the center of device lvds1 */
+	gtk_window_present (window);
+
+	loop = g_main_loop_new (NULL, FALSE);
+	g_timeout_add_seconds (2, (GSourceFunc) colord_sample_window_loop_cb, loop);
+	g_main_loop_run (loop);
+
+	g_main_loop_unref (loop);
+	gtk_widget_destroy (GTK_WIDGET (window));
+}
+
 int
 main (int argc, char **argv)
 {
@@ -94,6 +129,7 @@ main (int argc, char **argv)
 
 	/* tests go here */
 	g_test_add_func ("/colord/window", colord_window_func);
+	g_test_add_func ("/colors/sample-window", colord_sample_window_func);
 	return g_test_run ();
 }
 

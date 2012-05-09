@@ -36,6 +36,8 @@
 #include <colord/cd-client.h>
 #include <colord/cd-device.h>
 #include <colord/cd-profile.h>
+#include <colord/cd-color.h>
+#include <colord-gtk/cd-sample-window.h>
 #include <colord-gtk/cd-window.h>
 #include <colord-gtk/cd-window-sync.h>
 
