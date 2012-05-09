@@ -43,8 +43,6 @@ cd_window_get_profile_cb (GObject *source,
 					        &error);
 	g_assert_no_error (error);
 	g_assert (profile != NULL);
-	g_assert (cd_profile_get_has_vcgt (profile));
-
 	g_debug ("profile was %s", cd_profile_get_filename (profile));
 	g_object_unref (profile);
 
