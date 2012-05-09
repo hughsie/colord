@@ -9,19 +9,25 @@ SUBDIRS = 						\
 	policy						\
 	man						\
 	libcolord					\
-	client						\
-	contrib						\
-	data						\
-	examples					\
 	rules						\
-	doc						\
-	src						\
 	po
 
 if HAVE_GTK
 SUBDIRS += 						\
 	libcolord-gtk
 endif
+
+# this needs libcolord and libcolord-gtk
+SUBDIRS += 						\
+	client						\
+	contrib						\
+	doc						\
+	examples					\
+	src
+
+# this needs client/cd-create-profile
+SUBDIRS += 						\
+	data
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`
