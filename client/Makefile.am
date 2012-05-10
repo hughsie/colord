@@ -13,7 +13,9 @@ INCLUDES =						\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 COLORD_LIBS =						\
-	$(top_builddir)/libcolord/libcolord.la		\
+	$(top_builddir)/libcolord/libcolord.la
+
+COLORD_GTK_LIBS =					\
 	$(top_builddir)/libcolord-gtk/libcolord-gtk.la
 
 noinst_LIBRARIES = libclientprivate.a
@@ -74,6 +76,7 @@ colord_convert_SOURCES =				\
 colord_convert_LDADD =					\
 	$(LCMS_LIBS)					\
 	$(COLORD_LIBS)					\
+	$(COLORD_GTK_LIBS)				\
 	$(GTK_LIBS)					\
 	$(GLIB_LIBS)					\
 	-lm
