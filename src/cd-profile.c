@@ -346,7 +346,7 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 					       g_mapped_file_get_length (priv->mapped_file),
 					       NULL,
 					       FALSE,
-					       G_FILE_CREATE_PRIVATE | G_FILE_CREATE_REPLACE_DESTINATION,
+					       G_FILE_CREATE_REPLACE_DESTINATION,
 					       NULL,
 					       NULL, /* cancellable */
 					       &error_local);
