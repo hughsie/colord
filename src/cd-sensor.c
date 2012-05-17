@@ -974,7 +974,7 @@ out:
 
 #ifdef HAVE_GUDEV
 /**
- * cd_sensor_name_vanished_cb:
+ * cd_sensor_set_from_device:
  **/
 gboolean
 cd_sensor_set_from_device (CdSensor *sensor,
@@ -1025,8 +1025,13 @@ cd_sensor_set_from_device (CdSensor *sensor,
 	kind_str = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
 	if (priv->kind == CD_SENSOR_KIND_UNKNOWN)
 		cd_sensor_set_kind (sensor, cd_sensor_kind_from_string (kind_str));
-	if (priv->kind == CD_SENSOR_KIND_UNKNOWN)
-		g_warning ("Failed to recognize color device: %s", priv->model);
+	if (priv->kind == CD_SENSOR_KIND_UNKNOWN) {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to recognize color device: %s - %s",
+			     vendor_tmp, model_tmp);
+		goto out;
+	}
 	cd_sensor_set_id (sensor, kind_str);
 
 	/* get caps */
@@ -1056,7 +1061,19 @@ cd_sensor_set_from_device (CdSensor *sensor,
 		priv->caps[idx++] = g_strdup ("ambient");
 	priv->caps[idx] = NULL;
 
-	return TRUE;
+	/* no caps */
+	if (idx == 0) {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "device %s - %s  had no reported caps",
+			     vendor_tmp, model_tmp);
+		goto out;
+	}
+
+	/* success */
+	ret = TRUE;
+out:
+	return ret;
 }
 #endif
 

@@ -58,6 +58,7 @@ static gboolean
 cd_sensor_client_add (CdSensorClient *sensor_client,
 		      GUdevDevice *device)
 {
+	gboolean ignore;
 	gboolean ret;
 	CdSensor *sensor = NULL;
 	const gchar *device_file;
@@ -67,6 +68,11 @@ cd_sensor_client_add (CdSensorClient *sensor_client,
 	ret = g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR");
 	if (!ret)
 		goto out;
+	ignore = g_udev_device_get_property_as_boolean (device, "COLORD_IGNORE");
+	if (ignore) {
+		ret = FALSE;
+		goto out;
+	}
 
 	/* actual device? */
 	device_file = g_udev_device_get_device_file (device);
