@@ -26,14 +26,18 @@
 #include <gusb.h>
 
 /* device constants */
-#define	CH_USB_VID				0x04d8
-#define	CH_USB_PID				0xf8da
+#define	CH_USB_VID				0x273f
+#define	CH_USB_PID				0x1001
 #define	CH_USB_CONFIG				0x0001
 #define	CH_USB_INTERFACE			0x0000
 #define	CH_USB_HID_EP				0x0001
 #define	CH_USB_HID_EP_IN			(CH_USB_HID_EP | 0x80)
 #define	CH_USB_HID_EP_OUT			(CH_USB_HID_EP | 0x00)
 #define	CH_USB_HID_EP_SIZE			64
+
+/* old device constants */
+#define	CH_USB_VID_LEGACY			0x04d8
+#define	CH_USB_PID_LEGACY			0xf8da
 
 /* the default timeout in client tools */
 #define CH_DEVICE_USB_TIMEOUT			5000 /* ms */

@@ -474,7 +474,13 @@ cd_sensor_lock_async (CdSensor *sensor,
 	priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
 							  CH_USB_VID,
 							  CH_USB_PID,
-							  &error);
+							  NULL);
+	if (priv->device == NULL) {
+		priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
+								  CH_USB_VID_LEGACY,
+								  CH_USB_PID_LEGACY,
+								  &error);
+	}
 	if (priv->device == NULL) {
 		g_simple_async_report_gerror_in_idle (G_OBJECT (sensor),
 						      callback,

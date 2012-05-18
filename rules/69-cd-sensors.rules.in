@@ -70,6 +70,8 @@ ATTRS{idVendor}=="0765", ATTRS{idProduct}=="5001", ENV{COLORD_SENSOR}="1", ENV{C
 
 # ColorHug
 ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="f8da", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_SENSOR_CAP_LCD}="1"
+ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1000", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_IGNORE}="1"
+ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1001", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_SENSOR_CAP_LCD}="1"
 
 # color calibration device
 ENV{COLORD_SENSOR}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"
