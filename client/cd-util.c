@@ -448,7 +448,8 @@ cd_util_show_sensor (CdSensor *sensor)
 	}
 out:
 	g_list_free (list);
-	g_hash_table_unref (options);
+	if (options != NULL)
+		g_hash_table_unref (options);
 	if (loop != NULL)
 		g_main_loop_unref (loop);
 }
