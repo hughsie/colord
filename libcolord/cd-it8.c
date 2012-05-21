@@ -658,11 +658,11 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 
 	/* write data */
 	if (it8->priv->kind == CD_IT8_KIND_TI1) {
-		cmsIT8SetSheetType (it8_lcms, "CTI1");
+		cmsIT8SetSheetType (it8_lcms, "CTI1   ");
 		cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
 				      "Calibration Target chart information 1");
 	} else if (it8->priv->kind == CD_IT8_KIND_TI3) {
-		cmsIT8SetSheetType (it8_lcms, "CTI3");
+		cmsIT8SetSheetType (it8_lcms, "CTI3   ");
 		cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
 				      "Calibration Target chart information 3");
 	}
@@ -724,7 +724,7 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	gboolean ret = TRUE;
 
-	cmsIT8SetSheetType (it8_lcms, "CCMX");
+	cmsIT8SetSheetType (it8_lcms, "CCMX   ");
 	cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
 			      "Device Correction Matrix");
 
