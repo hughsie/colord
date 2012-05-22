@@ -1,5 +1,5 @@
 [Unit]
-Description=Daemon for managing, installing and generating color profiles
+Description=Manage, Install and Generate Color Profiles
 
 [Service]
 Type=dbus
