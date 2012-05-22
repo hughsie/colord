@@ -1,3 +1,4 @@
+if HAVE_SANE
 introspectiondir = $(datadir)/dbus-1/interfaces
 dist_introspection_DATA = 				\
 	org.freedesktop.colord.sane.xml
@@ -17,7 +18,6 @@ INCLUDES =						\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 if HAVE_GUDEV
-if HAVE_SANE
 
 COLORD_LIBS =						\
 	$(top_builddir)/libcolord/libcolord.la
@@ -36,7 +36,6 @@ colord_sane_LDADD =					\
 
 colord_sane_CFLAGS =					\
 	$(WARNINGFLAGS_C)
-endif
 endif
 
 dbusdir = $(sysconfdir)/dbus-1/system.d
@@ -72,3 +71,4 @@ DISTCLEANFILES =					\
 	$(systemdservicemain_DATA)
 
 -include $(top_srcdir)/git.mk
+endif
