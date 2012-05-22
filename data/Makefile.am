@@ -15,9 +15,10 @@ $(dbusservicemain_DATA): $(dbusservicemain_in_files) Makefile
 	@sed -e "s|\@servicedir\@|$(libexecdir)|" $< | \
 	sed -e "s|\@daemon_user\@|$(daemon_user)|" > $@
 
+systemdservicemain_in_files = colord.service.in
+
 if HAVE_SYSTEMD
 systemdservicemaindir = $(systemdsystemunitdir)
-systemdservicemain_in_files = colord.service.in
 systemdservicemain_DATA     = $(systemdservicemain_in_files:.service.in=.service)
 $(systemdservicemain_DATA): $(systemdservicemain_in_files) Makefile
 	@sed -e "s|\@servicedir\@|$(libexecdir)|" $< | \
