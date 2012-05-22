@@ -1,3 +1,19 @@
+Version 0.1.21
+~~~~~~~~~~~~~~
+Released: 2012-05-22
+
+Bugfixes:
+ - Do not add sensors that are ignored or have no caps (Richard Hughes)
+ - Do not install any parts of colord-sane if --disable-sane is specified (Christoph Brill)
+ - Do not use 'WantedBy=graphical.target' in the shipped systemd file (Benedikt Morbach)
+ - Fix autotools when configuring without systemd (Benedikt Morbach)
+ - Fix InstallSystemWide() by not writing a private file (Richard Hughes)
+ - Fix srcdir != builddir with introspection enabled (Colin Walters)
+ - Fix the description in the systemd service file (Benedikt Morbach)
+ - Isolate gtk dependency to cd-convert (Yanko Kaneti)
+ - Save the CCMX and ITx files to be compatible with argyllcms (Richard Hughes)
+ - The ColorHug has a new VID and PID (Richard Hughes)
+
 Version 0.1.20
 ~~~~~~~~~~~~~~
 Released: 2012-05-09
