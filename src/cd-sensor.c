@@ -89,6 +89,7 @@ struct _CdSensorPrivate
 	gchar				*serial;
 	gchar				*model;
 	gchar				*vendor;
+	gchar				*device_path;
 	gboolean			 native;
 	gboolean			 locked;
 	gchar				**caps;
@@ -972,6 +973,15 @@ out:
 	return ret;
 }
 
+/**
+ * cd_sensor_get_device_path:
+ **/
+const gchar *
+cd_sensor_get_device_path (CdSensor *sensor)
+{
+	return sensor->priv->device_path;
+}
+
 #ifdef HAVE_GUDEV
 /**
  * cd_sensor_set_from_device:
@@ -1069,6 +1079,9 @@ cd_sensor_set_from_device (CdSensor *sensor,
 			     vendor_tmp, model_tmp);
 		goto out;
 	}
+
+	/* save device path */
+	priv->device_path = g_strdup (g_udev_device_get_sysfs_path (device));
 
 	/* success */
 	ret = TRUE;
@@ -1294,6 +1307,7 @@ cd_sensor_finalize (GObject *object)
 	g_free (priv->vendor);
 	g_free (priv->serial);
 	g_free (priv->id);
+	g_free (priv->device_path);
 	g_free (priv->object_path);
 	g_hash_table_unref (priv->options);
 

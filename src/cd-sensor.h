@@ -83,6 +83,7 @@ CdSensor	*cd_sensor_new			(void);
 /* accessors */
 const gchar	*cd_sensor_get_id		(CdSensor		*sensor);
 const gchar	*cd_sensor_get_object_path	(CdSensor		*sensor);
+const gchar	*cd_sensor_get_device_path	(CdSensor		*sensor);
 gboolean	 cd_sensor_register_object	(CdSensor		*sensor,
 						 GDBusConnection	*connection,
 						 GDBusInterfaceInfo	*info,
