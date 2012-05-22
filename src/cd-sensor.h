@@ -92,6 +92,8 @@ gboolean	 cd_sensor_register_object	(CdSensor		*sensor,
 gboolean	 cd_sensor_set_from_device	(CdSensor		*sensor,
 						 GUdevDevice		*device,
 						 GError			**error);
+void		 cd_sensor_set_index		(CdSensor		*sensor,
+						 guint			 idx);
 #endif
 void		 cd_sensor_button_pressed	(CdSensor		*sensor);
 gboolean	 cd_sensor_dump			(CdSensor		*sensor,

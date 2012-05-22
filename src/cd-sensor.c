@@ -1033,8 +1033,7 @@ cd_sensor_set_from_device (CdSensor *sensor,
 
 	/* try to get type */
 	kind_str = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
-	if (priv->kind == CD_SENSOR_KIND_UNKNOWN)
-		cd_sensor_set_kind (sensor, cd_sensor_kind_from_string (kind_str));
+	priv->kind = cd_sensor_kind_from_string (kind_str);
 	if (priv->kind == CD_SENSOR_KIND_UNKNOWN) {
 		ret = FALSE;
 		g_set_error (error, 1, 0,
@@ -1042,7 +1041,6 @@ cd_sensor_set_from_device (CdSensor *sensor,
 			     vendor_tmp, model_tmp);
 		goto out;
 	}
-	cd_sensor_set_id (sensor, kind_str);
 
 	/* get caps */
 	ret = g_udev_device_get_property_as_boolean (device,
@@ -1089,6 +1087,21 @@ out:
 	return ret;
 }
 #endif
+
+/**
+ * cd_sensor_set_index:
+ **/
+void
+cd_sensor_set_index (CdSensor *sensor,
+		     guint idx)
+{
+	gchar *id;
+	id = g_strdup_printf ("%s-%02i",
+			      cd_sensor_kind_to_string (sensor->priv->kind),
+			      idx);
+	cd_sensor_set_id (sensor, id);
+	g_free (id);
+}
 
 /**
  * cd_sensor_add_option:

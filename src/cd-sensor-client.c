@@ -39,6 +39,7 @@ struct _CdSensorClientPrivate
 {
 	GUdevClient			*gudev_client;
 	GPtrArray			*array_sensors;
+	guint				 idx;
 };
 
 enum {
@@ -92,6 +93,9 @@ cd_sensor_client_add (CdSensorClient *sensor_client,
 		goto out;
 	}
 
+	/* set the index */
+	cd_sensor_set_index (sensor, sensor_client->priv->idx);
+
 	/* load the sensor */
 	ret = cd_sensor_load (sensor, &error);
 	if (!ret) {
@@ -104,6 +108,7 @@ cd_sensor_client_add (CdSensorClient *sensor_client,
 	/* signal the addition */
 	g_debug ("emit: added");
 	g_signal_emit (sensor_client, signals[SIGNAL_SENSOR_ADDED], 0, sensor);
+	sensor_client->priv->idx++;
 
 	/* keep track so we can remove with the same device */
 	g_ptr_array_add (sensor_client->priv->array_sensors, g_object_ref (sensor));
