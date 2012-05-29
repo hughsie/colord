@@ -781,6 +781,7 @@ struct {
 	{ "Hewlett-Packard", "Hewlett Packard" },
 	{ "LENOVO", "Lenovo" },
 	{ "NIKON", "Nikon" },
+	{ "samsung", "Samsung" },
 	{ NULL, NULL }
 };
 
