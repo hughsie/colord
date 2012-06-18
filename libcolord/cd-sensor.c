@@ -900,6 +900,7 @@ out:
 /**
  * cd_sensor_set_options:
  * @sensor: a #CdSensor instance.
+ * @values: (element-type utf8 GVariant): the options
  * @cancellable: a #GCancellable, or %NULL
  * @callback: the function to run on completion
  * @user_data: the data to pass to @callback
@@ -1105,7 +1106,8 @@ cd_sensor_get_connected (CdSensor *sensor)
  *
  * Gets any sensor options.
  *
- * Return value: (transfer full): A refcounted #GHashTable of (string, GVariant).
+ * Return value: (transfer full) (element-type utf8 GVariant): A
+ *               refcounted #GHashTable of (string, GVariant).
  *
  * Since: 0.1.20
  **/

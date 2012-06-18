@@ -113,7 +113,7 @@ Colord-1.0.gir: libcolord.la
 Colord_1_0_gir_INCLUDES = GObject-2.0 Gio-2.0
 Colord_1_0_gir_CFLAGS = $(INCLUDES)
 Colord_1_0_gir_SCANNERFLAGS = --identifier-prefix=Cd \
-				--symbol-prefix=cd_ \
+				--symbol-prefix=cd \
 				--warn-all \
 				--add-include-path=$(srcdir) \
 				--c-include="colord.h"

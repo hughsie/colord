@@ -167,7 +167,7 @@ cd_vec3_get_data (const CdVec3 *src)
 /**
  * cd_vec3_squared_error:
  * @src1: the vector source
- * @src1: another vector source
+ * @src2: another vector source
  *
  * Gets the mean squared error for a pair of vectors
  *

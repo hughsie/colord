@@ -212,6 +212,7 @@ cd_sensor_set_options_finish_sync (CdSensor *sensor,
 /**
  * cd_sensor_set_options_sync:
  * @sensor: a #CdSensor instance.
+ * @values: (element-type utf8 GVariant): the options
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *

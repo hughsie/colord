@@ -478,7 +478,8 @@ out:
  * @client: a #CdClient instance.
  * @id: identifier for the device
  * @scope: the scope of the device
- * @properties: properties to set on the device, or %NULL
+ * @properties: (element-type utf8 utf8) (allow-none): properties to
+ *   set on the device, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  * @callback: the function to run on completion
  * @user_data: the data to pass to @callback
@@ -629,7 +630,8 @@ out:
  * @client: a #CdClient instance.
  * @id: identifier for the profile
  * @scope: the scope of the profile
- * @properties: properties to set on the profile, or %NULL
+ * @properties: (element-type utf8 utf8) (allow-none): properties to
+ *   set on the profile, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  * @callback: the function to run on completion
  * @user_data: the data to pass to @callback

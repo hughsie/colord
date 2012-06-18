@@ -321,7 +321,8 @@ cd_client_create_profile_finish_sync (CdClient *client,
  * @client: a #CdClient instance.
  * @id: identifier for the device
  * @scope: the scope of the profile
- * @properties: properties to set on the profile, or %NULL
+ * @properties: (element-type utf8 utf8) (allow-none): properties to
+ *   set on the profile, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -434,7 +435,8 @@ cd_client_create_device_finish_sync (CdClient *client,
  * @client: a #CdClient instance.
  * @id: identifier for the device
  * @scope: the scope of the device
- * @properties: properties to set on the device, or %NULL
+ * @properties: (element-type utf8 utf8) (allow-none): properties to
+ *   set on the device, or %NULL
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -499,8 +501,8 @@ cd_client_get_devices_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: (transfer full): an array of #CdDevice objects,
- *		 free with g_ptr_array_unref()
+ * Return value: (transfer full) (element-type CdDevice): an array of
+ *		 #CdDevice objects, free with g_ptr_array_unref()
  *
  * Since: 0.1.0
  **/
@@ -552,8 +554,8 @@ cd_client_get_profiles_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: (transfer full): an array of #CdProfile objects,
- *		 free with g_ptr_array_unref()
+ * Return value: (transfer full) (element-type CdProfile): an array of
+ *		 #CdProfile objects, free with g_ptr_array_unref()
  *
  * Since: 0.1.0
  **/
@@ -605,8 +607,8 @@ cd_client_get_sensors_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: (transfer full): an array of #CdSensor objects,
- *		 free with g_ptr_array_unref()
+ * Return value: (transfer full) (element-type CdSensor): an array of
+ *		 #CdSensor objects, free with g_ptr_array_unref()
  *
  * Since: 0.1.0
  **/
@@ -821,8 +823,8 @@ cd_client_get_devices_by_kind_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: (transfer full): an array of #CdDevice objects,
- *		 free with g_ptr_array_unref()
+ * Return value: (transfer full) (element-type CdDevice): an array of
+ *		 #CdDevice objects, free with g_ptr_array_unref()
  *
  * Since: 0.1.0
  **/
