@@ -1,4 +1,3 @@
-client/cd-convert.c
 client/cd-create-profile.c
 client/cd-fix-profile.c
 client/cd-util.c

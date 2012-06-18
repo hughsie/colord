@@ -12,12 +12,7 @@ SUBDIRS = 						\
 	rules						\
 	po
 
-if HAVE_GTK
-SUBDIRS += 						\
-	libcolord-gtk
-endif
-
-# this needs libcolord and libcolord-gtk
+# this needs libcolord
 SUBDIRS += 						\
 	client						\
 	contrib						\

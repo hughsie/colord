@@ -274,23 +274,6 @@ else
 fi
 AC_SUBST(slashlibdir)
 
-dnl **** Check for GTK ****
-AC_ARG_ENABLE(gtk, AS_HELP_STRING([--enable-gtk],[Enable GTK support]),
-	      enable_gtk=$enableval)
-has_gtk=no
-if test x$enable_gtk != xno; then
-	PKG_CHECK_MODULES(GTK, gtk+-3.0, has_gtk=yes, has_gtk=no)
-	if test $has_gtk = "no"; then
-		if test x$enable_gtk = xyes -a $has_gtk = "no"; then
-			AC_MSG_ERROR([--enable-gtk was specified and GTK was not found])
-		fi
-	fi
-fi
-AM_CONDITIONAL(HAVE_GTK, test x$has_gtk = xyes)
-if test x$has_gtk = xyes; then
-	AC_DEFINE(HAVE_GTK,1,[Use GTK support])
-fi
-
 # per-machine directory
 AC_SUBST(CD_SYSTEM_PROFILES_DIR, "\$(localstatedir)/lib/colord/icc")
 
@@ -322,8 +305,6 @@ client/Makefile
 libcolord/cd-version.h
 libcolord/colord.pc
 libcolord/Makefile
-libcolord-gtk/colord-gtk.pc
-libcolord-gtk/Makefile
 ])
 AC_OUTPUT
 

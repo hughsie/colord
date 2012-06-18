@@ -135,12 +135,6 @@ exit 0
 %dir %{_datadir}/gtk-doc/html/colord
 %{_datadir}/gtk-doc/html/colord/*
 
-%files gtk-devel
-%defattr(-,root,root,-)
-%{_libdir}/libcolord-gtk.so
-%{_libdir}/pkgconfig/colord-gtk.pc
-%{_datadir}/gir-1.0/ColordGtk-1.0.gir
-
 %files sane
 %defattr(-,root,root,-)
 %{_datadir}/dbus-1/interfaces/org.freedesktop.colord.sane.xml
@@ -148,10 +142,6 @@ exit 0
 /usr/lib/systemd/system/colord-sane.service
 %{_libexecdir}/colord-sane
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.colord-sane.conf
-
-%files gtk
-%defattr(-,root,root,-)
-%{_libdir}/libcolord-gtk.so.*
 
 %changelog
 * #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#
