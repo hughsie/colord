@@ -40,6 +40,14 @@ Requires: %{name} = %{version}-%{release}
 %description devel
 Files for development with %{name}.
 
+%package devel-docs
+Summary: Developer documentation package for %{name}
+Requires: %{name} = %{version}-%{release}
+BuildArch: noarch
+
+%description devel-docs
+Documentation for development with %{name}.
+
 %package sane
 Summary: SANE helper package for %{name}
 Requires: %{name} = %{version}-%{release}
@@ -124,6 +132,9 @@ exit 0
 %{_libdir}/pkgconfig/colord.pc
 %{_datadir}/gir-1.0/Colord-1.0.gir
 %{_datadir}/vala/vapi/colord.vapi
+
+%files devel-docs
+%defattr(-,root,root,-)
 %dir %{_datadir}/gtk-doc/html/colord
 %{_datadir}/gtk-doc/html/colord/*
 
