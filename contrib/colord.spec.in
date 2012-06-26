@@ -21,7 +21,6 @@ BuildRequires: sqlite-devel
 BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
 BuildRequires: libgusb-devel
-BuildRequires: gtk3-devel
 BuildRequires: gtk-doc
 
 Requires: shared-color-profiles
@@ -40,13 +39,6 @@ Requires: %{name} = %{version}-%{release}
 
 %description devel
 Files for development with %{name}.
-
-%package gtk-devel
-Summary: GTK development package for %{name}
-Requires: %{name} = %{version}-%{release}
-
-%description gtk-devel
-Files for development with %{name} using GTK.
 
 %package sane
 Summary: SANE helper package for %{name}
