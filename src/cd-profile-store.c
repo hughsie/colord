@@ -181,8 +181,10 @@ cd_profile_store_add_profile (CdProfileStore *profile_store,
 	CdProfile *profile = NULL;
 	CdProfile *profile_tmp = NULL;
 	GError *error = NULL;
+	GFileInfo *info = NULL;
 	gchar *filename = NULL;
 	const gchar *checksum;
+	const gchar *type;
 	CdProfileStorePrivate *priv = profile_store->priv;
 
 	/* already added? */
@@ -190,6 +192,25 @@ cd_profile_store_add_profile (CdProfileStore *profile_store,
 	profile = cd_profile_store_get_by_filename (profile_store, filename);
 	if (profile != NULL)
 		goto out;
+
+	/* check is ICC file */
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  &error);
+	if (info == NULL) {
+		g_warning ("CdProfileStore: Failed to get content type of %s : %s",
+			   filename, error->message);
+		g_error_free (error);
+		goto out;
+	}
+	type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
+	if (g_strcmp0 (type, "application/vnd.iccprofile") != 0) {
+		g_debug ("CdProfileStore: Incorrect content type for %s, got %s",
+			 filename, type);
+		goto out;
+	}
 
 	/* is system wide? */
 	profile = cd_profile_new ();
@@ -228,6 +249,8 @@ out:
 	g_free (filename);
 	if (profile_tmp != NULL)
 		g_object_unref (profile_tmp);
+	if (info != NULL)
+		g_object_unref (info);
 	if (profile != NULL)
 		g_object_unref (profile);
 	return ret;
