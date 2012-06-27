@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-09 22:55+0100\n"
-"PO-Revision-Date: 2012-05-09 21:57+0000\n"
+"POT-Creation-Date: 2012-06-18 09:36+0100\n"
+"PO-Revision-Date: 2012-06-27 08:50+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -18,25 +18,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-
-#. TRANSLATORS: command line option
-#: ../client/cd-convert.c:273
-msgid "Use this device for profiling"
-msgstr ""
-
-#. TRANSLATORS: command line option
-#: ../client/cd-convert.c:276
-msgid "Make the window modal to this XID"
-msgstr ""
-
-#. TRANSLATORS: just dumps the EDID to disk
-#: ../client/cd-convert.c:289
-msgid "gcm-dispread"
-msgstr ""
-
-#: ../client/cd-convert.c:377
-msgid "Failed to calibrate"
-msgstr ""
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:329
@@ -113,12 +94,12 @@ msgid "No data to create profile"
 msgstr "Немає даних для створення профілю"
 
 #. TRANSLATORS: this is a command alias
-#: ../client/cd-fix-profile.c:91 ../client/cd-util.c:495
+#: ../client/cd-fix-profile.c:91 ../client/cd-util.c:496
 #, c-format
 msgid "Alias to %s"
 msgstr "Псевдонім %s"
 
-#: ../client/cd-fix-profile.c:169 ../client/cd-util.c:573
+#: ../client/cd-fix-profile.c:169 ../client/cd-util.c:574
 msgid "Command not found, valid commands are:"
 msgstr "Невідома команда, відомі команди:"
 
@@ -207,7 +188,7 @@ msgid "Automatically fix metadata in the profile"
 msgstr "Автоматично виправляти метадані у профілі"
 
 #. TRANSLATORS: program name
-#: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:2011
+#: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:2012
 #: ../src/cd-main.c:1847
 msgid "Color Management"
 msgstr "Керування кольорами"
@@ -330,7 +311,7 @@ msgstr "Серійний номер"
 #. TRANSLATORS: the options for the sensor
 #: ../client/cd-util.c:403
 msgid "Options"
-msgstr ""
+msgstr "Параметри"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: ../client/cd-util.c:408
@@ -372,157 +353,157 @@ msgstr "Проектор"
 msgid "Ambient"
 msgstr "Адаптивний"
 
-#: ../client/cd-util.c:708 ../client/cd-util.c:746 ../client/cd-util.c:809
-#: ../client/cd-util.c:898
+#: ../client/cd-util.c:709 ../client/cd-util.c:747 ../client/cd-util.c:810
+#: ../client/cd-util.c:899
 msgid "There are no supported sensors attached"
 msgstr "З комп’ютером не з’єднано підтримуваних датчиків"
 
 #. TRANSLATORS: this is the sensor title
-#: ../client/cd-util.c:845 ../client/cd-util.c:921
+#: ../client/cd-util.c:846 ../client/cd-util.c:922
 msgid "Sensor"
 msgstr "Датчик"
 
-#: ../client/cd-util.c:856
+#: ../client/cd-util.c:857
 msgid "Color"
 msgstr "Колір"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1868
+#: ../client/cd-util.c:1869
 msgid "Gets all the color managed devices"
 msgstr "Отримати список всіх пристроїв з керуванням кольорами"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1873
+#: ../client/cd-util.c:1874
 msgid "Gets all the color managed devices of a specific kind"
 msgstr "Отримати список всіх пристроїв з керуванням кольорами певного типу"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1878
+#: ../client/cd-util.c:1879
 msgid "Gets all the available color profiles"
 msgstr "Отримати список всіх доступний профілів кольорів"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1883
+#: ../client/cd-util.c:1884
 msgid "Gets all the available color sensors"
 msgstr "Отримати список всіх доступний датчиків кольорів"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1888
+#: ../client/cd-util.c:1889
 msgid "Gets a reading from a sensor"
 msgstr "Виконати спробу читання даних з пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1893
+#: ../client/cd-util.c:1894
 msgid "Locks the color sensor"
 msgstr "Заблокувати датчик кольорів"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1898
+#: ../client/cd-util.c:1899
 msgid "Sets one or more sensor options"
-msgstr ""
+msgstr "Встановлює один або декілька параметрів датчика"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1903
+#: ../client/cd-util.c:1904
 msgid "Create a device"
 msgstr "Створити пристрій"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1908
+#: ../client/cd-util.c:1909
 msgid "Find a device"
 msgstr "Знайти пристрій"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1913
+#: ../client/cd-util.c:1914
 msgid "Find a device that has a specific property"
 msgstr "Знайти пристрій з певною властивістю"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1918
+#: ../client/cd-util.c:1919
 msgid "Find a profile"
 msgstr "Знайти профіль"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1923
+#: ../client/cd-util.c:1924
 msgid "Find a profile by filename"
 msgstr "Знайти профіль за назвою файла"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1928
+#: ../client/cd-util.c:1929
 msgid "Get a standard colorspace"
 msgstr "Отримати стандартний простір кольорів"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1933
+#: ../client/cd-util.c:1934
 msgid "Create a profile"
 msgstr "Створити профіль"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1938
+#: ../client/cd-util.c:1939
 msgid "Add a profile to a device"
 msgstr "Додати профіль до пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1943
+#: ../client/cd-util.c:1944
 msgid "Makes a profile default for a device"
 msgstr "Зробити профіль типовим для пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1948
+#: ../client/cd-util.c:1949
 msgid "Deletes a device"
 msgstr "Вилучити пристрій"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1953
+#: ../client/cd-util.c:1954
 msgid "Deletes a profile"
 msgstr "Вилучити профіль"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1958
+#: ../client/cd-util.c:1959
 msgid "Sets the profile qualifier"
 msgstr "Встановити специфікатор профілю"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1963
+#: ../client/cd-util.c:1964
 msgid "Sets the profile filename"
 msgstr "Встановити назву файла профілю"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1968
+#: ../client/cd-util.c:1969
 msgid "Sets the device model"
 msgstr "Встановити модель пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1973
+#: ../client/cd-util.c:1974
 msgid "Gets the default profile for a device"
 msgstr "Отримати типовий профіль з пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1978
+#: ../client/cd-util.c:1979
 msgid "Sets the device vendor"
 msgstr "Встановити назву виробника пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1983
+#: ../client/cd-util.c:1984
 msgid "Sets the device serial"
 msgstr "Встановлює серійний номер пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1988
+#: ../client/cd-util.c:1989
 msgid "Sets the device kind"
 msgstr "Встановлює тип пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1993
+#: ../client/cd-util.c:1994
 msgid "Inhibits color profiles for this device"
 msgstr "Забороняє використання профілів кольорів для цього пристрою"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1998
+#: ../client/cd-util.c:1999
 msgid "Returns all the profiles that match a qualifier"
 msgstr "Повертає всі профілі, які відповідають специфікатору"
 
 #. TRANSLATORS: no colord available
-#: ../client/cd-util.c:2019
+#: ../client/cd-util.c:2020
 msgid "No connection to colord:"
 msgstr "Немає з’єднання з colord:"
 

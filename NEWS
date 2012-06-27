@@ -1,3 +1,17 @@
+Version 0.1.22
+~~~~~~~~~~~~~~
+Released: 2012-06-27
+
+New Features:
+ - Add a Vala version of cd-gtk-demo (Evan Nemerson)
+ - Split out colord-gtk to a new sub-project to prevent a dep loop (Richard Hughes)
+
+Bugfixes:
+ - Add many generic introspection type arguments (Evan Nemerson)
+ - Check any files in /usr/share/color/icc have the content type application/vnd.iccprofile (Richard Hughes)
+ - Do not try to create the same object paths if two sensors of the same type are plugged in (Richard Hughes)
+ - Fix the udev rules entry for the i1Display3 (Wolfgang Goetz)
+
 Version 0.1.21
 ~~~~~~~~~~~~~~
 Released: 2012-05-22

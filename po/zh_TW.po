@@ -8,34 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-09 22:55+0100\n"
-"PO-Revision-Date: 2012-05-09 21:57+0000\n"
+"POT-Creation-Date: 2012-06-18 09:36+0100\n"
+"PO-Revision-Date: 2012-06-27 08:50+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.net/projects/p/freedesktop/language/zh_TW/)\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/freedesktop/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0\n"
-
-#. TRANSLATORS: command line option
-#: ../client/cd-convert.c:273
-msgid "Use this device for profiling"
-msgstr ""
-
-#. TRANSLATORS: command line option
-#: ../client/cd-convert.c:276
-msgid "Make the window modal to this XID"
-msgstr ""
-
-#. TRANSLATORS: just dumps the EDID to disk
-#: ../client/cd-convert.c:289
-msgid "gcm-dispread"
-msgstr ""
-
-#: ../client/cd-convert.c:377
-msgid "Failed to calibrate"
-msgstr ""
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:329
@@ -112,12 +93,12 @@ msgid "No data to create profile"
 msgstr "沒有建立描述檔用的資料"
 
 #. TRANSLATORS: this is a command alias
-#: ../client/cd-fix-profile.c:91 ../client/cd-util.c:495
+#: ../client/cd-fix-profile.c:91 ../client/cd-util.c:496
 #, c-format
 msgid "Alias to %s"
 msgstr "%s 的別名"
 
-#: ../client/cd-fix-profile.c:169 ../client/cd-util.c:573
+#: ../client/cd-fix-profile.c:169 ../client/cd-util.c:574
 msgid "Command not found, valid commands are:"
 msgstr "找不到指令，有效的指令有："
 
@@ -206,7 +187,7 @@ msgid "Automatically fix metadata in the profile"
 msgstr "自動修正描述檔中的中介資料"
 
 #. TRANSLATORS: program name
-#: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:2011
+#: ../client/cd-fix-profile.c:1081 ../client/cd-util.c:2012
 #: ../src/cd-main.c:1847
 msgid "Color Management"
 msgstr "色彩管理"
@@ -371,157 +352,157 @@ msgstr "投影機"
 msgid "Ambient"
 msgstr "周遭"
 
-#: ../client/cd-util.c:708 ../client/cd-util.c:746 ../client/cd-util.c:809
-#: ../client/cd-util.c:898
+#: ../client/cd-util.c:709 ../client/cd-util.c:747 ../client/cd-util.c:810
+#: ../client/cd-util.c:899
 msgid "There are no supported sensors attached"
 msgstr "沒有接上支援的感測器"
 
 #. TRANSLATORS: this is the sensor title
-#: ../client/cd-util.c:845 ../client/cd-util.c:921
+#: ../client/cd-util.c:846 ../client/cd-util.c:922
 msgid "Sensor"
 msgstr "感測器"
 
-#: ../client/cd-util.c:856
+#: ../client/cd-util.c:857
 msgid "Color"
 msgstr "色彩"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1868
+#: ../client/cd-util.c:1869
 msgid "Gets all the color managed devices"
 msgstr "取得所有色彩管理裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1873
+#: ../client/cd-util.c:1874
 msgid "Gets all the color managed devices of a specific kind"
 msgstr "取得特定類型的所有色彩管理裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1878
+#: ../client/cd-util.c:1879
 msgid "Gets all the available color profiles"
 msgstr "取得所有可用的色彩描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1883
+#: ../client/cd-util.c:1884
 msgid "Gets all the available color sensors"
 msgstr "取得所有可用的色彩感測器"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1888
+#: ../client/cd-util.c:1889
 msgid "Gets a reading from a sensor"
 msgstr "從感測器取得讀取內容"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1893
+#: ../client/cd-util.c:1894
 msgid "Locks the color sensor"
 msgstr "鎖住色彩感測器"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1898
+#: ../client/cd-util.c:1899
 msgid "Sets one or more sensor options"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1903
+#: ../client/cd-util.c:1904
 msgid "Create a device"
 msgstr "建立裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1908
+#: ../client/cd-util.c:1909
 msgid "Find a device"
 msgstr "尋找裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1913
+#: ../client/cd-util.c:1914
 msgid "Find a device that has a specific property"
 msgstr "尋找含指定屬性的裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1918
+#: ../client/cd-util.c:1919
 msgid "Find a profile"
 msgstr "尋找描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1923
+#: ../client/cd-util.c:1924
 msgid "Find a profile by filename"
 msgstr "依檔名尋找描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1928
+#: ../client/cd-util.c:1929
 msgid "Get a standard colorspace"
 msgstr "取得標準色彩空間"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1933
+#: ../client/cd-util.c:1934
 msgid "Create a profile"
 msgstr "建立描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1938
+#: ../client/cd-util.c:1939
 msgid "Add a profile to a device"
 msgstr "將描述檔加入至裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1943
+#: ../client/cd-util.c:1944
 msgid "Makes a profile default for a device"
 msgstr "將描述檔作為裝置的預設"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1948
+#: ../client/cd-util.c:1949
 msgid "Deletes a device"
 msgstr "刪除裝置"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1953
+#: ../client/cd-util.c:1954
 msgid "Deletes a profile"
 msgstr "刪除描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1958
+#: ../client/cd-util.c:1959
 msgid "Sets the profile qualifier"
 msgstr "設定描述檔修飾子"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1963
+#: ../client/cd-util.c:1964
 msgid "Sets the profile filename"
 msgstr "設定描述檔檔名"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1968
+#: ../client/cd-util.c:1969
 msgid "Sets the device model"
 msgstr "設定裝置型號"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1973
+#: ../client/cd-util.c:1974
 msgid "Gets the default profile for a device"
 msgstr "取得裝置的預設描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1978
+#: ../client/cd-util.c:1979
 msgid "Sets the device vendor"
 msgstr "設定裝置廠商"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1983
+#: ../client/cd-util.c:1984
 msgid "Sets the device serial"
 msgstr "設定裝置序號"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1988
+#: ../client/cd-util.c:1989
 msgid "Sets the device kind"
 msgstr "設定裝置類型"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1993
+#: ../client/cd-util.c:1994
 msgid "Inhibits color profiles for this device"
 msgstr "抑制此裝置的色彩描述檔"
 
 #. TRANSLATORS: command description
-#: ../client/cd-util.c:1998
+#: ../client/cd-util.c:1999
 msgid "Returns all the profiles that match a qualifier"
 msgstr "回傳符合修飾子的描述檔"
 
 #. TRANSLATORS: no colord available
-#: ../client/cd-util.c:2019
+#: ../client/cd-util.c:2020
 msgid "No connection to colord:"
 msgstr "無連至 colord 的連線："
 

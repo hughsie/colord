@@ -12,34 +12,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-22 12:40+0100\n"
-"PO-Revision-Date: 2012-05-21 20:34+0000\n"
-"Last-Translator: Milan Knížek <knizek@volny.cz>\n"
+"POT-Creation-Date: 2012-06-18 09:36+0100\n"
+"PO-Revision-Date: 2012-06-27 08:50+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
-
-#. TRANSLATORS: command line option
-#: ../client/cd-convert.c:273
-msgid "Use this device for profiling"
-msgstr "Použít toto zařízení pro vytvoření profilu"
-
-#. TRANSLATORS: command line option
-#: ../client/cd-convert.c:276
-msgid "Make the window modal to this XID"
-msgstr "Změnit okno na modální vůči tomuto XID"
-
-#. TRANSLATORS: just dumps the EDID to disk
-#: ../client/cd-convert.c:289
-msgid "gcm-dispread"
-msgstr "gcm-dispread"
-
-#: ../client/cd-convert.c:377
-msgid "Failed to calibrate"
-msgstr "Kalibrace selhala"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:329
