@@ -179,6 +179,15 @@ fi
 AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$systemdsystemunitdir"])
 
 dnl ---------------------------------------------------------------------------
+dnl - Where to install udev rules
+dnl ---------------------------------------------------------------------------
+if test "$prefix" = "/usr" -o "$prefix" = "/usr/local" ; then
+	AC_SUBST([udevrulesdir], [$($PKG_CONFIG --variable=udevdir udev)/rules.d])
+else
+	AC_SUBST([udevrulesdir], [$prefix/lib/udev/rules.d])
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl - Build DBus examples
 dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(examples, AS_HELP_STRING([--enable-examples],[enable DBus example code]),
@@ -265,14 +274,6 @@ else
 	AC_MSG_WARN([Not introspection found, will not build Vala binding])
 fi
 AM_CONDITIONAL(HAVE_VAPIGEN, [test "x$has_vapigen" = "xyes"])
-
-# udev rules go in /lib, not /usr/lib
-if test "$prefix" = "/usr" -o "$prefix" = "/usr/local" ; then
-  slashlibdir=/lib
-else
-  slashlibdir=$prefix/lib
-fi
-AC_SUBST(slashlibdir)
 
 # per-machine directory
 AC_SUBST(CD_SYSTEM_PROFILES_DIR, "\$(localstatedir)/lib/colord/icc")

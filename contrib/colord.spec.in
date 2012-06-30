@@ -116,7 +116,7 @@ exit 0
 %{_datadir}/man/man1/*.1.gz
 %{_libdir}/libcolord.so.*
 %config %{_sysconfdir}/colord.conf
-/lib/udev/rules.d/*.rules
+/usr/lib/udev/rules.d/*.rules
 %dir %{_datadir}/color/icc/colord
 %{_datadir}/color/icc/colord/*.ic?
 %{_libdir}/colord-sensors
