@@ -108,11 +108,12 @@ cd_udev_client_add (CdUdevClient *udev_client,
 		    GUdevDevice *udev_device)
 {
 	CdDevice *device;
+	const gchar *kind = "webcam";
 	gboolean ret;
 	gchar *id;
 	gchar *model;
 	gchar *vendor;
-	const gchar *kind = "webcam";
+	guint i;
 
 	/* replace underscores with spaces */
 	model = g_strdup (g_udev_device_get_property (udev_device,
@@ -133,8 +134,19 @@ cd_udev_client_add (CdUdevClient *udev_client,
 	if (ret)
 		kind = "camera";
 
-	/* create new device */
+	/* generate ID */
 	id = cd_client_get_id_for_udev_device (udev_device);
+
+	/* check no existing devices have this ID */
+	for (i = 0; i < udev_client->priv->array_devices->len; i++) {
+		device = g_ptr_array_index (udev_client->priv->array_devices, i);
+		if (g_strcmp0 (cd_device_get_id (device), id) == 0) {
+			g_debug ("Duplicate add of %s, skipping", id);
+			goto out;
+		}
+	}
+
+	/* create new device */
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
 	cd_device_set_property_internal (device,
@@ -171,6 +183,7 @@ cd_udev_client_add (CdUdevClient *udev_client,
 
 	/* keep track so we can remove with the same device */
 	g_ptr_array_add (udev_client->priv->array_devices, device);
+out:
 	g_free (id);
 	g_free (model);
 	g_free (vendor);
