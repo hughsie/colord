@@ -502,7 +502,7 @@ cd_client_get_devices_finish_sync (CdClient *client,
  * Do not use it in GUI applications.
  *
  * Return value: (transfer full) (element-type CdDevice): an array of
- *		 #CdDevice objects, free with g_ptr_array_unref()
+ *		 #CdDevice objects.
  *
  * Since: 0.1.0
  **/
@@ -555,7 +555,7 @@ cd_client_get_profiles_finish_sync (CdClient *client,
  * Do not use it in GUI applications.
  *
  * Return value: (transfer full) (element-type CdProfile): an array of
- *		 #CdProfile objects, free with g_ptr_array_unref()
+ *		 #CdProfile objects.
  *
  * Since: 0.1.0
  **/
@@ -608,7 +608,7 @@ cd_client_get_sensors_finish_sync (CdClient *client,
  * Do not use it in GUI applications.
  *
  * Return value: (transfer full) (element-type CdSensor): an array of
- *		 #CdSensor objects, free with g_ptr_array_unref()
+ *		 #CdSensor objects.
  *
  * Since: 0.1.0
  **/
@@ -824,7 +824,7 @@ cd_client_get_devices_by_kind_finish_sync (CdClient *client,
  * Do not use it in GUI applications.
  *
  * Return value: (transfer full) (element-type CdDevice): an array of
- *		 #CdDevice objects, free with g_ptr_array_unref()
+ *		 #CdDevice objects.
  *
  * Since: 0.1.0
  **/
