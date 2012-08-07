@@ -1692,7 +1692,7 @@ out:
 /**
  * cd_client_find_profile_by_filename:
  * @client: a #CdClient instance.
- * @filename: a #profile filename
+ * @filename: a profile filename
  * @cancellable: a #GCancellable, or %NULL
  * @callback: the function to run on completion
  * @user_data: the data to pass to @callback
@@ -1805,7 +1805,7 @@ out:
 /**
  * cd_client_get_standard_space:
  * @client: a #CdStandardSpace instance.
- * @standard_space: a #profile id
+ * @standard_space: a profile id
  * @cancellable: a #GCancellable, or %NULL
  * @callback: the function to run on completion
  * @user_data: the data to pass to @callback

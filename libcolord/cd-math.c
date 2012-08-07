@@ -411,8 +411,6 @@ cd_mat33_reciprocal (const CdMat3x3 *src, CdMat3x3 *dest)
  *
  * Copies the matrix.
  * The arguments @src and @dest cannot be the same value.
- *
- * Return value: %FALSE if det is zero (singular).
  **/
 void
 cd_mat33_copy (const CdMat3x3 *src, CdMat3x3 *dest)

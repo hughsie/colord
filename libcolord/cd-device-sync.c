@@ -639,7 +639,7 @@ cd_device_set_kind_sync (CdDevice *device,
 /**
  * cd_device_set_colorspace_sync:
  * @device: a #CdDevice instance.
- * @colorspace: The device colorspace, e.g. #CD_DEVICE_COLORSPACE_RGB
+ * @colorspace: The device colorspace, e.g. #CD_COLORSPACE_RGB
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *

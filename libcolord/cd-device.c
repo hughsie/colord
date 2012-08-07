@@ -2052,7 +2052,7 @@ cd_device_class_init (CdDeviceClass *klass)
 	/**
 	 * CdDevice:kind:
 	 *
-	 * The device kind, e.g. %CD_DEVICE_KIND_KEYBOARD.
+	 * The device kind, e.g. %CD_DEVICE_KIND_DISPLAY.
 	 *
 	 * Since: 0.1.0
 	 **/
