@@ -1,3 +1,14 @@
+Version 0.1.23
+~~~~~~~~~~~~~~
+Released: 2012-08-29
+
+New Features:
+ - Get udevrulesdir from pkg-config (Benedikt Morbach)
+
+Bugfixes:
+ - Assorted documentation fixes (Evan Nemerson)
+ - Do not try to add duplicate sysfs devices (Richard Hughes)
+
 Version 0.1.22
 ~~~~~~~~~~~~~~
 Released: 2012-06-27
