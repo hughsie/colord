@@ -1312,6 +1312,7 @@ cd_main_on_bus_acquired_cb (GDBusConnection *connection,
 		NULL
 	};
 
+	priv->connection = g_object_ref (connection);
 	registration_id = g_dbus_connection_register_object (connection,
 							     COLORD_DBUS_PATH,
 							     priv->introspection_daemon->interfaces[0],
@@ -1657,7 +1658,6 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	guint i;
 
 	g_debug ("CdMain: acquired name: %s", name);
-	priv->connection = g_object_ref (connection);
 
 	/* add system profiles */
 	priv->profile_store = cd_profile_store_new ();
