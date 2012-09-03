@@ -365,6 +365,8 @@ cd_sensor_kind_to_string (CdSensorKind sensor_kind)
 		return "i1-display3";
 	if (sensor_kind == CD_SENSOR_KIND_COLORHUG)
 		return "colorhug";
+	if (sensor_kind == CD_SENSOR_KIND_COLORHUG_SPECTRO)
+		return "colorhug-spectro";
 	return "unknown";
 }
 
@@ -407,6 +409,8 @@ cd_sensor_kind_from_string (const gchar *sensor_kind)
 		return CD_SENSOR_KIND_I1_DISPLAY3;
 	if (g_strcmp0 (sensor_kind, "colorhug") == 0)
 		return CD_SENSOR_KIND_COLORHUG;
+	if (g_strcmp0 (sensor_kind, "colorhug-spectro") == 0)
+		return CD_SENSOR_KIND_COLORHUG_SPECTRO;
 	return CD_SENSOR_KIND_UNKNOWN;
 }
 
