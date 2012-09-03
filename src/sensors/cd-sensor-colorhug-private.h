@@ -305,7 +305,7 @@
  * Take a raw reading.
  *
  * IN:  [1:cmd]
- * OUT: [1:retval][1:cmd][2:count]
+ * OUT: [1:retval][1:cmd][4:count]
  *
  * This command is only available in firmware mode.
  **/
@@ -611,6 +611,45 @@
  **/
 #define	CH_CMD_GET_REMOTE_HASH			0x35
 
+/**
+ * CH_CMD_SET_MEASURE_MODE:
+ *
+ * Sets the measurement mode. The mode can either be frequency or pulse
+ * duration. The former is well tested, but the latter is much more
+ * precise.
+ *
+ * IN:  [1:cmd][1:measure_mode]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is available in firmware mode.
+ **/
+#define	CH_CMD_SET_MEASURE_MODE			0x36
+
+/**
+ * CH_CMD_GET_MEASURE_MODE:
+ *
+ * Gets the measurement mode.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][1:measure_mode]
+ *
+ * This command is available in firmware mode.
+ **/
+#define	CH_CMD_GET_MEASURE_MODE			0x37
+
+/**
+ * CH_CMD_SELF_TEST:
+ *
+ * Tests the device by trying to get a non-zero reading from each
+ * color channel.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is available in bootloader and firmware mode.
+ **/
+#define	CH_CMD_SELF_TEST			0x40
+
 /* secret code */
 #define	CH_WRITE_EEPROM_MAGIC			"Un1c0rn2"
 
@@ -698,14 +737,28 @@ typedef enum {
 	CH_ERROR_OVERFLOW_STACK,
 	CH_ERROR_DEVICE_DEACTIVATED,
 	CH_ERROR_INCOMPLETE_REQUEST,
+	CH_ERROR_SELF_TEST_SENSOR,
+	CH_ERROR_SELF_TEST_RED,
+	CH_ERROR_SELF_TEST_GREEN,
+	CH_ERROR_SELF_TEST_BLUE,
+	CH_ERROR_SELF_TEST_COLOR_SELECT,
+	CH_ERROR_SELF_TEST_MULTIPLIER,
+	CH_ERROR_INVALID_CALIBRATION,
 	CH_ERROR_LAST
 } ChError;
+
+/* the measure mode */
+typedef enum {
+	CH_MEASURE_MODE_FREQUENCY,
+	CH_MEASURE_MODE_DURATION
+} ChMeasureMode;
 
 /* any problems with the PCB */
 typedef enum {
 	CH_PCB_ERRATA_NONE		= 0,
 	CH_PCB_ERRATA_SWAPPED_LEDS	= 1 << 0,
-	CH_PCB_ERRATA_LAST		= 1 << 1
+	CH_PCB_ERRATA_NO_WELCOME	=  1 << 1,
+	CH_PCB_ERRATA_LAST		= 1 << 2
 } ChPcbErrata;
 
 /* prototypes */

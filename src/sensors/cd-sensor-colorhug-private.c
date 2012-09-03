@@ -92,6 +92,27 @@ ch_strerror (ChError error_enum)
 	case CH_ERROR_INCOMPLETE_REQUEST:
 		str = "Incomplete previous request";
 		break;
+	case CH_ERROR_SELF_TEST_SENSOR:
+		str = "Self test failed: Sensor";
+		break;
+	case CH_ERROR_SELF_TEST_RED:
+		str = "Self test failed: Red";
+		break;
+	case CH_ERROR_SELF_TEST_GREEN:
+		str = "Self test failed: Green";
+		break;
+	case CH_ERROR_SELF_TEST_BLUE:
+		str = "Self test failed: Blue";
+		break;
+	case CH_ERROR_SELF_TEST_MULTIPLIER:
+		str = "Self test failed: Multiplier";
+		break;
+	case CH_ERROR_SELF_TEST_COLOR_SELECT:
+		str = "Self test failed: Color Select";
+		break;
+	case CH_ERROR_INVALID_CALIBRATION:
+		str = "Invalid calibration";
+		break;
 	default:
 		str = "Unknown error, please report";
 		break;
@@ -208,6 +229,15 @@ ch_command_to_string (guint8 cmd)
 		break;
 	case CH_CMD_GET_HARDWARE_VERSION:
 		str = "get-hardware-version";
+		break;
+	case CH_CMD_GET_REMOTE_HASH:
+		str = "get-remote-hash";
+		break;
+	case CH_CMD_SET_REMOTE_HASH:
+		str = "set-remote-hash";
+		break;
+	case CH_CMD_SELF_TEST:
+		str = "self-test";
 		break;
 	default:
 		str = "unknown-command";
