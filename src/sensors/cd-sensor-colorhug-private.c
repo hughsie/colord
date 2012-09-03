@@ -324,19 +324,20 @@ ch_device_reply_cb (GObject *source_object,
 	/* parse */
 	if (helper->buffer[CH_BUFFER_OUTPUT_RETVAL] != CH_ERROR_NONE ||
 	    helper->buffer[CH_BUFFER_OUTPUT_CMD] != helper->cmd ||
-	    actual_len != helper->buffer_out_len + CH_BUFFER_OUTPUT_DATA) {
+	    (actual_len != helper->buffer_out_len + CH_BUFFER_OUTPUT_DATA &&
+	     actual_len != CH_USB_HID_EP_SIZE)) {
 		error_enum = helper->buffer[CH_BUFFER_OUTPUT_RETVAL];
 		msg = g_strdup_printf ("Invalid read: retval=0x%02x [%s] "
 				       "cmd=0x%02x (expected 0x%x [%s]) "
-				       "len=%"G_GSIZE_FORMAT" "
-				       "(expected %"G_GSIZE_FORMAT")",
+				       "len=%" G_GSIZE_FORMAT " (expected %" G_GSIZE_FORMAT " or %i)",
 				       error_enum,
 				       ch_strerror (error_enum),
 				       helper->buffer[CH_BUFFER_OUTPUT_CMD],
 				       helper->cmd,
 				       ch_command_to_string (helper->cmd),
 				       actual_len,
-				       helper->buffer_out_len + CH_BUFFER_OUTPUT_DATA);
+				       helper->buffer_out_len + CH_BUFFER_OUTPUT_DATA,
+				       CH_USB_HID_EP_SIZE);
 		g_simple_async_result_set_error (helper->res, 1, 0, "%s", msg);
 		g_simple_async_result_complete_in_idle (helper->res);
 		ch_device_free_helper (helper);
