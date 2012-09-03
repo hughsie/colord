@@ -181,11 +181,11 @@ AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$systemdsystemunitdir"])
 dnl ---------------------------------------------------------------------------
 dnl - Where to install udev rules
 dnl ---------------------------------------------------------------------------
-if test "$prefix" = "/usr" -o "$prefix" = "/usr/local" ; then
-	AC_SUBST([udevrulesdir], [$($PKG_CONFIG --variable=udevdir udev)/rules.d])
-else
-	AC_SUBST([udevrulesdir], [$prefix/lib/udev/rules.d])
-fi
+AC_ARG_WITH([udevrulesdir],
+            AS_HELP_STRING([--with-udevrulesdir=DIR], [Directory for udev rules files]),
+            [],
+            [with_udevrulesdir=$($PKG_CONFIG --variable=udevdir udev)/rules.d])
+AC_SUBST([udevrulesdir], [$with_udevrulesdir])
 
 dnl ---------------------------------------------------------------------------
 dnl - Build DBus examples
@@ -329,6 +329,8 @@ echo "
         GUDEV support:             ${enable_gudev}
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
+        udev rules.d dir:          ${with_udevrulesdir}
+        systemd service dir:       ${with_systemdsystemunitdir}
 "
 
 

@@ -32,6 +32,7 @@ DISTCHECK_CONFIGURE_FLAGS =				\
 	--enable-fd-fallback				\
 	--enable-gtk					\
 	--enable-gtk-doc				\
+	--with-udevrulesdir=$$dc_install_base/$(udevrulesdir) \
 	--with-systemdsystemunitdir=$$dc_install_base/$(systemdsystemunitdir)
 
 EXTRA_DIST =						\
