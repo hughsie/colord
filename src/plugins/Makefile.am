@@ -22,4 +22,15 @@ libcd_plugin_example_la_LIBADD = $(CD_PLUGIN_LIBS)
 libcd_plugin_example_la_LDFLAGS = -module -avoid-version
 libcd_plugin_example_la_CFLAGS = $(CD_PLUGIN_CFLAGS) $(WARNINGFLAGS_C)
 
+if HAVE_GUDEV
+
+plugin_LTLIBRARIES =					\
+	libcd_plugin_scanner.la
+
+libcd_plugin_scanner_la_SOURCES = cd-plugin-scanner.c
+libcd_plugin_scanner_la_LIBADD = $(GUDEV_LIBS)
+libcd_plugin_scanner_la_LDFLAGS = -module -avoid-version
+libcd_plugin_scanner_la_CFLAGS = $(GUDEV_CFLAGS) $(WARNINGFLAGS_C)
+endif
+
 -include $(top_srcdir)/git.mk

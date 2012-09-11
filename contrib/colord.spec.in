@@ -16,7 +16,6 @@ BuildRequires: intltool
 BuildRequires: lcms2-devel >= 2.2
 BuildRequires: libgudev1-devel
 BuildRequires: polkit-devel >= 0.103
-BuildRequires: sane-backends-devel
 BuildRequires: sqlite-devel
 BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
@@ -24,7 +23,6 @@ BuildRequires: libgusb-devel
 BuildRequires: gtk-doc
 
 Requires: shared-color-profiles
-Requires: colord-sane
 Requires: color-filesystem
 Requires: systemd-units
 Requires(pre): shadow-utils
@@ -47,15 +45,6 @@ BuildArch: noarch
 
 %description devel-docs
 Documentation for development with %{name}.
-
-%package sane
-Summary: SANE helper package for %{name}
-Requires: %{name} = %{version}-%{release}
-
-%description sane
-SANE helper package for %{name} that monitors scanners that are added
-and removed. This is a seporate process as libsane is craptastic, but
-useful.
 
 %package gtk
 Summary: GTK helper library for %{name}
@@ -120,6 +109,7 @@ exit 0
 %dir %{_datadir}/color/icc/colord
 %{_datadir}/color/icc/colord/*.ic?
 %{_libdir}/colord-sensors
+%{_libdir}/colord-plugins
 %{_libdir}/girepository-1.0/*.typelib
 %ghost %{_localstatedir}/lib/colord/*.db
 /usr/lib/systemd/system/colord.service
@@ -137,14 +127,6 @@ exit 0
 %defattr(-,root,root,-)
 %dir %{_datadir}/gtk-doc/html/colord
 %{_datadir}/gtk-doc/html/colord/*
-
-%files sane
-%defattr(-,root,root,-)
-%{_datadir}/dbus-1/interfaces/org.freedesktop.colord.sane.xml
-%{_datadir}/dbus-1/system-services/org.freedesktop.colord-sane.service
-/usr/lib/systemd/system/colord-sane.service
-%{_libexecdir}/colord-sane
-%{_sysconfdir}/dbus-1/system.d/org.freedesktop.colord-sane.conf
 
 %changelog
 * #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#

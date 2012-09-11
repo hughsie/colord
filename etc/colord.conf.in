@@ -5,15 +5,6 @@
 # default=@enablevolumesearch@
 SearchVolumes=@enablevolumesearch@
 
-# If we should use SANE to add scanner and camera devices.
-#
-# If this is set to 'true' then a colord-sane process will
-# automatically be started by the daemon which watches USB scanner
-# devices as they are inserted and removed.
-#
-# default=true
-UseSANE=true
-
 # If we should create a dummy sensor for testing
 #
 # default=false

@@ -204,32 +204,6 @@ AC_ARG_ENABLE(reverse, AS_HELP_STRING([--enable-reverse],[enable reverse enginee
 	      enable_reverse=$enableval,enable_reverse=no)
 AM_CONDITIONAL(CD_BUILD_REVERSE, test x$enable_reverse = xyes)
 
-dnl **** Check for SANE ****
-AC_ARG_ENABLE(sane, AS_HELP_STRING([--enable-sane],[Enable SANE support]),
-	      enable_sane=$enableval)
-has_sane=no
-if test x$enable_sane != xno; then
-	PKG_CHECK_MODULES(SANE, sane-backends, has_sane=yes, has_sane=no)
-	if test $has_sane = "no"; then
-		# fall back to detecting the header for some distros
-		AC_CHECK_HEADER(sane/sane.h, has_sane=yes, has_sane=no)
-		if test $has_sane = "yes"; then
-			SANE_CFLAGS=""
-			SANE_LIBS="-lsane"
-			AC_SUBST(SANE_CFLAGS)
-			AC_SUBST(SANE_LIBS)
-		fi
-		if test x$enable_sane = xyes -a $has_sane = "no"; then
-			AC_MSG_ERROR([--enable-sane was specified and SANE was not found])
-		fi
-
-	fi
-fi
-AM_CONDITIONAL(HAVE_SANE, test x$has_sane = xyes)
-if test x$has_sane = xyes; then
-	AC_DEFINE(HAVE_SANE,1,[Use SANE support for detecting scanners])
-fi
-
 dnl **** Daemon is allowed to do FD fallback  ****
 AC_ARG_ENABLE(fd_fallback, AS_HELP_STRING([--enable-fd-fallback],[Enable file descriptor fallback]),
 	      enable_fd_fallback=$enableval, enable_fd_fallback=yes)
@@ -285,8 +259,6 @@ AC_CONFIG_FILES([
 Makefile
 etc/Makefile
 contrib/Makefile
-contrib/colord-sane/Makefile
-contrib/colord-sane/org.freedesktop.colord-sane.conf
 examples/Makefile
 man/Makefile
 doc/Makefile
@@ -325,7 +297,6 @@ echo "
         Reverse engineering tools: ${enable_reverse}
         File descriptor fallback:  ${enable_fd_fallback}
         External volume searching: ${enable_volume_search}
-        SANE support:              ${has_sane}
         GUDEV support:             ${enable_gudev}
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}

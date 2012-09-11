@@ -1,5 +1,0 @@
-[D-BUS Service]
-Name=org.freedesktop.colord-sane
-Exec=@servicedir@/colord-sane
-User=@daemon_user@
-SystemdService=colord-sane.service

@@ -1594,32 +1594,6 @@ out:
 }
 
 /**
- * cd_main_colord_sane_refresh_cb:
- **/
-static void
-cd_main_colord_sane_refresh_cb (GObject *source_object,
-				GAsyncResult *res,
-				gpointer user_data)
-{
-	CdMainPrivate *priv = (CdMainPrivate *) user_data;
-	GError *error = NULL;
-	GVariant *retval;
-
-	retval = g_dbus_connection_call_finish (priv->connection,
-						res,
-						&error);
-	if (retval == NULL) {
-		g_warning ("failed to contact colord-sane: %s",
-			   error->message);
-		g_error_free (error);
-		goto out;
-	}
-out:
-	if (retval != NULL)
-		g_variant_unref (retval);
-}
-
-/**
  * cd_main_plugin_phase:
  **/
 static void
@@ -1741,23 +1715,6 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 		} else {
 			cd_main_add_sensor (priv, sensor);
 		}
-	}
-
-	/* add SANE devices */
-	ret = cd_config_get_boolean (priv->config, "UseSANE");
-	if (ret) {
-		g_dbus_connection_call (priv->connection,
-					"org.freedesktop.colord-sane",
-					"/org/freedesktop/colord_sane",
-					"org.freedesktop.colord.sane",
-					"Refresh",
-					NULL,
-					NULL,
-					G_DBUS_CALL_FLAGS_NONE,
-					-1,
-					NULL,
-					cd_main_colord_sane_refresh_cb,
-					priv);
 	}
 
 	/* now we've got the profiles, setup the overrides */
