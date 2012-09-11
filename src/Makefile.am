@@ -1,4 +1,5 @@
 SUBDIRS = 						\
+	plugins						\
 	sensors
 
 introspectiondir = $(datadir)/dbus-1/interfaces
@@ -53,6 +54,8 @@ colord_SOURCES =					\
 	cd-inhibit.h					\
 	cd-mapping-db.c					\
 	cd-mapping-db.h					\
+	cd-plugin.c					\
+	cd-plugin.h					\
 	cd-profile-array.c				\
 	cd-profile-array.h				\
 	cd-profile.c					\

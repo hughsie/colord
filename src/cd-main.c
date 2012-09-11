@@ -33,6 +33,7 @@
 #include "cd-device-db.h"
 #include "cd-device.h"
 #include "cd-mapping-db.h"
+#include "cd-plugin.h"
 #include "cd-profile-array.h"
 #include "cd-profile.h"
 #include "cd-profile-store.h"
@@ -57,6 +58,7 @@ typedef struct {
 	CdConfig		*config;
 	GPtrArray		*sensors;
 	GHashTable		*standard_spaces;
+	GPtrArray		*plugins;
 } CdMainPrivate;
 
 /**
@@ -1618,6 +1620,54 @@ out:
 }
 
 /**
+ * cd_main_plugin_phase:
+ **/
+static void
+cd_main_plugin_phase (CdMainPrivate *priv, CdPluginPhase phase)
+{
+	CdPluginFunc plugin_func = NULL;
+	CdPlugin *plugin;
+	const gchar *function = NULL;
+	gboolean ret;
+	guint i;
+
+	switch (phase) {
+	case CD_PLUGIN_PHASE_INIT:
+		function = "cd_plugin_initialize";
+		break;
+	case CD_PLUGIN_PHASE_DESTROY:
+		function = "cd_plugin_destroy";
+		break;
+	case CD_PLUGIN_PHASE_COLDPLUG:
+		function = "cd_plugin_coldplug";
+		break;
+	case CD_PLUGIN_PHASE_STATE_CHANGED:
+		function = "cd_plugin_state_changed";
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
+
+	g_assert (function != NULL);
+
+	/* run each plugin */
+	for (i = 0; i < priv->plugins->len; i++) {
+		plugin = g_ptr_array_index (priv->plugins, i);
+		ret = g_module_symbol (plugin->module,
+				       function,
+				       (gpointer *) &plugin_func);
+		if (!ret)
+			continue;
+		g_debug ("run %s on %s",
+			 function,
+			 g_module_name (plugin->module));
+		plugin_func (plugin);
+		g_debug ("finished %s", function);
+	}
+}
+
+/**
  * cd_main_on_name_acquired_cb:
  **/
 static void
@@ -1674,6 +1724,9 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	/* add sensor devices */
 	cd_sensor_client_coldplug (priv->sensor_client);
 #endif
+
+	/* coldplug plugin devices */
+	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_COLDPLUG);
 
 	/* add dummy sensor */
 	ret = cd_config_get_boolean (priv->config, "CreateDummySensor");
@@ -1856,6 +1909,147 @@ out:
 }
 
 /**
+ * cd_main_plugin_free:
+ **/
+static void
+cd_main_plugin_free (CdPlugin *plugin)
+{
+	g_free (plugin->priv);
+	g_module_close (plugin->module);
+	g_free (plugin);
+}
+
+/**
+ * cd_main_plugin_device_added:
+ **/
+static void
+cd_main_plugin_device_added_cb (CdPlugin *plugin,
+				CdDevice *device,
+				gpointer user_data)
+{
+	CdMainPrivate *priv = (CdMainPrivate *) user_data;
+	gboolean ret;
+	GError *error = NULL;
+
+	cd_device_set_mode (device, CD_DEVICE_MODE_PHYSICAL);
+	ret = cd_main_device_add (priv, device, NULL, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to add device: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* register on bus */
+	ret = cd_main_device_register_on_bus (priv, device, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to emit DeviceAdded: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+out:
+	return;
+}
+
+/**
+ * cd_main_plugin_device_removed_cb:
+ **/
+static void
+cd_main_plugin_device_removed_cb (CdPlugin *plugin,
+				  CdDevice *device,
+				  gpointer user_data)
+{
+	CdMainPrivate *priv = (CdMainPrivate *) user_data;
+	g_debug ("CdMain: remove device: %s", cd_device_get_id (device));
+	cd_main_device_removed (priv, device);
+}
+
+/**
+ * cd_main_load_plugin:
+ */
+static void
+cd_main_load_plugin (CdMainPrivate *priv, const gchar *filename)
+{
+	CdPluginGetDescFunc plugin_desc = NULL;
+	CdPlugin *plugin;
+	gboolean ret;
+	GModule *module;
+
+	module = g_module_open (filename, 0);
+	if (module == NULL) {
+		g_warning ("failed to open plugin %s: %s",
+			   filename, g_module_error ());
+		goto out;
+	}
+
+	/* get description */
+	ret = g_module_symbol (module,
+			       "cd_plugin_get_description",
+			       (gpointer *) &plugin_desc);
+	if (!ret) {
+		g_warning ("Plugin %s requires description", filename);
+		g_module_close (module);
+		goto out;
+	}
+
+	/* print what we know */
+	plugin = g_new0 (CdPlugin, 1);
+	plugin->user_data = priv;
+	plugin->module = module;
+	plugin->device_added = cd_main_plugin_device_added_cb;
+	plugin->device_removed = cd_main_plugin_device_removed_cb;
+	g_debug ("opened plugin %s: %s", filename, plugin_desc ());
+
+	/* add to array */
+	g_ptr_array_add (priv->plugins, plugin);
+out:
+	return;
+}
+
+/**
+ * cd_main_load_plugins:
+ */
+static void
+cd_main_load_plugins (CdMainPrivate *priv)
+{
+	const gchar *filename_tmp;
+	gchar *filename_plugin;
+	gchar *path;
+	GDir *dir;
+	GError *error = NULL;
+
+	/* search in the plugin directory for plugins */
+	path = g_build_filename (LIBDIR, "colord-plugins", NULL);
+	dir = g_dir_open (path, 0, &error);
+	if (dir == NULL) {
+		g_warning ("failed to open plugin directory: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* try to open each plugin */
+	g_debug ("searching for plugins in %s", path);
+	do {
+		filename_tmp = g_dir_read_name (dir);
+		if (filename_tmp == NULL)
+			break;
+		if (!g_str_has_suffix (filename_tmp, ".so"))
+			continue;
+		filename_plugin = g_build_filename (path,
+						    filename_tmp,
+						    NULL);
+		cd_main_load_plugin (priv, filename_plugin);
+		g_free (filename_plugin);
+	} while (TRUE);
+out:
+	if (dir != NULL)
+		g_dir_close (dir);
+	g_free (path);
+}
+
+/**
  * main:
  **/
 int
@@ -2006,8 +2200,16 @@ main (int argc, char *argv[])
 	else if (timed_exit)
 		g_timeout_add_seconds (5, cd_main_timed_exit_cb, loop);
 
+	/* load plugins */
+	priv->plugins = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_main_plugin_free);
+	cd_main_load_plugins (priv);
+	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_INIT);
+
 	/* wait */
 	g_main_loop_run (loop);
+
+	/* run the plugins */
+	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_DESTROY);
 
 	/* success */
 	retval = 0;
@@ -2016,6 +2218,7 @@ out:
 		g_bus_unown_name (owner_id);
 	g_main_loop_unref (loop);
 	g_ptr_array_unref (priv->sensors);
+	g_ptr_array_unref (priv->plugins);
 	g_hash_table_destroy (priv->standard_spaces);
 #ifdef HAVE_GUDEV
 	if (priv->udev_client != NULL)

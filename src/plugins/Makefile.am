@@ -1,0 +1,25 @@
+## We require new-style dependency handling.
+AUTOMAKE_OPTIONS = 1.7
+
+CD_GLIB2_LIBS =						\
+	$(top_builddir)/lib/packagekit-glib2/libpackagekit-glib2.la
+
+INCLUDES =						\
+	$(GIO_CFLAGS)					\
+	$(GLIB_CFLAGS)					\
+	$(GUDEV_CFLAGS)					\
+	-DG_LOG_DOMAIN=\"Cd\"				\
+	-DCD_COMPILATION				\
+	-I$(top_srcdir)/src
+
+# plugins
+plugindir = $(libdir)/colord-plugins
+noinst_LTLIBRARIES =					\
+	libcd_plugin_example.la
+
+libcd_plugin_example_la_SOURCES = cd-plugin-example.c
+libcd_plugin_example_la_LIBADD = $(CD_PLUGIN_LIBS)
+libcd_plugin_example_la_LDFLAGS = -module -avoid-version
+libcd_plugin_example_la_CFLAGS = $(CD_PLUGIN_CFLAGS) $(WARNINGFLAGS_C)
+
+-include $(top_srcdir)/git.mk

@@ -301,6 +301,7 @@ rules/Makefile
 rules/69-cd-sensors.rules
 po/Makefile.in
 src/Makefile
+src/plugins/Makefile
 src/sensors/Makefile
 client/Makefile
 libcolord/cd-version.h
