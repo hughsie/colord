@@ -178,9 +178,10 @@ cd_profile_set_object_path (CdProfile *profile)
 	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
 		path_tmp = g_strdup (profile->priv->id);
 	} else {
-		path_tmp = g_strdup_printf ("%s_%s",
+		path_tmp = g_strdup_printf ("%s_%s_%d",
 					    profile->priv->id,
-					    pw->pw_name);
+					    pw->pw_name,
+					    profile->priv->owner);
 	}
 	/* make sure object path is sane */
 	path_owner = cd_main_ensure_dbus_path (path_tmp);

@@ -250,9 +250,10 @@ cd_device_set_object_path (CdDevice *device)
 	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
 		path_tmp = g_strdup (device->priv->id);
 	} else {
-		path_tmp = g_strdup_printf ("%s_%s",
+		path_tmp = g_strdup_printf ("%s_%s_%d",
 					    device->priv->id,
-					    pw->pw_name);
+					    pw->pw_name,
+					    device->priv->owner);
 	}
 
 	/* make sure object path is sane */
