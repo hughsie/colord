@@ -244,19 +244,20 @@ cd_device_set_object_path (CdDevice *device)
 	gchar *path_owner;
 	struct passwd *pw;
 
-	/* make sure object path is sane */
-	path_tmp = cd_main_ensure_dbus_path (device->priv->id);
-
 	/* append the uid to the object path */
 	pw = getpwuid (device->priv->owner);
 	if (device->priv->owner == 0 ||
 	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
-		path_owner = g_strdup (path_tmp);
+		path_tmp = g_strdup (device->priv->id);
 	} else {
-		path_owner = g_strdup_printf ("%s_%s",
-					      path_tmp,
-					      pw->pw_name);
+		path_tmp = g_strdup_printf ("%s_%s",
+					    device->priv->id,
+					    pw->pw_name);
 	}
+
+	/* make sure object path is sane */
+	path_owner = cd_main_ensure_dbus_path (path_tmp);
+
 	device->priv->object_path = g_build_filename (COLORD_DBUS_PATH,
 						      "devices",
 						      path_owner,
