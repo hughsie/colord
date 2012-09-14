@@ -856,6 +856,17 @@ cd_device_set_model (CdDevice *device, const gchar *model)
 }
 
 /**
+ * cd_device_get_nullable_for_string:
+ **/
+static GVariant *
+cd_device_get_nullable_for_string (const gchar *value)
+{
+	if (value == NULL)
+		return g_variant_new_string ("");
+	return g_variant_new_string (value);
+}
+
+/**
  * cd_device_set_property_internal:
  **/
 gboolean
@@ -916,7 +927,7 @@ cd_device_set_property_internal (CdDevice *device,
 	if (!is_metadata) {
 		cd_device_dbus_emit_property_changed (device,
 						      property,
-						      g_variant_new_string (value));
+						      cd_device_get_nullable_for_string (value));
 	}
 	return ret;
 }
@@ -1364,17 +1375,6 @@ cd_device_inhibit_changed_cb (CdInhibit *inhibit,
 
 	/* emit global signal */
 	cd_device_dbus_emit_device_changed (device);
-}
-
-/**
- * cd_device_get_nullable_for_string:
- **/
-static GVariant *
-cd_device_get_nullable_for_string (const gchar *value)
-{
-	if (value == NULL)
-		return g_variant_new_string ("");
-	return g_variant_new_string (value);
 }
 
 /**
