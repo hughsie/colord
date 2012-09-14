@@ -178,6 +178,18 @@ if test "x$with_systemdsystemunitdir" != "xno"; then
 fi
 AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$systemdsystemunitdir"])
 
+PKG_CHECK_MODULES(LIBSYSTEMD_LOGIN,
+                  [libsystemd-login >= 44],
+                  have_libsystemd_login=yes,
+                  have_libsystemd_login=no)
+AM_CONDITIONAL(HAVE_LIBSYSTEMD_LOGIN, test x$have_libsystemd_login = xyes)
+if test "x$have_libsystemd_login" = "xyes"; then
+	AC_DEFINE([HAVE_LIBSYSTEMD_LOGIN], 1, [Define to 1 if libsystemd-login is available])
+fi
+AC_SUBST(HAVE_LIBSYSTEMD_LOGIN)
+AC_SUBST(LIBSYSTEMD_LOGIN_CFLAGS)
+AC_SUBST(LIBSYSTEMD_LOGIN_LIBS)
+
 dnl ---------------------------------------------------------------------------
 dnl - Where to install udev rules
 dnl ---------------------------------------------------------------------------
@@ -301,6 +313,7 @@ echo "
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
         udev rules.d dir:          ${with_udevrulesdir}
+        using libsystemd-login:    ${have_libsystemd_login}
         systemd service dir:       ${with_systemdsystemunitdir}
 "
 

@@ -21,10 +21,15 @@
 
 #include "config.h"
 
+#include <stdlib.h>
 #include <gio/gio.h>
 #include <gio/gunixfdlist.h>
 #include <glib/gi18n.h>
 #include <locale.h>
+
+#ifdef HAVE_LIBSYSTEMD_LOGIN
+#include <systemd/sd-login.h>
+#endif
 
 #include "cd-debug.h"
 #include "cd-common.h"
@@ -479,6 +484,27 @@ out:
 }
 
 /**
+ * cd_main_get_seat_for_process:
+ */
+static gchar *
+cd_main_get_seat_for_process (guint pid)
+{
+	char *sd_seat = NULL;
+	char *sd_session = NULL;
+	gchar *seat = NULL;
+
+#ifdef HAVE_LIBSYSTEMD_LOGIN
+	if (sd_pid_get_session (pid, &sd_session) == 0)
+		sd_session_get_seat (sd_session, &sd_seat);
+	seat = g_strdup (sd_seat);
+#endif
+
+	free (sd_seat);
+	free (sd_session);
+	return seat;
+}
+
+/**
  * cd_main_create_device:
  **/
 static CdDevice *
@@ -486,15 +512,20 @@ cd_main_create_device (CdMainPrivate *priv,
 		       const gchar *sender,
 		       const gchar *device_id,
 		       guint owner,
+		       guint process,
 		       CdObjectScope scope,
 		       CdDeviceMode mode,
 		       GError **error)
 {
 	gboolean ret;
+	gchar *seat;
 	CdDevice *device_tmp;
 	CdDevice *device = NULL;
 
 	g_assert (priv->connection != NULL);
+
+	/* get the seat of the process that is creating the device */
+	seat = cd_main_get_seat_for_process (process);
 
 	/* create an object */
 	device_tmp = cd_device_new ();
@@ -502,6 +533,7 @@ cd_main_create_device (CdMainPrivate *priv,
 	cd_device_set_id (device_tmp, device_id);
 	cd_device_set_scope (device_tmp, scope);
 	cd_device_set_mode (device_tmp, mode);
+	cd_device_set_seat (device_tmp, seat);
 	ret = cd_main_device_add (priv, device_tmp, sender, error);
 	if (!ret)
 		goto out;
@@ -515,6 +547,7 @@ cd_main_create_device (CdMainPrivate *priv,
 	/* success */
 	device = g_object_ref (device_tmp);
 out:
+	g_free (seat);
 	g_object_unref (device_tmp);
 	return device;
 }
@@ -765,6 +798,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	gint fd = -1;
+	guint pid;
 	guint uid;
 	gint32 fd_handle = 0;
 	const gchar *metadata_key = NULL;
@@ -1017,11 +1051,24 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			}
 		}
 
+		/* get the process that sent the message */
+		pid = cd_main_get_sender_pid (invocation, &error);
+		if (pid == G_MAXUINT) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "failed to get process ID: %s",
+							       error->message);
+			g_error_free (error);
+			goto out;
+		}
+
 		/* create device */
 		device = cd_main_create_device (priv,
 						sender,
 						device_id,
 						uid,
+						pid,
 						scope,
 						CD_DEVICE_MODE_UNKNOWN,
 						&error);
@@ -1388,6 +1435,7 @@ cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 	device = cd_main_create_device (priv,
 					NULL,
 					device_id,
+					0,
 					0,
 					CD_OBJECT_SCOPE_DISK,
 					CD_DEVICE_MODE_VIRTUAL,

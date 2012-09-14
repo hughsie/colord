@@ -96,6 +96,39 @@ cd_main_get_sender_uid (GDBusMethodInvocation *invocation, GError **error)
 }
 
 /**
+ * cd_main_get_sender_pid:
+ **/
+guint
+cd_main_get_sender_pid (GDBusMethodInvocation *invocation, GError **error)
+{
+	const gchar *sender;
+	GDBusConnection *connection;
+	guint pid = G_MAXUINT;
+	GVariant *value;
+
+	/* call into DBus to get the user ID that issued the request */
+	connection = g_dbus_method_invocation_get_connection (invocation);
+	sender = g_dbus_method_invocation_get_sender (invocation);
+	value = g_dbus_connection_call_sync (connection,
+					     "org.freedesktop.DBus",
+					     "/org/freedesktop/DBus",
+					     "org.freedesktop.DBus",
+					     "GetConnectionUnixProcessID",
+					     g_variant_new ("(s)",
+							    sender),
+					     NULL,
+					     G_DBUS_CALL_FLAGS_NONE,
+					     200,
+					     NULL,
+					     error);
+	if (value != NULL) {
+		g_variant_get (value, "(u)", &pid);
+		g_variant_unref (value);
+	}
+	return pid;
+}
+
+/**
  * cd_main_sender_authenticated:
  **/
 gboolean
