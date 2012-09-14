@@ -275,7 +275,7 @@ cd_sensor_get_locked (CdSensor *sensor)
  *
  * Returns the sensor metadata.
  *
- * Return value: (transfer full) (element-type utf8 utf8): a #GHashTable.
+ * Return value: The sensor capability bitfield.
  *
  * Since: 0.1.6
  **/
