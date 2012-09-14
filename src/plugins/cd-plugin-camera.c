@@ -74,6 +74,7 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 {
 	CdDevice *device = NULL;
 	const gchar *kind = "webcam";
+	const gchar *seat;
 	gboolean ret;
 	gchar *id = NULL;
 	gchar *model = NULL;
@@ -106,6 +107,11 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 	/* generate ID */
 	id = cd_plugin_get_camera_id_for_udev_device (udev_device);
 
+	/* assume device belongs to "seat0" if not tagged */
+	seat = g_udev_device_get_property (udev_device, "ID_SEAT");
+	if (seat == NULL)
+		seat = "seat0";
+
 	/* create new device */
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
@@ -136,6 +142,11 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 	cd_device_set_property_internal (device,
 					 "Serial",
 					 g_udev_device_get_sysfs_path (udev_device),
+					 FALSE,
+					 NULL);
+	cd_device_set_property_internal (device,
+					 "Seat",
+					 seat,
 					 FALSE,
 					 NULL);
 
