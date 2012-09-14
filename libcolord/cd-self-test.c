@@ -1864,6 +1864,52 @@ colord_device_modified_func (void)
 	g_object_unref (client);
 }
 
+static void
+colord_device_seat_func (void)
+{
+	CdClient *client;
+	CdDevice *device;
+	const gchar *tmp;
+	gboolean ret;
+	GError *error = NULL;
+
+	/* ensure the seat is set */
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	device = cd_client_create_device_sync (client,
+					       "device_seat_test",
+					       CD_OBJECT_SCOPE_TEMP,
+					       NULL,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect */
+	ret = cd_device_connect_sync (device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check the seat */
+#ifdef HAVE_LIBSYSTEMD_LOGIN
+	tmp = cd_device_get_seat (device);
+	g_assert_cmpstr (tmp, ==, "seat0");
+#endif
+
+	/* delete device */
+	ret = cd_client_delete_device_sync (client,
+					    device,
+					    NULL,
+					    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_object_unref (device);
+	g_object_unref (client);
+}
+
 /* when we re-add profiles, ensure they are sorted so the newest
  * assigned profile is first, not the newest-added */
 static void
@@ -2203,6 +2249,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/client", colord_client_func);
 	g_test_add_func ("/colord/device-duplicate", colord_device_duplicate_func);
+	g_test_add_func ("/colord/device-seat", colord_device_seat_func);
 	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
 	g_test_add_func ("/colord/profile-ordering", colord_profile_ordering_func);
 	g_test_add_func ("/colord/profile-duplicate", colord_profile_duplicate_func);
