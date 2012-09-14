@@ -275,6 +275,7 @@ typedef enum {
 #define CD_DEVICE_PROPERTY_ID			"DeviceId"
 #define CD_DEVICE_PROPERTY_SCOPE		"Scope"
 #define CD_DEVICE_PROPERTY_OWNER		"Owner"
+#define CD_DEVICE_PROPERTY_SEAT			"Seat"
 #define CD_DEVICE_PROPERTY_PROFILING_INHIBITORS	"ProfilingInhibitors"
 
 const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);

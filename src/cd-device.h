@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -62,6 +62,9 @@ void		 cd_device_set_scope			(CdDevice	*device,
 void		 cd_device_set_owner			(CdDevice	*device,
 							 guint		 owner);
 guint		 cd_device_get_owner			(CdDevice	*device);
+void		 cd_device_set_seat			(CdDevice	*device,
+							 const gchar	*seat);
+const gchar	*cd_device_get_seat			(CdDevice	*device);
 CdDeviceMode	 cd_device_get_mode			(CdDevice	*device);
 void		 cd_device_set_mode			(CdDevice	*device,
 							 CdDeviceMode	 mode);

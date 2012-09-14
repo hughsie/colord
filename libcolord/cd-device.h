@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -162,6 +162,7 @@ const gchar	*cd_device_get_id			(CdDevice	*device);
 const gchar	*cd_device_get_model			(CdDevice	*device);
 const gchar	*cd_device_get_vendor			(CdDevice	*device);
 const gchar	*cd_device_get_serial			(CdDevice	*device);
+const gchar	*cd_device_get_seat			(CdDevice	*device);
 const gchar	*cd_device_get_format			(CdDevice	*device);
 const gchar	**cd_device_get_profiling_inhibitors	(CdDevice	*device);
 guint64		 cd_device_get_created			(CdDevice	*device);

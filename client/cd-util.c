@@ -240,6 +240,10 @@ cd_util_show_device (CdDevice *device)
 	cd_util_print_field (_("Serial"),
 			     cd_device_get_serial (device));
 
+	/* TRANSLATORS: the device seat identifier */
+	cd_util_print_field (_("Seat"),
+			     cd_device_get_seat (device));
+
 	tmp = cd_device_get_format (device);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the device format, e.g.

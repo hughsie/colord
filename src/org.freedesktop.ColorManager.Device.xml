@@ -176,6 +176,18 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Seat' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The seat that the device belongs to, or an empty string for
+            none or unknown.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Metadata' type='a{ss}' access='read'>
       <doc:doc>
         <doc:description>

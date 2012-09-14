@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -74,6 +74,7 @@ struct _CdDevicePrivate
 	gboolean			 is_virtual;
 	GHashTable			*metadata;
 	guint				 owner;
+	gchar				*seat;
 };
 
 enum {
@@ -145,6 +146,26 @@ cd_device_set_owner (CdDevice *device, guint owner)
 {
 	g_return_if_fail (CD_IS_DEVICE (device));
 	device->priv->owner = owner;
+}
+
+/**
+ * cd_device_get_seat:
+ **/
+const gchar *
+cd_device_get_seat (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	return device->priv->seat;
+}
+
+/**
+ * cd_device_set_seat:
+ **/
+void
+cd_device_set_seat (CdDevice *device, const gchar *seat)
+{
+	g_return_if_fail (CD_IS_DEVICE (device));
+	device->priv->seat = g_strdup (seat);
 }
 
 /**
@@ -869,6 +890,9 @@ cd_device_set_property_internal (CdDevice *device,
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_MODE) == 0) {
 		g_free (priv->mode);
 		priv->mode = g_strdup (value);
+	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_SEAT) == 0) {
+		g_free (priv->seat);
+		priv->seat = g_strdup (value);
 	} else {
 		/* add to metadata */
 		is_metadata = TRUE;
@@ -1434,6 +1458,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = g_variant_new_uint32 (priv->owner);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SEAT) == 0) {
+		retval = cd_device_get_nullable_for_string (priv->seat);
+		goto out;
+	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILING_INHIBITORS) == 0) {
 		bus_names = cd_inhibit_get_bus_names (priv->inhibit);
 		retval = g_variant_new_strv ((const gchar * const *) bus_names, -1);
@@ -1669,6 +1697,7 @@ cd_device_finalize (GObject *object)
 	g_free (priv->mode);
 	g_free (priv->serial);
 	g_free (priv->kind);
+	g_free (priv->seat);
 	g_free (priv->object_path);
 	g_ptr_array_unref (priv->profiles);
 	g_object_unref (priv->profile_array);

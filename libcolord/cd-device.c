@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -61,6 +61,7 @@ struct _CdDevicePrivate
 	gchar			*id;
 	gchar			*model;
 	gchar			*serial;
+	gchar			*seat;
 	gchar			*format;
 	gchar			*vendor;
 	gchar			**profiling_inhibitors;
@@ -85,6 +86,7 @@ enum {
 	PROP_MODEL,
 	PROP_VENDOR,
 	PROP_SERIAL,
+	PROP_SEAT,
 	PROP_FORMAT,
 	PROP_KIND,
 	PROP_COLORSPACE,
@@ -207,6 +209,24 @@ cd_device_get_serial (CdDevice *device)
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
 	return device->priv->serial;
+}
+
+/**
+ * cd_device_get_seat:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device seat identifier.
+ *
+ * Return value: A string, or %NULL for invalid
+ *
+ * Since: 0.1.24
+ **/
+const gchar *
+cd_device_get_seat (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (device->priv->proxy != NULL, NULL);
+	return device->priv->seat;
 }
 
 /**
@@ -548,6 +568,9 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SERIAL) == 0) {
 			g_free (device->priv->serial);
 			device->priv->serial = cd_device_get_nullable_str (property_value);
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SEAT) == 0) {
+			g_free (device->priv->seat);
+			device->priv->seat = cd_device_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_FORMAT) == 0) {
 			g_free (device->priv->format);
 			device->priv->format = cd_device_get_nullable_str (property_value);
@@ -653,6 +676,7 @@ cd_device_connect_cb (GObject *source_object,
 	GVariant *kind = NULL;
 	GVariant *model = NULL;
 	GVariant *serial = NULL;
+	GVariant *seat = NULL;
 	GVariant *format = NULL;
 	GVariant *vendor = NULL;
 	GVariant *profiling_inhibitors = NULL;
@@ -741,6 +765,12 @@ cd_device_connect_cb (GObject *source_object,
 	if (serial != NULL)
 		device->priv->serial = cd_device_get_nullable_str (serial);
 
+	/* get seat */
+	seat = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						 CD_DEVICE_PROPERTY_SEAT);
+	if (seat != NULL)
+		device->priv->seat = cd_device_get_nullable_str (seat);
+
 	/* get format */
 	format = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						   CD_DEVICE_PROPERTY_FORMAT);
@@ -807,6 +837,8 @@ out:
 		g_variant_unref (profiling_inhibitors);
 	if (serial != NULL)
 		g_variant_unref (serial);
+	if (seat != NULL)
+		g_variant_unref (seat);
 	if (format != NULL)
 		g_variant_unref (format);
 	if (colorspace != NULL)
@@ -1863,6 +1895,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_SERIAL:
 		g_value_set_string (value, device->priv->serial);
 		break;
+	case PROP_SEAT:
+		g_value_set_string (value, device->priv->seat);
+		break;
 	case PROP_FORMAT:
 		g_value_set_string (value, device->priv->format);
 		break;
@@ -2007,6 +2042,19 @@ cd_device_class_init (CdDeviceClass *klass)
 	g_object_class_install_property (object_class,
 					 PROP_SERIAL,
 					 g_param_spec_string ("serial",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READABLE));
+	/**
+	 * CdDevice:seat:
+	 *
+	 * The device seat identifier.
+	 *
+	 * Since: 0.1.24
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_SEAT,
+					 g_param_spec_string ("seat",
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READABLE));
@@ -2163,6 +2211,7 @@ cd_device_finalize (GObject *object)
 	g_free (device->priv->id);
 	g_free (device->priv->model);
 	g_free (device->priv->serial);
+	g_free (device->priv->seat);
 	g_free (device->priv->format);
 	g_free (device->priv->vendor);
 	g_strfreev (device->priv->profiling_inhibitors);
