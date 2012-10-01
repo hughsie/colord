@@ -68,11 +68,16 @@ ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2005", ENV{COLORD_SENSOR}="1", ENV{C
 # Huey, built into Thinkpad w700
 ATTRS{idVendor}=="0765", ATTRS{idProduct}=="5001", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="huey", ENV{COLORD_SENSOR_CAP_LCD}="1", ENV{COLORD_SENSOR_CAP_CRT}="1", ENV{COLORD_SENSOR_CAP_AMBIENT}="1"
 
-# ColorHug
+# ColorHug (legacy)
 ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="f8da", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_SENSOR_CAP_LCD}="1"
+
+# ColorHug
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1000", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_IGNORE}="1"
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1001", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_SENSOR_CAP_LCD}="1"
-ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1002", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug-spectro", ENV{COLORD_SENSOR_CAP_AMBIENT}="1"
+
+# ColorHug Spectro
+ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1003", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug-spectro", ENV{COLORD_IGNORE}="1"
+ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1002", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug-spectro", ENV{COLORD_SENSOR_CAP_LCD}="1"
 
 # color calibration device
 ENV{COLORD_SENSOR}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"
