@@ -960,6 +960,73 @@ out:
 }
 
 /**
+ * cd_util_generate_vcgt:
+ **/
+static gboolean
+cd_util_generate_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	cmsHPROFILE lcms_profile = NULL;
+	gboolean ret = TRUE;
+	const cmsToneCurve **vcgt;
+	cmsFloat32Number in;
+	guint i;
+	guint size;
+
+	/* check arguments */
+	if (g_strv_length (values) != 2) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect 'filename' size'");
+		goto out;
+	}
+
+	/* invalid size */
+	size = atoi (values[1]);
+	if (size <= 1 || size > 1024) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid size,expected 2-1024");
+		goto out;
+	}
+
+	/* set value */
+	lcms_profile = cmsOpenProfileFromFile (values[0], "r");
+	if (lcms_profile == NULL) {
+		g_set_error (error, 1, 0,
+			     "failed to open profile %s",
+			     values[0]);
+		ret = FALSE;
+		goto out;
+	}
+
+	/* does profile have VCGT */
+	vcgt = cmsReadTag (lcms_profile, cmsSigVcgtTag);
+	if (vcgt == NULL || vcgt[0] == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "profile does not have any VCGT data");
+		goto out;
+	}
+
+	/* output data */
+	g_print ("idx,red,green,blue\n");
+	for (i = 0; i < size; i++) {
+		in = (gdouble) i / (gdouble) (size - 1);
+		g_print ("%i,", i);
+		g_print ("%f,", cmsEvalToneCurveFloat(vcgt[0], in));
+		g_print ("%f,", cmsEvalToneCurveFloat(vcgt[1], in));
+		g_print ("%f\n", cmsEvalToneCurveFloat(vcgt[2], in));
+	}
+
+	/* success */
+	ret = TRUE;
+out:
+	if (lcms_profile != NULL)
+		cmsCloseProfile (lcms_profile);
+	return ret;
+}
+
+/**
  * cd_util_ignore_cb:
  **/
 static void
@@ -1024,6 +1091,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Show all the details about the profile"),
 		     cd_util_dump);
+	cd_util_add (priv->cmd_array,
+		     "extract-vcgt",
+		     /* TRANSLATORS: command description */
+		     _("Generate the VCGT calibration of a given size"),
+		     cd_util_generate_vcgt);
 	cd_util_add (priv->cmd_array,
 		     "md-clear",
 		     /* TRANSLATORS: command description */
