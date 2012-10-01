@@ -915,7 +915,9 @@ cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 	g_print ("Using filename %s\n", values[0]);
 	lcms_profile = cmsOpenProfileFromFile (values[0], "r");
 	if (lcms_profile == NULL) {
-		g_warning ("failed to open profile %s", values[0]);
+		g_set_error (error, 1, 0,
+			     "failed to open profile %s",
+			     values[0]);
 		ret = FALSE;
 		goto out;
 	}
