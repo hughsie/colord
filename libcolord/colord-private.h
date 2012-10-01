@@ -37,6 +37,7 @@
 #include <colord/cd-color.h>
 #include <colord/cd-enum.h>
 #include <colord/cd-math.h>
+#include <colord/cd-it8.h>
 
 #undef __COLORD_H_INSIDE__
 
