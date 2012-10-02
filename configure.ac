@@ -249,7 +249,9 @@ AC_DEFINE_UNQUOTED([DAEMON_USER], ["$daemon_user"], [Daemon user])
 dnl ---------------------------------------------------------------------------
 dnl - Build VALA support
 dnl ---------------------------------------------------------------------------
-if test x$found_introspection != xno; then
+AC_ARG_ENABLE(vala, AS_HELP_STRING([--enable-vala],[build vala bindings]),
+	      enable_vala=$enableval,enable_vala=no)
+if test x$found_introspection != xno -a x$enable_vala != xno; then
 	AC_PATH_PROG([VAPIGEN], [vapigen], [])
 	if test "x$VAPIGEN" = "x"; then
 		has_vapigen="no"
@@ -259,7 +261,9 @@ if test x$found_introspection != xno; then
 	fi
 else
 	has_vapigen="no"
-	AC_MSG_WARN([Not introspection found, will not build Vala binding])
+	if test x$found_introspection = xno; then
+		AC_MSG_WARN([introspection not found, will not build Vala binding])
+	fi
 fi
 AM_CONDITIONAL(HAVE_VAPIGEN, [test "x$has_vapigen" = "xyes"])
 
