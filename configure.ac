@@ -127,11 +127,13 @@ dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gio-unix-2.0 gmodule-2.0)
-PKG_CHECK_MODULES(GUSB, gusb >= 0.1.1, have_gusb=yes, have_gusb=no)
-if test x$have_gusb = xyes; then
+AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
+	      enable_gusb=$enableval, enable_gusb=yes)
+if test x$enable_gusb != xno; then
+	PKG_CHECK_MODULES(GUSB, gusb >= 0.1.1)
 	AC_DEFINE(HAVE_GUSB,1,[whether gusb is available])
 fi
-AM_CONDITIONAL(HAVE_GUSB, test x$have_gusb = xyes)
+AM_CONDITIONAL(HAVE_GUSB, test x$enable_gusb = xyes)
 
 PKG_CHECK_MODULES(LCMS, lcms2 >= 2.2)
 PKG_CHECK_MODULES(SQLITE, sqlite3)
