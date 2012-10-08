@@ -61,6 +61,7 @@ when running GTK applications.
 %configure \
         --with-daemon-user=colord \
         --enable-gtk-doc \
+        --enable-vala \
         --disable-static \
         --disable-rpath \
         --disable-dependency-tracking
