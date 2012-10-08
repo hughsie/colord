@@ -235,6 +235,12 @@ cd_profile_store_add_profile (CdProfileStore *profile_store,
 		cd_profile_store_remove_profile (profile_store, profile_tmp);
 	}
 
+	/* ensure profiles have the checksum metadata item */
+	cd_profile_set_property_internal (profile,
+					  CD_PROFILE_METADATA_FILE_CHECKSUM,
+					  checksum,
+					  NULL);
+
 	/* add to array */
 	g_debug ("CdProfileStore: parsed new profile '%s'", filename);
 	g_ptr_array_add (priv->profile_array, g_object_ref (profile));
