@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -95,6 +95,12 @@ GPtrArray	*cd_client_get_devices_by_kind_sync	(CdClient	*client,
 							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,
 							 GError		**error);
+CdProfile	*cd_client_find_profile_by_property_sync(CdClient	*client,
+							 const gchar	*key,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
+
 
 G_END_DECLS
 

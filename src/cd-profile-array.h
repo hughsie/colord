@@ -62,6 +62,9 @@ CdProfile	*cd_profile_array_get_by_id_owner	(CdProfileArray	*profile_array,
 							 guint		 owner);
 CdProfile	*cd_profile_array_get_by_filename	(CdProfileArray	*profile_array,
 							 const gchar	*filename);
+CdProfile	*cd_profile_array_get_by_property	(CdProfileArray	*profile_array,
+							 const gchar	*key,
+							 const gchar	*value);
 CdProfile	*cd_profile_array_get_by_object_path	(CdProfileArray	*profile_array,
 							 const gchar	*object_path);
 GPtrArray	*cd_profile_array_get_by_kind		(CdProfileArray	*profile_array,

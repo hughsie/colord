@@ -204,6 +204,44 @@
     </method>
 
     <!--***********************************************************-->
+    <method name='FindProfileByProperty'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a profile path for the profile with the specified property.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='key' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A property key, e.g. <doc:tt>FILE_checksum</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='s' name='value' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A property value, e.g. <doc:tt>5b3855e8630c9d8a48177cc70680da93</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='o' name='object_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A profile path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--***********************************************************-->
     <method name='FindProfileByFilename'>
       <doc:doc>
         <doc:description>

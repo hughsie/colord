@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -226,6 +226,15 @@ void		 cd_client_get_sensors			(CdClient	*client,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 GPtrArray	*cd_client_get_sensors_finish		(CdClient	*client,
+							 GAsyncResult	*res,
+							 GError		**error);
+void		cd_client_find_profile_by_property	(CdClient	*client,
+							 const gchar	*key,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdProfile	*cd_client_find_profile_by_property_finish (CdClient	*client,
 							 GAsyncResult	*res,
 							 GError		**error);
 

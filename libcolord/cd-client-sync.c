@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -850,6 +850,61 @@ cd_client_get_devices_by_kind_sync (CdClient *client,
 	g_main_loop_unref (helper.loop);
 
 	return helper.array;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_find_profile_by_property_finish_sync (CdClient *client,
+					       GAsyncResult *res,
+					       CdClientHelper *helper)
+{
+	helper->profile = cd_client_find_profile_by_property_finish (client,
+								     res,
+								     helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_find_profile_by_property_sync:
+ * @client: a #CdClient instance.
+ * @key: The profile property key.
+ * @value: The profile property value.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Finds a color profile that has a property value.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: (transfer full): A #CdProfile object, or %NULL for error
+ *
+ * Since: 0.1.24
+ **/
+CdProfile *
+cd_client_find_profile_by_property_sync (CdClient *client,
+					 const gchar *key,
+					 const gchar *value,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+
+	/* run async method */
+	cd_client_find_profile_by_property (client, key, value, cancellable,
+					    (GAsyncReadyCallback) cd_client_find_profile_by_property_finish_sync,
+					    &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.profile;
 }
 
 /**********************************************************************/

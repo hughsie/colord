@@ -929,6 +929,33 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	}
 
 	/* return 'o' */
+	if (g_strcmp0 (method_name, "FindProfileByProperty") == 0) {
+
+		g_variant_get (parameters, "(&s&s)",
+			       &metadata_key,
+			       &metadata_value);
+		g_debug ("CdMain: %s:FindProfileByProperty(%s=%s)",
+			 sender, metadata_key, metadata_value);
+		profile = cd_profile_array_get_by_property (priv->profiles_array,
+							    metadata_key,
+							    metadata_value);
+		if (profile == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "property match '%s'='%s' does not exist",
+							       metadata_key,
+							       metadata_value);
+			goto out;
+		}
+
+		/* format the value */
+		value = g_variant_new ("(o)", cd_profile_get_object_path (profile));
+		g_dbus_method_invocation_return_value (invocation, value);
+		goto out;
+	}
+
+	/* return 'o' */
 	if (g_strcmp0 (method_name, "FindProfileById") == 0) {
 
 		g_variant_get (parameters, "(&s)", &device_id);

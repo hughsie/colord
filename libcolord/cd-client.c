@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -2364,6 +2364,121 @@ cd_client_get_sensors (CdClient *client,
 			   -1,
 			   cancellable,
 			   cd_client_get_sensors_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_client_find_profile_by_property_finish:
+ * @client: a #CdClient instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: (transfer full): a #CdProfile or %NULL
+ *
+ * Since: 0.1.24
+ **/
+CdProfile *
+cd_client_find_profile_by_property_finish (CdClient *client,
+					   GAsyncResult *res,
+					   GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+static void
+cd_client_find_profile_by_property_cb (GObject *source_object,
+				       GAsyncResult *res,
+				       gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	CdProfile *profile;
+	gchar *object_path = NULL;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		g_simple_async_result_set_error (res_source,
+						 CD_CLIENT_ERROR,
+						 CD_CLIENT_ERROR_FAILED,
+						 "Failed to FindProfileByProperty: %s",
+						 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* create a profile object */
+	g_variant_get (result, "(o)",
+		       &object_path);
+	profile = cd_profile_new ();
+	cd_profile_set_object_path (profile, object_path);
+
+	/* success */
+	g_simple_async_result_set_op_res_gpointer (res_source,
+						   profile,
+						   (GDestroyNotify) g_object_unref);
+	g_variant_unref (result);
+out:
+	g_free (object_path);
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+/**
+ * cd_client_find_profile_by_property:
+ * @client: a #CdClient instance.
+ * @key: the profile property key
+ * @value: the profile property value
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Finds a color profile that has a property value.
+ *
+ * Since: 0.1.24
+ **/
+void
+cd_client_find_profile_by_property (CdClient *client,
+				    const gchar *key,
+				    const gchar *value,
+				    GCancellable *cancellable,
+				    GAsyncReadyCallback callback,
+				    gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (client->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (client),
+					 callback,
+					 user_data,
+					 cd_client_find_profile_by_property);
+	g_dbus_proxy_call (client->priv->proxy,
+			   "FindProfileByProperty",
+			   g_variant_new ("(ss)", key, value),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_client_find_profile_by_property_cb,
 			   res);
 }
 
