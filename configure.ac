@@ -71,9 +71,6 @@ if test x$enable_strict != xno; then
 	CPPFLAGS="$CPPFLAGS -DG_DISABLE_SINGLE_INCLUDES"
 	CPPFLAGS="$CPPFLAGS -DG_DISABLE_DEPRECATED"
 	CPPFLAGS="$CPPFLAGS -DGSEAL_ENABLE"
-	if test "$GCC" = "yes"; then
-		CPPFLAGS="$CPPFLAGS -Werror"
-	fi
 fi
 
 dnl ---------------------------------------------------------------------------
