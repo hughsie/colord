@@ -1,3 +1,30 @@
+Version 0.1.24
+~~~~~~~~~~~~~~
+Released: 2012-10-26
+
+New Features:
+ - Add a extract-vcgt subcommand to cd-fix-profile (Richard Hughes)
+ - Add a general plugin interface for adding and removing devices (Richard Hughes)
+ - Add defines for the 'ColorHug Spectro' hardware (Richard Hughes)
+ - Add a 'seat' property to each device (Richard Hughes)
+ - Add FindProfileByProperty() to the main interface (Richard Hughes)
+ - Allow the user to specify a custom udev rules directory (Richard Hughes)
+
+Bugfixes:
+ - Append usernames to dbus object paths before sanitising the object path (Christopher James Halse Rogers)
+ - colorhug: Add support for firmware >= 1.2.0 by accepting a full HID buffer (Richard Hughes)
+ - colorhug: Update the private files to the latest libcolorhug code (Richard Hughes)
+ - Fix a critical warning when user tries to dump a non-icc file (Richard Hughes)
+ - Fix automatic dep on libusb (Pacho Ramos)
+ - Fix automatic dep on vala (Pacho Ramos)
+ - Fix a warning in the daemon if a device property is NULL at setup (Richard Hughes)
+ - Initialise global connection variable earlier (Christopher James Halse Rogers)
+ - More paranoia in construction of object paths (Christopher James Halse Rogers)
+ - Never use Werror by default in configure (Richard Hughes)
+ - Remove libsane support and rely only on udev for scanner device information (Richard Hughes)
+ - Set FILE_checksum on discovered system profiles (Richard Hughes)
+ - Set the seat for devices created in the session and from udev (Richard Hughes)
+
 Version 0.1.23
 ~~~~~~~~~~~~~~
 Released: 2012-08-29
