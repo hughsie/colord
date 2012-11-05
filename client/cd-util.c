@@ -609,6 +609,8 @@ cd_util_get_devices (CdUtilPrivate *priv, gchar **values, GError **error)
 		if (!ret)
 			goto out;
 		cd_util_show_device (device);
+		if (i != array->len - 1)
+			g_print ("\n");
 	}
 out:
 	if (array != NULL)
@@ -652,6 +654,8 @@ cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error
 		if (!ret)
 			goto out;
 		cd_util_show_device (device);
+		if (i != array->len - 1)
+			g_print ("\n");
 	}
 out:
 	if (array != NULL)
@@ -682,6 +686,8 @@ cd_util_get_profiles (CdUtilPrivate *priv, gchar **values, GError **error)
 		if (!ret)
 			goto out;
 		cd_util_show_profile (profile);
+		if (i != array->len - 1)
+			g_print ("\n");
 	}
 out:
 	if (array != NULL)
@@ -719,6 +725,8 @@ cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
 		if (!ret)
 			goto out;
 		cd_util_show_sensor (sensor);
+		if (i != array->len - 1)
+			g_print ("\n");
 	}
 out:
 	if (array != NULL)
