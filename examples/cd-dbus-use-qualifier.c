@@ -143,9 +143,13 @@ get_profile_for_device_path (DBusConnection *con,
 
 	/* split qualifier */
 	split = split_qualifier(qualifier);
+	if (split == NULL)
+		goto out;
 
 	/* create the fallbacks */
 	key = calloc(6, sizeof(char*));
+	if (key == NULL)
+		goto out;
 
 	/* exact match */
 	snprintf(str, 256, "%s.%s.%s",
