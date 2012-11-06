@@ -44,7 +44,7 @@ _cmsWriteTagTextAscii (cmsHPROFILE lcms_profile,
 static wchar_t *
 utf8_to_wchar_t (const char *src)
 {
-	gsize len;
+	gssize len;
 	gsize converted;
 	wchar_t *buf = NULL;
 
