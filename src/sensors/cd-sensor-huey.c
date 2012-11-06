@@ -157,20 +157,25 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 
 		/* the second byte seems to be the command again */
 		if (reply[1] != request[0]) {
+			ret = FALSE;
 			g_set_error (error, CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_INTERNAL,
-				     "wrong command reply, got 0x%02x, expected 0x%02x", reply[1], request[0]);
+				     "wrong command reply, got 0x%02x, "
+				     "expected 0x%02x",
+				     reply[1],
+				     request[0]);
 			goto out;
 		}
 
 		/* the first byte is status */
 		if (reply[0] == CD_SENSOR_HUEY_RETURN_SUCCESS) {
 			ret = TRUE;
-			break;
+			goto out;
 		}
 
 		/* failure, the return buffer is set to "Locked" */
 		if (reply[0] == CD_SENSOR_HUEY_RETURN_LOCKED) {
+			ret = FALSE;
 			g_set_error_literal (error, CD_SENSOR_ERROR,
 					     CD_SENSOR_ERROR_INTERNAL,
 					     "the device is locked");
@@ -179,6 +184,7 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 
 		/* failure, the return buffer is set to "NoCmd" */
 		if (reply[0] == CD_SENSOR_HUEY_RETURN_ERROR) {
+			ret = FALSE;
 			g_set_error (error, CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_INTERNAL,
 				     "failed to issue command: %s", &reply[2]);
@@ -187,6 +193,7 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 
 		/* we ignore retry */
 		if (reply[0] != CD_SENSOR_HUEY_RETURN_RETRY) {
+			ret = FALSE;
 			g_set_error (error, CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_INTERNAL,
 				     "return value unknown: 0x%02x", reply[0]);
@@ -195,12 +202,10 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 	}
 
 	/* no success */
-	if (!ret) {
-		g_set_error (error, CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_INTERNAL,
-			     "gave up retrying after %i reads", HUEY_MAX_READ_RETRIES);
-		goto out;
-	}
+	g_set_error (error, CD_SENSOR_ERROR,
+		     CD_SENSOR_ERROR_INTERNAL,
+		     "gave up retrying after %i reads",
+		     HUEY_MAX_READ_RETRIES);
 out:
 	return ret;
 }
