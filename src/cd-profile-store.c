@@ -271,8 +271,9 @@ cd_profile_store_file_monitor_changed_cb (GFileMonitor *monitor,
 					  GFileMonitorEvent event_type,
 					  CdProfileStore *profile_store)
 {
-	gchar *path = NULL;
+	gboolean ret;
 	gchar *parent_path = NULL;
+	gchar *path = NULL;
 	GFile *parent = NULL;
 
 	/* only care about created objects */
@@ -291,11 +292,15 @@ cd_profile_store_file_monitor_changed_cb (GFileMonitor *monitor,
 	parent_path = g_file_get_path (parent);
 	if (g_strcmp0 (parent_path, DATADIR) == 0) {
 		g_debug ("CdProfileStore: %s was added, rescanning", path);
-		cd_profile_store_search_path (profile_store, path);
+		ret = cd_profile_store_search_path (profile_store, path);
+		if (!ret)
+			g_debug ("CdProfileStore: no new profiles found in %s", path);
 	} else {
 		g_debug ("CdProfileStore: %s was added, rescanning parent %s",
 			 path, parent_path);
-		cd_profile_store_search_path (profile_store, parent_path);
+		ret = cd_profile_store_search_path (profile_store, parent_path);
+		if (!ret)
+			g_debug ("CdProfileStore: no new profiles found in %s", parent_path);
 	}
 out:
 	if (parent != NULL)
