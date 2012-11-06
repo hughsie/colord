@@ -1020,7 +1020,6 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	gchar **regexes = NULL;
 	GError *error = NULL;
 	guint i = 0;
-	GVariantIter *iter = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	gchar *tmp;
@@ -1354,8 +1353,7 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process device method %s", method_name);
 out:
-	if (iter != NULL)
-		g_variant_iter_free (iter);
+	return;
 }
 
 /**

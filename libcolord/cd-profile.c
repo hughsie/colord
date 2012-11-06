@@ -600,7 +600,6 @@ cd_profile_connect_cb (GObject *source_object,
 	GError *error = NULL;
 	GVariant *filename = NULL;
 	GVariant *id = NULL;
-	GVariant *profiles = NULL;
 	GVariant *qualifier = NULL;
 	GVariant *format = NULL;
 	GVariant *title = NULL;
@@ -758,8 +757,6 @@ out:
 		g_variant_unref (format);
 	if (title != NULL)
 		g_variant_unref (title);
-	if (profiles != NULL)
-		g_variant_unref (profiles);
 	g_simple_async_result_complete_in_idle (res_source);
 	g_object_unref (res_source);
 }
