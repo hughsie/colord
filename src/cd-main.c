@@ -1057,6 +1057,14 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* check it does not already exist */
 		scope = cd_object_scope_from_string (scope_tmp);
+		if (scope == CD_OBJECT_SCOPE_UNKNOWN) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "scope non-valid: %s",
+							       scope_tmp);
+			goto out;
+		}
 		device = cd_device_array_get_by_id_owner (priv->devices_array,
 							  device_id,
 							  uid);
@@ -1261,6 +1269,14 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 
 		/* create profile */
 		scope = cd_object_scope_from_string (scope_tmp);
+		if (scope == CD_OBJECT_SCOPE_UNKNOWN) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "scope non-valid: %s",
+							       scope_tmp);
+			goto out;
+		}
 		profile = cd_main_create_profile (priv,
 						  sender,
 						  device_id,
