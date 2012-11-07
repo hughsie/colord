@@ -1055,6 +1055,15 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 			       &iter);
 		g_debug ("CdMain: %s:CreateDevice(%s)", sender, device_id);
 
+		/* check ID is valid */
+		if (g_strcmp0 (device_id, "") == 0) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "device id cannot be blank");
+			goto out;
+		}
+
 		/* check it does not already exist */
 		scope = cd_object_scope_from_string (scope_tmp);
 		if (scope == CD_OBJECT_SCOPE_UNKNOWN) {
@@ -1252,6 +1261,15 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 				       &scope_tmp,
 				       &iter);
 			g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
+		}
+
+		/* check ID is valid */
+		if (g_strcmp0 (device_id, "") == 0) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_MAIN_ERROR,
+							       CD_MAIN_ERROR_FAILED,
+							       "profile id cannot be blank");
+			goto out;
 		}
 
 		/* check it does not already exist */
