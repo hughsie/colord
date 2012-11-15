@@ -896,8 +896,10 @@ out:
 static gboolean
 cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 {
+	cmsCIExyY yxy;
 	cmsHANDLE dict;
 	cmsHPROFILE lcms_profile = NULL;
+	const cmsCIEXYZ *xyz;
 	const cmsDICTentry* entry;
 	gboolean ret = TRUE;
 	gchar ascii_name[1024];
@@ -949,6 +951,28 @@ cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 			g_print ("%s %s\t=\t%s\n",
 				 _("Metadata"), ascii_name, ascii_value);
 		}
+	}
+
+	/* show Yxy primaries */
+	xyz = cmsReadTag (lcms_profile, cmsSigRedColorantTag);
+	if (xyz != NULL) {
+		cmsXYZ2xyY (&yxy, xyz);
+		g_print ("%s:\t%0.3f, %0.3f\n", _("Red primary"), yxy.x, yxy.y);
+	}
+	xyz = cmsReadTag (lcms_profile, cmsSigGreenColorantTag);
+	if (xyz != NULL) {
+		cmsXYZ2xyY (&yxy, xyz);
+		g_print ("%s:\t%0.3f, %0.3f\n", _("Green primary"), yxy.x, yxy.y);
+	}
+	xyz = cmsReadTag (lcms_profile, cmsSigBlueColorantTag);
+	if (xyz != NULL) {
+		cmsXYZ2xyY (&yxy, xyz);
+		g_print ("%s:\t%0.3f, %0.3f\n", _("Blue primary"), yxy.x, yxy.y);
+	}
+	xyz = cmsReadTag (lcms_profile, cmsSigMediaWhitePointTag);
+	if (xyz != NULL) {
+		cmsXYZ2xyY (&yxy, xyz);
+		g_print ("%s:\t%0.3f, %0.3f\n", _("Whitepoint"), yxy.x, yxy.y);
 	}
 
 	/* success */
