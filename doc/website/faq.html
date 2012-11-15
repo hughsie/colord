@@ -21,9 +21,6 @@
 <li><a href="#whydbnotxml">Why are the mappings stored in a database, not readable XML files?</a></li>
 <li><a href="#nvidia-driver">Does calibration work with the NVIDIA binary driver?</a></li>
 <li><a href="#cmm-cmf-cms">What is the difference between a CMM, CMF and a CMS?</a></li>
-<!--
-<li><a href="#xxx">xxx</a></li>
--->
 <li><a href="#sensors">What is a native sensor?</a></li>
 <li><a href="#application">How would an application like Simple Scan use colord?</a></li>
 <li><a href="#qualifiers">What is a qualifier used for?</a></li>
@@ -33,6 +30,7 @@
 <li><a href="#corporate-sponsor">Is there an organization sponsoring development of colord?</a></li>
 <li><a href="#oyranos">Why did you start a new project instead of working on Oyranos?</a></li>
 <li><a href="#why-root">Why does the daemon run as root?</a></li>
+<li><a href="#application-support">What desktop applications support color management?</a></li>
 </ul>
 
 <hr/>
@@ -460,6 +458,23 @@ authorisation request, but PolicyKit 0.104 (released October 2011)
 added functionality to allow non-root daemons to do this as well.
 </p>
 
+<hr/>
+<h3><a name="application-support">What desktop applications support color management</a></h3>
+<p>
+Applications can query colord directly, or can use the per-session
+<a href="http://www.oyranos.org/wiki/index.php?title=ICC_Profiles_in_X_Specification_0.4">
+<code>_ICC_PROFILE</code> X atom</a>.
+</p>
+<table class="noteinformation">
+<tr><th>Software</th><th>colord support</th><th>_ICC_PROFILE support</th><th>Notes</th></tr>
+<tr><td><a href="http://www.gtk.org/">GTK+</a></td><td>Yes</td><td>No</td><td>Only the print dialog</td></tr>
+<tr><td><a href="https://lwn.net/Articles/377063/">Simple Scan</a></td><td>Yes</td><td>No</td><td></td></tr>
+<tr><td><a href="http://www.gimp.org/">GIMP</a></td><td>No</td><td>Yes</td><td>Need to enable it before use</td></tr>
+<tr><td><a href="https://www.mozilla.org/en-US/">Firefox</a></td><td>No</td><td>Yes</td><td>Need to enable it before use</td></tr>
+<tr><td><a href="http://projects.gnome.org/eog/">Eye of GNOME</a></td><td>No</td><td>Yes</td><td></td></tr>
+<tr><td><a href="http://www.darktable.org/">Darktable</a></td><td>Yes</td><td>Yes</td><td></td></tr>
+<tr><td><a href="http://krita.org/">Krita</a></td><td>No</td><td>Yes</td><td></td></tr>
+</table>
 <p>Back to the <a href="index.html">main page</a></p>
 
 <p class="footer">
