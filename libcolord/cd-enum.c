@@ -591,6 +591,9 @@ cd_profile_warning_to_string (CdProfileWarning kind_enum)
 	case CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC:
 		kind = "gray-axis-non-monotonic";
 		break;
+	case CD_PROFILE_WARNING_PRIMARIES_INVALID:
+		kind = "primaries-invalid";
+		break;
 	default:
 		kind = "unknown";
 		break;
@@ -620,6 +623,8 @@ cd_profile_warning_from_string (const gchar *type)
 		return CD_PROFILE_WARNING_VCGT_NON_MONOTONIC;
 	if (g_strcmp0 (type, "scum-dot") == 0)
 		return CD_PROFILE_WARNING_SCUM_DOT;
+	if (g_strcmp0 (type, "primaries-invalid") == 0)
+		return CD_PROFILE_WARNING_PRIMARIES_INVALID;
 	return CD_PROFILE_WARNING_LAST;
 }
 

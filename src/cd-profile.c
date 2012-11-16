@@ -900,6 +900,45 @@ out:
 }
 
 /**
+ * cd_util_profile_check_primaries:
+ **/
+static CdProfileWarning
+cd_util_profile_check_primaries (cmsHPROFILE profile)
+{
+	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
+	cmsCIEXYZ *tmp;
+
+	/* check red */
+	tmp = cmsReadTag (profile, cmsSigRedColorantTag);
+	if (tmp == NULL)
+		goto out;
+	if (tmp->X < 0.0f || tmp->Y < 0.0f || tmp->Z < 0.0f) {
+		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
+		goto out;
+	}
+
+	/* check green */
+	tmp = cmsReadTag (profile, cmsSigGreenColorantTag);
+	if (tmp == NULL)
+		goto out;
+	if (tmp->X < 0.0f || tmp->Y < 0.0f || tmp->Z < 0.0f) {
+		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
+		goto out;
+	}
+
+	/* check blue */
+	tmp = cmsReadTag (profile, cmsSigBlueColorantTag);
+	if (tmp == NULL)
+		goto out;
+	if (tmp->X < 0.0f || tmp->Y < 0.0f || tmp->Z < 0.0f) {
+		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
+		goto out;
+	}
+out:
+	return warning;
+}
+
+/**
  * cd_util_profile_check_gray_axis:
  **/
 static CdProfileWarning
@@ -1001,6 +1040,11 @@ cd_util_profile_get_warnings (cmsHPROFILE profile)
 
 	/* gray should give low a/b and should be monotonic */
 	warning = cd_util_profile_check_gray_axis (profile);
+	if (warning != CD_PROFILE_WARNING_NONE)
+		g_array_append_val (flags, warning);
+
+	/* tristimulus values cannot be negative */
+	warning = cd_util_profile_check_primaries (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 out:
