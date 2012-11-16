@@ -27,6 +27,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <pwd.h>
+#include <math.h>
 
 #include "cd-common.h"
 #include "cd-profile.h"
@@ -60,6 +61,7 @@ struct _CdProfilePrivate
 	gboolean			 is_system_wide;
 	gint64				 created;
 	guint				 owner;
+	gchar				**warnings;
 	GMappedFile			*mapped_file;
 };
 
@@ -626,6 +628,15 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = g_variant_new_uint32 (profile->priv->owner);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_WARNINGS) == 0) {
+		if (profile->priv->warnings != NULL) {
+			retval = g_variant_new_strv ((const gchar * const *) profile->priv->warnings, -1);
+		} else {
+			const gchar *tmp[] = { NULL };
+			retval = g_variant_new_strv (tmp, -1);
+		}
+		goto out;
+	}
 
 	g_critical ("failed to set property %s", property_name);
 out:
@@ -810,6 +821,17 @@ out:
 }
 
 /**
+ * cd_util_profile_get_warnings:
+ **/
+static GArray *
+cd_util_profile_get_warnings (cmsHPROFILE profile)
+{
+	GArray *flags;
+	flags = g_array_new (FALSE, FALSE, sizeof (CdProfileWarning));
+	return flags;
+}
+
+/**
  * cd_profile_set_from_profile:
  **/
 static gboolean
@@ -817,12 +839,15 @@ cd_profile_set_from_profile (CdProfile *profile,
 			     cmsHPROFILE lcms_profile,
 			     GError **error)
 {
+	CdProfilePrivate *priv = profile->priv;
+	CdProfileWarning warning;
 	cmsColorSpaceSignature color_space;
+	const gchar *value;
+	GArray *flags = NULL;
 	gboolean ret = FALSE;
 	gchar text[1024];
+	guint i;
 	struct tm created;
-	const gchar *value;
-	CdProfilePrivate *priv = profile->priv;
 
 	/* get the description as the title */
 	cmsGetProfileInfoASCII (lcms_profile,
@@ -932,8 +957,20 @@ cd_profile_set_from_profile (CdProfile *profile,
 	/* get the checksum for the profile if we can */
 	priv->checksum = cd_profile_get_precooked_md5 (lcms_profile);
 
+	/* get any warnings for the profile */
+	flags = cd_util_profile_get_warnings (lcms_profile);
+	priv->warnings = g_new0 (gchar *, flags->len + 1);
+	if (flags->len > 0) {
+		for (i = 0; i < flags->len; i++) {
+			warning = g_array_index (flags, CdProfileWarning, i);
+			priv->warnings[i] = g_strdup (cd_profile_warning_to_string (warning));
+		}
+	}
+
 	/* success */
 	ret = TRUE;
+	if (flags != NULL)
+		g_array_unref (flags);
 	return ret;
 }
 
@@ -1410,6 +1447,7 @@ cd_profile_finalize (GObject *object)
 	g_free (priv->id);
 	g_free (priv->checksum);
 	g_free (priv->object_path);
+	g_strfreev (priv->warnings);
 	g_hash_table_unref (priv->metadata);
 
 	G_OBJECT_CLASS (cd_profile_parent_class)->finalize (object);

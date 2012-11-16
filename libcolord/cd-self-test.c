@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -926,6 +926,9 @@ colord_icc_meta_dict_func (void)
 	g_assert_cmpstr (g_hash_table_lookup (metadata, "EDID_md5"), ==,
 			 "f09e42aa86585d1bb6687d3c322ed0c1");
 	g_hash_table_unref (metadata);
+
+	/* check profile warnings */
+	g_assert_cmpint (g_strv_length (cd_profile_get_warnings (profile)), ==, 0);
 
 	/* create profile */
 	ret = cd_client_delete_profile_sync (client,

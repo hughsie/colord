@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -554,6 +554,47 @@ cd_standard_space_from_string (const gchar *standard_space)
 	if (g_strcmp0 (standard_space, "adobe-rgb") == 0)
 		return CD_STANDARD_SPACE_ADOBE_RGB;
 	return CD_STANDARD_SPACE_UNKNOWN;
+}
+
+/**
+ * cd_profile_warning_to_string:
+ *
+ * Converts a #CdProfileWarning to a string.
+ *
+ * Return value: identifier string
+ *
+ * Since: 0.1.25
+ **/
+const gchar *
+cd_profile_warning_to_string (CdProfileWarning kind_enum)
+{
+	const gchar *kind = NULL;
+	switch (kind_enum) {
+	case CD_PROFILE_WARNING_NONE:
+		kind = "none";
+		break;
+	default:
+		kind = "unknown";
+		break;
+	}
+	return kind;
+}
+
+/**
+ * cd_profile_warning_from_string:
+ *
+ * Converts a string to a #CdProfileWarning.
+ *
+ * Return value: enumerated value
+ *
+ * Since: 0.1.25
+ **/
+CdProfileWarning
+cd_profile_warning_from_string (const gchar *type)
+{
+	if (g_strcmp0 (type, "none") == 0)
+		return CD_PROFILE_WARNING_NONE;
+	return CD_PROFILE_WARNING_LAST;
 }
 
 /**

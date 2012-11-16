@@ -171,6 +171,19 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Warnings' type='as' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Any warnings for the profile, e.g.
+            '<doc:tt>description-missing</doc:tt>' or
+            '<doc:tt>vcgt-non-monotonic</doc:tt>'.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <method name='SetProperty'>
       <doc:doc>
         <doc:description>

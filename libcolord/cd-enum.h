@@ -205,6 +205,16 @@ typedef enum {
 	CD_STANDARD_SPACE_LAST
 } CdStandardSpace;
 
+/**
+ * CdProfileWarning:
+ *
+ * The a warning about the profile.
+ **/
+typedef enum {
+	CD_PROFILE_WARNING_NONE,					/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_LAST
+} CdProfileWarning;
+
 /* defined in org.freedesktop.ColorManager.xml */
 #define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"
 
@@ -256,6 +266,7 @@ typedef enum {
 #define CD_PROFILE_PROPERTY_ID			"ProfileId"
 #define CD_PROFILE_PROPERTY_SCOPE		"Scope"
 #define CD_PROFILE_PROPERTY_OWNER		"Owner"
+#define CD_PROFILE_PROPERTY_WARNINGS		"Warnings"		/* Since: 0.1.25 */
 
 /* defined in metadata-spec.txt */
 #define CD_DEVICE_METADATA_XRANDR_NAME		"XRANDR_name"
@@ -300,6 +311,8 @@ const gchar	*cd_sensor_cap_to_string		(CdSensorCap		 sensor_cap);
 CdSensorCap	 cd_sensor_cap_from_string		(const gchar		*sensor_cap);
 const gchar	*cd_standard_space_to_string		(CdStandardSpace	 standard_space);
 CdStandardSpace	 cd_standard_space_from_string		(const gchar		*standard_space);
+const gchar	*cd_profile_warning_to_string		(CdProfileWarning	 kind_enum);
+CdProfileWarning cd_profile_warning_from_string		(const gchar		*type);
 CdProfileKind	 cd_device_kind_to_profile_kind		(CdDeviceKind		 device_kind);
 
 G_END_DECLS

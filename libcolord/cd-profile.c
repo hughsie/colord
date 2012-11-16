@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -69,6 +69,7 @@ struct _CdProfilePrivate
 	gboolean		 has_vcgt;
 	gboolean		 is_system_wide;
 	guint			 owner;
+	gchar			**warnings;
 	GHashTable		*metadata;
 };
 
@@ -88,6 +89,7 @@ enum {
 	PROP_IS_SYSTEM_WIDE,
 	PROP_SCOPE,
 	PROP_OWNER,
+	PROP_WARNINGS,
 	PROP_LAST
 };
 
@@ -303,6 +305,24 @@ cd_profile_get_owner (CdProfile *profile)
 	g_return_val_if_fail (CD_IS_PROFILE (profile), G_MAXUINT);
 	g_return_val_if_fail (profile->priv->proxy != NULL, G_MAXUINT);
 	return profile->priv->owner;
+}
+
+/**
+ * cd_profile_get_warnings:
+ * @profile: a #CdProfile instance.
+ *
+ * Gets the profile warnings as a string array.
+ *
+ * Return value: (transfer none): Any profile warnings, e.g. "vcgt-non-monotonic"
+ *
+ * Since: 0.1.25
+ **/
+gchar **
+cd_profile_get_warnings (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
+	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
+	return profile->priv->warnings;
 }
 
 /**
@@ -607,6 +627,7 @@ cd_profile_connect_cb (GObject *source_object,
 	GVariant *colorspace = NULL;
 	GVariant *scope = NULL;
 	GVariant *owner = NULL;
+	GVariant *warnings = NULL;
 	GVariant *created = NULL;
 	GVariant *has_vcgt = NULL;
 	GVariant *is_system_wide = NULL;
@@ -692,6 +713,12 @@ cd_profile_connect_cb (GObject *source_object,
 	if (owner != NULL)
 		profile->priv->owner = g_variant_get_uint32 (owner);
 
+	/* get warnings */
+	warnings = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+						  CD_PROFILE_PROPERTY_WARNINGS);
+	if (warnings != NULL)
+		profile->priv->warnings = g_variant_dup_strv (warnings, NULL);
+
 	/* get created */
 	created = g_dbus_proxy_get_cached_property (profile->priv->proxy,
 						    CD_PROFILE_PROPERTY_CREATED);
@@ -741,6 +768,8 @@ out:
 		g_variant_unref (scope);
 	if (owner != NULL)
 		g_variant_unref (owner);
+	if (warnings != NULL)
+		g_variant_unref (warnings);
 	if (created != NULL)
 		g_variant_unref (created);
 	if (has_vcgt != NULL)
@@ -1164,6 +1193,9 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 	case PROP_OWNER:
 		g_value_set_uint (value, profile->priv->owner);
 		break;
+	case PROP_WARNINGS:
+		g_value_set_boxed (value, profile->priv->warnings);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1392,6 +1424,20 @@ cd_profile_class_init (CdProfileClass *klass)
 							    0,
 							    G_PARAM_READABLE));
 
+	/**
+	 * CdProfile:warnings:
+	 *
+	 * The profile warnings, e.g. "vcgt-non-monotonic".
+	 *
+	 * Since: 0.1.25
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_WARNINGS,
+					 g_param_spec_boxed ("warnings",
+							     NULL, NULL,
+							     G_TYPE_STRV,
+							     G_PARAM_READABLE));
+
 	g_type_class_add_private (klass, sizeof (CdProfilePrivate));
 }
 
@@ -1428,6 +1474,7 @@ cd_profile_finalize (GObject *object)
 	g_free (profile->priv->qualifier);
 	g_free (profile->priv->format);
 	g_free (profile->priv->title);
+	g_strfreev (profile->priv->warnings);
 	if (profile->priv->proxy != NULL) {
 		ret = g_signal_handlers_disconnect_by_func (profile->priv->proxy,
 							    G_CALLBACK (cd_profile_dbus_signal_cb),

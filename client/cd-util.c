@@ -113,8 +113,11 @@ cd_util_show_profile (CdProfile *profile)
 	CdProfileKind kind;
 	const gchar *tmp;
 	gchar *str_tmp;
+	gchar **warnings;
 	GHashTable *metadata;
 	GList *list, *l;
+	guint i;
+	guint size;
 
 	/* TRANSLATORS: the internal DBus path */
 	cd_util_print_field (_("Object Path"),
@@ -182,6 +185,13 @@ cd_util_show_profile (CdProfile *profile)
 		cd_util_print_field (_("Metadata"), str_tmp);
 		g_free (str_tmp);
 	}
+
+	/* show warnings */
+	warnings = cd_profile_get_warnings (profile);
+	size = g_strv_length (warnings);
+	for (i = 0; i < size; i++)
+		cd_util_print_field (_("Warning"), warnings[i]);
+
 	g_list_free (list);
 	g_hash_table_unref (metadata);
 }
