@@ -862,6 +862,44 @@ out:
 }
 
 /**
+ * cd_util_profile_check_scum_dot:
+ **/
+static CdProfileWarning
+cd_util_profile_check_scum_dot (cmsHPROFILE profile)
+{
+	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
+	cmsCIELab white;
+	cmsHPROFILE profile_lab;
+	cmsHTRANSFORM transform;
+	guint8 rgb[3] = { 0, 0, 0 };
+
+	/* do Lab to RGB transform of 100,0,0 */
+	profile_lab = cmsCreateLab2Profile (cmsD50_xyY ());
+	transform = cmsCreateTransform (profile_lab, TYPE_Lab_DBL,
+					profile, TYPE_RGB_8,
+					INTENT_RELATIVE_COLORIMETRIC,
+					0);
+	if (transform == NULL) {
+		g_warning ("failed to setup Lab -> RGB transform");
+		goto out;
+	}
+	white.L = 100.0;
+	white.a = 0.0;
+	white.b = 0.0;
+	cmsDoTransform (transform, &white, rgb, 1);
+	if (rgb[0] != 255 || rgb[1] != 255 || rgb[2] != 255) {
+		warning = CD_PROFILE_WARNING_SCUM_DOT;
+		goto out;
+	}
+out:
+	if (profile_lab != NULL)
+		cmsCloseProfile (profile_lab);
+	if (transform != NULL)
+		cmsDeleteTransform (transform);
+	return warning;
+}
+
+/**
  * cd_util_profile_get_warnings:
  **/
 static GArray *
@@ -892,6 +930,12 @@ cd_util_profile_get_warnings (cmsHPROFILE profile)
 
 	/* does profile have monotonic VCGT */
 	warning = cd_util_profile_check_vcgt (profile);
+	if (warning != CD_PROFILE_WARNING_NONE)
+		g_array_append_val (flags, warning);
+
+	/* if Lab 100,0,0 does not map to RGB 255,255,255 for relative
+	 * colorimetric then white it will not work on printers */
+	warning = cd_util_profile_check_scum_dot (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 out:

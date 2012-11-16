@@ -582,6 +582,9 @@ cd_profile_warning_to_string (CdProfileWarning kind_enum)
 	case CD_PROFILE_WARNING_VCGT_NON_MONOTONIC:
 		kind = "vcgt-non-monotonic";
 		break;
+	case CD_PROFILE_WARNING_SCUM_DOT:
+		kind = "scum-dot";
+		break;
 	default:
 		kind = "unknown";
 		break;
@@ -609,6 +612,8 @@ cd_profile_warning_from_string (const gchar *type)
 		return CD_PROFILE_WARNING_COPYRIGHT_MISSING;
 	if (g_strcmp0 (type, "vcgt-non-monotonic") == 0)
 		return CD_PROFILE_WARNING_VCGT_NON_MONOTONIC;
+	if (g_strcmp0 (type, "scum-dot") == 0)
+		return CD_PROFILE_WARNING_SCUM_DOT;
 	return CD_PROFILE_WARNING_LAST;
 }
 
