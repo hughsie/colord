@@ -75,6 +75,22 @@ MAINTAINERCLEANFILES =					\
 GITIGNOREFILES =					\
 	.tx
 
+coverity:
+	$(MAKE);					\
+	cd src; $(MAKE) clean; cd -;			\
+	cd libcolord; $(MAKE) clean; cd -;		\
+	cd examples; $(MAKE) clean; cd -;		\
+	cd client; $(MAKE) clean; cd -;			\
+	cov-build --dir cov-int $(MAKE);		\
+	tar czvf colord-coverity.tgz cov-int;		\
+	export COVERITY_EMAIL=`cat ~/.coverity | grep EMAIL | cut -f2`; \
+	export COVERITY_PASSWORD=`cat ~/.coverity | grep PASSWORD_colord | cut -f2`; \
+	curl --form file=@colord-coverity.tgz		\
+	     --form project=colord			\
+	     --form password=${COVERITY_PASSWORD}	\
+	     --form email=${COVERITY_EMAIL}		\
+	     http://scan5.coverity.com/cgi-bin/upload.py
+
 distclean-local:
 	if test $(srdcir) = .; then :; else \
 		rm -f ChangeLog; \
