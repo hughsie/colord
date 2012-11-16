@@ -579,6 +579,9 @@ cd_profile_warning_to_string (CdProfileWarning kind_enum)
 	case CD_PROFILE_WARNING_COPYRIGHT_MISSING:
 		kind = "copyright-missing";
 		break;
+	case CD_PROFILE_WARNING_VCGT_NON_MONOTONIC:
+		kind = "vcgt-non-monotonic";
+		break;
 	default:
 		kind = "unknown";
 		break;
@@ -604,6 +607,8 @@ cd_profile_warning_from_string (const gchar *type)
 		return CD_PROFILE_WARNING_DESCRIPTION_MISSING;
 	if (g_strcmp0 (type, "copyright-missing") == 0)
 		return CD_PROFILE_WARNING_COPYRIGHT_MISSING;
+	if (g_strcmp0 (type, "vcgt-non-monotonic") == 0)
+		return CD_PROFILE_WARNING_VCGT_NON_MONOTONIC;
 	return CD_PROFILE_WARNING_LAST;
 }
 

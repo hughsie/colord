@@ -821,6 +821,47 @@ out:
 }
 
 /**
+ * cd_util_profile_check_vcgt:
+ **/
+static CdProfileWarning
+cd_util_profile_check_vcgt (cmsHPROFILE profile)
+{
+	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
+	cmsFloat32Number in;
+	cmsFloat32Number now[3];
+	cmsFloat32Number previous[3] = { -1, -1, -1};
+	const cmsToneCurve **vcgt;
+	const guint size = 32;
+	guint i;
+
+	/* does profile have monotonic VCGT */
+	vcgt = cmsReadTag (profile, cmsSigVcgtTag);
+	if (vcgt == NULL)
+		goto out;
+	for (i = 0; i < size; i++) {
+		in = (gdouble) i / (gdouble) (size - 1);
+		now[0] = cmsEvalToneCurveFloat(vcgt[0], in);
+		now[1] = cmsEvalToneCurveFloat(vcgt[1], in);
+		now[2] = cmsEvalToneCurveFloat(vcgt[2], in);
+
+		/* check VCGT is increasing */
+		if (i > 0) {
+			if (now[0] < previous[0] ||
+			    now[1] < previous[1] ||
+			    now[2] < previous[2]) {
+				warning = CD_PROFILE_WARNING_VCGT_NON_MONOTONIC;
+				goto out;
+			}
+		}
+		previous[0] = now[0];
+		previous[1] = now[1];
+		previous[2] = now[2];
+	}
+out:
+	return warning;
+}
+
+/**
  * cd_util_profile_get_warnings:
  **/
 static GArray *
@@ -845,6 +886,15 @@ cd_util_profile_get_warnings (cmsHPROFILE profile)
 		g_array_append_val (flags, warning);
 	}
 
+	/* not a RGB space */
+	if (cmsGetColorSpace (profile) != cmsSigRgbData)
+		goto out;
+
+	/* does profile have monotonic VCGT */
+	warning = cd_util_profile_check_vcgt (profile);
+	if (warning != CD_PROFILE_WARNING_NONE)
+		g_array_append_val (flags, warning);
+out:
 	return flags;
 }
 
