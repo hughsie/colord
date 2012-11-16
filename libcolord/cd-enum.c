@@ -573,6 +573,9 @@ cd_profile_warning_to_string (CdProfileWarning kind_enum)
 	case CD_PROFILE_WARNING_NONE:
 		kind = "none";
 		break;
+	case CD_PROFILE_WARNING_DESCRIPTION_MISSING:
+		kind = "description-missing";
+		break;
 	default:
 		kind = "unknown";
 		break;
@@ -594,6 +597,8 @@ cd_profile_warning_from_string (const gchar *type)
 {
 	if (g_strcmp0 (type, "none") == 0)
 		return CD_PROFILE_WARNING_NONE;
+	if (g_strcmp0 (type, "description-missing") == 0)
+		return CD_PROFILE_WARNING_DESCRIPTION_MISSING;
 	return CD_PROFILE_WARNING_LAST;
 }
 

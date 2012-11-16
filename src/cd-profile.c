@@ -827,7 +827,19 @@ static GArray *
 cd_util_profile_get_warnings (cmsHPROFILE profile)
 {
 	GArray *flags;
+	gboolean ret;
+	gchar ascii_name[1024];
+	CdProfileWarning warning;
+
 	flags = g_array_new (FALSE, FALSE, sizeof (CdProfileWarning));
+
+	/* check that the profile has a description */
+	ret = cmsGetProfileInfoASCII (profile, cmsInfoDescription, "en", "US", ascii_name, 1024);
+	if (!ret || ascii_name[0] == '\0') {
+		warning = CD_PROFILE_WARNING_DESCRIPTION_MISSING;
+		g_array_append_val (flags, warning);
+	}
+
 	return flags;
 }
 
