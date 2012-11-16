@@ -900,6 +900,66 @@ out:
 }
 
 /**
+ * cd_util_profile_check_gray_axis:
+ **/
+static CdProfileWarning
+cd_util_profile_check_gray_axis (cmsHPROFILE profile)
+{
+	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
+	cmsCIELab gray[16];
+	cmsHPROFILE profile_lab;
+	cmsHTRANSFORM transform;
+	gdouble last_l = -1;
+	guint8 rgb[3*16];
+	guint8 tmp;
+	guint i;
+
+	/* do Lab to RGB transform of 100,0,0 */
+	profile_lab = cmsCreateLab2Profile (cmsD50_xyY ());
+	transform = cmsCreateTransform (profile, TYPE_RGB_8,
+					profile_lab, TYPE_Lab_DBL,
+					INTENT_RELATIVE_COLORIMETRIC,
+					0);
+	if (transform == NULL) {
+		g_warning ("failed to setup RGB -> Lab transform");
+		goto out;
+	}
+
+	/* run a 16 item gray ramp through the transform */
+	for (i = 0; i < 16; i++) {
+		tmp = (255.0f / (16.0f - 1)) * i;
+		rgb[(i * 3) + 0] = tmp;
+		rgb[(i * 3) + 1] = tmp;
+		rgb[(i * 3) + 2] = tmp;
+	}
+	cmsDoTransform (transform, rgb, gray, 16);
+
+	/* check a/b is small */
+	for (i = 0; i < 16; i++) {
+		if (gray[i].a > 0.1f ||
+		    gray[i].b > 0.1f) {
+			warning = CD_PROFILE_WARNING_GRAY_AXIS_INVALID;
+			goto out;
+		}
+	}
+
+	/* check it's monotonic */
+	for (i = 0; i < 16; i++) {
+		if (last_l > 0 && gray[i].L < last_l) {
+			warning = CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC;
+			goto out;
+		}
+		last_l = gray[i].L;
+	}
+out:
+	if (profile_lab != NULL)
+		cmsCloseProfile (profile_lab);
+	if (transform != NULL)
+		cmsDeleteTransform (transform);
+	return warning;
+}
+
+/**
  * cd_util_profile_get_warnings:
  **/
 static GArray *
@@ -936,6 +996,11 @@ cd_util_profile_get_warnings (cmsHPROFILE profile)
 	/* if Lab 100,0,0 does not map to RGB 255,255,255 for relative
 	 * colorimetric then white it will not work on printers */
 	warning = cd_util_profile_check_scum_dot (profile);
+	if (warning != CD_PROFILE_WARNING_NONE)
+		g_array_append_val (flags, warning);
+
+	/* gray should give low a/b and should be monotonic */
+	warning = cd_util_profile_check_gray_axis (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 out:

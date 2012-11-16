@@ -585,6 +585,12 @@ cd_profile_warning_to_string (CdProfileWarning kind_enum)
 	case CD_PROFILE_WARNING_SCUM_DOT:
 		kind = "scum-dot";
 		break;
+	case CD_PROFILE_WARNING_GRAY_AXIS_INVALID:
+		kind = "gray-axis-invalid";
+		break;
+	case CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC:
+		kind = "gray-axis-non-monotonic";
+		break;
 	default:
 		kind = "unknown";
 		break;
