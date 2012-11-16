@@ -833,10 +833,15 @@ cd_util_profile_get_warnings (cmsHPROFILE profile)
 
 	flags = g_array_new (FALSE, FALSE, sizeof (CdProfileWarning));
 
-	/* check that the profile has a description */
+	/* check that the profile has a description and a copyright */
 	ret = cmsGetProfileInfoASCII (profile, cmsInfoDescription, "en", "US", ascii_name, 1024);
 	if (!ret || ascii_name[0] == '\0') {
 		warning = CD_PROFILE_WARNING_DESCRIPTION_MISSING;
+		g_array_append_val (flags, warning);
+	}
+	ret = cmsGetProfileInfoASCII (profile, cmsInfoCopyright, "en", "US", ascii_name, 1024);
+	if (!ret || ascii_name[0] == '\0') {
+		warning = CD_PROFILE_WARNING_COPYRIGHT_MISSING;
 		g_array_append_val (flags, warning);
 	}
 

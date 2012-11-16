@@ -213,6 +213,7 @@ typedef enum {
 typedef enum {
 	CD_PROFILE_WARNING_NONE,					/* Since: 0.1.25 */
 	CD_PROFILE_WARNING_DESCRIPTION_MISSING,				/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_COPYRIGHT_MISSING,				/* Since: 0.1.25 */
 	CD_PROFILE_WARNING_LAST
 } CdProfileWarning;
 

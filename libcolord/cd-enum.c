@@ -576,6 +576,9 @@ cd_profile_warning_to_string (CdProfileWarning kind_enum)
 	case CD_PROFILE_WARNING_DESCRIPTION_MISSING:
 		kind = "description-missing";
 		break;
+	case CD_PROFILE_WARNING_COPYRIGHT_MISSING:
+		kind = "copyright-missing";
+		break;
 	default:
 		kind = "unknown";
 		break;
@@ -599,6 +602,8 @@ cd_profile_warning_from_string (const gchar *type)
 		return CD_PROFILE_WARNING_NONE;
 	if (g_strcmp0 (type, "description-missing") == 0)
 		return CD_PROFILE_WARNING_DESCRIPTION_MISSING;
+	if (g_strcmp0 (type, "copyright-missing") == 0)
+		return CD_PROFILE_WARNING_COPYRIGHT_MISSING;
 	return CD_PROFILE_WARNING_LAST;
 }
 
