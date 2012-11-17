@@ -632,6 +632,10 @@ cd_profile_warning_from_string (const gchar *type)
 		return CD_PROFILE_WARNING_VCGT_NON_MONOTONIC;
 	if (g_strcmp0 (type, "scum-dot") == 0)
 		return CD_PROFILE_WARNING_SCUM_DOT;
+	if (g_strcmp0 (type, "gray-axis-invalid") == 0)
+		return CD_PROFILE_WARNING_GRAY_AXIS_INVALID;
+	if (g_strcmp0 (type, "gray-axis-non-monotonic") == 0)
+		return CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC;
 	if (g_strcmp0 (type, "primaries-invalid") == 0)
 		return CD_PROFILE_WARNING_PRIMARIES_INVALID;
 	if (g_strcmp0 (type, "primaries-non-additive") == 0)

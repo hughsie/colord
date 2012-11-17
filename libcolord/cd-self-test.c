@@ -1109,6 +1109,22 @@ out:
 }
 
 static void
+colord_enum_func (void)
+{
+	CdProfileWarning warning;
+	const gchar *tmp;
+	guint i;
+
+	/* CdProfileWarning */
+	for (i = 0; i < CD_PROFILE_WARNING_LAST; i++) {
+		tmp = cd_profile_warning_to_string (i);
+		g_assert_cmpstr (tmp, !=, "unknown");
+		warning = cd_profile_warning_from_string (tmp);
+		g_assert_cmpint (warning, !=, CD_PROFILE_WARNING_LAST);
+	}
+}
+
+static void
 colord_color_func (void)
 {
 	CdColorXYZ *xyz;
@@ -2244,6 +2260,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);
 	g_test_add_func ("/colord/it8-raw", colord_it8_raw_func);
