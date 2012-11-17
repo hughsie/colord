@@ -999,6 +999,70 @@ out:
 }
 
 /**
+ * cd_util_profile_check_d50_whitepoint:
+ **/
+static CdProfileWarning
+cd_util_profile_check_d50_whitepoint (cmsHPROFILE profile)
+{
+	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
+	cmsCIEXYZ additive;
+	cmsCIEXYZ primaries[3];
+	cmsHPROFILE profile_lab;
+	cmsHTRANSFORM transform;
+	const cmsCIEXYZ *d50;
+	const gdouble additive_error = 0.1f;
+	guint8 rgb[3*3];
+	guint i;
+
+	/* do Lab to RGB transform to get primaries */
+	profile_lab = cmsCreateXYZProfile ();
+	transform = cmsCreateTransform (profile, TYPE_RGB_8,
+					profile_lab, TYPE_XYZ_DBL,
+					INTENT_RELATIVE_COLORIMETRIC,
+					0);
+	if (transform == NULL) {
+		g_warning ("failed to setup RGB -> XYZ transform");
+		goto out;
+	}
+
+	/* Run RGB through the transform */
+	rgb[0 + 0] = 255;
+	rgb[0 + 1] = 0;
+	rgb[0 + 2] = 0;
+	rgb[3 + 0] = 0;
+	rgb[3 + 1] = 255;
+	rgb[3 + 2] = 0;
+	rgb[6 + 0] = 0;
+	rgb[6 + 1] = 0;
+	rgb[6 + 2] = 255;
+	cmsDoTransform (transform, rgb, primaries, 3);
+
+	d50 = cmsD50_XYZ();
+
+	/* check primaries add up to D50 */
+	additive.X = 0;
+	additive.Y = 0;
+	additive.Z = 0;
+	for (i = 0; i < 3; i++) {
+		additive.X += primaries[i].X;
+		additive.Y += primaries[i].Y;
+		additive.Z += primaries[i].Z;
+	}
+	if (fabs (additive.X - d50->X) > additive_error ||
+	    fabs (additive.Y - d50->Y) > additive_error ||
+	    fabs (additive.Z - d50->Z) > additive_error) {
+		warning = CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE;
+		goto out;
+	}
+out:
+	if (profile_lab != NULL)
+		cmsCloseProfile (profile_lab);
+	if (transform != NULL)
+		cmsDeleteTransform (transform);
+	return warning;
+}
+
+/**
  * cd_util_profile_get_warnings:
  **/
 static GArray *
@@ -1045,6 +1109,11 @@ cd_util_profile_get_warnings (cmsHPROFILE profile)
 
 	/* tristimulus values cannot be negative */
 	warning = cd_util_profile_check_primaries (profile);
+	if (warning != CD_PROFILE_WARNING_NONE)
+		g_array_append_val (flags, warning);
+
+	/* check whitepoint works out to D50 */
+	warning = cd_util_profile_check_d50_whitepoint (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 out:
