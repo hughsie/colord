@@ -948,6 +948,7 @@ cd_util_profile_check_gray_axis (cmsHPROFILE profile)
 	cmsCIELab gray[16];
 	cmsHPROFILE profile_lab;
 	cmsHTRANSFORM transform;
+	const gdouble gray_error = 5.0f;
 	gdouble last_l = -1;
 	guint8 rgb[3*16];
 	guint8 tmp;
@@ -975,8 +976,8 @@ cd_util_profile_check_gray_axis (cmsHPROFILE profile)
 
 	/* check a/b is small */
 	for (i = 0; i < 16; i++) {
-		if (gray[i].a > 0.1f ||
-		    gray[i].b > 0.1f) {
+		if (gray[i].a > gray_error ||
+		    gray[i].b > gray_error) {
 			warning = CD_PROFILE_WARNING_GRAY_AXIS_INVALID;
 			goto out;
 		}
