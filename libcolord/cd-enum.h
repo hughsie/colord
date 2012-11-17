@@ -207,18 +207,28 @@ typedef enum {
 
 /**
  * CdProfileWarning:
+ * @CD_PROFILE_WARNING_NONE: No error is found
+ * @CD_PROFILE_WARNING_DESCRIPTION_MISSING: The description is missing or of zero length
+ * @CD_PROFILE_WARNING_COPYRIGHT_MISSING: The copyright is missing or of zero length
+ * @CD_PROFILE_WARNING_VCGT_NON_MONOTONIC: The video card gamma table is not monotonic
+ * @CD_PROFILE_WARNING_SCUM_DOT: Lab 100, 0, 0 does not map to RGB 255,255,255
+ * @CD_PROFILE_WARNING_GRAY_AXIS_INVALID: There is significant a/b for gray
+ * @CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC: The gray ramp is not monotonic
+ * @CD_PROFILE_WARNING_PRIMARIES_INVALID: One or more of the primaries are invalid
  *
- * The a warning about the profile.
+ * The warning about the profile. Profiles with warnings can still be
+ * used, but may be of limited use.
  **/
 typedef enum {
-	CD_PROFILE_WARNING_NONE,					/* Since: 0.1.25 */
-	CD_PROFILE_WARNING_DESCRIPTION_MISSING,				/* Since: 0.1.25 */
-	CD_PROFILE_WARNING_COPYRIGHT_MISSING,				/* Since: 0.1.25 */
-	CD_PROFILE_WARNING_VCGT_NON_MONOTONIC,				/* Since: 0.1.25 */
-	CD_PROFILE_WARNING_SCUM_DOT,					/* Since: 0.1.25 */
-	CD_PROFILE_WARNING_GRAY_AXIS_INVALID,				/* Since: 0.1.25 */
-	CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC,			/* Since: 0.1.25 */
-	CD_PROFILE_WARNING_PRIMARIES_INVALID,				/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_NONE,			/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_DESCRIPTION_MISSING,		/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_COPYRIGHT_MISSING,		/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_VCGT_NON_MONOTONIC,		/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_SCUM_DOT,			/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_GRAY_AXIS_INVALID,		/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC,	/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_PRIMARIES_INVALID,		/* Since: 0.1.25 */
+	/*< private >*/
 	CD_PROFILE_WARNING_LAST
 } CdProfileWarning;
 
