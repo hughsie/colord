@@ -1005,11 +1005,13 @@ static CdProfileWarning
 cd_util_profile_check_d50_whitepoint (cmsHPROFILE profile)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
+	cmsCIExyY tmp;
 	cmsCIEXYZ additive;
 	cmsCIEXYZ primaries[4];
 	cmsHPROFILE profile_lab;
 	cmsHTRANSFORM transform;
 	const cmsCIEXYZ *d50;
+	const gdouble rgb_error = 0.05;
 	const gdouble additive_error = 0.1f;
 	const gdouble white_error = 0.05;
 	guint8 rgb[3*4];
@@ -1040,6 +1042,27 @@ cd_util_profile_check_d50_whitepoint (cmsHPROFILE profile)
 	rgb[9 + 1] = 255;
 	rgb[9 + 2] = 255;
 	cmsDoTransform (transform, rgb, primaries, 4);
+
+	/* check red is in gamut */
+	cmsXYZ2xyY (&tmp, &primaries[0]);
+	if (tmp.x - 0.735 > rgb_error || 0.265 - tmp.y > rgb_error) {
+		warning = CD_PROFILE_WARNING_PRIMARIES_UNLIKELY;
+		goto out;
+	}
+
+	/* check green is in gamut */
+	cmsXYZ2xyY (&tmp, &primaries[1]);
+	if (0.160 - tmp.x > rgb_error || tmp.y - 0.840 > rgb_error) {
+		warning = CD_PROFILE_WARNING_PRIMARIES_UNLIKELY;
+		goto out;
+	}
+
+	/* check blue is in gamut */
+	cmsXYZ2xyY (&tmp, &primaries[2]);
+	if (0.037 - tmp.x > rgb_error || tmp.y - 0.358 > rgb_error) {
+		warning = CD_PROFILE_WARNING_PRIMARIES_UNLIKELY;
+		goto out;
+	}
 
 	/* check white is D50 */
 	d50 = cmsD50_XYZ();
