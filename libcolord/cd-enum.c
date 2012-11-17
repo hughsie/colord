@@ -597,6 +597,9 @@ cd_profile_warning_to_string (CdProfileWarning kind_enum)
 	case CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE:
 		kind = "primaries-non-additive";
 		break;
+	case CD_PROFILE_WARNING_WHITEPOINT_INVALID:
+		kind = "whitepoint-invalid";
+		break;
 	default:
 		kind = "unknown";
 		break;
@@ -630,6 +633,8 @@ cd_profile_warning_from_string (const gchar *type)
 		return CD_PROFILE_WARNING_PRIMARIES_INVALID;
 	if (g_strcmp0 (type, "primaries-non-additive") == 0)
 		return CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE;
+	if (g_strcmp0 (type, "whitepoint-invalid") == 0)
+		return CD_PROFILE_WARNING_WHITEPOINT_INVALID;
 	return CD_PROFILE_WARNING_LAST;
 }
 

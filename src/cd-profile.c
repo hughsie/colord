@@ -1006,12 +1006,13 @@ cd_util_profile_check_d50_whitepoint (cmsHPROFILE profile)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIEXYZ additive;
-	cmsCIEXYZ primaries[3];
+	cmsCIEXYZ primaries[4];
 	cmsHPROFILE profile_lab;
 	cmsHTRANSFORM transform;
 	const cmsCIEXYZ *d50;
 	const gdouble additive_error = 0.1f;
-	guint8 rgb[3*3];
+	const gdouble white_error = 0.05;
+	guint8 rgb[3*4];
 	guint i;
 
 	/* do Lab to RGB transform to get primaries */
@@ -1025,7 +1026,7 @@ cd_util_profile_check_d50_whitepoint (cmsHPROFILE profile)
 		goto out;
 	}
 
-	/* Run RGB through the transform */
+	/* Run RGBW through the transform */
 	rgb[0 + 0] = 255;
 	rgb[0 + 1] = 0;
 	rgb[0 + 2] = 0;
@@ -1035,9 +1036,19 @@ cd_util_profile_check_d50_whitepoint (cmsHPROFILE profile)
 	rgb[6 + 0] = 0;
 	rgb[6 + 1] = 0;
 	rgb[6 + 2] = 255;
-	cmsDoTransform (transform, rgb, primaries, 3);
+	rgb[9 + 0] = 255;
+	rgb[9 + 1] = 255;
+	rgb[9 + 2] = 255;
+	cmsDoTransform (transform, rgb, primaries, 4);
 
+	/* check white is D50 */
 	d50 = cmsD50_XYZ();
+	if (fabs (primaries[3].X - d50->X) > white_error ||
+	    fabs (primaries[3].Y - d50->Y) > white_error ||
+	    fabs (primaries[3].Z - d50->Z) > white_error) {
+		warning = CD_PROFILE_WARNING_WHITEPOINT_INVALID;
+		goto out;
+	}
 
 	/* check primaries add up to D50 */
 	additive.X = 0;
