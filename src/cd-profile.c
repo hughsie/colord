@@ -946,13 +946,17 @@ cd_util_profile_check_gray_axis (cmsHPROFILE profile)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIELab gray[16];
-	cmsHPROFILE profile_lab;
-	cmsHTRANSFORM transform;
+	cmsHPROFILE profile_lab = NULL;
+	cmsHTRANSFORM transform = NULL;
 	const gdouble gray_error = 5.0f;
 	gdouble last_l = -1;
 	guint8 rgb[3*16];
 	guint8 tmp;
 	guint i;
+
+	/* only do this for display profiles */
+	if (cmsGetDeviceClass (profile) != cmsSigDisplayClass)
+		goto out;
 
 	/* do Lab to RGB transform of 100,0,0 */
 	profile_lab = cmsCreateLab2Profile (cmsD50_xyY ());
@@ -1064,6 +1068,10 @@ cd_util_profile_check_d50_whitepoint (cmsHPROFILE profile)
 		warning = CD_PROFILE_WARNING_PRIMARIES_UNLIKELY;
 		goto out;
 	}
+
+	/* only do the rest for display profiles */
+	if (cmsGetDeviceClass (profile) != cmsSigDisplayClass)
+		goto out;
 
 	/* check white is D50 */
 	d50 = cmsD50_XYZ();
