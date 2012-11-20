@@ -821,10 +821,10 @@ out:
 }
 
 /**
- * cd_util_profile_check_vcgt:
+ * cd_profile_check_vcgt:
  **/
 static CdProfileWarning
-cd_util_profile_check_vcgt (cmsHPROFILE profile)
+cd_profile_check_vcgt (cmsHPROFILE profile)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsFloat32Number in;
@@ -862,10 +862,10 @@ out:
 }
 
 /**
- * cd_util_profile_check_scum_dot:
+ * cd_profile_check_scum_dot:
  **/
 static CdProfileWarning
-cd_util_profile_check_scum_dot (cmsHPROFILE profile)
+cd_profile_check_scum_dot (cmsHPROFILE profile)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIELab white;
@@ -900,10 +900,10 @@ out:
 }
 
 /**
- * cd_util_profile_check_primaries:
+ * cd_profile_check_primaries:
  **/
 static CdProfileWarning
-cd_util_profile_check_primaries (cmsHPROFILE profile)
+cd_profile_check_primaries (cmsHPROFILE profile)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIEXYZ *tmp;
@@ -939,10 +939,10 @@ out:
 }
 
 /**
- * cd_util_profile_check_gray_axis:
+ * cd_profile_check_gray_axis:
  **/
 static CdProfileWarning
-cd_util_profile_check_gray_axis (cmsHPROFILE profile)
+cd_profile_check_gray_axis (cmsHPROFILE profile)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIELab gray[16];
@@ -1004,10 +1004,10 @@ out:
 }
 
 /**
- * cd_util_profile_check_d50_whitepoint:
+ * cd_profile_check_d50_whitepoint:
  **/
 static CdProfileWarning
-cd_util_profile_check_d50_whitepoint (cmsHPROFILE profile)
+cd_profile_check_d50_whitepoint (cmsHPROFILE profile)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIExyY tmp;
@@ -1106,10 +1106,10 @@ out:
 }
 
 /**
- * cd_util_profile_get_warnings:
+ * cd_profile_get_warnings:
  **/
 static GArray *
-cd_util_profile_get_warnings (cmsHPROFILE profile)
+cd_profile_get_warnings (cmsHPROFILE profile)
 {
 	GArray *flags;
 	gboolean ret;
@@ -1135,28 +1135,28 @@ cd_util_profile_get_warnings (cmsHPROFILE profile)
 		goto out;
 
 	/* does profile have monotonic VCGT */
-	warning = cd_util_profile_check_vcgt (profile);
+	warning = cd_profile_check_vcgt (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 
 	/* if Lab 100,0,0 does not map to RGB 255,255,255 for relative
 	 * colorimetric then white it will not work on printers */
-	warning = cd_util_profile_check_scum_dot (profile);
+	warning = cd_profile_check_scum_dot (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 
 	/* gray should give low a/b and should be monotonic */
-	warning = cd_util_profile_check_gray_axis (profile);
+	warning = cd_profile_check_gray_axis (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 
 	/* tristimulus values cannot be negative */
-	warning = cd_util_profile_check_primaries (profile);
+	warning = cd_profile_check_primaries (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 
 	/* check whitepoint works out to D50 */
-	warning = cd_util_profile_check_d50_whitepoint (profile);
+	warning = cd_profile_check_d50_whitepoint (profile);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 out:
@@ -1290,7 +1290,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 	priv->checksum = cd_profile_get_precooked_md5 (lcms_profile);
 
 	/* get any warnings for the profile */
-	flags = cd_util_profile_get_warnings (lcms_profile);
+	flags = cd_profile_get_warnings (lcms_profile);
 	priv->warnings = g_new0 (gchar *, flags->len + 1);
 	if (flags->len > 0) {
 		for (i = 0; i < flags->len; i++) {
