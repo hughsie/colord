@@ -384,11 +384,14 @@ cd_util_get_standard_space_filename (CdUtilPrivate *priv,
 				     CdStandardSpace standard_space,
 				     GError **error)
 {
-	CdProfile *profile_tmp;
+	CdProfile *profile_tmp = NULL;
 	gboolean ret;
 	gchar *filename = NULL;
 
 	/* try to find */
+	ret = cd_client_connect_sync (priv->client, NULL, error);
+	if (!ret)
+		goto out;
 	profile_tmp = cd_client_get_standard_space_sync (priv->client,
 							 standard_space,
 							 NULL,
@@ -1101,12 +1104,6 @@ main (int argc, char *argv[])
 	/* create helper object */
 	priv = g_new0 (CdUtilPrivate, 1);
 	priv->client = cd_client_new ();
-	ret = cd_client_connect_sync (priv->client, NULL, &error);
-	if (!ret) {
-		g_print ("%s\n", error->message);
-		g_error_free (error);
-		goto out;
-	}
 
 	/* add commands */
 	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_util_item_free);
