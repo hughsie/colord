@@ -553,6 +553,51 @@ out:
 }
 
 /**
+ * cd_util_set_version:
+ **/
+static gboolean
+cd_util_set_version (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	cmsHPROFILE lcms_profile = NULL;
+	gboolean ret = TRUE;
+	gdouble version;
+
+	/* check arguments */
+	if (g_strv_length (values) != 2) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect 'filename' 'version'");
+		goto out;
+	}
+
+	/* get version */
+	version = atof (values[1]);
+	if (version < 1.0 || version > 6.0) {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "invalid version %f", version);
+		goto out;
+	}
+
+	/* open profile and set version */
+	lcms_profile = cd_util_profile_read (values[0], error);
+	if (lcms_profile == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	cmsSetProfileVersion (lcms_profile, version);
+
+	/* write new file */
+	ret = cd_util_profile_write (lcms_profile, values[0], error);
+	if (!ret)
+		goto out;
+out:
+	if (lcms_profile != NULL)
+		cmsCloseProfile (lcms_profile);
+	return ret;
+}
+
+/**
  * cd_util_set_fix_metadata:
  **/
 static gboolean
@@ -1162,6 +1207,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Automatically fix metadata in the profile"),
 		     cd_util_set_fix_metadata);
+	cd_util_add (priv->cmd_array,
+		     "set-version",
+		     /* TRANSLATORS: command description */
+		     _("Set the ICC profile version"),
+		     cd_util_set_version);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,
