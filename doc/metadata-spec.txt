@@ -1,3 +1,5 @@
+Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+
 = Introduction =
 
 This document will explain the metadata keys used by GNOME Color Manager
@@ -89,3 +91,7 @@ added to the colord Device.Metadata dictionary.
 XRANDR_name		The XRandR name, e.g. "lvds1". This is added by
 			and used by the session client interfacing with
 			the display.
+OutputPriority		The display output priority, either 'primary' or
+			'secondary'. The primary output is defined as the
+			screen where the taskbar or application menu is
+			located.

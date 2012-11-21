@@ -292,6 +292,9 @@ typedef enum {
 
 /* defined in metadata-spec.txt */
 #define CD_DEVICE_METADATA_XRANDR_NAME		"XRANDR_name"
+#define CD_DEVICE_METADATA_OUTPUT_PRIORITY	"OutputPriority"
+#define CD_DEVICE_METADATA_OUTPUT_PRIORITY_PRIMARY	"primary"
+#define CD_DEVICE_METADATA_OUTPUT_PRIORITY_SECONDARY	"secondary"
 
 /* defined in org.freedesktop.ColorManager.Device.xml */
 #define CD_DEVICE_PROPERTY_MODEL		"Model"
