@@ -107,8 +107,6 @@ exit 0
 %{_libdir}/libcolord.so.*
 %config %{_sysconfdir}/colord.conf
 /usr/lib/udev/rules.d/*.rules
-%dir %{_datadir}/color/icc/colord
-%{_datadir}/color/icc/colord/*.ic?
 %{_libdir}/colord-sensors
 %{_libdir}/colord-plugins
 %{_libdir}/girepository-1.0/*.typelib
