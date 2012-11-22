@@ -24,6 +24,7 @@
 #include <gio/gio.h>
 #include <glib-object.h>
 #include <sqlite3.h>
+#include <syslog.h>
 
 #include "cd-common.h"
 #include "cd-mapping-db.h"
@@ -65,6 +66,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 		goto out;
 
 	g_debug ("CdMappingDb: trying to open database '%s'", filename);
+	syslog (LOG_INFO, "Using mapping database file %s", filename);
 	rc = sqlite3_open (filename, &mdb->priv->db);
 	if (rc != SQLITE_OK) {
 		ret = FALSE;

@@ -23,6 +23,7 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
+#include <syslog.h>
 
 #include "cd-config.h"
 
@@ -96,6 +97,7 @@ cd_config_init (CdConfig *config)
 	config->priv->keyfile = g_key_file_new ();
 
 	/* load */
+	syslog (LOG_INFO, "Using config file %s", SYSCONFDIR "/colord.conf");
 	ret = g_key_file_load_from_file (config->priv->keyfile,
 					 SYSCONFDIR "/colord.conf",
 					 G_KEY_FILE_NONE,

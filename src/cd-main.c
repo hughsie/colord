@@ -26,6 +26,7 @@
 #include <gio/gunixfdlist.h>
 #include <glib/gi18n.h>
 #include <locale.h>
+#include <syslog.h>
 
 #ifdef HAVE_LIBSYSTEMD_LOGIN
 #include <systemd/sd-login.h>
@@ -88,6 +89,9 @@ cd_main_profile_removed (CdMainPrivate *priv, CdProfile *profile)
 						object_path_tmp,
 						NULL);
 		if (ret) {
+			syslog (LOG_INFO, "Automatic remove of %s from %s",
+				cd_profile_get_id (profile),
+				cd_device_get_id (device_tmp));
 			g_debug ("CdMain: automatically removing %s from %s as removed",
 				 object_path_tmp,
 				 cd_device_get_object_path (device_tmp));
@@ -96,6 +100,8 @@ cd_main_profile_removed (CdMainPrivate *priv, CdProfile *profile)
 
 	/* emit signal */
 	g_debug ("CdMain: Emitting ProfileRemoved(%s)", object_path_tmp);
+	syslog (LOG_INFO, "Profile removed: %s",
+		cd_profile_get_id (profile));
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       COLORD_DBUS_PATH,
@@ -152,6 +158,8 @@ cd_main_device_removed (CdMainPrivate *priv, CdDevice *device)
 
 	/* emit signal */
 	g_debug ("CdMain: Emitting DeviceRemoved(%s)", object_path_tmp);
+	syslog (LOG_INFO, "device removed: %s",
+		cd_device_get_id (device));
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       COLORD_DBUS_PATH,
@@ -280,6 +288,9 @@ cd_main_device_auto_add_profile_md (CdDevice *device, CdProfile *profile)
 	g_debug ("CdMain: Automatically MD add %s to %s",
 		 cd_profile_get_id (profile),
 		 cd_device_get_object_path (device));
+	syslog (LOG_INFO, "Automatic metadata add %s to %s",
+		cd_profile_get_id (profile),
+		cd_device_get_id (device));
 	ret = cd_device_add_profile (device,
 				     CD_DEVICE_RELATION_SOFT,
 				     cd_profile_get_object_path (profile),
@@ -310,6 +321,9 @@ cd_main_device_auto_add_profile_db (CdMainPrivate *priv,
 	g_debug ("CdMain: Automatically DB add %s to %s",
 		 cd_profile_get_id (profile),
 		 cd_device_get_object_path (device));
+	syslog (LOG_INFO, "Automatic database add %s to %s",
+		cd_profile_get_id (profile),
+		cd_device_get_id (device));
 	timestamp = cd_mapping_db_get_timestamp (priv->mapping_db,
 						 cd_device_get_id (device),
 						 cd_profile_get_id (profile),
@@ -426,6 +440,8 @@ cd_main_device_register_on_bus (CdMainPrivate *priv,
 	/* emit signal */
 	g_debug ("CdMain: Emitting DeviceAdded(%s)",
 		 cd_device_get_object_path (device));
+	syslog (LOG_INFO, "Device added: %s",
+		cd_device_get_id (device));
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       COLORD_DBUS_PATH,
@@ -712,6 +728,8 @@ cd_main_profile_register_on_bus (CdMainPrivate *priv,
 	/* emit signal */
 	g_debug ("CdMain: Emitting ProfileAdded(%s)",
 		 cd_profile_get_object_path (profile));
+	syslog (LOG_INFO, "Profile added: %s",
+		cd_profile_get_id (profile));
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       COLORD_DBUS_PATH,
@@ -1583,6 +1601,8 @@ cd_main_sensor_register_on_bus (CdMainPrivate *priv,
 	/* emit signal */
 	g_debug ("CdMain: Emitting SensorAdded(%s)",
 		 cd_sensor_get_object_path (sensor));
+	syslog (LOG_INFO, "Sensor added: %s",
+		cd_sensor_get_id (sensor));
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       COLORD_DBUS_PATH,
@@ -1870,6 +1890,8 @@ cd_main_client_sensor_removed_cb (CdSensorClient *sensor_client_,
 	/* emit signal */
 	g_debug ("CdMain: Emitting SensorRemoved(%s)",
 		 cd_sensor_get_object_path (sensor));
+	syslog (LOG_INFO, "Sensor removed: %s",
+		cd_sensor_get_id (sensor));
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       COLORD_DBUS_PATH,
@@ -2054,6 +2076,7 @@ cd_main_load_plugins (CdMainPrivate *priv)
 						    filename_tmp,
 						    NULL);
 		cd_main_load_plugin (priv, filename_plugin);
+		syslog (LOG_INFO, "Loading plugin %s", filename_tmp);
 		g_free (filename_plugin);
 	} while (TRUE);
 out:
@@ -2088,6 +2111,7 @@ main (int argc, char *argv[])
 	};
 
 	setlocale (LC_ALL, "");
+	openlog ("colord", LOG_CONS, LOG_DAEMON);
 
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -2212,10 +2236,12 @@ main (int argc, char *argv[])
 	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_INIT);
 
 	/* wait */
+	syslog (LOG_INFO, "Daemon ready for requests");
 	g_main_loop_run (loop);
 
 	/* run the plugins */
 	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_DESTROY);
+	closelog ();
 
 	/* success */
 	retval = 0;

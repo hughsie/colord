@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -23,6 +23,7 @@
 #include <glib/gi18n.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <syslog.h>
 
 #include <cd-debug.h>
 
@@ -55,6 +56,13 @@ cd_debug_ignore_cb (const gchar *log_domain,
 		    const gchar *message,
 		    gpointer user_data)
 {
+	/* syslog */
+	switch (log_level) {
+	case G_LOG_LEVEL_CRITICAL:
+	case G_LOG_LEVEL_ERROR:
+	case G_LOG_LEVEL_WARNING:
+		syslog (LOG_WARNING, "%s", message);
+	}
 }
 
 /**
@@ -68,6 +76,14 @@ cd_debug_handler_cb (const gchar *log_domain,
 {
 	gchar str_time[255];
 	time_t the_time;
+
+	/* syslog */
+	switch (log_level) {
+	case G_LOG_LEVEL_CRITICAL:
+	case G_LOG_LEVEL_ERROR:
+	case G_LOG_LEVEL_WARNING:
+		syslog (LOG_WARNING, "%s", message);
+	}
 
 	/* time header */
 	time (&the_time);
