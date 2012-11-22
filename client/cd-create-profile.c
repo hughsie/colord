@@ -192,7 +192,7 @@ create_nc_palette (const gchar *filename,
 	cmsSetDeviceClass(profile, cmsSigNamedColorClass);
 	cmsSetPCS (profile, cmsSigLabData);
 	cmsSetColorSpace (profile, cmsSigLabData);
-	cmsSetProfileVersion (profile, 3.4);
+	cmsSetProfileVersion (profile, 2.2);
 
 	/* create a named color structure */
 	nc2 = cmsAllocNamedColorList (NULL, 1, /* will realloc more as required */
@@ -273,7 +273,7 @@ create_xorg_gamma (const gchar *points_str)
 	cmsSetDeviceClass (profile, cmsSigDisplayClass);
 	cmsSetPCS (profile, cmsSigXYZData);
 	cmsSetColorSpace (profile, cmsSigRgbData);
-	cmsSetProfileVersion (profile, 3.4);
+	cmsSetProfileVersion (profile, 2.2);
 	cmsSetHeaderRenderingIntent (profile,
 				     INTENT_RELATIVE_COLORIMETRIC);
 
