@@ -34,13 +34,13 @@ EXTRA_DIST += $(systemdservicemain_in_files)
 endif
 
 x11-colors.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ --named-color-palette ./x11-colors.csv --nc-prefix="X11" --named-color-type srgb -d "X11 Colors" -c "No copyright" -n "Richard Hughes"
+	$(top_builddir)/client/cd-create-profile --output $@ create-named-color srgb "X11" "" ./x11-colors.csv -d "X11 Colors" -c "No copyright" -n "Richard Hughes"
 
 crayons.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ --named-color-palette ./crayons.csv --nc-prefix="Crayon" --named-color-type lab -d "Crayon Colors" -c "No copyright" -n "Richard Hughes"
+	$(top_builddir)/client/cd-create-profile --output $@ create-named-color lab "Crayon" "" ./crayons.csv -d "Crayon Colors" -c "No copyright" -n "Richard Hughes"
 
 gamma-90.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ --xorg-gamma "0.9,0.9,0.9" -d "sRGB display 90% Gamma" -c "No copyright" -n "Richard Hughes"
+	$(top_builddir)/client/cd-create-profile --output $@ create-x11-gamma 0.9 0.9 0.9 -d "sRGB display 90% Gamma" -c "No copyright" -n "Richard Hughes"
 
 CLEANFILES =						\
 	$(dist_profile_DATA)

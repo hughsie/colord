@@ -31,6 +31,150 @@
 #include "cd-common.h"
 #include "cd-lcms-helpers.h"
 
+typedef struct {
+	GOptionContext		*context;
+	GPtrArray		*cmd_array;
+	cmsHPROFILE		 lcms_profile;
+} CdUtilPrivate;
+
+typedef gboolean (*CdUtilPrivateCb)	(CdUtilPrivate	*util,
+					 gchar		**values,
+					 GError		**error);
+
+typedef struct {
+	gchar		*name;
+	gchar		*description;
+	CdUtilPrivateCb	 callback;
+} CdUtilItem;
+
+/**
+ * cd_util_item_free:
+ **/
+static void
+cd_util_item_free (CdUtilItem *item)
+{
+	g_free (item->name);
+	g_free (item->description);
+	g_free (item);
+}
+
+/*
+ * cd_sort_command_name_cb:
+ */
+static gint
+cd_sort_command_name_cb (CdUtilItem **item1, CdUtilItem **item2)
+{
+	return g_strcmp0 ((*item1)->name, (*item2)->name);
+}
+
+/**
+ * cd_util_add:
+ **/
+static void
+cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUtilPrivateCb callback)
+{
+	CdUtilItem *item;
+	gchar **names;
+	guint i;
+
+	/* add each one */
+	names = g_strsplit (name, ",", -1);
+	for (i=0; names[i] != NULL; i++) {
+		item = g_new0 (CdUtilItem, 1);
+		item->name = g_strdup (names[i]);
+		if (i == 0) {
+			item->description = g_strdup (description);
+		} else {
+			/* TRANSLATORS: this is a command alias */
+			item->description = g_strdup_printf (_("Alias to %s"),
+							     names[0]);
+		}
+		item->callback = callback;
+		g_ptr_array_add (array, item);
+	}
+	g_strfreev (names);
+}
+
+/**
+ * cd_util_get_descriptions:
+ **/
+static gchar *
+cd_util_get_descriptions (GPtrArray *array)
+{
+	CdUtilItem *item;
+	GString *string;
+	guint i;
+	guint j;
+	guint len;
+	guint max_len = 0;
+
+	/* get maximum command length */
+	for (i = 0; i < array->len; i++) {
+		item = g_ptr_array_index (array, i);
+		len = strlen (item->name);
+		if (len > max_len)
+			max_len = len;
+	}
+
+	/* ensure we're spaced by at least this */
+	if (max_len < 19)
+		max_len = 19;
+
+	/* print each command */
+	string = g_string_new ("");
+	for (i = 0; i < array->len; i++) {
+		item = g_ptr_array_index (array, i);
+		g_string_append (string, "  ");
+		g_string_append (string, item->name);
+		len = strlen (item->name);
+		for (j=len; j<max_len+3; j++)
+			g_string_append_c (string, ' ');
+		g_string_append (string, item->description);
+		g_string_append_c (string, '\n');
+	}
+
+	/* remove trailing newline */
+	if (string->len > 0)
+		g_string_set_size (string, string->len - 1);
+
+	return g_string_free (string, FALSE);
+}
+
+/**
+ * cd_util_run:
+ **/
+static gboolean
+cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError **error)
+{
+	CdUtilItem *item;
+	gboolean ret = FALSE;
+	GString *string;
+	guint i;
+
+	/* find command */
+	for (i = 0; i < priv->cmd_array->len; i++) {
+		item = g_ptr_array_index (priv->cmd_array, i);
+		if (g_strcmp0 (item->name, command) == 0) {
+			ret = item->callback (priv, values, error);
+			goto out;
+		}
+	}
+
+	/* not found */
+	string = g_string_new ("");
+	/* TRANSLATORS: error message */
+	g_string_append_printf (string, "%s\n",
+				_("Command not found, valid commands are:"));
+	for (i = 0; i < priv->cmd_array->len; i++) {
+		item = g_ptr_array_index (priv->cmd_array, i);
+		g_string_append_printf (string, " * %s\n", item->name);
+	}
+	g_set_error_literal (error, 1, 0, string->str);
+	g_string_free (string, TRUE);
+out:
+	return ret;
+}
+
 static gint lcms_error_code = 0;
 
 /**
@@ -173,43 +317,6 @@ out:
 	return ret;
 }
 
-/* create a Lab profile of named colors */
-static cmsHPROFILE
-create_nc_palette (const gchar *filename,
-		   const gchar *nc_prefix,
-		   const gchar *nc_suffix,
-		   const gchar *nc_type)
-{
-	cmsHPROFILE profile;
-	cmsNAMEDCOLORLIST *nc2 = NULL;
-
-	profile = cmsCreateNULLProfile ();
-	if (profile == NULL || lcms_error_code != 0) {
-		g_warning ("failed to open profile");
-		goto out;
-	}
-
-	cmsSetDeviceClass(profile, cmsSigNamedColorClass);
-	cmsSetPCS (profile, cmsSigLabData);
-	cmsSetColorSpace (profile, cmsSigLabData);
-	cmsSetProfileVersion (profile, 2.2);
-
-	/* create a named color structure */
-	nc2 = cmsAllocNamedColorList (NULL, 1, /* will realloc more as required */
-				      3,
-				      nc_prefix != NULL ? nc_prefix : "",
-				      nc_suffix != NULL ? nc_suffix : "");
-	if (g_strcmp0 (nc_type, "srgb") == 0)
-		add_nc_palette_srgb (nc2, filename);
-	else if (g_strcmp0 (nc_type, "lab") == 0)
-		add_nc_palette_lab (nc2, filename);
-	cmsWriteTag (profile, cmsSigNamedColor2Tag, nc2);
-out:
-	if (nc2 != NULL)
-		cmsFreeNamedColorList (nc2);
-	return profile;
-}
-
 static gboolean
 set_vcgt_from_data (cmsHPROFILE profile,
 		    const guint16 *red,
@@ -227,77 +334,126 @@ set_vcgt_from_data (cmsHPROFILE profile,
 	vcgt_curve[2] = cmsBuildTabulatedToneCurve16 (NULL, size, blue);
 
 	/* smooth it */
-	for (i=0; i<3; i++)
+	for (i = 0; i < 3; i++)
 		cmsSmoothToneCurve (vcgt_curve[i], 5);
 
 	/* write the tag */
 	ret = cmsWriteTag (profile, cmsSigVcgtType, vcgt_curve);
 
 	/* free the tonecurves */
-	for (i=0; i<3; i++)
+	for (i = 0; i < 3; i++)
 		cmsFreeToneCurve (vcgt_curve[i]);
 	return ret;
 }
 
-/* create a Lab profile of named colors */
-static cmsHPROFILE
-create_xorg_gamma (const gchar *points_str)
+/**
+ * cd_util_create_named_color:
+ **/
+static gboolean
+cd_util_create_named_color (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	cmsHPROFILE profile = NULL;
+	gboolean ret = TRUE;
+	cmsNAMEDCOLORLIST *nc2 = NULL;
+
+	/* check arguments */
+	if (g_strv_length (values) != 4) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect type prefix suffix data-file, e.g. 'lab', 'X11', '', 'data.csv'");
+		goto out;
+	}
+
+	priv->lcms_profile = cmsCreateNULLProfile ();
+	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "failed to create NULL profile");
+		goto out;
+	}
+
+	cmsSetDeviceClass(priv->lcms_profile, cmsSigNamedColorClass);
+	cmsSetPCS (priv->lcms_profile, cmsSigLabData);
+	cmsSetColorSpace (priv->lcms_profile, cmsSigLabData);
+	cmsSetProfileVersion (priv->lcms_profile, 2.2);
+
+	/* create a named color structure */
+	nc2 = cmsAllocNamedColorList (NULL, 1, /* will realloc more as required */
+				      3,
+				      values[1] != NULL ? values[1] : "",
+				      values[2] != NULL ? values[2] : "");
+	if (g_strcmp0 (values[0], "srgb") == 0)
+		add_nc_palette_srgb (nc2, values[3]);
+	else if (g_strcmp0 (values[0], "lab") == 0)
+		add_nc_palette_lab (nc2, values[3]);
+	cmsWriteTag (priv->lcms_profile, cmsSigNamedColor2Tag, nc2);
+out:
+	if (nc2 != NULL)
+		cmsFreeNamedColorList (nc2);
+	return ret;
+}
+
+/**
+ * cd_util_create_x11_gamma:
+ **/
+static gboolean
+cd_util_create_x11_gamma (CdUtilPrivate *priv, gchar **values, GError **error)
+{
 	gboolean ret;
-	gchar **points_split = NULL;
 	gdouble fraction;
 	gdouble points[3];
 	guint16 data[3][256];
 	guint i, j;
 
-	/* split into parts */
-	points_split = g_strsplit (points_str, ",", -1);
-	if (g_strv_length (points_split) != 3) {
-		g_warning ("incorrect points string");
+	/* check arguments */
+	if (g_strv_length (values) != 3) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect gamma-red, gamma-green, gamma-blue, e.g. '0.8', '0.9', '1.0'");
 		goto out;
 	}
 
 	/* parse floats */
-	for (j=0; j<3; j++)
-		points[j] = atof (points_split[j]);
+	for (j = 0; j < 3; j++)
+		points[j] = atof (values[j]);
 
 	/* create a bog-standard sRGB profile */
-	profile = cmsCreate_sRGBProfile ();
-	if (profile == NULL || lcms_error_code != 0) {
-		g_warning ("failed to open profile");
+	priv->lcms_profile = cmsCreate_sRGBProfile ();
+	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "failed to create profile");
 		goto out;
 	}
 
 	/* write header */
-	cmsSetDeviceClass (profile, cmsSigDisplayClass);
-	cmsSetPCS (profile, cmsSigXYZData);
-	cmsSetColorSpace (profile, cmsSigRgbData);
-	cmsSetProfileVersion (profile, 2.2);
-	cmsSetHeaderRenderingIntent (profile,
+	cmsSetDeviceClass (priv->lcms_profile, cmsSigDisplayClass);
+	cmsSetPCS (priv->lcms_profile, cmsSigXYZData);
+	cmsSetColorSpace (priv->lcms_profile, cmsSigRgbData);
+	cmsSetProfileVersion (priv->lcms_profile, 2.2);
+	cmsSetHeaderRenderingIntent (priv->lcms_profile,
 				     INTENT_RELATIVE_COLORIMETRIC);
 
 	/* scale all the values by the floating point values */
-	for (i=0; i<256; i++) {
+	for (i = 0; i < 256; i++) {
 		fraction = (gdouble)i / 256.0f;
-		for (j=0; j<3; j++) {
+		for (j = 0; j < 3; j++) {
 			data[j][i] = pow (fraction, 1.0f / points[j]) * 0xffff;
 		}
 	}
 
 	/* write vcgt */
-	ret = set_vcgt_from_data (profile,
+	ret = set_vcgt_from_data (priv->lcms_profile,
 				  data[0],
 				  data[1],
 				  data[2],
 				  256);
 	if (!ret) {
-		g_warning ("failed to write VCGT");
+		g_set_error_literal (error, 1, 0,
+				     "failed to write VCGT");
 		goto out;
 	}
 out:
-	g_strfreev (points_split);
-	return profile;
+	return ret;
 }
 
 /*
@@ -306,21 +462,16 @@ out:
 int
 main (int argc, char **argv)
 {
-	cmsHPROFILE lcms_profile = NULL;
+	CdUtilPrivate *priv;
 	gboolean ret;
+	gchar *cmd_descriptions = NULL;
 	gchar *copyright = NULL;
 	gchar *description = NULL;
 	gchar *filename = NULL;
 	gchar *manufacturer = NULL;
 	gchar *metadata = NULL;
 	gchar *model = NULL;
-	gchar *nc_prefix = NULL;
-	gchar *nc_suffix = NULL;
-	gchar *nc_palette = NULL;
-	gchar *nc_type = NULL;
-	gchar *xorg_gamma = NULL;
 	GError *error = NULL;
-	GOptionContext *context;
 	guint retval = EXIT_FAILURE;
 
 	const GOptionEntry options[] = {
@@ -339,21 +490,6 @@ main (int argc, char **argv)
 		{ "output", 'o', 0, G_OPTION_ARG_STRING, &filename,
 		/* TRANSLATORS: command line option */
 		  _("Profile to create"), NULL },
-		{ "named-color-palette", '\0', 0, G_OPTION_ARG_STRING, &nc_palette,
-		/* TRANSLATORS: command line option */
-		  _("Named color CSV filename"), NULL },
-		{ "named-color-type", '\0', 0, G_OPTION_ARG_STRING, &nc_type,
-		/* TRANSLATORS: command line option */
-		  _("Named color type, e.g. 'lab' or 'srgb'"), NULL },
-		{ "xorg-gamma", '\0', 0, G_OPTION_ARG_STRING, &xorg_gamma,
-		/* TRANSLATORS: command line option */
-		  _("A gamma string, e.g. '0.8,0.8,0.6'"), NULL },
-		{ "nc-prefix", '\0', 0, G_OPTION_ARG_STRING, &nc_prefix,
-		/* TRANSLATORS: command line option */
-		  _("Named color prefix"), NULL },
-		{ "nc-suffix", '\0', 0, G_OPTION_ARG_STRING, &nc_suffix,
-		/* TRANSLATORS: command line option */
-		  _("Named color suffix"), NULL },
 		{ "metadata", '\0', 0, G_OPTION_ARG_STRING, &metadata,
 		/* TRANSLATORS: command line option */
 		  _("The metadata in 'key1=value1,key2=value2' format"), NULL },
@@ -366,10 +502,36 @@ main (int argc, char **argv)
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	/* TRANSLATORS: command line tool */
-	context = g_option_context_new (_("ICC profile creation program"));
-	g_option_context_add_main_entries (context, options, NULL);
-	ret = g_option_context_parse (context, &argc, &argv, &error);
+	/* setup LCMS */
+	cmsSetLogErrorHandler (cd_fix_profile_error_cb);
+
+	/* add commands */
+	priv = g_new0 (CdUtilPrivate, 1);
+	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_util_item_free);
+	cd_util_add (priv->cmd_array,
+		     "create-named-color",
+		     /* TRANSLATORS: command description */
+		     _("Create a named color profile"),
+		     cd_util_create_named_color);
+	cd_util_add (priv->cmd_array,
+		     "create-x11-gamma",
+		     /* TRANSLATORS: command description */
+		     _("Create an X11 gamma profile"),
+		     cd_util_create_x11_gamma);
+
+	/* sort by command name */
+	g_ptr_array_sort (priv->cmd_array,
+			  (GCompareFunc) cd_sort_command_name_cb);
+
+	/* get a list of the commands */
+	priv->context = g_option_context_new (NULL);
+	cmd_descriptions = cd_util_get_descriptions (priv->cmd_array);
+	g_option_context_set_summary (priv->context, cmd_descriptions);
+
+	/* TRANSLATORS: program name */
+	g_set_application_name (_("ICC profile creation program"));
+	g_option_context_add_main_entries (priv->context, options, NULL);
+	ret = g_option_context_parse (priv->context, &argc, &argv, &error);
 	if (!ret) {
 		/* TRANSLATORS: the user didn't read the man page */
 		g_print ("%s: %s\n",
@@ -378,7 +540,6 @@ main (int argc, char **argv)
 		g_error_free (error);
 		goto out;
 	}
-	g_option_context_free (context);
 
 	/* nothing specified */
 	if (filename == NULL) {
@@ -387,24 +548,16 @@ main (int argc, char **argv)
 		goto out;
 	}
 
-	/* setup LCMS */
-	cmsSetLogErrorHandler (cd_fix_profile_error_cb);
-
-	if (nc_palette != NULL) {
-		lcms_profile = create_nc_palette (nc_palette,
-						  nc_prefix,
-						  nc_suffix,
-						  nc_type);
-	} else if (xorg_gamma != NULL) {
-		lcms_profile = create_xorg_gamma (xorg_gamma);
-	} else {
-		/* TRANSLATORS: the user forgot to use an action */
-		g_print ("%s\n", _("No data to create profile"));
+	/* run the specified command */
+	ret = cd_util_run (priv, argv[1], (gchar**) &argv[2], &error);
+	if (!ret) {
+		g_print ("%s\n", error->message);
+		g_error_free (error);
 		goto out;
 	}
 
 	if (description != NULL) {
-		ret = _cmsWriteTagTextAscii (lcms_profile,
+		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
 					     cmsSigProfileDescriptionTag,
 					     description);
 		if (!ret || lcms_error_code != 0) {
@@ -413,7 +566,7 @@ main (int argc, char **argv)
 		}
 	}
 	if (copyright != NULL) {
-		ret = _cmsWriteTagTextAscii (lcms_profile,
+		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
 					     cmsSigCopyrightTag,
 					     copyright);
 		if (!ret || lcms_error_code != 0) {
@@ -422,7 +575,7 @@ main (int argc, char **argv)
 		}
 	}
 	if (model != NULL) {
-		ret = _cmsWriteTagTextAscii (lcms_profile,
+		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
 					     cmsSigDeviceModelDescTag,
 					     model);
 		if (!ret || lcms_error_code != 0) {
@@ -431,7 +584,7 @@ main (int argc, char **argv)
 		}
 	}
 	if (manufacturer != NULL) {
-		ret = _cmsWriteTagTextAscii (lcms_profile,
+		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
 					     cmsSigDeviceMfgDescTag,
 					     manufacturer);
 		if (!ret || lcms_error_code != 0) {
@@ -440,7 +593,7 @@ main (int argc, char **argv)
 		}
 	}
 
-	ret = cd_profile_write_metadata_string (lcms_profile,
+	ret = cd_profile_write_metadata_string (priv->lcms_profile,
 						metadata,
 						TRUE,
 						argv[0],
@@ -453,7 +606,7 @@ main (int argc, char **argv)
 	}
 
 	/* write profile id */
-	ret = cmsMD5computeID (lcms_profile);
+	ret = cmsMD5computeID (priv->lcms_profile);
 	if (!ret || lcms_error_code != 0) {
 		g_warning ("failed to write profile id");
 		goto out;
@@ -461,21 +614,23 @@ main (int argc, char **argv)
 
 	/* success */
 	retval = EXIT_SUCCESS;
-	cmsSaveProfileToFile (lcms_profile, filename);
+	cmsSaveProfileToFile (priv->lcms_profile, filename);
 out:
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
+	if (priv != NULL) {
+		if (priv->cmd_array != NULL)
+			g_ptr_array_unref (priv->cmd_array);
+		if (priv->lcms_profile != NULL)
+			cmsCloseProfile (priv->lcms_profile);
+		g_option_context_free (priv->context);
+		g_free (priv);
+	}
+	g_free (cmd_descriptions);
 	g_free (description);
 	g_free (copyright);
 	g_free (model);
 	g_free (manufacturer);
 	g_free (metadata);
 	g_free (filename);
-	g_free (nc_palette);
-	g_free (nc_type);
-	g_free (xorg_gamma);
-	g_free (nc_prefix);
-	g_free (nc_suffix);
 	return retval;
 }
 

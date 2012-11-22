@@ -1225,7 +1225,15 @@ main (int argc, char *argv[])
 	/* TRANSLATORS: program name */
 	g_set_application_name (_("Color Management"));
 	g_option_context_add_main_entries (priv->context, options, NULL);
-	g_option_context_parse (priv->context, &argc, &argv, NULL);
+	ret = g_option_context_parse (priv->context, &argc, &argv, &error);
+	if (!ret) {
+		/* TRANSLATORS: the user didn't read the man page */
+		g_print ("%s: %s\n",
+			 _("Failed to parse arguments"),
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* set verbose? */
 	if (verbose) {
