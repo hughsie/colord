@@ -374,7 +374,6 @@ cd_util_create_named_color (CdUtilPrivate *priv, gchar **values, GError **error)
 	cmsSetDeviceClass(priv->lcms_profile, cmsSigNamedColorClass);
 	cmsSetPCS (priv->lcms_profile, cmsSigLabData);
 	cmsSetColorSpace (priv->lcms_profile, cmsSigLabData);
-	cmsSetProfileVersion (priv->lcms_profile, 2.2);
 
 	/* create a named color structure */
 	nc2 = cmsAllocNamedColorList (NULL, 1, /* will realloc more as required */
@@ -429,7 +428,6 @@ cd_util_create_x11_gamma (CdUtilPrivate *priv, gchar **values, GError **error)
 	cmsSetDeviceClass (priv->lcms_profile, cmsSigDisplayClass);
 	cmsSetPCS (priv->lcms_profile, cmsSigXYZData);
 	cmsSetColorSpace (priv->lcms_profile, cmsSigRgbData);
-	cmsSetProfileVersion (priv->lcms_profile, 2.2);
 	cmsSetHeaderRenderingIntent (priv->lcms_profile,
 				     INTENT_RELATIVE_COLORIMETRIC);
 
