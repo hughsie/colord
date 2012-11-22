@@ -554,6 +554,10 @@ main (int argc, char **argv)
 		goto out;
 	}
 
+	/* these are default values */
+	if (copyright == NULL)
+		copyright = g_strdup ("Public Domain. No warranty, use at own risk.");
+
 	if (description != NULL) {
 		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
 					     cmsSigProfileDescriptionTag,
