@@ -179,7 +179,7 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 	/* get authority */
 	authority = polkit_authority_get_sync (NULL, &error);
 	if (authority == NULL) {
-		g_warning ("failed to get pokit authority: %s", error->message);
+		g_warning ("failed to get polkit authority: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
