@@ -424,19 +424,11 @@ cd_util_create_x11_gamma (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* write header */
-	cmsSetDeviceClass (priv->lcms_profile, cmsSigDisplayClass);
-	cmsSetPCS (priv->lcms_profile, cmsSigXYZData);
-	cmsSetColorSpace (priv->lcms_profile, cmsSigRgbData);
-	cmsSetHeaderRenderingIntent (priv->lcms_profile,
-				     INTENT_RELATIVE_COLORIMETRIC);
-
 	/* scale all the values by the floating point values */
 	for (i = 0; i < 256; i++) {
-		fraction = (gdouble)i / 256.0f;
-		for (j = 0; j < 3; j++) {
-			data[j][i] = pow (fraction, 1.0f / points[j]) * 0xffff;
-		}
+		fraction = (gdouble) i / 256.0f;
+		for (j = 0; j < 3; j++)
+			data[j][i] = fraction * points[j] * 0xffff;
 	}
 
 	/* write vcgt */
