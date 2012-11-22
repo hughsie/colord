@@ -454,6 +454,95 @@ out:
 	return ret;
 }
 
+/**
+ * cd_util_build_srgb_gamma:
+ *
+ * Values taken from lcms2.
+ **/
+static cmsToneCurve *
+cd_util_build_srgb_gamma (void)
+{
+	cmsFloat64Number params[5];
+	params[0] = 2.4;
+	params[1] = 1. / 1.055;
+	params[2] = 0.055 / 1.055;
+	params[3] = 1. / 12.92;
+	params[4] = 0.04045;
+	return cmsBuildParametricToneCurve (NULL, 4, params);
+}
+
+/**
+ * cd_util_create_standard_space:
+ **/
+static gboolean
+cd_util_create_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	cmsCIExyYTRIPLE primaries;
+	cmsCIExyY white;
+	cmsToneCurve *transfer[3] = { NULL, NULL, NULL};
+	gboolean ret;
+	gdouble tgamma;
+
+	/* check arguments */
+	if (g_strv_length (values) != 11) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect gamma, white, xyY, xyY, xyY");
+		goto out;
+	}
+
+	/* parse gamma */
+	if (g_strcmp0 (values[0], "sRGB") == 0) {
+		transfer[0] = cd_util_build_srgb_gamma ();
+		transfer[1] = transfer[0];
+		transfer[2] = transfer[0];
+	} else {
+		tgamma = atof (values[0]);
+		transfer[0] = cmsBuildGamma (NULL, tgamma);
+		transfer[1] = transfer[0];
+		transfer[2] = transfer[0];
+	}
+
+	/* values taken from https://en.wikipedia.org/wiki/Standard_illuminant */
+	white.Y = 1.0f;
+	if (g_strcmp0 (values[1], "C") == 0) {
+		white.x = 0.31006;
+		white.y = 0.31616;
+	} else if (g_strcmp0 (values[1], "E") == 0) {
+		white.x = 0.33333;
+		white.y = 0.33333;
+	} else if (g_strcmp0 (values[1], "D50") == 0) {
+		cmsWhitePointFromTemp (&white, 5003);
+	} else if (g_strcmp0 (values[1], "D65") == 0) {
+		cmsWhitePointFromTemp (&white, 6504);
+	} else {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "unknown illuminant, expected C, E, D50 or D65");
+		goto out;
+	}
+
+	/* get primaries */
+	primaries.Red.x = atof (values[2]);
+	primaries.Red.y = atof (values[3]);
+	primaries.Red.Y = atof (values[4]);
+	primaries.Green.x = atof (values[5]);
+	primaries.Green.y = atof (values[6]);
+	primaries.Green.Y = atof (values[7]);
+	primaries.Blue.x = atof (values[8]);
+	primaries.Blue.y = atof (values[9]);
+	primaries.Blue.Y = atof (values[10]);
+
+	/* create profile */
+	priv->lcms_profile = cmsCreateRGBProfile (&white,
+						  &primaries,
+						  transfer);
+	ret = TRUE;
+out:
+	cmsFreeToneCurve (transfer[0]);
+	return ret;
+}
+
 /*
  * main:
  */
@@ -516,6 +605,11 @@ main (int argc, char **argv)
 		     /* TRANSLATORS: command description */
 		     _("Create an X11 gamma profile"),
 		     cd_util_create_x11_gamma);
+	cd_util_add (priv->cmd_array,
+		     "create-standard-space",
+		     /* TRANSLATORS: command description */
+		     _("Create a standard working space"),
+		     cd_util_create_standard_space);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,
