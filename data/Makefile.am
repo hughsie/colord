@@ -42,9 +42,11 @@ crayons.icc:
 gamma-90.icc:
 	$(top_builddir)/client/cd-create-profile --output $@ --xorg-gamma "0.9,0.9,0.9" -d "sRGB display 90% Gamma" -c "No copyright" -n "Richard Hughes"
 
+CLEANFILES =						\
+	$(dist_profile_DATA)
+
 DISTCLEANFILES =					\
 	$(dbusservicemain_DATA)				\
-	$(dist_profile_DATA)				\
 	$(systemdservicemain_DATA)
 
 -include $(top_srcdir)/git.mk
