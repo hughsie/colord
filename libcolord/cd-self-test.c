@@ -1771,6 +1771,39 @@ colord_device_func (void)
 }
 
 static void
+colord_client_standard_space_func (void)
+{
+	CdClient *client;
+	CdProfile *profile;
+	gboolean ret;
+	GError *error = NULL;
+
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get profile */
+	profile = cd_client_get_standard_space_sync (client,
+						     CD_STANDARD_SPACE_SRGB,
+						     NULL,
+						     &error);
+	g_assert_no_error (error);
+	g_assert (profile != NULL);
+
+	/* connect */
+	ret = cd_profile_connect_sync (profile, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_assert_cmpstr (cd_profile_get_metadata_item (profile, CD_PROFILE_METADATA_STANDARD_SPACE), ==, "srgb");
+	g_assert (cd_profile_get_is_system_wide (profile));
+
+	g_object_unref (profile);
+	g_object_unref (client);
+}
+
+static void
 colord_device_modified_func (void)
 {
 	CdClient *client;
@@ -2277,6 +2310,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/client-random", colord_client_random_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/device-modified", colord_device_modified_func);
+	g_test_add_func ("/colord/client-standard-space", colord_client_standard_space_func);
 	g_test_add_func ("/colord/client-async", colord_client_async_func);
 	g_test_add_func ("/colord/device-async", colord_device_async_func);
 	if (g_test_thorough ())
