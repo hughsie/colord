@@ -963,7 +963,7 @@ cd_profile_check_gray_axis (cmsHPROFILE profile)
 	transform = cmsCreateTransform (profile, TYPE_RGB_8,
 					profile_lab, TYPE_Lab_DBL,
 					INTENT_RELATIVE_COLORIMETRIC,
-					0);
+					cmsFLAGS_NOOPTIMIZE);
 	if (transform == NULL) {
 		g_warning ("failed to setup RGB -> Lab transform");
 		goto out;
@@ -1027,7 +1027,7 @@ cd_profile_check_d50_whitepoint (cmsHPROFILE profile)
 	transform = cmsCreateTransform (profile, TYPE_RGB_8,
 					profile_lab, TYPE_XYZ_DBL,
 					INTENT_RELATIVE_COLORIMETRIC,
-					0);
+					cmsFLAGS_NOOPTIMIZE);
 	if (transform == NULL) {
 		g_warning ("failed to setup RGB -> XYZ transform");
 		goto out;
