@@ -163,6 +163,10 @@ cd_util_show_profile (CdProfile *profile)
 	cd_util_print_field (_("Gamma Table"),
 			     cd_profile_get_has_vcgt (profile) ? "Yes" : "No");
 
+	/* TRANSLATORS: if the profile is installed for all users */
+	cd_util_print_field (_("System Wide"),
+			     cd_profile_get_is_system_wide (profile) ? "Yes" : "No");
+
 	/* TRANSLATORS: profile filename */
 	cd_util_print_field (_("Filename"),
 			     cd_profile_get_filename (profile));
