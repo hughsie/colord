@@ -1672,7 +1672,7 @@ colord_device_async_func (void)
 	g_debug ("connected to device in %f", g_test_timer_elapsed ());
 
 	/* set a property in another instance */
-	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave_hughsie");
+	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave_hughsie_1000");
 	ret = cd_device_connect_sync (device_tmp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -1682,7 +1682,7 @@ colord_device_async_func (void)
 	g_object_unref (device_tmp);
 
 	/* delete known device */
-	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave_hughsie");
+	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave_hughsie_1000");
 	ret = cd_client_delete_device_sync (client, device_tmp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
