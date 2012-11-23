@@ -83,7 +83,7 @@ cd_main_profile_removed (CdMainPrivate *priv, CdProfile *profile)
 
 	/* try to remove this profile from all devices */
 	devices = cd_device_array_get_array (priv->devices_array);
-	for (i=0; i<devices->len; i++) {
+	for (i = 0; i < devices->len; i++) {
 		device_tmp = g_ptr_array_index (devices, i);
 		ret = cd_device_remove_profile (device_tmp,
 						object_path_tmp,
@@ -399,7 +399,7 @@ cd_main_device_auto_add_profiles (CdMainPrivate *priv,
 	}
 
 	/* try to add them */
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		object_id_tmp = g_ptr_array_index (array, i);
 		profile_tmp = cd_profile_array_get_by_id_owner (priv->profiles_array,
 								object_id_tmp,
@@ -582,7 +582,7 @@ cd_main_device_array_to_variant (GPtrArray *array)
 
 	/* copy the object paths */
 	variant_array = g_new0 (GVariant *, array->len + 1);
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		device = g_ptr_array_index (array, i);
 		variant_array[length] = g_variant_new_object_path (
 			cd_device_get_object_path (device));
@@ -611,7 +611,7 @@ cd_main_profile_array_to_variant (GPtrArray *array)
 
 	/* copy the object paths */
 	variant_array = g_new0 (GVariant *, array->len + 1);
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		profile = g_ptr_array_index (array, i);
 		variant_array[length] = g_variant_new_object_path (
 			cd_profile_get_object_path (profile));
@@ -640,7 +640,7 @@ cd_main_sensor_array_to_variant (GPtrArray *array)
 
 	/* copy the object paths */
 	variant_array = g_new0 (GVariant *, array->len + 1);
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
 		variant_array[length] = g_variant_new_object_path (
 			cd_sensor_get_object_path (sensor));
@@ -687,7 +687,7 @@ cd_main_profile_auto_add_to_device (CdMainPrivate *priv,
 	}
 
 	/* try to add them */
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		device_id_tmp = g_ptr_array_index (array, i);
 		device_tmp = cd_device_array_get_by_id_owner (priv->devices_array,
 							      device_id_tmp,
@@ -778,7 +778,7 @@ cd_main_get_standard_space_metadata (CdMainPrivate *priv,
 						  standard_space);
 
 	/* just use the first system-wide profile */
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		profile_tmp = g_ptr_array_index (array, i);
 		ret = cd_profile_get_is_system_wide (profile_tmp);
 		if (ret) {
@@ -1539,7 +1539,7 @@ cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 		g_error_free (error);
 		goto out;
 	}
-	for (i=0; i<array_properties->len; i++) {
+	for (i = 0; i < array_properties->len; i++) {
 		property = g_ptr_array_index (array_properties, i);
 		value = cd_device_db_get_property (priv->device_db,
 						   device_id,

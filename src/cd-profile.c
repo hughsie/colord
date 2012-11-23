@@ -725,7 +725,7 @@ cd_profile_get_precooked_md5 (cmsHPROFILE lcms_profile)
 
 	/* check to see if we have a pre-cooked MD5 */
 	cmsGetHeaderProfileID (lcms_profile, profile_id);
-	for (i=0; i<16; i++) {
+	for (i = 0; i < 16; i++) {
 		if (profile_id[i] != 0) {
 			md5_precooked = TRUE;
 			break;
@@ -736,7 +736,7 @@ cd_profile_get_precooked_md5 (cmsHPROFILE lcms_profile)
 
 	/* convert to a hex string */
 	md5 = g_new0 (gchar, 32 + 1);
-	for (i=0; i<16; i++)
+	for (i = 0; i < 16; i++)
 		g_snprintf (md5 + i*2, 3, "%02x", profile_id[i]);
 out:
 	return md5;

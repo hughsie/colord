@@ -406,7 +406,7 @@ cd_device_match_qualifier (const gchar *qual1, const gchar *qual2)
 	split2 = g_strsplit (qual2, ".", 3);
 
 	/* ensure all substrings match */
-	for (i=0; i<3; i++) {
+	for (i = 0; i < 3; i++) {
 
 		/* wildcard in query */
 		if (g_strcmp0 (split1[i], "*") == 0)
@@ -447,7 +447,7 @@ cd_device_find_by_qualifier (const gchar *regex,
 	guint i;
 
 	/* find using a wildcard */
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		item = g_ptr_array_index (array, i);
 		if (item->relation != relation)
 			continue;
@@ -494,7 +494,7 @@ cd_device_find_profile_by_object_path (GPtrArray *array, const gchar *object_pat
 	guint i;
 
 	/* find using an object path */
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		item = g_ptr_array_index (array, i);
 		ret = (g_strcmp0 (object_path,
 				  cd_profile_get_object_path (item->profile)) == 0);
@@ -522,14 +522,14 @@ cd_device_get_profiles_as_variant (CdDevice *device)
 
 	/* copy the object paths, hard then soft */
 	profiles = g_new0 (GVariant *, device->priv->profiles->len + 1);
-	for (i=0; i<device->priv->profiles->len; i++) {
+	for (i = 0; i < device->priv->profiles->len; i++) {
 		item = g_ptr_array_index (device->priv->profiles, i);
 		if (item->relation == CD_DEVICE_RELATION_SOFT)
 			continue;
 		tmp = cd_profile_get_object_path (item->profile);
 		profiles[idx++] = g_variant_new_object_path (tmp);
 	}
-	for (i=0; i<device->priv->profiles->len; i++) {
+	for (i = 0; i < device->priv->profiles->len; i++) {
 		item = g_ptr_array_index (device->priv->profiles, i);
 		if (item->relation == CD_DEVICE_RELATION_HARD)
 			continue;
@@ -559,7 +559,7 @@ cd_device_remove_profile (CdDevice *device,
 	guint i;
 
 	/* check the profile exists on this device */
-	for (i=0; i<priv->profiles->len; i++) {
+	for (i = 0; i < priv->profiles->len; i++) {
 		item = g_ptr_array_index (priv->profiles, i);
 		if (g_strcmp0 (profile_object_path,
 			       cd_profile_get_object_path (item->profile)) == 0) {
@@ -608,7 +608,7 @@ cd_device_find_profile_relation (CdDevice *device,
 	guint i;
 
 	/* search profiles */
-	for (i=0; i<priv->profiles->len; i++) {
+	for (i = 0; i < priv->profiles->len; i++) {
 		item = g_ptr_array_index (priv->profiles, i);
 		if (g_strcmp0 (profile_object_path,
 			       cd_profile_get_object_path (item->profile)) == 0) {
@@ -681,7 +681,7 @@ cd_device_add_profile (CdDevice *device,
 	}
 
 	/* check it does not already exist */
-	for (i=0; i<priv->profiles->len; i++) {
+	for (i = 0; i < priv->profiles->len; i++) {
 		item = g_ptr_array_index (priv->profiles, i);
 		if (g_strcmp0 (cd_profile_get_object_path (profile),
 			       cd_profile_get_object_path (item->profile)) == 0) {

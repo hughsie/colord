@@ -110,7 +110,7 @@ cd_inhibit_get_by_sender (CdInhibit *inhibit,
 	guint i;
 
 	/* find sender */
-	for (i=0; i<priv->array->len; i++) {
+	for (i = 0; i < priv->array->len; i++) {
 		item_tmp = g_ptr_array_index (priv->array, i);
 		if (g_strcmp0 (item_tmp->sender, sender) == 0) {
 			item = item_tmp;

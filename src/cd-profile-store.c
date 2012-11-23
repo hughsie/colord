@@ -63,7 +63,7 @@ cd_profile_store_in_array (GPtrArray *array, const gchar *text)
 	const gchar *tmp;
 	guint i;
 
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		tmp = g_ptr_array_index (array, i);
 		if (g_strcmp0 (text, tmp) == 0)
 			return TRUE;
@@ -129,7 +129,7 @@ cd_profile_store_get_by_checksum (CdProfileStore *profile_store,
 	g_return_val_if_fail (checksum != NULL, NULL);
 
 	/* find profile */
-	for (i=0; i<priv->profile_array->len; i++) {
+	for (i = 0; i < priv->profile_array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->profile_array, i);
 		checksum_tmp = cd_profile_get_checksum (profile_tmp);
 		if (g_strcmp0 (checksum, checksum_tmp) == 0) {
@@ -158,7 +158,7 @@ cd_profile_store_get_by_filename (CdProfileStore *profile_store,
 	g_return_val_if_fail (filename != NULL, NULL);
 
 	/* find profile */
-	for (i=0; i<priv->profile_array->len; i++) {
+	for (i = 0; i < priv->profile_array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->profile_array, i);
 		filename_tmp = cd_profile_get_filename (profile_tmp);
 		if (g_strcmp0 (filename, filename_tmp) == 0) {

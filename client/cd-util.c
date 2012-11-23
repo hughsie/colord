@@ -278,7 +278,7 @@ cd_util_show_device (CdDevice *device)
 
 	/* print profiles */
 	profiles = cd_device_get_profiles (device);
-	for (i=0; i<profiles->len; i++) {
+	for (i = 0; i < profiles->len; i++) {
 		profile_tmp = g_ptr_array_index (profiles, i);
 		/* TRANSLATORS: the profile for the device */
 		str_tmp = g_strdup_printf ("%s %i", _("Profile"), i+1);
@@ -530,7 +530,7 @@ cd_util_get_descriptions (GPtrArray *array)
 	GString *string;
 
 	/* get maximum command length */
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		item = g_ptr_array_index (array, i);
 		len = strlen (item->name);
 		if (len > max_len)
@@ -543,7 +543,7 @@ cd_util_get_descriptions (GPtrArray *array)
 
 	/* print each command */
 	string = g_string_new ("");
-	for (i=0; i<array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		item = g_ptr_array_index (array, i);
 		g_string_append (string, "  ");
 		g_string_append (string, item->name);
@@ -573,7 +573,7 @@ cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError *
 	GString *string;
 
 	/* find command */
-	for (i=0; i<priv->cmd_array->len; i++) {
+	for (i = 0; i < priv->cmd_array->len; i++) {
 		item = g_ptr_array_index (priv->cmd_array, i);
 		if (g_strcmp0 (item->name, command) == 0) {
 			ret = item->callback (priv, values, error);
@@ -586,7 +586,7 @@ cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError *
 	/* TRANSLATORS: error message */
 	g_string_append_printf (string, "%s\n",
 				_("Command not found, valid commands are:"));
-	for (i=0; i<priv->cmd_array->len; i++) {
+	for (i = 0; i < priv->cmd_array->len; i++) {
 		item = g_ptr_array_index (priv->cmd_array, i);
 		g_string_append_printf (string, " * %s\n", item->name);
 	}

@@ -145,7 +145,7 @@ cd_sensor_client_remove (CdSensorClient *sensor_client,
 	device_path = g_udev_device_get_sysfs_path (device);
 	g_debug ("removing color management device: %s [%s]",
 		 device_path, device_file);
-	for (i=0; i<sensor_client->priv->array_sensors->len; i++) {
+	for (i = 0; i < sensor_client->priv->array_sensors->len; i++) {
 		sensor = g_ptr_array_index (sensor_client->priv->array_sensors, i);
 		if (g_strcmp0 (cd_sensor_get_device_path (sensor), device_path) == 0) {
 			g_debug ("emit: removed");
