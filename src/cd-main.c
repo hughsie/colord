@@ -774,7 +774,7 @@ cd_main_get_standard_space_metadata (CdMainPrivate *priv,
 
 	/* get all the profiles with this metadata */
 	array = cd_profile_array_get_by_metadata (priv->profiles_array,
-						  "STANDARD_space",
+						  CD_PROFILE_METADATA_STANDARD_SPACE,
 						  standard_space);
 
 	/* just use the first system-wide profile */
