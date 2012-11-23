@@ -62,6 +62,9 @@ cd_debug_ignore_cb (const gchar *log_domain,
 	case G_LOG_LEVEL_ERROR:
 	case G_LOG_LEVEL_WARNING:
 		syslog (LOG_WARNING, "%s", message);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -83,6 +86,9 @@ cd_debug_handler_cb (const gchar *log_domain,
 	case G_LOG_LEVEL_ERROR:
 	case G_LOG_LEVEL_WARNING:
 		syslog (LOG_WARNING, "%s", message);
+		break;
+	default:
+		break;
 	}
 
 	/* time header */
