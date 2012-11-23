@@ -1779,7 +1779,7 @@ cd_client_get_standard_space_cb (GObject *source_object,
 		g_simple_async_result_set_error (res_source,
 						 CD_CLIENT_ERROR,
 						 CD_CLIENT_ERROR_FAILED,
-						 "Failed to FindProfileById: %s",
+						 "Failed to GetStandardSpace: %s",
 						 error->message);
 		g_error_free (error);
 		goto out;
