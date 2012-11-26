@@ -1,3 +1,48 @@
+Version 0.1.25
+~~~~~~~~~~~~~~
+Released: 2012-11-16
+
+New Features:
+ - Add a create-standard-space sub-command to cd-create-profile (Richard Hughes)
+ - Add a FAQ entry describing application support of color management (Richard Hughes)
+ - Add a 'make coverity' helper to scan the project for errors (Richard Hughes)
+ - Add a profile metadata key of 'License' (Richard Hughes)
+ - Add a profile warning if any of the primaries are outside of ROMM RGB (Richard Hughes)
+ - Add a set-version command to the cd-fix-profile command line tool (Richard Hughes)
+ - Add a warning if the profile calibration data is non-monotonic (Richard Hughes)
+ - Add a warning if the profile copyright is missing (Richard Hughes)
+ - Add a warning if the profile description is missing (Richard Hughes)
+ - Add a warning if the profile gray axis is invalid (Richard Hughes)
+ - Add a warning if the profile primaries are invalid (Richard Hughes)
+ - Add a warning if the profile primaries do not add to D50 (Richard Hughes)
+ - Add a warning if the profile RGB 255,255,255 does not return D50 (Richard Hughes)
+ - Add a warning if the profile would produce a scum-dot (Richard Hughes)
+ - Add a 'Warnings' property to the DBus interface for each profile (Richard Hughes)
+ - Add OutputPriority device metadata key to the specification (Richard Hughes)
+ - Move the named color examples to shared-color-profiles (Richard Hughes)
+ - Print if the profile is system-wide when doing 'colormgr get-profiles' (Richard Hughes)
+ - Show the primaries when dumping the profile using cd-fix-profile (Richard Hughes)
+ - Use syslog to be able to debug what the daemon is doing without restarting it (Richard Hughes)
+
+Bugfixes:
+ - Check the return value of mbstowcs before using the buffer (Richard Hughes)
+ - Convert cd-create-profile to using sub-commands to make it more modular (Richard Hughes)
+ - Create linear vcgt tables when using create-x11-gamma to match the xserver behaviour (Richard Hughes)
+ - Create version 2.2 ICC files when creating named color profiles (Richard Hughes)
+ - Do not ever manually set a ICC profile version when creating profiles (Richard Hughes)
+ - Do not try to connect to colord in cd-fix-profile until actually needed (Richard Hughes)
+ - Don't optimize the profile check transforms to speed up daemon startup (Richard Hughes)
+ - Don't set the StandardSpaces override, the generated profiles have the correct metadata now (Richard Hughes)
+ - Fix a crash in the example code if the device has a non-standard qualifier format (Richard Hughes)
+ - Fix GetStandardSpace so it can actually work (Richard Hughes)
+ - huey: Ensure we return an error if we ran out of retries (Richard Hughes)
+ - If the copyright string is not set when creating a profile use a good default (Richard Hughes)
+ - Improve the formatting of 'get-profiles' and 'get-devices' (Richard Hughes)
+ - libcolord: Fix up a warning if GetStandardSpace fails to find a profile (Richard Hughes)
+ - Return an error if the client does not set a profile or device id (Richard Hughes)
+ - Return an error if the client uses an unsupported scope value (Richard Hughes)
+ - Set a default copyright string when creating profiles without using --copyright (Richard Hughes)
+
 Version 0.1.24
 ~~~~~~~~~~~~~~
 Released: 2012-10-26
