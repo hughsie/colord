@@ -273,6 +273,7 @@ typedef enum {
 #define CD_PROFILE_METADATA_CONNECTION_TYPE_DVI		"dvi"		/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_CONNECTION_TYPE_HDMI	"hdmi"		/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_CONNECTION_TYPE_DISPLAYPORT	"displayport"	/* Since: 0.1.16 */
+#define CD_PROFILE_METADATA_LICENSE		"License"		/* Since: 0.1.25 */
 
 /* defined in org.freedesktop.ColorManager.Profile.xml */
 #define CD_PROFILE_PROPERTY_FILENAME		"Filename"

@@ -19,6 +19,7 @@ Profile.Metadata dictionary.
 These keys are optional but recomended. Other keys may also be present,
 and should be ignored.
 
+License			A content license, e.g. "Public Domain" or "CC0"
 STANDARD_space		A standard space, where
 			"srgb"		: sRGB
 			"adobe-rgb"	: AdobeRGB
