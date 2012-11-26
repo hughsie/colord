@@ -259,9 +259,13 @@ out:
  * cd_util_set_info_text:
  **/
 static gboolean
-cd_util_set_info_text (CdUtilPrivate *priv, cmsTagSignature sig, gchar **values, GError **error)
+cd_util_set_info_text (CdUtilPrivate *priv,
+		       cmsTagSignature sig,
+		       gchar **values,
+		       GError **error)
 {
 	cmsHPROFILE lcms_profile = NULL;
+	const gchar *value;
 	gboolean ret = TRUE;
 
 	/* check arguments */
@@ -279,10 +283,18 @@ cd_util_set_info_text (CdUtilPrivate *priv, cmsTagSignature sig, gchar **values,
 		goto out;
 	}
 
+	/* these are default values */
+	if (sig == cmsSigCopyrightTag &&
+	    g_strcmp0 (values[0], "") == 0) {
+		value = CD_PROFILE_DEFAULT_COPYRIGHT_STRING;
+	} else {
+		value = values[0];
+	}
+
 	/* update value */
 	ret = cd_util_profile_set_text_acsii (lcms_profile,
 					      sig,
-					      values[0],
+					      value,
 					      error);
 	if (!ret)
 		goto out;
@@ -303,7 +315,7 @@ out:
 static gboolean
 cd_util_set_copyright (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	return cd_util_set_info_text (priv, cmsInfoCopyright, values, error);
+	return cd_util_set_info_text (priv, cmsSigCopyrightTag, values, error);
 }
 
 /**

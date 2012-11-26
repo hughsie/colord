@@ -27,6 +27,8 @@
 
 G_BEGIN_DECLS
 
+#define CD_PROFILE_DEFAULT_COPYRIGHT_STRING	"This profile is free of known copyright restrictions."
+
 gboolean	 cd_profile_write_metadata_string	(cmsHPROFILE	 lcms_profile,
 							 const gchar	*metadata,
 							 gboolean	 clear_existing,
