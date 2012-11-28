@@ -353,14 +353,22 @@ cd_sensor_kind_to_string (CdSensorKind sensor_kind)
 		return "dtp41";
 	if (sensor_kind == CD_SENSOR_KIND_DTP51)
 		return "dtp51";
+	if (sensor_kind == CD_SENSOR_KIND_DTP92)
+		return "dtp92";
 	if (sensor_kind == CD_SENSOR_KIND_DTP94)
 		return "dtp94";
 	if (sensor_kind == CD_SENSOR_KIND_SPECTRO_SCAN)
 		return "spectro-scan";
 	if (sensor_kind == CD_SENSOR_KIND_I1_PRO)
 		return "i1-pro";
+	if (sensor_kind == CD_SENSOR_KIND_I1_MONITOR)
+		return "i1-monitor";
 	if (sensor_kind == CD_SENSOR_KIND_COLORIMTRE_HCFR)
 		return "colorimtre-hcfr";
+	if (sensor_kind == CD_SENSOR_KIND_I1_DISPLAY1)
+		return "i1-display1";
+	if (sensor_kind == CD_SENSOR_KIND_I1_DISPLAY2)
+		return "i1-display2";
 	if (sensor_kind == CD_SENSOR_KIND_I1_DISPLAY3)
 		return "i1-display3";
 	if (sensor_kind == CD_SENSOR_KIND_COLORHUG)
