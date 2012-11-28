@@ -1079,7 +1079,7 @@ colord_sensor_func (void)
 	g_assert_cmpfloat (values->Z - 0.3f, <, 0.01);
 //	g_assert_cmpfloat (ambient + 1.0f, >, -0.01);
 //	g_assert_cmpfloat (ambient + 1.0f, <, 0.01);
-	g_object_unref (values);
+	cd_color_xyz_free (values);
 
 	/* unlock */
 	ret = cd_sensor_unlock_sync (sensor,
