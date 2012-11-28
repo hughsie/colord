@@ -812,6 +812,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 //	gdouble ambient;
 	GPtrArray *array = NULL;
 	guint i;
+	guint j;
 
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
@@ -837,12 +838,17 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 	cap = cd_sensor_cap_from_string (values[0]);
-	for (i=0; i < array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
 
 		ret = cd_sensor_connect_sync (sensor, NULL, error);
 		if (!ret)
 			goto out;
+
+		/* TRANSLATORS: this is the sensor title */
+		g_print ("%s: %s - %s\n", _("Sensor"),
+			 cd_sensor_get_vendor (sensor),
+			 cd_sensor_get_model (sensor));
 
 		/* lock */
 		ret = cd_sensor_lock_sync (sensor,
@@ -851,14 +857,22 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 		if (!ret)
 			goto out;
 
-		/* get a sample sync */
-		xyz = cd_sensor_get_sample_sync (sensor,
-						 cap,
-						 NULL,
-						 error);
-		if (xyz == NULL) {
-			ret = FALSE;
-			goto out;
+		/* get 3 samples sync */
+		for (j = 0; j < 3; j++) {
+			xyz = cd_sensor_get_sample_sync (sensor,
+							 cap,
+							 NULL,
+							 error);
+			if (xyz == NULL) {
+				ret = FALSE;
+				goto out;
+			}
+
+			/* TRANSLATORS: this is the XYZ color value */
+			g_print ("%s XYZ : %f, %f, %f\n",
+				 _("Color"),
+				 xyz->X, xyz->Y, xyz->Z);
+			cd_color_xyz_free (xyz);
 		}
 
 		/* unlock */
@@ -868,21 +882,10 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 		if (!ret)
 			goto out;
 
-		/* TRANSLATORS: this is the sensor title */
-		g_print ("%s: %s - %s\n", _("Sensor"),
-			 cd_sensor_get_vendor (sensor),
-			 cd_sensor_get_model (sensor));
-
 		/* TRANSLATORS: this is the ambient light level in Lux */
 //		g_print ("%s: %f Lux\n",
 //			 _("Ambient"),
 //			 ambient);
-
-		/* TRANSLATORS: this is the XYZ color value */
-		g_print ("%s XYZ : %f, %f, %f\n",
-			 _("Color"),
-			 xyz->X, xyz->Y, xyz->Z);
-		cd_color_xyz_free (xyz);
 	}
 out:
 	if (array != NULL)
