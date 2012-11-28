@@ -43,6 +43,7 @@ G_BEGIN_DECLS
 #define CD_IS_SENSOR(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_SENSOR))
 #define CD_IS_SENSOR_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_SENSOR))
 #define CD_SENSOR_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_SENSOR, CdSensorClass))
+#define CD_SENSOR_ERROR		cd_sensor_error_quark()
 
 typedef struct _CdSensorPrivate	CdSensorPrivate;
 typedef struct _CdSensor	CdSensor;
@@ -59,26 +60,12 @@ struct _CdSensorClass
 	GObjectClass	 parent_class;
 };
 
-/* dummy */
-#define CD_SENSOR_ERROR	1
-
 /* when the data is unavailable */
 #define CD_SENSOR_NO_VALUE			-1.0f
 
-/**
- * CdSensorError:
- *
- * The error code.
- **/
-typedef enum {
-	CD_SENSOR_ERROR_USER_ABORT,
-	CD_SENSOR_ERROR_NO_SUPPORT,
-	CD_SENSOR_ERROR_NO_DATA,
-	CD_SENSOR_ERROR_INTERNAL
-} CdSensorError;
-
 GType		 cd_sensor_get_type		(void);
 CdSensor	*cd_sensor_new			(void);
+GQuark		 cd_sensor_error_quark		(void);
 
 /* accessors */
 const gchar	*cd_sensor_get_id		(CdSensor		*sensor);

@@ -67,18 +67,6 @@ typedef struct
 	void (*_cd_sensor_reserved8) (void);
 } CdSensorClass;
 
-/**
- * CdSensorError:
- * @CD_SENSOR_ERROR_FAILED: the transaction failed for an unknown reason
- *
- * Errors that can be thrown
- */
-typedef enum
-{
-	CD_SENSOR_ERROR_FAILED,
-	CD_SENSOR_ERROR_LAST
-} CdSensorError;
-
 GType		 cd_sensor_get_type			(void);
 GQuark		 cd_sensor_error_quark			(void);
 CdSensor	*cd_sensor_new				(void);

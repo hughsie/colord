@@ -241,6 +241,29 @@ typedef enum {
 	CD_PROFILE_WARNING_LAST
 } CdProfileWarning;
 
+/**
+ * CdSensorError:
+ * @CD_SENSOR_ERROR_NO_SUPPORT:		This action is unsupported on this hardware
+ * @CD_SENSOR_ERROR_NO_DATA:		The sensor provided no data
+ * @CD_SENSOR_ERROR_INTERNAL:		An internal error occurred
+ * @CD_SENSOR_ERROR_ALREADY_LOCKED:	The sensor is already locked
+ * @CD_SENSOR_ERROR_NOT_LOCKED:		The sensor is not locked
+ * @CD_SENSOR_ERROR_IN_USE:		The sensor is already in use
+ *
+ * The sensor error code.
+ *
+ * Since: 0.1.26
+ **/
+typedef enum {
+	CD_SENSOR_ERROR_NO_SUPPORT,
+	CD_SENSOR_ERROR_NO_DATA,
+	CD_SENSOR_ERROR_INTERNAL,
+	CD_SENSOR_ERROR_ALREADY_LOCKED,
+	CD_SENSOR_ERROR_NOT_LOCKED,
+	CD_SENSOR_ERROR_IN_USE,
+	CD_SENSOR_ERROR_LAST
+} CdSensorError;
+
 /* defined in org.freedesktop.ColorManager.xml */
 #define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"
 
@@ -344,6 +367,10 @@ CdStandardSpace	 cd_standard_space_from_string		(const gchar		*standard_space);
 const gchar	*cd_profile_warning_to_string		(CdProfileWarning	 kind_enum);
 CdProfileWarning cd_profile_warning_from_string		(const gchar		*type);
 CdProfileKind	 cd_device_kind_to_profile_kind		(CdDeviceKind		 device_kind);
+
+const gchar	*cd_sensor_error_to_string		(CdSensorError		 error_enum);
+CdSensorError	 cd_sensor_error_from_string		(const gchar		*error_desc);
+
 
 G_END_DECLS
 

@@ -120,6 +120,25 @@ enum {
 G_DEFINE_TYPE (CdSensor, cd_sensor, G_TYPE_OBJECT)
 
 /**
+ * cd_sensor_error_quark:
+ **/
+GQuark
+cd_sensor_error_quark (void)
+{
+	guint i;
+	static GQuark quark = 0;
+	if (!quark) {
+		quark = g_quark_from_static_string ("CdSensor");
+		for (i = 0; i < CD_SENSOR_ERROR_LAST; i++) {
+			g_dbus_error_register_error (quark,
+						     i,
+						     cd_sensor_error_to_string (i));
+		}
+	}
+	return quark;
+}
+
+/**
  * cd_sensor_get_object_path:
  **/
 const gchar *
@@ -442,8 +461,8 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	sample = sensor->priv->desc->get_sample_finish (sensor, res, &error);
 	if (sample == NULL) {
 		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
+						       CD_SENSOR_ERROR,
+						       CD_SENSOR_ERROR_NO_DATA,
 						       "failed to sample: %s",
 						       error->message);
 		g_error_free (error);
@@ -482,8 +501,8 @@ cd_sensor_set_options_cb (GObject *source_object,
 	ret = sensor->priv->desc->set_options_finish (sensor, res, &error);
 	if (!ret) {
 		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
+						       CD_SENSOR_ERROR,
+						       CD_SENSOR_ERROR_NO_DATA,
 						       "failed to set options: %s",
 						       error->message);
 		g_error_free (error);
@@ -511,8 +530,8 @@ cd_sensor_lock_cb (GObject *source_object,
 	ret = sensor->priv->desc->lock_finish (sensor, res, &error);
 	if (!ret) {
 		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
+						       CD_SENSOR_ERROR,
+						       CD_SENSOR_ERROR_NO_SUPPORT,
 						       "failed to lock: %s",
 						       error->message);
 		g_error_free (error);
@@ -541,8 +560,8 @@ cd_sensor_unlock_cb (GObject *source_object,
 	ret = sensor->priv->desc->unlock_finish (sensor, res, &error);
 	if (!ret) {
 		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
+						       CD_SENSOR_ERROR,
+						       CD_SENSOR_ERROR_NO_SUPPORT,
 						       "failed to unlock: %s",
 						       error->message);
 		g_error_free (error);
@@ -628,8 +647,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	/* check native */
 	if (!priv->native) {
 		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
+						       CD_SENSOR_ERROR,
+						       CD_SENSOR_ERROR_NO_SUPPORT,
 						       "no native driver for sensor");
 		goto out;
 	}
@@ -642,8 +661,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* check locked */
 		if (priv->locked) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_ALREADY_LOCKED,
 							       "sensor is already locked");
 			goto out;
 		}
@@ -685,8 +704,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* check locked */
 		if (!priv->locked) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NOT_LOCKED,
 							       "sensor is not yet locked");
 			goto out;
 		}
@@ -726,8 +745,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* check locked */
 		if (!priv->locked) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NOT_LOCKED,
 							       "sensor is not yet locked");
 			goto out;
 		}
@@ -735,8 +754,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/*  check idle */
 		if (priv->state != CD_SENSOR_STATE_IDLE) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_IN_USE,
 							       "sensor not idle: %s",
 							       cd_sensor_state_to_string (priv->state));
 			goto out;
@@ -745,8 +764,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* no support */
 		if (sensor->priv->desc->get_sample_async == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NO_SUPPORT,
 							       "no sensor->get_sample");
 			goto out;
 		}
@@ -756,8 +775,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		cap = cd_sensor_cap_from_string (cap_tmp);
 		if (cap == CD_SENSOR_CAP_UNKNOWN) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_INTERNAL,
 							       "cap '%s' unknown",
 							       cap_tmp);
 			goto out;
@@ -780,8 +799,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* check locked */
 		if (!priv->locked) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NOT_LOCKED,
 							       "sensor is not yet locked");
 			goto out;
 		}
@@ -789,8 +808,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/*  check idle */
 		if (priv->state != CD_SENSOR_STATE_IDLE) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_IN_USE,
 							       "sensor not idle: %s",
 							       cd_sensor_state_to_string (priv->state));
 			goto out;
@@ -799,8 +818,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* no support */
 		if (sensor->priv->desc->set_options_async == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NO_SUPPORT,
 							       "no sensor options support");
 			goto out;
 		}
@@ -965,8 +984,8 @@ cd_sensor_register_object (CdSensor *sensor,
 		&error_local); /* GError** */
 	if (sensor->priv->registration_id == 0) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_SENSOR_ERROR,
+			     CD_SENSOR_ERROR_INTERNAL,
 			     "failed to register object: %s",
 			     error_local->message);
 		g_error_free (error_local);

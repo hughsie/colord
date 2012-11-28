@@ -1050,7 +1050,7 @@ colord_sensor_func (void)
 	ret = cd_sensor_lock_sync (sensor,
 				   NULL,
 				   &error);
-	g_assert_error (error, CD_SENSOR_ERROR, CD_SENSOR_ERROR_FAILED);
+	g_assert_error (error, CD_SENSOR_ERROR, CD_SENSOR_ERROR_ALREADY_LOCKED);
 	g_assert (!ret);
 
 	_g_test_loop_run_with_timeout (5);
@@ -1096,7 +1096,7 @@ colord_sensor_func (void)
 	ret = cd_sensor_unlock_sync (sensor,
 				     NULL,
 				     &error);
-	g_assert_error (error, CD_SENSOR_ERROR, CD_SENSOR_ERROR_FAILED);
+	g_assert_error (error, CD_SENSOR_ERROR, CD_SENSOR_ERROR_NOT_LOCKED);
 	g_assert (!ret);
 
 	_g_test_loop_run_with_timeout (5);
@@ -1112,8 +1112,17 @@ static void
 colord_enum_func (void)
 {
 	CdProfileWarning warning;
+	CdSensorError sensor_error;
 	const gchar *tmp;
 	guint i;
+
+	/* CdSensorError */
+	for (i = 0; i < CD_SENSOR_ERROR_LAST; i++) {
+		tmp = cd_sensor_error_to_string (i);
+		g_assert_cmpstr (tmp, !=, NULL);
+		sensor_error = cd_sensor_error_from_string (tmp);
+		g_assert_cmpint (sensor_error, !=, CD_SENSOR_ERROR_LAST);
+	}
 
 	/* CdProfileWarning */
 	for (i = 0; i < CD_PROFILE_WARNING_LAST; i++) {

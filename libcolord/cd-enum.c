@@ -685,3 +685,59 @@ cd_device_kind_to_profile_kind (CdDeviceKind device_kind)
 	}
 	return profile_kind;
 }
+
+#define	CD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
+
+/**
+ * cd_sensor_error_to_string:
+ *
+ * Converts a #CdSensorError to a string.
+ *
+ * Return value: identifier string
+ *
+ * Since: 0.1.26
+ **/
+const gchar *
+cd_sensor_error_to_string (CdSensorError error_enum)
+{
+	if (error_enum == CD_SENSOR_ERROR_NO_SUPPORT)
+		return CD_DBUS_INTERFACE_SENSOR "NoSupport";
+	if (error_enum == CD_SENSOR_ERROR_NO_DATA)
+		return CD_DBUS_INTERFACE_SENSOR "NoData";
+	if (error_enum == CD_SENSOR_ERROR_INTERNAL)
+		return CD_DBUS_INTERFACE_SENSOR "Internal";
+	if (error_enum == CD_SENSOR_ERROR_ALREADY_LOCKED)
+		return CD_DBUS_INTERFACE_SENSOR "AlreadyLocked";
+	if (error_enum == CD_SENSOR_ERROR_NOT_LOCKED)
+		return CD_DBUS_INTERFACE_SENSOR "NotLocked";
+	if (error_enum == CD_SENSOR_ERROR_IN_USE)
+		return CD_DBUS_INTERFACE_SENSOR "InUse";
+	return NULL;
+}
+
+/**
+ * cd_sensor_error_from_string:
+ *
+ * Converts a string to a #CdSensorError.
+ *
+ * Return value: enumerated value
+ *
+ * Since: 0.1.26
+ **/
+CdSensorError
+cd_sensor_error_from_string (const gchar *error_desc)
+{
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "NoSupport") == 0)
+		return CD_SENSOR_ERROR_NO_SUPPORT;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "NoData") == 0)
+		return CD_SENSOR_ERROR_NO_DATA;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "Internal") == 0)
+		return CD_SENSOR_ERROR_INTERNAL;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "AlreadyLocked") == 0)
+		return CD_SENSOR_ERROR_ALREADY_LOCKED;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "NotLocked") == 0)
+		return CD_SENSOR_ERROR_NOT_LOCKED;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "InUse") == 0)
+		return CD_SENSOR_ERROR_IN_USE;
+	return CD_SENSOR_ERROR_LAST;
+}

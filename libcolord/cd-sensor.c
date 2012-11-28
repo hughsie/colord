@@ -458,8 +458,12 @@ cd_sensor_connect_cb (GObject *source_object,
 	/* get result */
 	sensor->priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 	if (sensor->priv->proxy == NULL) {
-		g_simple_async_result_set_from_error (res_source,
-						      error);
+		g_simple_async_result_set_error (res_source,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_INTERNAL,
+						 "Failed to connect to sensor %s: %s",
+						 cd_sensor_get_object_path (sensor),
+						 error->message);
 		g_simple_async_result_complete (res_source);
 		g_error_free (error);
 		goto out;
@@ -669,6 +673,29 @@ cd_sensor_lock_finish (CdSensor *sensor,
 	return g_simple_async_result_get_op_res_gboolean (simple);
 }
 
+/**
+ * cd_sensor_fixup_dbus_error:
+ **/
+static void
+cd_sensor_fixup_dbus_error (GError *error)
+{
+	gchar *name = NULL;
+
+	g_return_if_fail (error != NULL);
+
+	/* is a remote error? */
+	if (!g_dbus_error_is_remote_error (error))
+		goto out;
+
+	/* parse the remote error */
+	name = g_dbus_error_get_remote_error (error);
+	error->domain = CD_SENSOR_ERROR;
+	error->code = cd_sensor_error_from_string (name);
+	g_dbus_error_strip_remote_error (error);
+out:
+	g_free (name);
+}
+
 static void
 cd_sensor_lock_cb (GObject *source_object,
 		   GAsyncResult *res,
@@ -682,11 +709,8 @@ cd_sensor_lock_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_SENSOR_ERROR,
-						 CD_SENSOR_ERROR_FAILED,
-						 "Failed to Lock: %s",
-						 error->message);
+		cd_sensor_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -781,11 +805,8 @@ cd_sensor_unlock_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_SENSOR_ERROR,
-						 CD_SENSOR_ERROR_FAILED,
-						 "Failed to Unlock: %s",
-						 error->message);
+		cd_sensor_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -880,11 +901,8 @@ cd_sensor_set_options_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_SENSOR_ERROR,
-						 CD_SENSOR_ERROR_FAILED,
-						 "Failed to set sensor options: %s",
-						 error->message);
+		cd_sensor_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -998,11 +1016,8 @@ cd_sensor_get_sample_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_SENSOR_ERROR,
-						 CD_SENSOR_ERROR_FAILED,
-						 "Failed to GetSample: %s",
-						 error->message);
+		cd_sensor_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
