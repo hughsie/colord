@@ -612,6 +612,29 @@ cd_profile_connect_finish (CdProfile *profile,
 	return g_simple_async_result_get_op_res_gboolean (simple);
 }
 
+/**
+ * cd_profile_fixup_dbus_error:
+ **/
+static void
+cd_profile_fixup_dbus_error (GError *error)
+{
+	gchar *name = NULL;
+
+	g_return_if_fail (error != NULL);
+
+	/* is a remote error? */
+	if (!g_dbus_error_is_remote_error (error))
+		goto out;
+
+	/* parse the remote error */
+	name = g_dbus_error_get_remote_error (error);
+	error->domain = CD_PROFILE_ERROR;
+	error->code = cd_profile_error_from_string (name);
+	g_dbus_error_strip_remote_error (error);
+out:
+	g_free (name);
+}
+
 static void
 cd_profile_connect_cb (GObject *source_object,
 		       GAsyncResult *res,
@@ -641,7 +664,7 @@ cd_profile_connect_cb (GObject *source_object,
 	if (profile->priv->proxy == NULL) {
 		g_simple_async_result_set_error (res_source,
 						 CD_PROFILE_ERROR,
-						 CD_PROFILE_ERROR_FAILED,
+						 CD_PROFILE_ERROR_INTERNAL,
 						 "Failed to connect to profile %s: %s",
 						 cd_profile_get_object_path (profile),
 						 error->message);
@@ -659,7 +682,7 @@ cd_profile_connect_cb (GObject *source_object,
 	if (id == NULL) {
 		g_simple_async_result_set_error (res_source,
 						 CD_PROFILE_ERROR,
-						 CD_PROFILE_ERROR_FAILED,
+						 CD_PROFILE_ERROR_INTERNAL,
 						 "Failed to connect to missing profile %s",
 						 cd_profile_get_object_path (profile));
 		goto out;
@@ -882,7 +905,7 @@ cd_profile_set_property_cb (GObject *source_object,
 	if (result == NULL) {
 		g_simple_async_result_set_error (res_source,
 						 CD_PROFILE_ERROR,
-						 CD_PROFILE_ERROR_FAILED,
+						 CD_PROFILE_ERROR_INTERNAL,
 						 "Failed to SetProperty: %s",
 						 error->message);
 		g_error_free (error);
@@ -987,11 +1010,8 @@ cd_profile_install_system_wide_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_PROFILE_ERROR,
-						 CD_PROFILE_ERROR_FAILED,
-						 "Failed to InstallSystemWide: %s",
-						 error->message);
+		cd_profile_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}

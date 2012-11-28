@@ -1112,6 +1112,7 @@ static void
 colord_enum_func (void)
 {
 	CdProfileWarning warning;
+	CdProfileError profile_error;
 	CdSensorError sensor_error;
 	const gchar *tmp;
 	guint i;
@@ -1122,6 +1123,14 @@ colord_enum_func (void)
 		g_assert_cmpstr (tmp, !=, NULL);
 		sensor_error = cd_sensor_error_from_string (tmp);
 		g_assert_cmpint (sensor_error, !=, CD_SENSOR_ERROR_LAST);
+	}
+
+	/* CdProfileError */
+	for (i = 0; i < CD_PROFILE_ERROR_LAST; i++) {
+		tmp = cd_profile_error_to_string (i);
+		g_assert_cmpstr (tmp, !=, NULL);
+		profile_error = cd_profile_error_from_string (tmp);
+		g_assert_cmpint (profile_error, !=, CD_PROFILE_ERROR_LAST);
 	}
 
 	/* CdProfileWarning */

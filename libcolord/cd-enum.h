@@ -264,6 +264,26 @@ typedef enum {
 	CD_SENSOR_ERROR_LAST
 } CdSensorError;
 
+/**
+ * CdProfileError:
+ * @CD_PROFILE_ERROR_INTERNAL: 		An internal error occurred
+ * @CD_PROFILE_ERROR_ALREADY_INSTALLED: The profile is already installed
+ * @CD_PROFILE_ERROR_FAILED_TO_WRITE: 	The profile could not be written
+ * @CD_PROFILE_ERROR_FAILED_TO_PARSE: 	The profile could not be parsed
+ * @CD_PROFILE_ERROR_FAILED_TO_READ: 	The profile could not be read
+ *
+ * Errors that can be thrown
+ */
+typedef enum
+{
+	CD_PROFILE_ERROR_INTERNAL,
+	CD_PROFILE_ERROR_ALREADY_INSTALLED,
+	CD_PROFILE_ERROR_FAILED_TO_WRITE,
+	CD_PROFILE_ERROR_FAILED_TO_PARSE,
+	CD_PROFILE_ERROR_FAILED_TO_READ,
+	CD_PROFILE_ERROR_LAST
+} CdProfileError;
+
 /* defined in org.freedesktop.ColorManager.xml */
 #define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"
 
@@ -370,6 +390,8 @@ CdProfileKind	 cd_device_kind_to_profile_kind		(CdDeviceKind		 device_kind);
 
 const gchar	*cd_sensor_error_to_string		(CdSensorError		 error_enum);
 CdSensorError	 cd_sensor_error_from_string		(const gchar		*error_desc);
+const gchar	*cd_profile_error_to_string		(CdProfileError		 error_enum);
+CdProfileError	 cd_profile_error_from_string		(const gchar		*error_desc);
 
 
 G_END_DECLS

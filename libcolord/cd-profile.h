@@ -66,18 +66,6 @@ typedef struct
 	void (*_cd_profile_reserved8) (void);
 } CdProfileClass;
 
-/**
- * CdProfileError:
- * @CD_PROFILE_ERROR_FAILED: the transaction failed for an unknown reason
- *
- * Errors that can be thrown
- */
-typedef enum
-{
-	CD_PROFILE_ERROR_FAILED,
-	CD_PROFILE_ERROR_LAST
-} CdProfileError;
-
 GType		 cd_profile_get_type			(void);
 GQuark		 cd_profile_error_quark			(void);
 CdProfile	*cd_profile_new				(void);

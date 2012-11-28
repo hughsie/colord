@@ -84,6 +84,25 @@ static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdProfile, cd_profile, G_TYPE_OBJECT)
 
 /**
+ * cd_profile_error_quark:
+ **/
+GQuark
+cd_profile_error_quark (void)
+{
+	guint i;
+	static GQuark quark = 0;
+	if (!quark) {
+		quark = g_quark_from_static_string ("CdProfile");
+		for (i = 0; i < CD_PROFILE_ERROR_LAST; i++) {
+			g_dbus_error_register_error (quark,
+						     i,
+						     cd_profile_error_to_string (i));
+		}
+	}
+	return quark;
+}
+
+/**
  * cd_profile_get_scope:
  **/
 CdObjectScope
@@ -306,8 +325,8 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 	if (priv->filename == NULL) {
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_INTERNAL,
 			     "icc filename not set");
 		goto out;
 	}
@@ -317,8 +336,8 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 			      CD_SYSTEM_PROFILES_DIR)) {
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_ALREADY_INSTALLED,
 			     "file %s already installed in /var",
 			     priv->filename);
 		goto out;
@@ -329,8 +348,8 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 			      DATADIR "/color")) {
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_ALREADY_INSTALLED,
 			     "file %s already installed in /usr",
 			     priv->filename);
 		goto out;
@@ -357,8 +376,8 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 		if (!ret) {
 			ret = FALSE;
 			g_set_error (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED,
+				     CD_PROFILE_ERROR,
+				     CD_PROFILE_ERROR_FAILED_TO_WRITE,
 				     "failed to write mapped file %s: %s",
 				     priv->filename,
 				     error_local->message);
@@ -372,8 +391,8 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 		if (!ret) {
 			ret = FALSE;
 			g_set_error (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED,
+				     CD_PROFILE_ERROR,
+				     CD_PROFILE_ERROR_FAILED_TO_WRITE,
 				     "failed to copy %s: %s",
 				     priv->filename,
 				     error_local->message);
@@ -520,10 +539,8 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 							property_value,
 							&error);
 		if (!ret) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "%s", error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
 			g_error_free (error);
 			goto out;
 		}
@@ -545,10 +562,8 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* copy systemwide */
 		ret = cd_profile_install_system_wide (profile, &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "%s", error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
 			g_error_free (error);
 			goto out;
 		}
@@ -672,8 +687,8 @@ cd_profile_register_object (CdProfile *profile,
 		&error_local); /* GError** */
 	if (profile->priv->registration_id == 0) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_INTERNAL,
 			     "failed to register object: %s",
 			     error_local->message);
 		g_error_free (error_local);
@@ -1392,8 +1407,8 @@ cd_profile_set_filename (CdProfile *profile,
 		/* we're not allowing the dameon to open the file */
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_INTERNAL,
 			     "Failed to open %s as client did not send FD and "
 			     "daemon is not compiled with --enable-fd-fallback",
 			     filename);
@@ -1405,8 +1420,8 @@ cd_profile_set_filename (CdProfile *profile,
 	lcms_profile = cmsOpenProfileFromFile (filename, "r");
 	if (lcms_profile == NULL) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_PARSE,
 			     "failed to parse %s",
 			     filename);
 		goto out;
@@ -1470,8 +1485,8 @@ cd_profile_set_fd (CdProfile *profile,
 	/* check we're not already set */
 	if (priv->kind != CD_PROFILE_KIND_UNKNOWN) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_INTERNAL,
 			     "profile '%s' already set",
 			     priv->object_path);
 		goto out;
@@ -1481,8 +1496,8 @@ cd_profile_set_fd (CdProfile *profile,
 	stream = fdopen (fd, "r");
 	if (stream == NULL) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_READ,
 			     "failed to open stream from fd %i",
 			     fd);
 		goto out;
@@ -1493,8 +1508,8 @@ cd_profile_set_fd (CdProfile *profile,
 	priv->mapped_file = g_mapped_file_new_from_fd (fd, FALSE, error);
 	if (priv->mapped_file == NULL) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_READ,
 			     "failed to create mapped file from fd %i",
 			     fd);
 		goto out;
@@ -1505,8 +1520,8 @@ cd_profile_set_fd (CdProfile *profile,
 	lcms_profile = cmsOpenProfileFromStream (stream, "r");
 	if (lcms_profile == NULL) {
 		g_set_error_literal (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED,
+				     CD_PROFILE_ERROR,
+				     CD_PROFILE_ERROR_FAILED_TO_READ,
 				     "failed to open stream");
 		goto out;
 	}

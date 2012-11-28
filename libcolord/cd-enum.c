@@ -741,3 +741,55 @@ cd_sensor_error_from_string (const gchar *error_desc)
 		return CD_SENSOR_ERROR_IN_USE;
 	return CD_SENSOR_ERROR_LAST;
 }
+
+#define	CD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
+
+/**
+ * cd_profile_error_to_string:
+ *
+ * Converts a #CdProfileError to a string.
+ *
+ * Return value: identifier string
+ *
+ * Since: 0.1.26
+ **/
+const gchar *
+cd_profile_error_to_string (CdProfileError error_enum)
+{
+	if (error_enum == CD_PROFILE_ERROR_INTERNAL)
+		return CD_DBUS_INTERFACE_PROFILE "Internal";
+	if (error_enum == CD_PROFILE_ERROR_ALREADY_INSTALLED)
+		return CD_DBUS_INTERFACE_PROFILE "AlreadyInstalled";
+	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_WRITE)
+		return CD_DBUS_INTERFACE_PROFILE "FailedToWrite";
+	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_PARSE)
+		return CD_DBUS_INTERFACE_PROFILE "FailedToParse";
+	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_READ)
+		return CD_DBUS_INTERFACE_PROFILE "FailedToRead";
+	return NULL;
+}
+
+/**
+ * cd_profile_error_from_string:
+ *
+ * Converts a string to a #CdProfileError.
+ *
+ * Return value: enumerated value
+ *
+ * Since: 0.1.26
+ **/
+CdProfileError
+cd_profile_error_from_string (const gchar *error_desc)
+{
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "Internal") == 0)
+		return CD_PROFILE_ERROR_INTERNAL;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "AlreadyInstalled") == 0)
+		return CD_PROFILE_ERROR_ALREADY_INSTALLED;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToWrite") == 0)
+		return CD_PROFILE_ERROR_FAILED_TO_WRITE;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToParse") == 0)
+		return CD_PROFILE_ERROR_FAILED_TO_PARSE;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToRead") == 0)
+		return CD_PROFILE_ERROR_FAILED_TO_READ;
+	return CD_PROFILE_ERROR_LAST;
+}
