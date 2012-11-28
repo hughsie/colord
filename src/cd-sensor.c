@@ -254,6 +254,15 @@ cd_sensor_set_kind (CdSensor *sensor, CdSensorKind kind)
 }
 
 /**
+ * cd_sensor_get_kind:
+ **/
+CdSensorKind
+cd_sensor_get_kind (CdSensor *sensor)
+{
+	return sensor->priv->kind;
+}
+
+/**
  * cd_sensor_load:
  * @sensor: a valid #CdSensor instance
  * @kind: the sensor kind, e.g %CD_SENSOR_KIND_HUEY
