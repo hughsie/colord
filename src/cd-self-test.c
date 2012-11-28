@@ -84,7 +84,7 @@ colord_device_func (void)
 				     cd_profile_get_object_path (profile),
 				     0,
 				     &error);
-	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED);
 	g_assert (!ret);
 	g_clear_error (&error);
 
@@ -94,7 +94,7 @@ colord_device_func (void)
 				     "/dave",
 				     0,
 				     &error);
-	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST);
 	g_assert (!ret);
 	g_clear_error (&error);
 

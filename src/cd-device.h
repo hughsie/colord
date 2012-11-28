@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 #define CD_IS_DEVICE(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_DEVICE))
 #define CD_IS_DEVICE_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_DEVICE))
 #define CD_DEVICE_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_DEVICE, CdDeviceClass))
+#define CD_DEVICE_ERROR		cd_device_error_quark()
 
 typedef struct _CdDevicePrivate	CdDevicePrivate;
 typedef struct _CdDevice	CdDevice;
@@ -54,6 +55,7 @@ struct _CdDeviceClass
 
 GType		 cd_device_get_type			(void);
 CdDevice	*cd_device_new				(void);
+GQuark		 cd_device_error_quark			(void);
 
 /* accessors */
 CdObjectScope	 cd_device_get_scope			(CdDevice	*device);

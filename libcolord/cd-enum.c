@@ -793,3 +793,63 @@ cd_profile_error_from_string (const gchar *error_desc)
 		return CD_PROFILE_ERROR_FAILED_TO_READ;
 	return CD_PROFILE_ERROR_LAST;
 }
+
+#define	CD_DBUS_INTERFACE_DEVICE	"org.freedesktop.ColorManager.Device"
+
+/**
+ * cd_device_error_to_string:
+ *
+ * Converts a #CdDeviceError to a string.
+ *
+ * Return value: identifier string
+ *
+ * Since: 0.1.26
+ **/
+const gchar *
+cd_device_error_to_string (CdDeviceError error_enum)
+{
+	if (error_enum == CD_DEVICE_ERROR_INTERNAL)
+		return CD_DBUS_INTERFACE_DEVICE "Internal";
+	if (error_enum == CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST)
+		return CD_DBUS_INTERFACE_DEVICE "ProfileDoesNotExist";
+	if (error_enum == CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED)
+		return CD_DBUS_INTERFACE_DEVICE "ProfileAlreadyAdded";
+	if (error_enum == CD_DEVICE_ERROR_PROFILING)
+		return CD_DBUS_INTERFACE_DEVICE "Profiling";
+	if (error_enum == CD_DEVICE_ERROR_NOTHING_MATCHED)
+		return CD_DBUS_INTERFACE_DEVICE "NothingMatched";
+	if (error_enum == CD_DEVICE_ERROR_FAILED_TO_INHIBIT)
+		return CD_DBUS_INTERFACE_DEVICE "FailedToInhibit";
+	if (error_enum == CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT)
+		return CD_DBUS_INTERFACE_DEVICE "FailedToUninhibit";
+	return NULL;
+}
+
+/**
+ * cd_device_error_from_string:
+ *
+ * Converts a string to a #CdDeviceError.
+ *
+ * Return value: enumerated value
+ *
+ * Since: 0.1.26
+ **/
+CdDeviceError
+cd_device_error_from_string (const gchar *error_desc)
+{
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "Internal") == 0)
+		return CD_DEVICE_ERROR_INTERNAL;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "ProfileDoesNotExist") == 0)
+		return CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "ProfileAlreadyAdded") == 0)
+		return CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "Profiling") == 0)
+		return CD_DEVICE_ERROR_PROFILING;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "NothingMatched") == 0)
+		return CD_DEVICE_ERROR_NOTHING_MATCHED;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "FailedToInhibit") == 0)
+		return CD_DEVICE_ERROR_FAILED_TO_INHIBIT;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "FailedToUninhibit") == 0)
+		return CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT;
+	return CD_DEVICE_ERROR_LAST;
+}

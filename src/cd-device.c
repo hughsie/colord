@@ -98,6 +98,25 @@ typedef struct {
 static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdDevice, cd_device, G_TYPE_OBJECT)
 
+/**
+ * cd_device_error_quark:
+ **/
+GQuark
+cd_device_error_quark (void)
+{
+	guint i;
+	static GQuark quark = 0;
+	if (!quark) {
+		quark = g_quark_from_static_string ("CdDevice");
+		for (i = 0; i < CD_DEVICE_ERROR_LAST; i++) {
+			g_dbus_error_register_error (quark,
+						     i,
+						     cd_device_error_to_string (i));
+		}
+	}
+	return quark;
+}
+
 #if !GLIB_CHECK_VERSION (2, 25, 0)
 static guint64
 g_get_real_time (void)
@@ -569,8 +588,8 @@ cd_device_remove_profile (CdDevice *device,
 	}
 	if (!ret) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_DEVICE_ERROR,
+			     CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST,
 			     "profile object path '%s' does not exist on '%s'",
 			     profile_object_path,
 			     priv->object_path);
@@ -673,8 +692,8 @@ cd_device_add_profile (CdDevice *device,
 	if (profile == NULL) {
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_DEVICE_ERROR,
+			     CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST,
 			     "profile object path '%s' does not exist",
 			     profile_object_path);
 		goto out;
@@ -687,8 +706,8 @@ cd_device_add_profile (CdDevice *device,
 			       cd_profile_get_object_path (item->profile)) == 0) {
 			ret = FALSE;
 			g_set_error (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED,
+				     CD_DEVICE_ERROR,
+				     CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED,
 				     "profile object path '%s' has already been added",
 				     profile_object_path);
 			goto out;
@@ -965,7 +984,9 @@ cd_device_make_default (CdDevice *device,
 	profile = cd_device_find_profile_by_object_path (priv->profiles,
 							 profile_object_path);
 	if (profile == NULL) {
-		g_set_error (error, 1, 0,
+		g_set_error (error,
+			     CD_DEVICE_ERROR,
+			     CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST,
 			     "profile object path '%s' does not exist for this device",
 			     profile_object_path);
 		goto out;
@@ -1050,8 +1071,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* nothing valid */
 		if (relation == CD_DEVICE_RELATION_UNKNOWN) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_INTERNAL,
 							       "relation '%s' unknown, expected 'hard' or 'soft'",
 							       property_value);
 			goto out;
@@ -1064,10 +1085,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 					     g_get_real_time (),
 					     &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "%s", error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
 			g_error_free (error);
 			goto out;
 		}
@@ -1112,10 +1131,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 						profile_object_path,
 						&error);
 		if (!ret) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "%s", error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
 			g_error_free (error);
 			goto out;
 		}
@@ -1153,8 +1170,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 							    property_value);
 		if (relation == CD_DEVICE_RELATION_UNKNOWN) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST,
 							       "no profile '%s' found",
 							       property_value);
 			goto out;
@@ -1183,8 +1200,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		if (!ret) {
 			g_debug ("CdDevice: returning no results for profiling");
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_PROFILING,
 							       "profiling, so ignoring '%s'",
 							       property_name);
 			goto out;
@@ -1207,8 +1224,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_NOTHING_MATCHED,
 							       "nothing matched expression '%s'",
 							       property_name);
 			goto out;
@@ -1240,11 +1257,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 					      profile_object_path,
 					      &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "failed to make profile default: %s",
-							       error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
 			g_error_free (error);
 			goto out;
 		}
@@ -1291,10 +1305,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 						       (priv->object_scope == CD_OBJECT_SCOPE_DISK),
 						       &error);
 		if (!ret) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
-							       "%s", error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
 			g_error_free (error);
 			goto out;
 		}
@@ -1319,8 +1331,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 				      &error);
 		if (!ret) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_FAILED_TO_INHIBIT,
 							       "%s", error->message);
 			g_error_free (error);
 			goto out;
@@ -1340,8 +1352,8 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 					 &error);
 		if (!ret) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT,
 							       "%s", error->message);
 			g_error_free (error);
 			goto out;
@@ -1501,8 +1513,8 @@ cd_device_register_object (CdDevice *device,
 		&error_local); /* GError** */
 	if (device->priv->registration_id == 0) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_DEVICE_ERROR,
+			     CD_DEVICE_ERROR_INTERNAL,
 			     "failed to register object: %s",
 			     error_local->message);
 		g_error_free (error_local);

@@ -67,18 +67,6 @@ typedef struct
 	void (*_cd_device_reserved8) (void);
 } CdDeviceClass;
 
-/**
- * CdDeviceError:
- * @CD_DEVICE_ERROR_FAILED: the transaction failed for an unknown reason
- *
- * Errors that can be thrown
- */
-typedef enum
-{
-	CD_DEVICE_ERROR_FAILED,
-	CD_DEVICE_ERROR_LAST
-} CdDeviceError;
-
 GType		 cd_device_get_type			(void);
 GQuark		 cd_device_error_quark			(void);
 CdDevice	*cd_device_new				(void);

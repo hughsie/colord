@@ -588,7 +588,7 @@ colord_client_random_func (void)
 								 qualifier1,
 								 NULL,
 								 &error);
-	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_NOTHING_MATCHED);
 	g_assert (profile_tmp == NULL);
 	g_clear_error (&error);
 
@@ -597,7 +597,7 @@ colord_client_random_func (void)
 						   profile,
 						   NULL,
 						   &error);
-	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST);
 	g_assert (relation == CD_DEVICE_RELATION_UNKNOWN);
 	g_clear_error (&error);
 
@@ -718,7 +718,7 @@ colord_client_random_func (void)
 	ret = cd_device_profiling_uninhibit_sync (device,
 						  NULL,
 						  &error);
-	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT);
 	g_assert (!ret);
 	g_clear_error (&error);
 
@@ -734,7 +734,7 @@ colord_client_random_func (void)
 								 qualifier2,
 								 NULL,
 								 &error);
-	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_PROFILING);
 	g_assert (profile_tmp == NULL);
 	g_clear_error (&error);
 
@@ -1113,6 +1113,7 @@ colord_enum_func (void)
 {
 	CdProfileWarning warning;
 	CdProfileError profile_error;
+	CdDeviceError device_error;
 	CdSensorError sensor_error;
 	const gchar *tmp;
 	guint i;
@@ -1131,6 +1132,14 @@ colord_enum_func (void)
 		g_assert_cmpstr (tmp, !=, NULL);
 		profile_error = cd_profile_error_from_string (tmp);
 		g_assert_cmpint (profile_error, !=, CD_PROFILE_ERROR_LAST);
+	}
+
+	/* CdDeviceError */
+	for (i = 0; i < CD_DEVICE_ERROR_LAST; i++) {
+		tmp = cd_device_error_to_string (i);
+		g_assert_cmpstr (tmp, !=, NULL);
+		device_error = cd_device_error_from_string (tmp);
+		g_assert_cmpint (device_error, !=, CD_DEVICE_ERROR_LAST);
 	}
 
 	/* CdProfileWarning */
@@ -1781,7 +1790,7 @@ colord_device_func (void)
 
 	/* connect */
 	ret = cd_device_connect_sync (device, NULL, &error);
-	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_FAILED);
+	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_INTERNAL);
 	g_assert (!ret);
 	g_clear_error (&error);
 

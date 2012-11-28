@@ -695,7 +695,7 @@ cd_device_connect_cb (GObject *source_object,
 	if (device->priv->proxy == NULL) {
 		g_simple_async_result_set_error (res_source,
 						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
+						 CD_DEVICE_ERROR_INTERNAL,
 						 "Failed to connect to device %s: %s",
 						 cd_device_get_object_path (device),
 						 error->message);
@@ -713,7 +713,7 @@ cd_device_connect_cb (GObject *source_object,
 	if (id == NULL) {
 		g_simple_async_result_set_error (res_source,
 						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
+						 CD_DEVICE_ERROR_INTERNAL,
 						 "Failed to connect to missing device %s",
 						 cd_device_get_object_path (device));
 		goto out;
@@ -940,6 +940,29 @@ cd_device_set_property_finish (CdDevice *device,
 	return g_simple_async_result_get_op_res_gboolean (simple);
 }
 
+/**
+ * cd_device_fixup_dbus_error:
+ **/
+static void
+cd_device_fixup_dbus_error (GError *error)
+{
+	gchar *name = NULL;
+
+	g_return_if_fail (error != NULL);
+
+	/* is a remote error? */
+	if (!g_dbus_error_is_remote_error (error))
+		goto out;
+
+	/* parse the remote error */
+	name = g_dbus_error_get_remote_error (error);
+	error->domain = CD_DEVICE_ERROR;
+	error->code = cd_device_error_from_string (name);
+	g_dbus_error_strip_remote_error (error);
+out:
+	g_free (name);
+}
+
 static void
 cd_device_set_property_cb (GObject *source_object,
 			    GAsyncResult *res,
@@ -953,11 +976,8 @@ cd_device_set_property_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to SetProperty: %s",
-						 error->message);
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -1059,11 +1079,8 @@ cd_device_add_profile_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to AddProfile: %s",
-						 error->message);
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -1165,11 +1182,8 @@ cd_device_remove_profile_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to RemoveProfile: %s",
-						 error->message);
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -1268,11 +1282,8 @@ cd_device_make_profile_default_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to MakeProfileDefault: %s",
-						 error->message);
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -1371,11 +1382,8 @@ cd_device_profiling_inhibit_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to ProfilingInhibit: %s",
-						 error->message);
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -1471,11 +1479,8 @@ cd_device_profiling_uninhibit_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to ProfilingUninhibit: %s",
-						 error->message);
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -1573,11 +1578,8 @@ cd_device_get_profile_for_qualifiers_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to GetProfileForQualifiers: %s",
-						 error->message);
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -1694,11 +1696,8 @@ cd_device_get_profile_relation_cb (GObject *source_object,
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_DEVICE_ERROR,
-						 CD_DEVICE_ERROR_FAILED,
-						 "Failed to GetProfileRelation: %s",
-						 error->message);
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
 		g_error_free (error);
 		goto out;
 	}

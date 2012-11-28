@@ -284,6 +284,30 @@ typedef enum
 	CD_PROFILE_ERROR_LAST
 } CdProfileError;
 
+/**
+ * CdDeviceError:
+ * @CD_DEVICE_ERROR_INTERNAL:		An internal error occurred
+ * @CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST:	The profile does not exist
+ * @CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED:	The profile has already been added
+ * @CD_DEVICE_ERROR_PROFILING:		The device is being profiled
+ * @CD_DEVICE_ERROR_NOTHING_MATCHED:	Nothing matched the search term
+ * @CD_DEVICE_ERROR_FAILED_TO_INHIBIT:	Cound not inhibit device
+ * @CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT:	Cound not uninhibit device
+ *
+ * Errors that can be thrown
+ */
+typedef enum
+{
+	CD_DEVICE_ERROR_INTERNAL,
+	CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST,
+	CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED,
+	CD_DEVICE_ERROR_PROFILING,
+	CD_DEVICE_ERROR_NOTHING_MATCHED,
+	CD_DEVICE_ERROR_FAILED_TO_INHIBIT,
+	CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT,
+	CD_DEVICE_ERROR_LAST
+} CdDeviceError;
+
 /* defined in org.freedesktop.ColorManager.xml */
 #define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"
 
@@ -392,7 +416,8 @@ const gchar	*cd_sensor_error_to_string		(CdSensorError		 error_enum);
 CdSensorError	 cd_sensor_error_from_string		(const gchar		*error_desc);
 const gchar	*cd_profile_error_to_string		(CdProfileError		 error_enum);
 CdProfileError	 cd_profile_error_from_string		(const gchar		*error_desc);
-
+const gchar	*cd_device_error_to_string		(CdDeviceError		 error_enum);
+CdDeviceError	 cd_device_error_from_string		(const gchar		*error_desc);
 
 G_END_DECLS
 
