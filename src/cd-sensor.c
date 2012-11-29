@@ -620,7 +620,8 @@ cd_sensor_name_vanished_cb (GDBusConnection *connection,
 
 	/* dummy */
 	g_debug ("locked sender has vanished without doing Unlock()!");
-	if (sensor->priv->desc->unlock_async == NULL) {
+	if (sensor->priv->desc == NULL ||
+	    sensor->priv->desc->unlock_async == NULL) {
 		cd_sensor_set_locked (sensor, FALSE);
 		goto out;
 	}
@@ -693,7 +694,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 						     NULL);
 
 		/* no support */
-		if (sensor->priv->desc->lock_async == NULL) {
+		if (sensor->priv->desc == NULL ||
+		    sensor->priv->desc->lock_async == NULL) {
 			cd_sensor_set_locked (sensor, TRUE);
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
@@ -741,7 +743,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* no support */
-		if (sensor->priv->desc->unlock_async == NULL) {
+		if (sensor->priv->desc == NULL ||
+		    sensor->priv->desc->unlock_async == NULL) {
 			cd_sensor_set_locked (sensor, FALSE);
 			g_dbus_method_invocation_return_value (invocation, NULL);
 			goto out;
@@ -780,7 +783,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* no support */
-		if (sensor->priv->desc->get_sample_async == NULL) {
+		if (sensor->priv->desc == NULL ||
+		    sensor->priv->desc->get_sample_async == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_SENSOR_ERROR,
 							       CD_SENSOR_ERROR_NO_SUPPORT,
@@ -834,7 +838,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* no support */
-		if (sensor->priv->desc->set_options_async == NULL) {
+		if (sensor->priv->desc == NULL ||
+		    sensor->priv->desc->set_options_async == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_SENSOR_ERROR,
 							       CD_SENSOR_ERROR_NO_SUPPORT,
