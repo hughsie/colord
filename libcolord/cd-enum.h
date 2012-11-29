@@ -249,6 +249,7 @@ typedef enum {
  * @CD_SENSOR_ERROR_ALREADY_LOCKED:	The sensor is already locked
  * @CD_SENSOR_ERROR_NOT_LOCKED:		The sensor is not locked
  * @CD_SENSOR_ERROR_IN_USE:		The sensor is already in use
+ * @CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE:	Authentication failed
  *
  * The sensor error code.
  *
@@ -261,6 +262,7 @@ typedef enum {
 	CD_SENSOR_ERROR_ALREADY_LOCKED,
 	CD_SENSOR_ERROR_NOT_LOCKED,
 	CD_SENSOR_ERROR_IN_USE,
+	CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE,
 	CD_SENSOR_ERROR_LAST
 } CdSensorError;
 
@@ -271,6 +273,7 @@ typedef enum {
  * @CD_PROFILE_ERROR_FAILED_TO_WRITE: 	The profile could not be written
  * @CD_PROFILE_ERROR_FAILED_TO_PARSE: 	The profile could not be parsed
  * @CD_PROFILE_ERROR_FAILED_TO_READ: 	The profile could not be read
+ * @CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE:	Authentication failed
  *
  * Errors that can be thrown
  */
@@ -281,6 +284,7 @@ typedef enum
 	CD_PROFILE_ERROR_FAILED_TO_WRITE,
 	CD_PROFILE_ERROR_FAILED_TO_PARSE,
 	CD_PROFILE_ERROR_FAILED_TO_READ,
+	CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE,
 	CD_PROFILE_ERROR_LAST
 } CdProfileError;
 
@@ -293,6 +297,7 @@ typedef enum
  * @CD_DEVICE_ERROR_NOTHING_MATCHED:	Nothing matched the search term
  * @CD_DEVICE_ERROR_FAILED_TO_INHIBIT:	Cound not inhibit device
  * @CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT:	Cound not uninhibit device
+ * @CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE:	Authentication failed
  *
  * Errors that can be thrown
  */
@@ -305,6 +310,7 @@ typedef enum
 	CD_DEVICE_ERROR_NOTHING_MATCHED,
 	CD_DEVICE_ERROR_FAILED_TO_INHIBIT,
 	CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT,
+	CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
 	CD_DEVICE_ERROR_LAST
 } CdDeviceError;
 

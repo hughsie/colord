@@ -42,6 +42,9 @@ cd_main_error_quark (void)
 		g_dbus_error_register_error (quark,
 					     CD_MAIN_ERROR_ALREADY_EXISTS,
 					     COLORD_DBUS_SERVICE ".AlreadyExists");
+		g_dbus_error_register_error (quark,
+					     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+					     COLORD_DBUS_SERVICE ".FailedToAuthenticate");
 	}
 	return quark;
 }
@@ -66,16 +69,14 @@ cd_main_ensure_dbus_path (const gchar *object_path)
  * cd_main_get_sender_uid:
  **/
 guint
-cd_main_get_sender_uid (GDBusMethodInvocation *invocation, GError **error)
+cd_main_get_sender_uid (GDBusConnection *connection,
+			const gchar *sender,
+			GError **error)
 {
-	const gchar *sender;
-	GDBusConnection *connection;
 	guint uid = G_MAXUINT;
 	GVariant *value;
 
 	/* call into DBus to get the user ID that issued the request */
-	connection = g_dbus_method_invocation_get_connection (invocation);
-	sender = g_dbus_method_invocation_get_sender (invocation);
 	value = g_dbus_connection_call_sync (connection,
 					     "org.freedesktop.DBus",
 					     "/org/freedesktop/DBus",
@@ -99,16 +100,14 @@ cd_main_get_sender_uid (GDBusMethodInvocation *invocation, GError **error)
  * cd_main_get_sender_pid:
  **/
 guint
-cd_main_get_sender_pid (GDBusMethodInvocation *invocation, GError **error)
+cd_main_get_sender_pid (GDBusConnection *connection,
+			const gchar *sender,
+			GError **error)
 {
-	const gchar *sender;
-	GDBusConnection *connection;
 	guint pid = G_MAXUINT;
 	GVariant *value;
 
 	/* call into DBus to get the user ID that issued the request */
-	connection = g_dbus_method_invocation_get_connection (invocation);
-	sender = g_dbus_method_invocation_get_sender (invocation);
 	value = g_dbus_connection_call_sync (connection,
 					     "org.freedesktop.DBus",
 					     "/org/freedesktop/DBus",
@@ -132,12 +131,13 @@ cd_main_get_sender_pid (GDBusMethodInvocation *invocation, GError **error)
  * cd_main_sender_authenticated:
  **/
 gboolean
-cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
-			      const gchar *action_id)
+cd_main_sender_authenticated (GDBusConnection *connection,
+			      const gchar *sender,
+			      const gchar *action_id,
+			      GError **error)
 {
-	const gchar *sender;
 	gboolean ret = FALSE;
-	GError *error = NULL;
+	GError *error_local = NULL;
 	guint uid;
 #ifdef USE_POLKIT
 	PolkitAuthorizationResult *result = NULL;
@@ -146,16 +146,15 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 #endif
 
 	/* uid 0 is allowed to do all actions */
-	sender = g_dbus_method_invocation_get_sender (invocation);
-	uid = cd_main_get_sender_uid (invocation, &error);
+	uid = cd_main_get_sender_uid (connection, sender, &error_local);
 	if (uid == G_MAXUINT) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
-						       "could not get uid to authenticate %s: %s",
-						       action_id,
-						       error->message);
-		g_error_free (error);
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+			     "could not get uid to authenticate %s: %s",
+			     action_id,
+			     error_local->message);
+		g_error_free (error_local);
 		goto out;
 	}
 
@@ -177,10 +176,14 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 
 #ifdef USE_POLKIT
 	/* get authority */
-	authority = polkit_authority_get_sync (NULL, &error);
+	authority = polkit_authority_get_sync (NULL, &error_local);
 	if (authority == NULL) {
-		g_warning ("failed to get polkit authority: %s", error->message);
-		g_error_free (error);
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+			     "failed to get polkit authorit: %s",
+			     error_local->message);
+		g_error_free (error_local);
 		goto out;
 	}
 
@@ -191,27 +194,25 @@ cd_main_sender_authenticated (GDBusMethodInvocation *invocation,
 			NULL,
 			POLKIT_CHECK_AUTHORIZATION_FLAGS_ALLOW_USER_INTERACTION,
 			NULL,
-			&error);
-
-	/* failed */
+			&error_local);
 	if (result == NULL) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
-						       "could not check %s for auth: %s",
-						       action_id,
-						       error->message);
-		g_error_free (error);
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+			     "could not check %s for auth: %s",
+			     action_id,
+			     error_local->message);
+		g_error_free (error_local);
 		goto out;
 	}
 
 	/* did not auth */
 	if (!polkit_authorization_result_get_is_authorized (result)) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
-						       "failed to obtain %s auth",
-						       action_id);
+		g_set_error (error,
+			     CD_MAIN_ERROR,
+			     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+			     "failed to obtain %s auth",
+			     action_id);
 		goto out;
 	}
 #else

@@ -1025,7 +1025,7 @@ out:
  * cd_device_dbus_method_call:
  **/
 static void
-cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
+cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
@@ -1050,10 +1050,18 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "AddProfile") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.modify-device");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.modify-device",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* check the profile_object_path exists */
 		g_variant_get (parameters, "(&s&o)",
@@ -1117,10 +1125,18 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "RemoveProfile") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.modify-device");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.modify-device",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* try to remove */
 		g_variant_get (parameters, "(&o)",
@@ -1241,10 +1257,18 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "MakeProfileDefault") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.modify-device");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.modify-device",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* check the profile_object_path exists */
 		g_variant_get (parameters, "(&o)",
@@ -1288,10 +1312,18 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "SetProperty") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.modify-device");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.modify-device",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* set, and parse */
 		g_variant_get (parameters, "(&s&s)",
@@ -1318,10 +1350,18 @@ cd_device_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "ProfilingInhibit") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.device-inhibit");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.device-inhibit",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* inhbit all profiles */
 		g_debug ("CdDevice %s:ProfilingInhibit()",

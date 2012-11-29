@@ -628,7 +628,7 @@ out:
  * cd_sensor_dbus_method_call:
  **/
 static void
-cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
+cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
@@ -639,6 +639,7 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	const gchar *cap_tmp = NULL;
 	gboolean ret;
 	gchar *key;
+	GError *error = NULL;
 	GHashTable *options = NULL;
 	GVariantIter iter;
 	GVariant *result = NULL;
@@ -668,10 +669,18 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.sensor-lock");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.sensor-lock",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* watch this bus name */
 		priv->watcher_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
@@ -711,10 +720,18 @@ cd_sensor_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.sensor-lock");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.sensor-lock",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* un-watch this bus name */
 		if (priv->watcher_id != 0) {

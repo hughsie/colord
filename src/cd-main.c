@@ -795,7 +795,7 @@ out:
  * cd_main_daemon_method_call:
  **/
 static void
-cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
+cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
@@ -825,7 +825,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	GUnixFDList *fd_list;
 
 	/* get the owner of the message */
-	uid = cd_main_get_sender_uid (invocation, &error);
+	uid = cd_main_get_sender_uid (connection, sender, &error);
 	if (uid == G_MAXUINT) {
 		g_dbus_method_invocation_return_error (invocation,
 						       CD_MAIN_ERROR,
@@ -1061,10 +1061,16 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "CreateDevice") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.create-device");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.create-device",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* does already exist */
 		g_variant_get (parameters, "(&s&sa{ss})",
@@ -1114,7 +1120,7 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 		}
 
 		/* get the process that sent the message */
-		pid = cd_main_get_sender_pid (invocation, &error);
+		pid = cd_main_get_sender_pid (connection, sender, &error);
 		if (pid == G_MAXUINT) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_MAIN_ERROR,
@@ -1183,10 +1189,16 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "DeleteDevice") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.delete-device");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.delete-device",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* does already exist */
 		g_variant_get (parameters, "(&o)", &device_id);
@@ -1220,10 +1232,16 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "DeleteProfile") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.create-profile");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.create-profile",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* does already exist */
 		g_variant_get (parameters, "(&o)", &device_id);
@@ -1258,10 +1276,16 @@ cd_main_daemon_method_call (GDBusConnection *connection_, const gchar *sender,
 	    g_strcmp0 (method_name, "CreateProfileWithFd") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.create-profile");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.create-profile",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
 			goto out;
+		}
 
 		if (g_strcmp0 (g_variant_get_type_string (parameters),
 			       "(ssha{ss})") == 0) {

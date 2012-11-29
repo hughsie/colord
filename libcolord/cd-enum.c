@@ -712,6 +712,8 @@ cd_sensor_error_to_string (CdSensorError error_enum)
 		return CD_DBUS_INTERFACE_SENSOR "NotLocked";
 	if (error_enum == CD_SENSOR_ERROR_IN_USE)
 		return CD_DBUS_INTERFACE_SENSOR "InUse";
+	if (error_enum == CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE)
+		return CD_DBUS_INTERFACE_SENSOR "FailedToAuthenticate";
 	return NULL;
 }
 
@@ -739,6 +741,8 @@ cd_sensor_error_from_string (const gchar *error_desc)
 		return CD_SENSOR_ERROR_NOT_LOCKED;
 	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "InUse") == 0)
 		return CD_SENSOR_ERROR_IN_USE;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "FailedToAuthenticate") == 0)
+		return CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE;
 	return CD_SENSOR_ERROR_LAST;
 }
 
@@ -766,6 +770,8 @@ cd_profile_error_to_string (CdProfileError error_enum)
 		return CD_DBUS_INTERFACE_PROFILE "FailedToParse";
 	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_READ)
 		return CD_DBUS_INTERFACE_PROFILE "FailedToRead";
+	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE)
+		return CD_DBUS_INTERFACE_PROFILE "FailedToAuthenticate";
 	return NULL;
 }
 
@@ -791,6 +797,8 @@ cd_profile_error_from_string (const gchar *error_desc)
 		return CD_PROFILE_ERROR_FAILED_TO_PARSE;
 	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToRead") == 0)
 		return CD_PROFILE_ERROR_FAILED_TO_READ;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToAuthenticate") == 0)
+		return CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE;
 	return CD_PROFILE_ERROR_LAST;
 }
 
@@ -822,6 +830,8 @@ cd_device_error_to_string (CdDeviceError error_enum)
 		return CD_DBUS_INTERFACE_DEVICE "FailedToInhibit";
 	if (error_enum == CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT)
 		return CD_DBUS_INTERFACE_DEVICE "FailedToUninhibit";
+	if (error_enum == CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE)
+		return CD_DBUS_INTERFACE_DEVICE "FailedToAuthenticate";
 	return NULL;
 }
 
@@ -851,5 +861,7 @@ cd_device_error_from_string (const gchar *error_desc)
 		return CD_DEVICE_ERROR_FAILED_TO_INHIBIT;
 	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "FailedToUninhibit") == 0)
 		return CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "FailedToAuthenticate") == 0)
+		return CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE;
 	return CD_DEVICE_ERROR_LAST;
 }

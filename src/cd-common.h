@@ -40,15 +40,20 @@
 typedef enum {
 	CD_MAIN_ERROR_FAILED,
 	CD_MAIN_ERROR_ALREADY_EXISTS,
+	CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
 	CD_MAIN_ERROR_LAST
 } CdMainError;
 
 GQuark		 cd_main_error_quark		(void);
-gboolean	 cd_main_sender_authenticated	(GDBusMethodInvocation *invocation,
-						 const gchar	*action_id);
-guint		 cd_main_get_sender_uid		(GDBusMethodInvocation *invocation,
+gboolean	 cd_main_sender_authenticated	(GDBusConnection *connection,
+						 const gchar	*sender,
+						 const gchar	*action_id,
 						 GError		**error);
-guint		 cd_main_get_sender_pid		(GDBusMethodInvocation *invocation,
+guint		 cd_main_get_sender_uid		(GDBusConnection *connection,
+						 const gchar	*sender,
+						 GError		**error);
+guint		 cd_main_get_sender_pid		(GDBusConnection *connection,
+						 const gchar	*sender,
 						 GError		**error);
 gchar		*cd_main_ensure_dbus_path	(const gchar	*object_path);
 gboolean	 cd_main_mkdir_with_parents	(const gchar	*filename,

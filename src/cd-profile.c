@@ -508,7 +508,7 @@ out:
  * cd_profile_dbus_method_call:
  **/
 static void
-cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
+cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
 			    const gchar *method_name, GVariant *parameters,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
@@ -523,10 +523,18 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 	if (g_strcmp0 (method_name, "SetProperty") == 0) {
 
 		/* require auth */
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.modify-profile");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.modify-profile",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_PROFILE_ERROR,
+							       CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* set, and parse */
 		g_variant_get (parameters, "(&s&s)",
@@ -554,10 +562,18 @@ cd_profile_dbus_method_call (GDBusConnection *connection_, const gchar *sender,
 		/* require auth */
 		g_debug ("CdProfile %s:InstallSystemWide() on %s",
 			 sender, profile->priv->object_path);
-		ret = cd_main_sender_authenticated (invocation,
-						    "org.freedesktop.color-manager.install-system-wide");
-		if (!ret)
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.install-system-wide",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_PROFILE_ERROR,
+							       CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
 			goto out;
+		}
 
 		/* copy systemwide */
 		ret = cd_profile_install_system_wide (profile, &error);
