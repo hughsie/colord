@@ -714,6 +714,10 @@ cd_sensor_error_to_string (CdSensorError error_enum)
 		return CD_DBUS_INTERFACE_SENSOR ".InUse";
 	if (error_enum == CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE)
 		return CD_DBUS_INTERFACE_SENSOR ".FailedToAuthenticate";
+	if (error_enum == CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE)
+		return CD_DBUS_INTERFACE_SENSOR ".RequiredPositionCalibrate";
+	if (error_enum == CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE)
+		return CD_DBUS_INTERFACE_SENSOR ".RequiredPositionSurface";
 	return NULL;
 }
 
@@ -743,6 +747,10 @@ cd_sensor_error_from_string (const gchar *error_desc)
 		return CD_SENSOR_ERROR_IN_USE;
 	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".FailedToAuthenticate") == 0)
 		return CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".RequiredPositionCalibrate") == 0)
+		return CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".RequiredPositionSurface") == 0)
+		return CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE;
 	return CD_SENSOR_ERROR_LAST;
 }
 

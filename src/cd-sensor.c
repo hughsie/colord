@@ -295,6 +295,7 @@ cd_sensor_load (CdSensor *sensor, GError **error)
 	gboolean ret = FALSE;
 	gchar *backend_name = NULL;
 	gchar *path = NULL;
+	gchar *path_fallback = NULL;
 	GModule *handle;
 
 	/* no module */
@@ -310,8 +311,16 @@ cd_sensor_load (CdSensor *sensor, GError **error)
 	path = g_build_filename (LIBDIR, "colord-sensors", backend_name, NULL);
 	handle = g_module_open (path, G_MODULE_BIND_LOCAL);
 	if (handle == NULL) {
+		g_debug ("Trying to fall back to : libcolord_sensor_argyll");
+		path_fallback = g_build_filename (LIBDIR,
+						  "colord-sensors",
+						  "libcolord_sensor_argyll.so",
+						  NULL);
+		handle = g_module_open (path_fallback, G_MODULE_BIND_LOCAL);
+	}
+	if (handle == NULL) {
 		g_set_error (error, 1, 0,
-			     "opening module %s failed : %s",
+			     "opening module %s (and fallback) failed : %s",
 			     backend_name, g_module_error ());
 		goto out;
 	}
@@ -341,6 +350,7 @@ out:
 //		g_module_close (handle);
 	g_free (backend_name);
 	g_free (path);
+	g_free (path_fallback);
 	return ret;
 }
 
@@ -644,15 +654,6 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	GVariantIter iter;
 	GVariant *result = NULL;
 	GVariant *value;
-
-	/* check native */
-	if (!priv->native) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_SENSOR_ERROR,
-						       CD_SENSOR_ERROR_NO_SUPPORT,
-						       "no native driver for sensor");
-		goto out;
-	}
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "Lock") == 0) {

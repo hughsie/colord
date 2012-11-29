@@ -250,6 +250,8 @@ typedef enum {
  * @CD_SENSOR_ERROR_NOT_LOCKED:		The sensor is not locked
  * @CD_SENSOR_ERROR_IN_USE:		The sensor is already in use
  * @CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE:	Authentication failed
+ * @CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE:	The sensor needs to be in the calibrate position
+ * @CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE:		The sensor needs to be in the surface position
  *
  * The sensor error code.
  *
@@ -263,6 +265,8 @@ typedef enum {
 	CD_SENSOR_ERROR_NOT_LOCKED,
 	CD_SENSOR_ERROR_IN_USE,
 	CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE,
+	CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE,
+	CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE,
 	CD_SENSOR_ERROR_LAST
 } CdSensorError;
 
