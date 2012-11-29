@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -26,6 +26,7 @@
 #include <locale.h>
 #include <pwd.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "cd-client-sync.h"
 #include "cd-device-sync.h"
@@ -809,7 +810,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 	CdSensorCap cap;
 	CdSensor *sensor;
 	gboolean ret = TRUE;
-//	gdouble ambient;
+	GError *error_local = NULL;
 	GPtrArray *array = NULL;
 	guint i;
 	guint j;
@@ -858,14 +859,36 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 			goto out;
 
 		/* get 3 samples sync */
-		for (j = 0; j < 3; j++) {
+		for (j = 1; j < 4; j++) {
 			xyz = cd_sensor_get_sample_sync (sensor,
 							 cap,
 							 NULL,
-							 error);
+							 &error_local);
 			if (xyz == NULL) {
-				ret = FALSE;
-				goto out;
+				if (g_error_matches (error_local,
+						     CD_SENSOR_ERROR,
+						     CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE)) {
+					/* TRANSLATORS: the user needs to change something on the device */
+					g_print ("%s\n", _("Set the device to the calibrate position and press enter."));
+					getchar ();
+					j--;
+					g_clear_error (&error_local);
+					continue;
+				} else if (g_error_matches (error_local,
+							    CD_SENSOR_ERROR,
+							    CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE)) {
+					/* TRANSLATORS: the user needs to change something on the device */
+					g_print ("%s\n", _("Set the device to the surface position and press enter."));
+					getchar ();
+					j--;
+					g_clear_error (&error_local);
+					continue;
+				} else {
+					g_propagate_error (error,
+							   error_local);
+					ret = FALSE;
+					goto out;
+				}
 			}
 
 			/* TRANSLATORS: this is the XYZ color value */
@@ -881,11 +904,6 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 					     error);
 		if (!ret)
 			goto out;
-
-		/* TRANSLATORS: this is the ambient light level in Lux */
-//		g_print ("%s: %f Lux\n",
-//			 _("Ambient"),
-//			 ambient);
 	}
 out:
 	if (array != NULL)
