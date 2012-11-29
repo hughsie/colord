@@ -561,15 +561,18 @@ cd_sensor_unlock_cb (GObject *source_object,
 	GError *error = NULL;
 
 	/* get the result */
-	ret = sensor->priv->desc->unlock_finish (sensor, res, &error);
-	if (!ret) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_SENSOR_ERROR,
-						       CD_SENSOR_ERROR_NO_SUPPORT,
-						       "failed to unlock: %s",
-						       error->message);
-		g_error_free (error);
-		goto out;
+	if (sensor->priv->desc != NULL &&
+	    sensor->priv->desc->unlock_finish != NULL) {
+		ret = sensor->priv->desc->unlock_finish (sensor, res, &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NO_SUPPORT,
+							       "failed to unlock: %s",
+							       error->message);
+			g_error_free (error);
+			goto out;
+		}
 	}
 	cd_sensor_set_locked (sensor, FALSE);
 	g_dbus_method_invocation_return_value (invocation, NULL);
@@ -590,12 +593,15 @@ cd_sensor_unlock_quietly_cb (GObject *source_object,
 	GError *error = NULL;
 
 	/* get the result */
-	ret = sensor->priv->desc->unlock_finish (sensor, res, &error);
-	if (!ret) {
-		g_warning ("failed to unlock: %s",
-			   error->message);
-		g_error_free (error);
-		goto out;
+	if (sensor->priv->desc != NULL &&
+	    sensor->priv->desc->unlock_finish != NULL) {
+		ret = sensor->priv->desc->unlock_finish (sensor, res, &error);
+		if (!ret) {
+			g_warning ("failed to unlock: %s",
+				   error->message);
+			g_error_free (error);
+			goto out;
+		}
 	}
 	cd_sensor_set_locked (sensor, FALSE);
 out:
