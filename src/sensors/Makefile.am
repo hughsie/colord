@@ -121,7 +121,7 @@ plugin_LTLIBRARIES =					\
 	libcolord_sensor_dummy.la
 
 libcolord_sensor_dummy_la_SOURCES = cd-sensor-dummy.c
-libcolord_sensor_dummy_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
+libcolord_sensor_dummy_la_LIBADD = $(GLIB_LIBS)
 libcolord_sensor_dummy_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_dummy_la_CFLAGS = $(WARNINGFLAGS_C)
 
@@ -136,7 +136,7 @@ libcolord_sensor_huey_la_SOURCES =			\
 	cd-sensor-huey-private.c			\
 	cd-sensor-huey-private.h			\
 	cd-buffer.c
-libcolord_sensor_huey_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS) $(COLORD_LIBS)
+libcolord_sensor_huey_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS)
 libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
 
@@ -145,7 +145,7 @@ libcolord_sensor_colorhug_la_SOURCES =			\
 	cd-sensor-colorhug-private.h			\
 	cd-sensor-colorhug.c				\
 	cd-sensor-colorhug.h
-libcolord_sensor_colorhug_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS) $(COLORD_LIBS)
+libcolord_sensor_colorhug_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS)
 libcolord_sensor_colorhug_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_colorhug_la_CFLAGS = $(WARNINGFLAGS_C)
 endif
@@ -156,13 +156,13 @@ libcolord_sensor_argyll_la_SOURCES =			\
 	cd-spawn.c					\
 	cd-spawn.h					\
 	cd-sensor-argyll.c
-libcolord_sensor_argyll_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS) $(COLORD_LIBS)
+libcolord_sensor_argyll_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS)
 libcolord_sensor_argyll_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_argyll_la_CFLAGS = $(WARNINGFLAGS_C)
 
 if FALSE
 libcolord_sensor_munki_la_SOURCES = cd-sensor-munki.c
-libcolord_sensor_munki_la_LIBADD = $(GLIB_LIBS) $(COLORD_LIBS)
+libcolord_sensor_munki_la_LIBADD = $(GLIB_LIBS)
 libcolord_sensor_munki_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_munki_la_CFLAGS = $(WARNINGFLAGS_C)
 endif

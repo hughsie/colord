@@ -65,6 +65,12 @@ colord_SOURCES =					\
 	cd-profile-store.h				\
 	cd-sensor.c					\
 	cd-sensor.h					\
+	$(top_builddir)/libcolord/cd-color.c		\
+	$(top_builddir)/libcolord/cd-color.h		\
+	$(top_builddir)/libcolord/cd-enum.c		\
+	$(top_builddir)/libcolord/cd-enum.h		\
+	$(top_builddir)/libcolord/cd-math.c		\
+	$(top_builddir)/libcolord/cd-math.h		\
 	cd-main.c
 
 if HAVE_GUDEV
@@ -74,7 +80,6 @@ colord_SOURCES +=					\
 endif
 
 colord_LDADD =						\
-	$(COLORD_PRIVATE_LIBS)				\
 	$(SQLITE_LIBS)					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
