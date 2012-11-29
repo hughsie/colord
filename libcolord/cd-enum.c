@@ -701,19 +701,19 @@ const gchar *
 cd_sensor_error_to_string (CdSensorError error_enum)
 {
 	if (error_enum == CD_SENSOR_ERROR_NO_SUPPORT)
-		return CD_DBUS_INTERFACE_SENSOR "NoSupport";
+		return CD_DBUS_INTERFACE_SENSOR ".NoSupport";
 	if (error_enum == CD_SENSOR_ERROR_NO_DATA)
-		return CD_DBUS_INTERFACE_SENSOR "NoData";
+		return CD_DBUS_INTERFACE_SENSOR ".NoData";
 	if (error_enum == CD_SENSOR_ERROR_INTERNAL)
-		return CD_DBUS_INTERFACE_SENSOR "Internal";
+		return CD_DBUS_INTERFACE_SENSOR ".Internal";
 	if (error_enum == CD_SENSOR_ERROR_ALREADY_LOCKED)
-		return CD_DBUS_INTERFACE_SENSOR "AlreadyLocked";
+		return CD_DBUS_INTERFACE_SENSOR ".AlreadyLocked";
 	if (error_enum == CD_SENSOR_ERROR_NOT_LOCKED)
-		return CD_DBUS_INTERFACE_SENSOR "NotLocked";
+		return CD_DBUS_INTERFACE_SENSOR ".NotLocked";
 	if (error_enum == CD_SENSOR_ERROR_IN_USE)
-		return CD_DBUS_INTERFACE_SENSOR "InUse";
+		return CD_DBUS_INTERFACE_SENSOR ".InUse";
 	if (error_enum == CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE)
-		return CD_DBUS_INTERFACE_SENSOR "FailedToAuthenticate";
+		return CD_DBUS_INTERFACE_SENSOR ".FailedToAuthenticate";
 	return NULL;
 }
 
@@ -729,19 +729,19 @@ cd_sensor_error_to_string (CdSensorError error_enum)
 CdSensorError
 cd_sensor_error_from_string (const gchar *error_desc)
 {
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "NoSupport") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".NoSupport") == 0)
 		return CD_SENSOR_ERROR_NO_SUPPORT;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "NoData") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".NoData") == 0)
 		return CD_SENSOR_ERROR_NO_DATA;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "Internal") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".Internal") == 0)
 		return CD_SENSOR_ERROR_INTERNAL;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "AlreadyLocked") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".AlreadyLocked") == 0)
 		return CD_SENSOR_ERROR_ALREADY_LOCKED;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "NotLocked") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".NotLocked") == 0)
 		return CD_SENSOR_ERROR_NOT_LOCKED;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "InUse") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".InUse") == 0)
 		return CD_SENSOR_ERROR_IN_USE;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR "FailedToAuthenticate") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".FailedToAuthenticate") == 0)
 		return CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE;
 	return CD_SENSOR_ERROR_LAST;
 }
@@ -761,17 +761,17 @@ const gchar *
 cd_profile_error_to_string (CdProfileError error_enum)
 {
 	if (error_enum == CD_PROFILE_ERROR_INTERNAL)
-		return CD_DBUS_INTERFACE_PROFILE "Internal";
+		return CD_DBUS_INTERFACE_PROFILE ".Internal";
 	if (error_enum == CD_PROFILE_ERROR_ALREADY_INSTALLED)
-		return CD_DBUS_INTERFACE_PROFILE "AlreadyInstalled";
+		return CD_DBUS_INTERFACE_PROFILE ".AlreadyInstalled";
 	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_WRITE)
-		return CD_DBUS_INTERFACE_PROFILE "FailedToWrite";
+		return CD_DBUS_INTERFACE_PROFILE ".FailedToWrite";
 	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_PARSE)
-		return CD_DBUS_INTERFACE_PROFILE "FailedToParse";
+		return CD_DBUS_INTERFACE_PROFILE ".FailedToParse";
 	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_READ)
-		return CD_DBUS_INTERFACE_PROFILE "FailedToRead";
+		return CD_DBUS_INTERFACE_PROFILE ".FailedToRead";
 	if (error_enum == CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE)
-		return CD_DBUS_INTERFACE_PROFILE "FailedToAuthenticate";
+		return CD_DBUS_INTERFACE_PROFILE ".FailedToAuthenticate";
 	return NULL;
 }
 
@@ -787,17 +787,17 @@ cd_profile_error_to_string (CdProfileError error_enum)
 CdProfileError
 cd_profile_error_from_string (const gchar *error_desc)
 {
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "Internal") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE ".Internal") == 0)
 		return CD_PROFILE_ERROR_INTERNAL;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "AlreadyInstalled") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE ".AlreadyInstalled") == 0)
 		return CD_PROFILE_ERROR_ALREADY_INSTALLED;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToWrite") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE ".FailedToWrite") == 0)
 		return CD_PROFILE_ERROR_FAILED_TO_WRITE;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToParse") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE ".FailedToParse") == 0)
 		return CD_PROFILE_ERROR_FAILED_TO_PARSE;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToRead") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE ".FailedToRead") == 0)
 		return CD_PROFILE_ERROR_FAILED_TO_READ;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE "FailedToAuthenticate") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_PROFILE ".FailedToAuthenticate") == 0)
 		return CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE;
 	return CD_PROFILE_ERROR_LAST;
 }
@@ -817,21 +817,21 @@ const gchar *
 cd_device_error_to_string (CdDeviceError error_enum)
 {
 	if (error_enum == CD_DEVICE_ERROR_INTERNAL)
-		return CD_DBUS_INTERFACE_DEVICE "Internal";
+		return CD_DBUS_INTERFACE_DEVICE ".Internal";
 	if (error_enum == CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST)
-		return CD_DBUS_INTERFACE_DEVICE "ProfileDoesNotExist";
+		return CD_DBUS_INTERFACE_DEVICE ".ProfileDoesNotExist";
 	if (error_enum == CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED)
-		return CD_DBUS_INTERFACE_DEVICE "ProfileAlreadyAdded";
+		return CD_DBUS_INTERFACE_DEVICE ".ProfileAlreadyAdded";
 	if (error_enum == CD_DEVICE_ERROR_PROFILING)
-		return CD_DBUS_INTERFACE_DEVICE "Profiling";
+		return CD_DBUS_INTERFACE_DEVICE ".Profiling";
 	if (error_enum == CD_DEVICE_ERROR_NOTHING_MATCHED)
-		return CD_DBUS_INTERFACE_DEVICE "NothingMatched";
+		return CD_DBUS_INTERFACE_DEVICE ".NothingMatched";
 	if (error_enum == CD_DEVICE_ERROR_FAILED_TO_INHIBIT)
-		return CD_DBUS_INTERFACE_DEVICE "FailedToInhibit";
+		return CD_DBUS_INTERFACE_DEVICE ".FailedToInhibit";
 	if (error_enum == CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT)
-		return CD_DBUS_INTERFACE_DEVICE "FailedToUninhibit";
+		return CD_DBUS_INTERFACE_DEVICE ".FailedToUninhibit";
 	if (error_enum == CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE)
-		return CD_DBUS_INTERFACE_DEVICE "FailedToAuthenticate";
+		return CD_DBUS_INTERFACE_DEVICE ".FailedToAuthenticate";
 	return NULL;
 }
 
@@ -847,21 +847,21 @@ cd_device_error_to_string (CdDeviceError error_enum)
 CdDeviceError
 cd_device_error_from_string (const gchar *error_desc)
 {
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "Internal") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".Internal") == 0)
 		return CD_DEVICE_ERROR_INTERNAL;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "ProfileDoesNotExist") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".ProfileDoesNotExist") == 0)
 		return CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "ProfileAlreadyAdded") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".ProfileAlreadyAdded") == 0)
 		return CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "Profiling") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".Profiling") == 0)
 		return CD_DEVICE_ERROR_PROFILING;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "NothingMatched") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".NothingMatched") == 0)
 		return CD_DEVICE_ERROR_NOTHING_MATCHED;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "FailedToInhibit") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".FailedToInhibit") == 0)
 		return CD_DEVICE_ERROR_FAILED_TO_INHIBIT;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "FailedToUninhibit") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".FailedToUninhibit") == 0)
 		return CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE "FailedToAuthenticate") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".FailedToAuthenticate") == 0)
 		return CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE;
 	return CD_DEVICE_ERROR_LAST;
 }
@@ -881,19 +881,19 @@ const gchar *
 cd_client_error_to_string (CdClientError error_enum)
 {
 	if (error_enum == CD_CLIENT_ERROR_INTERNAL)
-		return CD_DBUS_INTERFACE_DAEMON "Internal";
+		return CD_DBUS_INTERFACE_DAEMON ".Internal";
 	if (error_enum == CD_CLIENT_ERROR_ALREADY_EXISTS)
-		return CD_DBUS_INTERFACE_DAEMON "AlreadyExists";
+		return CD_DBUS_INTERFACE_DAEMON ".AlreadyExists";
 	if (error_enum == CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE)
-		return CD_DBUS_INTERFACE_DAEMON "FailedToAuthenticate";
+		return CD_DBUS_INTERFACE_DAEMON ".FailedToAuthenticate";
 	if (error_enum == CD_CLIENT_ERROR_NOT_SUPPORTED)
-		return CD_DBUS_INTERFACE_DAEMON "NotSupported";
+		return CD_DBUS_INTERFACE_DAEMON ".NotSupported";
 	if (error_enum == CD_CLIENT_ERROR_NOT_FOUND)
-		return CD_DBUS_INTERFACE_DAEMON "NotFound";
+		return CD_DBUS_INTERFACE_DAEMON ".NotFound";
 	if (error_enum == CD_CLIENT_ERROR_INPUT_INVALID)
-		return CD_DBUS_INTERFACE_DAEMON "InputInvalid";
+		return CD_DBUS_INTERFACE_DAEMON ".InputInvalid";
 	if (error_enum == CD_CLIENT_ERROR_FILE_INVALID)
-		return CD_DBUS_INTERFACE_DAEMON "FileInvalid";
+		return CD_DBUS_INTERFACE_DAEMON ".FileInvalid";
 	return NULL;
 }
 
@@ -909,19 +909,19 @@ cd_client_error_to_string (CdClientError error_enum)
 CdClientError
 cd_client_error_from_string (const gchar *error_desc)
 {
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "Internal") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON ".Internal") == 0)
 		return CD_CLIENT_ERROR_INTERNAL;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "AlreadyExists") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON ".AlreadyExists") == 0)
 		return CD_CLIENT_ERROR_ALREADY_EXISTS;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "FailedToAuthenticate") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON ".FailedToAuthenticate") == 0)
 		return CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "NotSupported") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON ".NotSupported") == 0)
 		return CD_CLIENT_ERROR_NOT_SUPPORTED;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "NotFound") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON ".NotFound") == 0)
 		return CD_CLIENT_ERROR_NOT_FOUND;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "InputInvalid") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON ".InputInvalid") == 0)
 		return CD_CLIENT_ERROR_INPUT_INVALID;
-	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "FileInvalid") == 0)
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON ".FileInvalid") == 0)
 		return CD_CLIENT_ERROR_FILE_INVALID;
 	return CD_CLIENT_ERROR_LAST;
 }
