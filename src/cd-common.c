@@ -28,23 +28,20 @@
 #include "cd-common.h"
 
 /**
- * cd_main_error_quark:
+ * cd_client_error_quark:
  **/
 GQuark
-cd_main_error_quark (void)
+cd_client_error_quark (void)
 {
+	guint i;
 	static GQuark quark = 0;
 	if (!quark) {
 		quark = g_quark_from_static_string ("colord");
-		g_dbus_error_register_error (quark,
-					     CD_MAIN_ERROR_FAILED,
-					     COLORD_DBUS_SERVICE ".Failed");
-		g_dbus_error_register_error (quark,
-					     CD_MAIN_ERROR_ALREADY_EXISTS,
-					     COLORD_DBUS_SERVICE ".AlreadyExists");
-		g_dbus_error_register_error (quark,
-					     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
-					     COLORD_DBUS_SERVICE ".FailedToAuthenticate");
+		for (i = 0; i < CD_CLIENT_ERROR_LAST; i++) {
+			g_dbus_error_register_error (quark,
+						     i,
+						     cd_client_error_to_string (i));
+		}
 	}
 	return quark;
 }
@@ -149,8 +146,8 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 	uid = cd_main_get_sender_uid (connection, sender, &error_local);
 	if (uid == G_MAXUINT) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE,
 			     "could not get uid to authenticate %s: %s",
 			     action_id,
 			     error_local->message);
@@ -179,8 +176,8 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 	authority = polkit_authority_get_sync (NULL, &error_local);
 	if (authority == NULL) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE,
 			     "failed to get polkit authorit: %s",
 			     error_local->message);
 		g_error_free (error_local);
@@ -197,8 +194,8 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 			&error_local);
 	if (result == NULL) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE,
 			     "could not check %s for auth: %s",
 			     action_id,
 			     error_local->message);
@@ -209,8 +206,8 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 	/* did not auth */
 	if (!polkit_authorization_result_get_is_authorized (result)) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE,
 			     "failed to obtain %s auth",
 			     action_id);
 		goto out;

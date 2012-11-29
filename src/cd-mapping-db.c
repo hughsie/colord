@@ -71,8 +71,8 @@ cd_mapping_db_load (CdMappingDb *mdb,
 	if (rc != SQLITE_OK) {
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
 			     "Can't open database: %s\n",
 			     sqlite3_errmsg (mdb->priv->db));
 		sqlite3_close (mdb->priv->db);
@@ -132,8 +132,8 @@ cd_mapping_db_empty (CdMappingDb *mdb,
 	if (rc != SQLITE_OK) {
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
@@ -172,8 +172,8 @@ cd_mapping_db_add (CdMappingDb *mdb,
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
@@ -213,8 +213,8 @@ cd_mapping_db_update_timestamp (CdMappingDb *mdb,
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
@@ -252,8 +252,8 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
@@ -315,8 +315,8 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 			   &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
@@ -364,8 +364,8 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 			   &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
@@ -430,8 +430,8 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 			   &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);

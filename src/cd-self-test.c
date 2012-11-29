@@ -254,7 +254,7 @@ cd_device_db_func (void)
 					   "device2",
 					   "xxx",
 					   &error);
-	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_INTERNAL);
 	g_assert (value == NULL);
 	g_clear_error (&error);
 	g_free (value);
@@ -295,7 +295,7 @@ cd_device_db_func (void)
 					   "device2",
 					   "kind",
 					   &error);
-	g_assert_error (error, CD_MAIN_ERROR, CD_MAIN_ERROR_FAILED);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_INTERNAL);
 	g_assert (value == NULL);
 	g_clear_error (&error);
 	g_free (value);

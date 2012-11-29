@@ -35,16 +35,9 @@
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
 #define COLORD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
 
-#define CD_MAIN_ERROR			cd_main_error_quark()
+#define CD_CLIENT_ERROR			cd_client_error_quark()
 
-typedef enum {
-	CD_MAIN_ERROR_FAILED,
-	CD_MAIN_ERROR_ALREADY_EXISTS,
-	CD_MAIN_ERROR_FAILED_TO_AUTHENTICATE,
-	CD_MAIN_ERROR_LAST
-} CdMainError;
-
-GQuark		 cd_main_error_quark		(void);
+GQuark		 cd_client_error_quark		(void);
 gboolean	 cd_main_sender_authenticated	(GDBusConnection *connection,
 						 const gchar	*sender,
 						 const gchar	*action_id,

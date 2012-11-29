@@ -86,21 +86,6 @@ typedef struct
 	void (*_cd_client_reserved8) (void);
 } CdClientClass;
 
-/**
- * CdClientError:
- * @CD_CLIENT_ERROR_FAILED: the transaction failed for an unknown reason
- * @CD_CLIENT_ERROR_ALREADY_EXISTS: the device or profile already exists
- *
- * Errors that can be thrown
- */
-typedef enum
-{
-	CD_CLIENT_ERROR_FAILED,
-	CD_CLIENT_ERROR_ALREADY_EXISTS,
-	CD_CLIENT_ERROR_FILE_INVALID,
-	CD_CLIENT_ERROR_LAST
-} CdClientError;
-
 GType		 cd_client_get_type			(void);
 GQuark		 cd_client_error_quark			(void);
 CdClient	*cd_client_new				(void);

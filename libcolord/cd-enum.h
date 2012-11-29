@@ -314,6 +314,29 @@ typedef enum
 	CD_DEVICE_ERROR_LAST
 } CdDeviceError;
 
+/**
+ * CdClientError:
+ * @CD_CLIENT_ERROR_INTERNAL:		An internal error occurred
+ * @CD_CLIENT_ERROR_ALREADY_EXISTS:	The profile already exists
+ * @CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE:	Authentication failed
+ * @CD_CLIENT_ERROR_NOT_SUPPORTED:	Feature not supported
+ * @CD_CLIENT_ERROR_NOT_FOUND:		Profile or device not found
+ * @CD_CLIENT_ERROR_INPUT_INVALID:	One or more of the parameters is invalid
+ * @CD_CLIENT_ERROR_FILE_INVALID:	The file if invalid
+ *
+ * Errors that can be thrown
+ */
+typedef enum {
+	CD_CLIENT_ERROR_INTERNAL,
+	CD_CLIENT_ERROR_ALREADY_EXISTS,
+	CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE,
+	CD_CLIENT_ERROR_NOT_SUPPORTED,
+	CD_CLIENT_ERROR_NOT_FOUND,
+	CD_CLIENT_ERROR_INPUT_INVALID,
+	CD_CLIENT_ERROR_FILE_INVALID,
+	CD_CLIENT_ERROR_LAST
+} CdClientError;
+
 /* defined in org.freedesktop.ColorManager.xml */
 #define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"
 
@@ -424,6 +447,8 @@ const gchar	*cd_profile_error_to_string		(CdProfileError		 error_enum);
 CdProfileError	 cd_profile_error_from_string		(const gchar		*error_desc);
 const gchar	*cd_device_error_to_string		(CdDeviceError		 error_enum);
 CdDeviceError	 cd_device_error_from_string		(const gchar		*error_desc);
+const gchar	*cd_client_error_to_string		(CdClientError		 error_enum);
+CdClientError	 cd_client_error_from_string		(const gchar		*error_desc);
 
 G_END_DECLS
 

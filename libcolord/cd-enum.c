@@ -865,3 +865,63 @@ cd_device_error_from_string (const gchar *error_desc)
 		return CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE;
 	return CD_DEVICE_ERROR_LAST;
 }
+
+#define	CD_DBUS_INTERFACE_DAEMON	"org.freedesktop.ColorManager"
+
+/**
+ * cd_client_error_to_string:
+ *
+ * Converts a #CdClientError to a string.
+ *
+ * Return value: identifier string
+ *
+ * Since: 0.1.26
+ **/
+const gchar *
+cd_client_error_to_string (CdClientError error_enum)
+{
+	if (error_enum == CD_CLIENT_ERROR_INTERNAL)
+		return CD_DBUS_INTERFACE_DAEMON "Internal";
+	if (error_enum == CD_CLIENT_ERROR_ALREADY_EXISTS)
+		return CD_DBUS_INTERFACE_DAEMON "AlreadyExists";
+	if (error_enum == CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE)
+		return CD_DBUS_INTERFACE_DAEMON "FailedToAuthenticate";
+	if (error_enum == CD_CLIENT_ERROR_NOT_SUPPORTED)
+		return CD_DBUS_INTERFACE_DAEMON "NotSupported";
+	if (error_enum == CD_CLIENT_ERROR_NOT_FOUND)
+		return CD_DBUS_INTERFACE_DAEMON "NotFound";
+	if (error_enum == CD_CLIENT_ERROR_INPUT_INVALID)
+		return CD_DBUS_INTERFACE_DAEMON "InputInvalid";
+	if (error_enum == CD_CLIENT_ERROR_FILE_INVALID)
+		return CD_DBUS_INTERFACE_DAEMON "FileInvalid";
+	return NULL;
+}
+
+/**
+ * cd_client_error_from_string:
+ *
+ * Converts a string to a #CdClientError.
+ *
+ * Return value: enumerated value
+ *
+ * Since: 0.1.26
+ **/
+CdClientError
+cd_client_error_from_string (const gchar *error_desc)
+{
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "Internal") == 0)
+		return CD_CLIENT_ERROR_INTERNAL;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "AlreadyExists") == 0)
+		return CD_CLIENT_ERROR_ALREADY_EXISTS;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "FailedToAuthenticate") == 0)
+		return CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "NotSupported") == 0)
+		return CD_CLIENT_ERROR_NOT_SUPPORTED;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "NotFound") == 0)
+		return CD_CLIENT_ERROR_NOT_FOUND;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "InputInvalid") == 0)
+		return CD_CLIENT_ERROR_INPUT_INVALID;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DAEMON "FileInvalid") == 0)
+		return CD_CLIENT_ERROR_FILE_INVALID;
+	return CD_CLIENT_ERROR_LAST;
+}

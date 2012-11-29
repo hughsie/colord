@@ -248,8 +248,8 @@ cd_main_create_profile (CdMainPrivate *priv,
 	case CD_OBJECT_SCOPE_DISK:
 		g_debug ("CdMain: persistent profile");
 		g_set_error_literal (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_NOT_SUPPORTED,
 				     "persistent profiles are no yet supported");
 		goto out;
 	default:
@@ -828,8 +828,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	uid = cd_main_get_sender_uid (connection, sender, &error);
 	if (uid == G_MAXUINT) {
 		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_FAILED,
+						       CD_CLIENT_ERROR,
+						       CD_CLIENT_ERROR_INTERNAL,
 						       "failed to get owner: %s",
 						       error->message);
 		g_error_free (error);
@@ -906,8 +906,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							  uid);
 		if (device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_NOT_FOUND,
 							       "device id '%s' does not exists",
 							       device_id);
 			goto out;
@@ -932,8 +932,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							  metadata_value);
 		if (device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_NOT_FOUND,
 							       "property match '%s'='%s' does not exist",
 							       metadata_key,
 							       metadata_value);
@@ -959,8 +959,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							    metadata_value);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_NOT_FOUND,
 							       "property match '%s'='%s' does not exist",
 							       metadata_key,
 							       metadata_value);
@@ -984,8 +984,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							    uid);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_NOT_FOUND,
 							       "profile id '%s' does not exist",
 							       device_id);
 			goto out;
@@ -1010,8 +1010,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			profile = cd_main_get_standard_space_metadata (priv, device_id);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_NOT_FOUND,
 							       "profile space '%s' does not exist",
 							       device_id);
 			goto out;
@@ -1033,8 +1033,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							    device_id);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_NOT_FOUND,
 							       "profile filename '%s' does not exist",
 							       device_id);
 			goto out;
@@ -1082,8 +1082,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		/* check ID is valid */
 		if (g_strcmp0 (device_id, "") == 0) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INPUT_INVALID,
 							       "device id cannot be blank");
 			goto out;
 		}
@@ -1092,8 +1092,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		scope = cd_object_scope_from_string (scope_tmp);
 		if (scope == CD_OBJECT_SCOPE_UNKNOWN) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INPUT_INVALID,
 							       "scope non-valid: %s",
 							       scope_tmp);
 			goto out;
@@ -1111,8 +1111,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 				register_on_bus = FALSE;
 			} else {
 				g_dbus_method_invocation_return_error (invocation,
-								       CD_MAIN_ERROR,
-								       CD_MAIN_ERROR_ALREADY_EXISTS,
+								       CD_CLIENT_ERROR,
+								       CD_CLIENT_ERROR_ALREADY_EXISTS,
 								       "device id '%s' already exists",
 								       device_id);
 				goto out;
@@ -1123,8 +1123,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		pid = cd_main_get_sender_pid (connection, sender, &error);
 		if (pid == G_MAXUINT) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INTERNAL,
 							       "failed to get process ID: %s",
 							       error->message);
 			g_error_free (error);
@@ -1213,8 +1213,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 								     device_id);
 			if (device == NULL) {
 				g_dbus_method_invocation_return_error (invocation,
-								       CD_MAIN_ERROR,
-								       CD_MAIN_ERROR_FAILED,
+								       CD_CLIENT_ERROR,
+								       CD_CLIENT_ERROR_NOT_FOUND,
 								       "device path '%s' not found",
 								       device_id);
 				goto out;
@@ -1256,8 +1256,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 								       device_id);
 			if (profile == NULL) {
 				g_dbus_method_invocation_return_error (invocation,
-								       CD_MAIN_ERROR,
-								       CD_MAIN_ERROR_FAILED,
+								       CD_CLIENT_ERROR,
+								       CD_CLIENT_ERROR_NOT_FOUND,
 								       "profile path '%s' not found",
 								       device_id);
 				goto out;
@@ -1308,8 +1308,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		/* check ID is valid */
 		if (g_strcmp0 (device_id, "") == 0) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INPUT_INVALID,
 							       "profile id cannot be blank");
 			goto out;
 		}
@@ -1320,8 +1320,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							    uid);
 		if (profile != NULL) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_ALREADY_EXISTS,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_ALREADY_EXISTS,
 							       "profile id '%s' already exists",
 							       device_id);
 			goto out;
@@ -1331,8 +1331,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		scope = cd_object_scope_from_string (scope_tmp);
 		if (scope == CD_OBJECT_SCOPE_UNKNOWN) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_FAILED,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INPUT_INVALID,
 							       "scope non-valid: %s",
 							       scope_tmp);
 			goto out;

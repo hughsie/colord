@@ -1111,9 +1111,10 @@ out:
 static void
 colord_enum_func (void)
 {
-	CdProfileWarning warning;
-	CdProfileError profile_error;
+	CdClientError client_error;
 	CdDeviceError device_error;
+	CdProfileError profile_error;
+	CdProfileWarning warning;
 	CdSensorError sensor_error;
 	const gchar *tmp;
 	guint i;
@@ -1140,6 +1141,14 @@ colord_enum_func (void)
 		g_assert_cmpstr (tmp, !=, NULL);
 		device_error = cd_device_error_from_string (tmp);
 		g_assert_cmpint (device_error, !=, CD_DEVICE_ERROR_LAST);
+	}
+
+	/* CdClientError */
+	for (i = 0; i < CD_CLIENT_ERROR_LAST; i++) {
+		tmp = cd_client_error_to_string (i);
+		g_assert_cmpstr (tmp, !=, NULL);
+		client_error = cd_client_error_from_string (tmp);
+		g_assert_cmpint (client_error, !=, CD_CLIENT_ERROR_LAST);
 	}
 
 	/* CdProfileWarning */
@@ -1588,7 +1597,7 @@ colord_delete_profile_bad_cb (GObject *object, GAsyncResult *res, gpointer user_
 	CdClient *client = CD_CLIENT (object);
 
 	ret = cd_client_delete_profile_finish (client, res, &error);
-	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_FAILED);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_NOT_FOUND);
 	g_assert (!ret);
 
 	_g_test_loop_quit ();
