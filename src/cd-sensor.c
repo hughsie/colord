@@ -470,11 +470,8 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	/* get the result */
 	sample = sensor->priv->desc->get_sample_finish (sensor, res, &error);
 	if (sample == NULL) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_SENSOR_ERROR,
-						       CD_SENSOR_ERROR_NO_DATA,
-						       "failed to sample: %s",
-						       error->message);
+		g_dbus_method_invocation_return_gerror (invocation,
+							error);
 		g_error_free (error);
 		goto out;
 	}
@@ -510,11 +507,8 @@ cd_sensor_set_options_cb (GObject *source_object,
 	/* get the result */
 	ret = sensor->priv->desc->set_options_finish (sensor, res, &error);
 	if (!ret) {
-		g_dbus_method_invocation_return_error (invocation,
-						       CD_SENSOR_ERROR,
-						       CD_SENSOR_ERROR_NO_DATA,
-						       "failed to set options: %s",
-						       error->message);
+		g_dbus_method_invocation_return_gerror (invocation,
+							error);
 		g_error_free (error);
 		goto out;
 	}
