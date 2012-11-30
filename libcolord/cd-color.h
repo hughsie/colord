@@ -105,6 +105,8 @@ void		 cd_color_convert_yxy_to_xyz		(const CdColorYxy	*src,
 							 CdColorXYZ		*dest);
 void		 cd_color_convert_xyz_to_yxy		(const CdColorXYZ	*src,
 							 CdColorYxy		*dest);
+void		 cd_color_get_blackbody_rgb		(guint			 temp,
+							 CdColorRGB		*result);
 
 #endif /* __CD_COLOR_H__ */
 

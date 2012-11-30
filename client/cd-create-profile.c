@@ -535,6 +535,67 @@ out:
 	return ret;
 }
 
+/**
+ * cd_util_create_temperature:
+ **/
+static gboolean
+cd_util_create_temperature (CdUtilPrivate *priv,
+			    gchar **values,
+			    GError **error)
+{
+	CdColorRGB white_point;
+	const guint size = 256;
+	gboolean ret;
+	gdouble gamma;
+	guint16 data[3][256];
+	guint i;
+	guint temp;
+
+	/* check arguments */
+	if (g_strv_length (values) != 2) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect temperature gamma, e.g. '6500', '0.8'");
+		goto out;
+	}
+
+	/* create a bog-standard sRGB profile */
+	priv->lcms_profile = cmsCreate_sRGBProfile ();
+	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "failed to create profile");
+		goto out;
+	}
+
+	/* generate the VCGT table */
+	temp = atoi (values[0]);
+	gamma = atof (values[1]);
+	cd_color_get_blackbody_rgb (temp, &white_point);
+	for (i = 0; i < size; i++) {
+		data[0][i] = pow ((gdouble) i / size, 1.0 / gamma) *
+				  0xffff * white_point.R;
+		data[1][i] = pow ((gdouble) i / size, 1.0 / gamma) *
+				  0xffff * white_point.G;
+		data[2][i] = pow ((gdouble) i / size, 1.0 / gamma) *
+				  0xffff * white_point.B;
+	}
+
+	/* write vcgt */
+	ret = set_vcgt_from_data (priv->lcms_profile,
+				  data[0],
+				  data[1],
+				  data[2],
+				  256);
+	if (!ret) {
+		g_set_error_literal (error, 1, 0,
+				     "failed to write VCGT");
+		goto out;
+	}
+out:
+	return ret;
+}
+
 /*
  * main:
  */
@@ -602,6 +663,11 @@ main (int argc, char **argv)
 		     /* TRANSLATORS: command description */
 		     _("Create a standard working space"),
 		     cd_util_create_standard_space);
+	cd_util_add (priv->cmd_array,
+		     "create-temperature",
+		     /* TRANSLATORS: command description */
+		     _("Create a profile with a temperature VCGT"),
+		     cd_util_create_temperature);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,
