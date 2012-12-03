@@ -1028,7 +1028,7 @@ cd_it8_add_data (CdIt8 *it8, const CdColorRGB *rgb, const CdColorXYZ *xyz)
 	g_ptr_array_add (it8->priv->array_rgb, rgb_tmp);
 
 	/* add XYZ */
-	if (rgb != NULL) {
+	if (xyz != NULL) {
 		xyz_tmp = cd_color_xyz_dup (xyz);
 	} else {
 		xyz_tmp = cd_color_xyz_new ();
