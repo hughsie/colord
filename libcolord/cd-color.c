@@ -468,14 +468,19 @@ static const CdColorRGB blackbody_data[] = {
 };
 
 /**
- * cd_color_interpolate_bilinear:
+ * cd_color_rgb_interpolate:
  **/
-static void
-cd_color_interpolate_bilinear (const CdColorRGB *p1,
-			       const CdColorRGB *p2,
-			       gdouble index,
-			       CdColorRGB *result)
+void
+cd_color_rgb_interpolate (const CdColorRGB *p1,
+			  const CdColorRGB *p2,
+			  gdouble index,
+			  CdColorRGB *result)
 {
+	g_return_if_fail (p1 != NULL);
+	g_return_if_fail (p2 != NULL);
+	g_return_if_fail (index >= 0.0f);
+	g_return_if_fail (index <= 1.0f);
+	g_return_if_fail (result != NULL);
 	result->R = (1.0 - index) * p1->R + index * p2->R;
 	result->G = (1.0 - index) * p1->G + index * p2->G;
 	result->B = (1.0 - index) * p1->B + index * p2->B;
@@ -497,7 +502,7 @@ cd_color_get_blackbody_rgb (guint temp, CdColorRGB *result)
 	/* bilinear interpolate the blackbody data */
 	alpha = (temp % 100) / 100.0;
 	temp_index = (temp - 1000) / 100;
-	cd_color_interpolate_bilinear (&blackbody_data[temp_index],
+	cd_color_rgb_interpolate (&blackbody_data[temp_index],
 				       &blackbody_data[temp_index + 1],
 				       alpha,
 				       result);
