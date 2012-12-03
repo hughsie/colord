@@ -345,6 +345,8 @@ cd_sensor_kind_to_string (CdSensorKind sensor_kind)
 		return "spyder2";
 	if (sensor_kind == CD_SENSOR_KIND_SPYDER3)
 		return "spyder3";
+	if (sensor_kind == CD_SENSOR_KIND_SPYDER4)
+		return "spyder4";
 	if (sensor_kind == CD_SENSOR_KIND_DTP20)
 		return "dtp20";
 	if (sensor_kind == CD_SENSOR_KIND_DTP22)
@@ -401,6 +403,8 @@ cd_sensor_kind_from_string (const gchar *sensor_kind)
 		return CD_SENSOR_KIND_SPYDER2;
 	if (g_strcmp0 (sensor_kind, "spyder3") == 0)
 		return CD_SENSOR_KIND_SPYDER3;
+	if (g_strcmp0 (sensor_kind, "spyder4") == 0)
+		return CD_SENSOR_KIND_SPYDER4;
 	if (g_strcmp0 (sensor_kind, "dtp20") == 0)
 		return CD_SENSOR_KIND_DTP20;
 	if (g_strcmp0 (sensor_kind, "dtp22") == 0)

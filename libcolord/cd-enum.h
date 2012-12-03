@@ -161,6 +161,7 @@ typedef enum {
 	CD_SENSOR_KIND_I1_DISPLAY2,	/* Since: 0.1.25 */
 	CD_SENSOR_KIND_DTP92,		/* Since: 0.1.25 */
 	CD_SENSOR_KIND_I1_MONITOR,	/* Since: 0.1.25 */
+	CD_SENSOR_KIND_SPYDER4,		/* Since: 0.1.26 */
 	CD_SENSOR_KIND_LAST
 } CdSensorKind;
 
