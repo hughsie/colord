@@ -7,7 +7,7 @@ m4_define([cd_micro_version], [26])
 m4_define([cd_version],
           [cd_major_version.cd_minor_version.cd_micro_version])
 
-AC_INIT([colord],[cd_version],[http://hughsie.com])
+AC_INIT([colord],[cd_version],[http://www.freedesktop.org/software/colord/])
 AC_CONFIG_SRCDIR(src)
 AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar])
 AC_CONFIG_HEADERS([config.h])
