@@ -397,6 +397,10 @@ cd_sensor_kind_from_string (const gchar *sensor_kind)
 		return CD_SENSOR_KIND_COLOR_MUNKI;
 	if (g_strcmp0 (sensor_kind, "spyder") == 0)
 		return CD_SENSOR_KIND_SPYDER;
+	if (g_strcmp0 (sensor_kind, "spyder2") == 0)
+		return CD_SENSOR_KIND_SPYDER2;
+	if (g_strcmp0 (sensor_kind, "spyder3") == 0)
+		return CD_SENSOR_KIND_SPYDER3;
 	if (g_strcmp0 (sensor_kind, "dtp20") == 0)
 		return CD_SENSOR_KIND_DTP20;
 	if (g_strcmp0 (sensor_kind, "dtp22") == 0)
