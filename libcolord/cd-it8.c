@@ -299,10 +299,10 @@ cd_it8_get_spectral (CdIt8 *it8)
 }
 
 /**
- * cd_it8_load_ti1:
+ * cd_it8_load_ti1_cal:
  **/
 static gboolean
-cd_it8_load_ti1 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdColorRGB *rgb;
 	CdColorXYZ *xyz;
@@ -526,6 +526,8 @@ cd_it8_load_from_data (CdIt8 *it8,
 		cd_it8_set_kind (it8, CD_IT8_KIND_TI3);
 	} else if (g_str_has_prefix (tmp, "CCMX")) {
 		cd_it8_set_kind (it8, CD_IT8_KIND_CCMX);
+	} else if (g_str_has_prefix (tmp, "CAL")) {
+		cd_it8_set_kind (it8, CD_IT8_KIND_CAL);
 	} else {
 		ret = FALSE;
 		g_set_error (error, 1, 0, "Invalid sheet type: %s", tmp);
@@ -533,8 +535,9 @@ cd_it8_load_from_data (CdIt8 *it8,
 	}
 
 	/* get ti1 and ti3 specific data */
-	if (it8->priv->kind == CD_IT8_KIND_TI1) {
-		ret = cd_it8_load_ti1 (it8, it8_lcms, error);
+	if (it8->priv->kind == CD_IT8_KIND_TI1 ||
+	    it8->priv->kind == CD_IT8_KIND_CAL) {
+		ret = cd_it8_load_ti1_cal (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
 	} else if (it8->priv->kind == CD_IT8_KIND_TI3) {
@@ -717,6 +720,45 @@ out:
 }
 
 /**
+ * cd_it8_save_to_file_cal:
+ **/
+static gboolean
+cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+{
+	CdColorRGB *rgb_tmp;
+	gboolean ret = TRUE;
+	guint i;
+
+	/* write data */
+	cmsIT8SetSheetType (it8_lcms, "CAL    ");
+	cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
+			      "Device Calibration Curves");
+	cmsIT8SetPropertyStr (it8_lcms, "COLOR_REP", "RGB");
+	if (it8->priv->instrument != NULL) {
+		cmsIT8SetPropertyStr (it8_lcms, "TARGET_INSTRUMENT",
+				      it8->priv->instrument);
+	}
+	cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", 4);
+	cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", it8->priv->array_rgb->len);
+	cmsIT8SetDataFormat (it8_lcms, 0, "SAMPLE_ID");
+	cmsIT8SetDataFormat (it8_lcms, 1, "RGB_I");
+	cmsIT8SetDataFormat (it8_lcms, 2, "RGB_R");
+	cmsIT8SetDataFormat (it8_lcms, 3, "RGB_G");
+	cmsIT8SetDataFormat (it8_lcms, 4, "RGB_B");
+
+	/* write to the it8 file */
+	for (i = 0; i < it8->priv->array_rgb->len; i++) {
+		rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, i);
+		cmsIT8SetDataRowColDbl(it8_lcms, i, 0, 1.0f / (gdouble) (it8->priv->array_rgb->len - 1) * (gdouble) i);
+		cmsIT8SetDataRowColDbl(it8_lcms, i, 1, rgb_tmp->R);
+		cmsIT8SetDataRowColDbl(it8_lcms, i, 2, rgb_tmp->G);
+		cmsIT8SetDataRowColDbl(it8_lcms, i, 3, rgb_tmp->B);
+	}
+
+	return ret;
+}
+
+/**
  * cd_it8_save_to_file_ccmx:
  **/
 static gboolean
@@ -799,6 +841,10 @@ cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
 	if (it8->priv->kind == CD_IT8_KIND_TI1 ||
 	    it8->priv->kind == CD_IT8_KIND_TI3) {
 		ret = cd_it8_save_to_file_ti1_ti3 (it8, it8_lcms, error);
+		if (!ret)
+			goto out;
+	} else if (it8->priv->kind == CD_IT8_KIND_CAL) {
+		ret = cd_it8_save_to_file_cal (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
 	} else if (it8->priv->kind == CD_IT8_KIND_CCMX) {

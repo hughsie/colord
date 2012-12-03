@@ -88,6 +88,7 @@ typedef enum {
 	CD_IT8_KIND_TI1,
 	CD_IT8_KIND_TI3,
 	CD_IT8_KIND_CCMX,
+	CD_IT8_KIND_CAL,
 	CD_IT8_KIND_LAST
 } CdIt8Kind;
 
