@@ -53,6 +53,28 @@ static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE (CdSensorClient, cd_sensor_client, G_TYPE_OBJECT)
 
 /**
+ * cd_sensor_client_get_by_id:
+ **/
+CdSensor *
+cd_sensor_client_get_by_id (CdSensorClient *sensor_client,
+			    const gchar *sensor_id)
+{
+	CdSensorClientPrivate *priv = sensor_client->priv;
+	CdSensor *sensor = NULL;
+	CdSensor *sensor_tmp;
+	guint i;
+
+	for (i = 0; i < priv->array_sensors->len; i++) {
+		sensor_tmp = g_ptr_array_index (priv->array_sensors, i);
+		if (g_strcmp0 (cd_sensor_get_id (sensor_tmp), sensor_id) == 0) {
+			sensor = g_object_ref (sensor_tmp);
+			break;
+		}
+	}
+	return sensor;
+}
+
+/**
  * cd_sensor_client_add:
  **/
 static gboolean

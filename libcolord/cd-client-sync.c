@@ -46,6 +46,7 @@ typedef struct {
 	gboolean	 ret;
 	CdProfile	*profile;
 	CdDevice	*device;
+	CdSensor	*sensor;
 	GPtrArray	*array;
 } CdClientHelper;
 
@@ -905,6 +906,59 @@ cd_client_find_profile_by_property_sync (CdClient *client,
 	g_main_loop_unref (helper.loop);
 
 	return helper.profile;
+}
+
+/**********************************************************************/
+
+static void
+cd_client_find_sensor_finish_sync (CdClient *client,
+				   GAsyncResult *res,
+				   CdClientHelper *helper)
+{
+	helper->sensor = cd_client_find_sensor_finish (client,
+						       res,
+						       helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_find_sensor_sync:
+ * @client: a #CdClient instance.
+ * @id: The sensor ID.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Finds a color sensor.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: (transfer full): A #CdSensor object, or %NULL for error
+ *
+ * Since: 0.1.26
+ **/
+CdSensor *
+cd_client_find_sensor_sync (CdClient *client,
+			    const gchar *id,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+
+	/* run async method */
+	cd_client_find_sensor (client, id, cancellable,
+			       (GAsyncReadyCallback) cd_client_find_sensor_finish_sync,
+			       &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.sensor;
 }
 
 /**********************************************************************/

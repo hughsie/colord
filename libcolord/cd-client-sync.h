@@ -100,7 +100,10 @@ CdProfile	*cd_client_find_profile_by_property_sync(CdClient	*client,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
 							 GError		**error);
-
+CdSensor	*cd_client_find_sensor_sync		(CdClient	*client,
+							 const gchar	*id,
+							 GCancellable	*cancellable,
+							 GError		**error);
 
 G_END_DECLS
 

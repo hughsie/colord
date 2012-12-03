@@ -222,6 +222,14 @@ void		cd_client_find_profile_by_property	(CdClient	*client,
 CdProfile	*cd_client_find_profile_by_property_finish (CdClient	*client,
 							 GAsyncResult	*res,
 							 GError		**error);
+void		cd_client_find_sensor			(CdClient	*client,
+							 const gchar	*id,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdSensor	*cd_client_find_sensor_finish 		(CdClient	*client,
+							 GAsyncResult	*res,
+							 GError		**error);
 
 /* getters */
 gboolean	 cd_client_get_connected		(CdClient	*client);

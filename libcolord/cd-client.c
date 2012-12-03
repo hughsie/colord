@@ -2484,6 +2484,117 @@ cd_client_find_profile_by_property (CdClient *client,
 
 /**********************************************************************/
 
+/**
+ * cd_client_find_sensor_finish:
+ * @client: a #CdClient instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: (transfer full): a #CdSensor or %NULL
+ *
+ * Since: 0.1.26
+ **/
+CdSensor *
+cd_client_find_sensor_finish (CdClient *client,
+			      GAsyncResult *res,
+			      GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
+}
+
+static void
+cd_client_find_sensor_cb (GObject *source_object,
+			    GAsyncResult *res,
+			    gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	CdSensor *sensor;
+	gchar *object_path = NULL;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		cd_client_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source,
+						      error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* create a sensor object */
+	g_variant_get (result, "(o)",
+		       &object_path);
+	sensor = cd_sensor_new ();
+	cd_sensor_set_object_path (sensor, object_path);
+
+	/* success */
+	g_simple_async_result_set_op_res_gpointer (res_source,
+						   sensor,
+						   (GDestroyNotify) g_object_unref);
+	g_variant_unref (result);
+out:
+	g_free (object_path);
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+/**
+ * cd_client_find_sensor:
+ * @client: a #CdClient instance.
+ * @id: a sensor id
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Finds a sensor by an ID.
+ *
+ * Since: 0.1.26
+ **/
+void
+cd_client_find_sensor (CdClient *client,
+		       const gchar *id,
+		       GCancellable *cancellable,
+		       GAsyncReadyCallback callback,
+		       gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (id != NULL);
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (client->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (client),
+					 callback,
+					 user_data,
+					 cd_client_find_sensor);
+	g_dbus_proxy_call (client->priv->proxy,
+			   "FindSensorById",
+			   g_variant_new ("(s)", id),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_client_find_sensor_cb,
+			   res);
+}
+
+/**********************************************************************/
+
 /*
  * cd_client_get_property:
  */

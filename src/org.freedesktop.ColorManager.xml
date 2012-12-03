@@ -137,6 +137,35 @@
     </method>
 
     <!--***********************************************************-->
+    <method name='FindSensorById'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a sensor path for the sensor ID.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='sensor_id' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A sensor ID.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='o' name='object_path' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              A sensor path.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--***********************************************************-->
     <method name='FindDeviceByProperty'>
       <doc:doc>
         <doc:description>

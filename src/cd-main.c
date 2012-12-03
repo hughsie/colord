@@ -804,6 +804,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	CdObjectScope scope;
 	CdProfile *profile = NULL;
+	CdSensor *sensor = NULL;
 	const gchar *prop_key;
 	const gchar *prop_value;
 	gboolean register_on_bus = TRUE;
@@ -942,6 +943,29 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 
 		/* format the value */
 		value = g_variant_new ("(o)", cd_device_get_object_path (device));
+		g_dbus_method_invocation_return_value (invocation, value);
+		goto out;
+	}
+
+	/* return 'o' */
+	if (g_strcmp0 (method_name, "FindSensorById") == 0) {
+
+		g_variant_get (parameters, "(&s)", &device_id);
+		g_debug ("CdMain: %s:FindSensorById(%s)",
+			 sender, device_id);
+		sensor = cd_sensor_client_get_by_id (priv->sensor_client,
+						     device_id);
+		if (sensor == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_NOT_FOUND,
+							       "sensor id '%s' does not exist",
+							       device_id);
+			goto out;
+		}
+
+		/* format the value */
+		value = g_variant_new ("(o)", cd_sensor_get_object_path (sensor));
 		g_dbus_method_invocation_return_value (invocation, value);
 		goto out;
 	}
@@ -1422,6 +1446,8 @@ out:
 		g_object_unref (device);
 	if (profile != NULL)
 		g_object_unref (profile);
+	if (sensor != NULL)
+		g_object_unref (sensor);
 	return;
 }
 

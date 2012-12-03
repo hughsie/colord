@@ -58,6 +58,8 @@ struct _CdSensorClientClass
 GType		 cd_sensor_client_get_type	(void);
 CdSensorClient	*cd_sensor_client_new		(void);
 void		 cd_sensor_client_coldplug	(CdSensorClient	*sensor_client);
+CdSensor	*cd_sensor_client_get_by_id	(CdSensorClient	*sensor_client,
+						 const gchar	*sensor_id);
 
 G_END_DECLS
 
