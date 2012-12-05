@@ -420,6 +420,19 @@ typedef enum {
 #define CD_DEVICE_PROPERTY_SEAT			"Seat"
 #define CD_DEVICE_PROPERTY_PROFILING_INHIBITORS	"ProfilingInhibitors"
 
+/* defined in org.freedesktop.ColorManager.Sensor.xml */
+#define CD_SENSOR_PROPERTY_ID			"SensorId"
+#define CD_SENSOR_PROPERTY_KIND			"Kind"
+#define CD_SENSOR_PROPERTY_STATE		"State"
+#define CD_SENSOR_PROPERTY_MODE			"Mode"
+#define CD_SENSOR_PROPERTY_SERIAL		"Serial"
+#define CD_SENSOR_PROPERTY_MODEL		"Model"
+#define CD_SENSOR_PROPERTY_VENDOR		"Vendor"
+#define CD_SENSOR_PROPERTY_NATIVE		"Native"
+#define CD_SENSOR_PROPERTY_LOCKED		"Locked"
+#define CD_SENSOR_PROPERTY_CAPABILITIES		"Capabilities"
+#define CD_SENSOR_PROPERTY_OPTIONS		"Options"
+
 const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string		(const gchar		*kind);
 const gchar	*cd_profile_kind_to_string		(CdProfileKind		 profile_kind);

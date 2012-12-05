@@ -55,6 +55,7 @@ static void	cd_sensor_finalize	(GObject	*object);
 struct _CdSensorPrivate
 {
 	gchar			*object_path;
+	gchar			*id;
 	CdSensorKind		 kind;
 	CdSensorState		 state;
 	CdSensorCap		 mode;
@@ -71,6 +72,7 @@ struct _CdSensorPrivate
 enum {
 	PROP_0,
 	PROP_OBJECT_PATH,
+	PROP_ID,
 	PROP_CONNECTED,
 	PROP_KIND,
 	PROP_STATE,
@@ -374,37 +376,41 @@ cd_sensor_dbus_properties_changed_cb (GDBusProxy  *proxy,
 				     "{sv}",
 				     &property_name,
 				     &property_value);
-		if (g_strcmp0 (property_name, "Kind") == 0) {
+		if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_KIND) == 0) {
 			sensor->priv->kind = cd_sensor_kind_from_string (g_variant_get_string (property_value, NULL));
 			g_object_notify (G_OBJECT (sensor), "kind");
-		} else if (g_strcmp0 (property_name, "State") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_STATE) == 0) {
 			sensor->priv->state = cd_sensor_state_from_string (g_variant_get_string (property_value, NULL));
 			g_object_notify (G_OBJECT (sensor), "state");
-		} else if (g_strcmp0 (property_name, "Mode") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_MODE) == 0) {
 			sensor->priv->mode = cd_sensor_cap_from_string (g_variant_get_string (property_value, NULL));
 			g_object_notify (G_OBJECT (sensor), "mode");
-		} else if (g_strcmp0 (property_name, "Serial") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_SERIAL) == 0) {
 			g_free (sensor->priv->serial);
 			sensor->priv->serial = g_variant_dup_string (property_value, NULL);
 			g_object_notify (G_OBJECT (sensor), "serial");
-		} else if (g_strcmp0 (property_name, "Model") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_MODEL) == 0) {
 			g_free (sensor->priv->model);
 			sensor->priv->model = g_variant_dup_string (property_value, NULL);
 			g_object_notify (G_OBJECT (sensor), "model");
-		} else if (g_strcmp0 (property_name, "Vendor") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_VENDOR) == 0) {
 			g_free (sensor->priv->vendor);
 			sensor->priv->vendor = g_variant_dup_string (property_value, NULL);
 			g_object_notify (G_OBJECT (sensor), "vendor");
-		} else if (g_strcmp0 (property_name, "Native") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_ID) == 0) {
+			g_free (sensor->priv->id);
+			sensor->priv->id = g_variant_dup_string (property_value, NULL);
+			g_object_notify (G_OBJECT (sensor), "id");
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_NATIVE) == 0) {
 			sensor->priv->native = g_variant_get_boolean (property_value);
 			g_object_notify (G_OBJECT (sensor), "native");
-		} else if (g_strcmp0 (property_name, "Locked") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_LOCKED) == 0) {
 			sensor->priv->locked = g_variant_get_boolean (property_value);
 			g_object_notify (G_OBJECT (sensor), "locked");
-		} else if (g_strcmp0 (property_name, "Capabilities") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_CAPABILITIES) == 0) {
 			cd_sensor_set_caps_from_variant (sensor, property_value);
 			g_object_notify (G_OBJECT (sensor), "capabilities");
-		} else if (g_strcmp0 (property_name, "Options") == 0) {
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_OPTIONS) == 0) {
 			cd_sensor_set_options_from_variant (sensor, property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
@@ -443,6 +449,7 @@ cd_sensor_connect_cb (GObject *source_object,
 		      gpointer user_data)
 {
 	GVariant *model = NULL;
+	GVariant *id = NULL;
 	GVariant *serial = NULL;
 	GVariant *vendor = NULL;
 	GVariant *kind = NULL;
@@ -471,55 +478,61 @@ cd_sensor_connect_cb (GObject *source_object,
 
 	/* get kind */
 	kind = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						 "Kind");
+						 CD_SENSOR_PROPERTY_KIND);
 	if (kind != NULL)
 		sensor->priv->kind = cd_sensor_kind_from_string (g_variant_get_string (kind, NULL));
 
 	/* get state */
 	state = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						  "State");
+						  CD_SENSOR_PROPERTY_STATE);
 	if (state != NULL)
 		sensor->priv->state = cd_colorspace_from_string (g_variant_get_string (state, NULL));
 
 	/* get mode */
 	mode = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						 "Mode");
+						 CD_SENSOR_PROPERTY_MODE);
 	if (mode != NULL)
 		sensor->priv->mode = cd_sensor_cap_from_string (g_variant_get_string (state, NULL));
 
 	/* get sensor serial */
 	serial = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						   "Serial");
+						   CD_SENSOR_PROPERTY_SERIAL);
 	if (serial != NULL)
 		sensor->priv->serial = g_variant_dup_string (serial, NULL);
 
 	/* get vendor */
 	vendor = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						   "Vendor");
+						   CD_SENSOR_PROPERTY_VENDOR);
 	if (vendor != NULL)
 		sensor->priv->vendor = g_variant_dup_string (vendor, NULL);
 
-	/* get vendor */
+	/* get model */
 	model = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						  "Model");
+						  CD_SENSOR_PROPERTY_MODEL);
 	if (model != NULL)
 		sensor->priv->model = g_variant_dup_string (model, NULL);
 
+	/* get id */
+	id = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
+					       CD_SENSOR_PROPERTY_ID);
+	if (id != NULL)
+		sensor->priv->id = g_variant_dup_string (id, NULL);
+
 	/* get native */
 	native = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						   "Native");
+						   CD_SENSOR_PROPERTY_NATIVE);
 	if (native != NULL)
 		sensor->priv->native = g_variant_get_boolean (native);
 
 	/* get locked */
 	locked = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						   "Locked");
+						   CD_SENSOR_PROPERTY_LOCKED);
 	if (locked != NULL)
 		sensor->priv->locked = g_variant_get_boolean (locked);
 
 	/* get if system wide */
 	caps = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
-						 "Capabilities");
+						 CD_SENSOR_PROPERTY_CAPABILITIES);
 	if (caps != NULL)
 		cd_sensor_set_caps_from_variant (sensor, caps);
 
@@ -544,6 +557,8 @@ out:
 		g_variant_unref (state);
 	if (mode != NULL)
 		g_variant_unref (mode);
+	if (id != NULL)
+		g_variant_unref (id);
 	if (serial != NULL)
 		g_variant_unref (serial);
 	if (model != NULL)
@@ -1099,6 +1114,23 @@ cd_sensor_get_object_path (CdSensor *sensor)
 }
 
 /**
+ * cd_sensor_get_id:
+ * @sensor: a #CdSensor instance.
+ *
+ * Gets the object ID for the sensor.
+ *
+ * Return value: the object ID, or %NULL
+ *
+ * Since: 0.1.26
+ **/
+const gchar *
+cd_sensor_get_id (CdSensor *sensor)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	return sensor->priv->id;
+}
+
+/**
  * cd_sensor_get_connected:
  * @sensor: a #CdSensor instance.
  *
@@ -1201,6 +1233,9 @@ cd_sensor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_OBJECT_PATH:
 		g_value_set_string (value, sensor->priv->object_path);
 		break;
+	case PROP_ID:
+		g_value_set_string (value, sensor->priv->id);
+		break;
 	case PROP_CONNECTED:
 		g_value_set_boolean (value, sensor->priv->proxy != NULL);
 		break;
@@ -1273,6 +1308,19 @@ cd_sensor_class_init (CdSensorClass *klass)
 							      NULL, NULL,
 							      NULL,
 							      G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+	/**
+	 * CdSensor:id:
+	 *
+	 * The object ID of the remote object
+	 *
+	 * Since: 0.1.26
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_ID,
+					 g_param_spec_string ("id",
+							      NULL, NULL,
+							      NULL,
+							      G_PARAM_READABLE));
 	/**
 	 * CdSensor:connected:
 	 *
@@ -1426,6 +1474,7 @@ cd_sensor_finalize (GObject *object)
 	sensor = CD_SENSOR (object);
 
 	g_free (sensor->priv->object_path);
+	g_free (sensor->priv->id);
 	g_free (sensor->priv->serial);
 	g_free (sensor->priv->model);
 	g_free (sensor->priv->vendor);

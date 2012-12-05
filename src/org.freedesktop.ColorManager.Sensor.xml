@@ -12,6 +12,17 @@
     </doc:doc>
 
     <!--***********************************************************-->
+    <property name='SensorId' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The sensor id string.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Kind' type='s' access='read'>
       <doc:doc>
         <doc:description>

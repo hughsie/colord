@@ -403,6 +403,10 @@ cd_util_show_sensor (CdSensor *sensor)
 			 tmp);
 	}
 
+	/* TRANSLATORS: sensor identifier */
+	cd_util_print_field (_("Sensor ID"),
+			     cd_sensor_get_id (sensor));
+
 	/* print sensor options */
 	options = cd_sensor_get_options (sensor);
 	list = g_hash_table_get_keys (options);

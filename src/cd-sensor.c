@@ -932,43 +932,47 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 
 	g_debug ("CdSensor %s:GetProperty '%s'",
 		 sender, property_name);
-	if (g_strcmp0 (property_name, "Kind") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_ID) == 0) {
+		retval = g_variant_new_string (priv->id);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_KIND) == 0) {
 		retval = g_variant_new_string (cd_sensor_kind_to_string (priv->kind));
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "State") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_STATE) == 0) {
 		retval = g_variant_new_string (cd_sensor_state_to_string (priv->state));
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Mode") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_MODE) == 0) {
 		retval = g_variant_new_string (cd_sensor_cap_to_string (priv->mode));
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Serial") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_SERIAL) == 0) {
 		retval = cd_sensor_get_nullable_for_string (priv->serial);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Model") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_MODEL) == 0) {
 		retval = cd_sensor_get_nullable_for_string (priv->model);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Vendor") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_VENDOR) == 0) {
 		retval = cd_sensor_get_nullable_for_string (priv->vendor);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Native") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_NATIVE) == 0) {
 		retval = g_variant_new_boolean (priv->native);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Locked") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_LOCKED) == 0) {
 		retval = g_variant_new_boolean (priv->locked);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Capabilities") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_CAPABILITIES) == 0) {
 		retval = g_variant_new_strv ((const gchar * const*) priv->caps, -1);
 		goto out;
 	}
-	if (g_strcmp0 (property_name, "Options") == 0) {
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_OPTIONS) == 0) {
 		retval = cd_sensor_get_options_as_variant (sensor);
 		goto out;
 	}
