@@ -325,6 +325,16 @@ cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		rgb->R = cmsIT8GetDataRowColDbl(it8_lcms, i, 1);
 		rgb->G = cmsIT8GetDataRowColDbl(it8_lcms, i, 2);
 		rgb->B = cmsIT8GetDataRowColDbl(it8_lcms, i, 3);
+
+		/* ti1 files don't have NORMALIZED_TO_Y_100 so guess on
+		 * the asumption the first patch isn't black */
+		if (rgb->R > 1.0 || rgb->G > 1.0 || rgb->B > 1.0)
+			it8->priv->normalized = TRUE;
+		if (it8->priv->normalized) {
+			rgb->R /= 100.0f;
+			rgb->G /= 100.0f;
+			rgb->B /= 100.0f;
+		}
 		g_ptr_array_add (it8->priv->array_rgb, rgb);
 		xyz = cd_color_xyz_new ();
 		cd_color_set_xyz (xyz, 0.0, 0.0, 0.0);
