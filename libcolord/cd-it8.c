@@ -620,6 +620,7 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	CdColorRGB *rgb_tmp;
 	CdColorXYZ lumi_xyz;
 	CdColorXYZ *xyz_tmp;
+	gboolean is_white;
 	gboolean ret = TRUE;
 	gchar *lumi_str = NULL;
 	gdouble normalize = 0.0f;
@@ -633,8 +634,8 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, i);
 
 			/* is this 100% white? */
-			ret = cd_it8_color_match (rgb_tmp, 1.0f, 1.0f, 1.0f);
-			if (!ret)
+			is_white = cd_it8_color_match (rgb_tmp, 1.0f, 1.0f, 1.0f);
+			if (!is_white)
 				continue;
 			luminance_samples++;
 			xyz_tmp = g_ptr_array_index (it8->priv->array_xyz, i);
