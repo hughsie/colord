@@ -747,6 +747,7 @@ cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	cmsIT8SetSheetType (it8_lcms, "CAL    ");
 	cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
 			      "Device Calibration Curves");
+	cmsIT8SetPropertyStr (it8_lcms, "DEVICE_CLASS", "DISPLAY");
 	cmsIT8SetPropertyStr (it8_lcms, "COLOR_REP", "RGB");
 	if (it8->priv->instrument != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "TARGET_INSTRUMENT",
