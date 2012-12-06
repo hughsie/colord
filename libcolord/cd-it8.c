@@ -755,11 +755,10 @@ cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	}
 	cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", 4);
 	cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", it8->priv->array_rgb->len);
-	cmsIT8SetDataFormat (it8_lcms, 0, "SAMPLE_ID");
-	cmsIT8SetDataFormat (it8_lcms, 1, "RGB_I");
-	cmsIT8SetDataFormat (it8_lcms, 2, "RGB_R");
-	cmsIT8SetDataFormat (it8_lcms, 3, "RGB_G");
-	cmsIT8SetDataFormat (it8_lcms, 4, "RGB_B");
+	cmsIT8SetDataFormat (it8_lcms, 0, "RGB_I");
+	cmsIT8SetDataFormat (it8_lcms, 1, "RGB_R");
+	cmsIT8SetDataFormat (it8_lcms, 2, "RGB_G");
+	cmsIT8SetDataFormat (it8_lcms, 3, "RGB_B");
 
 	/* write to the it8 file */
 	for (i = 0; i < it8->priv->array_rgb->len; i++) {
