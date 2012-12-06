@@ -106,7 +106,9 @@ cd_sensor_get_sample_timeout_cb (CdSensorAsyncState *state)
 }
 
 static void
-cd_sensor_get_sample_exit_cb (CdSensorAsyncState *state)
+cd_sensor_get_sample_exit_cb (CdSpawn *spawn,
+			      CdSpawnExitType exit_type,
+			      CdSensorAsyncState *state)
 {
 	GError *error;
 	error = g_error_new (CD_SENSOR_ERROR,
@@ -483,6 +485,11 @@ cd_sensor_unlock_async (CdSensor *sensor,
 						cd_sensor_unlock_async);
 	state->sensor = g_object_ref (sensor);
 
+	/* wait for exit */
+	state->exit_id = g_signal_connect (priv->spawn,
+					   "exit",
+					   G_CALLBACK (cd_sensor_unlock_exit_cb),
+					   state);
 	/* kill spotread */
 	ret = cd_spawn_kill (priv->spawn);
 	if (!ret) {
@@ -494,12 +501,6 @@ cd_sensor_unlock_async (CdSensor *sensor,
 		g_error_free (error);
 		goto out;
 	}
-
-	/* wait for exit */
-	state->exit_id = g_signal_connect (priv->spawn,
-					   "exit",
-					   G_CALLBACK (cd_sensor_unlock_exit_cb),
-					   state);
 out:
 	return;
 }
