@@ -713,14 +713,17 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		xyz_tmp = g_ptr_array_index (it8->priv->array_xyz, i);
 
 		cmsIT8SetDataRowColDbl(it8_lcms, i, 0, i + 1);
-		cmsIT8SetDataRowColDbl(it8_lcms, i, 1, rgb_tmp->R);
-		cmsIT8SetDataRowColDbl(it8_lcms, i, 2, rgb_tmp->G);
-		cmsIT8SetDataRowColDbl(it8_lcms, i, 3, rgb_tmp->B);
 		if (it8->priv->normalized) {
+			cmsIT8SetDataRowColDbl(it8_lcms, i, 1, rgb_tmp->R * 100.0f);
+			cmsIT8SetDataRowColDbl(it8_lcms, i, 2, rgb_tmp->G * 100.0f);
+			cmsIT8SetDataRowColDbl(it8_lcms, i, 3, rgb_tmp->B * 100.0f);
 			cmsIT8SetDataRowColDbl(it8_lcms, i, 4, xyz_tmp->X * normalize);
 			cmsIT8SetDataRowColDbl(it8_lcms, i, 5, xyz_tmp->Y * normalize);
 			cmsIT8SetDataRowColDbl(it8_lcms, i, 6, xyz_tmp->Z * normalize);
 		} else {
+			cmsIT8SetDataRowColDbl(it8_lcms, i, 1, rgb_tmp->R);
+			cmsIT8SetDataRowColDbl(it8_lcms, i, 2, rgb_tmp->G);
+			cmsIT8SetDataRowColDbl(it8_lcms, i, 3, rgb_tmp->B);
 			cmsIT8SetDataRowColDbl(it8_lcms, i, 4, xyz_tmp->X);
 			cmsIT8SetDataRowColDbl(it8_lcms, i, 5, xyz_tmp->Y);
 			cmsIT8SetDataRowColDbl(it8_lcms, i, 6, xyz_tmp->Z);
