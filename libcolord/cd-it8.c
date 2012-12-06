@@ -812,29 +812,32 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 }
 
 /**
- * cd_it8_save_to_file:
+ * cd_it8_save_to_data:
  * @it8: a #CdIt8 instance.
- * @file: a #GFile
+ * @data: a pointer to returned data
+ * @size: size of @data
  * @error: a #GError, or %NULL
  *
- * Saves a it8 file to disk
+ * Saves a it8 file to an area of memory.
  *
  * Return value: %TRUE if it8 file was saved.
  *
- * Since: 0.1.20
+ * Since: 0.1.26
  **/
 gboolean
-cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
+cd_it8_save_to_data (CdIt8 *it8,
+		     gchar **data,
+		     gsize *size,
+		     GError **error)
 {
 	cmsHANDLE it8_lcms = NULL;
 	const gchar *tmp;
 	gboolean ret;
-	gchar *data = NULL;
-	gsize size = 0;
+	gchar *data_tmp = NULL;
+	gsize size_tmp = 0;
 	guint i;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
-	g_return_val_if_fail (G_IS_FILE (file), FALSE);
 
 	/* set common data */
 	it8_lcms = cmsIT8Alloc (NULL);
@@ -874,21 +877,58 @@ cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
 	}
 
 	/* write the file */
-	ret = cmsIT8SaveToMem (it8_lcms, NULL, (cmsUInt32Number *) &size);
+	ret = cmsIT8SaveToMem (it8_lcms, NULL, (cmsUInt32Number *) &size_tmp);
 	g_assert (ret);
-	data = g_malloc (size);
-	ret = cmsIT8SaveToMem (it8_lcms, data, (cmsUInt32Number *) &size);
+	data_tmp = g_malloc (size_tmp);
+	ret = cmsIT8SaveToMem (it8_lcms, data_tmp, (cmsUInt32Number *) &size_tmp);
 	g_assert (ret);
 
-	/* save file (without the last '\0' byte) */
-	ret = g_file_replace_contents (file, data, size - 1, NULL,
+	/* save for caller */
+	if (data != NULL)
+		*data = g_strdup (data_tmp);
+	if (size != NULL)
+		*size = size_tmp;
+out:
+	if (it8_lcms != NULL)
+		cmsIT8Free (it8_lcms);
+	g_free (data_tmp);
+	return ret;
+}
+
+/**
+ * cd_it8_save_to_file:
+ * @it8: a #CdIt8 instance.
+ * @file: a #GFile
+ * @error: a #GError, or %NULL
+ *
+ * Saves a it8 file to disk
+ *
+ * Return value: %TRUE if it8 file was saved.
+ *
+ * Since: 0.1.20
+ **/
+gboolean
+cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
+{
+	gboolean ret;
+	gchar *data = NULL;
+	gsize size = 0;
+
+	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
+	g_return_val_if_fail (G_IS_FILE (file), FALSE);
+
+	/* get data */
+	ret = cd_it8_save_to_data (it8, &data, &size, error);
+	if (!ret)
+		goto out;
+
+	/* save file */
+	ret = g_file_replace_contents (file, data, size, NULL,
 				       FALSE, G_FILE_CREATE_NONE,
 				       NULL, NULL, error);
 	if (!ret)
 		goto out;
 out:
-	if (it8_lcms != NULL)
-		cmsIT8Free (it8_lcms);
 	g_free (data);
 	return ret;
 }

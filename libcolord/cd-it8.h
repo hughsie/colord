@@ -108,6 +108,10 @@ gboolean	 cd_it8_load_from_file		(CdIt8		*it8,
 gboolean	 cd_it8_save_to_file		(CdIt8		*it8,
 						 GFile		*file,
 						 GError		**error);
+gboolean	 cd_it8_save_to_data		(CdIt8		*it8,
+						 gchar		**data,
+						 gsize		*size,
+						 GError		**error);
 
 /* setters */
 void		 cd_it8_set_kind		(CdIt8		*it8,
