@@ -25,9 +25,9 @@
 
 #include "cd-lcms-helpers.h"
 
-/*
+/**
  * _cmsWriteTagTextAscii:
- */
+ **/
 cmsBool
 _cmsWriteTagTextAscii (cmsHPROFILE lcms_profile,
 		       cmsTagSignature sig,
@@ -41,11 +41,14 @@ _cmsWriteTagTextAscii (cmsHPROFILE lcms_profile,
 	return ret;
 }
 
+/**
+ * utf8_to_wchar_t:
+ **/
 static wchar_t *
 utf8_to_wchar_t (const char *src)
 {
 	gssize len;
-	gsize converted;
+	gssize converted;
 	wchar_t *buf = NULL;
 
 	len = mbstowcs (NULL, src, 0);
@@ -62,9 +65,9 @@ out:
 	return buf;
 }
 
-/*
+/**
  * _cmsDictAddEntryAscii:
- */
+ **/
 cmsBool
 _cmsDictAddEntryAscii (cmsHANDLE dict,
 		       const gchar *key,
