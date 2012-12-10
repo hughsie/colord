@@ -805,6 +805,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	CdObjectScope scope;
 	CdProfile *profile = NULL;
 	CdSensor *sensor = NULL;
+	CdSensor *sensor_tmp;
 	const gchar *prop_key;
 	const gchar *prop_value;
 	gboolean register_on_bus = TRUE;
@@ -817,6 +818,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	gint fd = -1;
+	guint i;
 	guint pid;
 	guint uid;
 	gint32 fd_handle = 0;
@@ -953,20 +955,21 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		g_variant_get (parameters, "(&s)", &device_id);
 		g_debug ("CdMain: %s:FindSensorById(%s)",
 			 sender, device_id);
-		sensor = cd_sensor_client_get_by_id (priv->sensor_client,
-						     device_id);
-		if (sensor == NULL) {
-			g_dbus_method_invocation_return_error (invocation,
-							       CD_CLIENT_ERROR,
-							       CD_CLIENT_ERROR_NOT_FOUND,
-							       "sensor id '%s' does not exist",
-							       device_id);
-			goto out;
-		}
 
-		/* format the value */
-		value = g_variant_new ("(o)", cd_sensor_get_object_path (sensor));
-		g_dbus_method_invocation_return_value (invocation, value);
+		/* find sensor */
+		for (i = 0; i < priv->sensors->len; i++) {
+			sensor_tmp = g_ptr_array_index (priv->sensors, i);
+			if (g_strcmp0 (cd_sensor_get_id (sensor_tmp), device_id) == 0) {
+				value = g_variant_new ("(o)", cd_sensor_get_object_path (sensor_tmp));
+				g_dbus_method_invocation_return_value (invocation, value);
+				goto out;
+			}
+		}
+		g_dbus_method_invocation_return_error (invocation,
+						       CD_CLIENT_ERROR,
+						       CD_CLIENT_ERROR_NOT_FOUND,
+						       "sensor id '%s' does not exist",
+						       device_id);
 		goto out;
 	}
 
