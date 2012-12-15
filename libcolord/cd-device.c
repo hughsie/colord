@@ -600,6 +600,8 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 			cd_device_set_metadata_from_variant (device, property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_OWNER) == 0) {
 			device->priv->owner = g_variant_get_uint32 (property_value);
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_SCOPE) == 0) {
+			device->priv->scope = cd_object_scope_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_ID) == 0) {
 			/* ignore this, we don't support it changing */;
 		} else {
