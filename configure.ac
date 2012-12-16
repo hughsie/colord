@@ -264,6 +264,17 @@ else
 fi
 AM_CONDITIONAL(HAVE_VAPIGEN, [test "x$has_vapigen" = "xyes"])
 
+dnl ---------------------------------------------------------------------------
+dnl - Build session helper example
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(enable-session-example, AS_HELP_STRING([--enable-session-example],[Enable session example]),
+	      enable_session_example=$enableval, enable_session_example=no)
+AM_CONDITIONAL(CD_BUILD_SESSION_EXAMPLE, test x$enable_session_example = xyes)
+if test x$enable_session_example != xno; then
+	PKG_CHECK_MODULES(GNOME_DESKTOP, gnome-desktop-3.0)
+	PKG_CHECK_MODULES(COLORD_GTK, colord-gtk >= 0.1.24)
+fi
+
 # per-machine directory
 AC_SUBST(CD_SYSTEM_PROFILES_DIR, "\$(localstatedir)/lib/colord/icc")
 
@@ -274,6 +285,7 @@ AC_CONFIG_FILES([
 Makefile
 etc/Makefile
 contrib/Makefile
+contrib/session-helper/Makefile
 examples/Makefile
 man/Makefile
 doc/Makefile

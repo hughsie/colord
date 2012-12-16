@@ -115,6 +115,11 @@ exit 0
 /usr/lib/systemd/system/colord.service
 %{_sysconfdir}/bash_completion.d/*-completion.bash
 
+# session helper
+%{_libexecdir}/colord-session
+%{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
+%{_datadir}/dbus-1/services/org.freedesktop.ColorHelper.service
+
 %files devel
 %defattr(-,root,root,-)
 %{_includedir}/colord-1
