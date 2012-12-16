@@ -909,7 +909,7 @@ cd_profile_check_scum_dot (cmsHPROFILE profile)
 	transform = cmsCreateTransform (profile_lab, TYPE_Lab_DBL,
 					profile, TYPE_RGB_8,
 					INTENT_RELATIVE_COLORIMETRIC,
-					0);
+					cmsFLAGS_NOOPTIMIZE);
 	if (transform == NULL) {
 		g_warning ("failed to setup Lab -> RGB transform");
 		goto out;
