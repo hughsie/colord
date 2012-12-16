@@ -1,5 +1,6 @@
 
 SUBDIRS = 						\
+	figures						\
 	tests
 
 dbusdir = $(sysconfdir)/dbus-1/system.d

@@ -104,6 +104,7 @@ exit 0
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/man/man1/*.1.gz
+%{_datadir}/colord
 %{_libdir}/libcolord.so.*
 %config %{_sysconfdir}/colord.conf
 /usr/lib/udev/rules.d/*.rules

@@ -281,6 +281,7 @@ doc/api/Makefile
 doc/api/dbus/Makefile
 doc/api/version.xml
 data/Makefile
+data/figures/Makefile
 data/org.freedesktop.ColorManager.conf
 data/tests/Makefile
 policy/Makefile
