@@ -1,7 +1,8 @@
 
 SUBDIRS = 						\
 	figures						\
-	tests
+	tests						\
+	ti1
 
 dbusdir = $(sysconfdir)/dbus-1/system.d
 dist_dbus_DATA = org.freedesktop.ColorManager.conf
