@@ -1998,6 +1998,96 @@ colord_device_seat_func (void)
 	g_object_unref (client);
 }
 
+static void
+colord_device_enabled_func (void)
+{
+	CdClient *client;
+	CdDevice *device;
+	gboolean ret;
+	GError *error = NULL;
+
+	/* ensure the device is enabled by default */
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	device = cd_client_create_device_sync (client,
+					       "device_enabled_test",
+					       CD_OBJECT_SCOPE_TEMP,
+					       NULL,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect */
+	ret = cd_device_connect_sync (device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* disable the device */
+	ret = cd_device_set_enabled_sync (device,
+					  FALSE,
+					  NULL,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert (!cd_device_get_enabled (device));
+
+	/* disable the device (again, should be allowed) */
+	ret = cd_device_set_enabled_sync (device,
+					  FALSE,
+					  NULL,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert (!cd_device_get_enabled (device));
+
+	/* delete device */
+	ret = cd_client_delete_device_sync (client,
+					    device,
+					    NULL,
+					    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (device);
+
+	/* check the device is disabled by default */
+	device = cd_client_create_device_sync (client,
+					       "device_enabled_test",
+					       CD_OBJECT_SCOPE_TEMP,
+					       NULL,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect */
+	ret = cd_device_connect_sync (device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* enable the device */
+	ret = cd_device_set_enabled_sync (device,
+					  TRUE,
+					  NULL,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert (cd_device_get_enabled (device));
+
+	/* delete device */
+	ret = cd_client_delete_device_sync (client,
+					    device,
+					    NULL,
+					    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_object_unref (device);
+	g_object_unref (client);
+}
+
 /* when we re-add profiles, ensure they are sorted so the newest
  * assigned profile is first, not the newest-added */
 static void
@@ -2339,6 +2429,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/client", colord_client_func);
 	g_test_add_func ("/colord/device-duplicate", colord_device_duplicate_func);
 	g_test_add_func ("/colord/device-seat", colord_device_seat_func);
+	g_test_add_func ("/colord/device-enabled", colord_device_enabled_func);
 	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
 	g_test_add_func ("/colord/profile-ordering", colord_profile_ordering_func);
 	g_test_add_func ("/colord/profile-duplicate", colord_profile_duplicate_func);

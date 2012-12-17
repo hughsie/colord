@@ -121,6 +121,14 @@ void		 cd_device_profiling_inhibit		(CdDevice	*device,
 gboolean	 cd_device_profiling_inhibit_finish	(CdDevice	*device,
 							 GAsyncResult	*res,
 							 GError		**error);
+void		 cd_device_set_enabled			(CdDevice	*device,
+							 gboolean	 enabled,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+gboolean	 cd_device_set_enabled_finish		(CdDevice	*device,
+							 GAsyncResult	*res,
+							 GError		**error);
 void		 cd_device_profiling_uninhibit		(CdDevice	*device,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
@@ -158,6 +166,7 @@ guint64		 cd_device_get_modified			(CdDevice	*device);
 CdDeviceKind	 cd_device_get_kind			(CdDevice	*device);
 CdColorspace	 cd_device_get_colorspace		(CdDevice	*device);
 CdDeviceMode	 cd_device_get_mode			(CdDevice	*device);
+gboolean	 cd_device_get_enabled			(CdDevice	*device);
 CdObjectScope	 cd_device_get_scope			(CdDevice	*device);
 guint		 cd_device_get_owner			(CdDevice	*device);
 GPtrArray	*cd_device_get_profiles			(CdDevice	*device);

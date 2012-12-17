@@ -303,6 +303,7 @@ typedef enum
  * @CD_DEVICE_ERROR_FAILED_TO_INHIBIT:	Cound not inhibit device
  * @CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT:	Cound not uninhibit device
  * @CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE:	Authentication failed
+ * @CD_DEVICE_ERROR_NOT_ENABLED:	The device has been disabled
  *
  * Errors that can be thrown
  */
@@ -316,6 +317,7 @@ typedef enum
 	CD_DEVICE_ERROR_FAILED_TO_INHIBIT,
 	CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT,
 	CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
+	CD_DEVICE_ERROR_NOT_ENABLED,
 	CD_DEVICE_ERROR_LAST
 } CdDeviceError;
 
@@ -419,6 +421,7 @@ typedef enum {
 #define CD_DEVICE_PROPERTY_OWNER		"Owner"
 #define CD_DEVICE_PROPERTY_SEAT			"Seat"
 #define CD_DEVICE_PROPERTY_PROFILING_INHIBITORS	"ProfilingInhibitors"
+#define CD_DEVICE_PROPERTY_ENABLED		"Enabled"
 
 /* defined in org.freedesktop.ColorManager.Sensor.xml */
 #define CD_SENSOR_PROPERTY_ID			"SensorId"

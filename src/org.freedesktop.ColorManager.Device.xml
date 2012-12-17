@@ -176,6 +176,24 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Enabled' type='b' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            If the device is enabled. Devices are enabled by default
+            until <doc:tt>Device.SetEnabled(False)</doc:tt> is called.
+            If the enabled state is changed then this is reflected for
+            all users and persistent across reboots.
+          </doc:para>
+          <doc:para>
+            If a device is not enabled then no profiles can be added or
+            removed and the default cannot be changed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Seat' type='s' access='read'>
       <doc:doc>
         <doc:description>
@@ -446,6 +464,28 @@
           </doc:para>
         </doc:description>
       </doc:doc>
+    </method>
+
+    <!--***********************************************************-->
+    <method name='SetEnabled'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Sets the device enable state. Devices that are disabled
+            return a zero length array from the property
+            <doc:tt>Device.Profiles</doc:tt>.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='b' name='enabled' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              If the device is enabled.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
     </method>
 
   </interface>

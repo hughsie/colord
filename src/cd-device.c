@@ -72,6 +72,7 @@ struct _CdDevicePrivate
 	guint64				 modified;
 	gboolean			 require_modified_signal;
 	gboolean			 is_virtual;
+	gboolean			 enabled;
 	GHashTable			*metadata;
 	guint				 owner;
 	gchar				*seat;
@@ -313,6 +314,8 @@ cd_device_set_object_path (CdDevice *device)
 void
 cd_device_set_id (CdDevice *device, const gchar *id)
 {
+	gchar *enabled_str;
+
 	g_return_if_fail (CD_IS_DEVICE (device));
 
 	g_free (device->priv->id);
@@ -320,6 +323,19 @@ cd_device_set_id (CdDevice *device, const gchar *id)
 
 	/* now calculate this again */
 	cd_device_set_object_path (device);
+
+	/* find initial enabled state */
+	enabled_str = cd_device_db_get_property (device->priv->device_db,
+						 device->priv->id,
+						 "Enabled",
+						 NULL);
+	if (g_strcmp0 (enabled_str, "False") == 0) {
+		g_debug ("%s disabled by db at load", id);
+		device->priv->enabled = FALSE;
+	} else {
+		device->priv->enabled = TRUE;
+	}
+	g_free (enabled_str);
 }
 
 /**
@@ -577,6 +593,15 @@ cd_device_remove_profile (CdDevice *device,
 	gboolean ret = FALSE;
 	guint i;
 
+	/* device is disabled */
+	if (priv->enabled == FALSE) {
+		g_set_error_literal (error,
+				     CD_DEVICE_ERROR,
+				     CD_DEVICE_ERROR_NOT_ENABLED,
+				     "device is disabled");
+		goto out;
+	}
+
 	/* check the profile exists on this device */
 	for (i = 0; i < priv->profiles->len; i++) {
 		item = g_ptr_array_index (priv->profiles, i);
@@ -682,9 +707,19 @@ cd_device_add_profile (CdDevice *device,
 {
 	CdDevicePrivate *priv = device->priv;
 	CdDeviceProfileItem *item;
-	CdProfile *profile;
+	CdProfile *profile = NULL;
 	gboolean ret = TRUE;
 	guint i;
+
+	/* device is disabled */
+	if (priv->enabled == FALSE) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_DEVICE_ERROR,
+				     CD_DEVICE_ERROR_NOT_ENABLED,
+				     "device is disabled");
+		goto out;
+	}
 
 	/* is it available */
 	profile = cd_profile_array_get_by_object_path (priv->profile_array,
@@ -980,6 +1015,15 @@ cd_device_make_default (CdDevice *device,
 	gboolean ret = FALSE;
 	CdDevicePrivate *priv = device->priv;
 
+	/* device is disabled */
+	if (priv->enabled == FALSE) {
+		g_set_error_literal (error,
+				     CD_DEVICE_ERROR,
+				     CD_DEVICE_ERROR_NOT_ENABLED,
+				     "device is disabled");
+		goto out;
+	}
+
 	/* find profile */
 	profile = cd_device_find_profile_by_object_path (priv->profiles,
 							 profile_object_path);
@@ -1022,6 +1066,56 @@ out:
 }
 
 /**
+ * cd_device_set_enabled:
+ **/
+static gboolean
+cd_device_set_enabled (CdDevice *device,
+		       gboolean enabled,
+		       GError **error)
+{
+	CdDevicePrivate *priv = device->priv;
+	gboolean ret;
+	GError *error_local = NULL;
+
+	/* device is already the correct state */
+	if (priv->enabled == enabled) {
+		ret = TRUE;
+		goto out;
+	}
+
+	/* update database */
+	ret = cd_device_db_set_property (device->priv->device_db,
+					 device->priv->id,
+					 "Enabled",
+					 enabled ? "True" : "False",
+					 &error_local);
+	if (!ret) {
+		g_set_error (error,
+			     CD_DEVICE_ERROR,
+			     CD_DEVICE_ERROR_INTERNAL,
+			     "%s", error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+
+	/* change property */
+	priv->enabled = enabled;
+
+	/* reset modification time */
+	cd_device_reset_modified (device);
+
+	/* emit */
+	cd_device_dbus_emit_property_changed (device,
+					      "Enabled",
+					      g_variant_new_boolean (enabled));
+
+	/* emit global signal */
+	cd_device_dbus_emit_device_changed (device);
+out:
+	return ret;
+}
+
+/**
  * cd_device_dbus_method_call:
  **/
 static void
@@ -1034,6 +1128,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	CdDevicePrivate *priv = device->priv;
 	CdProfile *profile = NULL;
 	const gchar *id;
+	gboolean enabled;
 	gboolean ret;
 	const gchar *profile_object_path = NULL;
 	const gchar *property_name = NULL;
@@ -1309,6 +1404,39 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	}
 
 	/* return '' */
+	if (g_strcmp0 (method_name, "SetEnabled") == 0) {
+
+		/* require auth */
+		ret = cd_main_sender_authenticated (connection,
+						    sender,
+						    "org.freedesktop.color-manager.modify-device",
+						    &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_DEVICE_ERROR,
+							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+		/* set, and parse */
+		g_variant_get (parameters, "(b)",
+			       &enabled);
+		g_debug ("CdDevice %s:SetEnabled(%s)",
+			 sender, enabled ? "True" : "False");
+		ret = cd_device_set_enabled (device, enabled, &error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+							        error);
+			g_error_free (error);
+			goto out;
+		}
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		goto out;
+	}
+
+	/* return '' */
 	if (g_strcmp0 (method_name, "SetProperty") == 0) {
 
 		/* require auth */
@@ -1464,6 +1592,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = cd_device_get_nullable_for_string (priv->serial);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_ENABLED) == 0) {
+		retval = g_variant_new_boolean (priv->enabled);
+		goto out;
+	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_COLORSPACE) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->colorspace);
 		goto out;
@@ -1490,6 +1622,9 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		ret = cd_inhibit_valid (priv->inhibit);
 		if (!ret) {
 			g_debug ("CdDevice: returning no profiles for profiling");
+			retval = g_variant_new ("ao", NULL);
+		} else if (!priv->enabled) {
+			g_debug ("CdDevice: returning no profiles as device disabled");
 			retval = g_variant_new ("ao", NULL);
 		} else {
 			retval = cd_device_get_profiles_as_variant (device);

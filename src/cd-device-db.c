@@ -193,7 +193,7 @@ cd_device_db_set_property (CdDeviceDb *ddb,
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
 	g_debug ("CdDeviceDb: add device %s [%s=%s]", device_id, property, value);
-	statement = sqlite3_mprintf ("INSERT INTO properties (device_id, "
+	statement = sqlite3_mprintf ("INSERT OR REPLACE INTO properties (device_id, "
 				     "property, value) "
 				     "VALUES ('%q', '%q', '%q')",
 				     device_id, property, value);

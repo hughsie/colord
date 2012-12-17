@@ -33,6 +33,7 @@ __colormgr_commandlist="
     device-set-model
     device-set-serial
     device-set-vendor
+    device-set-enabled
     find-device
     find-device-by-property
     find-profile

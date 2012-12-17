@@ -524,6 +524,59 @@ cd_device_get_profile_relation_sync (CdDevice *device,
 
 /**********************************************************************/
 
+static void
+cd_device_set_enabled_finish_sync (CdDevice *device,
+				   GAsyncResult *res,
+				   CdDeviceHelper *helper)
+{
+	helper->ret = cd_device_set_enabled_finish (device,
+						    res,
+						    helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_device_set_enabled_sync:
+ * @device: a #CdDevice instance.
+ * @enabled: the enabled state
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Enables or disables a device.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: %TRUE for success, else %FALSE.
+ *
+ * Since: 0.1.26
+ **/
+gboolean
+cd_device_set_enabled_sync (CdDevice *device,
+			    gboolean enabled,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	CdDeviceHelper helper;
+
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+
+	/* run async method */
+	cd_device_set_enabled (device, enabled, cancellable,
+				(GAsyncReadyCallback) cd_device_set_enabled_finish_sync,
+				&helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.ret;
+}
+
+/**********************************************************************/
+
 /**
  * cd_device_set_model_sync:
  * @device: a #CdDevice instance.

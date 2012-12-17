@@ -68,6 +68,11 @@ CdDeviceRelation cd_device_get_profile_relation_sync	(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GError		**error);
+gboolean	 cd_device_set_enabled_sync		(CdDevice	*device,
+							 gboolean	 enabled,
+							 GCancellable	*cancellable,
+							 GError		**error);
+
 
 /* helpers */
 gboolean	 cd_device_set_model_sync		(CdDevice	*device,

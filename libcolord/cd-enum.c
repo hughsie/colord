@@ -848,6 +848,8 @@ cd_device_error_to_string (CdDeviceError error_enum)
 		return CD_DBUS_INTERFACE_DEVICE ".FailedToUninhibit";
 	if (error_enum == CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE)
 		return CD_DBUS_INTERFACE_DEVICE ".FailedToAuthenticate";
+	if (error_enum == CD_DEVICE_ERROR_NOT_ENABLED)
+		return CD_DBUS_INTERFACE_DEVICE ".NotEnabled";
 	return NULL;
 }
 
@@ -879,6 +881,8 @@ cd_device_error_from_string (const gchar *error_desc)
 		return CD_DEVICE_ERROR_FAILED_TO_UNINHIBIT;
 	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".FailedToAuthenticate") == 0)
 		return CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_DEVICE ".NotEnabled") == 0)
+		return CD_DEVICE_ERROR_NOT_ENABLED;
 	return CD_DEVICE_ERROR_LAST;
 }
 

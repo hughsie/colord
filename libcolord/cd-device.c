@@ -72,6 +72,7 @@ struct _CdDevicePrivate
 	CdColorspace		 colorspace;
 	CdDeviceMode		 mode;
 	CdObjectScope		 scope;
+	gboolean		 enabled;
 	guint			 owner;
 	GHashTable		*metadata;
 };
@@ -94,6 +95,7 @@ enum {
 	PROP_SCOPE,
 	PROP_OWNER,
 	PROP_PROFILING_INHIBITORS,
+	PROP_ENABLED,
 	PROP_LAST
 };
 
@@ -356,6 +358,24 @@ cd_device_get_mode (CdDevice *device)
 }
 
 /**
+ * cd_device_get_enabled:
+ * @device: a #CdDevice instance.
+ *
+ * Gets the device enabled state.
+ *
+ * Return value: %TRUE if the device is enabled
+ *
+ * Since: 0.1.26
+ **/
+gboolean
+cd_device_get_enabled (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+	return device->priv->enabled;
+}
+
+/**
  * cd_device_get_scope:
  * @device: a #CdDevice instance.
  *
@@ -594,13 +614,15 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 								   property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_CREATED) == 0) {
 			device->priv->created = g_variant_get_uint64 (property_value);
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_ENABLED) == 0) {
+			device->priv->enabled = g_variant_get_boolean (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODIFIED) == 0) {
 			device->priv->modified = g_variant_get_uint64 (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_METADATA) == 0) {
 			cd_device_set_metadata_from_variant (device, property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_OWNER) == 0) {
 			device->priv->owner = g_variant_get_uint32 (property_value);
-		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_SCOPE) == 0) {
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SCOPE) == 0) {
 			device->priv->scope = cd_object_scope_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_ID) == 0) {
 			/* ignore this, we don't support it changing */;
@@ -684,6 +706,7 @@ cd_device_connect_cb (GObject *source_object,
 	GVariant *profiling_inhibitors = NULL;
 	GVariant *colorspace = NULL;
 	GVariant *scope = NULL;
+	GVariant *enabled = NULL;
 	GVariant *owner = NULL;
 	GVariant *mode = NULL;
 	GVariant *profiles = NULL;
@@ -741,6 +764,12 @@ cd_device_connect_cb (GObject *source_object,
 	if (scope != NULL)
 		device->priv->scope =
 			cd_object_scope_from_string (g_variant_get_string (scope, NULL));
+
+	/* get enabled */
+	enabled = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						    CD_DEVICE_PROPERTY_ENABLED);
+	if (enabled != NULL)
+		device->priv->enabled = g_variant_get_boolean (enabled);
 
 	/* get owner */
 	owner = g_dbus_proxy_get_cached_property (device->priv->proxy,
@@ -847,6 +876,8 @@ out:
 		g_variant_unref (colorspace);
 	if (scope != NULL)
 		g_variant_unref (scope);
+	if (enabled != NULL)
+		g_variant_unref (enabled);
 	if (owner != NULL)
 		g_variant_unref (owner);
 	if (mode != NULL)
@@ -1761,6 +1792,104 @@ cd_device_get_profile_relation (CdDevice *device,
 /**********************************************************************/
 
 /**
+ * cd_device_set_enabled_finish:
+ * @device: a #CdDevice instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: success
+ *
+ * Since: 0.1.26
+ **/
+gboolean
+cd_device_set_enabled_finish (CdDevice *device,
+			      GAsyncResult *res,
+			      GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+static void
+cd_device_set_enabled_cb (GObject *source_object,
+				   GAsyncResult *res,
+				   gpointer user_data)
+{
+	GError *error = NULL;
+	GVariant *result;
+	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		cd_device_fixup_dbus_error (error);
+		g_simple_async_result_set_from_error (res_source, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
+	g_variant_unref (result);
+out:
+	g_simple_async_result_complete_in_idle (res_source);
+	g_object_unref (res_source);
+}
+
+/**
+ * cd_device_set_enabled:
+ * @device: a #CdDevice instance.
+ * @enabled: the enabled state
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Enables or disables a device.
+ *
+ * Since: 0.1.26
+ **/
+void
+cd_device_set_enabled (CdDevice *device,
+		       gboolean enabled,
+		       GCancellable *cancellable,
+		       GAsyncReadyCallback callback,
+		       gpointer user_data)
+{
+	GSimpleAsyncResult *res;
+
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (device->priv->proxy != NULL);
+
+	res = g_simple_async_result_new (G_OBJECT (device),
+					 callback,
+					 user_data,
+					 cd_device_set_enabled);
+	g_dbus_proxy_call (device->priv->proxy,
+			   "SetEnabled",
+			   g_variant_new ("(b)", enabled),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_device_set_enabled_cb,
+			   res);
+}
+
+/**********************************************************************/
+
+/**
  * cd_device_get_object_path:
  * @device: a #CdDevice instance.
  *
@@ -1919,6 +2048,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 		break;
 	case PROP_SCOPE:
 		g_value_set_uint (value, device->priv->scope);
+		break;
+	case PROP_ENABLED:
+		g_value_set_boolean (value, device->priv->enabled);
 		break;
 	case PROP_OWNER:
 		g_value_set_uint (value, device->priv->owner);
@@ -2160,6 +2292,20 @@ cd_device_class_init (CdDeviceClass *klass)
 							    G_MAXUINT,
 							    0,
 							    G_PARAM_READABLE));
+
+	/**
+	 * CdDevice:enabled:
+	 *
+	 * The device enabled state.
+	 *
+	 * Since: 0.1.26
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_ENABLED,
+					 g_param_spec_boolean ("enabled",
+							       NULL, NULL,
+							       FALSE,
+							       G_PARAM_READABLE));
 
 	/**
 	 * CdDevice:owner:

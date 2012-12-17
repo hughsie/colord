@@ -238,6 +238,10 @@ cd_util_show_device (CdDevice *device)
 	cd_util_print_field (_("Type"),
 			     cd_device_kind_to_string (cd_device_get_kind (device)));
 
+	/* TRANSLATORS: the device enabled state */
+	cd_util_print_field (_("Enabled"),
+			     cd_device_get_enabled (device) ? "Yes" : "No");
+
 	/* TRANSLATORS: the device model */
 	cd_util_print_field (_("Model"),
 			     cd_device_get_model (device));
@@ -1584,6 +1588,50 @@ out:
 }
 
 /**
+ * cd_util_device_set_enabled:
+ **/
+static gboolean
+cd_util_device_set_enabled (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdDevice *device = NULL;
+	gboolean ret = TRUE;
+
+	if (g_strv_length (values) < 2) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     1, 0,
+				     "Not enough arguments, "
+				     "expected device path, True|False");
+		goto out;
+	}
+
+	/* check is valid object path */
+	if (!g_variant_is_object_path (values[0])) {
+		ret = FALSE;
+		g_set_error (error,
+			     1, 0,
+			     "Not a valid object path: %s",
+			     values[0]);
+		goto out;
+	}
+
+	device = cd_device_new_with_object_path (values[0]);
+	ret = cd_device_connect_sync (device, NULL, error);
+	if (!ret)
+		goto out;
+	ret = cd_device_set_enabled_sync (device,
+					  g_strcmp0 (values[1], "True") == 0,
+					  NULL,
+					  error);
+	if (!ret)
+		goto out;
+out:
+	if (device != NULL)
+		g_object_unref (device);
+	return ret;
+}
+
+/**
  * cd_util_device_get_default_profile:
  **/
 static gboolean
@@ -2019,6 +2067,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Sets the device model"),
 		     cd_util_device_set_model);
+	cd_util_add (priv->cmd_array,
+		     "device-set-enabled",
+		     /* TRANSLATORS: command description */
+		     _("Enables or disables the device"),
+		     cd_util_device_set_enabled);
 	cd_util_add (priv->cmd_array,
 		     "device-get-default-profile",
 		     /* TRANSLATORS: command description */
