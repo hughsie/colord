@@ -523,7 +523,7 @@ cd_state_show_profile (CdState *state)
 gboolean
 cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 {
-	gboolean ret;
+	gboolean ret = TRUE;
 	gdouble elapsed;
 	gfloat percentage;
 
@@ -578,7 +578,7 @@ cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 		percentage = cd_state_discrete_to_percent (state->priv->current,
 							    state->priv->steps);
 	} else {
-		/* this is cumalative, for XXXXXXXXXXXXXXXXXXXXy access */
+		/* this is cumalative */
 		percentage = state->priv->step_data[state->priv->current - 1];
 	}
 	cd_state_set_percentage (state, (guint) percentage);
@@ -603,7 +603,7 @@ out:
 gboolean
 cd_state_finished_real (CdState *state, GError **error, const gchar *strloc)
 {
-	gboolean ret;
+	gboolean ret = TRUE;
 
 	g_return_val_if_fail (state != NULL, FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);

@@ -81,6 +81,7 @@ coverity:
 	cd libcolord; $(MAKE) clean; cd -;		\
 	cd examples; $(MAKE) clean; cd -;		\
 	cd client; $(MAKE) clean; cd -;			\
+	cd contrib/session-helper; $(MAKE) clean; cd -;	\
 	cov-build --dir cov-int $(MAKE);		\
 	tar czvf colord-coverity.tgz cov-int;		\
 	export COVERITY_EMAIL=`cat ~/.coverity | grep EMAIL | cut -f2`; \
