@@ -804,7 +804,6 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	CdObjectScope scope;
 	CdProfile *profile = NULL;
-	CdSensor *sensor = NULL;
 	CdSensor *sensor_tmp;
 	const gchar *prop_key;
 	const gchar *prop_value;
@@ -1449,8 +1448,6 @@ out:
 		g_object_unref (device);
 	if (profile != NULL)
 		g_object_unref (profile);
-	if (sensor != NULL)
-		g_object_unref (sensor);
 	return;
 }
 
