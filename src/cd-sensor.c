@@ -91,6 +91,7 @@ struct _CdSensorPrivate
 	gchar				*vendor;
 	gchar				*device_path;
 	gboolean			 native;
+	gboolean			 embedded;
 	gboolean			 locked;
 	gchar				**caps;
 	gchar				*object_path;
@@ -968,6 +969,10 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		retval = g_variant_new_boolean (priv->locked);
 		goto out;
 	}
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_EMBEDDED) == 0) {
+		retval = g_variant_new_boolean (priv->embedded);
+		goto out;
+	}
 	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_CAPABILITIES) == 0) {
 		retval = g_variant_new_strv ((const gchar * const*) priv->caps, -1);
 		goto out;
@@ -1123,6 +1128,12 @@ cd_sensor_set_from_device (CdSensor *sensor,
 	if (ret)
 		priv->caps[idx++] = g_strdup ("ambient");
 	priv->caps[idx] = NULL;
+
+	/* is the sensor embeded, e.g. on the W700? */
+	ret = g_udev_device_get_property_as_boolean (device,
+						     "COLORD_SENSOR_EMBEDDED");
+	if (ret)
+		priv->embedded = TRUE;
 
 	/* no caps */
 	if (idx == 0) {

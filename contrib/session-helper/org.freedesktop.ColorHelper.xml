@@ -220,6 +220,7 @@
               0 = attach to screen
               1 = move to calibration mode.
               2 = move to surface mode.
+              3 = shut the laptop lid.
             </doc:para>
           </doc:summary>
         </doc:doc>

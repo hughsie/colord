@@ -122,6 +122,7 @@ const gchar	*cd_sensor_get_serial			(CdSensor	*sensor);
 const gchar	*cd_sensor_get_model			(CdSensor	*sensor);
 const gchar	*cd_sensor_get_vendor			(CdSensor	*sensor);
 gboolean	 cd_sensor_get_native			(CdSensor	*sensor);
+gboolean	 cd_sensor_get_embedded			(CdSensor	*sensor);
 gboolean	 cd_sensor_get_locked			(CdSensor	*sensor);
 guint		 cd_sensor_get_caps			(CdSensor	*sensor);
 gboolean	 cd_sensor_has_cap			(CdSensor	*sensor,

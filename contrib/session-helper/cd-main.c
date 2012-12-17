@@ -51,6 +51,7 @@ typedef enum {
 	CD_MAIN_INTERACTION_CODE_ATTACH_TO_SCREEN,
 	CD_MAIN_INTERACTION_CODE_MOVE_TO_CALIBRATION,
 	CD_MAIN_INTERACTION_CODE_MOVE_TO_SURFACE,
+	CD_MAIN_INTERACTION_CODE_SHUT_LAPTOP_LID,
 	CD_MAIN_INTERACTION_CODE_NONE
 } CdMainInteractionCode;
 
@@ -335,6 +336,9 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 	case CD_MAIN_INTERACTION_CODE_MOVE_TO_CALIBRATION:
 		image = cd_main_get_sensor_image_calibrate (priv);
 		message = "move the sensor to the calibrate position";
+		break;
+	case CD_MAIN_INTERACTION_CODE_SHUT_LAPTOP_LID:
+		message = "shut the laptop lid";
 		break;
 	default:
 		message = "";
@@ -1939,10 +1943,16 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		/* set the filename of all the calibrated files */
 		cd_main_set_basename (priv);
 
-		/* ask the user to attach the device to the screen */
+		/* ask the user to attach the device to the screen if
+		 * the sensor is external, otherwise to shut the lid */
+		if (cd_sensor_get_embedded (priv->sensor)) {
+			cd_main_emit_interaction_required (priv,
+							   CD_MAIN_INTERACTION_CODE_SHUT_LAPTOP_LID);
+		} else {
+			cd_main_emit_interaction_required (priv,
+							   CD_MAIN_INTERACTION_CODE_ATTACH_TO_SCREEN);
+		}
 		priv->status = CD_MAIN_STATUS_WAITING_FOR_INTERACTION;
-		cd_main_emit_interaction_required (priv,
-						   CD_MAIN_INTERACTION_CODE_ATTACH_TO_SCREEN);
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}

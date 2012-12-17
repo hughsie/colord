@@ -108,6 +108,23 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Embedded' type='b' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            If the sensor is embedded into the laptop hardware, for
+            example the W700 device from Lenovo.
+          </doc:para>
+          <doc:para>
+            If this property is set then the calibration process should
+            show the color patch fullscreen and should emit an audible
+            alert when completed.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Locked' type='b' access='read'>
       <doc:doc>
         <doc:description>

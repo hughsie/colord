@@ -63,6 +63,7 @@ struct _CdSensorPrivate
 	gchar			*model;
 	gchar			*vendor;
 	gboolean		 native;
+	gboolean		 embedded;
 	gboolean		 locked;
 	guint			 caps;
 	GHashTable		*options;
@@ -81,6 +82,7 @@ enum {
 	PROP_MODEL,
 	PROP_VENDOR,
 	PROP_NATIVE,
+	PROP_EMBEDDED,
 	PROP_LOCKED,
 	PROP_LAST
 };
@@ -254,6 +256,24 @@ cd_sensor_get_native (CdSensor *sensor)
 }
 
 /**
+ * cd_sensor_get_embedded:
+ * @sensor: a #CdSensor instance.
+ *
+ * Returns if the sensor is embedded into the computer.
+ *
+ * Return value: %TRUE if embedded.
+ *
+ * Since: 0.1.26
+ **/
+gboolean
+cd_sensor_get_embedded (CdSensor *sensor)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
+	return sensor->priv->embedded;
+}
+
+/**
  * cd_sensor_get_locked:
  * @sensor: a #CdSensor instance.
  *
@@ -404,6 +424,9 @@ cd_sensor_dbus_properties_changed_cb (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_NATIVE) == 0) {
 			sensor->priv->native = g_variant_get_boolean (property_value);
 			g_object_notify (G_OBJECT (sensor), "native");
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_EMBEDDED) == 0) {
+			sensor->priv->embedded = g_variant_get_boolean (property_value);
+			g_object_notify (G_OBJECT (sensor), "embedded");
 		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_LOCKED) == 0) {
 			sensor->priv->locked = g_variant_get_boolean (property_value);
 			g_object_notify (G_OBJECT (sensor), "locked");
@@ -456,6 +479,7 @@ cd_sensor_connect_cb (GObject *source_object,
 	GVariant *state = NULL;
 	GVariant *mode = NULL;
 	GVariant *native = NULL;
+	GVariant *embedded = NULL;
 	GVariant *locked = NULL;
 	GVariant *caps = NULL;
 	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
@@ -524,6 +548,12 @@ cd_sensor_connect_cb (GObject *source_object,
 	if (native != NULL)
 		sensor->priv->native = g_variant_get_boolean (native);
 
+	/* get embedded */
+	embedded = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
+						   CD_SENSOR_PROPERTY_EMBEDDED);
+	if (embedded != NULL)
+		sensor->priv->embedded = g_variant_get_boolean (embedded);
+
 	/* get locked */
 	locked = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
 						   CD_SENSOR_PROPERTY_LOCKED);
@@ -567,6 +597,8 @@ out:
 		g_variant_unref (vendor);
 	if (native != NULL)
 		g_variant_unref (native);
+	if (embedded != NULL)
+		g_variant_unref (embedded);
 	if (locked != NULL)
 		g_variant_unref (locked);
 	if (caps != NULL)
@@ -1260,6 +1292,9 @@ cd_sensor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_NATIVE:
 		g_value_set_boolean (value, sensor->priv->native);
 		break;
+	case PROP_EMBEDDED:
+		g_value_set_boolean (value, sensor->priv->embedded);
+		break;
 	case PROP_LOCKED:
 		g_value_set_boolean (value, sensor->priv->locked);
 		break;
@@ -1428,6 +1463,20 @@ cd_sensor_class_init (CdSensorClass *klass)
 					 g_param_spec_string ("native",
 							      NULL, NULL,
 							      NULL,
+							      G_PARAM_READABLE));
+
+	/**
+	 * CdSensor:embedded:
+	 *
+	 * If the sensor has a native driver.
+	 *
+	 * Since: 0.1.26
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_EMBEDDED,
+					 g_param_spec_string ("embedded",
+							      NULL, NULL,
+							      FALSE,
 							      G_PARAM_READABLE));
 
 	/**
