@@ -472,9 +472,8 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 			       GError **error)
 {
 	cmsCIExyYTRIPLE primaries;
-	cmsCIExyY black = { 0, 0, 0 };
 	cmsCIExyY white;
-	cmsToneCurve *transfer = NULL;
+	cmsToneCurve *transfer[3] = { NULL, NULL, NULL};
 	gboolean ret;
 	gdouble tgamma;
 
@@ -488,10 +487,14 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 
 	/* parse gamma */
 	if (g_strcmp0 (values[0], "sRGB") == 0) {
-		transfer = cd_util_build_srgb_gamma ();
+		transfer[0] = cd_util_build_srgb_gamma ();
+		transfer[1] = transfer[0];
+		transfer[2] = transfer[0];
 	} else {
 		tgamma = atof (values[0]);
-		transfer = cmsBuildGamma (NULL, tgamma);
+		transfer[0] = cmsBuildGamma (NULL, tgamma);
+		transfer[1] = transfer[0];
+		transfer[2] = transfer[0];
 	}
 
 	/* values taken from https://en.wikipedia.org/wiki/Standard_illuminant */
@@ -525,38 +528,12 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	primaries.Blue.Y = atof (values[10]);
 
 	/* create profile */
-	priv->lcms_profile = cmsCreateProfilePlaceholder (NULL);
-	cmsSetProfileVersion (priv->lcms_profile, 2.1);
-	cmsSetDeviceClass (priv->lcms_profile, cmsSigDisplayClass);
-	cmsSetColorSpace (priv->lcms_profile, cmsSigRgbData);
-	cmsSetPCS (priv->lcms_profile, cmsSigXYZData);
-	cmsWriteTag (priv->lcms_profile,
-		     cmsSigMediaWhitePointTag,
-		     &white);
-	cmsWriteTag (priv->lcms_profile,
-		     cmsSigMediaBlackPointTag,
-		     &black);
-	cmsWriteTag (priv->lcms_profile,
-		     cmsSigRedColorantTag,
-		     (void *) &primaries.Red);
-	cmsWriteTag (priv->lcms_profile,
-		     cmsSigGreenColorantTag,
-		     (void *) &primaries.Green);
-	cmsWriteTag (priv->lcms_profile,
-		     cmsSigBlueColorantTag,
-		     (void *) &primaries.Blue);
-	cmsWriteTag (priv->lcms_profile,
-		     cmsSigRedTRCTag,
-		     (void *) transfer);
-	cmsLinkTag (priv->lcms_profile,
-		    cmsSigGreenTRCTag,
-		    cmsSigRedTRCTag);
-	cmsLinkTag (priv->lcms_profile,
-		    cmsSigBlueTRCTag,
-		    cmsSigRedTRCTag );
+	priv->lcms_profile = cmsCreateRGBProfile (&white,
+						  &primaries,
+						  transfer);
 	ret = TRUE;
 out:
-	cmsFreeToneCurve (transfer);
+	cmsFreeToneCurve (transfer[0]);
 	return ret;
 }
 
