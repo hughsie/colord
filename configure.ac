@@ -121,6 +121,17 @@ AC_DEFINE(GETTEXT_PACKAGE, "AC_PACKAGE_NAME", [foo])
 GLIB_GSETTINGS
 
 dnl ---------------------------------------------------------------------------
+dnl - Check we have shared-color-profiles or a compatible profile set
+dnl ---------------------------------------------------------------------------
+has_color_profiles=yes
+AC_CHECK_FILE([/usr/share/color/icc/sRGB.icc],,has_color_profiles=no)
+AC_CHECK_FILE([/usr/share/color/icc/ProPhotoRGB.icc],,has_color_profiles=no)
+AC_CHECK_FILE([/usr/share/color/icc/AdobeRGB1998.icc],,has_color_profiles=no)
+if test x$has_color_profiles != xyes; then
+	AC_MSG_ERROR([shared-color-profiles or a compatible profile set is required])
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gio-unix-2.0 gmodule-2.0)
