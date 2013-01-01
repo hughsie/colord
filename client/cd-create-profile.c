@@ -24,6 +24,7 @@
 #include <glib/gi18n.h>
 #include <locale.h>
 #include <lcms2.h>
+#include <lcms2_plugin.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -463,6 +464,60 @@ cd_util_build_srgb_gamma (void)
 	return cmsBuildParametricToneCurve (NULL, 4, params);
 }
 
+#define LCMS_CURVE_PLUGIN_TYPE_REC709	1024
+
+/**
+ * cd_util_lcms_rec709_trc_cb:
+ **/
+static double
+cd_util_lcms_rec709_trc_cb (int type, const double params[], double x)
+{
+	gdouble val = 0.f;
+
+	switch (type) {
+	case -LCMS_CURVE_PLUGIN_TYPE_REC709:
+		if (x < params[4])
+			val = x * params[3];
+		else
+			val = params[1] * pow (x, (1.f / params[0])) + params[2];
+		break;
+	case LCMS_CURVE_PLUGIN_TYPE_REC709:
+		if (x <= (params[3] * params[4]))
+			val = x / params[3];
+		else
+			val = pow (((x + params[2]) / params[1]), params[0]);
+		break;
+	}
+	return val;
+}
+
+/* add Rec. 709 TRC curve type */
+cmsPluginParametricCurves cd_util_lcms_rec709_trc = {
+	{ cmsPluginMagicNumber,			/* 'acpp' */
+	  2000,					/* minimum version */
+	  cmsPluginParametricCurveSig,		/* type */
+	  NULL },				/* no more plugins */
+	1,					/* number functions */
+	{LCMS_CURVE_PLUGIN_TYPE_REC709},	/* function types */
+	{5},					/* parameter count */
+	cd_util_lcms_rec709_trc_cb		/* evaluator */
+};
+
+/**
+ * cd_util_build_rec709_gamma:
+ **/
+static cmsToneCurve *
+cd_util_build_rec709_gamma (void)
+{
+	cmsFloat64Number params[5];
+	params[0] = 1.0 / 0.45;
+	params[1] = 1.099;
+	params[2] = 0.099;
+	params[3] = 4.500;
+	params[4] = 0.018;
+	return cmsBuildParametricToneCurve (NULL, LCMS_CURVE_PLUGIN_TYPE_REC709, params);
+}
+
 /**
  * cd_util_create_standard_space:
  **/
@@ -488,6 +543,10 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	/* parse gamma */
 	if (g_strcmp0 (values[0], "sRGB") == 0) {
 		transfer[0] = cd_util_build_srgb_gamma ();
+		transfer[1] = transfer[0];
+		transfer[2] = transfer[0];
+	} else if (g_strcmp0 (values[0], "Rec709") == 0) {
+		transfer[0] = cd_util_build_rec709_gamma ();
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	} else {
@@ -646,6 +705,8 @@ main (int argc, char **argv)
 
 	/* setup LCMS */
 	cmsSetLogErrorHandler (cd_fix_profile_error_cb);
+	ret = cmsPlugin (&cd_util_lcms_rec709_trc);
+	g_assert (ret);
 
 	/* add commands */
 	priv = g_new0 (CdUtilPrivate, 1);
