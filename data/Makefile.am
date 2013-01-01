@@ -1,5 +1,6 @@
 
 SUBDIRS = 						\
+	profiles					\
 	figures						\
 	tests						\
 	ti1

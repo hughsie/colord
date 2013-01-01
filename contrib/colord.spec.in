@@ -1,5 +1,9 @@
 %define alphatag                #ALPHATAG#
 
+# Building the extra print profiles requires colprof, +4Gb of RAM and
+# quite a lot of time. Don't enable this for test builds.
+%define build_print_profiles 0
+
 Summary:   Color daemon
 Name:      colord
 Version:   #VERSION#
@@ -21,11 +25,17 @@ BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
 BuildRequires: libgusb-devel
 BuildRequires: gtk-doc
+%if 0%{?build_print_profiles}
+BuildRequires: argyllcms
+%endif
 
-Requires: shared-color-profiles
 Requires: color-filesystem
 Requires: systemd-units
 Requires(pre): shadow-utils
+
+# obsolete separate profiles package
+Obsoletes: shared-color-profiles <= 0.1.6-2
+Provides: shared-color-profiles
 
 %description
 colord is a low level system activated daemon that maps color devices
@@ -46,6 +56,19 @@ BuildArch: noarch
 %description devel-docs
 Documentation for development with %{name}.
 
+%package extra-profiles
+Summary: More color profiles for color management that are less commonly used
+Requires: %{name} = %{version}-%{release}
+BuildArch: noarch
+
+# obsolete separate profiles package
+Obsoletes: shared-color-profiles-extra <= 0.1.6-2
+Provides: shared-color-profiles-extra
+
+%description extra-profiles
+More color profiles for color management that are less commonly used.
+This may be useful for CMYK soft-proofing or for extra device support.
+
 %prep
 %setup -q
 
@@ -54,6 +77,11 @@ Documentation for development with %{name}.
         --with-daemon-user=colord \
         --enable-gtk-doc \
         --enable-vala \
+%if 0%{?build_print_profiles}
+        --enable-print-profiles \
+%else
+        --disable-print-profiles \
+%endif
         --disable-static \
         --disable-rpath \
         --disable-examples \
@@ -112,6 +140,59 @@ exit 0
 %{_libexecdir}/colord-session
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
 %{_datadir}/dbus-1/services/org.freedesktop.ColorHelper.service
+
+# common colorspaces
+%dir %{_icccolordir}/colord
+%{_icccolordir}/colord/AdobeRGB1998.icc
+%{_icccolordir}/colord/AppleRGB.icc
+%{_icccolordir}/colord/CIE-RGB.icc
+%{_icccolordir}/colord/ColorMatchRGB.icc
+%{_icccolordir}/colord/NTSC-RGB.icc
+%{_icccolordir}/colord/PAL-RGB.icc
+%{_icccolordir}/colord/ProPhotoRGB.icc
+%{_icccolordir}/colord/Rec709.icc
+%{_icccolordir}/colord/SMPTE-C-RGB.icc
+%{_icccolordir}/colord/sRGB.icc
+
+# so we can display at least something in the default dropdown
+%if 0%{?build_print_profiles}
+%{_icccolordir}/colord/FOGRA39L_coated.icc
+%endif
+
+# monitor test profiles
+%{_icccolordir}/colord/bluish.icc
+%{_icccolordir}/colord/SwappedRedAndGreen.icc
+%{_icccolordir}/colord/gamma*.icc
+
+# named color profiles
+%{_icccolordir}/colord/x11-colors.icc
+
+%files extra-profiles
+%defattr(-,root,root,-)
+
+%if 0%{?build_print_profiles}
+%{_icccolordir}/colord/FOGRA27L_coated.icc
+%{_icccolordir}/colord/FOGRA28L_webcoated.icc
+%{_icccolordir}/colord/FOGRA29L_uncoated.icc
+%{_icccolordir}/colord/FOGRA30L_uncoated_yellowish.icc
+%{_icccolordir}/colord/FOGRA40L_SC_paper.icc
+%{_icccolordir}/colord/GRACoL*.icc
+%{_icccolordir}/colord/ISOnewspaper26.icc
+%{_icccolordir}/colord/SNAP*.icc
+%{_icccolordir}/colord/SWOP*.icc
+%endif
+
+# other colorspaces not often used
+%{_icccolordir}/colord/BestRGB.icc
+%{_icccolordir}/colord/BetaRGB.icc
+%{_icccolordir}/colord/BruceRGB.icc
+%{_icccolordir}/colord/DonRGB4.icc
+%{_icccolordir}/colord/ECI-RGBv2.icc
+%{_icccolordir}/colord/EktaSpacePS5.icc
+%{_icccolordir}/colord/WideGamutRGB.icc
+
+# other named color profiles not generally useful
+%{_icccolordir}/colord/crayons.icc
 
 %files devel
 %defattr(-,root,root,-)

@@ -121,17 +121,6 @@ AC_DEFINE(GETTEXT_PACKAGE, "AC_PACKAGE_NAME", [foo])
 GLIB_GSETTINGS
 
 dnl ---------------------------------------------------------------------------
-dnl - Check we have shared-color-profiles or a compatible profile set
-dnl ---------------------------------------------------------------------------
-has_color_profiles=yes
-AC_CHECK_FILE([/usr/share/color/icc/sRGB.icc],,has_color_profiles=no)
-AC_CHECK_FILE([/usr/share/color/icc/ProPhotoRGB.icc],,has_color_profiles=no)
-AC_CHECK_FILE([/usr/share/color/icc/AdobeRGB1998.icc],,has_color_profiles=no)
-if test x$has_color_profiles != xyes; then
-	AC_MSG_ERROR([shared-color-profiles or a compatible profile set is required])
-fi
-
-dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.28.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gio-unix-2.0 gmodule-2.0)
@@ -286,6 +275,19 @@ if test x$enable_session_example != xno; then
 	PKG_CHECK_MODULES(COLORD_GTK, colord-gtk >= 0.1.24)
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl - Build extra print profiles (requires argyllcms)
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(print-profiles, AS_HELP_STRING([--enable-print-profiles],[Build extra print profiles]),
+	      enable_print_profiles=$enableval, enable_print_profiles=no)
+AM_CONDITIONAL(CD_BUILD_PRINT_PROFILES, test x$enable_print_profiles = xyes)
+if test x$enable_print_profiles != xno; then
+	AC_PATH_PROG(COLPROF, [colprof], false)
+	if test "$COLPROF" = "false"; then
+		AC_MSG_ERROR([colprof not found, please install argyllcms])
+	fi
+fi
+
 # per-machine directory
 AC_SUBST(CD_SYSTEM_PROFILES_DIR, "\$(localstatedir)/lib/colord/icc")
 
@@ -305,6 +307,7 @@ doc/api/dbus/Makefile
 doc/api/version.xml
 data/Makefile
 data/figures/Makefile
+data/profiles/Makefile
 data/ti1/Makefile
 data/org.freedesktop.ColorManager.conf
 data/tests/Makefile
@@ -338,6 +341,7 @@ echo "
         File descriptor fallback:  ${enable_fd_fallback}
         External volume searching: ${enable_volume_search}
         GUDEV support:             ${enable_gudev}
+        Extra print profiles:      ${enable_print_profiles}
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
         udev rules.d dir:          ${with_udevrulesdir}
