@@ -278,7 +278,7 @@ AM_CONDITIONAL(HAVE_VAPIGEN, [test "x$has_vapigen" = "xyes"])
 dnl ---------------------------------------------------------------------------
 dnl - Build session helper example
 dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(enable-session-example, AS_HELP_STRING([--enable-session-example],[Enable session example]),
+AC_ARG_ENABLE(session-example, AS_HELP_STRING([--enable-session-example],[Enable session example]),
 	      enable_session_example=$enableval, enable_session_example=no)
 AM_CONDITIONAL(CD_BUILD_SESSION_EXAMPLE, test x$enable_session_example = xyes)
 if test x$enable_session_example != xno; then
