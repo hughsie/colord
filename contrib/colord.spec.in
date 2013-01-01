@@ -46,14 +46,6 @@ BuildArch: noarch
 %description devel-docs
 Documentation for development with %{name}.
 
-%package gtk
-Summary: GTK helper library for %{name}
-Requires: %{name} = %{version}-%{release}
-
-%description gtk
-This package contains extra functionality for %{name} that can be used
-when running GTK applications.
-
 %prep
 %setup -q
 
@@ -64,6 +56,7 @@ when running GTK applications.
         --enable-vala \
         --disable-static \
         --disable-rpath \
+        --disable-examples \
         --disable-dependency-tracking
 
 make %{?_smp_mflags}
