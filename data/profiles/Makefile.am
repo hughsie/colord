@@ -15,7 +15,6 @@ generatedprofiles =					\
 	ProPhotoRGB.icc					\
 	SMPTE-C-RGB.icc					\
 	sRGB.icc					\
-	Rec709.icc					\
 	WideGamutRGB.icc				\
 	SwappedRedAndGreen.icc				\
 	bluish.icc					\
@@ -179,15 +178,6 @@ sRGB.icc:
 		--description "sRGB"			\
 		--metadata "License=$(license),DATA_source=standard,STANDARD_space=srgb" \
 		sRGB D65				\
-		0.6400 0.3300 0.212656			\
-		0.3000 0.6000 0.715158			\
-		0.1500 0.0600 0.072186
-Rec709.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Rec. 709"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=rec709" \
-		Rec709 D65				\
 		0.6400 0.3300 0.212656			\
 		0.3000 0.6000 0.715158			\
 		0.1500 0.0600 0.072186
