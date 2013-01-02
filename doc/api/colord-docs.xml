@@ -65,10 +65,10 @@
       </para>
     </partintro>
     <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>
-    <xi:include href="dbus/org.freedesktop.ColorManager.ref.xml"/>
-    <xi:include href="dbus/org.freedesktop.ColorManager.Device.ref.xml"/>
-    <xi:include href="dbus/org.freedesktop.ColorManager.Profile.ref.xml"/>
-    <xi:include href="dbus/org.freedesktop.ColorManager.Sensor.ref.xml"/>
+    <xi:include href="dbus/org.freedesktop.ColorManager.ref.xml"><xi:fallback /></xi:include>
+    <xi:include href="dbus/org.freedesktop.ColorManager.Device.ref.xml"><xi:fallback /></xi:include>
+    <xi:include href="dbus/org.freedesktop.ColorManager.Profile.ref.xml"><xi:fallback /></xi:include>
+    <xi:include href="dbus/org.freedesktop.ColorManager.Sensor.ref.xml"><xi:fallback /></xi:include>
   </reference>
 
   <reference id="libcolord">
