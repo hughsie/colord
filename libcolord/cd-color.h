@@ -78,32 +78,32 @@ CdColorXYZ	*cd_color_xyz_dup			(const CdColorXYZ	*src);
 CdColorRGB	*cd_color_rgb_dup			(const CdColorRGB	*src);
 CdColorYxy	*cd_color_yxy_dup			(const CdColorYxy	*src);
 
-void		 cd_color_set_xyz			(CdColorXYZ		*dest,
+void		 cd_color_xyz_set			(CdColorXYZ		*dest,
 							 gdouble		 X,
 							 gdouble		 Y,
 							 gdouble		 Z);
-void		 cd_color_set_rgb			(CdColorRGB		*dest,
+void		 cd_color_rgb_set			(CdColorRGB		*dest,
 							 gdouble		 R,
 							 gdouble		 G,
 							 gdouble		 B);
-void		 cd_color_set_yxy			(CdColorYxy		*dest,
+void		 cd_color_yxy_set			(CdColorYxy		*dest,
 							 gdouble		 Y,
 							 gdouble		 x,
 							 gdouble		 y);
-void		 cd_color_copy_xyz			(const CdColorXYZ	*src,
+void		 cd_color_xyz_copy			(const CdColorXYZ	*src,
 							 CdColorXYZ		*dest);
-void		 cd_color_copy_yxy			(const CdColorYxy	*src,
+void		 cd_color_yxy_copy			(const CdColorYxy	*src,
 							 CdColorYxy		*dest);
-void		 cd_color_clear_xyz			(CdColorXYZ		*dest);
-void		 cd_color_copy_rgb			(const CdColorRGB	*src,
+void		 cd_color_xyz_clear			(CdColorXYZ		*dest);
+void		 cd_color_rgb_copy			(const CdColorRGB	*src,
 							 CdColorRGB		*dest);
-void		 cd_color_convert_rgb8_to_rgb		(const CdColorRGB8	*src,
+void		 cd_color_rgb8_to_rgb			(const CdColorRGB8	*src,
 							 CdColorRGB		*dest);
-void		 cd_color_convert_rgb_to_rgb8		(const CdColorRGB	*src,
+void		 cd_color_rgb_to_rgb8			(const CdColorRGB	*src,
 							 CdColorRGB8		*dest);
-void		 cd_color_convert_yxy_to_xyz		(const CdColorYxy	*src,
+void		 cd_color_yxy_to_xyz			(const CdColorYxy	*src,
 							 CdColorXYZ		*dest);
-void		 cd_color_convert_xyz_to_yxy		(const CdColorXYZ	*src,
+void		 cd_color_xyz_to_yxy			(const CdColorXYZ	*src,
 							 CdColorYxy		*dest);
 void		 cd_color_get_blackbody_rgb		(guint			 temp,
 							 CdColorRGB		*result);

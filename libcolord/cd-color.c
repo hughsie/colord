@@ -132,7 +132,7 @@ cd_color_yxy_get_type (void)
 }
 
 /**
- * cd_color_set_xyz:
+ * cd_color_xyz_set:
  * @dest: the destination color
  * @X: component value
  * @Y: component value
@@ -141,7 +141,7 @@ cd_color_yxy_get_type (void)
  * Initialises a color value.
  **/
 void
-cd_color_set_xyz (CdColorXYZ *dest, gdouble X, gdouble Y, gdouble Z)
+cd_color_xyz_set (CdColorXYZ *dest, gdouble X, gdouble Y, gdouble Z)
 {
 	g_return_if_fail (dest != NULL);
 
@@ -151,13 +151,13 @@ cd_color_set_xyz (CdColorXYZ *dest, gdouble X, gdouble Y, gdouble Z)
 }
 
 /**
- * cd_color_clear_xyz:
+ * cd_color_xyz_clear:
  * @dest: the destination color
  *
  * Initialises a color value.
  **/
 void
-cd_color_clear_xyz (CdColorXYZ *dest)
+cd_color_xyz_clear (CdColorXYZ *dest)
 {
 	g_return_if_fail (dest != NULL);
 
@@ -167,7 +167,7 @@ cd_color_clear_xyz (CdColorXYZ *dest)
 }
 
 /**
- * cd_color_set_rgb:
+ * cd_color_rgb_set:
  * @dest: the destination color
  * @R: component value
  * @G: component value
@@ -176,7 +176,7 @@ cd_color_clear_xyz (CdColorXYZ *dest)
  * Initialises a color value.
  **/
 void
-cd_color_set_rgb (CdColorRGB *dest, gdouble R, gdouble G, gdouble B)
+cd_color_rgb_set (CdColorRGB *dest, gdouble R, gdouble G, gdouble B)
 {
 	g_return_if_fail (dest != NULL);
 
@@ -186,7 +186,7 @@ cd_color_set_rgb (CdColorRGB *dest, gdouble R, gdouble G, gdouble B)
 }
 
 /**
- * cd_color_set_yxy:
+ * cd_color_yxy_set:
  * @dest: the destination color
  * @Y: component value
  * @x: component value
@@ -195,7 +195,7 @@ cd_color_set_rgb (CdColorRGB *dest, gdouble R, gdouble G, gdouble B)
  * Initialises a color value.
  **/
 void
-cd_color_set_yxy (CdColorYxy *dest, gdouble Y, gdouble x, gdouble y)
+cd_color_yxy_set (CdColorYxy *dest, gdouble Y, gdouble x, gdouble y)
 {
 	g_return_if_fail (dest != NULL);
 
@@ -205,14 +205,14 @@ cd_color_set_yxy (CdColorYxy *dest, gdouble Y, gdouble x, gdouble y)
 }
 
 /**
- * cd_color_copy_xyz:
+ * cd_color_xyz_copy:
  * @src: the source color
  * @dest: the destination color
  *
  * Deep copies a color value.
  **/
 void
-cd_color_copy_xyz (const CdColorXYZ *src, CdColorXYZ *dest)
+cd_color_xyz_copy (const CdColorXYZ *src, CdColorXYZ *dest)
 {
 	g_return_if_fail (src != NULL);
 	g_return_if_fail (dest != NULL);
@@ -223,14 +223,14 @@ cd_color_copy_xyz (const CdColorXYZ *src, CdColorXYZ *dest)
 }
 
 /**
- * cd_color_copy_yxy:
+ * cd_color_yxy_copy:
  * @src: the source color
  * @dest: the destination color
  *
  * Deep copies a color value.
  **/
 void
-cd_color_copy_yxy (const CdColorYxy *src, CdColorYxy *dest)
+cd_color_yxy_copy (const CdColorYxy *src, CdColorYxy *dest)
 {
 	g_return_if_fail (src != NULL);
 	g_return_if_fail (dest != NULL);
@@ -241,14 +241,14 @@ cd_color_copy_yxy (const CdColorYxy *src, CdColorYxy *dest)
 }
 
 /**
- * cd_color_copy_rgb:
+ * cd_color_rgb_copy:
  * @src: the source color
  * @dest: the destination color
  *
  * Deep copies a color value.
  **/
 void
-cd_color_copy_rgb (const CdColorRGB *src, CdColorRGB *dest)
+cd_color_rgb_copy (const CdColorRGB *src, CdColorRGB *dest)
 {
 	g_return_if_fail (src != NULL);
 	g_return_if_fail (dest != NULL);
@@ -259,14 +259,14 @@ cd_color_copy_rgb (const CdColorRGB *src, CdColorRGB *dest)
 }
 
 /**
- * cd_color_convert_rgb8_to_rgb:
+ * cd_color_rgb8_to_rgb:
  * @src: the source color
  * @dest: the destination color
  *
  * Convert from one color format to another.
  **/
 void
-cd_color_convert_rgb8_to_rgb (const CdColorRGB8 *src, CdColorRGB *dest)
+cd_color_rgb8_to_rgb (const CdColorRGB8 *src, CdColorRGB *dest)
 {
 	g_return_if_fail (src != NULL);
 	g_return_if_fail (dest != NULL);
@@ -290,14 +290,14 @@ cd_color_value_double_to_uint8 (gdouble value)
 }
 
 /**
- * cd_color_convert_rgb_to_rgb8:
+ * cd_color_rgb_to_rgb8:
  * @src: the source color
  * @dest: the destination color
  *
  * Convert from one color format to another.
  **/
 void
-cd_color_convert_rgb_to_rgb8 (const CdColorRGB *src, CdColorRGB8 *dest)
+cd_color_rgb_to_rgb8 (const CdColorRGB *src, CdColorRGB8 *dest)
 {
 	g_return_if_fail (src != NULL);
 	g_return_if_fail (dest != NULL);
@@ -309,14 +309,14 @@ cd_color_convert_rgb_to_rgb8 (const CdColorRGB *src, CdColorRGB8 *dest)
 }
 
 /**
- * cd_color_convert_yxy_to_xyz:
+ * cd_color_yxy_to_xyz:
  * @src: the source color
  * @dest: the destination color
  *
  * Convert from one color format to another.
  **/
 void
-cd_color_convert_yxy_to_xyz (const CdColorYxy *src, CdColorXYZ *dest)
+cd_color_yxy_to_xyz (const CdColorYxy *src, CdColorXYZ *dest)
 {
 	g_return_if_fail (src != NULL);
 	g_return_if_fail (dest != NULL);
@@ -342,14 +342,14 @@ cd_color_convert_yxy_to_xyz (const CdColorYxy *src, CdColorXYZ *dest)
 }
 
 /**
- * cd_color_convert_xyz_to_yxy:
+ * cd_color_xyz_to_yxy:
  * @src: the source color
  * @dest: the destination color
  *
  * Convert from one color format to another.
  **/
 void
-cd_color_convert_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
+cd_color_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
 {
 	gdouble sum;
 

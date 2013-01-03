@@ -77,7 +77,6 @@ void		 cd_mat33_normalize		(const CdMat3x3		*src,
 void		 cd_mat33_copy			(const CdMat3x3		*src,
 						 CdMat3x3		*dest);
 
-				
 #undef __CD_MATH_H_INSIDE__
 
 #endif /* __CD_MATH_H__ */

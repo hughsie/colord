@@ -385,7 +385,7 @@ cd_main_calib_get_sample (CdMainPrivate *priv,
 		ret = FALSE;
 		goto out;
 	}
-	cd_color_copy_xyz (xyz_tmp, xyz);
+	cd_color_xyz_copy (xyz_tmp, xyz);
 out:
 	if (xyz_tmp != NULL)
 		cd_color_xyz_free (xyz_tmp);
@@ -448,7 +448,7 @@ cd_main_calib_try_item (CdMainPrivate *priv,
 	error_tmp = sqrt (lab.a * lab.a + lab.b * lab.b);
 	g_debug ("%f\t%f\t%f = %f", lab.L, lab.a, lab.b, error_tmp);
 	if (error_tmp < item->error) {
-		cd_color_copy_rgb (&item->color, &item->best_so_far);
+		cd_color_rgb_copy (&item->color, &item->best_so_far);
 		item->error = error_tmp;
 		if (new_best != NULL)
 			*new_best = TRUE;
@@ -485,7 +485,7 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		goto out;
 
 	/* copy the current color balance as the best */
-	cd_color_copy_rgb (&item->color, &item->best_so_far);
+	cd_color_rgb_copy (&item->color, &item->best_so_far);
 
 	/* get a baseline error */
 	ret = cd_main_calib_try_item (priv, item, NULL, error);
@@ -522,7 +522,7 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		}
 
 		/* blue */
-		cd_color_copy_rgb (&item->best_so_far, &item->color);
+		cd_color_rgb_copy (&item->best_so_far, &item->color);
 		if (item->best_so_far.B > interval) {
 			item->color.B = item->best_so_far.B - interval;
 			ret = cd_main_calib_try_item (priv, item, &new_best, error);
@@ -547,7 +547,7 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		}
 
 		/* red */
-		cd_color_copy_rgb (&item->best_so_far, &item->color);
+		cd_color_rgb_copy (&item->best_so_far, &item->color);
 		if (item->best_so_far.R > interval) {
 			item->color.R = item->best_so_far.R - interval;
 			ret = cd_main_calib_try_item (priv, item, &new_best, error);
@@ -572,7 +572,7 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		}
 
 		/* green */
-		cd_color_copy_rgb (&item->best_so_far, &item->color);
+		cd_color_rgb_copy (&item->best_so_far, &item->color);
 		if (item->best_so_far.G > interval) {
 			item->color.G = item->best_so_far.G - interval;
 			ret = cd_main_calib_try_item (priv, item, &new_best, error);
@@ -613,7 +613,7 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 	}
 
 	/* save this */
-	cd_color_copy_rgb (&item->best_so_far,
+	cd_color_rgb_copy (&item->best_so_far,
 			   &item->color);
 
 	/* done */
@@ -648,7 +648,7 @@ cd_main_calib_interpolate_up (CdMainPrivate *priv,
 		p1 = g_ptr_array_index (priv->array, i);
 		result = g_new (CdMainCalibrateItem, 1);
 		result->error = p1->error;
-		cd_color_copy_rgb (&p1->color, &result->color);
+		cd_color_rgb_copy (&p1->color, &result->color);
 		g_ptr_array_add (old_array, result);
 	}
 
@@ -662,7 +662,7 @@ cd_main_calib_interpolate_up (CdMainPrivate *priv,
 		p2 = g_ptr_array_index (old_array, (guint) ceil (mix));
 		result = g_new (CdMainCalibrateItem, 1);
 		result->error = G_MAXDOUBLE;
-		cd_color_set_rgb (&result->color, 1.0, 1.0, 1.0);
+		cd_color_rgb_set (&result->color, 1.0, 1.0, 1.0);
 		cd_color_rgb_interpolate (&p1->color,
 					  &p2->color,
 					  mix - (gint) mix,
@@ -708,11 +708,11 @@ cd_main_calib_process (CdMainPrivate *priv,
 	priv->array = g_ptr_array_new_with_free_func (g_free);
 	item = g_new0 (CdMainCalibrateItem, 1);
 	item->error = G_MAXDOUBLE;
-	cd_color_set_rgb (&item->color, 0.0, 0.0, 0.0);
+	cd_color_rgb_set (&item->color, 0.0, 0.0, 0.0);
 	g_ptr_array_add (priv->array, item);
 	item = g_new0 (CdMainCalibrateItem, 1);
 	item->error = G_MAXDOUBLE;
-	cd_color_set_rgb (&item->color, 1.0, 1.0, 1.0);
+	cd_color_rgb_set (&item->color, 1.0, 1.0, 1.0);
 	g_ptr_array_add (priv->array, item);
 	cd_main_emit_update_gamma (priv, priv->array);
 
@@ -752,7 +752,7 @@ cd_main_calib_process (CdMainPrivate *priv,
 		cd_color_get_blackbody_rgb (6500 - (priv->native_whitepoint - priv->target_whitepoint), &tmp);
 		g_debug ("Seeding with %f,%f,%f",
 			 tmp.R, tmp.G, tmp.B);
-		cd_color_copy_rgb (&tmp, &item->color);
+		cd_color_rgb_copy (&tmp, &item->color);
 	}
 
 	/* process the last item in the array (255,255,255) */

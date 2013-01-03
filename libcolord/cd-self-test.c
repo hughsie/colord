@@ -1170,12 +1170,12 @@ colord_color_func (void)
 	g_assert (xyz != NULL);
 
 	/* nothing set */
-	cd_color_convert_xyz_to_yxy (xyz, &yxy);
+	cd_color_xyz_to_yxy (xyz, &yxy);
 	g_assert_cmpfloat (fabs (yxy.x - 0.0f), <, 0.001f);
 
 	/* set dummy values */
-	cd_color_set_xyz (xyz, 0.125, 0.25, 0.5);
-	cd_color_convert_xyz_to_yxy (xyz, &yxy);
+	cd_color_xyz_set (xyz, 0.125, 0.25, 0.5);
+	cd_color_xyz_to_yxy (xyz, &yxy);
 
 	g_assert_cmpfloat (fabs (yxy.x - 0.142857143f), <, 0.001f);
 	g_assert_cmpfloat (fabs (yxy.y - 0.285714286f), <, 0.001f);

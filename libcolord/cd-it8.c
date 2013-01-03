@@ -337,7 +337,7 @@ cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		}
 		g_ptr_array_add (it8->priv->array_rgb, rgb);
 		xyz = cd_color_xyz_new ();
-		cd_color_set_xyz (xyz, 0.0, 0.0, 0.0);
+		cd_color_xyz_set (xyz, 0.0, 0.0, 0.0);
 		g_ptr_array_add (it8->priv->array_xyz, xyz);
 	}
 out:
@@ -638,7 +638,7 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	guint luminance_samples = 0;
 
 	/* calculate the absolute XYZ in candelas per meter squared */
-	cd_color_clear_xyz (&lumi_xyz);
+	cd_color_xyz_clear (&lumi_xyz);
 	if (it8->priv->normalized) {
 		for (i = 0; i < it8->priv->array_rgb->len; i++) {
 			rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, i);
@@ -1077,7 +1077,7 @@ cd_it8_add_data (CdIt8 *it8, const CdColorRGB *rgb, const CdColorXYZ *xyz)
 		rgb_tmp = cd_color_rgb_dup (rgb);
 	} else {
 		rgb_tmp = cd_color_rgb_new ();
-		cd_color_set_rgb (rgb_tmp, 0.0f, 0.0f, 0.0f);
+		cd_color_rgb_set (rgb_tmp, 0.0f, 0.0f, 0.0f);
 	}
 	g_ptr_array_add (it8->priv->array_rgb, rgb_tmp);
 
@@ -1086,7 +1086,7 @@ cd_it8_add_data (CdIt8 *it8, const CdColorRGB *rgb, const CdColorXYZ *xyz)
 		xyz_tmp = cd_color_xyz_dup (xyz);
 	} else {
 		xyz_tmp = cd_color_xyz_new ();
-		cd_color_set_xyz (xyz_tmp, 0.0f, 0.0f, 0.0f);
+		cd_color_xyz_set (xyz_tmp, 0.0f, 0.0f, 0.0f);
 	}
 	g_ptr_array_add (it8->priv->array_xyz, xyz_tmp);
 }
@@ -1134,11 +1134,11 @@ cd_it8_get_data_item (CdIt8 *it8, guint idx, CdColorRGB *rgb, CdColorXYZ *xyz)
 		return FALSE;
 	if (rgb != NULL) {
 		rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, idx);
-		cd_color_copy_rgb (rgb_tmp, rgb);
+		cd_color_rgb_copy (rgb_tmp, rgb);
 	}
 	if (xyz != NULL) {
 		xyz_tmp = g_ptr_array_index (it8->priv->array_xyz, idx);
-		cd_color_copy_xyz (xyz_tmp, xyz);
+		cd_color_xyz_copy (xyz_tmp, xyz);
 	}
 	return TRUE;
 }

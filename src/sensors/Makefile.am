@@ -16,6 +16,7 @@ INCLUDES =						\
 	-DLOCALSTATEDIR=\""$(localstatedir)"\"		\
 	-DVERSION="\"$(VERSION)\""			\
 	-DCD_COMPILATION				\
+	-DCD_DISABLE_DEPRECATED				\
 	-DG_UDEV_API_IS_SUBJECT_TO_CHANGE		\
 	-DG_USB_API_IS_SUBJECT_TO_CHANGE		\
 	-DLOCALEDIR=\""$(localedir)"\"

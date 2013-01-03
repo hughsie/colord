@@ -10,6 +10,7 @@ INCLUDES =						\
 	$(GUDEV_CFLAGS)					\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DCD_COMPILATION				\
+	-DCD_DISABLE_DEPRECATED				\
 	-I$(top_srcdir)/src
 
 # plugins

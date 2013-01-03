@@ -11,6 +11,7 @@ INCLUDES =						\
 	-I$(top_srcdir)/libcolord			\
 	-I$(top_srcdir)/src				\
 	-DCD_COMPILATION				\
+	-DCD_DISABLE_DEPRECATED				\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\

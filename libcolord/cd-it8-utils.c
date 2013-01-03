@@ -62,7 +62,7 @@ ch_it8_utils_4color_read_data (CdIt8 *it8,
 
 	/* find patches */
 	for (j = 0; j < 5; j++)
-		cd_color_set_xyz (&ave_XYZ[j], 0.0f, 0.0f, 0.0f);
+		cd_color_xyz_set (&ave_XYZ[j], 0.0f, 0.0f, 0.0f);
 	for (i = 0; i < len; i += 5) {
 		/* black, white, red, green, blue */
 		for (j = 0; j < 5; j++) {
@@ -92,7 +92,7 @@ ch_it8_utils_4color_read_data (CdIt8 *it8,
 
 	/* Convert XYZ to Yxy */
 	for (j = 0; j < 5; j++)
-		cd_color_convert_xyz_to_yxy (&ave_XYZ[j], &tmp_Yxy[j]);
+		cd_color_xyz_to_yxy (&ave_XYZ[j], &tmp_Yxy[j]);
 
 	/* create chroma of M_RGB */
 	mat_xyz->m00 = tmp_Yxy[2].x;

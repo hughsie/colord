@@ -21,6 +21,7 @@
 
 #include "config.h"
 
+#include <cd-color.h>
 #include <colord-gtk.h>
 #include <gio/gio.h>
 #include <glib.h>
@@ -126,7 +127,7 @@ cd_example_calib_set_output_gamma (CdExamplePrivate *priv,
 	red = g_new (guint16, priv->gamma_size);
 	green = g_new (guint16, priv->gamma_size);
 	blue = g_new (guint16, priv->gamma_size);
-	cd_color_set_rgb (&result, 1.0, 1.0, 1.0);
+	cd_color_rgb_set (&result, 1.0, 1.0, 1.0);
 	for (i = 0; i < priv->gamma_size; i++) {
 		mix = (gdouble) (array->len - 1) /
 			(gdouble) (priv->gamma_size - 1) *
@@ -310,7 +311,7 @@ cd_example_signal_cb (GDBusProxy *proxy,
 					    &color.G,
 					    &color.B)) {
 			color_tmp = cd_color_rgb_new ();
-			cd_color_copy_rgb (&color, color_tmp);
+			cd_color_rgb_copy (&color, color_tmp);
 			g_ptr_array_add (array, color_tmp);
 		}
 		g_variant_iter_free (iter);

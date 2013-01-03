@@ -37,6 +37,7 @@
 #include <colord/cd-client.h>
 #include <colord/cd-client-sync.h>
 #include <colord/cd-color.h>
+#include <colord/cd-deprecated.h>
 #include <colord/cd-device.h>
 #include <colord/cd-device-sync.h>
 #include <colord/cd-enum.h>
