@@ -43,6 +43,7 @@ profiles_DATA =						\
 	$(generatedprofiles)
 
 colprof_manufacturer = "Argyll Color Management System"
+colprof_options = -nc -v -qh -bh
 copyright = "This profile is free of known copyright restrictions."
 license = "CC0"
 
@@ -240,7 +241,8 @@ gamma5000.icc:
 
 if CD_BUILD_PRINT_PROFILES
 FOGRA27L_coated.icc: FOGRA27L.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 .94 .94 .48 -l300	\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "FOGRA27L Coated"				\
@@ -249,7 +251,8 @@ FOGRA27L_coated.icc: FOGRA27L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra27l $@
 FOGRA28L_webcoated.icc: FOGRA28L.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 .94 .94 .48 -l300	\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "FOGRA28L Web Coated"			\
@@ -258,7 +261,8 @@ FOGRA28L_webcoated.icc: FOGRA28L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra28l $@
 FOGRA29L_uncoated.icc: FOGRA29L.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 .94 .94 .48 -l300	\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "FOGRA29L Uncoated"				\
@@ -267,7 +271,8 @@ FOGRA29L_uncoated.icc: FOGRA29L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra29l $@
 FOGRA30L_uncoated_yellowish.icc: FOGRA30L.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 1. 1. .48 -l340		\
+	${COLPROF} -kp 0 .3 1. 1. .48 -l340		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "FOGRA30L Uncoated Yellowish"		\
@@ -276,7 +281,8 @@ FOGRA30L_uncoated_yellowish.icc: FOGRA30L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra30l $@
 FOGRA39L_coated.icc: FOGRA39L.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 .94 .94 .48 -l300	\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "FOGRA39L Coated"				\
@@ -285,7 +291,8 @@ FOGRA39L_coated.icc: FOGRA39L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra39l $@
 FOGRA40L_SC_paper.icc: FOGRA40L.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 1. 1. .48 -l340		\
+	${COLPROF} -kp 0 .3 1. 1. .48 -l340		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "FOGRA40L SC Paper"				\
@@ -294,7 +301,8 @@ FOGRA40L_SC_paper.icc: FOGRA40L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra40l $@
 GRACoL_TR006_coated.icc: TR006.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 .94 .94 .48 -l300	\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300	\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "GRACoL TR006 Coated"			\
@@ -303,7 +311,8 @@ GRACoL_TR006_coated.icc: TR006.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr006 $@
 SNAP_TR002_newsprint.icc: TR002.ti3
-	${COLPROF} -v -qh -bh -kp 0 .4 1. 1. .1 -l320		\
+	${COLPROF} -kp 0 .4 1. 1. .1 -l320		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "SNAP TR002 Newsprint"			\
@@ -312,7 +321,8 @@ SNAP_TR002_newsprint.icc: TR002.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr002 $@
 SWOP_TR003_coated_3.icc: TR003.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 .94 .94 .4 -l300		\
+	${COLPROF} -kp 0 .3 .94 .94 .4 -l300		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "SWOP TR003 Coated"				\
@@ -321,7 +331,8 @@ SWOP_TR003_coated_3.icc: TR003.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr003 $@
 SWOP_TR005_coated_5.icc: TR005.ti3
-	${COLPROF} -v -qh -bh -kp 0 .3 .94 .94 .48 -l300	\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "SWOP TR005 Coated"				\
@@ -332,7 +343,8 @@ SWOP_TR005_coated_5.icc: TR005.ti3
 
 # Total Ink = 230%, Maximum Black = 95%
 ISOnewspaper26.icc: IFRA26S.ti3
-	${COLPROF} -v -kr -l230 -L100 -cpp -dpp			\
+	${COLPROF} -kr -l230 -L100 -cpp -dpp			\
+		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
 		-D "IFRA26 Newsprint"				\
