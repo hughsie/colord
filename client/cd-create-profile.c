@@ -464,6 +464,21 @@ cd_util_build_srgb_gamma (void)
 	return cmsBuildParametricToneCurve (NULL, 4, params);
 }
 
+/**
+ * cd_util_build_lstar_gamma:
+ **/
+static cmsToneCurve *
+cd_util_build_lstar_gamma (void)
+{
+	cmsFloat64Number params[5];
+	params[0] = 3.000000;
+	params[1] = 0.862076;
+	params[2] = 0.137924;
+	params[3] = 0.110703;
+	params[4] = 0.080002;
+	return cmsBuildParametricToneCurve (NULL, 4, params);
+}
+
 #define LCMS_CURVE_PLUGIN_TYPE_REC709	1024
 
 /**
@@ -543,6 +558,10 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	/* parse gamma */
 	if (g_strcmp0 (values[0], "sRGB") == 0) {
 		transfer[0] = cd_util_build_srgb_gamma ();
+		transfer[1] = transfer[0];
+		transfer[2] = transfer[0];
+	} else if (g_strcmp0 (values[0], "L*") == 0) {
+		transfer[0] = cd_util_build_lstar_gamma ();
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	} else if (g_strcmp0 (values[0], "Rec709") == 0) {
