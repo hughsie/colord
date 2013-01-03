@@ -193,7 +193,9 @@ cd_fix_profile_error_cb (cmsContext ContextID,
 }
 
 static gboolean
-add_nc_palette_srgb (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
+add_nc_palette_srgb (cmsNAMEDCOLORLIST *nc2,
+		     const gchar *filename,
+		     GError **error)
 {
 	CdColorRGB8 rgb;
 	cmsCIELab lab;
@@ -206,7 +208,6 @@ add_nc_palette_srgb (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
 	gchar **lines = NULL;
 	gchar *name;
 	gchar **split = NULL;
-	GError *error = NULL;
 	guint i;
 
 	lab_profile = cmsCreateLab4Profile (NULL);
@@ -215,7 +216,7 @@ add_nc_palette_srgb (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
 					lab_profile, TYPE_Lab_DBL,
 					INTENT_PERCEPTUAL, 0);
 
-	ret = g_file_get_contents (filename, &data, NULL, &error);
+	ret = g_file_get_contents (filename, &data, NULL, error);
 	if (!ret)
 		goto out;
 	lines = g_strsplit (data, "\n", -1);
@@ -264,19 +265,21 @@ out:
 }
 
 static gboolean
-add_nc_palette_lab (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
+add_nc_palette_lab (cmsNAMEDCOLORLIST *nc2,
+		    const gchar *filename,
+		    GError **error)
 {
 	cmsCIELab lab;
 	cmsUInt16Number pcs[3];
 	gboolean ret;
 	gchar *data = NULL;
 	gchar **lines = NULL;
+	gchar *endptr = NULL;
 	gchar *name;
 	gchar **split = NULL;
-	GError *error = NULL;
 	guint i;
 
-	ret = g_file_get_contents (filename, &data, NULL, &error);
+	ret = g_file_get_contents (filename, &data, NULL, error);
 	if (!ret)
 		goto out;
 	lines = g_strsplit (data, "\n", -1);
@@ -289,9 +292,30 @@ add_nc_palette_lab (cmsNAMEDCOLORLIST *nc2, const gchar *filename)
 		if (g_strv_length (split) == 4) {
 			g_strdelimit (split[0], "\"", ' ');
 			name = g_strstrip (split[0]);
-			lab.L = atof (split[1]);
-			lab.a = atof (split[2]);
-			lab.b = atof (split[3]);
+			lab.L = g_ascii_strtod (split[1], &endptr);
+			if (endptr != NULL && endptr[0] != '\0') {
+				ret = FALSE;
+				g_set_error (error, 1, 0,
+					     "failed to parse lab.L: '%s'",
+					     split[1]);
+				goto out;
+			}
+			lab.a = g_ascii_strtod (split[2], &endptr);
+			if (endptr != NULL && endptr[0] != '\0') {
+				ret = FALSE;
+				g_set_error (error, 1, 0,
+					     "failed to parse lab.a: '%s'",
+					     split[2]);
+				goto out;
+			}
+			lab.b = g_ascii_strtod (split[3], &endptr);
+			if (endptr != NULL && endptr[0] != '\0') {
+				ret = FALSE;
+				g_set_error (error, 1, 0,
+					     "failed to parse lab.b: '%s'",
+					     split[3]);
+				goto out;
+			}
 
 			g_debug ("add %s, %f,%f,%f",
 				 name,
@@ -381,10 +405,20 @@ cd_util_create_named_color (CdUtilPrivate *priv, gchar **values, GError **error)
 				      3,
 				      values[1] != NULL ? values[1] : "",
 				      values[2] != NULL ? values[2] : "");
-	if (g_strcmp0 (values[0], "srgb") == 0)
-		add_nc_palette_srgb (nc2, values[3]);
-	else if (g_strcmp0 (values[0], "lab") == 0)
-		add_nc_palette_lab (nc2, values[3]);
+	if (g_strcmp0 (values[0], "srgb") == 0) {
+		ret = add_nc_palette_srgb (nc2, values[3], error);
+		if (!ret)
+			goto out;
+	} else if (g_strcmp0 (values[0], "lab") == 0) {
+		ret = add_nc_palette_lab (nc2, values[3], error);
+		if (!ret)
+			goto out;
+	} else {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid palette type, expected lab|srgb");
+		goto out;
+	}
 	cmsWriteTag (priv->lcms_profile, cmsSigNamedColor2Tag, nc2);
 out:
 	if (nc2 != NULL)
@@ -399,6 +433,7 @@ static gboolean
 cd_util_create_x11_gamma (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	gboolean ret;
+	gchar *endptr = NULL;
 	gdouble fraction;
 	gdouble points[3];
 	guint16 data[3][256];
@@ -413,8 +448,16 @@ cd_util_create_x11_gamma (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* parse floats */
-	for (j = 0; j < 3; j++)
-		points[j] = atof (values[j]);
+	for (j = 0; j < 3; j++) {
+		points[j] = g_ascii_strtod (values[j], &endptr);
+		if (endptr != NULL && endptr[0] != '\0') {
+			ret = FALSE;
+			g_set_error (error, 1, 0,
+				     "failed to parse gamma value %i: '%s'",
+				     j + 1, values[j]);
+			goto out;
+		}
+	}
 
 	/* create a bog-standard sRGB profile */
 	priv->lcms_profile = cmsCreate_sRGBProfile ();
@@ -545,6 +588,7 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	cmsCIExyY white;
 	cmsToneCurve *transfer[3] = { NULL, NULL, NULL};
 	gboolean ret;
+	gchar *endptr = NULL;
 	gdouble tgamma;
 
 	/* check arguments */
@@ -569,7 +613,14 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	} else {
-		tgamma = atof (values[0]);
+		tgamma = g_ascii_strtod (values[0], &endptr);
+		if (endptr != NULL && endptr[0] != '\0') {
+			ret = FALSE;
+			g_set_error (error, 1, 0,
+				     "failed to parse gamma: '%s'",
+				     values[0]);
+			goto out;
+		}
 		transfer[0] = cmsBuildGamma (NULL, tgamma);
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
@@ -595,15 +646,78 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	}
 
 	/* get primaries */
-	primaries.Red.x = atof (values[2]);
-	primaries.Red.y = atof (values[3]);
-	primaries.Red.Y = atof (values[4]);
-	primaries.Green.x = atof (values[5]);
-	primaries.Green.y = atof (values[6]);
-	primaries.Green.Y = atof (values[7]);
-	primaries.Blue.x = atof (values[8]);
-	primaries.Blue.y = atof (values[9]);
-	primaries.Blue.Y = atof (values[10]);
+	primaries.Red.x = g_ascii_strtod (values[2], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Red.x: '%s'",
+			     values[2]);
+		goto out;
+	}
+	primaries.Red.y = g_ascii_strtod (values[3], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Red.y: '%s'",
+			     values[3]);
+		goto out;
+	}
+	primaries.Red.Y = g_ascii_strtod (values[4], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Red.Y: '%s'",
+			     values[4]);
+		goto out;
+	}
+	primaries.Green.x = g_ascii_strtod (values[5], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Green.x: '%s'",
+			     values[5]);
+		goto out;
+	}
+	primaries.Green.y = g_ascii_strtod (values[6], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Green.y: '%s'",
+			     values[6]);
+		goto out;
+	}
+	primaries.Green.Y = g_ascii_strtod (values[7], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Green.Y: '%s'",
+			     values[7]);
+		goto out;
+	}
+	primaries.Blue.x = g_ascii_strtod (values[8], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Blue.x: '%s'",
+			     values[8]);
+		goto out;
+	}
+	primaries.Blue.y = g_ascii_strtod (values[9], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Blue.y: '%s'",
+			     values[9]);
+		goto out;
+	}
+	primaries.Blue.Y = g_ascii_strtod (values[10], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse Blue.Y: '%s'",
+			     values[10]);
+		goto out;
+	}
 
 	/* create profile */
 	priv->lcms_profile = cmsCreateRGBProfile (&white,
@@ -626,6 +740,7 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 	CdColorRGB white_point;
 	const guint size = 256;
 	gboolean ret;
+	gchar *endptr = NULL;
 	gdouble gamma;
 	guint16 data[3][256];
 	guint i;
@@ -650,7 +765,14 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 
 	/* generate the VCGT table */
 	temp = atoi (values[0]);
-	gamma = atof (values[1]);
+	gamma = g_ascii_strtod (values[1], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse gamma: '%s'",
+			     values[1]);
+		goto out;
+	}
 	cd_color_get_blackbody_rgb (temp, &white_point);
 	for (i = 0; i < size; i++) {
 		data[0][i] = pow ((gdouble) i / size, 1.0 / gamma) *

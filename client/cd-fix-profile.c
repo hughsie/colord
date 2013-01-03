@@ -572,6 +572,7 @@ cd_util_set_version (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret = TRUE;
+	gchar *endptr = NULL;
 	gdouble version;
 
 	/* check arguments */
@@ -583,7 +584,14 @@ cd_util_set_version (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* get version */
-	version = atof (values[1]);
+	version = g_ascii_strtod (values[1], &endptr);
+	if (endptr != NULL && endptr[0] != '\0') {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to parse version: '%s'",
+			     values[1]);
+		goto out;
+	}
 	if (version < 1.0 || version > 6.0) {
 		ret = FALSE;
 		g_set_error (error, 1, 0,
