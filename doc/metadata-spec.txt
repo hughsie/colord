@@ -20,6 +20,10 @@ These keys are optional but recomended. Other keys may also be present,
 and should be ignored.
 
 License			A content license, e.g. "Public Domain" or "CC0"
+Quality			A profile quality, where
+			"low"		: Low quality profile, fast
+			"medium"	: Medium quality profile
+			"high"		: High quality profile, slow
 STANDARD_space		A standard space, where
 			"srgb"		: sRGB
 			"adobe-rgb"	: AdobeRGB

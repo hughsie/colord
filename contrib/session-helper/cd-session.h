@@ -56,17 +56,6 @@ typedef enum {
 } CdSessionInteraction;
 
 /**
- * CdSessionQuality:
- *
- * The quality of the calibration.
- **/
-typedef enum {
-	CD_SESSION_QUALITY_LOW,
-	CD_SESSION_QUALITY_MEDIUM,
-	CD_SESSION_QUALITY_HIGH
-} CdSessionQuality;
-
-/**
  * CdSessionError:
  *
  * Errors returned from the calibration helper.

@@ -243,6 +243,22 @@ typedef enum {
 } CdProfileWarning;
 
 /**
+ * CdProfileQuality:
+ * @CD_PROFILE_QUALITY_LOW: Low quality profile, fast
+ * @CD_PROFILE_QUALITY_MEDIUM: Medium quality profile
+ * @CD_PROFILE_QUALITY_HIGH: High quality profile, slow
+ *
+ * The quality of the profile produced through calibration.
+ **/
+typedef enum {
+	CD_PROFILE_QUALITY_LOW,
+	CD_PROFILE_QUALITY_MEDIUM,
+	CD_PROFILE_QUALITY_HIGH,
+	/*< private >*/
+	CD_PROFILE_QUALITY_LAST
+} CdProfileQuality;
+
+/**
  * CdSensorError:
  * @CD_SENSOR_ERROR_NO_SUPPORT:		This action is unsupported on this hardware
  * @CD_SENSOR_ERROR_NO_DATA:		The sensor provided no data
@@ -381,6 +397,7 @@ typedef enum {
 #define CD_PROFILE_METADATA_CONNECTION_TYPE_HDMI	"hdmi"		/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_CONNECTION_TYPE_DISPLAYPORT	"displayport"	/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_LICENSE		"License"		/* Since: 0.1.25 */
+#define CD_PROFILE_METADATA_QUALITY		"Quality"		/* Since: 0.1.27 */
 
 /* defined in org.freedesktop.ColorManager.Profile.xml */
 #define CD_PROFILE_PROPERTY_FILENAME		"Filename"
@@ -461,6 +478,8 @@ const gchar	*cd_standard_space_to_string		(CdStandardSpace	 standard_space);
 CdStandardSpace	 cd_standard_space_from_string		(const gchar		*standard_space);
 const gchar	*cd_profile_warning_to_string		(CdProfileWarning	 kind_enum);
 CdProfileWarning cd_profile_warning_from_string		(const gchar		*type);
+const gchar	*cd_profile_quality_to_string		(CdProfileQuality	 quality_enum);
+CdProfileQuality cd_profile_quality_from_string		(const gchar		*quality);
 CdProfileKind	 cd_device_kind_to_profile_kind		(CdDeviceKind		 device_kind);
 
 const gchar	*cd_sensor_error_to_string		(CdSensorError		 error_enum);

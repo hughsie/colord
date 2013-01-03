@@ -664,6 +664,57 @@ cd_profile_warning_from_string (const gchar *type)
 }
 
 /**
+ * cd_profile_quality_to_string:
+ *
+ * Converts a #CdProfileQuality to a string.
+ *
+ * Return value: identifier string
+ *
+ * Since: 0.1.27
+ **/
+const gchar *
+cd_profile_quality_to_string (CdProfileQuality quality_enum)
+{
+	const gchar *kind = NULL;
+	switch (quality_enum) {
+	case CD_PROFILE_QUALITY_LOW:
+		kind = "low";
+		break;
+	case CD_PROFILE_QUALITY_MEDIUM:
+		kind = "medium";
+		break;
+	case CD_PROFILE_QUALITY_HIGH:
+		kind = "high";
+		break;
+	default:
+		kind = "unknown";
+		break;
+	}
+	return kind;
+}
+
+/**
+ * cd_profile_quality_from_string:
+ *
+ * Converts a string to a #CdProfileQuality.
+ *
+ * Return value: enumerated value
+ *
+ * Since: 0.1.27
+ **/
+CdProfileQuality
+cd_profile_quality_from_string (const gchar *quality)
+{
+	if (g_strcmp0 (quality, "low") == 0)
+		return CD_PROFILE_QUALITY_LOW;
+	if (g_strcmp0 (quality, "medium") == 0)
+		return CD_PROFILE_QUALITY_MEDIUM;
+	if (g_strcmp0 (quality, "high") == 0)
+		return CD_PROFILE_QUALITY_HIGH;
+	return CD_PROFILE_QUALITY_LAST;
+}
+
+/**
  * cd_device_kind_to_profile_kind:
  * @device_kind: A #CdDeviceKind
  *

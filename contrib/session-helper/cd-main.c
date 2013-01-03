@@ -61,7 +61,7 @@ typedef struct {
 	CdIt8			*it8_cal;
 	CdIt8			*it8_ti1;
 	CdIt8			*it8_ti3;
-	CdSessionQuality	 quality;
+	CdProfileQuality	 quality;
 	GCancellable		*cancellable;
 	gchar			*title;
 	gchar			*basename;
@@ -206,34 +206,15 @@ cd_main_get_sensor_image_attach (CdMainPrivate *priv)
  * cd_main_get_display_ti1:
  **/
 static const gchar *
-cd_main_get_display_ti1 (CdSessionQuality quality)
+cd_main_get_display_ti1 (CdProfileQuality quality)
 {
 	switch (quality) {
-	case CD_SESSION_QUALITY_LOW:
+	case CD_PROFILE_QUALITY_LOW:
 		return "display-short.ti1";
-	case CD_SESSION_QUALITY_MEDIUM:
+	case CD_PROFILE_QUALITY_MEDIUM:
 		return "display-normal.ti1";
-	case CD_SESSION_QUALITY_HIGH:
+	case CD_PROFILE_QUALITY_HIGH:
 		return "display-long.ti1";
-	default:
-		break;
-	}
-	return NULL;
-}
-
-/**
- * cd_main_quality_to_text:
- **/
-static const gchar *
-cd_main_quality_to_text (CdSessionQuality quality)
-{
-	switch (quality) {
-	case CD_SESSION_QUALITY_LOW:
-		return "low";
-	case CD_SESSION_QUALITY_MEDIUM:
-		return "medium";
-	case CD_SESSION_QUALITY_HIGH:
-		return "high";
 	default:
 		break;
 	}
@@ -517,11 +498,11 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		goto out;
 
 	/* use a different smallest interval for each quality */
-	if (priv->quality == CD_SESSION_QUALITY_LOW) {
+	if (priv->quality == CD_PROFILE_QUALITY_LOW) {
 		good_enough_interval = 0.009;
-	} else if (priv->quality == CD_SESSION_QUALITY_MEDIUM) {
+	} else if (priv->quality == CD_PROFILE_QUALITY_MEDIUM) {
 		good_enough_interval = 0.006;
-	} else if (priv->quality == CD_SESSION_QUALITY_HIGH) {
+	} else if (priv->quality == CD_PROFILE_QUALITY_HIGH) {
 		good_enough_interval = 0.003;
 	}
 
@@ -796,11 +777,11 @@ cd_main_calib_process (CdMainPrivate *priv,
 		goto out;
 
 	/* expand out the array into more points (interpolating) */
-	if (priv->quality == CD_SESSION_QUALITY_LOW) {
+	if (priv->quality == CD_PROFILE_QUALITY_LOW) {
 		precision_steps = 5;
-	} else if (priv->quality == CD_SESSION_QUALITY_MEDIUM) {
+	} else if (priv->quality == CD_PROFILE_QUALITY_MEDIUM) {
 		precision_steps = 11;
-	} else if (priv->quality == CD_SESSION_QUALITY_HIGH) {
+	} else if (priv->quality == CD_PROFILE_QUALITY_HIGH) {
 		precision_steps = 21;
 	}
 	ret = cd_main_calib_interpolate_up (priv, precision_steps, error);
@@ -965,13 +946,13 @@ out:
  * cd_main_get_colprof_quality_arg:
  **/
 static const gchar *
-cd_main_get_colprof_quality_arg (CdSessionQuality quality)
+cd_main_get_colprof_quality_arg (CdProfileQuality quality)
 {
-	if (quality == CD_SESSION_QUALITY_LOW)
+	if (quality == CD_PROFILE_QUALITY_LOW)
 		return "-ql";
-	if (quality == CD_SESSION_QUALITY_MEDIUM)
+	if (quality == CD_PROFILE_QUALITY_MEDIUM)
 		return "-qm";
-	if (quality == CD_SESSION_QUALITY_HIGH)
+	if (quality == CD_PROFILE_QUALITY_HIGH)
 		return "-qh";
 	return NULL;
 }
@@ -1131,6 +1112,9 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	_cmsDictAddEntryAscii (dict_md,
 			       CD_PROFILE_METADATA_LICENSE,
 			       "CC0");
+	_cmsDictAddEntryAscii (dict_md,
+			       CD_PROFILE_METADATA_QUALITY,
+			       cd_profile_quality_to_string (priv->quality));
 	_cmsDictAddEntryAscii (dict_md,
 			       CD_PROFILE_METADATA_MAPPING_DEVICE_ID,
 			       cd_device_get_id (priv->device));
@@ -1733,7 +1717,7 @@ cd_main_set_basename (CdMainPrivate *priv)
 
 	/* add the quality */
 	g_string_append_printf (str, "(%s) ",
-				cd_main_quality_to_text (priv->quality));
+				cd_profile_quality_to_string (priv->quality));
 
 	/* add date and time */
 	datetime = g_date_time_new_now_utc ();
@@ -1808,14 +1792,14 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 			 sensor_id);
 
 		/* set the default parameters */
-		priv->quality = CD_SESSION_QUALITY_MEDIUM;
+		priv->quality = CD_PROFILE_QUALITY_MEDIUM;
 		priv->device_kind = CD_SENSOR_CAP_LCD;
 		while (g_variant_iter_next (iter, "{&sv}",
 					    &prop_key, &prop_value)) {
 			if (g_strcmp0 (prop_key, "Quality") == 0) {
 				priv->quality = g_variant_get_uint32 (prop_value);
 				g_debug ("Quality: %s",
-					 cd_main_quality_to_text (priv->quality));
+					 cd_profile_quality_to_string (priv->quality));
 			} else if (g_strcmp0 (prop_key, "Whitepoint") == 0) {
 				priv->target_whitepoint = g_variant_get_uint32 (prop_value);
 				g_debug ("Whitepoint: %iK",
