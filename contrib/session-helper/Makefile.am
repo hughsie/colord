@@ -22,6 +22,10 @@ INCLUDES =						\
 COLORD_LIBS =						\
 	$(top_builddir)/libcolord/libcolord.la
 
+libcolord_includedir = $(includedir)/colord-1/colord-session
+libcolord_include_HEADERS =				\
+	cd-session.h
+
 libexec_PROGRAMS =					\
 	colord-session
 
@@ -30,6 +34,7 @@ colord_session_SOURCES =				\
 	$(top_srcdir)/client/cd-lcms-helpers.h		\
 	$(top_srcdir)/src/cd-debug.c			\
 	$(top_srcdir)/src/cd-debug.h			\
+	cd-session.h					\
 	cd-state.c					\
 	cd-state.h					\
 	cd-main.c

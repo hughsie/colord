@@ -35,36 +35,12 @@
 #include "cd-profile-sync.h"
 #include "cd-it8.h"
 #include "cd-sensor-sync.h"
-
-#define COLOR_HELPER_DBUS_SERVICE		"org.freedesktop.ColorHelper"
-#define COLOR_HELPER_DBUS_PATH			"/"
-#define COLOR_HELPER_DBUS_INTERFACE		"org.freedesktop.ColorHelper"
-#define COLOR_HELPER_DBUS_INTERFACE_DISPLAY	"org.freedesktop.ColorHelper.Display"
-
-typedef enum {
-	CD_MAIN_STATUS_IDLE,
-	CD_MAIN_STATUS_WAITING_FOR_INTERACTION,
-	CD_MAIN_STATUS_RUNNING
-} CdMainStatus;
-
-typedef enum {
-	CD_MAIN_INTERACTION_CODE_ATTACH_TO_SCREEN,
-	CD_MAIN_INTERACTION_CODE_MOVE_TO_CALIBRATION,
-	CD_MAIN_INTERACTION_CODE_MOVE_TO_SURFACE,
-	CD_MAIN_INTERACTION_CODE_SHUT_LAPTOP_LID,
-	CD_MAIN_INTERACTION_CODE_NONE
-} CdMainInteractionCode;
-
-typedef enum {
-	CD_MAIN_QUALITY_LOW,
-	CD_MAIN_QUALITY_MEDIUM,
-	CD_MAIN_QUALITY_HIGH
-} CdMainQuality;
+#include "cd-session.h"
 
 typedef struct {
 	/* global */
 	CdClient		*client;
-	CdMainStatus		 status;
+	CdSessionStatus		 status;
 	GDBusConnection		*connection;
 	GDBusNodeInfo		*introspection;
 	GMainLoop		*loop;
@@ -73,7 +49,7 @@ typedef struct {
 	CdState			*state;
 
 	/* for the task */
-	CdMainInteractionCode	 interaction_code_last;
+	CdSessionInteraction	 interaction_code_last;
 	CdSensor		*sensor;
 	CdDevice		*device;
 	CdSensorCap		 device_kind;
@@ -85,7 +61,7 @@ typedef struct {
 	CdIt8			*it8_cal;
 	CdIt8			*it8_ti1;
 	CdIt8			*it8_ti3;
-	CdMainQuality		 quality;
+	CdSessionQuality	 quality;
 	GCancellable		*cancellable;
 	gchar			*title;
 	gchar			*basename;
@@ -98,49 +74,32 @@ typedef struct {
 	gdouble			 error;
 } CdMainCalibrateItem;
 
-#define CD_MAIN_ERROR			cd_main_error_quark()
-
-/**
- * CdMainError:
- */
-typedef enum {
-	CD_MAIN_ERROR_NONE,
-	CD_MAIN_ERROR_INTERNAL,
-	CD_MAIN_ERROR_FAILED_TO_FIND_DEVICE,
-	CD_MAIN_ERROR_FAILED_TO_FIND_SENSOR,
-	CD_MAIN_ERROR_FAILED_TO_FIND_TOOL,
-	CD_MAIN_ERROR_FAILED_TO_GENERATE_PROFILE,
-	CD_MAIN_ERROR_FAILED_TO_GET_WHITEPOINT,
-	CD_MAIN_ERROR_FAILED_TO_OPEN_PROFILE,
-	CD_MAIN_ERROR_FAILED_TO_SAVE_PROFILE,
-	CD_MAIN_ERROR_INVALID_VALUE,
-	CD_MAIN_ERROR_LAST
-} CdMainError;
+#define CD_SESSION_ERROR			cd_main_error_quark()
 
 /**
  * cd_main_error_to_string:
  **/
 static const gchar *
-cd_main_error_to_string (CdMainError error_enum)
+cd_main_error_to_string (CdSessionError error_enum)
 {
-	if (error_enum == CD_MAIN_ERROR_INTERNAL)
-		return COLOR_HELPER_DBUS_SERVICE ".Internal";
-	if (error_enum == CD_MAIN_ERROR_FAILED_TO_FIND_DEVICE)
-		return COLOR_HELPER_DBUS_SERVICE ".FailedToFindDevice";
-	if (error_enum == CD_MAIN_ERROR_FAILED_TO_FIND_SENSOR)
-		return COLOR_HELPER_DBUS_SERVICE ".FailedToFindSensor";
-	if (error_enum == CD_MAIN_ERROR_FAILED_TO_FIND_TOOL)
-		return COLOR_HELPER_DBUS_SERVICE ".FailedToFindTool";
-	if (error_enum == CD_MAIN_ERROR_FAILED_TO_GENERATE_PROFILE)
-		return COLOR_HELPER_DBUS_SERVICE ".FailedToGenerateProfile";
-	if (error_enum == CD_MAIN_ERROR_FAILED_TO_GET_WHITEPOINT)
-		return COLOR_HELPER_DBUS_SERVICE ".FailedToGetWhitepoint";
-	if (error_enum == CD_MAIN_ERROR_FAILED_TO_OPEN_PROFILE)
-		return COLOR_HELPER_DBUS_SERVICE ".FailedToOpenProfile";
-	if (error_enum == CD_MAIN_ERROR_FAILED_TO_SAVE_PROFILE)
-		return COLOR_HELPER_DBUS_SERVICE ".FailedToSaveProfile";
-	if (error_enum == CD_MAIN_ERROR_INVALID_VALUE)
-		return COLOR_HELPER_DBUS_SERVICE ".InvalidValue";
+	if (error_enum == CD_SESSION_ERROR_INTERNAL)
+		return CD_SESSION_DBUS_SERVICE ".Internal";
+	if (error_enum == CD_SESSION_ERROR_FAILED_TO_FIND_DEVICE)
+		return CD_SESSION_DBUS_SERVICE ".FailedToFindDevice";
+	if (error_enum == CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR)
+		return CD_SESSION_DBUS_SERVICE ".FailedToFindSensor";
+	if (error_enum == CD_SESSION_ERROR_FAILED_TO_FIND_TOOL)
+		return CD_SESSION_DBUS_SERVICE ".FailedToFindTool";
+	if (error_enum == CD_SESSION_ERROR_FAILED_TO_GENERATE_PROFILE)
+		return CD_SESSION_DBUS_SERVICE ".FailedToGenerateProfile";
+	if (error_enum == CD_SESSION_ERROR_FAILED_TO_GET_WHITEPOINT)
+		return CD_SESSION_DBUS_SERVICE ".FailedToGetWhitepoint";
+	if (error_enum == CD_SESSION_ERROR_FAILED_TO_OPEN_PROFILE)
+		return CD_SESSION_DBUS_SERVICE ".FailedToOpenProfile";
+	if (error_enum == CD_SESSION_ERROR_FAILED_TO_SAVE_PROFILE)
+		return CD_SESSION_DBUS_SERVICE ".FailedToSaveProfile";
+	if (error_enum == CD_SESSION_ERROR_INVALID_VALUE)
+		return CD_SESSION_DBUS_SERVICE ".InvalidValue";
 	return NULL;
 }
 
@@ -154,7 +113,7 @@ cd_main_error_quark (void)
 	static GQuark quark = 0;
 	if (!quark) {
 		quark = g_quark_from_static_string ("colord");
-		for (i = 1; i < CD_MAIN_ERROR_LAST; i++) {
+		for (i = 1; i < CD_SESSION_ERROR_LAST; i++) {
 			g_dbus_error_register_error (quark,
 						     i,
 						     cd_main_error_to_string (i));
@@ -198,8 +157,8 @@ cd_main_emit_update_sample (CdMainPrivate *priv, CdColorRGB *color)
 		 color->R, color->G, color->B);
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
-				       COLOR_HELPER_DBUS_PATH,
-				       COLOR_HELPER_DBUS_INTERFACE_DISPLAY,
+				       CD_SESSION_DBUS_PATH,
+				       CD_SESSION_DBUS_INTERFACE_DISPLAY,
 				       "UpdateSample",
 				       g_variant_new ("(ddd)",
 						      color->R,
@@ -247,14 +206,14 @@ cd_main_get_sensor_image_attach (CdMainPrivate *priv)
  * cd_main_get_display_ti1:
  **/
 static const gchar *
-cd_main_get_display_ti1 (CdMainQuality quality)
+cd_main_get_display_ti1 (CdSessionQuality quality)
 {
 	switch (quality) {
-	case CD_MAIN_QUALITY_LOW:
+	case CD_SESSION_QUALITY_LOW:
 		return "display-short.ti1";
-	case CD_MAIN_QUALITY_MEDIUM:
+	case CD_SESSION_QUALITY_MEDIUM:
 		return "display-normal.ti1";
-	case CD_MAIN_QUALITY_HIGH:
+	case CD_SESSION_QUALITY_HIGH:
 		return "display-long.ti1";
 	default:
 		break;
@@ -266,14 +225,14 @@ cd_main_get_display_ti1 (CdMainQuality quality)
  * cd_main_quality_to_text:
  **/
 static const gchar *
-cd_main_quality_to_text (CdMainQuality quality)
+cd_main_quality_to_text (CdSessionQuality quality)
 {
 	switch (quality) {
-	case CD_MAIN_QUALITY_LOW:
+	case CD_SESSION_QUALITY_LOW:
 		return "low";
-	case CD_MAIN_QUALITY_MEDIUM:
+	case CD_SESSION_QUALITY_MEDIUM:
 		return "medium";
-	case CD_MAIN_QUALITY_HIGH:
+	case CD_SESSION_QUALITY_HIGH:
 		return "high";
 	default:
 		break;
@@ -314,7 +273,7 @@ cd_main_get_sensor_image_screen (CdMainPrivate *priv)
  **/
 static void
 cd_main_emit_interaction_required (CdMainPrivate *priv,
-				   CdMainInteractionCode code)
+				   CdSessionInteraction code)
 {
 	const gchar *image = NULL;
 	const gchar *message = NULL;
@@ -325,19 +284,19 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 
 	/* emit signal */
 	switch (code) {
-	case CD_MAIN_INTERACTION_CODE_ATTACH_TO_SCREEN:
+	case CD_SESSION_INTERACTION_ATTACH_TO_SCREEN:
 		image = cd_main_get_sensor_image_attach (priv);
 		message = "attach the sensor to the screen";
 		break;
-	case CD_MAIN_INTERACTION_CODE_MOVE_TO_SURFACE:
+	case CD_SESSION_INTERACTION_MOVE_TO_SURFACE:
 		image = cd_main_get_sensor_image_screen (priv);
 		message = "move the sensor to the surface position";
 		break;
-	case CD_MAIN_INTERACTION_CODE_MOVE_TO_CALIBRATION:
+	case CD_SESSION_INTERACTION_MOVE_TO_CALIBRATION:
 		image = cd_main_get_sensor_image_calibrate (priv);
 		message = "move the sensor to the calibrate position";
 		break;
-	case CD_MAIN_INTERACTION_CODE_SHUT_LAPTOP_LID:
+	case CD_SESSION_INTERACTION_SHUT_LAPTOP_LID:
 		message = "shut the laptop lid";
 		break;
 	default:
@@ -357,8 +316,8 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 		 code, message, path);
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
-				       COLOR_HELPER_DBUS_PATH,
-				       COLOR_HELPER_DBUS_INTERFACE_DISPLAY,
+				       CD_SESSION_DBUS_PATH,
+				       CD_SESSION_DBUS_INTERFACE_DISPLAY,
 				       "InteractionRequired",
 				       g_variant_new ("(uss)",
 						      code,
@@ -395,8 +354,8 @@ cd_main_emit_update_gamma (CdMainPrivate *priv,
 	}
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
-				       COLOR_HELPER_DBUS_PATH,
-				       COLOR_HELPER_DBUS_INTERFACE_DISPLAY,
+				       CD_SESSION_DBUS_PATH,
+				       CD_SESSION_DBUS_INTERFACE_DISPLAY,
 				       "UpdateGamma",
 				       g_variant_new ("(a(ddd))",
 						      &builder),
@@ -409,7 +368,7 @@ cd_main_emit_update_gamma (CdMainPrivate *priv,
  **/
 static void
 cd_main_emit_finished (CdMainPrivate *priv,
-		       CdMainError exit_code,
+		       CdSessionError exit_code,
 		       const gchar *message)
 {
 	/* emit signal */
@@ -417,8 +376,8 @@ cd_main_emit_finished (CdMainPrivate *priv,
 		 exit_code, message);
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
-				       COLOR_HELPER_DBUS_PATH,
-				       COLOR_HELPER_DBUS_INTERFACE_DISPLAY,
+				       CD_SESSION_DBUS_PATH,
+				       CD_SESSION_DBUS_INTERFACE_DISPLAY,
 				       "Finished",
 				       g_variant_new ("(us)",
 						      exit_code,
@@ -558,11 +517,11 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		goto out;
 
 	/* use a different smallest interval for each quality */
-	if (priv->quality == CD_MAIN_QUALITY_LOW) {
+	if (priv->quality == CD_SESSION_QUALITY_LOW) {
 		good_enough_interval = 0.009;
-	} else if (priv->quality == CD_MAIN_QUALITY_MEDIUM) {
+	} else if (priv->quality == CD_SESSION_QUALITY_MEDIUM) {
 		good_enough_interval = 0.006;
-	} else if (priv->quality == CD_MAIN_QUALITY_HIGH) {
+	} else if (priv->quality == CD_SESSION_QUALITY_HIGH) {
 		good_enough_interval = 0.003;
 	}
 
@@ -784,8 +743,8 @@ cd_main_calib_process (CdMainPrivate *priv,
 	    priv->native_whitepoint > 100000) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED_TO_GET_WHITEPOINT,
+				     CD_SESSION_ERROR,
+				     CD_SESSION_ERROR_FAILED_TO_GET_WHITEPOINT,
 				     "failed to get native temperature");
 		goto out;
 	}
@@ -837,11 +796,11 @@ cd_main_calib_process (CdMainPrivate *priv,
 		goto out;
 
 	/* expand out the array into more points (interpolating) */
-	if (priv->quality == CD_MAIN_QUALITY_LOW) {
+	if (priv->quality == CD_SESSION_QUALITY_LOW) {
 		precision_steps = 5;
-	} else if (priv->quality == CD_MAIN_QUALITY_MEDIUM) {
+	} else if (priv->quality == CD_SESSION_QUALITY_MEDIUM) {
 		precision_steps = 11;
-	} else if (priv->quality == CD_MAIN_QUALITY_HIGH) {
+	} else if (priv->quality == CD_SESSION_QUALITY_HIGH) {
 		precision_steps = 21;
 	}
 	ret = cd_main_calib_interpolate_up (priv, precision_steps, error);
@@ -1006,13 +965,13 @@ out:
  * cd_main_get_colprof_quality_arg:
  **/
 static const gchar *
-cd_main_get_colprof_quality_arg (CdMainQuality quality)
+cd_main_get_colprof_quality_arg (CdSessionQuality quality)
 {
-	if (quality == CD_MAIN_QUALITY_LOW)
+	if (quality == CD_SESSION_QUALITY_LOW)
 		return "-ql";
-	if (quality == CD_MAIN_QUALITY_MEDIUM)
+	if (quality == CD_SESSION_QUALITY_MEDIUM)
 		return "-qm";
-	if (quality == CD_MAIN_QUALITY_HIGH)
+	if (quality == CD_SESSION_QUALITY_HIGH)
 		return "-qh";
 	return NULL;
 }
@@ -1053,8 +1012,8 @@ cd_main_find_argyll_tool (const gchar *command,
 	g_free (filename);
 	filename = NULL;
 	g_set_error (error,
-		     CD_MAIN_ERROR,
-		     CD_MAIN_ERROR_FAILED_TO_FIND_TOOL,
+		     CD_SESSION_ERROR,
+		     CD_SESSION_ERROR_FAILED_TO_FIND_TOOL,
 		     "failed to get filename for %s", command);
 out:
 	return filename;
@@ -1148,8 +1107,8 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	if (lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_OPEN_PROFILE,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_FAILED_TO_OPEN_PROFILE,
 			     "failed to open profile %s",
 			     profile_path);
 		goto out;
@@ -1188,8 +1147,8 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	ret = cmsWriteTag (lcms_profile, cmsSigMetaTag, dict_md);
 	if (!ret) {
 		g_set_error_literal (error,
-				     CD_MAIN_ERROR,
-				     CD_MAIN_ERROR_FAILED_TO_SAVE_PROFILE,
+				     CD_SESSION_ERROR,
+				     CD_SESSION_ERROR_FAILED_TO_SAVE_PROFILE,
 				     "cannot initialize dict tag");
 		goto out;
 	}
@@ -1198,8 +1157,8 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	ret = cmsMD5computeID (lcms_profile);
 	if (!ret) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_INTERNAL,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_INTERNAL,
 			     "failed to compute profile id for %s",
 			     profile_path);
 		goto out;
@@ -1209,8 +1168,8 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	ret = cmsSaveProfileToFile (lcms_profile, profile_path);
 	if (!ret) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_SAVE_PROFILE,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_FAILED_TO_SAVE_PROFILE,
 			     "failed to save profile to %s",
 			     profile_path);
 		goto out;
@@ -1278,8 +1237,8 @@ cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 	if (exit_status != 0) {
 		ret = FALSE;
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_GENERATE_PROFILE,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_FAILED_TO_GENERATE_PROFILE,
 			     "colprof failed: %s", stderr);
 		goto out;
 	}
@@ -1513,16 +1472,16 @@ cd_main_start_calibration (CdMainPrivate *priv,
 		if (g_error_matches (error_local,
 				     CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE)) {
-			priv->status = CD_MAIN_STATUS_WAITING_FOR_INTERACTION;
+			priv->status = CD_SESSION_STATUS_WAITING_FOR_INTERACTION;
 			cd_main_emit_interaction_required (priv,
-							   CD_MAIN_INTERACTION_CODE_MOVE_TO_CALIBRATION);
+							   CD_SESSION_INTERACTION_MOVE_TO_CALIBRATION);
 			g_error_free (error_local);
 		} else if (g_error_matches (error_local,
 					    CD_SENSOR_ERROR,
 					    CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE)) {
-			priv->status = CD_MAIN_STATUS_WAITING_FOR_INTERACTION;
+			priv->status = CD_SESSION_STATUS_WAITING_FOR_INTERACTION;
 			cd_main_emit_interaction_required (priv,
-							   CD_MAIN_INTERACTION_CODE_MOVE_TO_SURFACE);
+							   CD_SESSION_INTERACTION_MOVE_TO_SURFACE);
 			g_error_free (error_local);
 		} else {
 			g_propagate_error (error, error_local);
@@ -1577,13 +1536,13 @@ cd_main_start_calibration_cb (gpointer user_data)
 					 &error);
 	if (!ret) {
 		/* use the error code if it's our error domain */
-		if (error->domain == CD_MAIN_ERROR) {
+		if (error->domain == CD_SESSION_ERROR) {
 			cd_main_emit_finished (priv,
 					       error->code,
 					       error->message);
 		} else {
 			cd_main_emit_finished (priv,
-					       CD_MAIN_ERROR_INTERNAL,
+					       CD_SESSION_ERROR_INTERNAL,
 					       error->message);
 		}
 		g_timeout_add (200, cd_main_finished_quit_cb, priv);
@@ -1592,7 +1551,7 @@ cd_main_start_calibration_cb (gpointer user_data)
 	}
 
 	/* success */
-	cd_main_emit_finished (priv, CD_MAIN_ERROR_NONE, NULL);
+	cd_main_emit_finished (priv, CD_SESSION_ERROR_NONE, NULL);
 	g_timeout_add (200, cd_main_finished_quit_cb, priv);
 out:
 	return FALSE;
@@ -1602,13 +1561,13 @@ out:
  * cd_main_status_to_text:
  **/
 static const gchar *
-cd_main_status_to_text (CdMainStatus status)
+cd_main_status_to_text (CdSessionStatus status)
 {
-	if (status == CD_MAIN_STATUS_IDLE)
+	if (status == CD_SESSION_STATUS_IDLE)
 		return "idle";
-	if (status == CD_MAIN_STATUS_WAITING_FOR_INTERACTION)
+	if (status == CD_SESSION_STATUS_WAITING_FOR_INTERACTION)
 		return "waiting-for-interaction";
-	if (status == CD_MAIN_STATUS_RUNNING)
+	if (status == CD_SESSION_STATUS_RUNNING)
 		return "running";
 	return NULL;
 }
@@ -1648,8 +1607,8 @@ cd_main_find_device (CdMainPrivate *priv,
 						 &error_local);
 	if (device_tmp == NULL) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_FIND_DEVICE,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_FAILED_TO_FIND_DEVICE,
 			     "%s", error_local->message);
 		g_error_free (error_local);
 		goto out;
@@ -1659,8 +1618,8 @@ cd_main_find_device (CdMainPrivate *priv,
 				      &error_local);
 	if (!ret) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_FIND_DEVICE,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_FAILED_TO_FIND_DEVICE,
 			     "%s", error_local->message);
 		g_error_free (error_local);
 		goto out;
@@ -1672,8 +1631,8 @@ cd_main_find_device (CdMainPrivate *priv,
 						&error_local);
 	if (!ret) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_INTERNAL,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_INTERNAL,
 			     "%s", error_local->message);
 		g_error_free (error_local);
 		goto out;
@@ -1706,8 +1665,8 @@ cd_main_find_sensor (CdMainPrivate *priv,
 						 &error_local);
 	if (sensor_tmp == NULL) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_FIND_SENSOR,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
 		g_error_free (error_local);
 		goto out;
@@ -1717,8 +1676,8 @@ cd_main_find_sensor (CdMainPrivate *priv,
 				      &error_local);
 	if (!ret) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_FIND_SENSOR,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
 		g_error_free (error_local);
 		goto out;
@@ -1730,8 +1689,8 @@ cd_main_find_sensor (CdMainPrivate *priv,
 				   &error_local);
 	if (!ret) {
 		g_set_error (error,
-			     CD_MAIN_ERROR,
-			     CD_MAIN_ERROR_FAILED_TO_FIND_SENSOR,
+			     CD_SESSION_ERROR,
+			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
 		g_error_free (error_local);
 		goto out;
@@ -1831,8 +1790,8 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 	/* should be impossible */
 	if (g_strcmp0 (interface_name, "org.freedesktop.ColorHelper.Display") != 0) {
 		g_dbus_method_invocation_return_error (invocation,
-						       CD_MAIN_ERROR,
-						       CD_MAIN_ERROR_INTERNAL,
+						       CD_SESSION_ERROR,
+						       CD_SESSION_ERROR_INTERNAL,
 						       "cannot execute method %s on %s",
 						       method_name, interface_name);
 		goto out;
@@ -1849,7 +1808,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 			 sensor_id);
 
 		/* set the default parameters */
-		priv->quality = CD_MAIN_QUALITY_MEDIUM;
+		priv->quality = CD_SESSION_QUALITY_MEDIUM;
 		priv->device_kind = CD_SENSOR_CAP_LCD;
 		while (g_variant_iter_next (iter, "{&sv}",
 					    &prop_key, &prop_value)) {
@@ -1881,10 +1840,10 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		if (priv->title == NULL)
 			priv->title = g_strdup ("Profile");
 
-		if (priv->status != CD_MAIN_STATUS_IDLE) {
+		if (priv->status != CD_SESSION_STATUS_IDLE) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_INTERNAL,
+							       CD_SESSION_ERROR,
+							       CD_SESSION_ERROR_INTERNAL,
 							       "cannot start as status is %s",
 							       cd_main_status_to_text (priv->status));
 			goto out;
@@ -1893,8 +1852,8 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		/* check the quality argument */
 		if (priv->quality > 2) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_INVALID_VALUE,
+							       CD_SESSION_ERROR,
+							       CD_SESSION_ERROR_INVALID_VALUE,
 							       "invalid quality value %i",
 							       priv->quality);
 			goto out;
@@ -1904,8 +1863,8 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		    (priv->target_whitepoint < 1000 ||
 		     priv->target_whitepoint > 100000)) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_INVALID_VALUE,
+							       CD_SESSION_ERROR,
+							       CD_SESSION_ERROR_INVALID_VALUE,
 							       "invalid target whitepoint value %i",
 							       priv->target_whitepoint);
 			goto out;
@@ -1918,7 +1877,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 						     NULL,
 						     cd_main_sender_vanished_cb,
 						     priv, NULL);
-		priv->status = CD_MAIN_STATUS_IDLE;
+		priv->status = CD_SESSION_STATUS_IDLE;
 
 		/* start calibration */
 		priv->device = cd_main_find_device (priv,
@@ -1947,29 +1906,29 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		 * the sensor is external, otherwise to shut the lid */
 		if (cd_sensor_get_embedded (priv->sensor)) {
 			cd_main_emit_interaction_required (priv,
-							   CD_MAIN_INTERACTION_CODE_SHUT_LAPTOP_LID);
+							   CD_SESSION_INTERACTION_SHUT_LAPTOP_LID);
 		} else {
 			cd_main_emit_interaction_required (priv,
-							   CD_MAIN_INTERACTION_CODE_ATTACH_TO_SCREEN);
+							   CD_SESSION_INTERACTION_ATTACH_TO_SCREEN);
 		}
-		priv->status = CD_MAIN_STATUS_WAITING_FOR_INTERACTION;
+		priv->status = CD_SESSION_STATUS_WAITING_FOR_INTERACTION;
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}
 
 	if (g_strcmp0 (method_name, "Cancel") == 0) {
 		g_debug ("CdMain: %s:Cancel()", sender);
-		if (priv->status != CD_MAIN_STATUS_RUNNING &&
-		    priv->status != CD_MAIN_STATUS_WAITING_FOR_INTERACTION) {
+		if (priv->status != CD_SESSION_STATUS_RUNNING &&
+		    priv->status != CD_SESSION_STATUS_WAITING_FOR_INTERACTION) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_INTERNAL,
+							       CD_SESSION_ERROR,
+							       CD_SESSION_ERROR_INTERNAL,
 							       "cannot cancel as status is %s",
 							       cd_main_status_to_text (priv->status));
 			goto out;
 		}
 		g_cancellable_cancel (priv->cancellable);
-		priv->status = CD_MAIN_STATUS_IDLE;
+		priv->status = CD_SESSION_STATUS_IDLE;
 		g_timeout_add (1000, cd_main_quit_loop_cb, priv);
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
@@ -1977,10 +1936,10 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 
 	if (g_strcmp0 (method_name, "Resume") == 0) {
 		g_debug ("CdMain: %s:Resume()", sender);
-		if (priv->status != CD_MAIN_STATUS_WAITING_FOR_INTERACTION) {
+		if (priv->status != CD_SESSION_STATUS_WAITING_FOR_INTERACTION) {
 			g_dbus_method_invocation_return_error (invocation,
-							       CD_MAIN_ERROR,
-							       CD_MAIN_ERROR_INTERNAL,
+							       CD_SESSION_ERROR,
+							       CD_SESSION_ERROR_INTERNAL,
 							       "cannot resume as status is %s",
 							       cd_main_status_to_text (priv->status));
 			goto out;
@@ -2012,7 +1971,7 @@ cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 
 	/* main interface */
 	if (g_strcmp0 (interface_name,
-		       COLOR_HELPER_DBUS_INTERFACE) == 0) {
+		       CD_SESSION_DBUS_INTERFACE) == 0) {
 		if (g_strcmp0 (property_name, "DaemonVersion") == 0) {
 			retval = g_variant_new_string (VERSION);
 		} else {
@@ -2023,7 +1982,7 @@ cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 
 	/* display interface */
-	if (g_strcmp0 (interface_name, COLOR_HELPER_DBUS_INTERFACE_DISPLAY) == 0) {
+	if (g_strcmp0 (interface_name, CD_SESSION_DBUS_INTERFACE_DISPLAY) == 0) {
 		if (g_strcmp0 (property_name, "Progress") == 0) {
 			retval = g_variant_new_uint32 (priv->progress);
 		} else {
@@ -2056,7 +2015,7 @@ cd_main_on_bus_acquired_cb (GDBusConnection *connection,
 	priv->connection = g_object_ref (connection);
 	for (i = 0; i < 2; i++) {
 		registration_id = g_dbus_connection_register_object (connection,
-								     COLOR_HELPER_DBUS_PATH,
+								     CD_SESSION_DBUS_PATH,
 								     priv->introspection->interfaces[i],
 								     &interface_vtable,
 								     priv,  /* user_data */
@@ -2149,11 +2108,11 @@ cd_main_emit_property_changed (CdMainPrivate *priv,
 			       property_value);
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
-				       COLOR_HELPER_DBUS_PATH,
+				       CD_SESSION_DBUS_PATH,
 				       "org.freedesktop.DBus.Properties",
 				       "PropertiesChanged",
 				       g_variant_new ("(sa{sv}as)",
-				       COLOR_HELPER_DBUS_INTERFACE_DISPLAY,
+				       CD_SESSION_DBUS_INTERFACE_DISPLAY,
 				       &builder,
 				       &invalidated_builder),
 				       NULL);
@@ -2196,8 +2155,8 @@ main (int argc, char *argv[])
 
 	g_type_init ();
 	priv = g_new0 (CdMainPrivate, 1);
-	priv->status = CD_MAIN_STATUS_IDLE;
-	priv->interaction_code_last = CD_MAIN_INTERACTION_CODE_NONE;
+	priv->status = CD_SESSION_STATUS_IDLE;
+	priv->interaction_code_last = CD_SESSION_INTERACTION_NONE;
 	priv->cancellable = g_cancellable_new ();
 	priv->loop = g_main_loop_new (NULL, FALSE);
 
@@ -2220,7 +2179,7 @@ main (int argc, char *argv[])
 
 	/* load introspection from file */
 	priv->introspection = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
-							  COLOR_HELPER_DBUS_INTERFACE ".xml",
+							  CD_SESSION_DBUS_INTERFACE ".xml",
 							  &error);
 	if (priv->introspection == NULL) {
 		g_warning ("CdMain: failed to load introspection: %s",
@@ -2240,7 +2199,7 @@ main (int argc, char *argv[])
 
 	/* own the object */
 	owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
-				   COLOR_HELPER_DBUS_SERVICE,
+				   CD_SESSION_DBUS_SERVICE,
 				   G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT |
 				    G_BUS_NAME_OWNER_FLAGS_REPLACE,
 				   cd_main_on_bus_acquired_cb,
