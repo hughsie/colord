@@ -398,6 +398,9 @@ typedef enum {
 #define CD_PROFILE_METADATA_CONNECTION_TYPE_DISPLAYPORT	"displayport"	/* Since: 0.1.16 */
 #define CD_PROFILE_METADATA_LICENSE		"License"		/* Since: 0.1.25 */
 #define CD_PROFILE_METADATA_QUALITY		"Quality"		/* Since: 0.1.27 */
+#define CD_PROFILE_METADATA_QUALITY_LOW		"low"			/* Since: 0.1.27 */
+#define CD_PROFILE_METADATA_QUALITY_MEDIUM	"medium"		/* Since: 0.1.27 */
+#define CD_PROFILE_METADATA_QUALITY_HIGH	"high"			/* Since: 0.1.27 */
 
 /* defined in org.freedesktop.ColorManager.Profile.xml */
 #define CD_PROFILE_PROPERTY_FILENAME		"Filename"
