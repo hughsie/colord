@@ -207,11 +207,11 @@ x11-colors.icc:
 		create-named-color srgb "X11" ""	\
 		--metadata "License=$(license)"		\
 		--description "X11 Colors"		\
-		./x11-colors.csv
+		$(srcdir)/x11-colors.csv
 crayons.icc:
 	$(top_builddir)/client/cd-create-profile --output $@ \
 		create-named-color lab "Crayon" ""	\
-		./crayons.csv				\
+		$(srcdir)/crayons.csv				\
 		--metadata "License=$(license)"		\
 		--description "Crayon Colors"
 bluish.icc:
