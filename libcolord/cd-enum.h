@@ -420,6 +420,8 @@ typedef enum {
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY	"OutputPriority"
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY_PRIMARY	"primary"
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY_SECONDARY	"secondary"
+#define CD_DEVICE_METADATA_CONNECTION_TYPE	"ConnectionType"	/* Since: 0.1.27 */
+#define CD_DEVICE_METADATA_CONNECTION_TYPE_INTERNAL	"internal"	/* Since: 0.1.27 */
 
 /* defined in org.freedesktop.ColorManager.Device.xml */
 #define CD_DEVICE_PROPERTY_MODEL		"Model"
