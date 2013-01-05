@@ -435,7 +435,8 @@ cd_device_get_profiles (CdDevice *device)
  * cd_device_get_default_profile:
  * @device: a #CdDevice instance.
  *
- * Gets the default device profile.
+ * Gets the default device profile. A profile will not be returned
+ * if the device is being profiled or is disabled.
  *
  * Return value: (transfer full): A #CdProfile's or NULL
  *
@@ -449,6 +450,10 @@ cd_device_get_default_profile (CdDevice *device)
 	if (device->priv->profiles == NULL)
 		return NULL;
 	if (device->priv->profiles->len == 0)
+		return NULL;
+	if (!device->priv->enabled)
+		return NULL;
+	if (g_strv_length (device->priv->profiling_inhibitors) > 0)
 		return NULL;
 	return g_object_ref (g_ptr_array_index (device->priv->profiles, 0));
 }

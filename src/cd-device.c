@@ -1566,7 +1566,6 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 {
 	CdDevice *device = CD_DEVICE (user_data);
 	CdDevicePrivate *priv = device->priv;
-	gboolean ret;
 	gchar **bus_names = NULL;
 	GVariant *retval = NULL;
 
@@ -1617,18 +1616,7 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILES) == 0) {
-
-		/* are we profiling? */
-		ret = cd_inhibit_valid (priv->inhibit);
-		if (!ret) {
-			g_debug ("CdDevice: returning no profiles for profiling");
-			retval = g_variant_new ("ao", NULL);
-		} else if (!priv->enabled) {
-			g_debug ("CdDevice: returning no profiles as device disabled");
-			retval = g_variant_new ("ao", NULL);
-		} else {
-			retval = cd_device_get_profiles_as_variant (device);
-		}
+		retval = cd_device_get_profiles_as_variant (device);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_METADATA) == 0) {

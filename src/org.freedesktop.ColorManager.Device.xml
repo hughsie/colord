@@ -109,6 +109,9 @@
         <doc:description>
           <doc:para>
             The profile paths associated with this device.
+            Profiles are returned even if the device is disabled or
+            is profiling, and clients should not assume that the first
+            profile in this array should be applied.
           </doc:para>
         </doc:description>
       </doc:doc>
@@ -471,9 +474,7 @@
       <doc:doc>
         <doc:description>
           <doc:para>
-            Sets the device enable state. Devices that are disabled
-            return a zero length array from the property
-            <doc:tt>Device.Profiles</doc:tt>.
+            Sets the device enable state.
           </doc:para>
         </doc:description>
       </doc:doc>
