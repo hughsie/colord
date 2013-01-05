@@ -73,6 +73,7 @@ struct _CdDevicePrivate
 	gboolean			 require_modified_signal;
 	gboolean			 is_virtual;
 	gboolean			 enabled;
+	gboolean			 embedded;
 	GHashTable			*metadata;
 	guint				 owner;
 	gchar				*seat;
@@ -958,6 +959,8 @@ cd_device_set_property_internal (CdDevice *device,
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_SEAT) == 0) {
 		g_free (priv->seat);
 		priv->seat = g_strdup (value);
+	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_EMBEDDED) == 0) {
+		priv->embedded = TRUE;
 	} else {
 		/* add to metadata */
 		is_metadata = TRUE;
@@ -1633,6 +1636,10 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_SEAT) == 0) {
 		retval = cd_device_get_nullable_for_string (priv->seat);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_EMBEDDED) == 0) {
+		retval = g_variant_new_boolean (priv->embedded);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_PROFILING_INHIBITORS) == 0) {

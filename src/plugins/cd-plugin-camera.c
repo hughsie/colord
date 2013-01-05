@@ -67,6 +67,41 @@ cd_plugin_get_camera_id_for_udev_device (GUdevDevice *udev_device)
 }
 
 /**
+ * cd_plugin_is_device_embedded:
+ **/
+static gboolean
+cd_plugin_is_device_embedded (GUdevDevice *device)
+{
+	const gchar *removable;
+	gboolean embedded = FALSE;
+	GUdevDevice *p = device;
+	GPtrArray *array;
+	guint i;
+
+	/* get a chain of all the parent devices */
+	array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	do {
+		p = g_udev_device_get_parent (p);
+		if (p == NULL)
+			break;
+		g_ptr_array_add (array, p);
+	} while (TRUE);
+
+	/* find a parent with a removable sysfs file */
+	for (i = 0; i < array->len; i++) {
+		p = g_ptr_array_index (array, i);
+		removable = g_udev_device_get_sysfs_attr (p, "removable");
+		if (removable != NULL) {
+			if (g_strcmp0 (removable, "fixed") == 0)
+				embedded = TRUE;
+			break;
+		}
+	}
+	g_ptr_array_unref (array);
+	return embedded;
+}
+
+/**
  * cd_plugin_add:
  **/
 static void
@@ -75,6 +110,7 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 	CdDevice *device = NULL;
 	const gchar *kind = "webcam";
 	const gchar *seat;
+	gboolean embedded;
 	gboolean ret;
 	gchar *id = NULL;
 	gchar *model = NULL;
@@ -112,43 +148,53 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 	if (seat == NULL)
 		seat = "seat0";
 
+	/* find if the device is embedded */
+	embedded = cd_plugin_is_device_embedded (udev_device);
+
 	/* create new device */
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
 	cd_device_set_property_internal (device,
-					 "Kind",
+					 CD_DEVICE_PROPERTY_KIND,
 					 kind,
 					 FALSE,
 					 NULL);
 	if (model != NULL) {
 		cd_device_set_property_internal (device,
-						 "Model",
+						 CD_DEVICE_PROPERTY_MODEL,
 						 model,
 						 FALSE,
 						 NULL);
 	}
 	if (vendor != NULL) {
 		cd_device_set_property_internal (device,
-						 "Vendor",
+						 CD_DEVICE_PROPERTY_VENDOR,
 						 vendor,
 						 FALSE,
 						 NULL);
 	}
 	cd_device_set_property_internal (device,
-					 "Colorspace",
+					 CD_DEVICE_PROPERTY_COLORSPACE,
 					 "rgb",
 					 FALSE,
 					 NULL);
 	cd_device_set_property_internal (device,
-					 "Serial",
+					 CD_DEVICE_PROPERTY_SERIAL,
 					 g_udev_device_get_sysfs_path (udev_device),
 					 FALSE,
 					 NULL);
 	cd_device_set_property_internal (device,
-					 "Seat",
+					 CD_DEVICE_PROPERTY_SEAT,
 					 seat,
 					 FALSE,
 					 NULL);
+	if (embedded) {
+		cd_device_set_property_internal (device,
+						 CD_DEVICE_PROPERTY_EMBEDDED,
+						 NULL,
+						 FALSE,
+						 NULL);
+	}
 
 	/* keep track so we can remove with the same device */
 	g_hash_table_insert (plugin->priv->devices,

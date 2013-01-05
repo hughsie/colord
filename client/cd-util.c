@@ -242,6 +242,11 @@ cd_util_show_device (CdDevice *device)
 	cd_util_print_field (_("Enabled"),
 			     cd_device_get_enabled (device) ? "Yes" : "No");
 
+	/* TRANSLATORS: if the device is embedded into the computer and
+	 * cannot be removed */
+	cd_util_print_field (_("Embedded"),
+			     cd_device_get_embedded (device) ? "Yes" : "No");
+
 	/* TRANSLATORS: the device model */
 	cd_util_print_field (_("Model"),
 			     cd_device_get_model (device));

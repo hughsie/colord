@@ -444,6 +444,7 @@ typedef enum {
 #define CD_DEVICE_PROPERTY_SEAT			"Seat"
 #define CD_DEVICE_PROPERTY_PROFILING_INHIBITORS	"ProfilingInhibitors"
 #define CD_DEVICE_PROPERTY_ENABLED		"Enabled"
+#define CD_DEVICE_PROPERTY_EMBEDDED		"Embedded"
 
 /* defined in org.freedesktop.ColorManager.Sensor.xml */
 #define CD_SENSOR_PROPERTY_ID			"SensorId"

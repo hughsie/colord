@@ -73,6 +73,7 @@ struct _CdDevicePrivate
 	CdDeviceMode		 mode;
 	CdObjectScope		 scope;
 	gboolean		 enabled;
+	gboolean		 embedded;
 	guint			 owner;
 	GHashTable		*metadata;
 };
@@ -96,6 +97,7 @@ enum {
 	PROP_OWNER,
 	PROP_PROFILING_INHIBITORS,
 	PROP_ENABLED,
+	PROP_EMBEDDED,
 	PROP_LAST
 };
 
@@ -376,6 +378,25 @@ cd_device_get_enabled (CdDevice *device)
 }
 
 /**
+ * cd_device_get_embedded:
+ * @device: a #CdDevice instance.
+ *
+ * Returns if the device is embedded in the computer and cannot be
+ * removed.
+ *
+ * Return value: %TRUE if embedded.
+ *
+ * Since: 0.1.27
+ **/
+gboolean
+cd_device_get_embedded (CdDevice *device)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (device->priv->proxy != NULL, FALSE);
+	return device->priv->embedded;
+}
+
+/**
  * cd_device_get_scope:
  * @device: a #CdDevice instance.
  *
@@ -621,6 +642,8 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 			device->priv->created = g_variant_get_uint64 (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_ENABLED) == 0) {
 			device->priv->enabled = g_variant_get_boolean (property_value);
+		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_EMBEDDED) == 0) {
+			device->priv->embedded = g_variant_get_boolean (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_MODIFIED) == 0) {
 			device->priv->modified = g_variant_get_uint64 (property_value);
 		} else if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_METADATA) == 0) {
@@ -712,6 +735,7 @@ cd_device_connect_cb (GObject *source_object,
 	GVariant *colorspace = NULL;
 	GVariant *scope = NULL;
 	GVariant *enabled = NULL;
+	GVariant *embedded = NULL;
 	GVariant *owner = NULL;
 	GVariant *mode = NULL;
 	GVariant *profiles = NULL;
@@ -842,6 +866,12 @@ cd_device_connect_cb (GObject *source_object,
 						     CD_DEVICE_PROPERTY_PROFILES);
 	cd_device_set_profiles_array_from_variant (device, profiles);
 
+	/* get embedded */
+	embedded = g_dbus_proxy_get_cached_property (device->priv->proxy,
+						     CD_DEVICE_PROPERTY_EMBEDDED);
+	if (embedded != NULL)
+		device->priv->embedded = g_variant_get_boolean (embedded);
+
 	/* get metadata */
 	metadata = g_dbus_proxy_get_cached_property (device->priv->proxy,
 						     CD_DEVICE_PROPERTY_METADATA);
@@ -883,6 +913,8 @@ out:
 		g_variant_unref (scope);
 	if (enabled != NULL)
 		g_variant_unref (enabled);
+	if (embedded != NULL)
+		g_variant_unref (embedded);
 	if (owner != NULL)
 		g_variant_unref (owner);
 	if (mode != NULL)
@@ -2060,6 +2092,9 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	case PROP_OWNER:
 		g_value_set_uint (value, device->priv->owner);
 		break;
+	case PROP_EMBEDDED:
+		g_value_set_boolean (value, device->priv->embedded);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -2327,6 +2362,19 @@ cd_device_class_init (CdDeviceClass *klass)
 							    G_MAXUINT,
 							    0,
 							    G_PARAM_READABLE));
+	/**
+	 * CdDevice:embedded:
+	 *
+	 * If the device is embedded in the device and cannot be removed.
+	 *
+	 * Since: 0.1.27
+	 **/
+	g_object_class_install_property (object_class,
+					 PROP_EMBEDDED,
+					 g_param_spec_string ("embedded",
+							      NULL, NULL,
+							      FALSE,
+							      G_PARAM_READABLE));
 
 	g_type_class_add_private (klass, sizeof (CdDevicePrivate));
 }

@@ -209,6 +209,18 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='Embedded' type='b' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            If the device is embedded into the hardware itself, for
+            example the internal webcam or laptop screen.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <property name='Metadata' type='a{ss}' access='read'>
       <doc:doc>
         <doc:description>
