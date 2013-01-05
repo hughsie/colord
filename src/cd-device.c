@@ -900,6 +900,10 @@ cd_device_set_model (CdDevice *device, const gchar *model)
 	/* remove insanities */
 	tmp = g_string_new (model);
 
+	/* remove the kind suffix */
+	if (g_strcmp0 (priv->kind, "printer") == 0)
+		cd_device_string_remove_suffix (tmp->str, " Printer");
+
 	/* okay, we're done now */
 	g_free (priv->model);
 	priv->model = g_string_free (tmp, FALSE);
