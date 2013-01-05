@@ -900,10 +900,6 @@ cd_device_set_model (CdDevice *device, const gchar *model)
 	/* remove insanities */
 	tmp = g_string_new (model);
 
-	/* are we really a webcam */
-	if (g_strcmp0 (priv->kind, "webcam") == 0)
-		g_string_assign (tmp, "Webcam");
-
 	/* okay, we're done now */
 	g_free (priv->model);
 	priv->model = g_string_free (tmp, FALSE);
