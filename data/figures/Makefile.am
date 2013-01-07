@@ -13,7 +13,8 @@ icons_DATA = 	 			\
 	munki-projector.svg		\
 	munki-screen.svg		\
 	spyder2-attach.svg		\
-	spyder3-attach.svg
+	spyder3-attach.svg		\
+	spyder4-attach.svg
 
 EXTRA_DIST =				\
 	$(icons_DATA)

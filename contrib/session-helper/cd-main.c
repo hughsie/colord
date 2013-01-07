@@ -196,6 +196,8 @@ cd_main_get_sensor_image_attach (CdMainPrivate *priv)
 		return "spyder2-attach.svg";
 	case CD_SENSOR_KIND_SPYDER3:
 		return "spyder3-attach.svg";
+	case CD_SENSOR_KIND_SPYDER4:
+		return "spyder4-attach.svg";
 	default:
 		break;
 	}

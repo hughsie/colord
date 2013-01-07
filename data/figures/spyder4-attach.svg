@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg7384"
+   sodipodi:docname="spyder4-attach.svg"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   height="300"
+   width="300">
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Gnome Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:cy="51.512091"
+     pagecolor="#e5e6e4"
+     borderopacity="1"
+     showborder="false"
+     inkscape:bbox-paths="false"
+     guidetolerance="10"
+     inkscape:object-paths="true"
+     inkscape:window-width="1598"
+     showguides="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-bbox="true"
+     inkscape:pageshadow="2"
+     inkscape:guide-bbox="true"
+     inkscape:snap-nodes="true"
+     bordercolor="#666666"
+     objecttolerance="10"
+     id="namedview88"
+     showgrid="false"
+     inkscape:window-maximized="0"
+     inkscape:window-x="1920"
+     inkscape:snap-global="true"
+     inkscape:window-y="5"
+     gridtolerance="10"
+     inkscape:window-height="1166"
+     inkscape:snap-others="false"
+     inkscape:snap-to-guides="true"
+     inkscape:current-layer="layer12"
+     inkscape:snap-bbox-midpoints="false"
+     inkscape:zoom="2"
+     inkscape:cx="266.17366"
+     inkscape:snap-grids="true"
+     inkscape:pageopacity="1">
+    <inkscape:grid
+       spacingx="1px"
+       spacingy="1px"
+       id="grid4866"
+       empspacing="2"
+       enabled="true"
+       type="xygrid"
+       snapvisiblegridlinesonly="true"
+       visible="true" />
+  </sodipodi:namedview>
+  <title
+     id="title9167">Gnome Symbolic Icon Theme</title>
+  <defs
+     id="defs7386" />
+  <g
+     inkscape:label="figures"
+     transform="translate(-241.00018,67)"
+     inkscape:groupmode="layer"
+     id="layer12"
+     style="display:inline">
+    <rect
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       x="241.00018"
+       y="-67"
+       id="rect5985-4"
+       inkscape:export-ydpi="90"
+       height="300"
+       inkscape:export-xdpi="90"
+       width="300"
+       style="color:#000000;fill:none;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <rect
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       x="261.00018"
+       y="-47"
+       id="rect5985-4-4"
+       rx="4"
+       inkscape:export-ydpi="90"
+       height="260"
+       ry="4"
+       inkscape:export-xdpi="90"
+       width="260"
+       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       inkscape:connector-curvature="0"
+       d="m 394.0002,232.00002 0,-48.78125 -6,-4 0,48.78125 z"
+       id="rect3883-1-8-5-1-8"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#eeeeec;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       inkscape:connector-curvature="0"
+       d="m 391.0002,191.00002 c 25.54902,0 18,-5 70,-5 14.73469,0 32,-31.44616 32,-35 0,-15.73588 -31.46893,0.28327 -57,-95 C 416.3141,-17.4695 436.82399,-33 391.0002,-33 c -45.82379,0 -25.3139,15.5305 -45,89.00002 -25.53107,95.28327 -57,79.26412 -57,95 0,3.55384 17.26531,35 32,35 52,0 44.45098,5 70,5 z"
+       id="rect6252-7"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#eeeeec;fill-opacity:1;fill-rule:nonzero;stroke:#eeeeec;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       inkscape:connector-curvature="0"
+       d="m 394.0002,232.00002 0,-48.78125 -6,-4 0,48.78125 z"
+       id="rect3883-1-8-5-1"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       inkscape:connector-curvature="0"
+       d="m 391.0002,191.00002 c 25.54902,0 18,-5 70,-5 14.73469,0 32,-31.44616 32,-35 0,-15.73588 -31.46893,0.28327 -57,-95 -19.6861,-73.46952 0.82379,-89 -45,-89 -45.82379,0 -25.3139,15.53048 -45,89 -25.53107,95.28327 -57,79.26412 -57,95 0,3.55384 17.26531,35 32,35 52,0 44.45098,5 70,5 z"
+       id="rect6252"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#eeeeec;fill-opacity:1;fill-rule:nonzero;stroke:#babdb6;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       inkscape:connector-curvature="0"
+       d="m 344.00019,110.50003 c 0,-41.14521 21.04262,-74.5 47.00001,-74.5 25.95738,0 47.00001,33.35479 47.00001,74.5 0,41.14521 -13.5128,74.5 -47.00001,74.5 -33.48721,0 -47.00001,-33.35479 -47.00001,-74.5 z"
+       id="path6226"
+       sodipodi:nodetypes="ssszs"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       sodipodi:cy="171.71875"
+       transform="matrix(-1,0,0,-1,539.71897,236.25004)"
+       d="m 155.1875,171.71875 a 6.46875,6.46875 0 1 1 -12.9375,0 6.46875,6.46875 0 1 1 12.9375,0 z"
+       id="path6276"
+       sodipodi:type="arc"
+       sodipodi:rx="6.46875"
+       inkscape:export-ydpi="90"
+       sodipodi:ry="6.46875"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#eeeeec;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new"
+       sodipodi:cx="148.71875" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       inkscape:connector-curvature="0"
+       d="m 394.0002,236.00002 0,-1.78125 -6,-4 0,1.78125 z"
+       id="rect3883-1-8-5-0"
+       sodipodi:nodetypes="ccccc"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       inkscape:connector-curvature="0"
+       d="m 392.12522,59.06252 c 2.52051,0.51577 4.40625,2.73327 4.40625,5.40625 0,3.05484 -2.47641,5.53125 -5.53125,5.53125 -3.05484,0 -5.53125,-2.47641 -5.53125,-5.53125 0,-2.67298 1.88574,-4.89048 4.40625,-5.40625 -2.2308,0.51557 -3.90625,2.51876 -3.90625,4.90625 0,2.77869 2.25256,5.03125 5.03125,5.03125 2.77869,0 5.03125,-2.25256 5.03125,-5.03125 0,-2.38749 -1.67545,-4.39068 -3.90625,-4.90625 z"
+       id="path6276-8"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+    <text
+       transform="matrix(0,-0.99661855,1.0033929,0,0,0)"
+       x="-105.11247"
+       y="422.17407"
+       id="text4078"
+       xml:space="preserve"
+       sodipodi:linespacing="125%"
+       style="font-size:8.84822941px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:end;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#eeeeec;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold"><tspan
+         x="-105.11247"
+         y="422.17407"
+         sodipodi:role="line"
+         id="tspan4080"><tspan
+           id="tspan4082"
+           style="font-size:8.84822941px;font-weight:bold;text-align:end;text-anchor:end;fill:#eeeeec;-inkscape-font-specification:Cantarell Bold"><tspan
+   id="tspan4084"
+   style="font-weight:bold;-inkscape-font-specification:Cantarell">Hugh</tspan>Syer4</tspan></tspan></text>
+    <text
+       transform="matrix(0,-0.83613746,1.1959756,0,0,0)"
+       x="-155.89813"
+       y="358.95218"
+       id="text4086"
+       xml:space="preserve"
+       sodipodi:linespacing="125%"
+       style="font-size:3.34454989px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#eeeeec;fill-opacity:1;stroke:none;font-family:Cantarell;-inkscape-font-specification:Cantarell Bold"><tspan
+         x="-155.89813"
+         y="358.95218"
+         sodipodi:role="line"
+         id="tspan4088"> MINI ESPRESSO</tspan></text>
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       sodipodi:cy="171.71875"
+       transform="matrix(-1.2012195,0,0,-1.9365728,569.64409,416.24115)"
+       d="m 155.1875,171.71875 a 6.46875,6.46875 0 1 1 -12.9375,0 6.46875,6.46875 0 1 1 12.9375,0 z"
+       id="path6276-7"
+       sodipodi:type="arc"
+       sodipodi:rx="6.46875"
+       inkscape:export-ydpi="90"
+       sodipodi:ry="6.46875"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#eeeeec;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new"
+       sodipodi:cx="148.71875" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       inkscape:connector-curvature="0"
+       d="m 392.35159,72.397508 c 3.02769,1.057179 5.29288,5.60241 5.29288,11.081246 0,6.261534 -2.97472,11.337457 -6.64425,11.337457 -3.66953,0 -6.64425,-5.075923 -6.64425,-11.337457 0,-5.478836 2.26519,-10.024067 5.29288,-11.081246 -2.67968,1.05677 -4.69227,5.162727 -4.69227,10.05639 0,5.695508 2.70582,11.297676 6.04364,11.297676 3.33782,0 6.04364,-5.602168 6.04364,-11.297676 0,-4.893663 -2.01259,-8.99962 -4.69227,-10.05639 z"
+       id="path6276-8-8"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new"
+       sodipodi:nodetypes="cssscsssc" />
+    <path
+       inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
+       sodipodi:cy="171.71875"
+       transform="matrix(-0.15230404,0,0,-0.18356992,413.65069,102.76403)"
+       d="m 155.1875,171.71875 a 6.46875,6.46875 0 1 1 -12.9375,0 6.46875,6.46875 0 1 1 12.9375,0 z"
+       id="path6276-5"
+       sodipodi:type="arc"
+       sodipodi:rx="6.46875"
+       inkscape:export-ydpi="90"
+       sodipodi:ry="6.46875"
+       inkscape:export-xdpi="90"
+       style="color:#000000;fill:#eeeeec;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new"
+       sodipodi:cx="148.71875" />
+  </g>
+</svg>
