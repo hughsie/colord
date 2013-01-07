@@ -93,10 +93,17 @@ cd_device_db_load (CdDeviceDb *ddb,
 			    "device_id TEXT PRIMARY KEY,"
 			    "device TEXT);";
 		sqlite3_exec (ddb->priv->db, statement, NULL, NULL, NULL);
-		statement = "CREATE TABLE properties ("
+	}
+
+	/* check properties version 2 */
+	rc = sqlite3_exec (ddb->priv->db, "SELECT * FROM properties_v2 LIMIT 1",
+			   NULL, NULL, &error_msg);
+	if (rc != SQLITE_OK) {
+		statement = "CREATE TABLE properties_v2 ("
 			    "device_id TEXT,"
 			    "property TEXT,"
-			    "value TEXT);";
+			    "value TEXT,"
+			    "PRIMARY KEY (device_id, property));";
 		sqlite3_exec (ddb->priv->db, statement, NULL, NULL, NULL);
 	}
 out:
@@ -119,7 +126,7 @@ cd_device_db_empty (CdDeviceDb *ddb,
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
-	statement = "DELETE FROM devices;DELETE FROM properties;";
+	statement = "DELETE FROM devices;DELETE FROM properties_v2;";
 	rc = sqlite3_exec (ddb->priv->db, statement,
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
@@ -192,10 +199,10 @@ cd_device_db_set_property (CdDeviceDb *ddb,
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
-	g_debug ("CdDeviceDb: add device %s [%s=%s]", device_id, property, value);
-	statement = sqlite3_mprintf ("INSERT OR REPLACE INTO properties (device_id, "
-				     "property, value) "
-				     "VALUES ('%q', '%q', '%q')",
+	g_debug ("CdDeviceDb: add device property %s [%s=%s]",
+		 device_id, property, value);
+	statement = sqlite3_mprintf ("INSERT OR REPLACE INTO properties_v2 (device_id, property, value) "
+				     "VALUES ('%q', '%q', '%q');",
 				     device_id, property, value);
 
 	/* insert the entry */
@@ -248,7 +255,7 @@ cd_device_db_remove (CdDeviceDb *ddb,
 		ret = FALSE;
 		goto out;
 	}
-	statement2 = sqlite3_mprintf ("DELETE FROM properties WHERE "
+	statement2 = sqlite3_mprintf ("DELETE FROM properties_v2 WHERE "
 				     "device_id = '%q';",
 				     device_id);
 	rc = sqlite3_exec (ddb->priv->db, statement2, NULL, NULL, &error_msg);
@@ -304,7 +311,7 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
 
 	g_debug ("CdDeviceDb: get property %s for %s", property, device_id);
-	statement = sqlite3_mprintf ("SELECT value FROM properties WHERE "
+	statement = sqlite3_mprintf ("SELECT value FROM properties_v2 WHERE "
 				     "device_id = '%q' AND "
 				     "property = '%q' LIMIT 1;",
 				     device_id, property);
@@ -406,7 +413,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 
 	/* get all the devices */
 	g_debug ("CdDeviceDb: get properties for device %s", device_id);
-	statement = sqlite3_mprintf ("SELECT property FROM properties "
+	statement = sqlite3_mprintf ("SELECT property FROM properties_v2 "
 				     "WHERE device_id = '%q';",
 				     device_id);
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
