@@ -903,7 +903,11 @@ cd_device_set_model (CdDevice *device, const gchar *model)
 
 	/* remove the kind suffix */
 	if (g_strcmp0 (priv->kind, "printer") == 0)
-		cd_device_string_remove_suffix (tmp->str, " Printer");
+		cd_device_string_remove_suffix (tmp->str, "Printer");
+	if (g_strcmp0 (priv->kind, "display") == 0) {
+		cd_device_string_remove_suffix (tmp->str, "Monitor");
+		cd_device_string_remove_suffix (tmp->str, "Screen");
+	}
 
 	/* okay, we're done now */
 	g_free (priv->model);
