@@ -815,7 +815,7 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 	CdSensorMunkiPrivate *priv;
 	g_object_set (sensor,
 		      "native", TRUE,
-		      "kind", CD_SENSOR_KIND_COLOR_MUNKI,
+		      "kind", CD_SENSOR_KIND_COLOR_MUNKI_PHOTO,
 		      NULL);
 	/* create private data */
 	priv = g_new0 (CdSensorMunkiPrivate, 1);

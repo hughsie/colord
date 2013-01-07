@@ -178,8 +178,8 @@ cd_main_get_sensor_image_attach (CdMainPrivate *priv)
 	case CD_SENSOR_KIND_DUMMY:
 	case CD_SENSOR_KIND_HUEY:
 		return "huey-attach.svg";
-	case CD_SENSOR_KIND_COLOR_MUNKI:
-		return "munki-attach.svg";
+	case CD_SENSOR_KIND_COLOR_MUNKI_PHOTO:
+		return "color-munki-photo-attach.svg";
 	case CD_SENSOR_KIND_SPYDER:
 		return "spyder2-attach.svg";
 	case CD_SENSOR_KIND_COLORIMTRE_HCFR:
@@ -232,8 +232,8 @@ cd_main_get_sensor_image_calibrate (CdMainPrivate *priv)
 	CdSensorKind sensor_kind;
 
 	sensor_kind = cd_sensor_get_kind (priv->sensor);
-	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI)
-		return "munki-calibrate.svg";
+	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI_PHOTO)
+		return "color-munki-photo-calibrate.svg";
 	return NULL;
 }
 
@@ -246,8 +246,8 @@ cd_main_get_sensor_image_screen (CdMainPrivate *priv)
 	CdSensorKind sensor_kind;
 
 	sensor_kind = cd_sensor_get_kind (priv->sensor);
-	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI)
-		return "munki-screen.svg";
+	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI_PHOTO)
+		return "color-munki-photo-screen.svg";
 	return NULL;
 }
 

@@ -337,8 +337,8 @@ cd_sensor_kind_to_string (CdSensorKind sensor_kind)
 		return "dummy";
 	if (sensor_kind == CD_SENSOR_KIND_HUEY)
 		return "huey";
-	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI)
-		return "color-munki";
+	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI_PHOTO)
+		return "color-munki-photo";
 	if (sensor_kind == CD_SENSOR_KIND_SPYDER)
 		return "spyder";
 	if (sensor_kind == CD_SENSOR_KIND_SPYDER2)
@@ -395,8 +395,9 @@ cd_sensor_kind_from_string (const gchar *sensor_kind)
 		return CD_SENSOR_KIND_DUMMY;
 	if (g_strcmp0 (sensor_kind, "huey") == 0)
 		return CD_SENSOR_KIND_HUEY;
-	if (g_strcmp0 (sensor_kind, "color-munki") == 0)
-		return CD_SENSOR_KIND_COLOR_MUNKI;
+	if (g_strcmp0 (sensor_kind, "color-munki") == 0 ||
+	    g_strcmp0 (sensor_kind, "color-munki-photo") == 0)
+		return CD_SENSOR_KIND_COLOR_MUNKI_PHOTO;
 	if (g_strcmp0 (sensor_kind, "spyder") == 0)
 		return CD_SENSOR_KIND_SPYDER;
 	if (g_strcmp0 (sensor_kind, "spyder2") == 0)

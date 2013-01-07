@@ -30,6 +30,10 @@
 
 #ifndef CD_DISABLE_DEPRECATED
 
+/* Damn you x-rite for re-using the 'ColorMunki' brand for lots of
+ * different types of hardware */
+#define CD_SENSOR_KIND_COLOR_MUNKI	CD_SENSOR_KIND_COLOR_MUNKI_PHOTO
+
 G_DEPRECATED_FOR(cd_color_xyz_set)
 void		 cd_color_set_xyz			(CdColorXYZ		*dest,
 							 gdouble		 X,

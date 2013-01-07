@@ -251,7 +251,7 @@ cd_parse_beagle_process_entry (CdSensorKind kind, CdParseEntry *entry)
 	/* sexify the output */
 	if (kind == CD_SENSOR_KIND_HUEY)
 		cd_parse_beagle_process_entry_huey (entry);
-	else if (kind == CD_SENSOR_KIND_COLOR_MUNKI)
+	else if (kind == CD_SENSOR_KIND_COLOR_MUNKI_PHOTO)
 		cd_parse_beagle_process_entry_colormunki (entry);
 	retval = g_strdup_printf ("dev%02i ep%02i(%s)\t%s\t%s\n",
 				  entry->dev, entry->ep,
@@ -286,7 +286,7 @@ main (gint argc, gchar *argv[])
 	}
 	kind = cd_sensor_kind_from_string (argv[1]);
 	if (kind != CD_SENSOR_KIND_HUEY &&
-	    kind != CD_SENSOR_KIND_COLOR_MUNKI) {
+	    kind != CD_SENSOR_KIND_COLOR_MUNKI_PHOTO) {
 		g_print ("only huey and colormunki device kinds supported\n");
 		goto out;
 	}
