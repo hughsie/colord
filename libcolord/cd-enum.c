@@ -428,6 +428,8 @@ cd_sensor_kind_from_string (const gchar *sensor_kind)
 		return CD_SENSOR_KIND_COLORHUG;
 	if (g_strcmp0 (sensor_kind, "colorhug-spectro") == 0)
 		return CD_SENSOR_KIND_COLORHUG_SPECTRO;
+	if (g_strcmp0 (sensor_kind, "color-munki-smile") == 0)
+		return CD_SENSOR_KIND_COLOR_MUNKI_SMILE;
 	return CD_SENSOR_KIND_UNKNOWN;
 }
 

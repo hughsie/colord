@@ -7,6 +7,7 @@ icons_DATA = 	 				\
 	i1-display3-attach.svg			\
 	i1-monitor-attach.svg			\
 	i1-pro-attach.svg			\
+	color-munki-smile-attach.svg		\
 	color-munki-photo-ambient.svg		\
 	color-munki-photo-attach.svg		\
 	color-munki-photo-calibrate.svg		\
