@@ -1807,6 +1807,48 @@ colord_device_func (void)
 }
 
 static void
+colord_device_embedded_func (void)
+{
+	CdDevice *device;
+	gboolean ret;
+	GError *error = NULL;
+	GHashTable *device_props;
+	CdClient *client;
+
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_EMBEDDED),
+			     NULL);
+	device = cd_client_create_device_sync (client,
+					       "device_embedded",
+					       CD_OBJECT_SCOPE_TEMP,
+					       device_props,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect */
+	ret = cd_device_connect_sync (device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check embedded */
+	g_assert (cd_device_get_embedded (device));
+
+	g_hash_table_unref (device_props);
+	g_object_unref (device);
+	g_object_unref (client);
+}
+
+static void
 colord_client_standard_space_func (void)
 {
 	CdClient *client;
@@ -2427,6 +2469,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/it8-ccmx", colord_it8_ccmx_func);
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/client", colord_client_func);
+	g_test_add_func ("/colord/device-embedded", colord_device_embedded_func);
 	g_test_add_func ("/colord/device-duplicate", colord_device_duplicate_func);
 	g_test_add_func ("/colord/device-seat", colord_device_seat_func);
 	g_test_add_func ("/colord/device-enabled", colord_device_enabled_func);

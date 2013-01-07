@@ -524,6 +524,7 @@ cd_client_create_device (CdClient *client,
 			 GAsyncReadyCallback callback,
 			 gpointer user_data)
 {
+	const gchar *value;
 	GSimpleAsyncResult *res;
 	GVariantBuilder builder;
 	GList *list, *l;
@@ -542,11 +543,11 @@ cd_client_create_device (CdClient *client,
 	if (properties != NULL) {
 		list = g_hash_table_get_keys (properties);
 		for (l = list; l != NULL; l = l->next) {
+			value = g_hash_table_lookup (properties, l->data);
 			g_variant_builder_add (&builder,
 					       "{ss}",
 					       l->data,
-					       g_hash_table_lookup (properties,
-								    l->data));
+					       value != NULL ? value : "");
 		}
 		g_list_free (list);
 	} else {
