@@ -87,6 +87,7 @@ This may be useful for CMYK soft-proofing or for extra device support.
         --disable-static \
         --disable-rpath \
         --disable-examples \
+        --disable-silent-rules \
         --disable-dependency-tracking
 
 make %{?_smp_mflags}
