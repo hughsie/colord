@@ -1875,6 +1875,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 			g_dbus_method_invocation_return_gerror (invocation,
 								error);
 			g_error_free (error);
+			g_timeout_add (200, cd_main_finished_quit_cb, priv);
 			goto out;
 		}
 		priv->sensor = cd_main_find_sensor (priv,
@@ -1884,6 +1885,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 			g_dbus_method_invocation_return_gerror (invocation,
 								error);
 			g_error_free (error);
+			g_timeout_add (200, cd_main_finished_quit_cb, priv);
 			goto out;
 		}
 
