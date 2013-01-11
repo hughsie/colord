@@ -1,3 +1,5 @@
+.NOTPARALLEL:
+
 profilesdir = $(datadir)/color/icc/colord
 generatedprofiles =					\
 	AdobeRGB1998.icc				\
