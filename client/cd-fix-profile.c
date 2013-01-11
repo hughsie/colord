@@ -81,7 +81,7 @@ cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUt
 
 	/* add each one */
 	names = g_strsplit (name, ",", -1);
-	for (i=0; names[i] != NULL; i++) {
+	for (i = 0; names[i] != NULL; i++) {
 		item = g_new0 (CdUtilItem, 1);
 		item->name = g_strdup (names[i]);
 		if (i == 0) {

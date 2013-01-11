@@ -40,7 +40,7 @@ parse_command_sequence (GString *output, const gchar *line, gboolean reply)
 	/* only know how to parse 8 bytes */
 	if (g_strv_length (tok) != 8)
 		goto out;
-	for (j=0; j<8; j++) {
+	for (j = 0; j < 8; j++) {
 		command_as_text = NULL;
 		cmd = g_ascii_strtoll (tok[j], NULL, 16);
 		if (j == 0 && reply) {
@@ -217,7 +217,7 @@ main (gint argc, gchar *argv[])
 	/* parse string */
 	output = g_string_new ("// automatically generated, do not edit\n");
 	split = g_strsplit (data, "\n", -1);
-	for (i=0; split[i] != NULL; i++) {
+	for (i = 0; split[i] != NULL; i++) {
 		line = split[i];
 
 		if (mode == CD_PARSE_MODE_ARGYLLD9)

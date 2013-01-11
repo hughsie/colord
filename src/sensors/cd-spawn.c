@@ -117,7 +117,7 @@ cd_spawn_emit_whole_lines (CdSpawn *spawn, GString *string)
 
 	bytes_processed = 0;
 	/* we only emit n-1 strings */
-	for (i=0; i<(size-1); i++) {
+	for (i = 0; i < (size-1); i++) {
 		g_signal_emit (spawn, signals [SIGNAL_STDOUT], 0, lines[i]);
 		/* ITS4: ignore, g_strsplit always NULL terminates */
 		bytes_processed += strlen (lines[i]) + 1;
@@ -421,11 +421,11 @@ cd_spawn_argv (CdSpawn *spawn, gchar **argv, gchar **envp, GError **error)
 	g_return_val_if_fail (argv != NULL, FALSE);
 
 	len = g_strv_length (argv);
-	for (i=0; i<len; i++)
+	for (i = 0; i < len; i++)
 		g_debug ("argv[%i] '%s'", i, argv[i]);
 	if (envp != NULL) {
 		len = g_strv_length (envp);
-		for (i=0; i<len; i++)
+		for (i = 0; i < len; i++)
 			g_debug ("envp[%i] '%s'", i, envp[i]);
 	}
 

@@ -43,7 +43,7 @@ main (gint argc, gchar *argv[])
 	if (argc != 2)
 		goto out;
 
-	for (i=0; i<0xff; i++)
+	for (i = 0; i < 0xff; i++)
 		buffer[i] = 0;
 
 	ret = g_file_get_contents (argv[1], &data, NULL, &error);
@@ -53,7 +53,7 @@ main (gint argc, gchar *argv[])
 		goto out;
 	}
 	lines = g_strsplit (data, "\n", -1);
-	for (i=0; lines[i] != NULL; i++) {
+	for (i = 0; lines[i] != NULL; i++) {
 		if (g_str_has_prefix (lines[i], "register[0x")) {
 			addr = g_ascii_strtoull (lines[i] + 11, NULL, 16);
 			if (addr > 0xff) {
@@ -64,11 +64,11 @@ main (gint argc, gchar *argv[])
 		}
 	}
 	g_print ("*** find byte ***\n");
-	for (i=0; i<0xff; i++) {
+	for (i = 0; i < 0xff; i++) {
 		g_print ("0x%02x\t0x%02x\t(%i)\n", i, (int) buffer[i], (int) buffer[i]);
 	}
 	g_print ("*** find uint32 ***\n");
-	for (j=0; j<4; j++) {
+	for (j = 0; j < 4; j++) {
 		for (i=j; i<0xff-3; i+=4) {
 			value_uint32 = cd_buffer_read_uint32_be (buffer+i);
 			if (value_uint32 == G_MAXUINT32) {
@@ -79,7 +79,7 @@ main (gint argc, gchar *argv[])
 		}
 	}
 	g_print ("*** find float ***\n");
-	for (j=0; j<4; j++) {
+	for (j = 0; j < 4; j++) {
 		for (i=j; i<0xff-3; i+=4) {
 			value_uint32 = cd_buffer_read_uint32_be (buffer+i);
 			value_float = *((volatile gfloat*) &value_uint32);
@@ -91,7 +91,7 @@ main (gint argc, gchar *argv[])
 		}
 	}
 	g_print ("*** find time/dates ***\n");
-	for (i=0; i<0xff-3; i++) {
+	for (i = 0; i < 0xff-3; i++) {
 		GDate *date;
 		time_t time_tmp;
 		gchar text[128];

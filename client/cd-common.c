@@ -86,7 +86,7 @@ cd_profile_write_metadata_string (cmsHPROFILE lcms_profile,
 	/* parse string */
 	if (metadata != NULL) {
 		metadata_split = g_strsplit (metadata, ",", -1);
-		for (i=0; metadata_split[i] != NULL; i++) {
+		for (i = 0; metadata_split[i] != NULL; i++) {
 			tmp = g_strstr_len (metadata_split[i], -1, "=");
 			if (tmp == NULL) {
 				g_set_error (error, 1, 0,

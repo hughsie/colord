@@ -1326,14 +1326,14 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* search each regex against the profiles for this device */
-		for (i=0; profile == NULL && regexes[i] != NULL; i++) {
+		for (i = 0; profile == NULL && regexes[i] != NULL; i++) {
 			if (i == 0)
 				g_debug ("searching [hard]");
 			profile = cd_device_find_by_qualifier (regexes[i],
 							       priv->profiles,
 							       CD_DEVICE_RELATION_HARD);
 		}
-		for (i=0; profile == NULL && regexes[i] != NULL; i++) {
+		for (i = 0; profile == NULL && regexes[i] != NULL; i++) {
 			if (i == 0)
 				g_debug ("searching [soft]");
 			profile = cd_device_find_by_qualifier (regexes[i],

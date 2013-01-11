@@ -85,7 +85,7 @@ cd_sensor_munki_print_data (const gchar *title,
 		g_print ("%c[%dm", 0x1B, 34);
 	g_print ("%s\t", title);
 
-	for (i=0; i< length; i++)
+	for (i = 0; i <  length; i++)
 		g_print ("%02x [%c]\t", data[i], g_ascii_isprint (data[i]) ? data[i] : '?');
 
 	g_print ("%c[%dm\n", 0x1B, 0);
@@ -773,7 +773,7 @@ cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 	buffer = g_new0 (guchar, priv->eeprom_blocksize);
 
 	/* get all banks of EEPROM */
-	for (i=0; i<priv->eeprom_blocks; i++) {
+	for (i = 0; i < priv->eeprom_blocks; i++) {
 		ret = cd_sensor_munki_get_eeprom_data (sensor,
 						       i*priv->eeprom_blocksize,
 						       buffer, priv->eeprom_blocksize,
@@ -782,7 +782,7 @@ cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 			goto out;
 
 		/* write details */
-		for (j=0; j<priv->eeprom_blocksize; j++)
+		for (j = 0; j < priv->eeprom_blocksize; j++)
 			g_string_append_printf (data, "eeprom[0x%04x]:0x%02x\n", (i*priv->eeprom_blocksize) + j, buffer[j]);
 	}
 out:

@@ -343,7 +343,7 @@ cd_sensor_set_caps_from_variant (CdSensor *sensor, GVariant *variant)
 
 	/* insert the new metadata */
 	caps_tmp = g_variant_get_strv (variant, NULL);
-	for (i=0; caps_tmp[i] != NULL; i++) {
+	for (i = 0; caps_tmp[i] != NULL; i++) {
 		value = 1 << cd_sensor_cap_from_string (caps_tmp[i]);
 		sensor->priv->caps += value;
 	}
@@ -391,7 +391,7 @@ cd_sensor_dbus_properties_changed_cb (GDBusProxy  *proxy,
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
 	len = g_variant_iter_init (&iter, changed_properties);
-	for (i=0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		g_variant_get_child (changed_properties, i,
 				     "{sv}",
 				     &property_name,

@@ -495,7 +495,7 @@ cd_device_set_profiles_array_from_variant (CdDevice *device,
 	if (profiles == NULL)
 		goto out;
 	len = g_variant_n_children (profiles);
-	for (i=0; i<len; i++) {
+	for (i = 0; i < len; i++) {
 		g_variant_get_child (profiles, i,
 				     "o", &object_path_tmp);
 		profile_tmp = cd_profile_new_with_object_path (object_path_tmp);
@@ -603,7 +603,7 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 	g_return_if_fail (CD_IS_DEVICE (device));
 
 	len = g_variant_iter_init (&iter, changed_properties);
-	for (i=0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		g_variant_get_child (changed_properties, i,
 				     "{sv}",
 				     &property_name,
@@ -1701,7 +1701,7 @@ cd_device_get_profile_for_qualifiers (CdDevice *device,
 
 	/* squash char** into an array of strings */
 	g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
-	for (i=0; qualifiers[i] != NULL; i++)
+	for (i = 0; qualifiers[i] != NULL; i++)
 		g_variant_builder_add (&builder, "s", qualifiers[i]);
 
 	res = g_simple_async_result_new (G_OBJECT (device),

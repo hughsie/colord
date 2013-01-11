@@ -96,7 +96,7 @@ cd_sensor_huey_print_data (const gchar *title,
 		g_print ("%c[%dm", 0x1B, 34);
 	g_print ("%s\t", title);
 
-	for (i=0; i< length; i++)
+	for (i = 0; i <  length; i++)
 		g_print ("%02x [%c]\t", data[i], g_ascii_isprint (data[i]) ? data[i] : '?');
 
 	g_print ("%c[%dm\n", 0x1B, 0);
@@ -138,7 +138,7 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 		goto out;
 
 	/* some commands need to retry the read */
-	for (i=0; i<HUEY_MAX_READ_RETRIES; i++) {
+	for (i = 0; i < HUEY_MAX_READ_RETRIES; i++) {
 
 		/* get sync response */
 		ret = g_usb_device_interrupt_transfer (priv->device,
@@ -253,7 +253,7 @@ cd_sensor_huey_read_register_string (CdSensorHueyPrivate *huey,
 	gboolean ret = TRUE;
 
 	/* get each byte of the string */
-	for (i=0; i<len; i++) {
+	for (i = 0; i < len; i++) {
 		ret = cd_sensor_huey_read_register_byte (huey,
 							 addr+i,
 							 (guint8*) &value[i],
@@ -276,7 +276,7 @@ cd_sensor_huey_read_register_word (CdSensorHueyPrivate *huey,
 	gboolean ret = TRUE;
 
 	/* get each byte of the 32 bit number */
-	for (i=0; i<4; i++) {
+	for (i = 0; i < 4; i++) {
 		ret = cd_sensor_huey_read_register_byte (huey,
 							  addr+i,
 							  tmp+i,
@@ -329,7 +329,7 @@ cd_sensor_huey_read_register_vector (CdSensorHueyPrivate *huey,
 	vector_data = cd_vec3_get_data (value);
 
 	/* read in vec3 */
-	for (i=0; i<3; i++) {
+	for (i = 0; i < 3; i++) {
 		ret = cd_sensor_huey_read_register_float (huey,
 							   addr + (i*4),
 							   &tmp,
@@ -359,7 +359,7 @@ cd_sensor_huey_read_register_matrix (CdSensorHueyPrivate *huey,
 	matrix_data = cd_mat33_get_data (value);
 
 	/* read in 3d matrix */
-	for (i=0; i<9; i++) {
+	for (i = 0; i < 9; i++) {
 		ret = cd_sensor_huey_read_register_float (huey,
 							  addr + (i*4),
 							  &tmp,
@@ -948,7 +948,7 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	}
 
 	/* spin the LEDs */
-	for (i=0; spin_leds[i] != 0xff; i++) {
+	for (i = 0; spin_leds[i] != 0xff; i++) {
 		ret = cd_sensor_huey_set_leds (sensor, spin_leds[i], &error);
 		if (!ret) {
 			g_simple_async_result_set_from_error (res, error);
@@ -1107,7 +1107,7 @@ cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 				HUEY_XYZ_POST_MULTIPLY_SCALE_FACTOR);
 
 	/* read all the register space */
-	for (i=0; i<0xff; i++) {
+	for (i = 0; i < 0xff; i++) {
 		ret = cd_sensor_huey_read_register_byte (priv,
 							 i,
 							 &value,

@@ -194,7 +194,7 @@ cd_mat33_clear (const CdMat3x3 *src)
 {
 	guint i;
 	gdouble *temp = (gdouble *) src;
-	for (i=0; i<3*3; i++)
+	for (i = 0; i < 3*3; i++)
 		temp[i] = 0.0f;
 }
 
@@ -355,8 +355,8 @@ cd_mat33_matrix_multiply (const CdMat3x3 *mat_src1, const CdMat3x3 *mat_src2, Cd
 	g_return_if_fail (mat_src1 != mat_dest);
 	g_return_if_fail (mat_src2 != mat_dest);
 
-	for (i=0; i<3; i++) {
-		for (j=0; j<3; j++) {
+	for (i = 0; i < 3; i++) {
+		for (j = 0; j < 3; j++) {
 			for (k=0; k<3; k++) {
 				dest[3 * i + j] += src1[i * 3 + k] * src2[k * 3 + j];
 			}

@@ -80,7 +80,7 @@ cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUt
 
 	/* add each one */
 	names = g_strsplit (name, ",", -1);
-	for (i=0; names[i] != NULL; i++) {
+	for (i = 0; names[i] != NULL; i++) {
 		item = g_new0 (CdUtilItem, 1);
 		item->name = g_strdup (names[i]);
 		if (i == 0) {
@@ -128,7 +128,7 @@ cd_util_get_descriptions (GPtrArray *array)
 		g_string_append (string, "  ");
 		g_string_append (string, item->name);
 		len = strlen (item->name);
-		for (j=len; j<max_len+3; j++)
+		for (j=len; j < max_len+3; j++)
 			g_string_append_c (string, ' ');
 		g_string_append (string, item->description);
 		g_string_append_c (string, '\n');
@@ -221,7 +221,7 @@ add_nc_palette_srgb (cmsNAMEDCOLORLIST *nc2,
 		goto out;
 	lines = g_strsplit (data, "\n", -1);
 
-	for (i=0; lines[i] != NULL; i++) {
+	for (i = 0; lines[i] != NULL; i++) {
 		/* ignore blank lines */
 		if (lines[i][0] == '\0')
 			continue;
@@ -284,7 +284,7 @@ add_nc_palette_lab (cmsNAMEDCOLORLIST *nc2,
 		goto out;
 	lines = g_strsplit (data, "\n", -1);
 
-	for (i=0; lines[i] != NULL; i++) {
+	for (i = 0; lines[i] != NULL; i++) {
 		/* ignore blank lines */
 		if (lines[i][0] == '\0')
 			continue;

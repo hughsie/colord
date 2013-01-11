@@ -518,7 +518,7 @@ cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUt
 
 	/* add each one */
 	names = g_strsplit (name, ",", -1);
-	for (i=0; names[i] != NULL; i++) {
+	for (i = 0; names[i] != NULL; i++) {
 		item = g_new0 (CdUtilItem, 1);
 		item->name = g_strdup (names[i]);
 		if (i == 0) {
@@ -631,7 +631,7 @@ cd_util_get_devices (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = FALSE;
 		goto out;
 	}
-	for (i=0; i < array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		device = g_ptr_array_index (array, i);
 		ret = cd_device_connect_sync (device, NULL, error);
 		if (!ret)
@@ -676,7 +676,7 @@ cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error
 		ret = FALSE;
 		goto out;
 	}
-	for (i=0; i < array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		device = g_ptr_array_index (array, i);
 		ret = cd_device_connect_sync (device, NULL, error);
 		if (!ret)
@@ -708,7 +708,7 @@ cd_util_get_profiles (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = FALSE;
 		goto out;
 	}
-	for (i=0; i < array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		profile = g_ptr_array_index (array, i);
 		ret = cd_profile_connect_sync (profile, NULL, error);
 		if (!ret)
@@ -747,7 +747,7 @@ cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
 				     _("There are no supported sensors attached"));
 		goto out;
 	}
-	for (i=0; i < array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
 		ret = cd_sensor_connect_sync (sensor, NULL, error);
 		if (!ret)
@@ -787,7 +787,7 @@ cd_util_sensor_lock (CdUtilPrivate *priv, gchar **values, GError **error)
 				     _("There are no supported sensors attached"));
 		goto out;
 	}
-	for (i=0; i < array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
 
 		ret = cd_sensor_connect_sync (sensor, NULL, error);
@@ -964,7 +964,7 @@ cd_util_sensor_set_options (CdUtilPrivate *priv, gchar **values, GError **error)
 	options = g_hash_table_new (g_str_hash, g_str_equal);
 	g_hash_table_insert (options, values[0], g_variant_new_string (values[1]));
 
-	for (i=0; i < array->len; i++) {
+	for (i = 0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
 
 		ret = cd_sensor_connect_sync (sensor, NULL, error);

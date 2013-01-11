@@ -1754,7 +1754,7 @@ cd_main_setup_standard_spaces (CdMainPrivate *priv)
 	}
 
 	/* parse them */
-	for (i=0; spaces[i] != NULL; i++) {
+	for (i = 0; spaces[i] != NULL; i++) {
 		split = g_strsplit (spaces[i], ":", 2);
 		if (g_strv_length (split) == 2) {
 			cd_main_setup_standard_space (priv,
@@ -1863,7 +1863,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 		g_error_free (error);
 		goto out;
 	}
-	for (i=0; i < array_devices->len; i++) {
+	for (i = 0; i < array_devices->len; i++) {
 		device_id = g_ptr_array_index (array_devices, i);
 		cd_main_add_disk_device (priv, device_id);
 	}

@@ -80,7 +80,7 @@ cd_parse_beagle_process_entry_huey (CdParseEntry *entry)
 	}
 
 	output = g_string_new ("");
-	for (j=0; j<8; j++) {
+	for (j = 0; j < 8; j++) {
 		command_as_text = NULL;
 		cmd = g_ascii_strtoll (tok[j], NULL, 16);
 		if (j == 0 && entry->direction == CD_PARSE_ENTRY_DIRECTION_REPLY) {
@@ -183,7 +183,7 @@ cd_parse_beagle_process_entry_colormunki (CdParseEntry *entry)
 	}
 
 	/* unknown command */
-	for (j=0; j<tok_len; j++) {
+	for (j = 0; j < tok_len; j++) {
 		cmd = g_ascii_strtoll (tok[j], NULL, 16);
 		g_string_append_printf (output, "%02x ", cmd);
 	}
@@ -304,7 +304,7 @@ main (gint argc, gchar *argv[])
 
 	/* parse string */
 	split = g_strsplit (data, "\n", -1);
-	for (i=0; split[i] != NULL; i++) {
+	for (i = 0; split[i] != NULL; i++) {
 
 		/* comment or blank line */
 		if (split[i][0] == '#' ||

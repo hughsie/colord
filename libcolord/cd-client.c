@@ -1874,7 +1874,7 @@ cd_client_get_device_array_from_variant (CdClient *client,
 	array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	child = g_variant_get_child_value (result, 0);
 	len = g_variant_iter_init (&iter, child);
-	for (i=0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		g_variant_get_child (child, i,
 				     "o", &object_path_tmp);
 		device = cd_device_new_with_object_path (object_path_tmp);
@@ -2119,7 +2119,7 @@ cd_client_get_profile_array_from_variant (CdClient *client,
 	array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	child = g_variant_get_child_value (result, 0);
 	len = g_variant_iter_init (&iter, child);
-	for (i=0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		g_variant_get_child (child, i,
 				     "o", &object_path_tmp);
 		profile = cd_profile_new_with_object_path (object_path_tmp);
@@ -2255,7 +2255,7 @@ cd_client_get_sensor_array_from_variant (CdClient *client,
 	array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	child = g_variant_get_child_value (result, 0);
 	len = g_variant_iter_init (&iter, child);
-	for (i=0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		g_variant_get_child (child, i,
 				     "o", &object_path_tmp);
 		sensor = cd_sensor_new_with_object_path (object_path_tmp);

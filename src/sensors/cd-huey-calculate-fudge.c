@@ -168,7 +168,7 @@ main (gint argc, gchar *argv[])
 	for (pre_scalar = 1900.0f; pre_scalar < 2100.0f; pre_scalar+=1.0f) {
 		for (post_scalar = 0.25f; post_scalar < 5.0f; post_scalar += 0.000125f) {
 			error = 0.0f;
-			for (i=0; i<5; i++) {
+			for (i = 0; i < 5; i++) {
 				cd_sensor_huey_convert_device_RGB_to_XYZ (&device_rgb[i],
 									   &cd_xyz,
 									   &calibration,

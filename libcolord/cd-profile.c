@@ -516,7 +516,7 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 	g_return_if_fail (CD_IS_PROFILE (profile));
 
 	len = g_variant_iter_init (&iter, changed_properties);
-	for (i=0; i < len; i++) {
+	for (i = 0; i < len; i++) {
 		g_variant_get_child (changed_properties, i,
 				     "{sv}",
 				     &property_name,

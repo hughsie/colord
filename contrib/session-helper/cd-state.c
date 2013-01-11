@@ -430,7 +430,7 @@ cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gi
 
 	/* process the valist */
 	va_start (args, value);
-	for (i=0;; i++) {
+	for (i = 0;; i++) {
 		value_temp = va_arg (args, gint);
 		if (value_temp == -1)
 			break;
@@ -465,7 +465,7 @@ cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gi
 	state->priv->step_profile = g_new0 (gdouble, i+2);
 	state->priv->step_data[0] = total;
 	va_start (args, value);
-	for (i=0;; i++) {
+	for (i = 0;; i++) {
 		value_temp = va_arg (args, gint);
 		if (value_temp == -1)
 			break;

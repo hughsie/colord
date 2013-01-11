@@ -264,7 +264,7 @@ ch_print_data_buffer (const gchar *title,
 		g_print ("%c[%dm", 0x1B, 34);
 	g_print ("%s\t", title);
 
-	for (i=0; i< length; i++)
+	for (i = 0; i <  length; i++)
 		g_print ("%02x [%c]\t", data[i], g_ascii_isprint (data[i]) ? data[i] : '?');
 
 	g_print ("%c[%dm\n", 0x1B, 0);
