@@ -26,6 +26,7 @@ BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
 BuildRequires: libgusb-devel
 BuildRequires: gtk-doc
+BuildRequires: color-filesystem
 %if 0%{?build_print_profiles}
 BuildRequires: argyllcms
 %endif
