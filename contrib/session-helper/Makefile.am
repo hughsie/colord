@@ -2,7 +2,7 @@ introspectiondir = $(datadir)/dbus-1/interfaces
 dist_introspection_DATA = 				\
 	org.freedesktop.ColorHelper.xml
 
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	$(COLORD_GTK_CFLAGS)				\
 	$(GLIB_CFLAGS)					\
 	$(GNOME_DESKTOP_CFLAGS)				\

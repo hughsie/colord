@@ -1,4 +1,4 @@
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	$(GLIB_CFLAGS)					\
 	$(GTK_CFLAGS)					\
 	-I$(top_srcdir)					\

@@ -9,7 +9,7 @@ dist_introspection_DATA = 				\
 	org.freedesktop.ColorManager.Sensor.xml		\
 	org.freedesktop.ColorManager.Profile.xml
 
-INCLUDES =						\
+AM_CPPFLAGS =						\
 	$(GLIB_CFLAGS)					\
 	$(POLKIT_CFLAGS)				\
 	$(LCMS_CFLAGS)					\

@@ -5,7 +5,7 @@ INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
 INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
 endif
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)						\
 	$(LCMS_CFLAGS)						\
 	-I$(top_srcdir)						\
@@ -113,7 +113,7 @@ introspection_sources =						\
 
 Colord-1.0.gir: libcolord.la
 Colord_1_0_gir_INCLUDES = GObject-2.0 Gio-2.0
-Colord_1_0_gir_CFLAGS = $(INCLUDES) -DCD_DISABLE_DEPRECATED
+Colord_1_0_gir_CFLAGS = $(AM_CPPFLAGS) -DCD_DISABLE_DEPRECATED
 Colord_1_0_gir_SCANNERFLAGS = --identifier-prefix=Cd \
 				--symbol-prefix=cd \
 				--warn-all \
