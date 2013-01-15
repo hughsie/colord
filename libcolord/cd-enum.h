@@ -458,6 +458,7 @@ typedef enum {
 #define CD_SENSOR_PROPERTY_CAPABILITIES		"Capabilities"
 #define CD_SENSOR_PROPERTY_OPTIONS		"Options"
 #define CD_SENSOR_PROPERTY_EMBEDDED		"Embedded"
+#define CD_SENSOR_PROPERTY_METADATA		"Metadata"
 
 const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string		(const gchar		*kind);

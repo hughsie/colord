@@ -130,6 +130,9 @@ gboolean	 cd_sensor_has_cap			(CdSensor	*sensor,
 GHashTable	*cd_sensor_get_options			(CdSensor	*sensor);
 const gchar	*cd_sensor_get_option			(CdSensor	*sensor,
 							 const gchar	*key);
+GHashTable	*cd_sensor_get_metadata			(CdSensor	*sensor);
+const gchar	*cd_sensor_get_metadata_item		(CdSensor	*sensor,
+							 const gchar	*key);
 
 /* utilities */
 void		 cd_sensor_set_object_path		(CdSensor	*sensor,

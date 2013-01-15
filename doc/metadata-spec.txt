@@ -100,3 +100,8 @@ OutputPriority		The display output priority, either 'primary' or
 			'secondary'. The primary output is defined as the
 			screen where the taskbar or application menu is
 			located.
+
+== Sensor Metadata ==
+
+These data values are not properties on the DBus interface, but are
+added to the colord Sensor.Metadata dictionary.

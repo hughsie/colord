@@ -100,6 +100,7 @@ struct _CdSensorPrivate
 	guint				 registration_id;
 	CdSensorIface			*desc;
 	GHashTable			*options;
+	GHashTable			*metadata;
 };
 
 enum {
@@ -908,6 +909,38 @@ out:
 }
 
 /**
+ * cd_sensor_get_metadata_as_variant:
+ **/
+static GVariant *
+cd_sensor_get_metadata_as_variant (CdSensor *sensor)
+{
+	GList *list, *l;
+	GVariantBuilder builder;
+	GVariant *value;
+
+	/* we always must have at least one bit of metadata */
+	if (g_hash_table_size (sensor->priv->metadata) == 0) {
+		value = g_variant_new_array (G_VARIANT_TYPE ("{sv}"),
+					     NULL, 0);
+		goto out;
+	}
+	/* add all the keys in the dictionary to the variant builder */
+	list = g_hash_table_get_keys (sensor->priv->metadata);
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	for (l = list; l != NULL; l = l->next) {
+		g_variant_builder_add (&builder,
+				       "{ss}",
+				       l->data,
+				       g_hash_table_lookup (sensor->priv->metadata,
+							    l->data));
+	}
+	g_list_free (list);
+	value = g_variant_builder_end (&builder);
+out:
+	return value;
+}
+
+/**
  * cd_sensor_get_nullable_for_string:
  **/
 static GVariant *
@@ -979,6 +1012,10 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	}
 	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_OPTIONS) == 0) {
 		retval = cd_sensor_get_options_as_variant (sensor);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_METADATA) == 0) {
+		retval = cd_sensor_get_metadata_as_variant (sensor);
 		goto out;
 	}
 
@@ -1361,6 +1398,10 @@ cd_sensor_init (CdSensor *sensor)
 						       g_str_equal,
 						       (GDestroyNotify) g_free,
 						       (GDestroyNotify) g_variant_unref);
+	sensor->priv->metadata = g_hash_table_new_full (g_str_hash,
+							g_str_equal,
+							g_free,
+							g_free);
 }
 
 /**
@@ -1389,6 +1430,7 @@ cd_sensor_finalize (GObject *object)
 	g_free (priv->device_path);
 	g_free (priv->object_path);
 	g_hash_table_unref (priv->options);
+	g_hash_table_unref (priv->metadata);
 
 	G_OBJECT_CLASS (cd_sensor_parent_class)->finalize (object);
 }

@@ -67,6 +67,7 @@ struct _CdSensorPrivate
 	gboolean		 locked;
 	guint			 caps;
 	GHashTable		*options;
+	GHashTable		*metadata;
 	GDBusProxy		*proxy;
 };
 
@@ -374,13 +375,37 @@ cd_sensor_set_options_from_variant (CdSensor *sensor, GVariant *variant)
 }
 
 /**
+ * cd_sensor_set_metadata_from_variant:
+ **/
+static void
+cd_sensor_set_metadata_from_variant (CdSensor *sensor, GVariant *variant)
+{
+	GVariantIter iter;
+	const gchar *prop_key;
+	const gchar *prop_value;
+
+	/* remove old entries */
+	g_hash_table_remove_all (sensor->priv->metadata);
+
+	/* insert the new metadata */
+	g_variant_iter_init (&iter, variant);
+	while (g_variant_iter_loop (&iter, "{ss}",
+				    &prop_key, &prop_value)) {
+		g_hash_table_insert (sensor->priv->metadata,
+				     g_strdup (prop_key),
+				     g_strdup (prop_value));
+
+	}
+}
+
+/**
  * cd_sensor_dbus_properties_changed_cb:
  **/
 static void
-cd_sensor_dbus_properties_changed_cb (GDBusProxy  *proxy,
-				   GVariant    *changed_properties,
-				   const gchar * const *invalidated_properties,
-				   CdSensor   *sensor)
+cd_sensor_dbus_properties_changed_cb (GDBusProxy *proxy,
+				      GVariant *changed_properties,
+				      const gchar * const *invalidated_properties,
+				      CdSensor *sensor)
 {
 	guint i;
 	guint len;
@@ -435,6 +460,8 @@ cd_sensor_dbus_properties_changed_cb (GDBusProxy  *proxy,
 			g_object_notify (G_OBJECT (sensor), "capabilities");
 		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_OPTIONS) == 0) {
 			cd_sensor_set_options_from_variant (sensor, property_value);
+		} else if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_METADATA) == 0) {
+			cd_sensor_set_metadata_from_variant (sensor, property_value);
 		} else {
 			g_warning ("%s property unhandled", property_name);
 		}
@@ -482,6 +509,7 @@ cd_sensor_connect_cb (GObject *source_object,
 	GVariant *embedded = NULL;
 	GVariant *locked = NULL;
 	GVariant *caps = NULL;
+	GVariant *metadata = NULL;
 	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 	CdSensor *sensor = CD_SENSOR (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
 	GError *error = NULL;
@@ -566,6 +594,12 @@ cd_sensor_connect_cb (GObject *source_object,
 	if (caps != NULL)
 		cd_sensor_set_caps_from_variant (sensor, caps);
 
+	/* get metadata */
+	metadata = g_dbus_proxy_get_cached_property (sensor->priv->proxy,
+						     CD_SENSOR_PROPERTY_METADATA);
+	if (metadata != NULL)
+		cd_sensor_set_metadata_from_variant (sensor, metadata);
+
 	/* get signals from DBus */
 	g_signal_connect (sensor->priv->proxy,
 			  "g-signal",
@@ -603,6 +637,8 @@ out:
 		g_variant_unref (locked);
 	if (caps != NULL)
 		g_variant_unref (caps);
+	if (metadata != NULL)
+		g_variant_unref (metadata);
 	g_object_unref (res_source);
 }
 
@@ -1216,6 +1252,44 @@ cd_sensor_get_option (CdSensor *sensor, const gchar *key)
 }
 
 /**
+ * cd_sensor_get_metadata:
+ * @sensor: a #CdSensor instance.
+ *
+ * Returns the sensor metadata.
+ *
+ * Return value: (transfer full) (element-type utf8 utf8): a
+ *               #GHashTable.
+ *
+ * Since: 0.1.28
+ **/
+GHashTable *
+cd_sensor_get_metadata (CdSensor *sensor)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, NULL);
+	return g_hash_table_ref (sensor->priv->metadata);
+}
+
+/**
+ * cd_sensor_get_metadata_item:
+ * @sensor: a #CdSensor instance.
+ * @key: a key for the metadata dictionary
+ *
+ * Returns the sensor metadata for a specific key.
+ *
+ * Return value: the metadata value, or %NULL if not set.
+ *
+ * Since: 0.1.28
+ **/
+const gchar *
+cd_sensor_get_metadata_item (CdSensor *sensor, const gchar *key)
+{
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
+	g_return_val_if_fail (sensor->priv->proxy != NULL, NULL);
+	return g_hash_table_lookup (sensor->priv->metadata, key);
+}
+
+/**
  * cd_sensor_equal:
  * @sensor1: one #CdSensor instance.
  * @sensor2: another #CdSensor instance.
@@ -1507,6 +1581,10 @@ cd_sensor_init (CdSensor *sensor)
 						       g_str_equal,
 						       (GDestroyNotify) g_free,
 						       (GDestroyNotify) g_variant_unref);
+	sensor->priv->metadata = g_hash_table_new_full (g_str_hash,
+							g_str_equal,
+							g_free,
+							g_free);
 }
 
 /*
@@ -1528,6 +1606,7 @@ cd_sensor_finalize (GObject *object)
 	g_free (sensor->priv->model);
 	g_free (sensor->priv->vendor);
 	g_hash_table_unref (sensor->priv->options);
+	g_hash_table_destroy (sensor->priv->metadata);
 	if (sensor->priv->proxy != NULL) {
 		ret = g_signal_handlers_disconnect_by_func (sensor->priv->proxy,
 							    G_CALLBACK (cd_sensor_dbus_signal_cb),
