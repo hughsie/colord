@@ -169,44 +169,6 @@ cd_main_emit_update_sample (CdMainPrivate *priv, CdColorRGB *color)
 }
 
 /**
- * cd_main_get_sensor_image_attach:
- **/
-static const gchar *
-cd_main_get_sensor_image_attach (CdMainPrivate *priv)
-{
-	switch (cd_sensor_get_kind (priv->sensor)) {
-	case CD_SENSOR_KIND_DUMMY:
-	case CD_SENSOR_KIND_HUEY:
-		return "huey-attach.svg";
-	case CD_SENSOR_KIND_COLOR_MUNKI_PHOTO:
-		return "color-munki-photo-attach.svg";
-	case CD_SENSOR_KIND_SPYDER:
-		return "spyder2-attach.svg";
-	case CD_SENSOR_KIND_COLORIMTRE_HCFR:
-		return "hcfr-attach.svg";
-	case CD_SENSOR_KIND_I1_PRO:
-		return "i1-pro-attach.svg";
-	case CD_SENSOR_KIND_DTP94:
-		return "dtp94-attach.svg";
-	case CD_SENSOR_KIND_I1_DISPLAY3:
-		return "i1-display3-attach.svg";
-	case CD_SENSOR_KIND_COLORHUG:
-		return "colorhug-attach.svg";
-	case CD_SENSOR_KIND_SPYDER2:
-		return "spyder2-attach.svg";
-	case CD_SENSOR_KIND_SPYDER3:
-		return "spyder3-attach.svg";
-	case CD_SENSOR_KIND_SPYDER4:
-		return "spyder4-attach.svg";
-	case CD_SENSOR_KIND_COLOR_MUNKI_SMILE:
-		return "color-munki-smile-attach.svg";
-	default:
-		break;
-	}
-	return NULL;
-}
-
-/**
  * cd_main_get_display_ti1:
  **/
 static const gchar *
@@ -222,34 +184,6 @@ cd_main_get_display_ti1 (CdProfileQuality quality)
 	default:
 		break;
 	}
-	return NULL;
-}
-
-/**
- * cd_main_get_sensor_image_calibrate:
- **/
-static const gchar *
-cd_main_get_sensor_image_calibrate (CdMainPrivate *priv)
-{
-	CdSensorKind sensor_kind;
-
-	sensor_kind = cd_sensor_get_kind (priv->sensor);
-	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI_PHOTO)
-		return "color-munki-photo-calibrate.svg";
-	return NULL;
-}
-
-/**
- * cd_main_get_sensor_image_screen:
- **/
-static const gchar *
-cd_main_get_sensor_image_screen (CdMainPrivate *priv)
-{
-	CdSensorKind sensor_kind;
-
-	sensor_kind = cd_sensor_get_kind (priv->sensor);
-	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI_PHOTO)
-		return "color-munki-photo-screen.svg";
 	return NULL;
 }
 
@@ -270,15 +204,18 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 	/* emit signal */
 	switch (code) {
 	case CD_SESSION_INTERACTION_ATTACH_TO_SCREEN:
-		image = cd_main_get_sensor_image_attach (priv);
+		image = cd_sensor_get_metadata_item (priv->sensor,
+						     CD_SENSOR_METADATA_IMAGE_ATTACH);
 		message = "attach the sensor to the screen";
 		break;
 	case CD_SESSION_INTERACTION_MOVE_TO_SURFACE:
-		image = cd_main_get_sensor_image_screen (priv);
+		image = cd_sensor_get_metadata_item (priv->sensor,
+						     CD_SENSOR_METADATA_IMAGE_SCREEN);
 		message = "move the sensor to the surface position";
 		break;
 	case CD_SESSION_INTERACTION_MOVE_TO_CALIBRATION:
-		image = cd_main_get_sensor_image_calibrate (priv);
+		image = cd_sensor_get_metadata_item (priv->sensor,
+						     CD_SENSOR_METADATA_IMAGE_CALIBRATE);
 		message = "move the sensor to the calibrate position";
 		break;
 	case CD_SESSION_INTERACTION_SHUT_LAPTOP_LID:

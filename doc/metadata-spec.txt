@@ -105,3 +105,10 @@ OutputPriority		The display output priority, either 'primary' or
 
 These data values are not properties on the DBus interface, but are
 added to the colord Sensor.Metadata dictionary.
+
+ImageAttach		The image SVG filename used to illustrate
+			the device attached to the screen.
+ImageCalibrate		The image SVG filename used to illustrate
+			the device in calibrate mode.
+ImageScreen		The image SVG filename used to illustrate
+			the device in screen mode.

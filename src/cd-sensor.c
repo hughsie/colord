@@ -1088,13 +1088,16 @@ cd_sensor_set_from_device (CdSensor *sensor,
 			   GUdevDevice *device,
 			   GError **error)
 {
-	gboolean ret;
-	guint idx = 0;
-	const gchar *vendor_tmp = NULL;
-	const gchar *model_tmp = NULL;
-	const gchar *kind_str;
-	gboolean use_database;
 	CdSensorPrivate *priv = sensor->priv;
+	const gchar *images[] = { "attach", "calibrate", "screen", NULL };
+	const gchar *kind_str;
+	const gchar *model_tmp = NULL;
+	const gchar *vendor_tmp = NULL;
+	gboolean ret;
+	gboolean use_database;
+	gchar *tmp;
+	guint i;
+	guint idx = 0;
 
 	/* only use the database if we found both the VID and the PID */
 	use_database = g_udev_device_has_property (device, "ID_VENDOR_FROM_DATABASE") &&
@@ -1171,6 +1174,21 @@ cd_sensor_set_from_device (CdSensor *sensor,
 						     "COLORD_SENSOR_EMBEDDED");
 	if (ret)
 		priv->embedded = TRUE;
+
+	/* add image metadata if the files exist */
+	for (i = 0; images[i] != NULL; i++) {
+		tmp = g_strdup_printf ("%s/colord/icons/%s-%s.svg",
+				       DATADIR, kind_str, images[i]);
+		if (g_file_test (tmp, G_FILE_TEST_EXISTS)) {
+			g_debug ("helper image %s found", tmp);
+			g_hash_table_insert (priv->metadata,
+					     g_strdup (CD_SENSOR_METADATA_IMAGE_ATTACH),
+					     tmp);
+		} else {
+			g_debug ("helper image %s not found", tmp);
+			g_free (tmp);
+		}
+	}
 
 	/* no caps */
 	if (idx == 0) {

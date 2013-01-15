@@ -460,6 +460,11 @@ typedef enum {
 #define CD_SENSOR_PROPERTY_EMBEDDED		"Embedded"
 #define CD_SENSOR_PROPERTY_METADATA		"Metadata"
 
+/* defined in metadata-spec.txt */
+#define CD_SENSOR_METADATA_IMAGE_ATTACH		"ImageAttach"
+#define CD_SENSOR_METADATA_IMAGE_CALIBRATE	"ImageCalibrate"
+#define CD_SENSOR_METADATA_IMAGE_SCREEN		"ImageScreen"
+
 const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string		(const gchar		*kind);
 const gchar	*cd_profile_kind_to_string		(CdProfileKind		 profile_kind);
