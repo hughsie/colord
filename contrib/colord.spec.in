@@ -125,9 +125,13 @@ getent passwd colord >/dev/null || \
     -c "User for colord" colord
 exit 0
 
-%post -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
-%postun -p /sbin/ldconfig
+%postun
+/sbin/ldconfig
+glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
@@ -136,6 +140,7 @@ exit 0
 %attr(755,colord,colord) %dir %{_localstatedir}/lib/colord
 %attr(755,colord,colord) %dir %{_localstatedir}/lib/colord/icc
 %{_bindir}/*
+%{_datadir}/glib-2.0/schemas/org.freedesktop.ColorHelper.gschema.xml
 %{_sysconfdir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy

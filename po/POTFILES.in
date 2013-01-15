@@ -1,6 +1,7 @@
 client/cd-create-profile.c
 client/cd-fix-profile.c
 client/cd-util.c
+contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in
 policy/org.freedesktop.color.policy.in.in
 src/cd-debug.c
 src/cd-main.c

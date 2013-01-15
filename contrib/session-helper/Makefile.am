@@ -80,10 +80,17 @@ test: colord-session-example
 
 endif
 
+@GSETTINGS_RULES@
+@INTLTOOL_XML_NOMERGE_RULE@
+gsettings_schemas_in_files = org.freedesktop.ColorHelper.gschema.xml.in
+gsettings_SCHEMAS = $(gsettings_schemas_in_files:.gschema.xml.in=.gschema.xml)
+
 EXTRA_DIST =						\
+	$(gsettings_SCHEMAS)				\
 	$(dbusservicemain_in_files)
 
 DISTCLEANFILES =					\
-	$(dbusservicemain_DATA)
+	$(dbusservicemain_DATA)				\
+	org.freedesktop.ColorHelper.gschema.xml
 
 -include $(top_srcdir)/git.mk

@@ -1,0 +1,21 @@
+<schemalist>
+  <schema id="org.freedesktop.ColorHelper" path="/org/freedesktop/color-helper/">
+    <key name="display-gamma" type="d">
+      <default>2.4</default>
+      <_summary>Default gamma for the display</_summary>
+      <_description>
+        The default target gamma value for the display.
+        Common values are 1.8, 2.2 and 2.4.
+      </_description>
+    </key>
+    <key name="display-whitepoint" type="i">
+      <default>6500</default>
+      <_summary>Default display target whitepoint</_summary>
+      <_description>
+        The default target whitepoint in Kelvin for display calibration,
+        with 0 meaning display native.
+        Common values are 6500 for D65 and 5000 for D50.
+      </_description>
+    </key>
+  </schema>
+</schemalist>
