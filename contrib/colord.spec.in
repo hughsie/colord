@@ -44,6 +44,9 @@ Requires: color-filesystem
 Requires: systemd-units
 Requires(pre): shadow-utils
 
+# Self-obsoletes to fix the multilib upgrade path
+Obsoletes: colord < 0.1.27-3
+
 # obsolete separate profiles package
 Obsoletes: shared-color-profiles <= 0.1.6-2
 Provides: shared-color-profiles
