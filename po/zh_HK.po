@@ -3,8 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Gabor Kelemen <kelemeng at gnome dot hu>, 2012.
-#   <kelemeng@gnome.hu>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
@@ -12,54 +10,54 @@ msgstr ""
 "POT-Creation-Date: 2013-01-16 23:22+0000\n"
 "PO-Revision-Date: 2013-01-16 23:20+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Hungarian <openscope@googlegroups.com>\n"
+"Language-Team: Chinese (Hong Kong) (http://www.transifex.com/projects/p/freedesktop/language/zh_HK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hu\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: zh_HK\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. TRANSLATORS: this is a command alias
 #: ../client/cd-create-profile.c:90 ../client/cd-fix-profile.c:91
 #: ../client/cd-util.c:544
 #, c-format
 msgid "Alias to %s"
-msgstr "%s álneve"
+msgstr ""
 
 #: ../client/cd-create-profile.c:168 ../client/cd-fix-profile.c:169
 #: ../client/cd-util.c:622
 msgid "Command not found, valid commands are:"
-msgstr "A parancs nem található, az érvényes parancsok:"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:822
 msgid "The profile description"
-msgstr "A profil leírása"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:825
 msgid "The profile copyright"
-msgstr "Profil szerzői joga"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:828
 msgid "The device model"
-msgstr "Az eszköz típusa"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:831
 msgid "The device manufacturer"
-msgstr "Az eszköz gyártója"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:834
 msgid "Profile to create"
-msgstr "Létrehozandó profil"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: ../client/cd-create-profile.c:837
 msgid "The metadata in 'key1=value1,key2=value2' format"
-msgstr "A metaadatok „kulcs1=érték1,kulcs2=érték2” formátumban"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:858
@@ -84,46 +82,46 @@ msgstr ""
 #. TRANSLATORS: program name
 #: ../client/cd-create-profile.c:886
 msgid "ICC profile creation program"
-msgstr "ICC-profil készítő program"
+msgstr ""
 
 #: ../client/cd-create-profile.c:892 ../client/cd-fix-profile.c:1252
 msgid "Failed to parse arguments"
-msgstr "A paraméterek feldolgozása meghiúsult"
+msgstr ""
 
 #. TRANSLATORS: the user forgot to use -o
 #: ../client/cd-create-profile.c:901
 msgid "No output filename specified"
-msgstr "Nincs megadva kimeneti fájlnév"
+msgstr ""
 
 #: ../client/cd-fix-profile.c:996
 msgid "Description"
-msgstr "Leírás"
+msgstr ""
 
 #: ../client/cd-fix-profile.c:999
 msgid "Manufacturer"
-msgstr "Gyártó"
+msgstr ""
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 #: ../client/cd-fix-profile.c:1002 ../client/cd-util.c:251
 #: ../client/cd-util.c:405
 msgid "Model"
-msgstr "Típus"
+msgstr ""
 
 #: ../client/cd-fix-profile.c:1005
 msgid "Copyright"
-msgstr "Copyright"
+msgstr ""
 
 #: ../client/cd-fix-profile.c:1010
 msgid "No metadata"
-msgstr "Nincsenek metaadatok"
+msgstr ""
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 #: ../client/cd-fix-profile.c:1020 ../client/cd-util.c:190
 #: ../client/cd-util.c:324 ../client/cd-util.c:449
 msgid "Metadata"
-msgstr "Metaadatok"
+msgstr ""
 
 #: ../client/cd-fix-profile.c:1028
 msgid "Red primary"
@@ -144,12 +142,12 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: ../client/cd-fix-profile.c:1156
 msgid "Show extra debugging information"
-msgstr "Extra hibakeresési információk megjelenítése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1178
 msgid "Show all the details about the profile"
-msgstr "A profillal kapcsolatos összes részlet megjelenítése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1183
@@ -159,47 +157,47 @@ msgstr ""
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1188
 msgid "Clear any metadata in the profile"
-msgstr "A profil metaadatainak törlése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1193
 msgid "Initialize any metadata for the profile"
-msgstr "A profil metaadatainak előkészítése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1198
 msgid "Add a metadata item to the profile"
-msgstr "Metaadat-elem hozzáadása a profilhoz"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1203
 msgid "Remove a metadata item from the profile"
-msgstr "Metaadat-elem eltávolítása a profilból"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1208
 msgid "Sets the copyright string"
-msgstr "Szerzői jogi szöveg beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1213
 msgid "Sets the description string"
-msgstr "Leírás beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1218
 msgid "Sets the manufacturer string"
-msgstr "Gyártó beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1223
 msgid "Sets the model string"
-msgstr "Típus beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1228
 msgid "Automatically fix metadata in the profile"
-msgstr "A profil metaadatainak automatikus javítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1233
@@ -210,22 +208,22 @@ msgstr ""
 #: ../client/cd-fix-profile.c:1246 ../client/cd-util.c:2137
 #: ../src/cd-main.c:2174
 msgid "Color Management"
-msgstr "Színkezelés"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: ../client/cd-util.c:87
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr "%Y. %B %d., %k.%M.%S"
+msgstr ""
 
 #. TRANSLATORS: profile owner
 #: ../client/cd-util.c:102
 msgid "Owner"
-msgstr "Tulajdonos"
+msgstr ""
 
 #. TRANSLATORS: the internal DBus path
 #: ../client/cd-util.c:124 ../client/cd-util.c:222 ../client/cd-util.c:362
 msgid "Object Path"
-msgstr "Objektumútvonal"
+msgstr ""
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -233,41 +231,41 @@ msgstr "Objektumútvonal"
 #. * ColorModel.OutputMode.OutputResolution
 #: ../client/cd-util.c:131 ../client/cd-util.c:275
 msgid "Format"
-msgstr "Formátum"
+msgstr ""
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: ../client/cd-util.c:137
 msgid "Title"
-msgstr "Név"
+msgstr ""
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: ../client/cd-util.c:142
 msgid "Qualifier"
-msgstr "Minősítő"
+msgstr ""
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: ../client/cd-util.c:147 ../client/cd-util.c:238 ../client/cd-util.c:384
 msgid "Type"
-msgstr "Típus"
+msgstr ""
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 #: ../client/cd-util.c:153 ../client/cd-util.c:286
 msgid "Colorspace"
-msgstr "Színtér"
+msgstr ""
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: ../client/cd-util.c:159 ../client/cd-util.c:281
 msgid "Scope"
-msgstr "Hatáskör"
+msgstr ""
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: ../client/cd-util.c:164
 msgid "Gamma Table"
-msgstr "Gamma táblázat"
+msgstr ""
 
 #. TRANSLATORS: if the profile is installed for all users
 #: ../client/cd-util.c:168
@@ -277,12 +275,12 @@ msgstr ""
 #. TRANSLATORS: profile filename
 #: ../client/cd-util.c:172
 msgid "Filename"
-msgstr "Fájlnév"
+msgstr ""
 
 #. TRANSLATORS: profile identifier
 #: ../client/cd-util.c:176
 msgid "Profile ID"
-msgstr "Profilazonosító"
+msgstr ""
 
 #: ../client/cd-util.c:198
 msgid "Warning"
@@ -293,13 +291,13 @@ msgstr ""
 #. * unless the device has been explicitly saved in the database
 #: ../client/cd-util.c:229
 msgid "Created"
-msgstr "Létrehozva"
+msgstr ""
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 #: ../client/cd-util.c:234
 msgid "Modified"
-msgstr "Módosítva"
+msgstr ""
 
 #. TRANSLATORS: the device enabled state
 #: ../client/cd-util.c:242
@@ -316,16 +314,16 @@ msgstr ""
 #. TRANSLATORS: sensor vendor
 #: ../client/cd-util.c:255 ../client/cd-util.c:412
 msgid "Vendor"
-msgstr "Gyártó"
+msgstr ""
 
 #: ../client/cd-util.c:260
 msgid "Inhibitors"
-msgstr "Korlátozók"
+msgstr ""
 
 #. TRANSLATORS: the device serial number
 #: ../client/cd-util.c:264
 msgid "Serial"
-msgstr "Sorozatszám"
+msgstr ""
 
 #. TRANSLATORS: the device seat identifier
 #: ../client/cd-util.c:268
@@ -335,22 +333,22 @@ msgstr ""
 #. TRANSLATORS: the device identifier
 #: ../client/cd-util.c:290
 msgid "Device ID"
-msgstr "Eszközazonosító"
+msgstr ""
 
 #. TRANSLATORS: the profile for the device
 #: ../client/cd-util.c:298
 msgid "Profile"
-msgstr "Profil"
+msgstr ""
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:391
 msgid "State"
-msgstr "Állapot"
+msgstr ""
 
 #. TRANSLATORS: sensor serial
 #: ../client/cd-util.c:398
 msgid "Serial number"
-msgstr "Sorozatszám"
+msgstr ""
 
 #. TRANSLATORS: sensor identifier
 #: ../client/cd-util.c:417
@@ -360,57 +358,57 @@ msgstr ""
 #. TRANSLATORS: the options for the sensor
 #: ../client/cd-util.c:436
 msgid "Options"
-msgstr "Beállítások"
+msgstr ""
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: ../client/cd-util.c:454
 msgid "Native"
-msgstr "Natív"
+msgstr ""
 
 #. TRANSLATORS: if the sensor is locked
 #: ../client/cd-util.c:458
 msgid "Locked"
-msgstr "Zárolva"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports calibrating an LCD display
 #: ../client/cd-util.c:462
 msgid "LCD"
-msgstr "LCD"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports calibrating a CRT display
 #: ../client/cd-util.c:466
 msgid "CRT"
-msgstr "CRT"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports calibrating a printer
 #: ../client/cd-util.c:470
 msgid "Printer"
-msgstr "Nyomtató"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports spot measurements
 #: ../client/cd-util.c:474
 msgid "Spot"
-msgstr "Direktszínek"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports calibrating a projector
 #: ../client/cd-util.c:478
 msgid "Projector"
-msgstr "Projektor"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports getting the ambient light level
 #: ../client/cd-util.c:482
 msgid "Ambient"
-msgstr "Környezeti"
+msgstr ""
 
 #: ../client/cd-util.c:763 ../client/cd-util.c:803 ../client/cd-util.c:867
 #: ../client/cd-util.c:975
 msgid "There are no supported sensors attached"
-msgstr "Nincsenek csatlakoztatva támogatott érzékelők"
+msgstr ""
 
 #. TRANSLATORS: this is the sensor title
 #: ../client/cd-util.c:879 ../client/cd-util.c:998
 msgid "Sensor"
-msgstr "Érzékelő"
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: ../client/cd-util.c:901
@@ -424,112 +422,112 @@ msgstr ""
 
 #: ../client/cd-util.c:925
 msgid "Color"
-msgstr "Szín"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1989
 msgid "Gets all the color managed devices"
-msgstr "Az összes színkezelt eszköz lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1994
 msgid "Gets all the color managed devices of a specific kind"
-msgstr "Adott típusú összes színkezelt eszköz lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:1999
 msgid "Gets all the available color profiles"
-msgstr "Az összes elérhető színprofil lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2004
 msgid "Gets all the available color sensors"
-msgstr "Az összes elérhető színérzékelő lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2009
 msgid "Gets a reading from a sensor"
-msgstr "Adatok lekérése egy érzékelőtől"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2014
 msgid "Locks the color sensor"
-msgstr "Színérzékelő zárolása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2019
 msgid "Sets one or more sensor options"
-msgstr "Válasszon legalább egy érzékelőbeállítást"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2024
 msgid "Create a device"
-msgstr "Eszköz létrehozása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2029
 msgid "Find a device"
-msgstr "Eszköz keresése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2034
 msgid "Find a device that has a specific property"
-msgstr "Adott tulajdonsággal rendelkező eszköz keresése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2039
 msgid "Find a profile"
-msgstr "Profil keresése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2044
 msgid "Find a profile by filename"
-msgstr "Profil keresése fájlnév szerint"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2049
 msgid "Get a standard colorspace"
-msgstr "Szabványos színtér lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2054
 msgid "Create a profile"
-msgstr "Profil létrehozása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2059
 msgid "Add a profile to a device"
-msgstr "Profil hozzáadása egy eszközhöz"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2064
 msgid "Makes a profile default for a device"
-msgstr "Profil alapértelmezetté tétele egy eszközhöz"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2069
 msgid "Deletes a device"
-msgstr "Eszköz törlése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2074
 msgid "Deletes a profile"
-msgstr "Profil törlése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2079
 msgid "Sets the profile qualifier"
-msgstr "Profilminősítő lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2084
 msgid "Sets the profile filename"
-msgstr "Profil fájlnevének beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2089
 msgid "Sets the device model"
-msgstr "Eszköz típusának beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2094
@@ -539,37 +537,37 @@ msgstr ""
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2099
 msgid "Gets the default profile for a device"
-msgstr "Eszköz alapértelmezett profiljának lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2104
 msgid "Sets the device vendor"
-msgstr "Eszköz gyártójának beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2109
 msgid "Sets the device serial"
-msgstr "Eszköz sorozatszámának beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2114
 msgid "Sets the device kind"
-msgstr "Eszköz fajtájának beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2119
 msgid "Inhibits color profiles for this device"
-msgstr "Letiltja a színprofilokat ehhez az eszközhöz"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2124
 msgid "Returns all the profiles that match a qualifier"
-msgstr "Visszaadja a minősítőnek megfelelő összes profilt"
+msgstr ""
 
 #. TRANSLATORS: no colord available
 #: ../client/cd-util.c:2145
 msgid "No connection to colord:"
-msgstr "Nincs kapcsolat a colord-hez:"
+msgstr ""
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:1
 msgid "Default gamma for the display"
@@ -596,66 +594,66 @@ msgstr ""
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:4
 msgid "Create a color managed device"
-msgstr "Színkezelt eszköz létrehozása"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:5
 msgid "Authentication is required to create a color managed device"
-msgstr "Hitelesítés szükséges egy színkezelt eszköz létrehozásához"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:9
 msgid "Create a color profile"
-msgstr "Színprofil létrehozása"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:10
 msgid "Authentication is required to create a color profile"
-msgstr "Hitelesítés szükséges egy színprofil létrehozásához"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:14
 msgid "Remove a color managed device"
-msgstr "Színkezelt eszköz eltávolítása"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:15
 msgid "Authentication is required to remove a color managed device"
-msgstr "Hitelesítés szükséges egy színkezelt eszköz eltávolításához"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:19
 msgid "Remove a color profile"
-msgstr "Színprofil eltávolítása"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:20
 msgid "Authentication is required to remove a color profile"
-msgstr "Hitelesítés szükséges egy színprofil eltávolításához"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:24
 msgid "Modify color settings for a device"
-msgstr "Eszköz színbeállításainak módosítása"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:25
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Hitelesítés szükséges egy eszköz színbeállításainak módosításához"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:29
 msgid "Modify a color profile"
-msgstr "Színprofil módosítása"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:30
 msgid "Authentication is required to modify a color profile"
-msgstr "Hitelesítés szükséges egy színprofil módosításához"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -667,11 +665,11 @@ msgstr "Hitelesítés szükséges egy színprofil módosításához"
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:39
 msgid "Install system color profiles"
-msgstr "Rendszerszintű színprofilok telepítése"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:40
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Hitelesítés szükséges a színprofil telepítéséhez minden felhasználó számára"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
@@ -679,11 +677,11 @@ msgstr "Hitelesítés szükséges a színprofil telepítéséhez minden felhaszn
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:45
 msgid "Inhibit color profile selection"
-msgstr "Színprofilválasztás letiltása"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:46
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Hitelesítés szükséges a profilkezelés letiltásához egy eszközhöz"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
@@ -691,35 +689,35 @@ msgstr "Hitelesítés szükséges a profilkezelés letiltásához egy eszközhö
 #. 
 #: ../policy/org.freedesktop.color.policy.in.in.h:51
 msgid "Use color sensor"
-msgstr "Színérzékelő használata"
+msgstr ""
 
 #: ../policy/org.freedesktop.color.policy.in.in.h:52
 msgid "Authentication is required to use the color sensor"
-msgstr "Hitelesítés szükséges a színérzékelő használatához"
+msgstr ""
 
 #. TRANSLATORS: turn on all debugging
 #: ../src/cd-debug.c:134
 msgid "Show debugging information for all files"
-msgstr "Hibakeresési információk megjelenítése az összes fájlhoz"
+msgstr ""
 
 #: ../src/cd-debug.c:192
 msgid "Debugging Options"
-msgstr "Hibakeresési lehetőségek"
+msgstr ""
 
 #: ../src/cd-debug.c:193
 msgid "Show debugging options"
-msgstr "Hibakeresési lehetőségek megjelenítése"
+msgstr ""
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: ../src/cd-main.c:2156
 msgid "Exit after a small delay"
-msgstr "Kilépés rövid késleltetés után"
+msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: ../src/cd-main.c:2159
 msgid "Exit after the engine has loaded"
-msgstr "Kilépés az alrendszer betöltése után"
+msgstr ""
 
 #: ../src/cd-main.c:2178
 msgid "Color Management D-Bus Service"
-msgstr "Színkezelési D-Bus szolgáltatás"
+msgstr ""
