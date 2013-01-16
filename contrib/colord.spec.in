@@ -52,9 +52,17 @@ Provides: shared-color-profiles
 colord is a low level system activated daemon that maps color devices
 to color profiles in the system context.
 
+%package libs
+Summary: Color daemon library
+
+%description libs
+colord is a low level system activated daemon that maps color devices
+to color profiles in the system context.
+
 %package devel
 Summary: Development package for %{name}
 Requires: %{name} = %{version}-%{release}
+Requires: %{name}-libs = %{version}-%{release}
 
 %description devel
 Files for development with %{name}.
@@ -146,12 +154,10 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/man/man1/*.1.gz
 %{_datadir}/colord
-%{_libdir}/libcolord.so.*
 %config %{_sysconfdir}/colord.conf
 /usr/lib/udev/rules.d/*.rules
 %{_libdir}/colord-sensors
 %{_libdir}/colord-plugins
-%{_libdir}/girepository-1.0/*.typelib
 %ghost %{_localstatedir}/lib/colord/*.db
 /usr/lib/systemd/system/colord.service
 %{_sysconfdir}/bash_completion.d/*-completion.bash
@@ -185,6 +191,11 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 # named color profiles
 %{_icccolordir}/colord/x11-colors.icc
+
+%files libs
+%doc COPYING
+%{_libdir}/libcolord.so.*
+%{_libdir}/girepository-1.0/*.typelib
 
 %files extra-profiles
 %if 0%{?build_print_profiles}
