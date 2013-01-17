@@ -375,11 +375,38 @@ out:
 }
 
 /**
- * cd_main_device_auto_add_profiles:
+ * cd_main_device_auto_add_profiles_md:
  **/
 static void
-cd_main_device_auto_add_profiles (CdMainPrivate *priv,
-				  CdDevice *device)
+cd_main_device_auto_add_profiles_md (CdMainPrivate *priv,
+				     CdDevice *device)
+{
+	CdProfile *profile_tmp;
+	GPtrArray *array;
+	guint i;
+
+	/* get all the profiles, and check to see if any of them contain
+	 * MAPPING_device_id that matches the device */
+	array = cd_profile_array_get_by_metadata (priv->profiles_array,
+						  CD_PROFILE_METADATA_MAPPING_DEVICE_ID,
+						  cd_device_get_id (device));
+	if (array == NULL)
+		goto out;
+	for (i = 0; i < array->len; i++) {
+		profile_tmp = g_ptr_array_index (array, i);
+		cd_main_device_auto_add_profile_md (device, profile_tmp);
+	}
+out:
+	if (array != NULL)
+		g_ptr_array_unref (array);
+}
+
+/**
+ * cd_main_device_auto_add_profiles_db:
+ **/
+static void
+cd_main_device_auto_add_profiles_db (CdMainPrivate *priv,
+				     CdDevice *device)
 {
 	CdProfile *profile_tmp;
 	const gchar *object_id_tmp;
@@ -493,8 +520,9 @@ cd_main_device_add (CdMainPrivate *priv,
 	/* add to array */
 	cd_device_array_add (priv->devices_array, device);
 
-	/* auto add profiles from the database */
-	cd_main_device_auto_add_profiles (priv, device);
+	/* auto add profiles from the database and metadata */
+	cd_main_device_auto_add_profiles_db (priv, device);
+	cd_main_device_auto_add_profiles_md (priv, device);
 out:
 	return ret;
 }
