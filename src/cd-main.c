@@ -684,11 +684,11 @@ cd_main_sensor_array_to_variant (GPtrArray *array)
 }
 
 /**
- * cd_main_profile_auto_add_to_device:
+ * cd_main_profile_auto_add_to_device_db:
  **/
 static void
-cd_main_profile_auto_add_to_device (CdMainPrivate *priv,
-				    CdProfile *profile)
+cd_main_profile_auto_add_to_device_db (CdMainPrivate *priv,
+				       CdProfile *profile)
 {
 	CdDevice *device_tmp;
 	const gchar *device_id_tmp;
@@ -733,6 +733,27 @@ cd_main_profile_auto_add_to_device (CdMainPrivate *priv,
 out:
 	if (array != NULL)
 		g_ptr_array_unref (array);
+}
+
+/**
+ * cd_main_profile_auto_add_to_device_md:
+ **/
+static void
+cd_main_profile_auto_add_to_device_md (CdMainPrivate *priv,
+				       CdProfile *profile)
+{
+	CdDevice *device_tmp;
+	GPtrArray *array;
+	guint i;
+
+	/* get data */
+	array = cd_device_array_get_array (priv->devices_array);
+	for (i = 0; i < array->len; i++) {
+		device_tmp = g_ptr_array_index (array, i);
+		cd_main_device_auto_add_profile_md (device_tmp,
+						    profile);
+	}
+	g_ptr_array_unref (array);
 }
 
 /**
@@ -1403,9 +1424,6 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			goto out;
 		}
 
-		/* auto add profiles from the database */
-		cd_main_profile_auto_add_to_device (priv, profile);
-
 		/* get any file descriptor in the message */
 		message = g_dbus_method_invocation_get_message (invocation);
 		fd_list = g_dbus_message_get_unix_fd_list (message);
@@ -1448,6 +1466,10 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 				goto out;
 			}
 		}
+
+		/* auto add profiles from the database and metadata */
+		cd_main_profile_auto_add_to_device_db (priv, profile);
+		cd_main_profile_auto_add_to_device_md (priv, profile);
 
 		/* register on bus */
 		ret = cd_main_profile_register_on_bus (priv, profile, &error);
