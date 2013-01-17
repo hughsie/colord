@@ -2299,8 +2299,10 @@ out:
 	if (owner_id > 0)
 		g_bus_unown_name (owner_id);
 	g_main_loop_unref (loop);
-	g_ptr_array_unref (priv->sensors);
-	g_ptr_array_unref (priv->plugins);
+	if (priv->sensors != NULL)
+		g_ptr_array_unref (priv->sensors);
+	if (priv->plugins != NULL)
+		g_ptr_array_unref (priv->plugins);
 	g_hash_table_destroy (priv->standard_spaces);
 #ifdef HAVE_GUDEV
 	if (priv->sensor_client != NULL)
