@@ -35,6 +35,8 @@
 
 /**
  * cd_color_xyz_dup:
+ *
+ * Since: 0.1.27
  **/
 CdColorXYZ *
 cd_color_xyz_dup (const CdColorXYZ *src)
@@ -50,6 +52,8 @@ cd_color_xyz_dup (const CdColorXYZ *src)
 
 /**
  * cd_color_rgb_dup:
+ *
+ * Since: 0.1.27
  **/
 CdColorRGB *
 cd_color_rgb_dup (const CdColorRGB *src)
@@ -65,6 +69,8 @@ cd_color_rgb_dup (const CdColorRGB *src)
 
 /**
  * cd_color_yxy_dup:
+ *
+ * Since: 0.1.27
  **/
 CdColorYxy *
 cd_color_yxy_dup (const CdColorYxy *src)
@@ -83,6 +89,8 @@ cd_color_yxy_dup (const CdColorYxy *src)
  * Gets a specific type.
  *
  * Return value: a #GType
+ *
+ * Since: 0.1.6
  **/
 GType
 cd_color_xyz_get_type (void)
@@ -101,6 +109,8 @@ cd_color_xyz_get_type (void)
  * Gets a specific type.
  *
  * Return value: a #GType
+ *
+ * Since: 0.1.6
  **/
 GType
 cd_color_rgb_get_type (void)
@@ -119,6 +129,8 @@ cd_color_rgb_get_type (void)
  * Gets a specific type.
  *
  * Return value: a #GType
+ *
+ * Since: 0.1.6
  **/
 GType
 cd_color_yxy_get_type (void)
@@ -139,6 +151,8 @@ cd_color_yxy_get_type (void)
  * @Z: component value
  *
  * Initialises a color value.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_xyz_set (CdColorXYZ *dest, gdouble X, gdouble Y, gdouble Z)
@@ -155,6 +169,8 @@ cd_color_xyz_set (CdColorXYZ *dest, gdouble X, gdouble Y, gdouble Z)
  * @dest: the destination color
  *
  * Initialises a color value.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_xyz_clear (CdColorXYZ *dest)
@@ -174,6 +190,8 @@ cd_color_xyz_clear (CdColorXYZ *dest)
  * @B: component value
  *
  * Initialises a color value.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_rgb_set (CdColorRGB *dest, gdouble R, gdouble G, gdouble B)
@@ -193,6 +211,8 @@ cd_color_rgb_set (CdColorRGB *dest, gdouble R, gdouble G, gdouble B)
  * @y: component value
  *
  * Initialises a color value.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_yxy_set (CdColorYxy *dest, gdouble Y, gdouble x, gdouble y)
@@ -210,6 +230,8 @@ cd_color_yxy_set (CdColorYxy *dest, gdouble Y, gdouble x, gdouble y)
  * @dest: the destination color
  *
  * Deep copies a color value.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_xyz_copy (const CdColorXYZ *src, CdColorXYZ *dest)
@@ -228,6 +250,8 @@ cd_color_xyz_copy (const CdColorXYZ *src, CdColorXYZ *dest)
  * @dest: the destination color
  *
  * Deep copies a color value.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_yxy_copy (const CdColorYxy *src, CdColorYxy *dest)
@@ -246,6 +270,8 @@ cd_color_yxy_copy (const CdColorYxy *src, CdColorYxy *dest)
  * @dest: the destination color
  *
  * Deep copies a color value.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_rgb_copy (const CdColorRGB *src, CdColorRGB *dest)
@@ -264,6 +290,8 @@ cd_color_rgb_copy (const CdColorRGB *src, CdColorRGB *dest)
  * @dest: the destination color
  *
  * Convert from one color format to another.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_rgb8_to_rgb (const CdColorRGB8 *src, CdColorRGB *dest)
@@ -295,6 +323,8 @@ cd_color_value_double_to_uint8 (gdouble value)
  * @dest: the destination color
  *
  * Convert from one color format to another.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_rgb_to_rgb8 (const CdColorRGB *src, CdColorRGB8 *dest)
@@ -314,6 +344,8 @@ cd_color_rgb_to_rgb8 (const CdColorRGB *src, CdColorRGB8 *dest)
  * @dest: the destination color
  *
  * Convert from one color format to another.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_yxy_to_xyz (const CdColorYxy *src, CdColorXYZ *dest)
@@ -347,6 +379,8 @@ cd_color_yxy_to_xyz (const CdColorYxy *src, CdColorXYZ *dest)
  * @dest: the destination color
  *
  * Convert from one color format to another.
+ *
+ * Since: 0.1.27
  **/
 void
 cd_color_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
@@ -469,6 +503,8 @@ static const CdColorRGB blackbody_data[] = {
 
 /**
  * cd_color_rgb_interpolate:
+ *
+ * Since: 0.1.26
  **/
 void
 cd_color_rgb_interpolate (const CdColorRGB *p1,
@@ -492,6 +528,8 @@ cd_color_rgb_interpolate (const CdColorRGB *p1,
  * @result: the destination color
  *
  * Get the blackbody color for a specific temperature.
+ *
+ * Since: 0.1.26
  **/
 void
 cd_color_get_blackbody_rgb (guint temp, CdColorRGB *result)
