@@ -875,12 +875,12 @@ colord_client_random_func (void)
 }
 
 /*
- * Create profile with id xrandr-default
  * Create profile with metadata MAPPING_device_id of xrandr-default
+ * Create device with id xrandr-default
  * Check device has soft mapping of profile
  */
 static void
-colord_device_id_mapping_func (void)
+colord_device_id_mapping_pd_func (void)
 {
 	CdClient *client;
 	CdDevice *device;
@@ -910,7 +910,7 @@ colord_device_id_mapping_func (void)
 			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
 			     g_strdup ("xrandr-default"));
 	profile = cd_client_create_profile_sync (client,
-						 "profile_md_test_id",
+						 "profile_md_test1_id",
 						 CD_OBJECT_SCOPE_TEMP,
 						 metadata,
 						 NULL,
@@ -950,6 +950,124 @@ colord_device_id_mapping_func (void)
 	/* ensure it's the same profile */
 	g_assert_cmpstr (cd_profile_get_id (profile), ==,
 			 cd_profile_get_id (profile_on_device));
+
+	/* delete device */
+	ret = cd_client_delete_device_sync (client,
+					    device,
+					    NULL,
+					    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (device);
+
+	/* delete profile */
+	ret = cd_client_delete_profile_sync (client,
+					     profile,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_hash_table_unref (metadata);
+	g_object_unref (profile);
+	g_object_unref (profile_on_device);
+	g_object_unref (device);
+	g_object_unref (client);
+}
+
+/*
+ * Create device with id xrandr-default
+ * Create profile with metadata MAPPING_device_id of xrandr-default
+ * Check device has soft mapping of profile
+ */
+static void
+colord_device_id_mapping_dp_func (void)
+{
+	CdClient *client;
+	CdDevice *device;
+	CdProfile *profile;
+	CdProfile *profile_on_device;
+	gboolean ret;
+	GError *error = NULL;
+	GHashTable *metadata;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
+	/* connect to daemon */
+	client = cd_client_new ();
+	g_assert (client != NULL);
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create a device */
+	device = cd_client_create_device_sync (client,
+					       "xrandr-default",
+					       CD_OBJECT_SCOPE_TEMP,
+					       NULL,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect to device */
+	ret = cd_device_connect_sync (device,
+				      NULL,
+				      &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create profile */
+	metadata = g_hash_table_new_full (g_str_hash, g_str_equal,
+					  g_free, g_free);
+	g_hash_table_insert (metadata,
+			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
+			     g_strdup ("xrandr-default"));
+	profile = cd_client_create_profile_sync (client,
+						 "profile_md_test2_id",
+						 CD_OBJECT_SCOPE_TEMP,
+						 metadata,
+						 NULL,
+						 &error);
+	g_assert_no_error (error);
+	g_assert (profile != NULL);
+
+	/* connect */
+	ret = cd_profile_connect_sync (profile, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* ensure profile is magically on device */
+	profile_on_device = cd_device_get_default_profile (device);
+	g_assert (profile_on_device != NULL);
+	ret = cd_profile_connect_sync (profile_on_device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* ensure it's the same profile */
+	g_assert_cmpstr (cd_profile_get_id (profile), ==,
+			 cd_profile_get_id (profile_on_device));
+
+	/* delete device */
+	ret = cd_client_delete_device_sync (client,
+					    device,
+					    NULL,
+					    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (device);
+
+	/* delete profile */
+	ret = cd_client_delete_profile_sync (client,
+					     profile,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 
 	g_hash_table_unref (metadata);
 	g_object_unref (profile);
@@ -1397,6 +1515,7 @@ colord_device_mapping_func (void)
 
 	/* ensure the second profile is the default profile */
 	profile_tmp = cd_device_get_default_profile (device);
+	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
 			 ==,
 			 cd_profile_get_object_path (profile2));
@@ -1482,6 +1601,7 @@ colord_device_mapping_func (void)
 
 	/* ensure the second profile is the default profile */
 	profile_tmp = cd_device_get_default_profile (device);
+	g_assert (profile_tmp != NULL);
 	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp),
 			 ==,
 			 cd_profile_get_object_path (profile2));
@@ -2548,30 +2668,31 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);
-	g_test_add_func ("/colord/it8-raw", colord_it8_raw_func);
-	g_test_add_func ("/colord/it8-normalized", colord_it8_normalized_func);
-	g_test_add_func ("/colord/it8-ccmx", colord_it8_ccmx_func);
+	g_test_add_func ("/colord/it8{raw}", colord_it8_raw_func);
+	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);
+	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/client", colord_client_func);
-	g_test_add_func ("/colord/device-embedded", colord_device_embedded_func);
-	g_test_add_func ("/colord/device-duplicate", colord_device_duplicate_func);
-	g_test_add_func ("/colord/device-seat", colord_device_seat_func);
-	g_test_add_func ("/colord/device-enabled", colord_device_enabled_func);
-	g_test_add_func ("/colord/profile-metadata", colord_icc_meta_dict_func);
-	g_test_add_func ("/colord/profile{device-id-mapping}", colord_device_id_mapping_func);
-	g_test_add_func ("/colord/profile-ordering", colord_profile_ordering_func);
-	g_test_add_func ("/colord/profile-duplicate", colord_profile_duplicate_func);
-	g_test_add_func ("/colord/device-mapping", colord_device_mapping_func);
-	g_test_add_func ("/colord/client-random", colord_client_random_func);
+	g_test_add_func ("/colord/device{embedded}", colord_device_embedded_func);
+	g_test_add_func ("/colord/device{duplicate}", colord_device_duplicate_func);
+	g_test_add_func ("/colord/device{seat}", colord_device_seat_func);
+	g_test_add_func ("/colord/device{enabled}", colord_device_enabled_func);
+	g_test_add_func ("/colord/profile{metadata}", colord_icc_meta_dict_func);
+	g_test_add_func ("/colord/profile{device-id-mapping, p->d}", colord_device_id_mapping_pd_func);
+	g_test_add_func ("/colord/profile{device-id-mapping, d->p}", colord_device_id_mapping_dp_func);
+	g_test_add_func ("/colord/profile{ordering}", colord_profile_ordering_func);
+	g_test_add_func ("/colord/profile{duplicate}", colord_profile_duplicate_func);
+	g_test_add_func ("/colord/device{mapping}", colord_device_mapping_func);
+	g_test_add_func ("/colord/client{random}", colord_client_random_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
-	g_test_add_func ("/colord/device-modified", colord_device_modified_func);
-	g_test_add_func ("/colord/client-standard-space", colord_client_standard_space_func);
-	g_test_add_func ("/colord/client-async", colord_client_async_func);
-	g_test_add_func ("/colord/device-async", colord_device_async_func);
+	g_test_add_func ("/colord/device{modified}", colord_device_modified_func);
+	g_test_add_func ("/colord/client{standard-space}", colord_client_standard_space_func);
+	g_test_add_func ("/colord/client{async}", colord_client_async_func);
+	g_test_add_func ("/colord/device{async}", colord_device_async_func);
 	if (g_test_thorough ())
-		g_test_add_func ("/colord/client-systemwide", colord_client_systemwide_func);
-	g_test_add_func ("/colord/client-fd-pass", colord_client_fd_pass_func);
-	g_test_add_func ("/colord/client-import", colord_client_import_func);
+		g_test_add_func ("/colord/client{systemwide}", colord_client_systemwide_func);
+	g_test_add_func ("/colord/client{fd-pass}", colord_client_fd_pass_func);
+	g_test_add_func ("/colord/client{import}", colord_client_import_func);
 	return g_test_run ();
 }
 

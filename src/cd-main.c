@@ -265,24 +265,15 @@ out:
 }
 
 /**
- * cd_main_device_auto_add_profile_md:
+ * cd_main_auto_add_from_md:
  **/
 static gboolean
-cd_main_device_auto_add_profile_md (CdDevice *device, CdProfile *profile)
+cd_main_auto_add_from_md (CdMainPrivate *priv,
+			  CdDevice *device,
+			  CdProfile *profile)
 {
-	const gchar *device_id;
 	gboolean ret = FALSE;
 	GError *error = NULL;
-
-	/* does the profile have device metadata */
-	device_id = cd_profile_get_metadata_item (profile,
-						  CD_PROFILE_METADATA_MAPPING_DEVICE_ID);
-	if (device_id == NULL)
-		goto out;
-
-	/* does this device match? */
-	if (g_strcmp0 (cd_device_get_id (device), device_id) != 0)
-		goto out;
 
 	/* auto-add soft relationship */
 	g_debug ("CdMain: Automatically MD add %s to %s",
@@ -307,12 +298,12 @@ out:
 }
 
 /**
- * cd_main_device_auto_add_profile_db:
+ * cd_main_auto_add_from_db:
  **/
 static gboolean
-cd_main_device_auto_add_profile_db (CdMainPrivate *priv,
-				    CdDevice *device,
-				    CdProfile *profile)
+cd_main_auto_add_from_db (CdMainPrivate *priv,
+			  CdDevice *device,
+			  CdProfile *profile)
 {
 	gboolean ret = FALSE;
 	GError *error = NULL;
@@ -350,36 +341,11 @@ out:
 }
 
 /**
- * cd_main_device_auto_add_profile:
- **/
-static gboolean
-cd_main_device_auto_add_profile (CdMainPrivate *priv,
-				 CdDevice *device,
-				 CdProfile *profile)
-{
-	gboolean ret;
-
-	/* try adding devices from the mapping db -- we do this first
-	 * as the database entries might be hard */
-	ret = cd_main_device_auto_add_profile_db (priv, device, profile);
-	if (ret)
-		goto out;
-
-	/* first try finding profile metadata to the device,
-	 * which will be added soft */
-	ret = cd_main_device_auto_add_profile_md (device, profile);
-	if (ret)
-		goto out;
-out:
-	return ret;
-}
-
-/**
- * cd_main_device_auto_add_profiles_md:
+ * cd_main_device_auto_add_from_md:
  **/
 static void
-cd_main_device_auto_add_profiles_md (CdMainPrivate *priv,
-				     CdDevice *device)
+cd_main_device_auto_add_from_md (CdMainPrivate *priv,
+				 CdDevice *device)
 {
 	CdProfile *profile_tmp;
 	GPtrArray *array;
@@ -394,7 +360,7 @@ cd_main_device_auto_add_profiles_md (CdMainPrivate *priv,
 		goto out;
 	for (i = 0; i < array->len; i++) {
 		profile_tmp = g_ptr_array_index (array, i);
-		cd_main_device_auto_add_profile_md (device, profile_tmp);
+		cd_main_auto_add_from_md (priv, device, profile_tmp);
 	}
 out:
 	if (array != NULL)
@@ -402,11 +368,10 @@ out:
 }
 
 /**
- * cd_main_device_auto_add_profiles_db:
+ * cd_main_device_auto_add_from_db:
  **/
 static void
-cd_main_device_auto_add_profiles_db (CdMainPrivate *priv,
-				     CdDevice *device)
+cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 {
 	CdProfile *profile_tmp;
 	const gchar *object_id_tmp;
@@ -431,15 +396,15 @@ cd_main_device_auto_add_profiles_db (CdMainPrivate *priv,
 		profile_tmp = cd_profile_array_get_by_id_owner (priv->profiles_array,
 								object_id_tmp,
 								cd_device_get_owner (device));
-		if (profile_tmp != NULL) {
-			cd_main_device_auto_add_profile (priv,
-							 device,
-							 profile_tmp);
-			g_object_unref (profile_tmp);
-		} else {
-			g_debug ("CdMain: profile %s is not (yet) available",
-				 object_id_tmp);
+		if (profile_tmp == NULL) {
+			g_debug ("CdMain: profile %s with owner %i is not (yet) available",
+				 object_id_tmp, cd_device_get_owner (device));
+			continue;
 		}
+
+		/* does the profile have the correct device metadata */
+		cd_main_auto_add_from_db (priv, device, profile_tmp);
+		g_object_unref (profile_tmp);
 	}
 out:
 	if (array != NULL)
@@ -521,8 +486,8 @@ cd_main_device_add (CdMainPrivate *priv,
 	cd_device_array_add (priv->devices_array, device);
 
 	/* auto add profiles from the database and metadata */
-	cd_main_device_auto_add_profiles_db (priv, device);
-	cd_main_device_auto_add_profiles_md (priv, device);
+	cd_main_device_auto_add_from_db (priv, device);
+	cd_main_device_auto_add_from_md (priv, device);
 out:
 	return ret;
 }
@@ -684,11 +649,11 @@ cd_main_sensor_array_to_variant (GPtrArray *array)
 }
 
 /**
- * cd_main_profile_auto_add_to_device_db:
+ * cd_main_profile_auto_add_from_db:
  **/
 static void
-cd_main_profile_auto_add_to_device_db (CdMainPrivate *priv,
-				       CdProfile *profile)
+cd_main_profile_auto_add_from_db (CdMainPrivate *priv,
+				  CdProfile *profile)
 {
 	CdDevice *device_tmp;
 	const gchar *device_id_tmp;
@@ -720,15 +685,12 @@ cd_main_profile_auto_add_to_device_db (CdMainPrivate *priv,
 		device_tmp = cd_device_array_get_by_id_owner (priv->devices_array,
 							      device_id_tmp,
 							      cd_profile_get_owner (profile));
-		if (device_tmp != NULL) {
-			cd_main_device_auto_add_profile (priv,
-							 device_tmp,
-							 profile);
-			g_object_unref (device_tmp);
-		} else {
-			g_debug ("CdMain: device %s is not (yet) available",
-				 device_id_tmp);
-		}
+		if (device_tmp == NULL)
+			continue;
+
+		/* hard add */
+		cd_main_auto_add_from_db (priv, device_tmp, profile);
+		g_object_unref (device_tmp);
 	}
 out:
 	if (array != NULL)
@@ -736,24 +698,29 @@ out:
 }
 
 /**
- * cd_main_profile_auto_add_to_device_md:
+ * cd_main_profile_auto_add_from_md:
  **/
 static void
-cd_main_profile_auto_add_to_device_md (CdMainPrivate *priv,
-				       CdProfile *profile)
+cd_main_profile_auto_add_from_md (CdMainPrivate *priv,
+				  CdProfile *profile)
 {
-	CdDevice *device_tmp;
-	GPtrArray *array;
-	guint i;
+	CdDevice *device = NULL;
+	const gchar *device_id;
 
-	/* get data */
-	array = cd_device_array_get_array (priv->devices_array);
-	for (i = 0; i < array->len; i++) {
-		device_tmp = g_ptr_array_index (array, i);
-		cd_main_device_auto_add_profile_md (device_tmp,
-						    profile);
-	}
-	g_ptr_array_unref (array);
+	/* does the device exists that matches the md */
+	device_id = cd_profile_get_metadata_item (profile,
+						  CD_PROFILE_METADATA_MAPPING_DEVICE_ID);
+	if (device_id == NULL)
+		goto out;
+	device = cd_device_array_get_by_id_owner (priv->devices_array,
+						  device_id,
+						  cd_profile_get_owner (profile));
+	if (device == NULL)
+		goto out;
+	cd_main_auto_add_from_md (priv, device, profile);
+out:
+	if (device != NULL)
+		g_object_unref (device);
 }
 
 /**
@@ -1468,8 +1435,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* auto add profiles from the database and metadata */
-		cd_main_profile_auto_add_to_device_db (priv, profile);
-		cd_main_profile_auto_add_to_device_md (priv, profile);
+		cd_main_profile_auto_add_from_db (priv, profile);
+		cd_main_profile_auto_add_from_md (priv, profile);
 
 		/* register on bus */
 		ret = cd_main_profile_register_on_bus (priv, profile, &error);
