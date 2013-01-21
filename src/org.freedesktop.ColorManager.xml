@@ -23,37 +23,6 @@
     </property>
 
     <!--***********************************************************-->
-<!--
-    <method name='GetProfilesForFile'>
-      <doc:doc>
-        <doc:description>
-          <doc:para>
-            Gets the profiles for a file.
-          </doc:para>
-        </doc:description>
-      </doc:doc>
-      <arg type='s' name='filename' direction='in'>
-        <doc:doc>
-          <doc:summary>
-            <doc:para>
-              Fully qualified filename, e.g. <doc:tt>/home/hughsie/Photos/Hughsie.jpg</doc:tt>.
-            </doc:para>
-          </doc:summary>
-        </doc:doc>
-      </arg>
-      <arg type='ao' name='profiles' direction='out'>
-        <doc:doc>
-          <doc:summary>
-            <doc:para>
-              An array of profile paths to use with this type of device.
-            </doc:para>
-          </doc:summary>
-        </doc:doc>
-      </arg>
-    </method>
--->
-
-    <!--***********************************************************-->
     <method name='GetDevices'>
       <doc:doc>
         <doc:description>
