@@ -401,6 +401,8 @@ cd_mapping_db_sqlite_timestamp_cb (void *data,
  * cd_mapping_db_get_timestamp:
  *
  * Gets when the profile was added to the device.
+ *
+ * Return value: %G_MAXUINT64 for error or not found
  **/
 guint64
 cd_mapping_db_get_timestamp (CdMappingDb *mdb,
@@ -413,8 +415,8 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 	gint rc;
 	guint64 timestamp = G_MAXUINT64;
 
-	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), G_MAXUINT64);
+	g_return_val_if_fail (mdb->priv->db != NULL, G_MAXUINT64);
 
 	g_debug ("CdMappingDb: get checksum for %s<->%s",
 		 device_id, profile_id);
@@ -435,6 +437,16 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
+		goto out;
+	}
+
+	/* nothing found */
+	if (timestamp == G_MAXUINT64) {
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
+			     "device and profile %s<>%s not found",
+			     device_id, profile_id);
 		goto out;
 	}
 out:
