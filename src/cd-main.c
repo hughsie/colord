@@ -63,6 +63,7 @@ typedef struct {
 	GPtrArray		*sensors;
 	GHashTable		*standard_spaces;
 	GPtrArray		*plugins;
+	GMainLoop		*loop;
 } CdMainPrivate;
 
 /**
@@ -1925,9 +1926,9 @@ cd_main_on_name_lost_cb (GDBusConnection *connection,
 			 const gchar *name,
 			 gpointer user_data)
 {
-	GMainLoop *loop = (GMainLoop *) user_data;
+	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	g_debug ("CdMain: lost name: %s", name);
-	g_main_loop_quit (loop);
+	g_main_loop_quit (priv->loop);
 }
 
 #ifdef HAVE_GUDEV
@@ -2163,7 +2164,6 @@ main (int argc, char *argv[])
 	gboolean ret;
 	gboolean timed_exit = FALSE;
 	GError *error = NULL;
-	GMainLoop *loop;
 	GOptionContext *context;
 	guint owner_id = 0;
 	guint retval = 1;
@@ -2200,7 +2200,7 @@ main (int argc, char *argv[])
 	priv->config = cd_config_new ();
 
 	/* create new objects */
-	loop = g_main_loop_new (NULL, FALSE);
+	priv->loop = g_main_loop_new (NULL, FALSE);
 	priv->devices_array = cd_device_array_new ();
 	priv->profiles_array = cd_profile_array_new ();
 	priv->sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
@@ -2293,9 +2293,9 @@ main (int argc, char *argv[])
 	/* Only timeout and close the mainloop if we have specified it
 	 * on the command line */
 	if (immediate_exit)
-		g_idle_add (cd_main_timed_exit_cb, loop);
+		g_idle_add (cd_main_timed_exit_cb, priv->loop);
 	else if (timed_exit)
-		g_timeout_add_seconds (5, cd_main_timed_exit_cb, loop);
+		g_timeout_add_seconds (5, cd_main_timed_exit_cb, priv->loop);
 
 	/* load plugins */
 	priv->plugins = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_main_plugin_free);
@@ -2304,7 +2304,7 @@ main (int argc, char *argv[])
 
 	/* wait */
 	syslog (LOG_INFO, "Daemon ready for requests");
-	g_main_loop_run (loop);
+	g_main_loop_run (priv->loop);
 
 	/* run the plugins */
 	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_DESTROY);
@@ -2315,7 +2315,8 @@ main (int argc, char *argv[])
 out:
 	if (owner_id > 0)
 		g_bus_unown_name (owner_id);
-	g_main_loop_unref (loop);
+	if (priv->loop != NULL)
+		g_main_loop_unref (priv->loop);
 	if (priv->sensors != NULL)
 		g_ptr_array_unref (priv->sensors);
 	if (priv->plugins != NULL)
