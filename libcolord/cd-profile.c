@@ -536,6 +536,9 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_TITLE) == 0) {
 			g_free (profile->priv->title);
 			profile->priv->title = g_variant_dup_string (property_value, NULL);
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_WARNINGS) == 0) {
+			g_strfreev(profile->priv->warnings);
+			profile->priv->warnings = g_variant_dup_strv (property_value, NULL);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_KIND) == 0) {
 			profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_COLORSPACE) == 0) {
@@ -546,6 +549,8 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 			profile->priv->created = g_variant_get_int64 (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_HAS_VCGT) == 0) {
 			profile->priv->has_vcgt = g_variant_get_boolean (property_value);
+		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_OWNER) == 0) {
+			profile->priv->owner = g_variant_get_uint32 (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_IS_SYSTEM_WIDE) == 0) {
 			profile->priv->is_system_wide = g_variant_get_boolean (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_METADATA) == 0) {
