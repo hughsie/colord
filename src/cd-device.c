@@ -709,6 +709,7 @@ cd_device_add_profile (CdDevice *device,
 	CdDevicePrivate *priv = device->priv;
 	CdDeviceProfileItem *item;
 	CdProfile *profile = NULL;
+	gboolean create_item = TRUE;
 	gboolean ret = TRUE;
 	guint i;
 
@@ -740,6 +741,19 @@ cd_device_add_profile (CdDevice *device,
 		item = g_ptr_array_index (priv->profiles, i);
 		if (g_strcmp0 (cd_profile_get_object_path (profile),
 			       cd_profile_get_object_path (item->profile)) == 0) {
+
+			/* if we soft added this profile, and now the
+			 * user hard adds it as well then we need to
+			 * change the kind and not re-add it */
+			if (relation == CD_DEVICE_RELATION_HARD &&
+			    item->relation == CD_DEVICE_RELATION_SOFT) {
+				g_debug ("CdDevice: converting %s hard->soft",
+					 cd_profile_get_id (profile));
+				item->relation = CD_DEVICE_RELATION_HARD;
+				create_item = FALSE;
+				break;
+			}
+
 			ret = FALSE;
 			g_set_error (error,
 				     CD_DEVICE_ERROR,
@@ -751,17 +765,19 @@ cd_device_add_profile (CdDevice *device,
 	}
 
 	/* add to the array */
-	g_debug ("Adding %s [%s] to %s",
-		 cd_profile_get_id (profile),
-		 _cd_device_relation_to_string (relation),
-		 device->priv->id);
-	item = g_new0 (CdDeviceProfileItem, 1);
-	item->profile = g_object_ref (profile);
-	item->relation = relation;
-	item->timestamp = timestamp;
-	g_ptr_array_add (priv->profiles, item);
-	g_ptr_array_sort (priv->profiles,
-			  cd_device_profile_item_sort_cb);
+	if (create_item) {
+		g_debug ("Adding %s [%s] to %s",
+			 cd_profile_get_id (profile),
+			 _cd_device_relation_to_string (relation),
+			 device->priv->id);
+		item = g_new0 (CdDeviceProfileItem, 1);
+		item->profile = g_object_ref (profile);
+		item->relation = relation;
+		item->timestamp = timestamp;
+		g_ptr_array_add (priv->profiles, item);
+		g_ptr_array_sort (priv->profiles,
+				  cd_device_profile_item_sort_cb);
+	}
 
 	/* reset modification time */
 	cd_device_reset_modified (device);

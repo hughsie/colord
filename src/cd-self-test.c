@@ -90,13 +90,22 @@ colord_device_func (void)
 
 	/* add profile again */
 	ret = cd_device_add_profile (device,
-				     CD_DEVICE_RELATION_HARD,
+				     CD_DEVICE_RELATION_SOFT,
 				     cd_profile_get_object_path (profile),
 				     0,
 				     &error);
 	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED);
 	g_assert (!ret);
 	g_clear_error (&error);
+
+	/* add profile again */
+	ret = cd_device_add_profile (device,
+				     CD_DEVICE_RELATION_HARD,
+				     cd_profile_get_object_path (profile),
+				     0,
+				     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 
 	/* add profile that does not exist */
 	ret = cd_device_add_profile (device,
