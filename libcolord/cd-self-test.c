@@ -887,6 +887,7 @@ colord_device_id_mapping_pd_func (void)
 	CdProfile *profile;
 	CdProfile *profile_on_device;
 	gboolean ret;
+	gchar *device_id;
 	GError *error = NULL;
 	GHashTable *metadata;
 
@@ -903,12 +904,15 @@ colord_device_id_mapping_pd_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	/* get random device-id as we're using the mapping DB */
+	device_id = colord_get_random_device_id ();
+
 	/* create profile */
 	metadata = g_hash_table_new_full (g_str_hash, g_str_equal,
 					  g_free, g_free);
 	g_hash_table_insert (metadata,
 			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
-			     g_strdup ("xrandr-default"));
+			     g_strdup (device_id));
 	profile = cd_client_create_profile_sync (client,
 						 "profile_md_test1_id",
 						 CD_OBJECT_SCOPE_TEMP,
@@ -925,7 +929,7 @@ colord_device_id_mapping_pd_func (void)
 
 	/* create a device */
 	device = cd_client_create_device_sync (client,
-					       "xrandr-default",
+					       device_id,
 					       CD_OBJECT_SCOPE_TEMP,
 					       NULL,
 					       NULL,
@@ -973,6 +977,7 @@ colord_device_id_mapping_pd_func (void)
 	g_object_unref (profile_on_device);
 	g_object_unref (device);
 	g_object_unref (client);
+	g_free (device_id);
 }
 
 /*
