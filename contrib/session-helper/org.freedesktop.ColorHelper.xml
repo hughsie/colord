@@ -80,7 +80,7 @@
               <doc:tt>Quality</doc:tt> : (u) The calibration quality, where 0 is low, 1 is medium and
               2 is high.
               <doc:tt>Whitepoint</doc:tt> : (u) The target whitepoint in Kelvin, or 0 or native.
-              <doc:tt>Title</doc:tt>doc:tt> : (s) The profile title, e.g. <doc:tt>Lenovo T61</doc:tt>.
+              <doc:tt>Title</doc:tt> : (s) The profile title, e.g. <doc:tt>Lenovo T61</doc:tt>.
               <doc:tt>DeviceKind</doc:tt> : (u) The CdSensorCap for the display.
               <doc:tt>Brightness</doc:tt> : (u) The display brightness.
             </doc:para>
