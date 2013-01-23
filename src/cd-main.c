@@ -273,16 +273,34 @@ cd_main_auto_add_from_md (CdMainPrivate *priv,
 			  CdDevice *device,
 			  CdProfile *profile)
 {
+	const gchar *device_id;
+	const gchar *profile_id;
 	gboolean ret = FALSE;
 	GError *error = NULL;
+	guint64 timestamp;
+
+	/* check device and profile hasn't been manually removed */
+	profile_id = cd_profile_get_id (profile);
+	device_id = cd_device_get_id (device);
+	timestamp = cd_mapping_db_get_timestamp (priv->mapping_db,
+						 device_id,
+						 profile_id,
+						 &error);
+	if (timestamp == G_MAXUINT64) {
+		g_debug ("CdMain: no existing mapping found: %s",
+			 error->message);
+		g_clear_error (&error);
+	} else if (timestamp == 0) {
+		g_debug ("CdMain: Not doing MD add %s to %s due to removal",
+			 profile_id, device_id);
+		goto out;
+	}
 
 	/* auto-add soft relationship */
 	g_debug ("CdMain: Automatically MD add %s to %s",
-		 cd_profile_get_id (profile),
-		 cd_device_get_object_path (device));
+		 profile_id, device_id);
 	syslog (LOG_INFO, "Automatic metadata add %s to %s",
-		cd_profile_get_id (profile),
-		cd_device_get_id (device));
+		profile_id, device_id);
 	ret = cd_device_add_profile (device,
 				     CD_DEVICE_RELATION_SOFT,
 				     cd_profile_get_object_path (profile),

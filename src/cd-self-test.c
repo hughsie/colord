@@ -201,7 +201,7 @@ cd_mapping_db_func (void)
 	g_assert (ret);
 
 	/* remove one */
-	ret = cd_mapping_db_remove (mdb, "device1", "profile2", &error);
+	ret = cd_mapping_db_clear_timestamp (mdb, "device1", "profile2", &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 

@@ -347,6 +347,14 @@
             happen to both exist in the future, the profiles are
             no longer auto-added to the device.
           </doc:para>
+          <doc:para>
+            If the profile was automatically added due to metadata in
+            the profile (e.g. the profile was created for the device)
+            then manually removing the profile will cause this metadata
+            add to be supressed.
+            This allows the user to remove old or obsolete profiles
+            from any color control panel without having to delete them.
+          </doc:para>
         </doc:description>
       </doc:doc>
       <arg type='o' name='object_path' direction='in'>

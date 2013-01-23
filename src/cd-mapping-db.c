@@ -184,6 +184,52 @@ out:
 	sqlite3_free (statement);
 	return ret;
 }
+
+/**
+ * cd_mapping_db_clear_timestamp:
+ *
+ * Setting a timestamp to zero means that the soft-auto-add should not
+ * be done as the user has explicitly removed it.
+ *
+ * If the mapping does not exist then it will be automatically added.
+ **/
+gboolean
+cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
+			       const gchar *device_id,
+			       const gchar *profile_id,
+			       GError  **error)
+{
+	gboolean ret = TRUE;
+	gchar *error_msg = NULL;
+	gchar *statement;
+	gint rc;
+
+	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
+	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+
+	g_debug ("CdMappingDb: clearing timestamp %s<=>%s",
+		 device_id, profile_id);
+	statement = sqlite3_mprintf ("INSERT OR REPLACE INTO mappings (device, profile, timestamp) "
+				     "VALUES ('%q', '%q', 0);",
+				     device_id, profile_id);
+
+	/* update the entry */
+	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
+	if (rc != SQLITE_OK) {
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
+			     "SQL error: %s",
+			     error_msg);
+		sqlite3_free (error_msg);
+		ret = FALSE;
+		goto out;
+	}
+out:
+	sqlite3_free (statement);
+	return ret;
+}
+
 /**
  * cd_mapping_db_update_timestamp:
  **/
@@ -228,6 +274,9 @@ out:
 
 /**
  * cd_mapping_db_remove:
+ *
+ * You probably don't want to use this function. See the related
+ * cd_mapping_db_clear_timestamp() for more details.
  **/
 gboolean  
 cd_mapping_db_remove (CdMappingDb *mdb,
@@ -304,7 +353,8 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 
 	g_debug ("CdMappingDb: get profiles for %s", device_id);
 	statement = sqlite3_mprintf ("SELECT profile FROM mappings WHERE "
-				     "device = '%q' ORDER BY timestamp ASC;", device_id);
+				     "device = '%q' AND timestamp > 0 "
+				     "ORDER BY timestamp ASC;", device_id);
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
@@ -353,7 +403,8 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 
 	g_debug ("CdMappingDb: get devices for %s", profile_id);
 	statement = sqlite3_mprintf ("SELECT device FROM mappings WHERE "
-				     "profile = '%q' ORDER BY timestamp ASC;", profile_id);
+				     "profile = '%q' AND timestamp > 0 "
+				     "ORDER BY timestamp ASC;", profile_id);
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);

@@ -1277,11 +1277,12 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		id = cd_profile_get_id (profile);
 		g_object_unref (profile);
 
-		/* save this to the permanent database */
-		ret = cd_mapping_db_remove (priv->mapping_db,
-					    priv->id,
-					    id,
-					    &error);
+		/* leave the entry in the database to it never gets
+		 * soft added, even if there if metadata */
+		ret = cd_mapping_db_clear_timestamp (priv->mapping_db,
+						     priv->id,
+						     id,
+						     &error);
 		if (!ret) {
 			g_warning ("CdDevice: failed to save mapping to database: %s",
 				   error->message);

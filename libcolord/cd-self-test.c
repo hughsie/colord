@@ -954,6 +954,16 @@ colord_device_id_mapping_pd_func (void)
 	/* ensure it's the same profile */
 	g_assert_cmpstr (cd_profile_get_id (profile), ==,
 			 cd_profile_get_id (profile_on_device));
+	g_object_unref (profile_on_device);
+
+	/* remove profile which should create cleared timestamp to
+	 * prevent future auto-add from metadata */
+	ret = cd_device_remove_profile_sync (device,
+					     profile,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 
 	/* delete device */
 	ret = cd_client_delete_device_sync (client,
@@ -964,6 +974,28 @@ colord_device_id_mapping_pd_func (void)
 	g_assert (ret);
 	g_object_unref (device);
 
+	/* create the device again and check it's not auto-added */
+	device = cd_client_create_device_sync (client,
+					       device_id,
+					       CD_OBJECT_SCOPE_TEMP,
+					       NULL,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect to device */
+	ret = cd_device_connect_sync (device,
+				      NULL,
+				      &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* ensure profile is ***NOT*** added to device even though
+	 * there is metadata*/
+	profile_on_device = cd_device_get_default_profile (device);
+	g_assert (profile_on_device == NULL);
+
 	/* delete profile */
 	ret = cd_client_delete_profile_sync (client,
 					     profile,
@@ -972,9 +1004,17 @@ colord_device_id_mapping_pd_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	/* delete device */
+	ret = cd_client_delete_device_sync (client,
+					    device,
+					    NULL,
+					    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (device);
+
 	g_hash_table_unref (metadata);
 	g_object_unref (profile);
-	g_object_unref (profile_on_device);
 	g_object_unref (device);
 	g_object_unref (client);
 	g_free (device_id);
