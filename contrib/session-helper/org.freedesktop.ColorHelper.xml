@@ -130,11 +130,16 @@
           </doc:summary>
         </doc:doc>
       </arg>
-      <arg type='s' name='error_details' direction='out'>
+      <arg type='a{sv}' name='details' direction='out'>
         <doc:doc>
           <doc:summary>
             <doc:para>
-              Any additional (untranslated) error output for debugging.
+              Extra data from the calibration that may be useful to
+              client software.
+              Known keys are:
+              <doc:tt>ProfileId</doc:tt> : (s) The ID of the profile.
+              <doc:tt>ProfilePath</doc:tt> : (s) The object path of the profile.
+              <doc:tt>ErrorDetails</doc:tt>: (s) Any untranslated error detail string.
             </doc:para>
           </doc:summary>
         </doc:doc>

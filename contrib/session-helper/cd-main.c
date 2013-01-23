@@ -52,6 +52,7 @@ typedef struct {
 	CdSessionInteraction	 interaction_code_last;
 	CdSensor		*sensor;
 	CdDevice		*device;
+	CdProfile		*profile;
 	CdSensorCap		 device_kind;
 	GPtrArray		*array;
 	cmsCIEXYZ		 whitepoint;
@@ -282,17 +283,38 @@ cd_main_emit_finished (CdMainPrivate *priv,
 		       CdSessionError exit_code,
 		       const gchar *message)
 {
+	GVariantBuilder builder;
+
 	/* emit signal */
 	g_debug ("CdMain: Emitting Finished(%u,%s)",
 		 exit_code, message);
+
+	/* build the dict */
+	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
+	if (exit_code == CD_SESSION_ERROR_NONE) {
+		g_variant_builder_add (&builder,
+				       "{sv}",
+				       "ProfileId",
+				       g_variant_new_string (cd_profile_get_id (priv->profile)));
+		g_variant_builder_add (&builder,
+				       "{sv}",
+				       "ProfilePath",
+				       g_variant_new_string (cd_profile_get_object_path (priv->profile)));
+	} else {
+		g_variant_builder_add (&builder,
+				       "{sv}",
+				       "ErrorDetails",
+				       g_variant_new_string (message));
+	}
+
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       CD_SESSION_DBUS_PATH,
 				       CD_SESSION_DBUS_INTERFACE_DISPLAY,
 				       "Finished",
-				       g_variant_new ("(us)",
+				       g_variant_new ("(ua{sv})",
 						      exit_code,
-						      message != NULL ? message : ""),
+						      &builder),
 				       NULL);
 }
 
@@ -936,7 +958,6 @@ out:
 static gboolean
 cd_main_import_profile (CdMainPrivate *priv, GError **error)
 {
-	CdProfile *profile;
 	gboolean ret = TRUE;
 	gchar *filename;
 	gchar *path;
@@ -948,44 +969,42 @@ cd_main_import_profile (CdMainPrivate *priv, GError **error)
 				 NULL);
 	g_debug ("trying to import %s", path);
 	file = g_file_new_for_path (path);
-	profile = cd_client_import_profile_sync (priv->client,
-						 file,
-						 priv->cancellable,
-						 error);
-	if (profile == NULL) {
+	priv->profile = cd_client_import_profile_sync (priv->client,
+						       file,
+						       priv->cancellable,
+						       error);
+	if (priv->profile == NULL) {
 		ret = FALSE;
 		goto out;
 	}
-	g_debug ("imported %s", cd_profile_get_object_path (profile));
+	g_debug ("imported %s", cd_profile_get_object_path (priv->profile));
 
 	/* add profile to device and set default */
-	ret = cd_profile_connect_sync (profile,
+	ret = cd_profile_connect_sync (priv->profile,
 				       priv->cancellable,
 				       error);
 	if (!ret)
 		goto out;
 	ret = cd_device_add_profile_sync (priv->device,
 					  CD_DEVICE_RELATION_HARD,
-					  profile,
+					  priv->profile,
 					  priv->cancellable,
 					  error);
 	if (!ret)
 		goto out;
 	ret = cd_device_make_profile_default_sync (priv->device,
-						   profile,
+						   priv->profile,
 						   priv->cancellable,
 						   error);
 	if (!ret)
 		goto out;
 	g_debug ("set %s default on %s",
-		 cd_profile_get_id (profile),
+		 cd_profile_get_id (priv->profile),
 		 cd_device_get_id (priv->device));
 out:
 	g_free (filename);
 	g_free (path);
 	g_object_unref (file);
-	if (profile != NULL)
-		g_object_unref (profile);
 	return ret;
 }
 
@@ -2149,6 +2168,8 @@ out:
 		g_object_unref (priv->sensor);
 	if (priv->device != NULL)
 		g_object_unref (priv->device);
+	if (priv->profile != NULL)
+		g_object_unref (priv->profile);
 	if (priv->cancellable != NULL)
 		g_object_unref (priv->cancellable);
 	if (priv->it8_cal != NULL)

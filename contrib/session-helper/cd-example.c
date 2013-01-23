@@ -250,20 +250,26 @@ cd_example_signal_cb (GDBusProxy *proxy,
 	CdMainInteractionCode code;
 	const gchar *image;
 	const gchar *message;
-	const gchar *str;
+	const gchar *profile_id = NULL;
+	const gchar *profile_path = NULL;
+	const gchar *str = NULL;
 	gboolean ret;
 	GError *error = NULL;
 	GPtrArray *array = NULL;
 	GtkImage *img;
 	GtkLabel *label;
 	GVariantIter *iter;
+	GVariant *dict = NULL;
 
 	if (g_strcmp0 (signal_name, "Finished") == 0) {
-		g_variant_get (parameters, "(u&s)",
-			       &code,
-			       &str);
+
+		g_variant_get (parameters, "(u@a{sv})", &code, &dict);
+		g_variant_lookup (dict, "ErrorDetails", "&s", &str);
+		g_variant_lookup (dict, "ProfileId", "&s", &profile_id);
+		g_variant_lookup (dict, "ProfilePath", "&s", &profile_path);
 		if (code == 0) {
-			g_debug ("calibration succeeded");
+			g_debug ("calibration succeeded with profile %s created at %s",
+				 profile_id, profile_path);
 		} else {
 			g_warning ("calibration failed with code %i: %s",
 				   code, str);
@@ -328,7 +334,8 @@ cd_example_signal_cb (GDBusProxy *proxy,
 	}
 	g_warning ("got unknown signal %s", signal_name);
 out:
-	return;
+	if (dict != NULL)
+		g_variant_unref (dict);
 }
 
 /**
