@@ -679,7 +679,7 @@ _cd_device_relation_to_string (CdDeviceRelation device_relation)
 }
 
 /**
- * cd_device_add_profile:
+ * cd_device_profile_item_sort_cb:
  **/
 static gint
 cd_device_profile_item_sort_cb (gconstpointer a, gconstpointer b)
