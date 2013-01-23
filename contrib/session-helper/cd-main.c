@@ -196,7 +196,6 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 {
 	const gchar *image = NULL;
 	const gchar *message = NULL;
-	gchar *path;
 
 	/* save so we know what was asked for */
 	priv->interaction_code_last = code;
@@ -225,17 +224,8 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 		message = "";
 		break;
 	}
-	if (image != NULL) {
-		path = g_build_filename (DATADIR,
-					 "colord",
-					 "icons",
-					 image,
-					 NULL);
-	} else {
-		path = g_strdup ("");
-	}
 	g_debug ("CdMain: Emitting InteractionRequired(%i,%s,%s)",
-		 code, message, path);
+		 code, message, image);
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       CD_SESSION_DBUS_PATH,
@@ -244,9 +234,8 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 				       g_variant_new ("(uss)",
 						      code,
 						      message,
-						      path),
+						      image != NULL ? image : ""),
 				       NULL);
-	g_free (path);
 }
 
 /**
