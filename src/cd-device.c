@@ -62,7 +62,7 @@ struct _CdDevicePrivate
 	gchar				*colorspace;
 	gchar				*format;
 	gchar				*mode;
-	gchar				*kind;
+	CdDeviceKind			 kind;
 	gchar				*object_path;
 	GDBusConnection			*connection;
 	GPtrArray			*profiles; /* of CdDeviceProfileItem */
@@ -269,11 +269,22 @@ cd_device_get_model (CdDevice *device)
 /**
  * cd_device_get_kind:
  **/
-const gchar *
+CdDeviceKind
 cd_device_get_kind (CdDevice *device)
 {
-	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_KIND_UNKNOWN);
 	return device->priv->kind;
+}
+
+/**
+ * cd_device_set_kind:
+ **/
+void
+cd_device_set_kind (CdDevice *device, CdDeviceKind kind)
+{
+	g_return_if_fail (CD_IS_DEVICE (device));
+	g_return_if_fail (kind != CD_DEVICE_KIND_UNKNOWN);
+	device->priv->kind = kind;
 }
 
 /**
@@ -918,9 +929,9 @@ cd_device_set_model (CdDevice *device, const gchar *model)
 	tmp = g_string_new (model);
 
 	/* remove the kind suffix */
-	if (g_strcmp0 (priv->kind, "printer") == 0)
+	if (priv->kind == CD_DEVICE_KIND_PRINTER)
 		cd_device_string_remove_suffix (tmp->str, "Printer");
-	if (g_strcmp0 (priv->kind, "display") == 0) {
+	if (priv->kind == CD_DEVICE_KIND_DISPLAY) {
 		cd_device_string_remove_suffix (tmp->str, "Monitor");
 		cd_device_string_remove_suffix (tmp->str, "Screen");
 	}
@@ -960,8 +971,7 @@ cd_device_set_property_internal (CdDevice *device,
 	if (g_strcmp0 (property, CD_DEVICE_PROPERTY_MODEL) == 0) {
 		cd_device_set_model (device, value);
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_KIND) == 0) {
-		g_free (priv->kind);
-		priv->kind = g_strdup (value);
+		priv->kind = cd_device_kind_from_string (value);
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_VENDOR) == 0) {
 		cd_device_set_vendor (device, value);
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_SERIAL) == 0) {
@@ -1632,7 +1642,7 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_KIND) == 0) {
-		retval = cd_device_get_nullable_for_string (priv->kind);
+		retval = cd_device_get_nullable_for_string (cd_device_kind_to_string (priv->kind));
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_ID) == 0) {
@@ -1897,7 +1907,6 @@ cd_device_finalize (GObject *object)
 	g_free (priv->format);
 	g_free (priv->mode);
 	g_free (priv->serial);
-	g_free (priv->kind);
 	g_free (priv->seat);
 	g_free (priv->object_path);
 	g_ptr_array_unref (priv->profiles);

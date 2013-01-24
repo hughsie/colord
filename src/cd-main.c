@@ -836,6 +836,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
 	CdDevice *device = NULL;
+	CdDeviceKind device_kind;
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	CdObjectScope scope;
 	CdProfile *profile = NULL;
@@ -849,6 +850,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	GError *error = NULL;
 	GPtrArray *array = NULL;
 	GVariantIter *iter = NULL;
+	GVariant *dict = NULL;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
 	gint fd = -1;
@@ -905,8 +907,17 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		g_variant_get (parameters, "(&s)", &device_id);
 		g_debug ("CdMain: %s:GetDevicesByKind(%s)",
 			 sender, device_id);
+		device_kind = cd_device_kind_from_string (device_id);
+		if (device_kind == CD_DEVICE_KIND_UNKNOWN) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INPUT_INVALID,
+							       "device kind %s not recognised",
+							       device_id);
+			goto out;
+		}
 		array = cd_device_array_get_by_kind (priv->devices_array,
-						     device_id);
+						     device_kind);
 
 		/* format the value */
 		value = cd_main_device_array_to_variant (array);
@@ -1134,10 +1145,10 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* does already exist */
-		g_variant_get (parameters, "(&s&sa{ss})",
+		g_variant_get (parameters, "(&s&s@a{ss})",
 			       &device_id,
 			       &scope_tmp,
-			       &iter);
+			       &dict);
 		g_debug ("CdMain: %s:CreateDevice(%s)", sender, device_id);
 
 		/* check ID is valid */
@@ -1146,6 +1157,26 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							       CD_CLIENT_ERROR,
 							       CD_CLIENT_ERROR_INPUT_INVALID,
 							       "device id cannot be blank");
+			goto out;
+		}
+
+		/* check kind is supplied and recognised */
+		ret = g_variant_lookup (dict,
+					CD_DEVICE_PROPERTY_KIND,
+					"&s", &prop_value);
+		if (!ret) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INPUT_INVALID,
+							       "required device type not specified");
+			goto out;
+		}
+		device_kind = cd_device_kind_from_string (prop_value);
+		if (device_kind == CD_DEVICE_KIND_UNKNOWN) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INPUT_INVALID,
+							       "device type not recognised");
 			goto out;
 		}
 
@@ -1211,8 +1242,12 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* set the properties */
+		cd_device_set_kind (device, device_kind);
+		iter = g_variant_iter_new (dict);
 		while (g_variant_iter_next (iter, "{&s&s}",
 					    &prop_key, &prop_value)) {
+			if (g_strcmp0 (prop_key, CD_DEVICE_PROPERTY_KIND) == 0)
+				continue;
 			ret = cd_device_set_property_internal (device,
 							       prop_key,
 							       prop_value,
@@ -1478,6 +1513,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 out:
 	if (iter != NULL)
 		g_variant_iter_free (iter);
+	if (dict != NULL)
+		g_variant_unref (dict);
 	if (array != NULL)
 		g_ptr_array_unref (array);
 	if (device != NULL)

@@ -169,7 +169,7 @@ cd_device_array_get_array (CdDeviceArray *device_array)
  **/
 GPtrArray *
 cd_device_array_get_by_kind (CdDeviceArray *device_array,
-			     const gchar   *kind)
+			     CdDeviceKind kind)
 {
 	CdDeviceArrayPrivate *priv = device_array->priv;
 	CdDevice *device_tmp;
@@ -180,9 +180,9 @@ cd_device_array_get_by_kind (CdDeviceArray *device_array,
 	array_tmp = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	for (i = 0; i < priv->array->len; i++) {
 		device_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (cd_device_get_kind (device_tmp),
-			       kind) == 0) {
-			g_ptr_array_add (array_tmp, g_object_ref (device_tmp));
+		if (cd_device_get_kind (device_tmp) == kind) {
+			g_ptr_array_add (array_tmp,
+					 g_object_ref (device_tmp));
 		}
 	}
 

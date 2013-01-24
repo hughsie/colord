@@ -320,6 +320,7 @@ colord_client_random_func (void)
 	gchar *profile_path;
 	GError *error = NULL;
 	GHashTable *device_props;
+	GHashTable *device_props2;
 	GHashTable *profile_props;
 	GPtrArray *array;
 	GPtrArray *devices;
@@ -372,6 +373,9 @@ colord_client_random_func (void)
 	/* create device */
 	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	g_hash_table_insert (device_props,
 			     g_strdup (CD_DEVICE_PROPERTY_VENDOR),
 			     g_strdup ("Hewlett-Packard Ltd."));
@@ -837,10 +841,16 @@ colord_client_random_func (void)
 
 	/* create device */
 	g_object_unref (device);
+
+	device_props2 = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (device_props2,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       device_id,
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props2,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -868,6 +878,7 @@ colord_client_random_func (void)
 	g_ptr_array_unref (profiles);
 	g_hash_table_unref (profile_props);
 	g_hash_table_unref (device_props);
+	g_hash_table_unref (device_props2);
 	g_object_unref (device);
 	g_object_unref (profile);
 	g_object_unref (profile2);
@@ -889,7 +900,8 @@ colord_device_id_mapping_pd_func (void)
 	gboolean ret;
 	gchar *device_id;
 	GError *error = NULL;
-	GHashTable *metadata;
+	GHashTable *device_props;
+	GHashTable *profile_props;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -908,15 +920,15 @@ colord_device_id_mapping_pd_func (void)
 	device_id = colord_get_random_device_id ();
 
 	/* create profile */
-	metadata = g_hash_table_new_full (g_str_hash, g_str_equal,
-					  g_free, g_free);
-	g_hash_table_insert (metadata,
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (profile_props,
 			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
 			     g_strdup (device_id));
 	profile = cd_client_create_profile_sync (client,
 						 "profile_md_test1_id",
 						 CD_OBJECT_SCOPE_TEMP,
-						 metadata,
+						 profile_props,
 						 NULL,
 						 &error);
 	g_assert_no_error (error);
@@ -928,10 +940,15 @@ colord_device_id_mapping_pd_func (void)
 	g_assert (ret);
 
 	/* create a device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       device_id,
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -975,10 +992,15 @@ colord_device_id_mapping_pd_func (void)
 	g_object_unref (device);
 
 	/* create the device again and check it's not auto-added */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       device_id,
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -1013,7 +1035,7 @@ colord_device_id_mapping_pd_func (void)
 	g_assert (ret);
 	g_object_unref (device);
 
-	g_hash_table_unref (metadata);
+	g_hash_table_unref (profile_props);
 	g_object_unref (profile);
 	g_object_unref (device);
 	g_object_unref (client);
@@ -1034,7 +1056,8 @@ colord_device_id_mapping_dp_func (void)
 	CdProfile *profile_on_device;
 	gboolean ret;
 	GError *error = NULL;
-	GHashTable *metadata;
+	GHashTable *device_props;
+	GHashTable *profile_props;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -1050,10 +1073,15 @@ colord_device_id_mapping_dp_func (void)
 	g_assert (ret);
 
 	/* create a device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       "xrandr-default",
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -1067,15 +1095,15 @@ colord_device_id_mapping_dp_func (void)
 	g_assert (ret);
 
 	/* create profile */
-	metadata = g_hash_table_new_full (g_str_hash, g_str_equal,
-					  g_free, g_free);
-	g_hash_table_insert (metadata,
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (profile_props,
 			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
 			     g_strdup ("xrandr-default"));
 	profile = cd_client_create_profile_sync (client,
 						 "profile_md_test2_id",
 						 CD_OBJECT_SCOPE_TEMP,
-						 metadata,
+						 profile_props,
 						 NULL,
 						 &error);
 	g_assert_no_error (error);
@@ -1114,7 +1142,7 @@ colord_device_id_mapping_dp_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
-	g_hash_table_unref (metadata);
+	g_hash_table_unref (profile_props);
 	g_object_unref (profile);
 	g_object_unref (profile_on_device);
 	g_object_unref (device);
@@ -1475,15 +1503,16 @@ static void
 colord_device_mapping_func (void)
 {
 	CdClient *client;
-	gboolean ret;
-	GError *error = NULL;
 	CdDevice *device;
 	CdProfile *profile1;
 	CdProfile *profile2;
 	CdProfile *profile_tmp;
-	gint32 key;
+	gboolean ret;
 	gchar *profile_id1;
 	gchar *profile_id2;
+	GError *error = NULL;
+	GHashTable *device_props;
+	gint32 key;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -1504,10 +1533,15 @@ colord_device_mapping_func (void)
 	g_assert (ret);
 
 	/* create a device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       "device_mapping",
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -1628,10 +1662,15 @@ colord_device_mapping_func (void)
 	g_object_unref (device);
 
 	/* create a device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       "device_mapping",
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -1918,11 +1957,12 @@ colord_device_connect_cb (GObject *object, GAsyncResult *res, gpointer user_data
 static void
 colord_device_async_func (void)
 {
-	gboolean ret;
-	GError *error = NULL;
 	CdClient *client;
 	CdDevice *device;
 	CdDevice *device_tmp;
+	gboolean ret;
+	GError *error = NULL;
+	GHashTable *device_props;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -1937,10 +1977,15 @@ colord_device_async_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       "device_async_dave",
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -2058,11 +2103,11 @@ colord_device_func (void)
 static void
 colord_device_embedded_func (void)
 {
+	CdClient *client;
 	CdDevice *device;
 	gboolean ret;
 	GError *error = NULL;
 	GHashTable *device_props;
-	CdClient *client;
 
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
@@ -2072,6 +2117,9 @@ colord_device_embedded_func (void)
 	/* create device */
 	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	g_hash_table_insert (device_props,
 			     g_strdup (CD_DEVICE_PROPERTY_EMBEDDED),
 			     NULL);
@@ -2094,6 +2142,40 @@ colord_device_embedded_func (void)
 
 	g_hash_table_unref (device_props);
 	g_object_unref (device);
+	g_object_unref (client);
+}
+
+static void
+colord_device_invalid_kind_func (void)
+{
+	CdClient *client;
+	CdDevice *device;
+	gboolean ret;
+	GError *error = NULL;
+	GHashTable *device_props;
+
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup ("thermodynamic-teapot"));
+	device = cd_client_create_device_sync (client,
+					       "device_kind",
+					       CD_OBJECT_SCOPE_TEMP,
+					       device_props,
+					       NULL,
+					       &error);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_INPUT_INVALID);
+	g_assert (device == NULL);
+	g_error_free (error);
+
+	g_hash_table_unref (device_props);
 	g_object_unref (client);
 }
 
@@ -2135,12 +2217,12 @@ colord_device_modified_func (void)
 {
 	CdClient *client;
 	CdDevice *device;
-	GHashTable *device_props;
 	CdProfile *profile;
-	GHashTable *profile_props;
 	gboolean ret;
-	GError *error = NULL;
 	gchar full_path[PATH_MAX];
+	GError *error = NULL;
+	GHashTable *device_props;
+	GHashTable *profile_props;
 	GPtrArray *array;
 
 	/* no running colord to use */
@@ -2157,13 +2239,16 @@ colord_device_modified_func (void)
 	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					      g_free, g_free);
 	g_hash_table_insert (device_props,
-			     g_strdup ("Vendor"),
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_VENDOR),
 			     g_strdup ("Hewlett-Packard Ltd."));
 	g_hash_table_insert (device_props,
-			     g_strdup ("Model"),
+			     g_strdup (CD_DEVICE_PROPERTY_MODEL),
 			     g_strdup ("3000"));
 	g_hash_table_insert (device_props,
-			     g_strdup ("XRANDR_name"),
+			     g_strdup (CD_DEVICE_METADATA_XRANDR_NAME),
 			     g_strdup ("lvds1"));
 	device = cd_client_create_device_sync (client,
 					       "device_dave",
@@ -2251,16 +2336,22 @@ colord_device_seat_func (void)
 	const gchar *tmp;
 	gboolean ret;
 	GError *error = NULL;
+	GHashTable *device_props;
 
 	/* ensure the seat is set */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       "device_seat_test",
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -2285,6 +2376,7 @@ colord_device_seat_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	g_hash_table_unref (device_props);
 	g_object_unref (device);
 	g_object_unref (client);
 }
@@ -2296,16 +2388,22 @@ colord_device_enabled_func (void)
 	CdDevice *device;
 	gboolean ret;
 	GError *error = NULL;
+	GHashTable *device_props;
 
 	/* ensure the device is enabled by default */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       "device_enabled_test",
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -2347,7 +2445,7 @@ colord_device_enabled_func (void)
 	device = cd_client_create_device_sync (client,
 					       "device_enabled_test",
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -2375,6 +2473,7 @@ colord_device_enabled_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	g_hash_table_unref (device_props);
 	g_object_unref (device);
 	g_object_unref (client);
 }
@@ -2386,13 +2485,14 @@ colord_profile_ordering_func (void)
 {
 	CdClient *client;
 	CdDevice *device;
-	CdProfile *profile_tmp;
 	CdProfile *profile1;
 	CdProfile *profile2;
+	CdProfile *profile_tmp;
 	gboolean ret;
-	GError *error = NULL;
-	GPtrArray *array;
 	gchar *device_id;
+	GError *error = NULL;
+	GHashTable *device_props;
+	GPtrArray *array;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -2406,10 +2506,15 @@ colord_profile_ordering_func (void)
 
 	/* create device */
 	device_id = colord_get_random_device_id ();
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
 					       device_id,
 					       CD_OBJECT_SCOPE_TEMP,
-					       NULL,
+					       device_props,
 					       NULL,
 					       &error);
 	g_assert_no_error (error);
@@ -2553,6 +2658,7 @@ colord_profile_ordering_func (void)
 				    "/org/freedesktop/ColorManager/profiles/profile2"));
 	g_ptr_array_unref (array);
 
+	g_hash_table_unref (device_props);
 	g_free (device_id);
 	g_object_unref (profile1);
 	g_object_unref (profile2);
@@ -2632,8 +2738,9 @@ colord_device_duplicate_func (void)
 	CdClient *client;
 	CdDevice *device1;
 	CdDevice *device2;
-	GError *error = NULL;
 	gchar *device_id;
+	GError *error = NULL;
+	GHashTable *device_props;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -2647,10 +2754,15 @@ colord_device_duplicate_func (void)
 
 	/* create device */
 	device_id = colord_get_random_device_id ();
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device1 = cd_client_create_device_sync (client,
 						device_id,
 						CD_OBJECT_SCOPE_TEMP,
-						NULL,
+						device_props,
 						NULL,
 						&error);
 	g_assert_no_error (error);
@@ -2660,7 +2772,7 @@ colord_device_duplicate_func (void)
 	device2 = cd_client_create_device_sync (client,
 						device_id,
 						CD_OBJECT_SCOPE_TEMP,
-						NULL,
+						device_props,
 						NULL,
 						&error);
 	g_assert_error (error,
@@ -2669,6 +2781,7 @@ colord_device_duplicate_func (void)
 	g_assert (device2 == NULL);
 	g_clear_error (&error);
 
+	g_hash_table_unref (device_props);
 	g_free (device_id);
 	g_object_unref (device1);
 	g_object_unref (client);
@@ -2719,6 +2832,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/client", colord_client_func);
 	g_test_add_func ("/colord/device{embedded}", colord_device_embedded_func);
+	g_test_add_func ("/colord/device{invalid-kind}", colord_device_invalid_kind_func);
 	g_test_add_func ("/colord/device{duplicate}", colord_device_duplicate_func);
 	g_test_add_func ("/colord/device{seat}", colord_device_seat_func);
 	g_test_add_func ("/colord/device{enabled}", colord_device_enabled_func);

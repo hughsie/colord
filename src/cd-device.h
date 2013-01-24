@@ -71,7 +71,9 @@ CdDeviceMode	 cd_device_get_mode			(CdDevice	*device);
 void		 cd_device_set_mode			(CdDevice	*device,
 							 CdDeviceMode	 mode);
 const gchar	*cd_device_get_model			(CdDevice	*device);
-const gchar	*cd_device_get_kind			(CdDevice	*device);
+CdDeviceKind	 cd_device_get_kind			(CdDevice	*device);
+void		 cd_device_set_kind			(CdDevice	*device,
+							 CdDeviceKind	 kind);
 const gchar	*cd_device_get_id			(CdDevice	*device);
 void		 cd_device_set_id			(CdDevice	*device,
 							 const gchar	*id);
