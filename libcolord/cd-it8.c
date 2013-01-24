@@ -730,6 +730,7 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		}
 	}
 out:
+	g_free (lumi_str);
 	return ret;
 }
 
