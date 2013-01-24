@@ -1959,16 +1959,32 @@ out:
 }
 
 /**
+ * cd_util_ignore_cb:
+ **/
+static void
+cd_util_ignore_cb (const gchar *log_domain, GLogLevelFlags log_level,
+		   const gchar *message, gpointer user_data)
+{
+}
+
+/**
  * main:
  **/
 int
 main (int argc, char *argv[])
 {
+	CdUtilPrivate *priv;
 	gboolean ret;
+	gboolean verbose;
+	gchar *cmd_descriptions = NULL;
 	GError *error = NULL;
 	guint retval = 1;
-	CdUtilPrivate *priv;
-	gchar *cmd_descriptions = NULL;
+	const GOptionEntry options[] = {
+		{ "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
+			/* TRANSLATORS: command line option */
+			_("Show extra debugging information"), NULL },
+		{ NULL}
+	};
 
 	setlocale (LC_ALL, "");
 
@@ -2135,7 +2151,24 @@ main (int argc, char *argv[])
 
 	/* TRANSLATORS: program name */
 	g_set_application_name (_("Color Management"));
-	g_option_context_parse (priv->context, &argc, &argv, NULL);
+	g_option_context_add_main_entries (priv->context, options, NULL);
+	ret = g_option_context_parse (priv->context, &argc, &argv, &error);
+	if (!ret) {
+		/* TRANSLATORS: the user didn't read the man page */
+		g_print ("%s: %s\n",
+			 _("Failed to parse arguments"),
+			 error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* set verbose? */
+	if (verbose) {
+		g_setenv ("COLORD_VERBOSE", "1", FALSE);
+	} else {
+		g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
+				   cd_util_ignore_cb, NULL);
+	}
 
 	/* get connection to colord */
 	priv->client = cd_client_new ();
@@ -2160,7 +2193,8 @@ main (int argc, char *argv[])
 	retval = 0;
 out:
 	if (priv != NULL) {
-		g_object_unref (priv->client);
+		if (priv->client != NULL)
+			g_object_unref (priv->client);
 		if (priv->cmd_array != NULL)
 			g_ptr_array_unref (priv->cmd_array);
 		g_option_context_free (priv->context);
