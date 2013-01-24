@@ -1976,6 +1976,7 @@ main (int argc, char *argv[])
 	CdUtilPrivate *priv;
 	gboolean ret;
 	gboolean verbose;
+	gboolean version;
 	gchar *cmd_descriptions = NULL;
 	GError *error = NULL;
 	guint retval = 1;
@@ -1983,6 +1984,9 @@ main (int argc, char *argv[])
 		{ "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
 			/* TRANSLATORS: command line option */
 			_("Show extra debugging information"), NULL },
+		{ "version", '\0', 0, G_OPTION_ARG_NONE, &version,
+			/* TRANSLATORS: command line option */
+			_("Show client and daemon versions"), NULL },
 		{ NULL}
 	};
 
@@ -2178,6 +2182,15 @@ main (int argc, char *argv[])
 		g_print ("%s %s\n", _("No connection to colord:"),
 			 error->message);
 		g_error_free (error);
+		goto out;
+	}
+
+	/* get version */
+	if (version) {
+		g_print ("%s\t%s\n", _("Client version:"),
+			 PACKAGE_VERSION);
+		g_print ("%s\t%s\n", _("Daemon version:"),
+			 cd_client_get_daemon_version (priv->client));
 		goto out;
 	}
 
