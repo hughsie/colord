@@ -1093,6 +1093,7 @@ cd_sensor_set_from_device (CdSensor *sensor,
 	const gchar *kind_str;
 	const gchar *model_tmp = NULL;
 	const gchar *vendor_tmp = NULL;
+	const gchar * const *caps_str;
 	gboolean ret;
 	gboolean use_database;
 	gchar *tmp;
@@ -1143,30 +1144,18 @@ cd_sensor_set_from_device (CdSensor *sensor,
 	}
 
 	/* get caps */
-	ret = g_udev_device_get_property_as_boolean (device,
-						     "COLORD_SENSOR_CAP_LCD");
-	if (ret)
-		priv->caps[idx++] = g_strdup ("lcd");
-	ret = g_udev_device_get_property_as_boolean (device,
-						     "COLORD_SENSOR_CAP_CRT");
-	if (ret)
-		priv->caps[idx++] = g_strdup ("crt");
-	ret = g_udev_device_get_property_as_boolean (device,
-						     "COLORD_SENSOR_CAP_PROJECTOR");
-	if (ret)
-		priv->caps[idx++] = g_strdup ("projector");
-	ret = g_udev_device_get_property_as_boolean (device,
-						     "COLORD_SENSOR_CAP_PRINTER");
-	if (ret)
-		priv->caps[idx++] = g_strdup ("printer");
-	ret = g_udev_device_get_property_as_boolean (device,
-						     "COLORD_SENSOR_CAP_SPOT");
-	if (ret)
-		priv->caps[idx++] = g_strdup ("spot");
-	ret = g_udev_device_get_property_as_boolean (device,
-						     "COLORD_SENSOR_CAP_AMBIENT");
-	if (ret)
-		priv->caps[idx++] = g_strdup ("ambient");
+	caps_str = g_udev_device_get_property_as_strv (device,
+						       "COLORD_SENSOR_CAPS");
+	if (caps_str != NULL) {
+		for (i = 0; caps_str[i] != NULL; i++) {
+			if (cd_sensor_cap_from_string (caps_str[i]) != CD_SENSOR_CAP_UNKNOWN) {
+				priv->caps[idx++] = g_strdup (caps_str[i]);
+			} else {
+				g_warning ("Unknown sensor cap %s on %s",
+					   caps_str[i], kind_str);
+			}
+		}
+	}
 	priv->caps[idx] = NULL;
 
 	/* is the sensor embeded, e.g. on the W700? */
