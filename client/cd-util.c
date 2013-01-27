@@ -264,7 +264,12 @@ cd_util_show_device (CdDevice *device)
 	cd_util_print_field (_("Serial"),
 			     cd_device_get_serial (device));
 
-	/* TRANSLATORS: the device seat identifier */
+	/* TRANSLATORS: the device seat identifier, where a seat is
+	 * defined as a monitor, keyboard and mouse.
+	 * For instance, in a public library one central computer can
+	 * have 3 keyboards, 3 displays and 3 mice plugged in and with
+	 * systemd these can be setup as three independant seats with
+	 * different sessions running on them */
 	cd_util_print_field (_("Seat"),
 			     cd_device_get_seat (device));
 
