@@ -1090,6 +1090,10 @@ cd_sensor_set_from_device (CdSensor *sensor,
 {
 	CdSensorPrivate *priv = sensor->priv;
 	const gchar *images[] = { "attach", "calibrate", "screen", NULL };
+	const gchar *images_md[] = { CD_SENSOR_METADATA_IMAGE_ATTACH,
+				     CD_SENSOR_METADATA_IMAGE_CALIBRATE,
+				     CD_SENSOR_METADATA_IMAGE_SCREEN,
+				     NULL };
 	const gchar *kind_str;
 	const gchar *model_tmp = NULL;
 	const gchar *vendor_tmp = NULL;
@@ -1171,7 +1175,7 @@ cd_sensor_set_from_device (CdSensor *sensor,
 		if (g_file_test (tmp, G_FILE_TEST_EXISTS)) {
 			g_debug ("helper image %s found", tmp);
 			g_hash_table_insert (priv->metadata,
-					     g_strdup (CD_SENSOR_METADATA_IMAGE_ATTACH),
+					     g_strdup (images_md[i]),
 					     tmp);
 		} else {
 			g_debug ("helper image %s not found", tmp);
