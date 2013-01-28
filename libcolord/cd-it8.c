@@ -835,6 +835,8 @@ cd_it8_save_to_data (CdIt8 *it8,
 	const gchar *tmp;
 	gboolean ret;
 	gchar *data_tmp = NULL;
+	gchar *date_str = NULL;
+	GDateTime *datetime;
 	gsize size_tmp = 0;
 	guint i;
 
@@ -854,6 +856,12 @@ cd_it8_save_to_data (CdIt8 *it8,
 		cmsIT8SetPropertyStr (it8_lcms, "REFERENCE",
 				      it8->priv->reference);
 	}
+
+	/* set time and date in crazy ArgllCMS format, e.g.
+	 * 'Wed Dec 19 18:47:57 2012' */
+	datetime = g_date_time_new_now_local ();
+	date_str = g_date_time_format (datetime, "%a %b %d %H:%M:%S %Y");
+	cmsIT8SetPropertyStr (it8_lcms, "CREATED", date_str);
 
 	/* set ti1 and ti3 specific data */
 	if (it8->priv->kind == CD_IT8_KIND_TI1 ||
@@ -892,7 +900,9 @@ cd_it8_save_to_data (CdIt8 *it8,
 out:
 	if (it8_lcms != NULL)
 		cmsIT8Free (it8_lcms);
+	g_date_time_unref (datetime);
 	g_free (data_tmp);
+	g_free (date_str);
 	return ret;
 }
 
