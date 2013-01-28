@@ -895,8 +895,10 @@ cd_it8_save_to_data (CdIt8 *it8,
 	/* save for caller */
 	if (data != NULL)
 		*data = g_strdup (data_tmp);
+
+	/* LCMS alocates an extra byte for the '\0' byte */
 	if (size != NULL)
-		*size = size_tmp;
+		*size = size_tmp - 1;
 out:
 	if (it8_lcms != NULL)
 		cmsIT8Free (it8_lcms);

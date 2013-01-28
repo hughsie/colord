@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <string.h>
 #include <glib.h>
 #include <glib-object.h>
 
@@ -107,10 +108,12 @@ colord_it8_raw_func (void)
 	CdColorXYZ xyz;
 	CdIt8 *it8;
 	gboolean ret;
+	gchar *data;
 	gchar *filename;
 	GError *error = NULL;
 	GFile *file;
 	GFile *file_new;
+	gsize data_len;
 
 	it8 = cd_it8_new ();
 	g_assert (it8 != NULL);
@@ -121,6 +124,15 @@ colord_it8_raw_func (void)
 	ret = cd_it8_load_from_file (it8, file, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+
+	/* write this to raw data */
+	ret = cd_it8_save_to_data (it8, &data, &data_len, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert (g_str_has_prefix (data, "CTI3"));
+	g_assert_cmpint (data_len, ==, strlen (data));
+	g_assert (data[data_len - 1] != '\0');
+	g_free (data);
 
 	/* write this to a new file */
 	file_new = g_file_new_for_path ("/tmp/test.ti3");
