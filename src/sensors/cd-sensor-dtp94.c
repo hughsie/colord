@@ -62,24 +62,6 @@ cd_sensor_dtp94_get_private (CdSensor *sensor)
 	return g_object_get_data (G_OBJECT (sensor), "priv");
 }
 
-static void
-cd_sensor_dtp94_print_data (const gchar *title,
-			    const guint8 *data,
-			    gsize length)
-{
-	guint i;
-
-	if (g_strcmp0 (title, "request") == 0)
-		g_print ("%c[%dm", 0x1B, 31);
-	if (g_strcmp0 (title, "reply") == 0)
-		g_print ("%c[%dm", 0x1B, 34);
-	g_print ("%s\t", title);
-	for (i = 0; i <  length; i++)
-		g_print ("%02x [%c]\t", data[i], g_ascii_isprint (data[i]) ? data[i] : '?');
-
-	g_print ("%c[%dm\n", 0x1B, 0);
-}
-
 static gboolean
 cd_sensor_dtp94_send_data (CdSensorDtp94Private *priv,
 			   const guint8 *request, gsize request_len,
@@ -95,7 +77,8 @@ cd_sensor_dtp94_send_data (CdSensorDtp94Private *priv,
 	g_return_val_if_fail (reply_read != NULL, FALSE);
 
 	/* request data from device */
-	cd_sensor_dtp94_print_data ("request", request, request_len);
+	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_REQUEST,
+			      request, request_len);
 	ret = g_usb_device_interrupt_transfer (priv->device,
 					       0x2,
 					       (guint8 *) request,
@@ -126,9 +109,8 @@ cd_sensor_dtp94_send_data (CdSensorDtp94Private *priv,
 				     "failed to get data from device");
 		goto out;
 	}
-
-	/* show what we've got */
-	cd_sensor_dtp94_print_data ("reply", reply, *reply_read);
+	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_RESPONSE,
+			      reply, *reply_read);
 out:
 	return ret;
 }
@@ -303,7 +285,6 @@ cd_sensor_dtp94_sample_thread_cb (GSimpleAsyncResult *res,
 	 * 'X     10.29	Y     10.33	Z      4.65\u000d<00>' */
 	tmp = (gchar *) buffer;
 	g_strdelimit (tmp, "\t\r", '\0');
-	g_debug ("\n'%s'\n'%s'\n'%s'", tmp + 1, tmp + 13, tmp + 25);
 
 	/* success */
 	state->ret = TRUE;

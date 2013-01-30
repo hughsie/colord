@@ -72,25 +72,6 @@ cd_sensor_munki_get_private (CdSensor *sensor)
 	return g_object_get_data (G_OBJECT (sensor), "priv");
 }
 
-static void
-cd_sensor_munki_print_data (const gchar *title,
-			    const guchar *data,
-			    gsize length)
-{
-	guint i;
-
-	if (g_strcmp0 (title, "request") == 0)
-		g_print ("%c[%dm", 0x1B, 31);
-	if (g_strcmp0 (title, "reply") == 0)
-		g_print ("%c[%dm", 0x1B, 34);
-	g_print ("%s\t", title);
-
-	for (i = 0; i <  length; i++)
-		g_print ("%02x [%c]\t", data[i], g_ascii_isprint (data[i]) ? data[i] : '?');
-
-	g_print ("%c[%dm\n", 0x1B, 0);
-}
-
 /**
  * cd_sensor_munki_refresh_state_transfer_cb:
  **/
@@ -130,7 +111,9 @@ cd_sensor_munki_refresh_state_transfer_cb (struct libusb_transfer *transfer)
 		 cd_sensor_cap_to_string (cd_sensor_get_mode (sensor)),
 		 cd_sensor_munki_button_state_to_string (reply[1]));
 
-	cd_sensor_munki_print_data ("reply", transfer->buffer + LIBUSB_CONTROL_SETUP_SIZE, transfer->actual_length);
+	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_RESPONSE,
+			      transfer->buffer + LIBUSB_CONTROL_SETUP_SIZE,
+			      transfer->actual_length);
 out:
 	g_free (transfer->buffer);
 }
@@ -190,7 +173,9 @@ cd_sensor_munki_transfer_cb (struct libusb_transfer *transfer)
 		return;
 	}
 
-	cd_sensor_munki_print_data ("reply", transfer->buffer + LIBUSB_CONTROL_SETUP_SIZE, transfer->actual_length);
+	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_RESPONSE,
+			      transfer->buffer + LIBUSB_CONTROL_SETUP_SIZE,
+			      transfer->actual_length);
 	timestamp = (reply[7] << 24) + (reply[6] << 16) + (reply[5] << 8) + (reply[4] << 0);
 	/* we only care when the button is pressed */
 	if (reply[0] == CD_SENSOR_MUNKI_COMMAND_BUTTON_RELEASED) {
@@ -258,7 +243,8 @@ cd_sensor_munki_get_eeprom_data (CdSensor *sensor,
 	g_debug ("get EEPROM at 0x%04x for %i", address, size);
 	cd_buffer_write_uint32_le (request, address);
 	cd_buffer_write_uint32_le (request + 4, size);
-	cd_sensor_munki_print_data ("request", request, 8);
+	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_REQUEST,
+			      request, 8);
 	handle = cd_usb_get_device_handle (priv->usb);
 	retval = libusb_control_transfer (handle,
 					  LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
@@ -290,7 +276,8 @@ cd_sensor_munki_get_eeprom_data (CdSensor *sensor,
 				     "did not get the correct number of bytes");
 		goto out;
 	}
-	cd_sensor_munki_print_data ("reply", data, size);
+	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_RESPONSE,
+			      data, size);
 
 	/* success */
 	ret = TRUE;
@@ -370,9 +357,9 @@ cd_sensor_munki_get_ambient_thread_cb (GSimpleAsyncResult *res,
 /*
  * ioctl(3, USBDEVFS_SUBMITURB or USBDEVFS_SUBMITURB32, {type=3, endpoint=129, status=0, flags=0, buffer_length=1096, actual_length=0, start_frame=0, number_of_packets=0, error_count=0, signr=0, usercontext=(nil), buffer=00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ) = 0
  * ioctl(3, USBDEVFS_CONTROL or USBDEVFS_CONTROL32, {requesttype=64, request=128, value=0, index=0, length=12, timeout=2000, data=00 00 01 00 b7 3e 00 00 02 00 00 00 ) = 12
- * 
+ *
  * ioctl(3, USBDEVFS_SUBMITURB or USBDEVFS_SUBMITURB32, {type=3, endpoint=129, status=0, flags=0, buffer_length=548, actual_length=0, start_frame=0, number_of_packets=0, error_count=0, signr=0, usercontext=(nil), buffer=d0 a3 9d 00 d0 a3 9d 00 00 00 00 00 00 00 00 00 00 d0 86 40 bf c6 fa 21 a4 4b 61 40 0b 24 0c d6 7a 29 04 40 91 3a 0e c7 f9 28 04 40 c0 b1 55 bc 9b 28 04 40 b9 d3 41 53 86 6a 07 40 df 23 db 4d 0c e3 06 40 20 5c bf 4d b2 53 05 40 5f 28 38 74 26 44 07 40 e9 45 b7 e4 2f a5 08 40 bb a2 87 d7 8c db 07 40 34 90 30 b1 f3 a1 06 40 b0 8f fa 63 84 98 05 40 35 1f 09 07 97 47 04 40 53 ac 8a be ) = 0
- * 
+ *
  * ioctl(3, USBDEVFS_REAPURBNDELAY or USBDEVFS_REAPURBNDELAY32, {type=3, endpoint=129, status=0, flags=0, buffer_length=548, actual_length=548, start_frame=0, number_of_packets=0, error_count=0, signr=0, usercontext=(nil), buffer=de 07 da 07 d6 07 d8 07 d6 07 16 08 29 0b 79 0d 22 12 f2 17 b4 1c 31 20 4b 22 e2 22 7b 22 a8 21 93 20 eb 1e 2d 1d fe 1b 1c 1b e5 19 69 19 c8 19 b5 19 8a 18 16 17 a4 15 86 14 ac 13 e8 12 22 12 20 12 bf 12 8e 13 d2 13 de 13 ea 13 fb 13 39 14 89 14 bd 14 ec 14 8b 15 78 16 69 17 99 18 ca 19 97 1a 14 1b 6f 1b b5 1b 7f 1c 98 1d 59 1e a9 1e af 1e 71 1e d2 1d db 1c c1 1b d4 1a 50 1a 46 1a }) = 0
  * write(1, " Result is XYZ: 126.685284 136.9"..., 91 Result is XYZ: 126.685284 136.946975 206.789116, D50 Lab: 112.817679 -7.615524 -49.589593
 ) = 91

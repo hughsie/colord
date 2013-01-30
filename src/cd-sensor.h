@@ -60,6 +60,12 @@ struct _CdSensorClass
 	GObjectClass	 parent_class;
 };
 
+typedef enum {
+	CD_SENSOR_DEBUG_MODE_REQUEST,
+	CD_SENSOR_DEBUG_MODE_RESPONSE,
+	CD_SENSOR_DEBUG_MODE_UNKNOWN
+} CdSensorDebugMode;
+
 /* when the data is unavailable */
 #define CD_SENSOR_NO_VALUE			-1.0f
 
@@ -145,7 +151,9 @@ void		 cd_sensor_set_options_async	(CdSensor		*sensor,
 gboolean	 cd_sensor_set_options_finish	(CdSensor		*sensor,
 						 GAsyncResult		*res,
 						 GError			**error);
-
+void		 cd_sensor_debug_data		(CdSensorDebugMode	 debug_mode,
+						 const guint8		*data,
+						 gsize			 length);
 G_END_DECLS
 
 #endif /* __CD_SENSOR_H */

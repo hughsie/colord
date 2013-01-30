@@ -83,25 +83,6 @@ cd_sensor_huey_get_private (CdSensor *sensor)
 	return g_object_get_data (G_OBJECT (sensor), "priv");
 }
 
-static void
-cd_sensor_huey_print_data (const gchar *title,
-			   const guchar *data,
-			   gsize length)
-{
-	guint i;
-
-	if (g_strcmp0 (title, "request") == 0)
-		g_print ("%c[%dm", 0x1B, 31);
-	if (g_strcmp0 (title, "reply") == 0)
-		g_print ("%c[%dm", 0x1B, 34);
-	g_print ("%s\t", title);
-
-	for (i = 0; i <  length; i++)
-		g_print ("%02x [%c]\t", data[i], g_ascii_isprint (data[i]) ? data[i] : '?');
-
-	g_print ("%c[%dm\n", 0x1B, 0);
-}
-
 static gboolean
 cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 			  const guchar *request, gsize request_len,
@@ -117,10 +98,9 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 	g_return_val_if_fail (reply_len != 0, FALSE);
 	g_return_val_if_fail (reply_read != NULL, FALSE);
 
-	/* show what we've got */
-	cd_sensor_huey_print_data ("request", request, request_len);
-
 	/* control transfer */
+	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_REQUEST,
+			      request, request_len);
 	ret = g_usb_device_control_transfer (priv->device,
 					     G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
 					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
@@ -152,10 +132,9 @@ cd_sensor_huey_send_data (CdSensorHueyPrivate *priv,
 		if (!ret)
 			goto out;
 
-		/* show what we've got */
-		cd_sensor_huey_print_data ("reply", reply, *reply_read);
-
 		/* the second byte seems to be the command again */
+		cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_RESPONSE,
+				      reply, *reply_read);
 		if (reply[1] != request[0]) {
 			ret = FALSE;
 			g_set_error (error, CD_SENSOR_ERROR,
