@@ -74,7 +74,8 @@ main (int argc, char **argv)
 
 	/* get the default sensor */
 	sensor = cd_sensor_new ();
-	cd_sensor_set_kind (sensor, CD_SENSOR_KIND_HUEY);
+	cd_debug_setup (TRUE);
+	cd_sensor_set_kind (sensor, CD_SENSOR_KIND_DTP94);
 	ret = cd_sensor_load (sensor, &error);
 	if (!ret) {
 		g_print ("FAILED: Failed to load sensor: %s\n",

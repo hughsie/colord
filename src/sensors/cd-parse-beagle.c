@@ -286,6 +286,7 @@ main (gint argc, gchar *argv[])
 	}
 	kind = cd_sensor_kind_from_string (argv[1]);
 	if (kind != CD_SENSOR_KIND_HUEY &&
+	    kind != CD_SENSOR_KIND_DTP94 &&
 	    kind != CD_SENSOR_KIND_COLOR_MUNKI_PHOTO) {
 		g_print ("only huey and colormunki device kinds supported\n");
 		goto out;

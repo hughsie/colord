@@ -1,0 +1,156 @@
+usb_get_paths about to look through devices:
+usb_check_and_add() called with VID 0x8087, PID 0x20
+usb_check_and_add() called with VID 0x8087, PID 0x20
+usb_check_and_add() called with VID 0x1d6b, PID 0x2
+usb_check_and_add() called with VID 0x1d6b, PID 0x2
+usb_check_and_add() called with VID 0x3f0, PID 0x2d24
+usb_check_and_add() called with VID 0x424, PID 0x3328
+usb_check_and_add() called with VID 0xa5f, PID 0x9
+usb_check_and_add() called with VID 0x3f0, PID 0x7a11
+usb_check_and_add() called with VID 0x46d, PID 0xc52b
+usb_check_and_add() called with VID 0xa5c, PID 0x217f
+usb_check_and_add() called with VID 0x17ef, PID 0x100a
+usb_check_and_add() called with VID 0x17ef, PID 0x480f
+usb_check_and_add() called with VID 0x765, PID 0xd094
+usb_check_and_add() found known instrument
+usb_check_and_add() called with VID 0x3f0, PID 0x2512
+usb_check_and_add() called with VID 0x409, PID 0x58
+managed to open serial "/dev/ttyS3"
+managed to open serial "/dev/ttyS2"
+managed to open serial "/dev/ttyS1"
+managed to open serial "/dev/ttyS0"
+dtp92: About to init coms
+dtp92Q/dtp94: About to init USB
+icoms: About to set usb port characteristics
+icoms: About to open the USB port, tries 0
+icoms: USB port needs opening
+icoms: About to open USB port 'usb:/bus2/dev5/ (Xrite DTP94)'
+open() of USB port 'usb:/bus2/dev5/ (Xrite DTP94)' suceeded
+icoms: USB port is now open
+icoms: Clearing any USB errors
+icoms: usb port characteristics set ok
+
+icoms: Write_Read called with '0PR^M'
+icoms: About to write '0PR^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with '0PR^M'
+icoms: About to write '0PR^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with '^M'
+icoms: About to write '^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with '0PR^M'
+icoms: About to write '0PR^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+dtp92: init coms has suceeded
+dtp92: About to init instrument
+
+icoms: Write_Read called with '0PR^M'
+icoms: About to write '0PR^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with 'SV^M'
+icoms: About to write 'SV^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read 'X-Rite DTP94 vDB06^M<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning 'X-Rite DTP94 vDB06^M<00>'
+
+icoms: Write_Read called with '0207CF^M'
+icoms: About to write '0207CF^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with '0008CF^M'
+icoms: About to write '0008CF^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with '010ACF^M'
+icoms: About to write '010ACF^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with '0019CF^M'
+icoms: About to write '0019CF^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with 'EFC^M'
+icoms: About to write 'EFC^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+icoms: Write_Read called with '0117CF^M'
+icoms: About to write '0117CF^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+dtp92: instrument inited OK
+
+icoms: Write_Read called with '0216CF^M'
+icoms: About to write '0216CF^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read '<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning '<00>'
+
+Place instrument on spot to be measured,
+and hit [A-Z] to read white and setup FWA compensation (keyed to letter)
+[a-z] to read and make FWA compensated reading from keyed reference
+'r' to set reference, 's' to save spectrum,
+'h' to toggle high res., 'k' to do a calibration
+Hit ESC or Q to exit, any other key to take a reading:
+icoms: Write_Read called with 'RM^M'
+icoms: About to write 'RM^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read 'X    211.83^IY    218.63^IZ    232.52^M<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning 'X    211.83^IY    218.63^IZ    232.52^M<00>'
+
+
+ Result is XYZ: 211.830000 218.630000 232.520000, D50 Lab: 134.554789 1.052096 -22.943082
+
+Place instrument on spot to be measured,
+and hit [A-Z] to read white and setup FWA compensation (keyed to letter)
+[a-z] to read and make FWA compensated reading from keyed reference
+'r' to set reference, 's' to save spectrum,
+'h' to toggle high res., 'k' to do a calibration
+Hit ESC or Q to exit, any other key to take a reading:
+icoms: Write_Read called with 'RM^M'
+icoms: About to write 'RM^M' ICOM err 0x0
+icoms: Read called
+icoms: About to return read 'X      0.00^IY      0.00^IZ      0.00^M<00>' ICOM err 0x0
+icoms: Write_Read Write_Read success, returning 'X      0.00^IY      0.00^IZ      0.00^M<00>'
+
+
+ Result is XYZ: 0.000000 0.000000 0.000000, D50 Lab: 0.000000 0.000000 0.000000
+
+Place instrument on spot to be measured,
+and hit [A-Z] to read white and setup FWA compensation (keyed to letter)
+[a-z] to read and make FWA compensated reading from keyed reference
+'r' to set reference, 's' to save spectrum,
+'h' to toggle high res., 'k' to do a calibration
+Hit ESC or Q to exit, any other key to take a reading:
+
+Spot read stopped at user request!
+Hit Esc or Q to give up, any other key to retry:icoms: delete called
+icoms: closing port
+usb_close_port() called
+usb port has been released and closed
+
