@@ -357,6 +357,68 @@ out:
 }
 
 /**
+ * cd_sensor_set_locked:
+ **/
+static void
+cd_sensor_set_locked (CdSensor *sensor, gboolean locked)
+{
+	sensor->priv->locked = locked;
+	cd_sensor_dbus_emit_property_changed (sensor,
+					      "Locked",
+					      g_variant_new_boolean (locked));
+}
+
+/**
+ * _cd_sensor_lock_async:
+ *
+ * Lock the sensor. You don't ever need to call this, and this method
+ * should only be used from the internal self check program.
+ **/
+void
+_cd_sensor_lock_async (CdSensor *sensor,
+		       GCancellable *cancellable,
+		       GAsyncReadyCallback callback,
+		       gpointer user_data)
+{
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (sensor->priv->desc != NULL);
+
+	/* proxy up */
+	if (sensor->priv->desc->lock_async) {
+		sensor->priv->desc->lock_async (sensor,
+						cancellable,
+						callback,
+						user_data);
+	}
+}
+
+/**
+ * _cd_sensor_lock_finish:
+ *
+ * Finish locking the sensor. You don't ever need to call this, and this
+ * method should only be used from the internal self check program.
+ **/
+gboolean
+_cd_sensor_lock_finish (CdSensor *sensor,
+			GAsyncResult *res,
+			GError **error)
+{
+	gboolean ret = TRUE;
+
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (sensor->priv->desc != NULL, FALSE);
+
+	/* proxy up */
+	if (sensor->priv->desc->lock_finish) {
+		ret = sensor->priv->desc->lock_finish (sensor,
+						       res,
+						       error);
+	}
+	cd_sensor_set_locked (sensor, TRUE);
+	return ret;
+}
+
+/**
  * cd_sensor_set_state:
  * @sensor: a valid #CdSensor instance
  * @state: the sensor state, e.g %CD_SENSOR_STATE_IDLE
@@ -391,18 +453,6 @@ CdSensorCap
 cd_sensor_get_mode (CdSensor *sensor)
 {
 	return sensor->priv->mode;
-}
-
-/**
- * cd_sensor_set_locked:
- **/
-static void
-cd_sensor_set_locked (CdSensor *sensor, gboolean locked)
-{
-	sensor->priv->locked = locked;
-	cd_sensor_dbus_emit_property_changed (sensor,
-					      "Locked",
-					      g_variant_new_boolean (locked));
 }
 
 /**

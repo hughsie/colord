@@ -123,6 +123,13 @@ void		 cd_sensor_lock_async		(CdSensor		*sensor,
 gboolean	 cd_sensor_lock_finish		(CdSensor		*sensor,
 						 GAsyncResult		*res,
 						 GError			**error);
+void		 _cd_sensor_lock_async		(CdSensor		*sensor,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+gboolean	 _cd_sensor_lock_finish		(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
 void		 cd_sensor_unlock_async		(CdSensor		*sensor,
 						 GCancellable		*cancellable,
 						 GAsyncReadyCallback	 callback,

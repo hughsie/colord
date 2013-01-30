@@ -97,7 +97,10 @@ cd_sensor_dump_SOURCES =				\
 	../cd-common.h					\
 	../cd-sensor.c					\
 	../cd-sensor.h					\
-	cd-sensor-huey.c				\
+	../cd-debug.c					\
+	../cd-debug.h					\
+	../../libcolord/cd-color.c			\
+	../../libcolord/cd-color.h			\
 	cd-sensor-dump.c
 
 cd_sensor_dump_LDADD =					\
