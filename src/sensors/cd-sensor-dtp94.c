@@ -30,9 +30,7 @@
 #include <string.h>
 
 #include "cd-sensor.h"
-
-#define CD_SENSOR_DTP94_VENDOR_ID	0x0765
-#define CD_SENSOR_DTP94_PRODUCT_ID	0xd094
+#include "cd-sensor-dtp94-private.h"
 
 typedef struct
 {
@@ -123,6 +121,7 @@ cd_sensor_dtp94_cm2 (CdSensorDtp94Private *priv,
 	gboolean ret;
 	gsize reply_read;
 	guint8 buffer[128];
+	guint8 rc;
 	guint command_len;
 
 	/* sent command raw */
@@ -138,7 +137,8 @@ cd_sensor_dtp94_cm2 (CdSensorDtp94Private *priv,
 		goto out;
 
 	/* device busy */
-	if (memcmp (buffer, "<01>", reply_read) == 0) {
+	rc = cd_sensor_dtp94_rc_parse (buffer, reply_read);
+	if (rc == CD_SENSOR_DTP92_RC_BAD_COMMAND) {
 		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_SENSOR_ERROR,
@@ -148,14 +148,15 @@ cd_sensor_dtp94_cm2 (CdSensorDtp94Private *priv,
 	}
 
 	/* no success */
-	if (memcmp (buffer, "<00>", reply_read) != 0) {
+	if (rc != CD_SENSOR_DTP92_RC_OK) {
 		ret = FALSE;
 		buffer[reply_read] = '\0';
 		g_set_error (error,
 			     CD_SENSOR_ERROR,
 			     CD_SENSOR_ERROR_INTERNAL,
-			     "unexpected response from device: %s",
-			     (const gchar *) buffer);
+			     "unexpected response from device: %s [%s]",
+			     (const gchar *) buffer,
+			     cd_sensor_dtp94_rc_to_string (rc));
 		goto out;
 	}
 out:
@@ -367,28 +368,42 @@ cd_sensor_dtp94_startup (CdSensor *sensor, GError **error)
 	gsize reply_read;
 	guint8 buffer[128];
 
-	/* no idea what these mean */
+	/* reset device */
 	ret = cd_sensor_dtp94_cmd (priv, "0PR\r", error);
 	if (!ret)
 		goto out;
+
+	/* reset device again */
 	ret = cd_sensor_dtp94_cmd (priv, "0PR\r", error);
 	if (!ret)
 		goto out;
+
+	/* set color data separator to '\t' */
 	ret = cd_sensor_dtp94_cmd (priv, "0207CF\r", error);
 	if (!ret)
 		goto out;
+
+	/* set delimeter to CR */
 	ret = cd_sensor_dtp94_cmd (priv, "0008CF\r", error);
 	if (!ret)
 		goto out;
+
+	/* set extra digit resolution */
 	ret = cd_sensor_dtp94_cmd (priv, "010ACF\r", error);
 	if (!ret)
 		goto out;
+
+	/* no black point subtraction */
 	ret = cd_sensor_dtp94_cmd (priv, "0019CF\r", error);
 	if (!ret)
 		goto out;
+
+	/* set to factory calibration */
 	ret = cd_sensor_dtp94_cmd (priv, "EFC\r", error);
 	if (!ret)
 		goto out;
+
+	/* unknown command */
 	ret = cd_sensor_dtp94_cmd (priv, "0117CF\r", error);
 	if (!ret)
 		goto out;

@@ -56,6 +56,8 @@ cd_parse_beagle_SOURCES =				\
 	cd-sensor-munki-private.h			\
 	cd-sensor-huey-private.c			\
 	cd-sensor-huey-private.h			\
+	cd-sensor-dtp94-private.c			\
+	cd-sensor-dtp94-private.h			\
 	cd-parse-beagle.c
 
 cd_parse_beagle_LDADD =					\
@@ -146,6 +148,8 @@ libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
 
 libcolord_sensor_dtp94_la_SOURCES =			\
+	cd-sensor-dtp94-private.c			\
+	cd-sensor-dtp94-private.h			\
 	cd-sensor-dtp94.c				\
 	cd-sensor-dtp94.h				\
 	cd-buffer.c
