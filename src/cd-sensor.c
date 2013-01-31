@@ -1012,7 +1012,7 @@ cd_sensor_get_variant_for_caps (guint64 caps)
 
 	g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
 	for (i = 0; i < CD_SENSOR_CAP_LAST; i++) {
-		if ((caps & (1 << i)) == 0)
+		if (!cd_bitfield_contain (caps, i))
 			continue;
 		g_variant_builder_add (&builder, "s",
 				       cd_sensor_cap_to_string (i));
@@ -1223,7 +1223,7 @@ cd_sensor_set_from_device (CdSensor *sensor,
 		for (i = 0; caps_str[i] != NULL; i++) {
 			cap = cd_sensor_cap_from_string (caps_str[i]);
 			if (cap != CD_SENSOR_CAP_UNKNOWN) {
-				priv->caps |= 1 << cap;
+				cd_bitfield_add (priv->caps, cap);
 			} else {
 				g_warning ("Unknown sensor cap %s on %s",
 					   caps_str[i], kind_str);

@@ -465,6 +465,13 @@ typedef enum {
 #define CD_SENSOR_METADATA_IMAGE_CALIBRATE	"ImageCalibrate"
 #define CD_SENSOR_METADATA_IMAGE_SCREEN		"ImageScreen"
 
+/* convenience functions as it's easy to forget the bitwise operators */
+#define cd_bitfield_add(bitfield,tmp)		do { ((bitfield) |= (cd_bitfield_value(tmp))); } while (0)
+#define cd_bitfield_remove(bitfield,tmp)	do { ((bitfield) &= ~(cd_bitfield_value(tmp))); } while (0)
+#define cd_bitfield_contain(bitfield,tmp)	(((bitfield) & (cd_bitfield_value(tmp))) > 0)
+#define cd_bitfield_value(tmp)			((guint64) 1 << (tmp))
+
+guint64		 cd_bitfield_from_enums			(gint			 value, ...);
 const gchar	*cd_device_kind_to_string		(CdDeviceKind		 kind_enum);
 CdDeviceKind	 cd_device_kind_from_string		(const gchar		*kind);
 const gchar	*cd_profile_kind_to_string		(CdProfileKind		 profile_kind);

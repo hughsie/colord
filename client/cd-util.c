@@ -518,7 +518,7 @@ cd_util_show_sensor (CdSensor *sensor)
 	caps = cd_sensor_get_caps (sensor);
 	caps_str = g_string_new ("");
 	for (i = 0; i < CD_SENSOR_CAP_LAST; i++) {
-		ret = (caps & (1 << i)) > 0;
+		ret = cd_bitfield_contain (caps, i);
 		if (ret) {
 			g_string_append_printf (caps_str, "%s, ",
 						cd_util_sensor_cap_to_string (i));

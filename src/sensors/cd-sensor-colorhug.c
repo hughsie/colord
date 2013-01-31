@@ -864,7 +864,7 @@ gboolean
 cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
 	CdSensorColorhugPrivate *priv;
-	guint64 caps = CD_SENSOR_CAP_LCD;
+	guint64 caps = cd_bitfield_from_enums (CD_SENSOR_CAP_LCD, -1);
 	g_object_set (sensor,
 		      "native", TRUE,
 		      "kind", CD_SENSOR_KIND_COLORHUG,

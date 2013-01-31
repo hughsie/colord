@@ -999,3 +999,35 @@ cd_client_error_from_string (const gchar *error_desc)
 		return CD_CLIENT_ERROR_FILE_INVALID;
 	return CD_CLIENT_ERROR_LAST;
 }
+
+/**
+ * cd_bitfield_from_enums: (skip)
+ * @value: the values we want to add to the bitfield
+ *
+ * Return value: The return bitfield, or 0 if invalid
+ *
+ * Since: 0.1.26
+ **/
+guint64
+cd_bitfield_from_enums (gint value, ...)
+{
+	va_list args;
+	guint i;
+	gint value_temp;
+	guint64 values;
+
+	/* we must query at least one thing */
+	values = cd_bitfield_value (value);
+
+	/* process the valist */
+	va_start (args, value);
+	for (i=0;; i++) {
+		value_temp = va_arg (args, gint);
+		if (value_temp == -1)
+			break;
+		values += cd_bitfield_value (value_temp);
+	}
+	va_end (args);
+
+	return values;
+}
