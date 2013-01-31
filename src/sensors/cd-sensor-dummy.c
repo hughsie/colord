@@ -158,13 +158,12 @@ gboolean
 cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
 	CdSensorDummyPrivate *priv;
-	const gchar *caps[] = { "lcd",
-				"crt",
-				"projector",
-				"spot",
-				"printer",
-				"ambient",
-				NULL };
+	guint64 caps = CD_SENSOR_CAP_LCD |
+		       CD_SENSOR_CAP_CRT |
+		       CD_SENSOR_CAP_PROJECTOR |
+		       CD_SENSOR_CAP_SPOT |
+		       CD_SENSOR_CAP_PRINTER |
+		       CD_SENSOR_CAP_AMBIENT;
 	g_object_set (sensor,
 		      "id", "dummy",
 		      "kind", CD_SENSOR_KIND_DUMMY,

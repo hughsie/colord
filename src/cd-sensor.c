@@ -93,7 +93,7 @@ struct _CdSensorPrivate
 	gboolean			 native;
 	gboolean			 embedded;
 	gboolean			 locked;
-	gchar				**caps;
+	guint64				 caps;
 	gchar				*object_path;
 	guint				 watcher_id;
 	GDBusConnection			*connection;
@@ -1002,6 +1002,25 @@ cd_sensor_get_nullable_for_string (const gchar *value)
 }
 
 /**
+ * cd_sensor_get_variant_for_caps:
+ **/
+static GVariant *
+cd_sensor_get_variant_for_caps (guint64 caps)
+{
+	guint i;
+	GVariantBuilder builder;
+
+	g_variant_builder_init (&builder, G_VARIANT_TYPE ("as"));
+	for (i = 0; i < CD_SENSOR_CAP_LAST; i++) {
+		if ((caps & (1 << i)) == 0)
+			continue;
+		g_variant_builder_add (&builder, "s",
+				       cd_sensor_cap_to_string (i));
+	}
+	return g_variant_new ("as", &builder);
+}
+
+/**
  * cd_sensor_dbus_get_property:
  **/
 static GVariant *
@@ -1057,7 +1076,7 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_CAPABILITIES) == 0) {
-		retval = g_variant_new_strv ((const gchar * const*) priv->caps, -1);
+		retval = cd_sensor_get_variant_for_caps (priv->caps);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_OPTIONS) == 0) {
@@ -1138,6 +1157,7 @@ cd_sensor_set_from_device (CdSensor *sensor,
 			   GUdevDevice *device,
 			   GError **error)
 {
+	CdSensorCap cap;
 	CdSensorPrivate *priv = sensor->priv;
 	const gchar *images[] = { "attach", "calibrate", "screen", NULL };
 	const gchar *images_md[] = { CD_SENSOR_METADATA_IMAGE_ATTACH,
@@ -1152,7 +1172,6 @@ cd_sensor_set_from_device (CdSensor *sensor,
 	gboolean use_database;
 	gchar *tmp;
 	guint i;
-	guint idx = 0;
 
 	/* only use the database if we found both the VID and the PID */
 	use_database = g_udev_device_has_property (device, "ID_VENDOR_FROM_DATABASE") &&
@@ -1202,15 +1221,15 @@ cd_sensor_set_from_device (CdSensor *sensor,
 						       "COLORD_SENSOR_CAPS");
 	if (caps_str != NULL) {
 		for (i = 0; caps_str[i] != NULL; i++) {
-			if (cd_sensor_cap_from_string (caps_str[i]) != CD_SENSOR_CAP_UNKNOWN) {
-				priv->caps[idx++] = g_strdup (caps_str[i]);
+			cap = cd_sensor_cap_from_string (caps_str[i]);
+			if (cap != CD_SENSOR_CAP_UNKNOWN) {
+				priv->caps |= 1 << cap;
 			} else {
 				g_warning ("Unknown sensor cap %s on %s",
 					   caps_str[i], kind_str);
 			}
 		}
 	}
-	priv->caps[idx] = NULL;
 
 	/* is the sensor embeded, e.g. on the W700? */
 	ret = g_udev_device_get_property_as_boolean (device,
@@ -1231,15 +1250,6 @@ cd_sensor_set_from_device (CdSensor *sensor,
 			g_debug ("helper image %s not found", tmp);
 			g_free (tmp);
 		}
-	}
-
-	/* no caps */
-	if (idx == 0) {
-		ret = FALSE;
-		g_set_error (error, 1, 0,
-			     "device %s - %s  had no reported caps",
-			     vendor_tmp, model_tmp);
-		goto out;
 	}
 
 	/* save device path */
@@ -1371,7 +1381,7 @@ cd_sensor_set_property (GObject *object, guint prop_id, const GValue *value, GPa
 		cd_sensor_set_kind (sensor, g_value_get_uint (value));
 		break;
 	case PROP_CAPS:
-		priv->caps = g_strdupv (g_value_get_boxed (value));
+		priv->caps = g_value_get_uint64 (value);
 		break;
 	case PROP_SERIAL:
 		cd_sensor_set_serial (sensor, g_value_get_string (value));
@@ -1437,9 +1447,9 @@ cd_sensor_class_init (CdSensorClass *klass)
 	/**
 	 * CdSensor:caps:
 	 */
-	pspec = g_param_spec_boxed ("caps", NULL, NULL,
-				    G_TYPE_STRV,
-				    G_PARAM_READWRITE);
+	pspec = g_param_spec_uint64 ("caps", NULL, NULL,
+				     0, G_MAXUINT64, 0,
+				     G_PARAM_READWRITE);
 	g_object_class_install_property (object_class, PROP_CAPS, pspec);
 
 	/**
@@ -1476,7 +1486,6 @@ static void
 cd_sensor_init (CdSensor *sensor)
 {
 	sensor->priv = CD_SENSOR_GET_PRIVATE (sensor);
-	sensor->priv->caps = g_new0 (gchar *, CD_SENSOR_CAP_LAST);
 	sensor->priv->state = CD_SENSOR_STATE_IDLE;
 	sensor->priv->mode = CD_SENSOR_CAP_UNKNOWN;
 	sensor->priv->options = g_hash_table_new_full (g_str_hash,
@@ -1507,7 +1516,6 @@ cd_sensor_finalize (GObject *object)
 	}
 	if (priv->watcher_id != 0)
 		g_bus_unwatch_name (priv->watcher_id);
-	g_strfreev (priv->caps);
 	g_free (priv->model);
 	g_free (priv->vendor);
 	g_free (priv->serial);

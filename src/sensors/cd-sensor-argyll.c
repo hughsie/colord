@@ -510,11 +510,8 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
 	gboolean ret;
 	CdSensorArgyllPrivate *priv;
-	const gchar *caps[] = { "lcd",
-				"crt",
-				NULL };
 	g_object_set (sensor,
-		      "caps", caps,
+		      "caps", CD_SENSOR_CAP_LCD | CD_SENSOR_CAP_CRT,
 		      "native", FALSE,
 		      NULL);
 
