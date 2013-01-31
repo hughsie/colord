@@ -419,7 +419,15 @@ cd_sensor_huey_get_ambient_thread_cb (GSimpleAsyncResult *res,
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
 
 	/* hit hardware */
-	request[2] = (state->current_cap == CD_SENSOR_CAP_LCD) ? 0x00 : 0x02;
+	switch (state->current_cap) {
+	case CD_SENSOR_CAP_CRT:
+	case CD_SENSOR_CAP_PLASMA:
+		request[2] = 0x02;
+		break;
+	default:
+		request[2] = 0x00;
+		break;
+	}
 	ret = cd_sensor_huey_send_data (priv,
 					request, 8,
 					reply, 8,
@@ -655,12 +663,16 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 		values.B = 0.0f;
 
 	/* we use different calibration matrices for each output type */
-	if (state->current_cap == CD_SENSOR_CAP_LCD) {
-		g_debug ("using LCD calibration matrix");
-		device_calibration = &priv->calibration_lcd;
-	} else {
+	switch (state->current_cap) {
+	case CD_SENSOR_CAP_CRT:
+	case CD_SENSOR_CAP_PLASMA:
 		g_debug ("using CRT calibration matrix");
 		device_calibration = &priv->calibration_crt;
+		break;
+	default:
+		g_debug ("using LCD calibration matrix");
+		device_calibration = &priv->calibration_lcd;
+		break;
 	}
 
 	/* convert from device RGB to XYZ */
@@ -713,9 +725,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 						     cd_sensor_huey_get_ambient_thread_cb,
 						     0,
 						     (GCancellable*) tmp);
-	} else if (cap == CD_SENSOR_CAP_LCD ||
-		   cap == CD_SENSOR_CAP_LED ||
-		   cap == CD_SENSOR_CAP_CRT) {
+	} else {
 		g_simple_async_result_run_in_thread (G_SIMPLE_ASYNC_RESULT (state->res),
 						     cd_sensor_huey_sample_thread_cb,
 						     0,

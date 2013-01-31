@@ -197,15 +197,24 @@ out:
 static const gchar *
 cd_sensor_get_y_arg_for_cap (CdSensorCap cap)
 {
-	if (cap == CD_SENSOR_CAP_LCD)
-		return "-yl";
-	if (cap == CD_SENSOR_CAP_CRT)
-		return "-yc";
-	if (cap == CD_SENSOR_CAP_PROJECTOR)
-		return "-yp";
-	if (cap == CD_SENSOR_CAP_LED)
-		return "-yl";
-	return NULL;
+	const gchar *arg = NULL;
+
+	switch (cap) {
+	case CD_SENSOR_CAP_LCD:
+	case CD_SENSOR_CAP_LED:
+		arg = "-yl";
+		break;
+	case CD_SENSOR_CAP_CRT:
+	case CD_SENSOR_CAP_PLASMA:
+		arg = "-yc";
+		break;
+	case CD_SENSOR_CAP_PROJECTOR:
+		arg = "-yp";
+		break;
+	default:
+		break;
+	}
+	return arg;
 }
 
 void

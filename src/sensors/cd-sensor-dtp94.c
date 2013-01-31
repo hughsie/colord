@@ -236,19 +236,23 @@ cd_sensor_dtp94_sample_thread_cb (GSimpleAsyncResult *res,
 	gsize reply_read;
 
 	/* set hardware support */
-	if (state->current_cap == CD_SENSOR_CAP_CRT) {
+	switch (state->current_cap) {
+	case CD_SENSOR_CAP_CRT:
+	case CD_SENSOR_CAP_PLASMA:
 		/* CRT = 01 */
 		ret = cd_sensor_dtp94_cmd (priv, "0116CF\r", &error);
-	} else if (state->current_cap == CD_SENSOR_CAP_LCD) {
+		break;
+	case CD_SENSOR_CAP_LCD:
 		/* LCD = 02 */
 		ret = cd_sensor_dtp94_cmd (priv, "0216CF\r", &error);
-	} else {
+		break;
+	default:
 		g_set_error (&error,
 			     CD_SENSOR_ERROR,
 			     CD_SENSOR_ERROR_NO_SUPPORT,
 			     "DTP94 cannot measure in %s mode",
 			     cd_sensor_cap_to_string (state->current_cap));
-		goto out;
+		break;
 	}
 	if (!ret) {
 		cd_sensor_dtp94_get_sample_state_finish (state, error);

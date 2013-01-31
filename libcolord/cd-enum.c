@@ -504,6 +504,8 @@ cd_sensor_cap_to_string (CdSensorCap sensor_cap)
 		return "calibration";
 	if (sensor_cap == CD_SENSOR_CAP_LED)
 		return "led";
+	if (sensor_cap == CD_SENSOR_CAP_PLASMA)
+		return "plasma";
 	return "unknown";
 }
 
@@ -534,6 +536,8 @@ cd_sensor_cap_from_string (const gchar *sensor_cap)
 		return CD_SENSOR_CAP_CALIBRATION;
 	if (g_strcmp0 (sensor_cap, "led") == 0)
 		return CD_SENSOR_CAP_LED;
+	if (g_strcmp0 (sensor_cap, "plasma") == 0)
+		return CD_SENSOR_CAP_PLASMA;
 	return CD_SENSOR_CAP_UNKNOWN;
 }
 

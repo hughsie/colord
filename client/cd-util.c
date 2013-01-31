@@ -386,6 +386,12 @@ cd_util_sensor_cap_to_string (CdSensorCap sensor_cap)
 		 * LED stands for 'Light Emitted Diode' */
 		return _("LED Generic");
 	}
+	if (sensor_cap == CD_SENSOR_CAP_PLASMA) {
+		/* TRANSLATORS: this is the display technology,
+		 * sometimes called PDP displays. See
+		 * http://en.wikipedia.org/wiki/Plasma_display */
+		return _("Plasma");
+	}
 	/* TRANSLATORS: this an unknown display technology */
 	return _("Unknown");
 }

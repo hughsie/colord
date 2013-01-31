@@ -181,6 +181,7 @@ typedef enum {
 	CD_SENSOR_CAP_AMBIENT,
 	CD_SENSOR_CAP_CALIBRATION,
 	CD_SENSOR_CAP_LED,		/* Since: 0.1.17 */
+	CD_SENSOR_CAP_PLASMA,		/* Since: 0.1.29 */
 	CD_SENSOR_CAP_LAST
 } CdSensorCap;
 
