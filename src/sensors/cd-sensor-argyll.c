@@ -510,10 +510,7 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
 	gboolean ret;
 	CdSensorArgyllPrivate *priv;
-	guint64 caps = CD_SENSOR_CAP_LCD |
-		       CD_SENSOR_CAP_CRT;
 	g_object_set (sensor,
-		      "caps", caps,
 		      "native", FALSE,
 		      NULL);
 
