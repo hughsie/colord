@@ -378,15 +378,13 @@ cd_util_sensor_cap_to_string (CdSensorCap sensor_cap)
 	}
 	if (sensor_cap == CD_SENSOR_CAP_LCD) {
 		/* TRANSLATORS: this is the display technology,
-		 * where LCD stands for 'Liquid Crystal Display'
-		 * and CCFL stands for 'Cold Cathode Fluorescent Lamp' */
-		return _("LCD CCFL");
+		 * where LCD stands for 'Liquid Crystal Display' */
+		return _("LCD Generic");
 	}
 	if (sensor_cap == CD_SENSOR_CAP_LED) {
 		/* TRANSLATORS: this is the display technology where
-		 * RGB stands for 'Red Green Blue' and LED stands for
-		 * 'Light Emitted Diode' */
-		return _("LCD RGB LED");
+		 * LED stands for 'Light Emitted Diode' */
+		return _("LED Generic");
 	}
 	/* TRANSLATORS: this an unknown display technology */
 	return _("Unknown");
