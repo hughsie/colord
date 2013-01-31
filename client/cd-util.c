@@ -343,6 +343,54 @@ cd_util_idle_loop_quit_cb (gpointer user_data)
 	g_main_loop_quit (loop);
 	return FALSE;
 }
+/**
+ * cd_util_sensor_cap_to_string:
+ **/
+static const gchar *
+cd_util_sensor_cap_to_string (CdSensorCap sensor_cap)
+{
+	if (sensor_cap == CD_SENSOR_CAP_CRT) {
+		/* TRANSLATORS: this is the display technology,
+		 * and an abbreviation for "Cathode Ray Tube" */
+		return _("CRT");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_PRINTER) {
+		/* TRANSLATORS: this is a desktop printer */
+		return _("Printer");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_PROJECTOR) {
+		/* TRANSLATORS: a beamer used for presentations */
+		return _("Projector");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_SPOT) {
+		/* TRANSLATORS: a spot measurement, e.g.
+		 * getting the color from a color swatch */
+		return _("Spot");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_AMBIENT) {
+		/* TRANSLATORS: the sensor can get a reading of the
+		 * ambient light level */
+		return _("Ambient");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_CALIBRATION) {
+		/* TRANSLATORS: this is the display technology */
+		return _("Calibration");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_LCD) {
+		/* TRANSLATORS: this is the display technology,
+		 * where LCD stands for 'Liquid Crystal Display'
+		 * and CCFL stands for 'Cold Cathode Fluorescent Lamp' */
+		return _("LCD CCFL");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_LED) {
+		/* TRANSLATORS: this is the display technology where
+		 * RGB stands for 'Red Green Blue' and LED stands for
+		 * 'Light Emitted Diode' */
+		return _("LCD RGB LED");
+	}
+	/* TRANSLATORS: this an unknown display technology */
+	return _("Unknown");
+}
 
 /**
  * cd_util_show_sensor:
@@ -356,10 +404,13 @@ cd_util_show_sensor (CdSensor *sensor)
 	gboolean ret;
 	gchar *str_tmp;
 	GError *error = NULL;
+	GString *caps_str = NULL;
 	GHashTable *options = NULL;
 	GList *l;
 	GList *list = NULL;
 	GMainLoop *loop = NULL;
+	guint caps;
+	guint i;
 	GVariant *value_tmp;
 	GHashTable *metadata = NULL;
 
@@ -463,29 +514,21 @@ cd_util_show_sensor (CdSensor *sensor)
 	cd_util_print_field (_("Locked"),
 			     cd_sensor_get_locked (sensor) ? "Yes" : "No");
 
-	/* TRANSLATORS: if the sensor supports calibrating an LCD display */
-	cd_util_print_field (_("LCD"),
-			     cd_sensor_has_cap (sensor, CD_SENSOR_CAP_LCD) ? "Yes" : "No");
-
-	/* TRANSLATORS: if the sensor supports calibrating a CRT display */
-	cd_util_print_field (_("CRT"),
-			     cd_sensor_has_cap (sensor, CD_SENSOR_CAP_CRT) ? "Yes" : "No");
-
-	/* TRANSLATORS: if the sensor supports calibrating a printer */
-	cd_util_print_field (_("Printer"),
-			     cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PRINTER) ? "Yes" : "No");
-
-	/* TRANSLATORS: if the sensor supports spot measurements */
-	cd_util_print_field (_("Spot"),
-			     cd_sensor_has_cap (sensor, CD_SENSOR_CAP_SPOT) ? "Yes" : "No");
-
-	/* TRANSLATORS: if the sensor supports calibrating a projector */
-	cd_util_print_field (_("Projector"),
-			     cd_sensor_has_cap (sensor, CD_SENSOR_CAP_PROJECTOR) ? "Yes" : "No");
-
-	/* TRANSLATORS: if the sensor supports getting the ambient light level */
-	cd_util_print_field (_("Ambient"),
-			     cd_sensor_has_cap (sensor, CD_SENSOR_CAP_AMBIENT) ? "Yes" : "No");
+	/* get sensor caps */
+	caps = cd_sensor_get_caps (sensor);
+	caps_str = g_string_new ("");
+	for (i = 0; i < CD_SENSOR_CAP_LAST; i++) {
+		ret = (caps & (1 << i)) > 0;
+		if (ret) {
+			g_string_append_printf (caps_str, "%s, ",
+						cd_util_sensor_cap_to_string (i));
+		}
+	}
+	if (caps_str->len > 0)
+		g_string_set_size (caps_str, caps_str->len - 2);
+	/* TRANSLATORS: if the sensor supports calibrating different
+	 * display types, e.g. LCD, LED, Projector */
+	cd_util_print_field (_("Capabilities"), caps_str->str);
 
 	/* unlock */
 	ret = cd_sensor_unlock_sync (sensor,
@@ -501,6 +544,8 @@ out:
 	if (metadata != NULL)
 		g_hash_table_unref (metadata);
 	g_list_free (list);
+	if (caps_str != NULL)
+		g_string_free (caps_str, TRUE);
 	if (options != NULL)
 		g_hash_table_unref (options);
 	if (loop != NULL)
