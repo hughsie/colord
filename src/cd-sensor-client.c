@@ -81,21 +81,19 @@ static gboolean
 cd_sensor_client_add (CdSensorClient *sensor_client,
 		      GUdevDevice *device)
 {
-	gboolean ignore;
-	gboolean ret;
 	CdSensor *sensor = NULL;
 	const gchar *device_file;
+	const gchar *tmp;
+	gboolean ret = FALSE;
 	GError *error = NULL;
 
 	/* interesting device? */
-	ret = g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR");
-	if (!ret)
+	tmp = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
+	if (tmp == NULL)
 		goto out;
-	ignore = g_udev_device_get_property_as_boolean (device, "COLORD_IGNORE");
-	if (ignore) {
-		ret = FALSE;
+	tmp = g_udev_device_get_property (device, "COLORD_IGNORE");
+	if (tmp != NULL)
 		goto out;
-	}
 
 	/* actual device? */
 	device_file = g_udev_device_get_device_file (device);
@@ -143,19 +141,19 @@ out:
 /**
  * cd_sensor_client_remove:
  **/
-static gboolean
+static void
 cd_sensor_client_remove (CdSensorClient *sensor_client,
 			 GUdevDevice *device)
 {
 	CdSensor *sensor;
 	const gchar *device_file;
 	const gchar *device_path;
-	gboolean ret;
+	const gchar *tmp;
 	guint i;
 
 	/* interesting device? */
-	ret = g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR");
-	if (!ret)
+	tmp = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
+	if (tmp == NULL)
 		goto out;
 
 	/* actual device? */
@@ -180,7 +178,7 @@ cd_sensor_client_remove (CdSensorClient *sensor_client,
 	/* nothing found */
 	g_warning ("removed CM sensor that was never added");
 out:
-	return ret;
+	return;
 }
 
 /**
@@ -198,10 +196,10 @@ cd_sensor_client_uevent_cb (GUdevClient *gudev_client,
 	if (g_strcmp0 (action, "remove") == 0) {
 		g_debug ("CdSensorClient: remove %s",
 			 g_udev_device_get_sysfs_path (udev_device));
-		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR");
+		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR_KIND");
 		if (ret) {
 			cd_sensor_client_remove (sensor_client,
-						      udev_device);
+						 udev_device);
 			goto out;
 		}
 		goto out;
@@ -211,10 +209,10 @@ cd_sensor_client_uevent_cb (GUdevClient *gudev_client,
 	if (g_strcmp0 (action, "add") == 0) {
 		g_debug ("CdSensorClient: add %s",
 			 g_udev_device_get_sysfs_path (udev_device));
-		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR");
+		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR_KIND");
 		if (ret) {
 			cd_sensor_client_add (sensor_client,
-						   udev_device);
+					      udev_device);
 			goto out;
 		}
 		goto out;
