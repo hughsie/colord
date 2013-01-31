@@ -616,9 +616,12 @@ gboolean
 cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
 	CdSensorDtp94Private *priv;
+	guint64 caps = CD_SENSOR_CAP_LCD |
+		       CD_SENSOR_CAP_CRT;
 	g_object_set (sensor,
 		      "native", TRUE,
 		      "kind", CD_SENSOR_KIND_DTP94,
+		      "caps", caps,
 		      NULL);
 	/* create private data */
 	priv = g_new0 (CdSensorDtp94Private, 1);

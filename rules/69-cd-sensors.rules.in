@@ -28,7 +28,7 @@ ATTRS{idVendor}=="0765", ATTRS{idProduct}=="d020", ENV{COLORD_SENSOR}="1", ENV{C
 ATTRS{idVendor}=="0765", ATTRS{idProduct}=="d092", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="unknown", ENV{COLORD_SENSOR_CAPS}="crt"
 
 # DTP94
-ATTRS{idVendor}=="0765", ATTRS{idProduct}=="d094", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="dtp94", ENV{COLORD_SENSOR_CAPS}="lcd crt"
+ATTRS{idVendor}=="0765", ATTRS{idProduct}=="d094", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="dtp94"
 
 # MonacoOPTIX (Same as i1 Display 1)
 ATTRS{idVendor}=="0670", ATTRS{idProduct}=="0001", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="i1-pro", ENV{COLORD_SENSOR_CAPS}="lcd crt"
@@ -64,13 +64,13 @@ ATTRS{idVendor}=="085c", ATTRS{idProduct}=="0300", ENV{COLORD_SENSOR}="1", ENV{C
 ATTRS{idVendor}=="085c", ATTRS{idProduct}=="0400", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="spyder4", ENV{COLORD_SENSOR_CAPS}="lcd crt ambient"
 
 # Huey
-ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2005", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="huey", ENV{COLORD_SENSOR_CAPS}="lcd crt ambient"
+ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2005", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="huey"
 
 # Huey, built into Thinkpad w700
-ATTRS{idVendor}=="0765", ATTRS{idProduct}=="5001", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="huey", ENV{COLORD_SENSOR_CAPS}="lcd ambient", ENV{COLORD_SENSOR_EMBEDDED}="1"
+ATTRS{idVendor}=="0765", ATTRS{idProduct}=="5001", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="huey", ENV{COLORD_SENSOR_EMBEDDED}="1"
 
 # ColorHug (legacy)
-ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="f8da", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_SENSOR_CAPS}="lcd"
+ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="f8da", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug"
 
 # ColorHug
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1000", ENV{COLORD_SENSOR}="1", ENV{COLORD_SENSOR_KIND}="colorhug", ENV{COLORD_IGNORE}="1"

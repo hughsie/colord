@@ -800,9 +800,13 @@ gboolean
 cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
 	CdSensorMunkiPrivate *priv;
+	guint64 caps = CD_SENSOR_CAP_LCD |
+		       CD_SENSOR_CAP_CRT |
+		       CD_SENSOR_CAP_AMBIENT;
 	g_object_set (sensor,
 		      "native", TRUE,
 		      "kind", CD_SENSOR_KIND_COLOR_MUNKI_PHOTO,
+		      "caps", caps,
 		      NULL);
 	/* create private data */
 	priv = g_new0 (CdSensorMunkiPrivate, 1);
