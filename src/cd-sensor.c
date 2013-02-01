@@ -89,7 +89,9 @@ struct _CdSensorPrivate
 	gchar				*serial;
 	gchar				*model;
 	gchar				*vendor;
-	gchar				*device_path;
+#ifdef HAVE_GUDEV
+	GUdevDevice			*device;
+#endif
 	gboolean			 native;
 	gboolean			 embedded;
 	gboolean			 locked;
@@ -1145,7 +1147,11 @@ out:
 const gchar *
 cd_sensor_get_device_path (CdSensor *sensor)
 {
-	return sensor->priv->device_path;
+#ifdef HAVE_GUDEV
+	return g_udev_device_get_sysfs_path (sensor->priv->device);
+#else
+	return NULL;
+#endif
 }
 
 /**
@@ -1162,6 +1168,15 @@ cd_sensor_add_cap (CdSensor *sensor, CdSensorCap cap)
 }
 
 #ifdef HAVE_GUDEV
+/**
+ * cd_sensor_get_device:
+ **/
+GUdevDevice *
+cd_sensor_get_device (CdSensor *sensor)
+{
+	return sensor->priv->device;
+}
+
 /**
  * cd_sensor_set_from_device:
  **/
@@ -1265,8 +1280,9 @@ cd_sensor_set_from_device (CdSensor *sensor,
 		}
 	}
 
-	/* save device path */
-	priv->device_path = g_strdup (g_udev_device_get_sysfs_path (device));
+	/* some properties might not be valid in the GUdevDevice if the
+	 * device changes as this is only a snapshot */
+	priv->device = g_object_ref (device);
 
 	/* success */
 	ret = TRUE;
@@ -1533,10 +1549,13 @@ cd_sensor_finalize (GObject *object)
 	g_free (priv->vendor);
 	g_free (priv->serial);
 	g_free (priv->id);
-	g_free (priv->device_path);
 	g_free (priv->object_path);
 	g_hash_table_unref (priv->options);
 	g_hash_table_unref (priv->metadata);
+#ifdef HAVE_GUDEV
+	if (priv->device != NULL)
+		g_object_unref (priv->device);
+#endif
 
 	G_OBJECT_CLASS (cd_sensor_parent_class)->finalize (object);
 }
