@@ -29,7 +29,9 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <sys/types.h>
 #include <time.h>
+#include <pwd.h>
 
 #include "cd-client.h"
 #include "cd-client-sync.h"
@@ -1985,12 +1987,21 @@ colord_device_async_func (void)
 	gboolean ret;
 	GError *error = NULL;
 	GHashTable *device_props;
+	const gchar *device_name = "device_async_dave";
+	gchar *device_path;
+	struct passwd *user_details;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
 		g_print ("[DISABLED] ");
 		return;
 	}
+
+	user_details = getpwuid(getuid());
+	device_path = g_strdup_printf("/org/freedesktop/ColorManager/devices/%s_%s_%d",
+				      device_name,
+				      user_details->pw_name,
+				      user_details->pw_uid);
 
 	client = cd_client_new ();
 
@@ -2005,7 +2016,7 @@ colord_device_async_func (void)
 			     g_strdup (CD_DEVICE_PROPERTY_KIND),
 			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
-					       "device_async_dave",
+					       device_name,
 					       CD_OBJECT_SCOPE_TEMP,
 					       device_props,
 					       NULL,
@@ -2024,7 +2035,7 @@ colord_device_async_func (void)
 	g_debug ("connected to device in %f", g_test_timer_elapsed ());
 
 	/* set a property in another instance */
-	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave_hughsie_1000");
+	device_tmp = cd_device_new_with_object_path (device_path);
 	ret = cd_device_connect_sync (device_tmp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -2034,13 +2045,14 @@ colord_device_async_func (void)
 	g_object_unref (device_tmp);
 
 	/* delete known device */
-	device_tmp = cd_device_new_with_object_path ("/org/freedesktop/ColorManager/devices/device_async_dave_hughsie_1000");
+	device_tmp = cd_device_new_with_object_path (device_path);
 	ret = cd_client_delete_device_sync (client, device_tmp, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 	g_object_unref (device_tmp);
 
 	g_object_unref (client);
+	g_free(device_path);
 }
 
 static void
