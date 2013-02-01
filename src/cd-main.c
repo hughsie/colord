@@ -2126,18 +2126,25 @@ cd_main_plugin_device_removed_cb (CdPlugin *plugin,
 /**
  * cd_main_load_plugin:
  */
-static void
-cd_main_load_plugin (CdMainPrivate *priv, const gchar *filename)
+static gboolean
+cd_main_load_plugin (CdMainPrivate *priv,
+		     const gchar *filename,
+		     GError **error)
 {
+	CdPluginConfigEnabledFunc plugin_config_enabled = NULL;
 	CdPluginGetDescFunc plugin_desc = NULL;
 	CdPlugin *plugin;
-	gboolean ret;
+	gboolean ret = FALSE;
 	GModule *module;
 
+	/* open the plugin and import all symbols */
 	module = g_module_open (filename, 0);
 	if (module == NULL) {
-		g_warning ("failed to open plugin %s: %s",
-			   filename, g_module_error ());
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_FILE_INVALID,
+			     "failed to open: %s",
+			     g_module_error ());
 		goto out;
 	}
 
@@ -2146,9 +2153,28 @@ cd_main_load_plugin (CdMainPrivate *priv, const gchar *filename)
 			       "cd_plugin_get_description",
 			       (gpointer *) &plugin_desc);
 	if (!ret) {
-		g_warning ("Plugin %s requires description", filename);
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_INTERNAL,
+				     "plugin requires description");
 		g_module_close (module);
 		goto out;
+	}
+
+	/* give the module the option to opt-out */
+	ret = g_module_symbol (module,
+			       "cd_plugin_config_enabled",
+			       (gpointer *) &plugin_config_enabled);
+	if (ret) {
+		if (!plugin_config_enabled (priv->config)) {
+			ret = FALSE;
+			g_set_error_literal (error,
+					     CD_CLIENT_ERROR,
+					     CD_CLIENT_ERROR_NOT_SUPPORTED,
+					     "plugin refused to load");
+			g_module_close (module);
+			goto out;
+		}
 	}
 
 	/* print what we know */
@@ -2157,12 +2183,14 @@ cd_main_load_plugin (CdMainPrivate *priv, const gchar *filename)
 	plugin->module = module;
 	plugin->device_added = cd_main_plugin_device_added_cb;
 	plugin->device_removed = cd_main_plugin_device_removed_cb;
-	g_debug ("opened plugin %s: %s", filename, plugin_desc ());
 
 	/* add to array */
 	g_ptr_array_add (priv->plugins, plugin);
+
+	/* success */
+	ret = TRUE;
 out:
-	return;
+	return ret;
 }
 
 /**
@@ -2172,6 +2200,7 @@ static void
 cd_main_load_plugins (CdMainPrivate *priv)
 {
 	const gchar *filename_tmp;
+	gboolean ret;
 	gchar *filename_plugin;
 	gchar *path;
 	GDir *dir;
@@ -2198,8 +2227,25 @@ cd_main_load_plugins (CdMainPrivate *priv)
 		filename_plugin = g_build_filename (path,
 						    filename_tmp,
 						    NULL);
-		cd_main_load_plugin (priv, filename_plugin);
-		syslog (LOG_INFO, "Loading plugin %s", filename_tmp);
+		ret = cd_main_load_plugin (priv, filename_plugin, &error);
+		if (ret) {
+			syslog (LOG_INFO,
+				"loaded plugin %s",
+				filename_tmp);
+		} else {
+			if (g_error_matches (error,
+					     CD_CLIENT_ERROR,
+					     CD_CLIENT_ERROR_NOT_SUPPORTED)) {
+				g_debug ("CdMain: %s", error->message);
+			} else {
+				g_warning ("CdMain: %s", error->message);
+			}
+			syslog (LOG_INFO,
+				"plugin %s not loaded: %s",
+				filename_plugin,
+				error->message);
+			g_clear_error (&error);
+		}
 		g_free (filename_plugin);
 	} while (TRUE);
 out:
