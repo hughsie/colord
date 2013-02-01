@@ -29,6 +29,8 @@
 #include <glib.h>
 #include <glib-object.h>
 
+#include <time.h>
+
 #include "cd-client.h"
 #include "cd-client-sync.h"
 #include "cd-color.h"
@@ -347,6 +349,14 @@ colord_client_random_func (void)
 				     NULL};
 	const gchar *qualifier3[] = {"*.*.*",
 				     NULL};
+	const struct tm profile_created_time = 
+		{.tm_sec = 46,
+		 .tm_min = 20,
+		 .tm_hour = 22,
+		 .tm_mday = 23,
+		 .tm_mon = 11,
+		 .tm_year = 2009 - 1900,
+		 .tm_isdst = -1};
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -582,7 +592,7 @@ colord_client_random_func (void)
 
 	/* check profile age */
 	g_assert_cmpuint (cd_profile_get_created (profile), ==,
-			  1261606846);
+			  mktime(&profile_created_time));
 
 	/* check profile filename */
 	g_assert (g_str_has_suffix (cd_profile_get_filename (profile),
