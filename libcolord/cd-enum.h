@@ -425,6 +425,7 @@ typedef enum {
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY	"OutputPriority"
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY_PRIMARY	"primary"
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY_SECONDARY	"secondary"
+#define CD_DEVICE_METADATA_OWNER_CMDLINE	"OwnerCmdline"
 
 /* defined in org.freedesktop.ColorManager.Device.xml */
 #define CD_DEVICE_PROPERTY_MODEL		"Model"

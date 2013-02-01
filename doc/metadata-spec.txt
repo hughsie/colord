@@ -100,6 +100,8 @@ OutputPriority		The display output priority, either 'primary' or
 			'secondary'. The primary output is defined as the
 			screen where the taskbar or application menu is
 			located.
+OwnerCmdline		The command line of the binary that created the device
+			but not set for devices created by colord itself.
 
 == Sensor Metadata ==
 

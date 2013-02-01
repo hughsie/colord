@@ -827,6 +827,39 @@ out:
 }
 
 /**
+ * cd_main_get_cmdline_for_pid:
+ **/
+static gchar *
+cd_main_get_cmdline_for_pid (guint pid)
+{
+	gboolean ret;
+	gchar *cmdline = NULL;
+	gchar *proc_path;
+	GError *error = NULL;
+	gsize len = 0;
+	guint i;
+
+	/* just read the link */
+	proc_path = g_strdup_printf ("/proc/%i/cmdline", pid);
+	ret = g_file_get_contents (proc_path, &cmdline, &len, &error);
+	if (!ret || len == 0) {
+		g_warning ("CdMain: failed to read %s: %s",
+			   proc_path, error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* turn all the \0's into spaces */
+	for (i = 0; i < len; i++) {
+		if (cmdline[i] == '\0')
+			cmdline[i] = ' ';
+	}
+out:
+	g_free (proc_path);
+	return cmdline;
+}
+
+/**
  * cd_main_daemon_method_call:
  **/
 static void
@@ -847,6 +880,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	gboolean ret;
 	const gchar *device_id = NULL;
 	const gchar *scope_tmp = NULL;
+	gchar *cmdline = NULL;
 	GError *error = NULL;
 	GPtrArray *array = NULL;
 	GVariantIter *iter = NULL;
@@ -1264,6 +1298,24 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			}
 		}
 
+		/* add any extra metadata */
+		cmdline = cd_main_get_cmdline_for_pid (pid);
+		if (cmdline != NULL) {
+			ret = cd_device_set_property_internal (device,
+							       CD_DEVICE_METADATA_OWNER_CMDLINE,
+							       cmdline,
+							       (scope == CD_OBJECT_SCOPE_DISK),
+							       &error);
+			if (!ret) {
+				g_warning ("CdMain: failed to set property on device: %s",
+					   error->message);
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				g_error_free (error);
+				goto out;
+			}
+		}
+
 		/* register on bus */
 		if (register_on_bus) {
 			ret = cd_main_device_register_on_bus (priv, device, &error);
@@ -1512,6 +1564,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
 out:
+	g_free (cmdline);
 	if (iter != NULL)
 		g_variant_iter_free (iter);
 	if (dict != NULL)
