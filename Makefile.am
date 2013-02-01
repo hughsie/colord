@@ -31,6 +31,7 @@ DISTCHECK_CONFIGURE_FLAGS =				\
 	--enable-introspection				\
 	--enable-fd-fallback				\
 	--enable-gtk					\
+	--enable-sane					\
 	--disable-print-profiles			\
 	--enable-gtk-doc				\
 	--with-udevrulesdir=$$dc_install_base/$(udevrulesdir) \

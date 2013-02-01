@@ -11,6 +11,7 @@ AM_CPPFLAGS =						\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DCD_COMPILATION				\
 	-DCD_DISABLE_DEPRECATED				\
+	-DCOLORD_SANE_BINARY=\""$(libexecdir)/colord-sane"\"	\
 	-I$(top_srcdir)/src
 
 # plugins
@@ -38,6 +39,18 @@ libcd_plugin_scanner_la_SOURCES = cd-plugin-scanner.c
 libcd_plugin_scanner_la_LIBADD = $(GUDEV_LIBS)
 libcd_plugin_scanner_la_LDFLAGS = -module -avoid-version
 libcd_plugin_scanner_la_CFLAGS = $(GUDEV_CFLAGS) $(WARNINGFLAGS_C)
-endif
+
+if HAVE_SANE
+
+plugin_LTLIBRARIES +=					\
+	libcd_plugin_sane.la
+
+libcd_plugin_sane_la_SOURCES = cd-plugin-sane.c
+libcd_plugin_sane_la_LIBADD = $(GUDEV_LIBS)
+libcd_plugin_sane_la_LDFLAGS = -module -avoid-version
+libcd_plugin_sane_la_CFLAGS = $(GUDEV_CFLAGS) $(WARNINGFLAGS_C)
+
+endif # HAVE_SANE
+endif # HAVE_GUDEV
 
 -include $(top_srcdir)/git.mk

@@ -4,6 +4,10 @@
 # quite a lot of time. Don't enable this for test builds.
 %define enable_print_profiles 0
 
+# SANE is pretty insane when it comes to handling devices, and we get AVCs
+# popping up all over the place.
+%define enable_sane 0
+
 # Don't build the print profiles for secondary architectures on the
 # logic that these are probably not doing press proofing or editing
 # in different CMYK spaces
@@ -38,6 +42,12 @@ BuildRequires: gtk-doc
 BuildRequires: color-filesystem
 %if 0%{?build_print_profiles}
 BuildRequires: argyllcms
+%endif
+
+# for SANE support
+%if 0%{?enable_sane}
+BuildRequires: sane-backends-devel
+BuildRequires: dbus-devel
 %endif
 
 Requires: color-filesystem
@@ -108,6 +118,9 @@ ulimit -Sv 2000000
 %else
         --disable-print-profiles \
 %endif
+%if 0%{?enable_sane}
+        --enable-sane \
+%endif
         --disable-static \
         --disable-rpath \
         --disable-examples \
@@ -169,6 +182,11 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/colord-session
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
 %{_datadir}/dbus-1/services/org.freedesktop.ColorHelper.service
+
+# sane helper
+%if 0%{?enable_sane}
+%{_libexecdir}/colord-sane
+%endif
 
 # common colorspaces
 %dir %{_icccolordir}/colord

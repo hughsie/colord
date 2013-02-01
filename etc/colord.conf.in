@@ -10,6 +10,17 @@ SearchVolumes=@enablevolumesearch@
 # default=false
 CreateDummySensor=false
 
+# If we should use SANE to add scanner and camera devices.
+#
+# If SANE support is installed then this will allow colord to manage
+# all scanners that SANE can detect, including remote scanners.
+#
+# If this is disabled then colord will only detect locally connected
+# scanners.
+#
+# default=false
+UseSANE=false
+
 # Known profiles are specific colorspaces that applications may request,
 # e.g. 'adobe-rgb' or 'srgb'.
 # This key sets up any manual overrides that are not automatically added
