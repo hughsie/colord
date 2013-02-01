@@ -351,7 +351,7 @@ colord_client_random_func (void)
 				     NULL};
 	const gchar *qualifier3[] = {"*.*.*",
 				     NULL};
-	const struct tm profile_created_time = 
+	struct tm profile_created_time =
 		{.tm_sec = 46,
 		 .tm_min = 20,
 		 .tm_hour = 22,
@@ -594,7 +594,7 @@ colord_client_random_func (void)
 
 	/* check profile age */
 	g_assert_cmpuint (cd_profile_get_created (profile), ==,
-			  mktime(&profile_created_time));
+			  mktime (&profile_created_time));
 
 	/* check profile filename */
 	g_assert (g_str_has_suffix (cd_profile_get_filename (profile),
