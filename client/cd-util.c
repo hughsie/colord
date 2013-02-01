@@ -1085,21 +1085,30 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	CdDevice *device = NULL;
 	gboolean ret = TRUE;
 	guint mask;
+	GHashTable *device_props = NULL;
 
-	if (g_strv_length (values) < 2) {
+	if (g_strv_length (values) < 3) {
 		ret = FALSE;
 		g_set_error_literal (error,
 				     1, 0,
 				     "Not enough arguments, "
-				     "expected device id, scope "
-				     "e.g. 'epson-stylus-800 disk'");
+				     "expected device id, scope, kind "
+				     "e.g. 'epson-stylus-800 disk display'");
 		goto out;
 	}
 
 	/* execute sync method */
 	mask = cd_object_scope_from_string (values[1]);
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (values[2]));
 	device = cd_client_create_device_sync (priv->client, values[0],
-					       mask, NULL, NULL, error);
+					       mask,
+					       device_props,
+					       NULL,
+					       error);
 	if (device == NULL) {
 		ret = FALSE;
 		goto out;
@@ -1110,6 +1119,8 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	cd_util_show_device (device);
 out:
+	if (device_props != NULL)
+		g_hash_table_unref (device_props);
 	if (device != NULL)
 		g_object_unref (device);
 	return ret;

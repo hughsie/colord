@@ -1176,7 +1176,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_CLIENT_ERROR,
 							       CD_CLIENT_ERROR_INPUT_INVALID,
-							       "device type not recognised");
+							       "device type %s not recognised",
+							       prop_value);
 			goto out;
 		}
 
