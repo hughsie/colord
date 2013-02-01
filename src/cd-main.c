@@ -517,18 +517,32 @@ out:
 static gchar *
 cd_main_get_seat_for_process (guint pid)
 {
+	gchar *seat = NULL;
+#ifdef HAVE_LIBSYSTEMD_LOGIN
 	char *sd_seat = NULL;
 	char *sd_session = NULL;
-	gchar *seat = NULL;
+	gint rc;
 
-#ifdef HAVE_LIBSYSTEMD_LOGIN
-	if (sd_pid_get_session (pid, &sd_session) == 0)
-		sd_session_get_seat (sd_session, &sd_seat);
+	/* get session the process belongs to */
+	rc = sd_pid_get_session (pid, &sd_session);
+	if (rc != 0) {
+		g_warning ("failed to get session [pid %i]: %s",
+			   pid, strerror (rc));
+		goto out;
+	}
+
+	/* get the seat the session is on */
+	rc = sd_session_get_seat (sd_session, &sd_seat);
+	if (rc != 0) {
+		g_warning ("failed to get seat for session %s [pid %i]: %s",
+			   sd_session, pid, strerror (rc));
+		goto out;
+	}
 	seat = g_strdup (sd_seat);
-#endif
-
+out:
 	free (sd_seat);
 	free (sd_session);
+#endif
 	return seat;
 }
 
