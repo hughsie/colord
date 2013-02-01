@@ -178,12 +178,17 @@ if test "x$with_systemdsystemunitdir" != "xno"; then
 fi
 AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$systemdsystemunitdir"])
 
-PKG_CHECK_MODULES(LIBSYSTEMD_LOGIN,
-                  [libsystemd-login >= 44],
-                  have_libsystemd_login=yes,
-                  have_libsystemd_login=no)
-AM_CONDITIONAL(HAVE_LIBSYSTEMD_LOGIN, test x$have_libsystemd_login = xyes)
-if test "x$have_libsystemd_login" = "xyes"; then
+
+
+dnl ---------------------------------------------------------------------------
+dnl - Use libsystemd-login to track the process seat
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(systemd-login, AS_HELP_STRING([--enable-systemd-login],[Build systemd-login support]),
+	      enable_systemd_login=$enableval, enable_systemd_login=yes)
+AM_CONDITIONAL(HAVE_LIBSYSTEMD_LOGIN, test x$enable_systemd_login = xyes)
+if test x$enable_systemd_login != xno; then
+	PKG_CHECK_MODULES(LIBSYSTEMD_LOGIN,
+			  [libsystemd-login >= 44])
 	AC_DEFINE([HAVE_LIBSYSTEMD_LOGIN], 1, [Define to 1 if libsystemd-login is available])
 fi
 AC_SUBST(HAVE_LIBSYSTEMD_LOGIN)
@@ -346,7 +351,7 @@ echo "
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
         udev rules.d dir:          ${with_udevrulesdir}
-        using libsystemd-login:    ${have_libsystemd_login}
+        using libsystemd-login:    ${enable_systemd_login}
         systemd service dir:       ${with_systemdsystemunitdir}
 "
 

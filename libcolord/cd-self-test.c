@@ -2367,7 +2367,9 @@ colord_device_seat_func (void)
 {
 	CdClient *client;
 	CdDevice *device;
+#ifdef HAVE_LIBSYSTEMD_LOGIN
 	const gchar *tmp;
+#endif
 	gboolean ret;
 	GError *error = NULL;
 	GHashTable *device_props;
