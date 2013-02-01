@@ -107,6 +107,8 @@ void		 cd_sensor_set_serial		(CdSensor		*sensor,
 void		 cd_sensor_add_option		(CdSensor		*sensor,
 						 const gchar		*key,
 						 GVariant		*value);
+void		 cd_sensor_add_cap		(CdSensor		*sensor,
+						 CdSensorCap		 cap);
 
 /* GModule */
 void		 cd_sensor_get_sample_async	(CdSensor		*sensor,

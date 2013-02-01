@@ -1148,6 +1148,19 @@ cd_sensor_get_device_path (CdSensor *sensor)
 	return sensor->priv->device_path;
 }
 
+/**
+ * cd_sensor_add_cap:
+ **/
+void
+cd_sensor_add_cap (CdSensor *sensor, CdSensorCap cap)
+{
+	cd_bitfield_add (sensor->priv->caps, cap);
+	cd_sensor_dbus_emit_property_changed (sensor,
+					      "Capabilities",
+					      cd_sensor_get_variant_for_caps (sensor->priv->caps));
+
+}
+
 #ifdef HAVE_GUDEV
 /**
  * cd_sensor_set_from_device:
