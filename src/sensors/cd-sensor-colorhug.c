@@ -47,9 +47,7 @@ typedef union {
 
 typedef struct
 {
-	GUsbContext			*usb_ctx;
 	GUsbDevice			*device;
-	GUsbDeviceList			*device_list;
 } CdSensorColorhugPrivate;
 
 /* async state for the sensor readings */
@@ -465,24 +463,18 @@ cd_sensor_lock_async (CdSensor *sensor,
 {
 	CdSensorAsyncState *state;
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
-	gboolean ret;
 	GError *error = NULL;
 	guint8 buffer[4];
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
-	/* try to find the ColorHug device */
-	priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
-							  CH_USB_VID,
-							  CH_USB_PID,
-							  NULL);
+	/* try to find the USB device */
+	priv->device = cd_sensor_open_usb_device (sensor,
+						  CH_USB_CONFIG,
+						  CH_USB_INTERFACE,
+						  &error);
 	if (priv->device == NULL) {
-		priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
-								  CH_USB_VID_LEGACY,
-								  CH_USB_PID_LEGACY,
-								  &error);
-	}
-	if (priv->device == NULL) {
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 		g_simple_async_report_gerror_in_idle (G_OBJECT (sensor),
 						      callback,
 						      user_data,
@@ -493,44 +485,6 @@ cd_sensor_lock_async (CdSensor *sensor,
 
 	/* set state */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_STARTING);
-
-	/* load device */
-	ret = g_usb_device_open (priv->device, &error);
-	if (!ret) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_report_gerror_in_idle (G_OBJECT (sensor),
-						      callback,
-						      user_data,
-						      error);
-		g_error_free (error);
-		goto out;
-	}
-	ret = g_usb_device_set_configuration (priv->device,
-					      CH_USB_CONFIG,
-					      &error);
-	if (!ret) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_report_gerror_in_idle (G_OBJECT (sensor),
-						      callback,
-						      user_data,
-						      error);
-		g_error_free (error);
-		goto out;
-	}
-	ret = g_usb_device_claim_interface (priv->device,
-					    CH_USB_INTERFACE,
-					    G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
-					    &error);
-	if (!ret) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_report_gerror_in_idle (G_OBJECT (sensor),
-						      callback,
-						      user_data,
-						      error);
-		g_error_free (error);
-		goto out;
-	}
-	g_debug ("Claimed interface 0x%x for device", CH_USB_INTERFACE);
 
 	/* save state */
 	state = g_slice_new0 (CdSensorAsyncState);
@@ -856,8 +810,8 @@ cd_sensor_set_options_finish (CdSensor *sensor,
 static void
 cd_sensor_unref_private (CdSensorColorhugPrivate *priv)
 {
-	g_object_unref (priv->usb_ctx);
-	g_object_unref (priv->device_list);
+	if (priv->device != NULL)
+		g_object_unref (priv->device);
 	g_free (priv);
 }
 
@@ -875,8 +829,6 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 	priv = g_new0 (CdSensorColorhugPrivate, 1);
 	g_object_set_data_full (G_OBJECT (sensor), "priv", priv,
 				(GDestroyNotify) cd_sensor_unref_private);
-	priv->usb_ctx = g_usb_context_new (NULL);
-	priv->device_list = g_usb_device_list_new (priv->usb_ctx);
 	return TRUE;
 }
 

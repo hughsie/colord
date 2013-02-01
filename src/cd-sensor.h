@@ -26,6 +26,7 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
+#include <gusb.h>
 
 #ifdef HAVE_GUDEV
 #include <gudev/gudev.h>
@@ -86,6 +87,10 @@ gboolean	 cd_sensor_set_from_device	(CdSensor		*sensor,
 						 GUdevDevice		*device,
 						 GError			**error);
 GUdevDevice	*cd_sensor_get_device		(CdSensor		*sensor);
+GUsbDevice	*cd_sensor_open_usb_device	(CdSensor		*sensor,
+						 gint			 config,
+						 gint			 interface,
+						 GError			**error);
 void		 cd_sensor_set_index		(CdSensor		*sensor,
 						 guint			 idx);
 #endif

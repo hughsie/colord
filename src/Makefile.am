@@ -14,6 +14,7 @@ AM_CPPFLAGS =						\
 	$(POLKIT_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
 	$(GUDEV_CFLAGS)					\
+	$(GUSB_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
 	$(LIBSYSTEMD_LOGIN_CFLAGS)			\
 	-I$(top_srcdir)/libcolord			\
@@ -28,6 +29,7 @@ AM_CPPFLAGS =						\
 	-DCD_COMPILATION				\
 	-DCD_DISABLE_DEPRECATED				\
 	-DG_UDEV_API_IS_SUBJECT_TO_CHANGE		\
+	-DG_USB_API_IS_SUBJECT_TO_CHANGE		\
 	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DLOCALEDIR=\""$(localedir)"\"
 
@@ -85,6 +87,7 @@ colord_LDADD =						\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(GUDEV_LIBS)					\
+	$(GUSB_LIBS)					\
 	$(LIBSYSTEMD_LOGIN_LIBS)			\
 	$(GLIB_LIBS)
 

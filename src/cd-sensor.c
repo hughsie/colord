@@ -103,6 +103,8 @@ struct _CdSensorPrivate
 	CdSensorIface			*desc;
 	GHashTable			*options;
 	GHashTable			*metadata;
+	GUsbContext			*usb_ctx;
+	GUsbDeviceList			*device_list;
 };
 
 enum {
@@ -1155,6 +1157,56 @@ cd_sensor_get_device_path (CdSensor *sensor)
 }
 
 /**
+ * cd_sensor_open_usb_device:
+ **/
+GUsbDevice *
+cd_sensor_open_usb_device (CdSensor *sensor,
+			   gint config,
+			   gint interface,
+			   GError **error)
+{
+	CdSensorPrivate *priv = sensor->priv;
+	gboolean ret;
+	guint8 busnum;
+	guint8 devnum;
+	GUsbDevice *device;
+	GUsbDevice *device_success = NULL;
+
+	/* convert from GUdevDevice to GUsbDevice */
+	busnum = g_udev_device_get_sysfs_attr_as_int (priv->device, "busnum");
+	devnum = g_udev_device_get_sysfs_attr_as_int (priv->device, "devnum");
+	device = g_usb_device_list_find_by_bus_address (priv->device_list,
+							busnum,
+							devnum,
+							error);
+	if (device == NULL)
+		goto out;
+
+	/* open device, set config and claim interface */
+	ret = g_usb_device_open (device, error);
+	if (!ret)
+		goto out;
+	ret = g_usb_device_set_configuration (device,
+					      config,
+					      error);
+	if (!ret)
+		goto out;
+	ret = g_usb_device_claim_interface (device,
+					    interface,
+					    G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
+					    error);
+	if (!ret)
+		goto out;
+
+	/* success */
+	device_success = g_object_ref (device);
+out:
+	if (device != NULL)
+		g_object_unref (device);
+	return device_success;
+}
+
+/**
  * cd_sensor_add_cap:
  **/
 void
@@ -1517,6 +1569,8 @@ cd_sensor_init (CdSensor *sensor)
 	sensor->priv = CD_SENSOR_GET_PRIVATE (sensor);
 	sensor->priv->state = CD_SENSOR_STATE_IDLE;
 	sensor->priv->mode = CD_SENSOR_CAP_UNKNOWN;
+	sensor->priv->usb_ctx = g_usb_context_new (NULL);
+	sensor->priv->device_list = g_usb_device_list_new (sensor->priv->usb_ctx);
 	sensor->priv->options = g_hash_table_new_full (g_str_hash,
 						       g_str_equal,
 						       (GDestroyNotify) g_free,
@@ -1552,6 +1606,8 @@ cd_sensor_finalize (GObject *object)
 	g_free (priv->object_path);
 	g_hash_table_unref (priv->options);
 	g_hash_table_unref (priv->metadata);
+	g_object_unref (priv->usb_ctx);
+	g_object_unref (priv->device_list);
 #ifdef HAVE_GUDEV
 	if (priv->device != NULL)
 		g_object_unref (priv->device);

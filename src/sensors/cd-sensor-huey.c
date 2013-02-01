@@ -36,9 +36,7 @@
 typedef struct
 {
 	gboolean			 done_startup;
-	GUsbContext			*usb_ctx;
 	GUsbDevice			*device;
-	GUsbDeviceList			*device_list;
 	CdMat3x3			 calibration_lcd;
 	CdMat3x3			 calibration_crt;
 	gfloat				 calibration_value;
@@ -797,53 +795,14 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	guint32 serial_number;
 	guint i;
 
-	/* try to find the device */
-	priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
-							  CD_SENSOR_HUEY_VENDOR_ID,
-							  CD_SENSOR_HUEY_PRODUCT_ID,
-							  &error);
+	/* try to find the USB device */
+	priv->device = cd_sensor_open_usb_device (sensor,
+						  0x01, /* config */
+						  0x00, /* interface */
+						  &error);
 	if (priv->device == NULL) {
-		/* try to find 2nd generation device */
-		g_clear_error (&error);
-		priv->device = g_usb_device_list_find_by_vid_pid (priv->device_list,
-								  CD_SENSOR_HUEY_VENDOR_ID2,
-								  CD_SENSOR_HUEY_PRODUCT_ID2,
-								  &error);
-	}
-	if (priv->device == NULL) {
-		g_simple_async_result_set_from_error (res,
-						      error);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* load device */
-	ret = g_usb_device_open (priv->device, &error);
-	if (!ret) {
 		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_result_set_from_error (res,
-						      error);
-		g_error_free (error);
-		goto out;
-	}
-	ret = g_usb_device_set_configuration (priv->device,
-					      0x01,
-					      &error);
-	if (!ret) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_result_set_from_error (res,
-						      error);
-		g_error_free (error);
-		goto out;
-	}
-	ret = g_usb_device_claim_interface (priv->device,
-					    0x00,
-					    G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
-					    &error);
-	if (!ret) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_result_set_from_error (res,
-						      error);
+		g_simple_async_result_set_from_error (res, error);
 		g_error_free (error);
 		goto out;
 	}
@@ -1117,8 +1076,8 @@ out:
 static void
 cd_sensor_unref_private (CdSensorHueyPrivate *priv)
 {
-	g_object_unref (priv->usb_ctx);
-	g_object_unref (priv->device_list);
+	if (priv->device != NULL)
+		g_object_unref (priv->device);
 	g_free (priv);
 }
 
@@ -1139,8 +1098,6 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 	priv = g_new0 (CdSensorHueyPrivate, 1);
 	g_object_set_data_full (G_OBJECT (sensor), "priv", priv,
 				(GDestroyNotify) cd_sensor_unref_private);
-	priv->usb_ctx = g_usb_context_new (NULL);
-	priv->device_list = g_usb_device_list_new (priv->usb_ctx);
 	cd_mat33_clear (&priv->calibration_lcd);
 	cd_mat33_clear (&priv->calibration_crt);
 	priv->unlock_string[0] = '\0';
