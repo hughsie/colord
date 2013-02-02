@@ -33,10 +33,8 @@ AM_CPPFLAGS =						\
 	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DLOCALEDIR=\""$(localedir)"\"
 
-COLORD_LIBS =						\
-	$(top_builddir)/libcolord/libcolord.la
 COLORD_PRIVATE_LIBS =					\
-	$(top_builddir)/libcolord/libcolordprivate.a
+	$(top_builddir)/libcolord/libcolordprivate.la
 
 libexec_PROGRAMS =					\
 	colord

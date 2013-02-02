@@ -15,17 +15,8 @@ AM_CPPFLAGS = \
 	-DTESTDATADIR=\""$(top_srcdir)/data/tests"\"		\
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"
 
-# only stuff we can use in the daemon
-noinst_LIBRARIES = libcolordprivate.a
-libcolordprivate_a_SOURCES =					\
-	cd-color.c						\
-	cd-enum.c						\
-	cd-math.c
-
-libcolordprivate_a_CFLAGS =					\
-	$(WARNINGFLAGS_C)
-
 lib_LTLIBRARIES =						\
+	libcolordprivate.la					\
 	libcolord.la
 
 libcolord_includedir = $(includedir)/colord-1
@@ -51,32 +42,41 @@ libcolordbase_include_HEADERS =					\
 	cd-sensor-sync.h					\
 	cd-version.h
 
+libcolordprivate_la_SOURCES =					\
+	cd-color.c						\
+	cd-enum.c						\
+	cd-math.c
+libcolordprivate_la_LIBADD =					\
+	$(GLIB_LIBS)
+libcolordprivate_la_LDFLAGS =					\
+	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)	\
+	-export-dynamic						\
+	-no-undefined						\
+	-export-symbols-regex '^cd_.*'
+libcolordprivate_la_CFLAGS =					\
+	$(WARNINGFLAGS_C)
+
 libcolord_la_SOURCES =						\
 	cd-client.c						\
 	cd-client-sync.c					\
-	cd-color.c						\
 	cd-deprecated.c						\
 	cd-device.c						\
 	cd-device-sync.c					\
-	cd-enum.c						\
 	cd-it8.c						\
 	cd-it8-utils.c						\
-	cd-math.c						\
 	cd-profile.c						\
 	cd-profile-sync.c					\
 	cd-sensor.c						\
 	cd-sensor-sync.c
-
 libcolord_la_LIBADD =						\
 	$(LCMS_LIBS)						\
-	$(GLIB_LIBS)
-
+	$(GLIB_LIBS)						\
+	libcolordprivate.la
 libcolord_la_LDFLAGS =						\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)	\
 	-export-dynamic						\
 	-no-undefined						\
 	-export-symbols-regex '^cd_.*'
-
 libcolord_la_CFLAGS =						\
 	$(WARNINGFLAGS_C)
 
@@ -111,7 +111,7 @@ introspection_sources =						\
 	$(libcolord_la_SOURCES)					\
 	$(libcolordbase_include_HEADERS)
 
-Colord-1.0.gir: libcolord.la
+Colord-1.0.gir: libcolord.la libcolordprivate.la
 Colord_1_0_gir_INCLUDES = GObject-2.0 Gio-2.0
 Colord_1_0_gir_CFLAGS = $(AM_CPPFLAGS) -DCD_DISABLE_DEPRECATED
 Colord_1_0_gir_SCANNERFLAGS = --identifier-prefix=Cd \
