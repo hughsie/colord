@@ -26,6 +26,7 @@ libcolord_include_HEADERS =					\
 
 libcolordbase_includedir = $(libcolord_includedir)/colord
 libcolordbase_include_HEADERS =					\
+	cd-buffer.h						\
 	cd-client.h						\
 	cd-client-sync.h					\
 	cd-color.h						\
@@ -43,6 +44,7 @@ libcolordbase_include_HEADERS =					\
 	cd-version.h
 
 libcolordprivate_la_SOURCES =					\
+	cd-buffer.c						\
 	cd-color.c						\
 	cd-enum.c						\
 	cd-math.c

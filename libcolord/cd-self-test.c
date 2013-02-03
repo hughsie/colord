@@ -33,6 +33,7 @@
 #include <time.h>
 #include <pwd.h>
 
+#include "cd-buffer.h"
 #include "cd-client.h"
 #include "cd-client-sync.h"
 #include "cd-color.h"
@@ -2849,6 +2850,22 @@ cd_test_math_func (void)
 	g_assert_cmpfloat (mat.m22, >, -0.001f);
 }
 
+static void
+colord_buffer_func (void)
+{
+	guint8 buffer[4];
+
+	cd_buffer_write_uint16_be (buffer, 255);
+	g_assert_cmpint (buffer[0], ==, 0x00);
+	g_assert_cmpint (buffer[1], ==, 0xff);
+	g_assert_cmpint (cd_buffer_read_uint16_be (buffer), ==, 255);
+
+	cd_buffer_write_uint16_le (buffer, 8192);
+	g_assert_cmpint (buffer[0], ==, 0x00);
+	g_assert_cmpint (buffer[1], ==, 0x20);
+	g_assert_cmpint (cd_buffer_read_uint16_le (buffer), ==, 8192);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -2859,6 +2876,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);

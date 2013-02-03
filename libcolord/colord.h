@@ -34,6 +34,7 @@
 
 #define __COLORD_H_INSIDE__
 
+#include <colord/cd-buffer.h>
 #include <colord/cd-client.h>
 #include <colord/cd-client-sync.h>
 #include <colord/cd-color.h>

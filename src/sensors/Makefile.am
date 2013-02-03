@@ -21,27 +21,8 @@ AM_CPPFLAGS =						\
 	-DG_USB_API_IS_SUBJECT_TO_CHANGE		\
 	-DLOCALEDIR=\""$(localedir)"\"
 
-COLORD_LIBS =						\
-	$(top_builddir)/libcolord/libcolord.la
 COLORD_PRIVATE_LIBS =					\
-	$(top_builddir)/libcolord/libcolordprivate.a
-
-check_PROGRAMS =					\
-	cd-self-test
-
-cd_self_test_SOURCES =					\
-	cd-buffer.c					\
-	cd-buffer.h					\
-	cd-self-test.c
-
-cd_self_test_LDADD =					\
-	$(COLORD_PRIVATE_LIBS)				\
-	$(POLKIT_LIBS)					\
-	$(LCMS_LIBS)					\
-	$(SQLITE_LIBS)					\
-	$(GLIB_LIBS)
-
-cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
+	$(top_builddir)/libcolord/libcolordprivate.la
 
 if CD_BUILD_REVERSE
 
@@ -80,8 +61,6 @@ cd_huey_parse_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 cd_huey_dump_values_SOURCES =				\
-	cd-buffer.c					\
-	cd-buffer.h					\
 	cd-huey-dump-values.c
 
 cd_huey_dump_values_LDADD =				\
@@ -93,8 +72,6 @@ cd_huey_dump_values_CFLAGS =				\
 	$(WARNINGFLAGS_C)
 
 cd_sensor_dump_SOURCES =				\
-	cd-buffer.c					\
-	cd-buffer.h					\
 	../cd-common.c					\
 	../cd-common.h					\
 	../cd-sensor.c					\
@@ -141,8 +118,7 @@ libcolord_sensor_huey_la_SOURCES =			\
 	cd-sensor-huey.c				\
 	cd-sensor-huey.h				\
 	cd-sensor-huey-private.c			\
-	cd-sensor-huey-private.h			\
-	cd-buffer.c
+	cd-sensor-huey-private.h
 libcolord_sensor_huey_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS)
 libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
@@ -151,8 +127,7 @@ libcolord_sensor_dtp94_la_SOURCES =			\
 	cd-sensor-dtp94-private.c			\
 	cd-sensor-dtp94-private.h			\
 	cd-sensor-dtp94.c				\
-	cd-sensor-dtp94.h				\
-	cd-buffer.c
+	cd-sensor-dtp94.h
 libcolord_sensor_dtp94_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS)
 libcolord_sensor_dtp94_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_dtp94_la_CFLAGS = $(WARNINGFLAGS_C)

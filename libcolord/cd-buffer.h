@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -19,25 +19,27 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#if !defined (__COLORD_H_INSIDE__) && !defined (CD_COMPILATION)
+#error "Only <colord.h> can be included directly."
+#endif
+
 #ifndef __CD_BUFFER_H__
 #define __CD_BUFFER_H__
 
-#define __CD_BUFFER_H_INSIDE__
+#include <glib.h>
 
-guint16		 cd_buffer_read_uint16_be	(const guchar	*buffer);
-guint16		 cd_buffer_read_uint16_le	(const guchar	*buffer);
-void		 cd_buffer_write_uint16_be	(guchar		*buffer,
+guint16		 cd_buffer_read_uint16_be	(const guint8	*buffer);
+guint16		 cd_buffer_read_uint16_le	(const guint8	*buffer);
+void		 cd_buffer_write_uint16_be	(guint8		*buffer,
 						 guint16	 value);
-void		 cd_buffer_write_uint16_le	(guchar		*buffer,
+void		 cd_buffer_write_uint16_le	(guint8		*buffer,
 						 guint16	 value);
-guint32		 cd_buffer_read_uint32_be	(const guchar	*buffer);
-guint32		 cd_buffer_read_uint32_le	(const guchar	*buffer);
-void		 cd_buffer_write_uint32_be	(guchar		*buffer,
+guint32		 cd_buffer_read_uint32_be	(const guint8	*buffer);
+guint32		 cd_buffer_read_uint32_le	(const guint8	*buffer);
+void		 cd_buffer_write_uint32_be	(guint8		*buffer,
 						 guint32	 value);
-void		 cd_buffer_write_uint32_le	(guchar		*buffer,
+void		 cd_buffer_write_uint32_le	(guint8		*buffer,
 						 guint32	 value);
-
-#undef __CD_BUFFER_H_INSIDE__
 
 #endif /* __CD_BUFFER_H__ */
 

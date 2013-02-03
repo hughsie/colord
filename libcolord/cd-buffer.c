@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -28,9 +28,7 @@
 
 #include "config.h"
 
-#include <glib-object.h>
-
-#include <cd-buffer.h>
+#include "cd-buffer.h"
 
 /**
  * cd_buffer_write_uint16_be:
@@ -41,7 +39,7 @@
  * NOTE: No validation is done on the buffer to ensure it's big enough.
  **/
 void
-cd_buffer_write_uint16_be (guchar *buffer, guint16 value)
+cd_buffer_write_uint16_be (guint8 *buffer, guint16 value)
 {
 	buffer[0] = (value >> 8) & 0xff;
 	buffer[1] = (value >> 0) & 0xff;
@@ -56,7 +54,7 @@ cd_buffer_write_uint16_be (guchar *buffer, guint16 value)
  * NOTE: No validation is done on the buffer to ensure it's big enough.
  **/
 void
-cd_buffer_write_uint16_le (guchar *buffer, guint16 value)
+cd_buffer_write_uint16_le (guint8 *buffer, guint16 value)
 {
 	buffer[0] = (value >> 0) & 0xff;
 	buffer[1] = (value >> 8) & 0xff;
@@ -72,7 +70,7 @@ cd_buffer_write_uint16_le (guchar *buffer, guint16 value)
  * Return value: the value to read.
  **/
 guint16
-cd_buffer_read_uint16_be (const guchar *buffer)
+cd_buffer_read_uint16_be (const guint8 *buffer)
 {
 	return GUINT16_FROM_BE (*(guint16*)buffer);
 }
@@ -87,7 +85,7 @@ cd_buffer_read_uint16_be (const guchar *buffer)
  * Return value: the value to read.
  **/
 guint16
-cd_buffer_read_uint16_le (const guchar *buffer)
+cd_buffer_read_uint16_le (const guint8 *buffer)
 {
 	return GUINT16_FROM_LE (*(guint16*)buffer);
 }
@@ -101,7 +99,7 @@ cd_buffer_read_uint16_le (const guchar *buffer)
  * NOTE: No validation is done on the buffer to ensure it's big enough.
  **/
 void
-cd_buffer_write_uint32_be (guchar *buffer, guint32 value)
+cd_buffer_write_uint32_be (guint8 *buffer, guint32 value)
 {
 	buffer[0] = (value >> 24) & 0xff;
 	buffer[1] = (value >> 16) & 0xff;
@@ -118,7 +116,7 @@ cd_buffer_write_uint32_be (guchar *buffer, guint32 value)
  * NOTE: No validation is done on the buffer to ensure it's big enough.
  **/
 void
-cd_buffer_write_uint32_le (guchar *buffer, guint32 value)
+cd_buffer_write_uint32_le (guint8 *buffer, guint32 value)
 {
 	buffer[0] = (value >> 0) & 0xff;
 	buffer[1] = (value >> 8) & 0xff;
@@ -136,7 +134,7 @@ cd_buffer_write_uint32_le (guchar *buffer, guint32 value)
  * Return value: the value to read.
  **/
 guint32
-cd_buffer_read_uint32_be (const guchar *buffer)
+cd_buffer_read_uint32_be (const guint8 *buffer)
 {
 	return GUINT32_FROM_BE (*(guint32*)buffer);
 }
@@ -151,7 +149,7 @@ cd_buffer_read_uint32_be (const guchar *buffer)
  * Return value: the value to read.
  **/
 guint32
-cd_buffer_read_uint32_le (const guchar *buffer)
+cd_buffer_read_uint32_le (const guint8 *buffer)
 {
 	return GUINT32_FROM_LE (*(guint32*)buffer);
 }
