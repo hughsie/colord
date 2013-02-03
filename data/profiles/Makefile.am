@@ -52,7 +52,7 @@ license = "CC0"
 AdobeRGB1998.icc:
 	$(top_builddir)/client/cd-create-profile --output $@ \
 		create-standard-space			\
-		--description "Adobe RGB (1998)"	\
+		--description "Compatible with Adobe RGB (1998)" \
 		--metadata "License=$(license),DATA_source=standard,STANDARD_space=adobe-rgb" \
 		2.2 D65					\
 		0.6400 0.3300 0.297361			\
