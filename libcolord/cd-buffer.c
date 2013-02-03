@@ -153,3 +153,29 @@ cd_buffer_read_uint32_le (const guint8 *buffer)
 {
 	return GUINT32_FROM_LE (*(guint32*)buffer);
 }
+
+/**
+ * cd_buffer_debug:
+ * @buffer_kind: the debug mode, e.g %CD_BUFFER_KIND_REQUEST
+ * @data: the data of size @length
+ * @length: the size of data
+ *
+ * Prints some debugging of the request to the console.
+ **/
+void
+cd_buffer_debug (CdBufferKind buffer_kind,
+		 const guint8 *data,
+		 gsize length)
+{
+	guint i;
+	if (buffer_kind == CD_BUFFER_KIND_REQUEST)
+		g_print ("%c[%dmrequest\t", 0x1B, 31);
+	else if (buffer_kind == CD_BUFFER_KIND_RESPONSE)
+		g_print ("%c[%dmresponse\t", 0x1B, 34);
+	for (i = 0; i <  length; i++) {
+		g_print ("%02x [%c]\t",
+			 data[i],
+			 g_ascii_isprint (data[i]) ? data[i] : '?');
+	}
+	g_print ("%c[%dm\n", 0x1B, 0);
+}

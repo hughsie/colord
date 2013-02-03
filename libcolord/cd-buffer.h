@@ -28,6 +28,15 @@
 
 #include <glib.h>
 
+typedef enum {
+	CD_BUFFER_KIND_REQUEST,
+	CD_BUFFER_KIND_RESPONSE,
+	CD_BUFFER_KIND_UNKNOWN
+} CdBufferKind;
+
+void		 cd_buffer_debug		(CdBufferKind	 buffer_kind,
+						 const guint8	*data,
+						 gsize		 length);
 guint16		 cd_buffer_read_uint16_be	(const guint8	*buffer);
 guint16		 cd_buffer_read_uint16_le	(const guint8	*buffer);
 void		 cd_buffer_write_uint16_be	(guint8		*buffer,
