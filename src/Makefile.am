@@ -19,6 +19,7 @@ AM_CPPFLAGS =						\
 	$(LIBSYSTEMD_LOGIN_CFLAGS)			\
 	-I$(top_srcdir)/lib				\
 	-I$(top_builddir)/lib				\
+	-I$(top_srcdir)/lib/colord			\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\

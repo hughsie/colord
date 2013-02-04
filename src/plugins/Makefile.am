@@ -14,6 +14,7 @@ AM_CPPFLAGS =						\
 	-DCOLORD_SANE_BINARY=\""$(libexecdir)/colord-sane"\"	\
 	-I$(top_srcdir)/lib				\
 	-I$(top_builddir)/lib				\
+	-I$(top_srcdir)/lib/colord			\
 	-I$(top_srcdir)/src
 
 # plugins

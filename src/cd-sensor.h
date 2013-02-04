@@ -27,7 +27,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gusb.h>
-#include <colord/colord-private.h>
+#include <colord-private.h>
 
 #ifdef HAVE_GUDEV
 #include <gudev/gudev.h>

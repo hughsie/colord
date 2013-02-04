@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include <colord/colord-private.h>
+#include <colord-private.h>
 #include <colord-gtk.h>
 #include <gio/gio.h>
 #include <glib.h>

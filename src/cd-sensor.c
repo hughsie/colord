@@ -25,7 +25,7 @@
 #include <gio/gio.h>
 #include <sys/time.h>
 #include <gmodule.h>
-#include <colord/colord-private.h>
+#include <colord-private.h>
 
 #include "cd-common.h"
 #include "cd-sensor.h"

@@ -27,7 +27,7 @@
 
 #include <glib-object.h>
 #include <gusb.h>
-#include <colord/colord-private.h>
+#include <colord-private.h>
 
 #include "cd-sensor.h"
 #include "cd-sensor-huey-private.h"

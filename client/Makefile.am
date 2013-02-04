@@ -4,6 +4,7 @@ AM_CPPFLAGS =						\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/lib				\
 	-I$(top_builddir)/lib				\
+	-I$(top_srcdir)/lib/colord			\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DCD_COMPILATION				\
 	-DCD_DISABLE_DEPRECATED				\
