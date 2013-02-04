@@ -31,8 +31,8 @@ parse_command_sequence (GString *output, const gchar *line, gboolean reply)
 {
 	gchar **tok;
 	guint j;
-	guchar cmd;
-	guchar instruction = 0;
+	guint8 cmd;
+	guint8 instruction = 0;
 	const gchar *command_as_text;
 	tok = g_strsplit (line, " ", -1);
 

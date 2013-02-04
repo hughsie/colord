@@ -376,6 +376,7 @@ lib/colorhug/colorhug.pc
 lib/colorhug/ch-version.h
 lib/dtp94/Makefile
 lib/huey/Makefile
+lib/munki/Makefile
 ])
 AC_OUTPUT
 

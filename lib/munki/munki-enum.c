@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -19,64 +19,78 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "cd-sensor-munki-private.h"
+/**
+ * SECTION:munki-enum
+ * @short_description: Types used by munki and libmunki
+ *
+ * These helper functions provide a way to marshal enumerated values to
+ * text and back again.
+ *
+ * See also: #CdClient, #CdDevice
+ */
+
+#include "config.h"
+
+#include <glib.h>
+
+#include "munki-enum.h"
 
 /**
- * cd_sensor_munki_command_value_to_string:
+ * munki_command_value_to_string:
  **/
 const gchar *
-cd_sensor_munki_command_value_to_string (guchar value)
+munki_command_value_to_string (guint8 value)
 {
-	if (value == CD_SENSOR_MUNKI_COMMAND_DIAL_ROTATE)
+	if (value == MUNKI_COMMAND_DIAL_ROTATE)
 		return "dial-rotate";
-	if (value == CD_SENSOR_MUNKI_COMMAND_BUTTON_PRESSED)
+	if (value == MUNKI_COMMAND_BUTTON_PRESSED)
 		return "button-released";
-	if (value == CD_SENSOR_MUNKI_COMMAND_BUTTON_RELEASED)
+	if (value == MUNKI_COMMAND_BUTTON_RELEASED)
 		return "button-released";
 	return NULL;
 }
 
 /**
- * cd_sensor_munki_button_state_to_string:
+ * munki_button_state_to_string:
  **/
 const gchar *
-cd_sensor_munki_button_state_to_string (guchar value)
+munki_button_state_to_string (guint8 value)
 {
-	if (value == CD_SENSOR_MUNKI_BUTTON_STATE_RELEASED)
+	if (value == MUNKI_BUTTON_STATE_RELEASED)
 		return "released";
-	if (value == CD_SENSOR_MUNKI_BUTTON_STATE_PRESSED)
+	if (value == MUNKI_BUTTON_STATE_PRESSED)
 		return "pressed";
 	return NULL;
 }
 
 /**
- * cd_sensor_munki_dial_position_to_string:
+ * munki_dial_position_to_string:
  **/
 const gchar *
-cd_sensor_munki_dial_position_to_string (guchar value)
+munki_dial_position_to_string (guint8 value)
 {
-	if (value == CD_SENSOR_MUNKI_DIAL_POSITION_PROJECTOR)
+	if (value == MUNKI_DIAL_POSITION_PROJECTOR)
 		return "projector";
-	if (value == CD_SENSOR_MUNKI_DIAL_POSITION_SURFACE)
+	if (value == MUNKI_DIAL_POSITION_SURFACE)
 		return "surface";
-	if (value == CD_SENSOR_MUNKI_DIAL_POSITION_CALIBRATION)
+	if (value == MUNKI_DIAL_POSITION_CALIBRATION)
 		return "calibration";
-	if (value == CD_SENSOR_MUNKI_DIAL_POSITION_AMBIENT)
+	if (value == MUNKI_DIAL_POSITION_AMBIENT)
 		return "ambient";
 	return NULL;
 }
 
 /**
- * cd_sensor_munki_endpoint_to_string:
+ * munki_endpoint_to_string:
  **/
 const gchar *
-cd_sensor_munki_endpoint_to_string (guint value)
+munki_endpoint_to_string (guint value)
 {
-	if (value == CD_SENSOR_MUNKI_EP_CONTROL)
+	if (value == MUNKI_EP_CONTROL)
 		return "control";
-	if (value == CD_SENSOR_MUNKI_EP_DATA)
+	if (value == MUNKI_EP_DATA)
 		return "data";
-	if (value == CD_SENSOR_MUNKI_EP_EVENT)
+	if (value == MUNKI_EP_EVENT)
 		return "event";
 	return NULL;
 }

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -19,25 +19,29 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef __CD_SENSOR_MUNKI_PRIVATE_H
-#define __CD_SENSOR_MUNKI_PRIVATE_H
+#if !defined (__MUNKI_H_INSIDE__) && !defined (MUNKI_COMPILATION)
+#error "Only <munki.h> can be included directly."
+#endif
 
-#include <glib.h>
+#ifndef __MUNKI_ENUM_H
+#define __MUNKI_ENUM_H
+
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
-#define CD_SENSOR_MUNKI_COMMAND_DIAL_ROTATE		0x00
-#define CD_SENSOR_MUNKI_COMMAND_BUTTON_PRESSED		0x01
-#define CD_SENSOR_MUNKI_COMMAND_BUTTON_RELEASED		0x02
+#define MUNKI_COMMAND_DIAL_ROTATE		0x00
+#define MUNKI_COMMAND_BUTTON_PRESSED		0x01
+#define MUNKI_COMMAND_BUTTON_RELEASED		0x02
 
-#define	CD_SENSOR_MUNKI_BUTTON_STATE_RELEASED		0x00
-#define	CD_SENSOR_MUNKI_BUTTON_STATE_PRESSED		0x01
+#define	MUNKI_BUTTON_STATE_RELEASED		0x00
+#define	MUNKI_BUTTON_STATE_PRESSED		0x01
 
-#define	CD_SENSOR_MUNKI_DIAL_POSITION_PROJECTOR		0x00
-#define	CD_SENSOR_MUNKI_DIAL_POSITION_SURFACE		0x01
-#define	CD_SENSOR_MUNKI_DIAL_POSITION_CALIBRATION	0x02
-#define	CD_SENSOR_MUNKI_DIAL_POSITION_AMBIENT		0x03
-#define	CD_SENSOR_MUNKI_DIAL_POSITION_UNKNOWN		0xff
+#define	MUNKI_DIAL_POSITION_PROJECTOR		0x00
+#define	MUNKI_DIAL_POSITION_SURFACE		0x01
+#define	MUNKI_DIAL_POSITION_CALIBRATION	0x02
+#define	MUNKI_DIAL_POSITION_AMBIENT		0x03
+#define	MUNKI_DIAL_POSITION_UNKNOWN		0xff
 
 
 /*
@@ -49,7 +53,7 @@ G_BEGIN_DECLS
  * /         \ /         \
  * 04 00 00 00 04 00 00 00
  */
-#define	CD_SENSOR_MUNKI_REQUEST_EEPROM_DATA		0x81
+#define	MUNKI_REQUEST_EEPROM_DATA			0x81
 
 /*
  * Gets the next hardware event
@@ -72,19 +76,19 @@ G_BEGIN_DECLS
  * 00	button event
  * 01	dial rotate
  */
-#define	CD_SENSOR_MUNKI_REQUEST_INTERRUPT		0x83
+#define	MUNKI_REQUEST_INTERRUPT				0x83
 
 /*
  * Returns the major and minor version numbers
  * Length: 24 bytes
  */
-#define	CD_SENSOR_MUNKI_REQUEST_VERSION_STRING		0x85
+#define	MUNKI_REQUEST_VERSION_STRING			0x85
 
 /*
  * Returns the chip id
  * Length: 8 bytes
  */
-#define	CD_SENSOR_MUNKI_REQUEST_FIRMWARE_PARAMS		0x86
+#define	MUNKI_REQUEST_FIRMWARE_PARAMS			0x86
 
 /*
  * Gets the device status
@@ -98,28 +102,28 @@ G_BEGIN_DECLS
  * - 02 = calibration
  * - 03 = ambient
  */
-#define	CD_SENSOR_MUNKI_REQUEST_GET_STATUS		0x87
+#define	MUNKI_REQUEST_GET_STATUS			0x87
 
 /*
  * Returns the version string
  * Length: 36 bytes
  */
-#define	CD_SENSOR_MUNKI_REQUEST_CHIP_ID			0x8A
+#define	MUNKI_REQUEST_CHIP_ID				0x8A
 
 /* USB endpoints in use */
-#define CD_SENSOR_MUNKI_EP_CONTROL			0x00
-#define CD_SENSOR_MUNKI_EP_DATA				0x01
-#define CD_SENSOR_MUNKI_EP_EVENT			0x03
+#define MUNKI_EP_CONTROL				0x00
+#define MUNKI_EP_DATA					0x01
+#define MUNKI_EP_EVENT					0x03
 
 /* EEPROM is massive */
 #define	COLORMUNKI_EEPROM_OFFSET_SERIAL_NUMBER		0x0018 /* 10 bytes */
 
-const gchar	*cd_sensor_munki_button_state_to_string		(guchar	 value);
-const gchar	*cd_sensor_munki_dial_position_to_string	(guchar	 value);
-const gchar	*cd_sensor_munki_command_value_to_string	(guchar	 value);
-const gchar	*cd_sensor_munki_endpoint_to_string		(guint	 value);
+const gchar	*munki_button_state_to_string		(guint8	 value);
+const gchar	*munki_dial_position_to_string		(guint8	 value);
+const gchar	*munki_command_value_to_string		(guint8	 value);
+const gchar	*munki_endpoint_to_string		(guint	 value);
 
 G_END_DECLS
 
-#endif /* __CD_SENSOR_MUNKI_PRIVATE_H */
+#endif /* __MUNKI_ENUM_H */
 

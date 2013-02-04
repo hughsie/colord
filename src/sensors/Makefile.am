@@ -35,14 +35,13 @@ noinst_PROGRAMS =					\
 	cd-parse-beagle
 
 cd_parse_beagle_SOURCES =				\
-	cd-sensor-munki-private.c			\
-	cd-sensor-munki-private.h			\
 	cd-parse-beagle.c
 
 cd_parse_beagle_LDADD =					\
 	$(COLORD_PRIVATE_LIBS)				\
 	$(GLIB_LIBS)					\
-	$(top_builddir)/lib/huey/libhuey.la
+	$(top_builddir)/lib/huey/libhuey.la		\
+	$(top_builddir)/lib/munki/libmunki.la
 
 cd_parse_beagle_CFLAGS =				\
 	$(WARNINGFLAGS_C)

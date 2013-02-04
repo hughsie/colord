@@ -24,8 +24,8 @@
 #include <stdlib.h>
 #include <glib.h>
 #include <huey/huey.h>
+#include <munki/munki.h>
 
-#include "cd-sensor-munki-private.h"
 #include "cd-sensor.h"
 
 typedef enum {
@@ -65,8 +65,8 @@ cd_parse_beagle_process_entry_huey (CdParseEntry *entry)
 {
 	gchar **tok;
 	guint j;
-	guchar cmd;
-	guchar instruction = 0;
+	guint8 cmd;
+	guint8 instruction = 0;
 	const gchar *command_as_text;
 	GString *output = NULL;
 
@@ -129,12 +129,12 @@ cd_parse_beagle_process_entry_colormunki (CdParseEntry *entry)
 {
 	gchar **tok;
 	guint j;
-	guchar cmd;
+	guint8 cmd;
 	guint tok_len;
 	GString *output;
 
 	/* set ep description */
-	entry->ep_description = cd_sensor_munki_endpoint_to_string (entry->ep);
+	entry->ep_description = munki_endpoint_to_string (entry->ep);
 
 	output = g_string_new ("");
 
@@ -143,7 +143,7 @@ cd_parse_beagle_process_entry_colormunki (CdParseEntry *entry)
 	tok_len = g_strv_length (tok);
 
 	/* status */
-	if (entry->ep == CD_SENSOR_MUNKI_EP_CONTROL &&
+	if (entry->ep == MUNKI_EP_CONTROL &&
 	    entry->direction == CD_PARSE_ENTRY_DIRECTION_REPLY &&
 	    tok_len == 2) {
 
@@ -151,18 +151,18 @@ cd_parse_beagle_process_entry_colormunki (CdParseEntry *entry)
 		cmd = g_ascii_strtoll (tok[0], NULL, 16);
 		g_string_append_printf (output, "%s(dial-position-%s) ",
 					tok[0],
-					cd_sensor_munki_dial_position_to_string (cmd));
+					munki_dial_position_to_string (cmd));
 
 		/* button value */
 		cmd = g_ascii_strtoll (tok[1], NULL, 16);
 		g_string_append_printf (output, "%s(button-state-%s)",
 					tok[1],
-					cd_sensor_munki_button_state_to_string (cmd));
+					munki_button_state_to_string (cmd));
 		goto out;
 	}
 
 	/* event */
-	if (entry->ep == CD_SENSOR_MUNKI_EP_EVENT &&
+	if (entry->ep == MUNKI_EP_EVENT &&
 	    entry->direction == CD_PARSE_ENTRY_DIRECTION_REPLY &&
 	    tok_len == 8) {
 		g_print ("process 8: %s\n", entry->summary);
@@ -171,7 +171,7 @@ cd_parse_beagle_process_entry_colormunki (CdParseEntry *entry)
 		cmd = g_ascii_strtoll (tok[0], NULL, 16);
 		g_string_append_printf (output, "%s(%s) ",
 					tok[0],
-					cd_sensor_munki_command_value_to_string (cmd));
+					munki_command_value_to_string (cmd));
 
 		for (j=1; j<8; j++) {
 			cmd = g_ascii_strtoll (tok[j], NULL, 16);

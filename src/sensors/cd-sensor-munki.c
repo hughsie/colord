@@ -27,10 +27,10 @@
 
 #include <glib-object.h>
 #include <gusb.h>
+#include <munki/munki.h>
 
 #include "cd-buffer.h"
 #include "cd-sensor.h"
-#include "cd-sensor-munki-private.h"
 
 typedef struct
 {
@@ -86,19 +86,19 @@ cd_sensor_munki_refresh_state_transfer_cb (struct libusb_transfer *transfer)
 
 	/* sensor position and button state */
 	switch (reply[0]) {
-	case CD_SENSOR_MUNKI_DIAL_POSITION_PROJECTOR:
+	case MUNKI_DIAL_POSITION_PROJECTOR:
 		cd_sensor_set_mode (sensor, CD_SENSOR_CAP_PROJECTOR);
 		break;
-	case CD_SENSOR_MUNKI_DIAL_POSITION_SURFACE:
+	case MUNKI_DIAL_POSITION_SURFACE:
 		cd_sensor_set_mode (sensor, CD_SENSOR_CAP_PRINTER);
 		break;
-	case CD_SENSOR_MUNKI_DIAL_POSITION_CALIBRATION:
+	case MUNKI_DIAL_POSITION_CALIBRATION:
 		cd_sensor_set_mode (sensor, CD_SENSOR_CAP_CALIBRATION);
 		break;
-	case CD_SENSOR_MUNKI_DIAL_POSITION_AMBIENT:
+	case MUNKI_DIAL_POSITION_AMBIENT:
 		cd_sensor_set_mode (sensor, CD_SENSOR_CAP_AMBIENT);
 		break;
-	case CD_SENSOR_MUNKI_DIAL_POSITION_UNKNOWN:
+	case MUNKI_DIAL_POSITION_UNKNOWN:
 		cd_sensor_set_mode (sensor, CD_SENSOR_CAP_UNKNOWN);
 		break;
 	default:
@@ -107,7 +107,7 @@ cd_sensor_munki_refresh_state_transfer_cb (struct libusb_transfer *transfer)
 
 	g_debug ("dial now %s, button now %s",
 		 cd_sensor_cap_to_string (cd_sensor_get_mode (sensor)),
-		 cd_sensor_munki_button_state_to_string (reply[1]));
+		 munki_button_state_to_string (reply[1]));
 
 	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_RESPONSE,
 			      transfer->buffer + LIBUSB_CONTROL_SETUP_SIZE,
@@ -124,7 +124,7 @@ cd_sensor_munki_refresh_state (CdSensor *sensor, GError **error)
 {
 	gint retval;
 	gboolean ret = FALSE;
-	static guchar *request;
+	static guint8 *request;
 	libusb_device_handle *handle;
 	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
 
@@ -132,10 +132,10 @@ cd_sensor_munki_refresh_state (CdSensor *sensor, GError **error)
 	handle = cd_usb_get_device_handle (priv->usb);
 
 	/* request new button state */
-	request = g_new0 (guchar, LIBUSB_CONTROL_SETUP_SIZE + 2);
+	request = g_new0 (guint8, LIBUSB_CONTROL_SETUP_SIZE + 2);
 	libusb_fill_control_setup (request,
 				   LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-				   CD_SENSOR_MUNKI_REQUEST_GET_STATUS,
+				   MUNKI_REQUEST_GET_STATUS,
 				   0x00, 0, 2);
 	libusb_fill_control_transfer (priv->transfer_state, handle, request,
 				      &cd_sensor_munki_refresh_state_transfer_cb,
@@ -176,14 +176,14 @@ cd_sensor_munki_transfer_cb (struct libusb_transfer *transfer)
 			      transfer->actual_length);
 	timestamp = (reply[7] << 24) + (reply[6] << 16) + (reply[5] << 8) + (reply[4] << 0);
 	/* we only care when the button is pressed */
-	if (reply[0] == CD_SENSOR_MUNKI_COMMAND_BUTTON_RELEASED) {
+	if (reply[0] == MUNKI_COMMAND_BUTTON_RELEASED) {
 		g_debug ("ignoring button released");
 		goto out;
 	}
 
-	if (reply[0] == CD_SENSOR_MUNKI_COMMAND_DIAL_ROTATE) {
+	if (reply[0] == MUNKI_COMMAND_DIAL_ROTATE) {
 		g_warning ("dial rotate at %ims", timestamp);
-	} else if (reply[0] == CD_SENSOR_MUNKI_COMMAND_BUTTON_PRESSED) {
+	} else if (reply[0] == MUNKI_COMMAND_BUTTON_PRESSED) {
 		g_debug ("button pressed at %ims", timestamp);
 		cd_sensor_button_pressed (sensor);
 	}
@@ -204,14 +204,14 @@ static void
 cd_sensor_munki_submit_transfer (CdSensor *sensor)
 {
 	gint retval;
-	guchar *reply;
+	guint8 *reply;
 	libusb_device_handle *handle;
 	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
 
-	reply = g_new0 (guchar, 8);
+	reply = g_new0 (guint8, 8);
 	handle = cd_usb_get_device_handle (priv->usb);
 	libusb_fill_interrupt_transfer (priv->transfer_interrupt, handle,
-					CD_SENSOR_MUNKI_REQUEST_INTERRUPT,
+					MUNKI_REQUEST_INTERRUPT,
 					reply, 8,
 					cd_sensor_munki_transfer_cb,
 					sensor, -1);
@@ -227,12 +227,12 @@ cd_sensor_munki_submit_transfer (CdSensor *sensor)
  **/
 static gboolean
 cd_sensor_munki_get_eeprom_data (CdSensor *sensor,
-				 guint32 address, guchar *data,
+				 guint32 address, guint8 *data,
 				 guint32 size, GError **error)
 {
 	gint retval;
 	libusb_device_handle *handle;
-	guchar request[8];
+	guint8 request[8];
 	gsize reply_read = 0;
 	gboolean ret = FALSE;
 	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
@@ -246,7 +246,7 @@ cd_sensor_munki_get_eeprom_data (CdSensor *sensor,
 	handle = cd_usb_get_device_handle (priv->usb);
 	retval = libusb_control_transfer (handle,
 					  LIBUSB_ENDPOINT_OUT | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-					  CD_SENSOR_MUNKI_REQUEST_EEPROM_DATA,
+					  MUNKI_REQUEST_EEPROM_DATA,
 					  0, 0, request, 8, 2000);
 	if (retval < 0) {
 		g_set_error (error, CD_SENSOR_ERROR,
@@ -258,7 +258,7 @@ cd_sensor_munki_get_eeprom_data (CdSensor *sensor,
 
 	/* read EEPROM */
 	retval = libusb_bulk_transfer (handle,
-				       CD_SENSOR_MUNKI_REQUEST_EEPROM_DATA,
+				       MUNKI_REQUEST_EEPROM_DATA,
 				       data, (gint) size, (gint*)&reply_read,
 				       5000);
 	if (retval < 0) {
@@ -480,7 +480,7 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 	gboolean ret = FALSE;
 	GError *error = NULL;
 	gint retval;
-	guchar buffer[36];
+	guint8 buffer[36];
 	libusb_device_handle *handle;
 
 	/* try to find the USB device */
@@ -509,7 +509,7 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 	handle = cd_usb_get_device_handle (priv->usb);
 	retval = libusb_control_transfer (handle,
 					  LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-					  CD_SENSOR_MUNKI_REQUEST_FIRMWARE_PARAMS,
+					  MUNKI_REQUEST_FIRMWARE_PARAMS,
 					  0, 0, buffer, 24, 2000);
 	if (retval < 0) {
 		g_simple_async_result_set_error (res, CD_SENSOR_ERROR,
@@ -529,7 +529,7 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 	/* get chip ID */
 	retval = libusb_control_transfer (handle,
 					  LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-					  CD_SENSOR_MUNKI_REQUEST_CHIP_ID,
+					  MUNKI_REQUEST_CHIP_ID,
 					  0, 0, buffer, 8, 2000);
 	if (retval < 0) {
 		g_simple_async_result_set_error (res, CD_SENSOR_ERROR,
@@ -546,8 +546,8 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 	priv->version_string = g_new0 (gchar, 36);
 	retval = libusb_control_transfer (handle,
 					  LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
-					  CD_SENSOR_MUNKI_REQUEST_VERSION_STRING,
-					  0, 0, (guchar*) priv->version_string, 36, 2000);
+					  MUNKI_REQUEST_VERSION_STRING,
+					  0, 0, (guint8*) priv->version_string, 36, 2000);
 	if (retval < 0) {
 		g_simple_async_result_set_error (res, CD_SENSOR_ERROR,
 						 CD_SENSOR_ERROR_NO_SUPPORT,
@@ -707,7 +707,7 @@ out:
 gboolean
 cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 {
-	guchar *buffer;
+	guint8 *buffer;
 	guint i, j;
 	gboolean ret = TRUE;
 	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
@@ -723,7 +723,7 @@ cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 	g_string_append_printf (data, "eeprom-blocksize:%i\n", priv->eeprom_blocksize);
 
 	/* allocate a big chunk o' memory */
-	buffer = g_new0 (guchar, priv->eeprom_blocksize);
+	buffer = g_new0 (guint8, priv->eeprom_blocksize);
 
 	/* get all banks of EEPROM */
 	for (i = 0; i < priv->eeprom_blocks; i++) {

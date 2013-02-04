@@ -2,6 +2,7 @@ SUBDIRS =						\
 	colord						\
 	colorhug					\
 	dtp94						\
-	huey
+	huey						\
+	munki
 
 -include $(top_srcdir)/git.mk
