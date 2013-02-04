@@ -2035,8 +2035,8 @@ main (int argc, char *argv[])
 {
 	CdUtilPrivate *priv;
 	gboolean ret;
-	gboolean verbose;
-	gboolean version;
+	gboolean verbose = FALSE;
+	gboolean version = FALSE;
 	gchar *cmd_descriptions = NULL;
 	GError *error = NULL;
 	guint retval = 1;

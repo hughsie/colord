@@ -477,6 +477,7 @@ ch_device_queue_process (ChDeviceQueue	*device_queue,
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* create temp object */
+	helper.ret = FALSE;
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 

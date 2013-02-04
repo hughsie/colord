@@ -100,6 +100,7 @@ huey_ctx_error_quark (void)
 GUsbDevice *
 huey_ctx_get_device (HueyCtx *ctx)
 {
+	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
 	return ctx->priv->device;
 }
 
@@ -111,6 +112,7 @@ huey_ctx_get_device (HueyCtx *ctx)
 void
 huey_ctx_set_device (HueyCtx *ctx, GUsbDevice *device)
 {
+	g_return_if_fail (HUEY_IS_CTX (ctx));
 	ctx->priv->device = g_object_ref (device);
 }
 
@@ -124,6 +126,9 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 {
 	gboolean ret;
 	HueyCtxPrivate *priv = ctx->priv;
+
+	g_return_val_if_fail (HUEY_IS_CTX (ctx), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* get matrix */
 	cd_mat33_clear (&priv->calibration_lcd);
@@ -174,6 +179,7 @@ out:
 const CdMat3x3 *
 huey_ctx_get_calibration_lcd (HueyCtx *ctx)
 {
+	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
 	return &ctx->priv->calibration_lcd;
 }
 
@@ -185,6 +191,7 @@ huey_ctx_get_calibration_lcd (HueyCtx *ctx)
 const CdMat3x3 *
 huey_ctx_get_calibration_crt (HueyCtx *ctx)
 {
+	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
 	return &ctx->priv->calibration_crt;
 }
 
@@ -196,6 +203,7 @@ huey_ctx_get_calibration_crt (HueyCtx *ctx)
 gfloat
 huey_ctx_get_calibration_value (HueyCtx *ctx)
 {
+	g_return_val_if_fail (HUEY_IS_CTX (ctx), -1);
 	return ctx->priv->calibration_value;
 }
 
@@ -207,6 +215,7 @@ huey_ctx_get_calibration_value (HueyCtx *ctx)
 const CdVec3 *
 huey_ctx_get_dark_offset (HueyCtx *ctx)
 {
+	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
 	return &ctx->priv->dark_offset;
 }
 
@@ -218,6 +227,7 @@ huey_ctx_get_dark_offset (HueyCtx *ctx)
 const gchar *
 huey_ctx_get_unlock_string (HueyCtx *ctx)
 {
+	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
 	return ctx->priv->unlock_string;
 }
 
@@ -334,6 +344,9 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 	gboolean ret = FALSE;
 	HueyCtxDeviceRaw color_native;
 	HueyCtxMultiplier multiplier;
+
+	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* no hardware support */
 	if (cap == CD_SENSOR_CAP_PROJECTOR) {

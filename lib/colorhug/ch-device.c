@@ -486,6 +486,7 @@ ch_device_write_command (GUsbDevice *device,
 	ChDeviceSyncHelper helper;
 
 	/* create temp object */
+	helper.ret = FALSE;
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 

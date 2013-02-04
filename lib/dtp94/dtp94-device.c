@@ -69,11 +69,13 @@ dtp94_device_send_data (GUsbDevice *device,
 {
 	gboolean ret;
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (request != NULL, FALSE);
 	g_return_val_if_fail (request_len != 0, FALSE);
 	g_return_val_if_fail (reply != NULL, FALSE);
 	g_return_val_if_fail (reply_len != 0, FALSE);
 	g_return_val_if_fail (reply_read != NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* request data from device */
 	cd_buffer_debug (CD_BUFFER_KIND_REQUEST,
@@ -125,6 +127,9 @@ dtp94_device_send_cmd_issue (GUsbDevice *device,
 	guint8 rc;
 	guint command_len;
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
 	/* sent command raw */
 	command_len = strlen (command);
 	ret = dtp94_device_send_data (device,
@@ -174,9 +179,13 @@ dtp94_device_send_cmd (GUsbDevice *device,
 		       const gchar *command,
 		       GError **error)
 {
-	gboolean ret;
+	gboolean ret = FALSE;
 	GError *error_local = NULL;
 	guint error_cnt = 0;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (command != NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* repeat until the device is ready */
 	for (error_cnt = 0; ret != TRUE; error_cnt++) {
@@ -206,6 +215,9 @@ gboolean
 dtp94_device_setup (GUsbDevice *device, GError **error)
 {
 	gboolean ret;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* reset device */
 	ret = dtp94_device_send_cmd (device, "0PR\r", error);
@@ -264,6 +276,9 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 	gsize reply_read;
 	guint8 buffer[128];
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	/* set hardware support */
 	switch (cap) {
 	case CD_SENSOR_CAP_CRT:
@@ -296,7 +311,6 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 		goto out;
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
 	if (tmp == NULL || memcmp (tmp + 1, "<00>", 4) != 0) {
-		ret = FALSE;
 		buffer[reply_read] = '\0';
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,
@@ -335,6 +349,9 @@ dtp94_device_get_serial (GUsbDevice *device, GError **error)
 	gsize reply_read;
 	guint8 buffer[128];
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	ret = dtp94_device_send_data (device,
 			       (const guint8 *) "SV\r", 3,
 			       buffer, sizeof (buffer),
@@ -344,7 +361,6 @@ dtp94_device_get_serial (GUsbDevice *device, GError **error)
 		goto out;
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
 	if (tmp == NULL || memcmp (tmp + 1, "<00>", 4) != 0) {
-		ret = FALSE;
 		buffer[reply_read] = '\0';
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,

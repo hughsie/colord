@@ -62,11 +62,13 @@ huey_device_send_data (GUsbDevice *device,
 	gboolean ret;
 	guint i;
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (request != NULL, FALSE);
 	g_return_val_if_fail (request_len != 0, FALSE);
 	g_return_val_if_fail (reply != NULL, FALSE);
 	g_return_val_if_fail (reply_len != 0, FALSE);
 	g_return_val_if_fail (reply_read != NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* control transfer */
 	cd_buffer_debug (CD_BUFFER_KIND_REQUEST,
@@ -177,6 +179,9 @@ huey_device_unlock (GUsbDevice *device, GError **error)
 	gboolean ret;
 	gsize reply_read;
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
 	request[0] = HUEY_CMD_UNLOCK;
 	request[1] = 'G';
 	request[2] = 'r';
@@ -210,6 +215,9 @@ huey_device_get_serial_number (GUsbDevice *device, GError **error)
 	guint32 tmp;
 	gchar *serial_number = NULL;
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
 	ret = huey_device_read_register_word (device,
 					      HUEY_EEPROM_ADDR_SERIAL,
 					      &tmp,
@@ -232,6 +240,9 @@ huey_device_get_unlock_string (GUsbDevice *device, GError **error)
 	gboolean ret;
 	gchar *str = NULL;
 	gchar tmp[5];
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	ret = huey_device_read_register_string (device,
 						HUEY_EEPROM_ADDR_UNLOCK,
@@ -263,6 +274,10 @@ huey_device_set_leds (GUsbDevice *device, guint8 value, GError **error)
 			     0x00,
 			     0x00,
 			     0x00 };
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
 	return huey_device_send_data (device,
 				      payload, 8, reply, 8,
 				      &reply_read,
@@ -291,6 +306,9 @@ huey_device_get_ambient (GUsbDevice *device, GError **error)
 			     0x00,
 			     0x00,
 			     0x00 };
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), -1);
+	g_return_val_if_fail (error == NULL || *error == NULL, -1);
 
 	/* just use LCD mode */
 	request[2] = 0x00;
@@ -331,6 +349,9 @@ huey_device_read_register_byte (GUsbDevice *device,
 	gboolean ret;
 	gsize reply_read;
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
 	/* hit hardware */
 	request[1] = addr;
 	ret = huey_device_send_data (device,
@@ -360,6 +381,9 @@ huey_device_read_register_string (GUsbDevice *device,
 	guint8 i;
 	gboolean ret = TRUE;
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
 	/* get each byte of the string */
 	for (i = 0; i < len; i++) {
 		ret = huey_device_read_register_byte (device,
@@ -387,6 +411,9 @@ huey_device_read_register_word (GUsbDevice *device,
 	guint8 i;
 	guint8 tmp[4];
 	gboolean ret = TRUE;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* get each byte of the 32 bit number */
 	for (i = 0; i < 4; i++) {
@@ -418,6 +445,9 @@ huey_device_read_register_float (GUsbDevice *device,
 	gboolean ret;
 	guint32 tmp = 0;
 
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
 	/* first read in 32 bit integer */
 	ret = huey_device_read_register_word (device,
 						  addr,
@@ -447,6 +477,9 @@ huey_device_read_register_vector (GUsbDevice *device,
 	guint i;
 	gfloat tmp = 0.0f;
 	gdouble *vector_data;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* get this to avoid casting */
 	vector_data = cd_vec3_get_data (value);
@@ -482,6 +515,9 @@ huey_device_read_register_matrix (GUsbDevice *device,
 	guint i;
 	gfloat tmp = 0.0f;
 	gdouble *matrix_data;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* get this to avoid casting */
 	matrix_data = cd_mat33_get_data (value);
