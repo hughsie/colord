@@ -6,7 +6,7 @@ INCLUDES =						\
 	$(SANE_CFLAGS)					\
 	$(DBUS_CFLAGS)					\
 	-I$(top_srcdir)					\
-	-I$(top_srcdir)/libcolord			\
+	-I$(top_srcdir)/lib				\
 	-DG_LOG_DOMAIN=\"CdSane\"			\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DDATADIR=\"$(datadir)\"			\
@@ -16,7 +16,7 @@ INCLUDES =						\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 COLORD_LIBS =						\
-	$(top_builddir)/libcolord/libcolord.la
+	$(top_builddir)/lib/colord/libcolord.la
 
 libexec_PROGRAMS =					\
 	colord-sane

@@ -7,7 +7,7 @@ AM_CPPFLAGS =						\
 	$(SANE_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
 	-I$(top_srcdir)/src				\
-	-I$(top_srcdir)/libcolord			\
+	-I$(top_srcdir)/lib				\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\
@@ -22,7 +22,7 @@ AM_CPPFLAGS =						\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 COLORD_PRIVATE_LIBS =					\
-	$(top_builddir)/libcolord/libcolordprivate.la
+	$(top_builddir)/lib/colord/libcolordprivate.la
 
 if CD_BUILD_REVERSE
 
@@ -78,8 +78,6 @@ cd_sensor_dump_SOURCES =				\
 	../cd-sensor.h					\
 	../cd-debug.c					\
 	../cd-debug.h					\
-	../../libcolord/cd-color.c			\
-	../../libcolord/cd-color.h			\
 	cd-sensor-dump.c
 
 cd_sensor_dump_LDADD =					\

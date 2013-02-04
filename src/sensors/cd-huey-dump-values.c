@@ -24,8 +24,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <glib.h>
-
-#include "cd-buffer.h"
+#include <colord/colord-private.h>
 
 gint
 main (gint argc, gchar *argv[])

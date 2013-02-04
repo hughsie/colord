@@ -367,9 +367,10 @@ src/Makefile
 src/plugins/Makefile
 src/sensors/Makefile
 client/Makefile
-libcolord/cd-version.h
-libcolord/colord.pc
-libcolord/Makefile
+lib/Makefile
+lib/colord/cd-version.h
+lib/colord/colord.pc
+lib/colord/Makefile
 ])
 AC_OUTPUT
 

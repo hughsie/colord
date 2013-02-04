@@ -27,12 +27,7 @@
 #include <pwd.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-#include "cd-client-sync.h"
-#include "cd-device-sync.h"
-#include "cd-enum.h"
-#include "cd-profile-sync.h"
-#include "cd-sensor-sync.h"
+#include <colord/colord.h>
 
 typedef struct {
 	CdClient		*client;

@@ -27,14 +27,13 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gusb.h>
+#include <colord/colord-private.h>
 
 #ifdef HAVE_GUDEV
 #include <gudev/gudev.h>
 #endif
 
 #include "cd-common.h"
-#include "cd-enum.h"
-#include "cd-color.h"
 
 G_BEGIN_DECLS
 

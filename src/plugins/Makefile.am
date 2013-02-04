@@ -12,6 +12,7 @@ AM_CPPFLAGS =						\
 	-DCD_COMPILATION				\
 	-DCD_DISABLE_DEPRECATED				\
 	-DCOLORD_SANE_BINARY=\""$(libexecdir)/colord-sane"\"	\
+	-I$(top_srcdir)/lib				\
 	-I$(top_srcdir)/src
 
 # plugins

@@ -8,7 +8,7 @@ AM_CPPFLAGS =						\
 	$(GNOME_DESKTOP_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
 	-I$(top_srcdir)/client				\
-	-I$(top_srcdir)/libcolord			\
+	-I$(top_srcdir)/lib				\
 	-I$(top_srcdir)/src				\
 	-DCD_COMPILATION				\
 	-DCD_DISABLE_DEPRECATED				\
@@ -21,7 +21,7 @@ AM_CPPFLAGS =						\
 	-DVERSION="\"$(VERSION)\""
 
 COLORD_LIBS =						\
-	$(top_builddir)/libcolord/libcolord.la
+	$(top_builddir)/lib/colord/libcolord.la
 
 libcolord_includedir = $(includedir)/colord-1/colord-session
 libcolord_include_HEADERS =				\

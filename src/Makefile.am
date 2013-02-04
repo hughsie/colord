@@ -17,7 +17,7 @@ AM_CPPFLAGS =						\
 	$(GUSB_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
 	$(LIBSYSTEMD_LOGIN_CFLAGS)			\
-	-I$(top_srcdir)/libcolord			\
+	-I$(top_srcdir)/lib				\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\
@@ -34,7 +34,7 @@ AM_CPPFLAGS =						\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 COLORD_PRIVATE_LIBS =					\
-	$(top_builddir)/libcolord/libcolordprivate.la
+	$(top_builddir)/lib/colord/libcolordprivate.la
 
 libexec_PROGRAMS =					\
 	colord
@@ -66,12 +66,6 @@ colord_SOURCES =					\
 	cd-profile-store.h				\
 	cd-sensor.c					\
 	cd-sensor.h					\
-	$(top_builddir)/libcolord/cd-color.c		\
-	$(top_builddir)/libcolord/cd-color.h		\
-	$(top_builddir)/libcolord/cd-enum.c		\
-	$(top_builddir)/libcolord/cd-enum.h		\
-	$(top_builddir)/libcolord/cd-math.c		\
-	$(top_builddir)/libcolord/cd-math.h		\
 	cd-main.c
 
 if HAVE_GUDEV
@@ -87,6 +81,7 @@ colord_LDADD =						\
 	$(GUDEV_LIBS)					\
 	$(GUSB_LIBS)					\
 	$(LIBSYSTEMD_LOGIN_LIBS)			\
+	$(COLORD_PRIVATE_LIBS)				\
 	$(GLIB_LIBS)
 
 colord_CFLAGS =						\

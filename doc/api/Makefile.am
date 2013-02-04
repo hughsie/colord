@@ -13,7 +13,7 @@ DOC_MAIN_SGML_FILE=colord-docs.xml
 SCAN_OPTIONS=--ignore-headers=config.h
 
 # The directory containing the source code. Relative to $(srcdir)
-DOC_SOURCE_DIR=../../libcolord
+DOC_SOURCE_DIR=../../lib/colord
 
 # Used for dependencies
 HFILE_GLOB=
@@ -27,10 +27,10 @@ IGNORE_HFILES= \
 # if $(DOC_MODULE).types is non-empty.
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)				\
-	-I$(top_srcdir)/libcolord 		\
-	-I$(top_builddir)/libcolord
+	-I$(top_srcdir)/lib/colord 		\
+	-I$(top_builddir)/lib/colord
 
-COLORD_LIBS = $(top_builddir)/libcolord/libcolord.la
+COLORD_LIBS = $(top_builddir)/lib/colord/libcolord.la
 
 GTKDOC_LIBS =					\
 	$(GLIB_LIBS)				\

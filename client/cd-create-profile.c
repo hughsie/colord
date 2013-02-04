@@ -27,8 +27,8 @@
 #include <lcms2_plugin.h>
 #include <stdlib.h>
 #include <math.h>
+#include <colord/colord-private.h>
 
-#include "cd-color.h"
 #include "cd-common.h"
 #include "cd-lcms-helpers.h"
 

@@ -22,8 +22,8 @@
 #include "config.h"
 
 #include <stdlib.h>
+#include <colord/colord-private.h>
 
-#include "cd-enum.h"
 #include "cd-common.h"
 #include "cd-lcms-helpers.h"
 

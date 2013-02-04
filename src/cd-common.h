@@ -25,8 +25,7 @@
 #include "config.h"
 
 #include <gio/gio.h>
-
-#include "../libcolord/cd-enum.h"
+#include <colord/colord-private.h>
 
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_PATH		"/org/freedesktop/ColorManager"

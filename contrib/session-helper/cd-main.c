@@ -27,14 +27,11 @@
 #include <lcms2.h>
 #include <math.h>
 
+#include <colord/colord.h>
+
 #include "cd-debug.h"
 #include "cd-state.h"
 #include "cd-lcms-helpers.h"
-#include "cd-client-sync.h"
-#include "cd-device-sync.h"
-#include "cd-profile-sync.h"
-#include "cd-it8.h"
-#include "cd-sensor-sync.h"
 #include "cd-session.h"
 
 typedef struct {

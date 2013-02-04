@@ -23,6 +23,7 @@
 #define __CD_PLUGIN_H
 
 #include <glib-object.h>
+#include <colord/colord-private.h>
 
 #include "cd-device.h"
 #include "cd-config.h"

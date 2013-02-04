@@ -8,7 +8,7 @@ SUBDIRS = 						\
 	etc						\
 	policy						\
 	man						\
-	libcolord					\
+	lib						\
 	rules						\
 	po
 

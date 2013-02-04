@@ -26,12 +26,10 @@
 #include <locale.h>
 #include <lcms2.h>
 #include <stdlib.h>
+#include <colord/colord.h>
 
-#include "cd-client-sync.h"
 #include "cd-common.h"
-#include "cd-enum.h"
 #include "cd-lcms-helpers.h"
-#include "cd-profile-sync.h"
 
 typedef struct {
 	GOptionContext		*context;

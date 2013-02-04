@@ -9,7 +9,7 @@ AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)						\
 	$(LCMS_CFLAGS)						\
 	-I$(top_srcdir)						\
-	-I$(top_srcdir)/libcolord				\
+	-I$(top_srcdir)/lib					\
 	-DCD_COMPILATION					\
 	-DG_LOG_DOMAIN=\"libcolord\"				\
 	-DTESTDATADIR=\""$(top_srcdir)/data/tests"\"		\
