@@ -20,19 +20,31 @@
  */
 
 /**
- * SECTION:cd-sensor-dtp94-private
+ * SECTION:dtp94-enum
+ * @short_description: Types used by dtp94 and libdtp94
+ *
+ * These helper functions provide a way to marshal enumerated values to
+ * text and back again.
+ *
+ * See also: #CdClient, #CdDevice
  */
 
-#include "cd-sensor-dtp94-private.h"
+#include "config.h"
+
+#include <glib.h>
+
+#include "dtp94-enum.h"
 
 /**
- * cd_sensor_dtp94_rc_parse:
+ * dtp94_rc_parse:
+ *
+ * Since: 0.1.29
  **/
 guint8
-cd_sensor_dtp94_rc_parse (const guint8 *data, gsize length)
+dtp94_rc_parse (const guint8 *data, gsize length)
 {
 	gchar *endptr = NULL;
-	guint64 tmp = CD_SENSOR_DTP92_RC_UNKNOWN;
+	guint64 tmp = DTP94_RC_UNKNOWN;
 
 	/* invalid data */
 	if (length < 4 ||
@@ -52,58 +64,60 @@ out:
 }
 
 /**
- * cd_sensor_dtp94_rc_to_string:
+ * dtp94_rc_to_string:
+ *
+ * Since: 0.1.29
  **/
 const gchar *
-cd_sensor_dtp94_rc_to_string (guint8 value)
+dtp94_rc_to_string (guint8 value)
 {
-	if (value == CD_SENSOR_DTP92_RC_OK)
+	if (value == DTP94_RC_OK)
 		return "ok";
-	if (value == CD_SENSOR_DTP92_RC_BAD_COMMAND)
+	if (value == DTP94_RC_BAD_COMMAND)
 		return "bad-command";
-	if (value == CD_SENSOR_DTP92_RC_PRM_RANGE)
+	if (value == DTP94_RC_PRM_RANGE)
 		return "prm-range";
-	if (value == CD_SENSOR_DTP92_RC_MEMORY_OVERFLOW)
+	if (value == DTP94_RC_MEMORY_OVERFLOW)
 		return "memory-overflow";
-	if (value == CD_SENSOR_DTP92_RC_INVALID_BAUD_RATE)
+	if (value == DTP94_RC_INVALID_BAUD_RATE)
 		return "invalid-baud-rate";
-	if (value == CD_SENSOR_DTP92_RC_TIMEOUT)
+	if (value == DTP94_RC_TIMEOUT)
 		return "timeout";
-	if (value == CD_SENSOR_DTP92_RC_SYNTAX_ERROR)
+	if (value == DTP94_RC_SYNTAX_ERROR)
 		return "syntax-error";
-	if (value == CD_SENSOR_DTP92_RC_NO_DATA_AVAILABLE)
+	if (value == DTP94_RC_NO_DATA_AVAILABLE)
 		return "no-data-available";
-	if (value == CD_SENSOR_DTP92_RC_MISSING_PARAMETER)
+	if (value == DTP94_RC_MISSING_PARAMETER)
 		return "missing-parameter";
-	if (value == CD_SENSOR_DTP92_RC_CALIBRATION_DENIED)
+	if (value == DTP94_RC_CALIBRATION_DENIED)
 		return "calibration-denied";
-	if (value == CD_SENSOR_DTP92_RC_NEEDS_OFFSET_CAL)
+	if (value == DTP94_RC_NEEDS_OFFSET_CAL)
 		return "needs-offset-cal";
-	if (value == CD_SENSOR_DTP92_RC_NEEDS_RATIO_CAL)
+	if (value == DTP94_RC_NEEDS_RATIO_CAL)
 		return "needs-ratio-cal";
-	if (value == CD_SENSOR_DTP92_RC_NEEDS_LUMINANCE_CAL)
+	if (value == DTP94_RC_NEEDS_LUMINANCE_CAL)
 		return "needs-luminance-cal";
-	if (value == CD_SENSOR_DTP92_RC_NEEDS_WHITE_POINT_CAL)
+	if (value == DTP94_RC_NEEDS_WHITE_POINT_CAL)
 		return "needs-white-point-cal";
-	if (value == CD_SENSOR_DTP92_RC_NEEDS_BLACK_POINT_CAL)
+	if (value == DTP94_RC_NEEDS_BLACK_POINT_CAL)
 		return "needs-black-point-cal";
-	if (value == CD_SENSOR_DTP92_RC_INVALID_READING)
+	if (value == DTP94_RC_INVALID_READING)
 		return "invalid-reading";
-	if (value == CD_SENSOR_DTP92_RC_BAD_COMP_TABLE)
+	if (value == DTP94_RC_BAD_COMP_TABLE)
 		return "bad-comp-table";
-	if (value == CD_SENSOR_DTP92_RC_TOO_MUCH_LIGHT)
+	if (value == DTP94_RC_TOO_MUCH_LIGHT)
 		return "too-much-light";
-	if (value == CD_SENSOR_DTP92_RC_NOT_ENOUGH_LIGHT)
+	if (value == DTP94_RC_NOT_ENOUGH_LIGHT)
 		return "not-enough-light";
-	if (value == CD_SENSOR_DTP92_RC_BAD_SERIAL_NUMBER)
+	if (value == DTP94_RC_BAD_SERIAL_NUMBER)
 		return "bad-serial-number";
-	if (value == CD_SENSOR_DTP92_RC_NO_MODULATION)
+	if (value == DTP94_RC_NO_MODULATION)
 		return "no-modulation";
-	if (value == CD_SENSOR_DTP92_RC_EEPROM_FAILURE)
+	if (value == DTP94_RC_EEPROM_FAILURE)
 		return "eeprom-failure";
-	if (value == CD_SENSOR_DTP92_RC_FLASH_WRITE_FAILURE)
+	if (value == DTP94_RC_FLASH_WRITE_FAILURE)
 		return "flash-write-failure";
-	if (value == CD_SENSOR_DTP92_RC_INST_INTERNAL_ERROR)
+	if (value == DTP94_RC_INST_INTERNAL_ERROR)
 		return "inst-internal-error";
 	return NULL;
 }

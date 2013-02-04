@@ -371,6 +371,7 @@ lib/Makefile
 lib/colord/cd-version.h
 lib/colord/colord.pc
 lib/colord/Makefile
+lib/dtp94/Makefile
 ])
 AC_OUTPUT
 

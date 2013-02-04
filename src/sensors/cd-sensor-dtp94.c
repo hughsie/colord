@@ -29,8 +29,9 @@
 #include <gusb.h>
 #include <string.h>
 
-#include "cd-sensor.h"
-#include "cd-sensor-dtp94-private.h"
+#include "../src/cd-sensor.h"
+
+#include <dtp94/dtp94.h>
 
 typedef struct
 {
@@ -49,143 +50,11 @@ typedef struct {
 } CdSensorAsyncState;
 
 #define DTP94_CONTROL_MESSAGE_TIMEOUT	50000 /* ms */
-#define DTP94_MAX_READ_RETRIES		5
 
 static CdSensorDtp94Private *
 cd_sensor_dtp94_get_private (CdSensor *sensor)
 {
 	return g_object_get_data (G_OBJECT (sensor), "priv");
-}
-
-static gboolean
-cd_sensor_dtp94_send_data (CdSensorDtp94Private *priv,
-			   const guint8 *request, gsize request_len,
-			   guint8 *reply, gsize reply_len,
-			   gsize *reply_read, GError **error)
-{
-	gboolean ret;
-
-	g_return_val_if_fail (request != NULL, FALSE);
-	g_return_val_if_fail (request_len != 0, FALSE);
-	g_return_val_if_fail (reply != NULL, FALSE);
-	g_return_val_if_fail (reply_len != 0, FALSE);
-	g_return_val_if_fail (reply_read != NULL, FALSE);
-
-	/* request data from device */
-	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_REQUEST,
-			      request, request_len);
-	ret = g_usb_device_interrupt_transfer (priv->device,
-					       0x2,
-					       (guint8 *) request,
-					       request_len,
-					       NULL,
-					       DTP94_CONTROL_MESSAGE_TIMEOUT,
-					       NULL,
-					       error);
-	if (!ret)
-		goto out;
-
-	/* get sync response */
-	ret = g_usb_device_interrupt_transfer (priv->device,
-					       0x81,
-					       (guint8 *) reply,
-					       reply_len,
-					       reply_read,
-					       DTP94_CONTROL_MESSAGE_TIMEOUT,
-					       NULL,
-					       error);
-	if (!ret)
-		goto out;
-	if (reply_read == 0) {
-		ret = FALSE;
-		g_set_error_literal (error,
-				     CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_INTERNAL,
-				     "failed to get data from device");
-		goto out;
-	}
-	cd_sensor_debug_data (CD_SENSOR_DEBUG_MODE_RESPONSE,
-			      reply, *reply_read);
-out:
-	return ret;
-}
-
-static gboolean
-cd_sensor_dtp94_cm2 (CdSensorDtp94Private *priv,
-		     const gchar *command,
-		     GError **error)
-{
-	gboolean ret;
-	gsize reply_read;
-	guint8 buffer[128];
-	guint8 rc;
-	guint command_len;
-
-	/* sent command raw */
-	command_len = strlen (command);
-	ret = cd_sensor_dtp94_send_data (priv,
-					 (const guint8 *) command,
-					 command_len,
-					 buffer,
-					 sizeof (buffer),
-					 &reply_read,
-					 error);
-	if (!ret)
-		goto out;
-
-	/* device busy */
-	rc = cd_sensor_dtp94_rc_parse (buffer, reply_read);
-	if (rc == CD_SENSOR_DTP92_RC_BAD_COMMAND) {
-		ret = FALSE;
-		g_set_error_literal (error,
-				     CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_NO_DATA,
-				     "device busy");
-		goto out;
-	}
-
-	/* no success */
-	if (rc != CD_SENSOR_DTP92_RC_OK) {
-		ret = FALSE;
-		buffer[reply_read] = '\0';
-		g_set_error (error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_INTERNAL,
-			     "unexpected response from device: %s [%s]",
-			     (const gchar *) buffer,
-			     cd_sensor_dtp94_rc_to_string (rc));
-		goto out;
-	}
-out:
-	return ret;
-}
-
-static gboolean
-cd_sensor_dtp94_cmd (CdSensorDtp94Private *priv,
-		     const gchar *command,
-		     GError **error)
-{
-	gboolean ret;
-	GError *error_local = NULL;
-	guint error_cnt = 0;
-
-	/* repeat until the device is ready */
-	for (error_cnt = 0; ret != TRUE; error_cnt++) {
-		ret = cd_sensor_dtp94_cm2 (priv, command, &error_local);
-		if (!ret) {
-			if (error_cnt < DTP94_MAX_READ_RETRIES &&
-			    g_error_matches (error_local,
-					     CD_SENSOR_ERROR,
-					     CD_SENSOR_ERROR_NO_DATA)) {
-				g_debug ("ignoring %s", error_local->message);
-				g_clear_error (&error_local);
-				continue;
-			}
-			g_propagate_error (error, error_local);
-			break;
-		}
-	};
-	return ret;
 }
 
 static void
@@ -227,74 +96,19 @@ cd_sensor_dtp94_sample_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
-	gboolean ret = FALSE;
 	GError *error = NULL;
-	guint8 buffer[128];
-	gchar *tmp;
-	gsize reply_read;
 
-	/* set hardware support */
-	switch (state->current_cap) {
-	case CD_SENSOR_CAP_CRT:
-	case CD_SENSOR_CAP_PLASMA:
-		/* CRT = 01 */
-		ret = cd_sensor_dtp94_cmd (priv, "0116CF\r", &error);
-		break;
-	case CD_SENSOR_CAP_LCD:
-		/* LCD = 02 */
-		ret = cd_sensor_dtp94_cmd (priv, "0216CF\r", &error);
-		break;
-	default:
-		g_set_error (&error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_NO_SUPPORT,
-			     "DTP94 cannot measure in %s mode",
-			     cd_sensor_cap_to_string (state->current_cap));
-		break;
-	}
-	if (!ret) {
+	/* take a measurement from the sensor */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
+	state->sample = dtp94_device_take_sample (priv->device,
+					   state->current_cap,
+					   &error);
+	if (state->sample == NULL) {
 		cd_sensor_dtp94_get_sample_state_finish (state, error);
 		g_error_free (error);
 		goto out;
 	}
-
-	/* get sample */
-	ret = cd_sensor_dtp94_send_data (priv,
-					 (const guint8 *) "RM\r", 3,
-					 buffer, sizeof (buffer),
-					 &reply_read,
-					 &error);
-	if (!ret) {
-		cd_sensor_dtp94_get_sample_state_finish (state, error);
-		g_error_free (error);
-		goto out;
-	}
-	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
-	if (tmp == NULL || memcmp (tmp + 1, "<00>", 4) != 0) {
-		ret = FALSE;
-		buffer[reply_read] = '\0';
-		g_set_error (&error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_INTERNAL,
-			     "unexpected response from device: %s",
-			     (const gchar *) buffer);
-		cd_sensor_dtp94_get_sample_state_finish (state, error);
-		g_error_free (error);
-		goto out;
-	}
-
-	/* format is raw ASCII with fixed formatting:
-	 * 'X     10.29	Y     10.33	Z      4.65\u000d<00>' */
-	tmp = (gchar *) buffer;
-	g_strdelimit (tmp, "\t\r", '\0');
-
-	/* success */
 	state->ret = TRUE;
-	state->sample = cd_color_xyz_new ();
-	cd_color_xyz_set (state->sample,
-			  g_ascii_strtod (tmp + 1, NULL),
-			  g_ascii_strtod (tmp + 13, NULL),
-			  g_ascii_strtod (tmp + 25, NULL));
 	cd_sensor_dtp94_get_sample_state_finish (state, NULL);
 out:
 	/* set state */
@@ -356,80 +170,6 @@ cd_sensor_get_sample_finish (CdSensor *sensor,
 	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
 }
 
-static gboolean
-cd_sensor_dtp94_startup (CdSensor *sensor, GError **error)
-{
-	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
-	gboolean ret;
-	gchar *tmp;
-	gsize reply_read;
-	guint8 buffer[128];
-
-	/* reset device */
-	ret = cd_sensor_dtp94_cmd (priv, "0PR\r", error);
-	if (!ret)
-		goto out;
-
-	/* reset device again */
-	ret = cd_sensor_dtp94_cmd (priv, "0PR\r", error);
-	if (!ret)
-		goto out;
-
-	/* set color data separator to '\t' */
-	ret = cd_sensor_dtp94_cmd (priv, "0207CF\r", error);
-	if (!ret)
-		goto out;
-
-	/* set delimeter to CR */
-	ret = cd_sensor_dtp94_cmd (priv, "0008CF\r", error);
-	if (!ret)
-		goto out;
-
-	/* set extra digit resolution */
-	ret = cd_sensor_dtp94_cmd (priv, "010ACF\r", error);
-	if (!ret)
-		goto out;
-
-	/* no black point subtraction */
-	ret = cd_sensor_dtp94_cmd (priv, "0019CF\r", error);
-	if (!ret)
-		goto out;
-
-	/* set to factory calibration */
-	ret = cd_sensor_dtp94_cmd (priv, "EFC\r", error);
-	if (!ret)
-		goto out;
-
-	/* unknown command */
-	ret = cd_sensor_dtp94_cmd (priv, "0117CF\r", error);
-	if (!ret)
-		goto out;
-
-	/* get serial number */
-	ret = cd_sensor_dtp94_send_data (priv,
-					 (const guint8 *) "SV\r", 3,
-					 buffer, sizeof (buffer),
-					 &reply_read,
-					 error);
-	if (!ret)
-		goto out;
-	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
-	if (tmp == NULL || memcmp (tmp + 1, "<00>", 4) != 0) {
-		ret = FALSE;
-		buffer[reply_read] = '\0';
-		g_set_error (error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_INTERNAL,
-			     "unexpected response from device: %s",
-			     (const gchar *) buffer);
-		goto out;
-	}
-	tmp[0] = '\0';
-	cd_sensor_set_serial (sensor, (const gchar *) buffer);
-out:
-	return ret;
-}
-
 static void
 cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
 			        GObject *object,
@@ -438,6 +178,7 @@ cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
 	gboolean ret = FALSE;
+	gchar *serial = NULL;
 	GError *error = NULL;
 
 	/* try to find the USB device */
@@ -456,16 +197,27 @@ cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_STARTING);
 
 	/* do startup sequence */
-	ret = cd_sensor_dtp94_startup (sensor, &error);
+	ret = dtp94_device_setup (priv->device, &error);
 	if (!ret) {
 		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 		g_simple_async_result_set_from_error (res, error);
 		g_error_free (error);
 		goto out;
 	}
+
+	/* get serial */
+	serial = dtp94_device_get_serial (priv->device, &error);
+	if (serial == NULL) {
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+		g_simple_async_result_set_from_error (res, error);
+		g_error_free (error);
+		goto out;
+	}
+	cd_sensor_set_serial (sensor, serial);
 out:
 	/* set state */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+	g_free (serial);
 }
 
 void
