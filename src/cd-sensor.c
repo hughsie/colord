@@ -313,10 +313,12 @@ cd_sensor_load (CdSensor *sensor, GError **error)
 	/* can we load a module? */
 	backend_name = g_strdup_printf ("libcolord_sensor_%s." G_MODULE_SUFFIX,
 					cd_sensor_kind_to_string (sensor->priv->kind));
-	g_debug ("Trying to load : %s", backend_name);
 	path = g_build_filename (LIBDIR, "colord-sensors", backend_name, NULL);
+	g_debug ("Trying to load sensor driver: %s", path);
 	handle = g_module_open (path, G_MODULE_BIND_LOCAL);
 	if (handle == NULL) {
+		g_debug ("opening module %s failed : %s",
+			 backend_name, g_module_error ());
 		g_debug ("Trying to fall back to : libcolord_sensor_argyll");
 		path_fallback = g_build_filename (LIBDIR,
 						  "colord-sensors",
