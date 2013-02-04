@@ -216,6 +216,19 @@ cd_profile_set_object_path (CdProfile *profile)
 }
 
 /**
+ * cd_profile_set_metadata:
+ **/
+static void
+cd_profile_set_metadata (CdProfile *profile,
+			 const gchar *property,
+			 const gchar *value)
+{
+	g_hash_table_insert (profile->priv->metadata,
+			     g_strdup (property),
+			     g_strdup (value));
+}
+
+/**
  * cd_profile_set_id:
  **/
 void
@@ -489,9 +502,7 @@ cd_profile_set_property_internal (CdProfile *profile,
 						       g_variant_new_string (value));
 	} else {
 		/* add to metadata */
-		g_hash_table_insert (profile->priv->metadata,
-				     g_strdup (property),
-				     g_strdup (value));
+		cd_profile_set_metadata (profile, property, value);
 		cd_profile_dbus_emit_property_changed (profile,
 						       CD_PROFILE_PROPERTY_METADATA,
 						       cd_profile_get_metadata_as_variant (profile));
