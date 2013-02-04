@@ -159,6 +159,4 @@ libcolord_sensor_munki_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_munki_la_CFLAGS = $(WARNINGFLAGS_C)
 endif
 
-TESTS = cd-self-test
-
 -include $(top_srcdir)/git.mk
