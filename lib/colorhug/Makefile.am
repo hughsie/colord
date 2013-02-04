@@ -1,8 +1,12 @@
 if HAVE_INTROSPECTION
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
-INTROSPECTION_SCANNER_ARGS = --add-include-path=$(srcdir)
-INTROSPECTION_COMPILER_ARGS = --includedir=$(srcdir)
+INTROSPECTION_SCANNER_ARGS =					\
+	--add-include-path=$(srcdir)				\
+	--add-include-path=$(top_builddir)/lib/colord
+INTROSPECTION_COMPILER_ARGS =					\
+	--includedir=$(srcdir)					\
+	--includedir=$(top_builddir)/lib/colord
 endif
 
 AM_CPPFLAGS =							\
@@ -133,7 +137,6 @@ ColorHug_1_0_gir_SCANNERFLAGS = --identifier-prefix=Ch \
 				--symbol-prefix=ch_ \
 				--warn-all \
 				--add-include-path=$(srcdir) \
-				--add-include-path=$(top_builddir)/lib/colord \
 				--c-include="colorhug.h"
 ColorHug_1_0_gir_EXPORT_PACKAGES = colorhug
 ColorHug_1_0_gir_LIBS = libcolorhug.la
