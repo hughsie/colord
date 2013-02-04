@@ -26,6 +26,8 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <sqlite3.h>
+#include <glib/gstdio.h>
 
 #include "cd-common.h"
 #include "cd-device-array.h"
@@ -173,19 +175,122 @@ colord_device_array_func (void)
 }
 
 static void
-cd_mapping_db_func (void)
+cd_mapping_db_alter_func (void)
 {
 	CdMappingDb *mdb;
-	GError *error = NULL;
+	const gchar *db_filename = "/tmp/mapping.db";
+	const gchar *statement;
 	gboolean ret;
-	GPtrArray *array;
+	GError *error = NULL;
+	gint rc;
+	sqlite3 *db;
 
 	/* create */
 	mdb = cd_mapping_db_new ();
 	g_assert (mdb != NULL);
 
-	/* connect, which should create it for us */
-	ret = cd_mapping_db_load (mdb, "/tmp/mapping.db", &error);
+	/* setup v0.1.0 database for altering */
+	rc = g_unlink (db_filename);
+	g_assert_cmpint (rc, ==, 0);
+	rc = sqlite3_open (db_filename, &db);
+	g_assert_cmpint (rc, ==, SQLITE_OK);
+	statement = "CREATE TABLE mappings ("
+		    "device TEXT,"
+		    "profile TEXT);";
+	sqlite3_exec (db, statement, NULL, NULL, NULL);
+	statement = "INSERT INTO mappings (device, profile) VALUES ('dev1', 'prof1')";
+	sqlite3_exec (db, statement, NULL, NULL, NULL);
+
+	/* connect */
+	ret = cd_mapping_db_load (mdb, db_filename, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check we ALTERed it correctly */
+	statement = "SELECT timestamp FROM mappings LIMIT 1";
+	rc = sqlite3_exec (db, statement, NULL, NULL, NULL);
+	g_assert_cmpint (rc, ==, SQLITE_OK);
+
+	sqlite3_close (db);
+	g_object_unref (mdb);
+}
+
+/**
+ * cd_mapping_db_test_cb:
+ **/
+static gint
+cd_mapping_db_test_cb (void *data, gint argc, gchar **argv, gchar **col_name)
+{
+	gchar **tmp = (gchar **) data;
+	*tmp = g_strdup (argv[0]);
+	return 0;
+}
+
+static void
+cd_mapping_db_convert_func (void)
+{
+	CdMappingDb *mdb;
+	const gchar *db_filename = "/tmp/mapping.db";
+	const gchar *statement;
+	gboolean ret;
+	gchar *device_id = NULL;
+	GError *error = NULL;
+	gint rc;
+	sqlite3 *db;
+
+	/* create */
+	mdb = cd_mapping_db_new ();
+	g_assert (mdb != NULL);
+
+	/* setup v0.1.8 database for converting */
+	rc = g_unlink (db_filename);
+	g_assert_cmpint (rc, ==, 0);
+	rc = sqlite3_open (db_filename, &db);
+	g_assert_cmpint (rc, ==, SQLITE_OK);
+	statement = "CREATE TABLE mappings ("
+		    "device TEXT,"
+		    "profile TEXT,"
+		    "timestamp INTEGER DEFAULT 0);";
+	sqlite3_exec (db, statement, NULL, NULL, NULL);
+	statement = "INSERT INTO mappings (device, profile, timestamp) VALUES ('dev1', 'prof1', 12345)";
+	sqlite3_exec (db, statement, NULL, NULL, NULL);
+
+	/* connect, which should convert it for us */
+	ret = cd_mapping_db_load (mdb, db_filename, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check we converted it correctly */
+	statement = "SELECT timestamp FROM mappings_v2 LIMIT 1";
+	rc = sqlite3_exec (db, statement,
+			   cd_mapping_db_test_cb, &device_id, NULL);
+	g_assert_cmpint (rc, ==, SQLITE_OK);
+	g_assert_cmpstr (device_id, ==, "12345");
+	g_free (device_id);
+
+	sqlite3_close (db);
+	g_object_unref (mdb);
+}
+
+static void
+cd_mapping_db_func (void)
+{
+	CdMappingDb *mdb;
+	const gchar *db_filename = "/tmp/mapping.db";
+	gboolean ret;
+	GError *error = NULL;
+	gint rc;
+	GPtrArray *array;
+	guint64 timestamp;
+
+	/* create */
+	mdb = cd_mapping_db_new ();
+	g_assert (mdb != NULL);
+
+	/* connect, which should create a v2 table for us */
+	rc = g_unlink (db_filename);
+	g_assert_cmpint (rc, ==, 0);
+	ret = cd_mapping_db_load (mdb, db_filename, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -209,6 +314,15 @@ cd_mapping_db_func (void)
 	ret = cd_mapping_db_clear_timestamp (mdb, "device1", "profile2", &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+
+	/* ensure timestamp really is zero */
+	timestamp = cd_mapping_db_get_timestamp (mdb,
+						 "device1",
+						 "profile2",
+						 &error);
+	g_assert_no_error (error);
+	g_assert (timestamp != G_MAXUINT64);
+	g_assert_cmpint (timestamp, ==, 0);
 
 	/* get the profiles for a device */
 	array = cd_mapping_db_get_profiles (mdb, "device1", &error);
@@ -351,6 +465,8 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/mapping-db{alter}", cd_mapping_db_alter_func);
+	g_test_add_func ("/colord/mapping-db{convert}", cd_mapping_db_convert_func);
 	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);
 	g_test_add_func ("/colord/device-db", cd_device_db_func);
 	g_test_add_func ("/colord/profile", colord_profile_func);
