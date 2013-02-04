@@ -1,3 +1,42 @@
+Version 0.1.29
+~~~~~~~~~~~~~~
+Released: 2013-02-04
+
+New Features:
+ - Add an interface for plugins to decline to load (Christopher James Halse Rogers)
+ - Add a --verbose and --version argument to colormgr (Richard Hughes)
+ - Add DTP94 native sensor support (Richard Hughes)
+ - Add the 'Plasma' sensor capability (Richard Hughes)
+ - Allow profiles to have a 'score' which affects the standard space (Richard Hughes)
+ - Detect profiles from adobe.com and color.org and add metadata (Richard Hughes)
+ - Install libdtp94 for access to the DTP94 colorimeter (Richard Hughes)
+ - Install libhuey for access to the Huey colorimeter (Richard Hughes)
+ - Install libmunki for access to the ColorMunki Photo hardware (Richard Hughes)
+ - Move libcolorhug from colorhug-client for access to the ColorHug colorimeter (Richard Hughes)
+ - Reintroduce SANE support (Christopher James Halse Rogers)
+ - session-helper: Return extra data from the calibration in the Finished signal (Richard Hughes)
+ - session-helper: Return the correct sensor images when calibrating (Richard Hughes)
+
+Bugfixes:
+ - Allow the user to specify the device type when using 'colormgr create-device' (Richard Hughes)
+ - Change the Adobe RGB description to be 'Compatible with Adobe RGB (1998)' (Richard Hughes)
+ - Do not auto-add profiles due to device-id metadata if they have been manually removed (Richard Hughes)
+ - Do not include the size of the NULL byte when writing data from CCMX files (Richard Hughes)
+ - Do not log a critical warning if the daemon is replaced at runtime (Richard Hughes)
+ - Do not make the libsystemd-login dep automatic (Richard Hughes)
+ - Do not return an error if a user manually adds a profile that has already been automatically added (Richard Hughes)
+ - Don't emit a warning if the profile warnings or owner changes (Richard Hughes)
+ - Ensure profiles with MAPPING_device_id get auto-added to devices (Richard Hughes)
+ - Fix timezone problem in colord_client_random_func test (Christopher James Halse Rogers)
+ - Include cd-buffer.c in libcolordprivate for future use (Richard Hughes)
+ - Make libcolord/device_async test pass everywhere (Christopher James Halse Rogers)
+ - Return an error if a client tries to create a device of an unknown type (Richard Hughes)
+ - Set the additional 'OwnerCmdline' metadata on each device (Richard Hughes)
+ - Show all the possible capabilities on one line when doing 'colormgr get-sensors' (Richard Hughes)
+ - Specify the sensor caps in the code for native sensors (Richard Hughes)
+ - Split the libcolord.so into libcolordprivate.so so it can be used without a GObject dep (Richard Hughes)
+ - Write the CdIt8 'CREATED' date string in all files (Richard Hughes)
+
 Version 0.1.28
 ~~~~~~~~~~~~~~
 Released: 2013-01-16
