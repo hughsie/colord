@@ -23,8 +23,8 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <glib.h>
+#include <huey/huey.h>
 
-#include "cd-sensor-huey-private.h"
 #include "cd-sensor-munki-private.h"
 #include "cd-sensor.h"
 
@@ -84,27 +84,27 @@ cd_parse_beagle_process_entry_huey (CdParseEntry *entry)
 		command_as_text = NULL;
 		cmd = g_ascii_strtoll (tok[j], NULL, 16);
 		if (j == 0 && entry->direction == CD_PARSE_ENTRY_DIRECTION_REPLY) {
-			command_as_text = cd_sensor_huey_return_code_to_string (cmd);
+			command_as_text = huey_rc_to_string (cmd);
 			if (command_as_text == NULL)
 				g_warning ("return code 0x%02x not known in %s", cmd, entry->summary);
 		}
 		if ((j == 0 && entry->direction == CD_PARSE_ENTRY_DIRECTION_REQUEST) ||
 		    (j == 1 && entry->direction == CD_PARSE_ENTRY_DIRECTION_REPLY)) {
 			instruction = cmd;
-			command_as_text = cd_sensor_huey_command_code_to_string (instruction);
+			command_as_text = huey_cmd_code_to_string (instruction);
 			if (command_as_text == NULL)
 				g_warning ("command code 0x%02x not known", cmd);
 		}
 
 		/* some requests are filled with junk data */
 		if (entry->direction == CD_PARSE_ENTRY_DIRECTION_REQUEST &&
-		    instruction == CD_SENSOR_HUEY_COMMAND_REGISTER_READ && j > 1)
+		    instruction == HUEY_CMD_REGISTER_READ && j > 1)
 			g_string_append_printf (output, "xx ");
 		else if (entry->direction == CD_PARSE_ENTRY_DIRECTION_REQUEST &&
-			 instruction == CD_SENSOR_HUEY_COMMAND_SET_LEDS && j > 4)
+			 instruction == HUEY_CMD_SET_LEDS && j > 4)
 			g_string_append_printf (output, "xx ");
 		else if (entry->direction == CD_PARSE_ENTRY_DIRECTION_REQUEST &&
-			 instruction == CD_SENSOR_HUEY_COMMAND_GET_AMBIENT && j > 3)
+			 instruction == HUEY_CMD_GET_AMBIENT && j > 3)
 			g_string_append_printf (output, "xx ");
 		else if (command_as_text != NULL)
 			g_string_append_printf (output, "%02x(%s) ", cmd, command_as_text);

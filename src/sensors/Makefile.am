@@ -37,25 +37,23 @@ noinst_PROGRAMS =					\
 cd_parse_beagle_SOURCES =				\
 	cd-sensor-munki-private.c			\
 	cd-sensor-munki-private.h			\
-	cd-sensor-huey-private.c			\
-	cd-sensor-huey-private.h			\
 	cd-parse-beagle.c
 
 cd_parse_beagle_LDADD =					\
 	$(COLORD_PRIVATE_LIBS)				\
-	$(GLIB_LIBS)
+	$(GLIB_LIBS)					\
+	$(top_builddir)/lib/huey/libhuey.la
 
 cd_parse_beagle_CFLAGS =				\
 	$(WARNINGFLAGS_C)
 
 cd_huey_parse_SOURCES =					\
-	cd-sensor-huey-private.c			\
-	cd-sensor-huey-private.h			\
 	cd-huey-parse.c
 
 cd_huey_parse_LDADD =					\
 	$(COLORD_PRIVATE_LIBS)				\
-	$(GLIB_LIBS)
+	$(GLIB_LIBS)					\
+	$(top_builddir)/lib/huey/libhuey.la
 
 cd_huey_parse_CFLAGS =					\
 	$(WARNINGFLAGS_C)
@@ -114,10 +112,11 @@ plugin_LTLIBRARIES +=					\
 
 libcolord_sensor_huey_la_SOURCES =			\
 	cd-sensor-huey.c				\
-	cd-sensor-huey.h				\
-	cd-sensor-huey-private.c			\
-	cd-sensor-huey-private.h
-libcolord_sensor_huey_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS)
+	cd-sensor-huey.h
+libcolord_sensor_huey_la_LIBADD =			\
+	$(GLIB_LIBS)					\
+	$(GUSB_LIBS)					\
+	$(top_builddir)/lib/huey/libhuey.la
 libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
 

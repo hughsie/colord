@@ -24,8 +24,7 @@
 #include <stdlib.h>
 
 #include <glib.h>
-
-#include "cd-sensor-huey-private.h"
+#include <huey/huey.h>
 
 static void
 parse_command_sequence (GString *output, const gchar *line, gboolean reply)
@@ -44,14 +43,14 @@ parse_command_sequence (GString *output, const gchar *line, gboolean reply)
 		command_as_text = NULL;
 		cmd = g_ascii_strtoll (tok[j], NULL, 16);
 		if (j == 0 && reply) {
-			command_as_text = cd_sensor_huey_return_code_to_string (cmd);
+			command_as_text = huey_rc_to_string (cmd);
 			if (command_as_text == NULL)
 				g_warning ("return code 0x%02x not known in %s", cmd, line);
 		}
 		if ((j == 0 && !reply) ||
 		    (j == 1 && reply)) {
 			instruction = cmd;
-			command_as_text = cd_sensor_huey_command_code_to_string (instruction);
+			command_as_text = huey_cmd_code_to_string (instruction);
 			if (command_as_text == NULL)
 				g_warning ("command code 0x%02x not known", cmd);
 		}

@@ -372,6 +372,7 @@ lib/colord/cd-version.h
 lib/colord/colord.pc
 lib/colord/Makefile
 lib/dtp94/Makefile
+lib/huey/Makefile
 ])
 AC_OUTPUT
 
