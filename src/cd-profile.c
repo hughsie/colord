@@ -238,6 +238,8 @@ cd_profile_set_metadata (CdProfile *profile,
 void
 cd_profile_set_id (CdProfile *profile, const gchar *id)
 {
+	CdStandardSpace standard_space = CD_STANDARD_SPACE_UNKNOWN;
+
 	g_return_if_fail (CD_IS_PROFILE (profile));
 
 	g_free (profile->priv->id);
@@ -245,6 +247,53 @@ cd_profile_set_id (CdProfile *profile, const gchar *id)
 
 	/* all profiles have a score initially */
 	profile->priv->score = 1;
+
+	/* http://www.color.org/srgbprofiles.xalter */
+	if (g_strcmp0 (id, "icc-34562abf994ccd066d2c5721d0d68c5d") == 0) {
+		/* sRGB_v4_ICC_preference */
+		standard_space = CD_STANDARD_SPACE_SRGB;
+		profile->priv->score = 10;
+	}
+	if (g_strcmp0 (id, "icc-fc66337837e2886bfd72e9838228f1b8") == 0) {
+		/* sRGB_v4_ICC_preference_displayclass */
+		standard_space = CD_STANDARD_SPACE_SRGB;
+		profile->priv->score = 8;
+	}
+	if (g_strcmp0 (id, "icc-29f83ddeaff255ae7842fae4ca83390d") == 0) {
+		/* sRGB_IEC61966-2-1_black_scaled */
+		standard_space = CD_STANDARD_SPACE_SRGB;
+		profile->priv->score = 6;
+	}
+	if (g_strcmp0 (id, "icc-c95bd637e95d8a3b0df38f99c1320389") == 0) {
+		/* sRGB_IEC61966-2-1_no_black_scaling */
+		standard_space = CD_STANDARD_SPACE_SRGB;
+		profile->priv->score = 4;
+	}
+
+	/* from http://download.adobe.com/pub/adobe/iccprofiles/ */
+	if (g_strcmp0 (id, "icc-dea88382d899d5f6e573b432473ae138") == 0) {
+		/* AdobeRGB1998 */
+		standard_space = CD_STANDARD_SPACE_ADOBE_RGB;
+		profile->priv->score = 10;
+	}
+	if (g_strcmp0 (id, "icc-91cf26c58e07eda724fdbf3eadce4505") == 0) {
+		/* ColorMatchRGB */
+		standard_space = CD_STANDARD_SPACE_LAST;
+	}
+	if (g_strcmp0 (id, "icc-2e54d10b392cac47226469ba2ea95bd8") == 0) {
+		/* AppleRGB */
+		standard_space = CD_STANDARD_SPACE_LAST;
+	}
+
+	/* add additional metadata to fix the GUIs */
+	if (standard_space != CD_STANDARD_SPACE_UNKNOWN) {
+		cd_profile_set_metadata (profile,
+					 CD_PROFILE_METADATA_STANDARD_SPACE,
+					 cd_standard_space_to_string (standard_space));
+		cd_profile_set_metadata (profile,
+					 CD_PROFILE_METADATA_DATA_SOURCE,
+					 CD_PROFILE_METADATA_DATA_SOURCE_STANDARD);
+	}
 
 	/* now calculate this again */
 	cd_profile_set_object_path (profile);
