@@ -88,7 +88,7 @@ gsettings_schemas_in_files = org.freedesktop.ColorHelper.gschema.xml.in
 gsettings_SCHEMAS = $(gsettings_schemas_in_files:.gschema.xml.in=.gschema.xml)
 
 EXTRA_DIST =						\
-	$(gsettings_SCHEMAS)				\
+	$(gsettings_schemas_in_files)			\
 	$(dbusservicemain_in_files)
 
 DISTCLEANFILES =					\
