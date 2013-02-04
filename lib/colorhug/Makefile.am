@@ -133,6 +133,7 @@ ColorHug_1_0_gir_SCANNERFLAGS = --identifier-prefix=Ch \
 				--symbol-prefix=ch_ \
 				--warn-all \
 				--add-include-path=$(srcdir) \
+				--add-include-path=$(top_builddir)/lib/colord \
 				--c-include="colorhug.h"
 ColorHug_1_0_gir_EXPORT_PACKAGES = colorhug
 ColorHug_1_0_gir_LIBS = libcolorhug.la
