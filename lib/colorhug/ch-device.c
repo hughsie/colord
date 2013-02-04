@@ -24,229 +24,109 @@
 #include <glib.h>
 #include <gusb.h>
 #include <string.h>
+#include <lcms2.h>
 
-#include "cd-sensor-colorhug-private.h"
+#include "ch-common.h"
+#include "ch-device.h"
+#include "ch-math.h"
 
 /**
- * ch_strerror:
+ * ch_device_error_quark:
+ *
+ * Return value: ChDevice error quark.
+ *
+ * Since: 0.1.1
  **/
-const gchar *
-ch_strerror (ChError error_enum)
+GQuark
+ch_device_error_quark (void)
 {
-	const char *str = NULL;
-	switch (error_enum) {
-	case CH_ERROR_NONE:
-		str = "Success";
-		break;
-	case CH_ERROR_UNKNOWN_CMD:
-		str = "Unknown command";
-		break;
-	case CH_ERROR_WRONG_UNLOCK_CODE:
-		str = "Wrong unlock code";
-		break;
-	case CH_ERROR_NOT_IMPLEMENTED:
-		str = "Not implemented";
-		break;
-	case CH_ERROR_UNDERFLOW_SENSOR:
-		str = "Underflow of sensor";
-		break;
-	case CH_ERROR_NO_SERIAL:
-		str = "No serial";
-		break;
-	case CH_ERROR_WATCHDOG:
-		str = "Watchdog";
-		break;
-	case CH_ERROR_INVALID_ADDRESS:
-		str = "Invalid address";
-		break;
-	case CH_ERROR_INVALID_LENGTH:
-		str = "Invalid length";
-		break;
-	case CH_ERROR_INVALID_CHECKSUM:
-		str = "Invalid checksum";
-		break;
-	case CH_ERROR_INVALID_VALUE:
-		str = "Invalid value";
-		break;
-	case CH_ERROR_UNKNOWN_CMD_FOR_BOOTLOADER:
-		str = "Unknown command for bootloader";
-		break;
-	case CH_ERROR_OVERFLOW_MULTIPLY:
-		str = "Overflow of multiply";
-		break;
-	case CH_ERROR_OVERFLOW_ADDITION:
-		str = "Overflow of addition";
-		break;
-	case CH_ERROR_OVERFLOW_SENSOR:
-		str = "Overflow of sensor";
-		break;
-	case CH_ERROR_OVERFLOW_STACK:
-		str = "Overflow of stack";
-		break;
-	case CH_ERROR_NO_CALIBRATION:
-		str = "No calibration";
-		break;
-	case CH_ERROR_DEVICE_DEACTIVATED:
-		str = "Device deactivated";
-		break;
-	case CH_ERROR_INCOMPLETE_REQUEST:
-		str = "Incomplete previous request";
-		break;
-	case CH_ERROR_SELF_TEST_SENSOR:
-		str = "Self test failed: Sensor";
-		break;
-	case CH_ERROR_SELF_TEST_RED:
-		str = "Self test failed: Red";
-		break;
-	case CH_ERROR_SELF_TEST_GREEN:
-		str = "Self test failed: Green";
-		break;
-	case CH_ERROR_SELF_TEST_BLUE:
-		str = "Self test failed: Blue";
-		break;
-	case CH_ERROR_SELF_TEST_MULTIPLIER:
-		str = "Self test failed: Multiplier";
-		break;
-	case CH_ERROR_SELF_TEST_COLOR_SELECT:
-		str = "Self test failed: Color Select";
-		break;
-	case CH_ERROR_INVALID_CALIBRATION:
-		str = "Invalid calibration";
-		break;
-	default:
-		str = "Unknown error, please report";
-		break;
-	}
-	return str;
+	static GQuark quark = 0;
+	if (!quark)
+		quark = g_quark_from_static_string ("ch_device_error");
+	return quark;
 }
 
 /**
- * ch_command_to_string:
+ * ch_device_open:
  **/
-const gchar *
-ch_command_to_string (guint8 cmd)
+gboolean
+ch_device_open (GUsbDevice *device, GError **error)
 {
-	const char *str = NULL;
-	switch (cmd) {
-	case CH_CMD_GET_COLOR_SELECT:
-		str = "get-color-select";
-		break;
-	case CH_CMD_SET_COLOR_SELECT:
-		str = "set-color-select";
-		break;
-	case CH_CMD_GET_MULTIPLIER:
-		str = "get-multiplier";
-		break;
-	case CH_CMD_SET_MULTIPLIER:
-		str = "set-multiplier";
-		break;
-	case CH_CMD_GET_INTEGRAL_TIME:
-		str = "get-integral-time";
-		break;
-	case CH_CMD_SET_INTEGRAL_TIME:
-		str = "set-integral-time";
-		break;
-	case CH_CMD_GET_FIRMWARE_VERSION:
-		str = "get-firmare-version";
-		break;
-	case CH_CMD_GET_CALIBRATION:
-		str = "get-calibration";
-		break;
-	case CH_CMD_SET_CALIBRATION:
-		str = "set-calibration";
-		break;
-	case CH_CMD_GET_SERIAL_NUMBER:
-		str = "get-serial-number";
-		break;
-	case CH_CMD_SET_SERIAL_NUMBER:
-		str = "set-serial-number";
-		break;
-	case CH_CMD_GET_OWNER_NAME:
-		str = "get-owner-name";
-		break;
-	case CH_CMD_SET_OWNER_NAME:
-		str = "set-owner-name";
-		break;
-	case CH_CMD_GET_OWNER_EMAIL:
-		str = "get-owner-name";
-		break;
-	case CH_CMD_SET_OWNER_EMAIL:
-		str = "set-owner-email";
-		break;
-	case CH_CMD_GET_LEDS:
-		str = "get-leds";
-		break;
-	case CH_CMD_SET_LEDS:
-		str = "set-leds";
-		break;
-	case CH_CMD_GET_PCB_ERRATA:
-		str = "get-pcb-errata";
-		break;
-	case CH_CMD_SET_PCB_ERRATA:
-		str = "set-pcb-errata";
-		break;
-	case CH_CMD_GET_DARK_OFFSETS:
-		str = "get-dark-offsets";
-		break;
-	case CH_CMD_SET_DARK_OFFSETS:
-		str = "set-dark-offsets";
-		break;
-	case CH_CMD_WRITE_EEPROM:
-		str = "write-eeprom";
-		break;
-	case CH_CMD_TAKE_READING_RAW:
-		str = "take-reading-raw";
-		break;
-	case CH_CMD_TAKE_READINGS:
-		str = "take-readings";
-		break;
-	case CH_CMD_TAKE_READING_XYZ:
-		str = "take-reading-xyz";
-		break;
-	case CH_CMD_RESET:
-		str = "reset";
-		break;
-	case CH_CMD_READ_FLASH:
-		str = "read-flash";
-		break;
-	case CH_CMD_ERASE_FLASH:
-		str = "erase-flash";
-		break;
-	case CH_CMD_WRITE_FLASH:
-		str = "write-flash";
-		break;
-	case CH_CMD_BOOT_FLASH:
-		str = "boot-flash";
-		break;
-	case CH_CMD_SET_FLASH_SUCCESS:
-		str = "set-flash-success";
-		break;
-	case CH_CMD_GET_CALIBRATION_MAP:
-		str = "get-calibration-map";
-		break;
-	case CH_CMD_SET_CALIBRATION_MAP:
-		str = "set-calibration-map";
-		break;
-	case CH_CMD_GET_HARDWARE_VERSION:
-		str = "get-hardware-version";
-		break;
-	case CH_CMD_GET_REMOTE_HASH:
-		str = "get-remote-hash";
-		break;
-	case CH_CMD_SET_REMOTE_HASH:
-		str = "set-remote-hash";
-		break;
-	case CH_CMD_SELF_TEST:
-		str = "self-test";
-		break;
-	default:
-		str = "unknown-command";
-		break;
-	}
-	return str;
+	gboolean ret;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	/* load device */
+	ret = g_usb_device_open (device, error);
+	if (!ret)
+		goto out;
+	ret = g_usb_device_set_configuration (device,
+					      CH_USB_CONFIG,
+					      error);
+	if (!ret)
+		goto out;
+	ret = g_usb_device_claim_interface (device,
+					    CH_USB_INTERFACE,
+					    G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
+					    error);
+	if (!ret)
+		goto out;
+out:
+	return ret;
 }
 
-/**********************************************************************/
+/**
+ * ch_device_is_colorhug:
+ **/
+gboolean
+ch_device_is_colorhug (GUsbDevice *device)
+{
+	return ch_device_get_mode (device) != CH_DEVICE_MODE_UNKNOWN;
+}
+
+/**
+ * ch_device_get_mode:
+ **/
+ChDeviceMode
+ch_device_get_mode (GUsbDevice *device)
+{
+	ChDeviceMode state;
+
+	/* is a legacy device */
+	if (g_usb_device_get_vid (device) == CH_USB_VID_LEGACY &&
+	    g_usb_device_get_pid (device) == CH_USB_PID_LEGACY) {
+		state = CH_DEVICE_MODE_LEGACY;
+		goto out;
+	}
+
+	/* vendor doesn't match */
+	if (g_usb_device_get_vid (device) != CH_USB_VID) {
+		state = CH_DEVICE_MODE_UNKNOWN;
+		goto out;
+	}
+
+	/* use the product ID to work out the state */
+	switch (g_usb_device_get_pid (device)) {
+	case CH_USB_PID_BOOTLOADER:
+		state = CH_DEVICE_MODE_BOOTLOADER;
+		break;
+	case CH_USB_PID_BOOTLOADER_SPECTRO:
+		state = CH_DEVICE_MODE_BOOTLOADER_SPECTRO;
+		break;
+	case CH_USB_PID_FIRMWARE:
+		state = CH_DEVICE_MODE_FIRMWARE;
+		break;
+	case CH_USB_PID_FIRMWARE_SPECTRO:
+		state = CH_DEVICE_MODE_FIRMWARE_SPECTRO;
+		break;
+	default:
+		state = CH_DEVICE_MODE_UNKNOWN;
+		break;
+	}
+out:
+	return state;
+}
 
 /**
  * ch_print_data_buffer:
@@ -264,7 +144,7 @@ ch_print_data_buffer (const gchar *title,
 		g_print ("%c[%dm", 0x1B, 34);
 	g_print ("%s\t", title);
 
-	for (i = 0; i <  length; i++)
+	for (i = 0; i < length; i++)
 		g_print ("%02x [%c]\t", data[i], g_ascii_isprint (data[i]) ? data[i] : '?');
 
 	g_print ("%c[%dm\n", 0x1B, 0);
@@ -314,6 +194,9 @@ ch_device_write_command_finish (GUsbDevice *device,
 static void
 ch_device_free_helper (ChDeviceHelper *helper)
 {
+	/* clear busy flag */
+	g_object_steal_data (G_OBJECT (helper->device),
+			     "ChCommonDeviceBusy");
 	if (helper->cancellable != NULL)
 		g_object_unref (helper->cancellable);
 	g_object_unref (helper->device);
@@ -349,7 +232,11 @@ ch_device_reply_cb (GObject *source_object,
 	}
 
 	/* parse the reply */
-	ch_print_data_buffer ("reply", helper->buffer, actual_len);
+	if (g_getenv ("COLORHUG_VERBOSE") != NULL) {
+		ch_print_data_buffer ("reply",
+				      helper->buffer,
+				      actual_len);
+	}
 
 	/* parse */
 	if (helper->buffer[CH_BUFFER_OUTPUT_RETVAL] != CH_ERROR_NONE ||
@@ -368,7 +255,10 @@ ch_device_reply_cb (GObject *source_object,
 				       actual_len,
 				       helper->buffer_out_len + CH_BUFFER_OUTPUT_DATA,
 				       CH_USB_HID_EP_SIZE);
-		g_simple_async_result_set_error (helper->res, 1, 0, "%s", msg);
+		g_simple_async_result_set_error (helper->res,
+						 CH_DEVICE_ERROR,
+						 error_enum,
+						 "%s", msg);
 		g_simple_async_result_complete_in_idle (helper->res);
 		ch_device_free_helper (helper);
 		return;
@@ -423,6 +313,39 @@ ch_device_request_cb (GObject *source_object,
 }
 
 /**
+ * ch_device_emulate_cb:
+ **/
+static gboolean
+ch_device_emulate_cb (gpointer user_data)
+{
+	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+
+	switch (helper->cmd) {
+	case CH_CMD_GET_SERIAL_NUMBER:
+		helper->buffer_out[6] = 42;
+		break;
+	case CH_CMD_GET_FIRMWARE_VERSION:
+		helper->buffer_out[0] = 0x01;
+		helper->buffer_out[4] = 0x01;
+		break;
+	case CH_CMD_GET_HARDWARE_VERSION:
+		helper->buffer_out[0] = 0xff;
+		break;
+	default:
+		g_debug ("Ignoring command %s",
+			 ch_command_to_string (helper->cmd));
+		break;
+	}
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
+	g_simple_async_result_complete_in_idle (helper->res);
+	ch_device_free_helper (helper);
+
+	return FALSE;
+}
+
+/**
  * ch_device_write_command_async:
  * @device:		A #GUsbDevice
  * @cmd:		The command to use, e.g. %CH_CMD_GET_COLOR_SELECT
@@ -448,6 +371,7 @@ ch_device_write_command_async (GUsbDevice *device,
 			       gpointer user_data)
 {
 	ChDeviceHelper *helper;
+	gpointer device_busy;
 
 	g_return_if_fail (G_USB_IS_DEVICE (device));
 	g_return_if_fail (cmd != 0);
@@ -465,6 +389,16 @@ ch_device_write_command_async (GUsbDevice *device,
 	if (cancellable != NULL)
 		helper->cancellable = g_object_ref (cancellable);
 
+	/* device busy processing another command */
+	device_busy = g_object_get_data (G_OBJECT (device),
+					 "ChCommonDeviceBusy");
+	if (device_busy != NULL) {
+		g_simple_async_result_set_error (helper->res, 1, 0, "Device busy!");
+		g_simple_async_result_complete_in_idle (helper->res);
+		ch_device_free_helper (helper);
+		return;
+	}
+
 	/* set command */
 	helper->cmd = cmd;
 	helper->buffer[CH_BUFFER_INPUT_CMD] = helper->cmd;
@@ -475,9 +409,24 @@ ch_device_write_command_async (GUsbDevice *device,
 	}
 
 	/* request */
-	ch_print_data_buffer ("request",
-			      helper->buffer,
-			      buffer_in_len + 1);
+	if (g_getenv ("COLORHUG_VERBOSE") != NULL) {
+		ch_print_data_buffer ("request",
+				      helper->buffer,
+				      buffer_in_len + 1);
+	}
+
+	/* dummy hardware */
+	if (g_getenv ("COLORHUG_EMULATE") != NULL) {
+		g_timeout_add (20, ch_device_emulate_cb, helper);
+		return;
+	}
+
+	/* set a private flag so we don't do reentrancy */
+	g_object_set_data (G_OBJECT (device),
+			   "ChCommonDeviceBusy",
+			   GUINT_TO_POINTER (TRUE));
+
+	/* do interrupt transfer */
 	g_usb_device_interrupt_transfer_async (helper->device,
 					       CH_USB_HID_EP_OUT,
 					       helper->buffer,
@@ -488,68 +437,72 @@ ch_device_write_command_async (GUsbDevice *device,
 					       helper);
 }
 
+/* tiny helper to help us do the async operation */
+typedef struct {
+	GError		**error;
+	GMainLoop	*loop;
+	gboolean	 ret;
+} ChDeviceSyncHelper;
+
 /**
- * ch_sha1_to_string:
- * @sha1: A %ChSha1
- *
- * Gets a string representation of the SHA1 hash.
- *
- * Return value: A string, free with g_free().
- */
-gchar *
-ch_sha1_to_string (const ChSha1 *sha1)
+ * ch_device_write_command_finish_cb:
+ **/
+static void
+ch_device_write_command_finish_cb (GObject *source,
+				   GAsyncResult *res,
+				   gpointer user_data)
 {
-	GString *string = NULL;
-	guint i;
-
-	g_return_val_if_fail (sha1 != NULL, NULL);
-
-	/* read each byte and convert to hex */
-	string = g_string_new ("");
-	for (i = 0; i < 20; i++) {
-		g_string_append_printf (string, "%02x",
-					sha1->bytes[i]);
-	}
-	return g_string_free (string, FALSE);
+	GUsbDevice *device = G_USB_DEVICE (source);
+	ChDeviceSyncHelper *helper = (ChDeviceSyncHelper *) user_data;
+	helper->ret = ch_device_write_command_finish (device, res, helper->error);
+	g_main_loop_quit (helper->loop);
 }
 
 /**
- * ch_sha1_parse:
- * @value: A string representation of the SHA1 hash
- * @sha1: A %ChSha1
- * @error: A %GError, or %NULL
+ * ch_device_write_command:
+ * @device:		A #GUsbDevice
+ * @cmd:		The command to use, e.g. %CH_CMD_GET_COLOR_SELECT
+ * @buffer_in:		The input buffer of data, or %NULL
+ * @buffer_in_len:	The input buffer length
+ * @buffer_out:		The output buffer of data, or %NULL
+ * @buffer_out_len:	The output buffer length
+ * @cancellable:	A #GCancellable or %NULL
+ * @error:		A #GError, or %NULL
  *
- * Parses a SHA1 hash from a string value.
+ * Sends a message to the device and waits for a reply.
  *
- * Return value: %TRUE for success
- */
+ * Return value: %TRUE if the command was executed successfully.
+ **/
 gboolean
-ch_sha1_parse (const gchar *value, ChSha1 *sha1, GError **error)
+ch_device_write_command (GUsbDevice *device,
+			 guint8 cmd,
+			 const guint8 *buffer_in,
+			 gsize buffer_in_len,
+			 guint8 *buffer_out,
+			 gsize buffer_out_len,
+			 GCancellable *cancellable,
+			 GError **error)
 {
-	gboolean ret = TRUE;
-	gchar tmp[3] = { '\0', '\0', '\0'};
-	guint i;
-	guint len;
+	ChDeviceSyncHelper helper;
 
-	g_return_val_if_fail (value != NULL, FALSE);
-	g_return_val_if_fail (sha1 != NULL, FALSE);
+	/* create temp object */
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
 
-	/* not a SHA1 hash */
-	len = strlen (value);
-	if (len != 40) {
-		ret = FALSE;
-		g_set_error (error, 1, 0,
-			     "Invalid SHA1 hash '%s'",
-			     value);
-		goto out;
-	}
+	/* run async method */
+	ch_device_write_command_async (device,
+				       cmd,
+				       buffer_in,
+				       buffer_in_len,
+				       buffer_out,
+				       buffer_out_len,
+				       cancellable,
+				       ch_device_write_command_finish_cb,
+				       &helper);
+	g_main_loop_run (helper.loop);
 
-	/* parse */
-	for (i = 0; i < len; i += 2) {
-		tmp[0] = value[i+0];
-		tmp[1] = value[i+1];
-		sha1->bytes[i/2] = g_ascii_strtoull (tmp, NULL, 16);
-	}
-out:
-	return ret;
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.ret;
 }

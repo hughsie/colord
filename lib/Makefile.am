@@ -1,5 +1,7 @@
 SUBDIRS =						\
 	colord						\
-	dtp94
+	colorhug					\
+	dtp94						\
+	huey
 
 -include $(top_srcdir)/git.mk

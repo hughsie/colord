@@ -76,6 +76,7 @@ to color profiles in the system context.
 Summary: Development package for %{name}
 Requires: %{name} = %{version}-%{release}
 Requires: %{name}-libs = %{version}-%{release}
+Obsoletes: colorhug-client-devel <= 0.1.13
 
 %description devel
 Files for development with %{name}.
@@ -246,8 +247,8 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %files devel
 %{_includedir}/colord-1
 %{_libdir}/lib*.so
-%{_libdir}/pkgconfig/colord.pc
-%{_datadir}/gir-1.0/Colord-1.0.gir
+%{_libdir}/pkgconfig/*.pc
+%{_datadir}/gir-1.0/*.gir
 %{_datadir}/vala/vapi/colord.vapi
 
 %files devel-docs

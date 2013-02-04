@@ -371,6 +371,9 @@ lib/Makefile
 lib/colord/cd-version.h
 lib/colord/colord.pc
 lib/colord/Makefile
+lib/colorhug/Makefile
+lib/colorhug/colorhug.pc
+lib/colorhug/ch-version.h
 lib/dtp94/Makefile
 lib/huey/Makefile
 ])

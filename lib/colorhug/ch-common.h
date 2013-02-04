@@ -19,15 +19,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef CD_SENSOR_COLORHUG_PRIVATE_H
-#define CD_SENSOR_COLORHUG_PRIVATE_H
+#if !defined (__COLORHUG_H_INSIDE__) && !defined (CH_COMPILATION)
+#error "Only <colorhug.h> can be included directly."
+#endif
+
+#ifndef CH_COMMON_H
+#define CH_COMMON_H
 
 #include <glib.h>
 #include <gusb.h>
 
 /* device constants */
 #define	CH_USB_VID				0x273f
-#define	CH_USB_PID				0x1001
+#define	CH_USB_PID_BOOTLOADER			0x1000
+#define	CH_USB_PID_FIRMWARE			0x1001
+#define	CH_USB_PID_FIRMWARE_SPECTRO		0x1002
+#define	CH_USB_PID_BOOTLOADER_SPECTRO		0x1003
 #define	CH_USB_CONFIG				0x0001
 #define	CH_USB_INTERFACE			0x0000
 #define	CH_USB_HID_EP				0x0001
@@ -276,7 +283,7 @@
 #define	CH_CMD_GET_OWNER_EMAIL			0x13
 
 /**
- * CH_CMD_SET_OWNER_NAME:
+ * CH_CMD_SET_OWNER_EMAIL:
  *
  * Set User's Email Address
  *
@@ -638,6 +645,42 @@
 #define	CH_CMD_GET_MEASURE_MODE			0x37
 
 /**
+ * CH_CMD_READ_SRAM:
+ *
+ * Read in raw data from the SRAM memory.
+ *
+ * IN:  [1:cmd][2:address][1:length]
+ * OUT: [1:retval][1:cmd][1-60:data]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_READ_SRAM			0x38
+
+/**
+ * CH_CMD_WRITE_SRAM:
+ *
+ * Write raw data to the SRAM memory.
+ *
+ * IN:  [1:cmd][2:address][1:length][1-60:data]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_WRITE_SRAM			0x39
+
+/**
+ * CH_CMD_GET_TEMPERATURE:
+ *
+ * Gets the temperature of the sensor in degrees celsius
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][4:temperature]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_GET_TEMPERATURE			0x3b
+
+/**
  * CH_CMD_SELF_TEST:
  *
  * Tests the device by trying to get a non-zero reading from each
@@ -686,9 +729,10 @@
 #define	CH_FLASH_ERASE_BLOCK_SIZE		0x400	/* 1024 */
 #define	CH_FLASH_WRITE_BLOCK_SIZE		0x040	/* 64 */
 #define	CH_FLASH_TRANSFER_BLOCK_SIZE		0x020	/* 32 */
-#define	CH_FLASH_RECONNECT_TIMEOUT		2500	/* ms */
+#define	CH_FLASH_RECONNECT_TIMEOUT		5000	/* ms */
 
 /* calibration remapping contants */
+#define	CH_CALIBRATION_INDEX_FACTORY_ONLY		0x00
 #define	CH_CALIBRATION_INDEX_LCD		(CH_CALIBRATION_MAX + 0)
 #define	CH_CALIBRATION_INDEX_CRT		(CH_CALIBRATION_MAX + 1)
 #define	CH_CALIBRATION_INDEX_PROJECTOR		(CH_CALIBRATION_MAX + 2)
@@ -744,6 +788,13 @@ typedef enum {
 	CH_ERROR_SELF_TEST_COLOR_SELECT,
 	CH_ERROR_SELF_TEST_MULTIPLIER,
 	CH_ERROR_INVALID_CALIBRATION,
+	CH_ERROR_SRAM_FAILED,
+	CH_ERROR_OUT_OF_MEMORY,
+	CH_ERROR_SELF_TEST_TEMPERATURE,
+	CH_ERROR_SELF_TEST_I2C,
+	CH_ERROR_SELF_TEST_ADC_VDD,
+	CH_ERROR_SELF_TEST_ADC_VSS,
+	CH_ERROR_SELF_TEST_ADC_VREF,
 	CH_ERROR_LAST
 } ChError;
 
@@ -761,32 +812,22 @@ typedef enum {
 	CH_PCB_ERRATA_LAST		= 1 << 2
 } ChPcbErrata;
 
+typedef enum {
+	CH_DEVICE_MODE_UNKNOWN,
+	CH_DEVICE_MODE_LEGACY,
+	CH_DEVICE_MODE_BOOTLOADER,
+	CH_DEVICE_MODE_FIRMWARE,
+	CH_DEVICE_MODE_BOOTLOADER_SPECTRO,
+	CH_DEVICE_MODE_FIRMWARE_SPECTRO,
+	CH_DEVICE_MODE_LAST
+} ChDeviceMode;
+
 /* prototypes */
 const gchar	*ch_strerror			(ChError	 error_enum);
 const gchar	*ch_command_to_string		(guint8		 cmd);
-
-void		ch_device_write_command_async	(GUsbDevice	*device,
-						 guint8		 cmd,
-						 const guint8	*buffer_in,
-						 gsize		 buffer_in_len,
-						 guint8		*buffer_out,
-						 gsize		 buffer_out_len,
-						 GCancellable	*cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer	 user_data);
-gboolean	 ch_device_write_command_finish	(GUsbDevice	*device,
-						 GAsyncResult	*res,
-						 GError		**error);
-
-
-/* SHA1 hash */
-typedef struct {
-	guint8	bytes[20];
-} ChSha1;
-
-gchar		*ch_sha1_to_string		(const ChSha1		*sha1);
-gboolean	 ch_sha1_parse			(const gchar		*value,
-						 ChSha1			*sha1,
-						 GError			**error);
+const gchar	*ch_multiplier_to_string	(ChFreqScale	 multiplier);
+const gchar	*ch_color_select_to_string	(ChColorSelect	 color_select);
+const gchar	*ch_measure_mode_to_string	(ChMeasureMode	 measure_mode);
+const gchar	*ch_device_mode_to_string	(ChDeviceMode	 device_mode);
 
 #endif
