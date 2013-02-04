@@ -1426,10 +1426,10 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		g_object_unref (profile);
 
 		/* save new timestamp in database */
-		ret = cd_mapping_db_update_timestamp (priv->mapping_db,
-						      priv->id,
-						      id,
-						      &error);
+		ret = cd_mapping_db_add (priv->mapping_db,
+					 priv->id,
+					 id,
+					 &error);
 		if (!ret)
 			goto out;
 

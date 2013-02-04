@@ -54,10 +54,6 @@ gboolean	 cd_mapping_db_load		(CdMappingDb	*mdb,
 						 GError		**error);
 gboolean	 cd_mapping_db_empty		(CdMappingDb	*mdb,
 						 GError		**error);
-gboolean	 cd_mapping_db_update_timestamp	(CdMappingDb	*mdb,
-						 const gchar	*device_id,
-						 const gchar	*profile_id,
-						 GError		**error);
 gboolean	 cd_mapping_db_clear_timestamp	(CdMappingDb	*mdb,
 						 const gchar	*device_id,
 						 const gchar	*profile_id,

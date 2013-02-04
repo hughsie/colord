@@ -229,7 +229,7 @@ cd_mapping_db_add (CdMappingDb *mdb,
 	g_debug ("CdMappingDb: add %s<=>%s",
 		 device_id, profile_id);
 	timestamp = g_get_real_time ();
-	statement = sqlite3_mprintf ("INSERT INTO mappings_v2 (device, profile, timestamp) "
+	statement = sqlite3_mprintf ("INSERT OR REPLACE INTO mappings_v2 (device, profile, timestamp) "
 				     "VALUES ('%q', '%q', %"G_GINT64_FORMAT")",
 				     device_id, profile_id, timestamp);
 
@@ -277,48 +277,6 @@ cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
 	statement = sqlite3_mprintf ("INSERT OR REPLACE INTO mappings_v2 (device, profile, timestamp) "
 				     "VALUES ('%q', '%q', 0);",
 				     device_id, profile_id);
-
-	/* update the entry */
-	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
-	if (rc != SQLITE_OK) {
-		g_set_error (error,
-			     CD_CLIENT_ERROR,
-			     CD_CLIENT_ERROR_INTERNAL,
-			     "SQL error: %s",
-			     error_msg);
-		sqlite3_free (error_msg);
-		ret = FALSE;
-		goto out;
-	}
-out:
-	sqlite3_free (statement);
-	return ret;
-}
-
-/**
- * cd_mapping_db_update_timestamp:
- **/
-gboolean
-cd_mapping_db_update_timestamp (CdMappingDb *mdb,
-				const gchar *device_id,
-				const gchar *profile_id,
-				GError  **error)
-{
-	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
-	gchar *statement;
-	gint rc;
-	gint64 timestamp;
-
-	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
-
-	g_debug ("CdMappingDb: update timestamp %s<=>%s",
-		 device_id, profile_id);
-	timestamp = g_get_real_time ();
-	statement = sqlite3_mprintf ("UPDATE mappings_v2 SET timestamp = %"G_GINT64_FORMAT
-				     " WHERE device = '%q' AND profile = '%q';",
-				     timestamp, device_id, profile_id);
 
 	/* update the entry */
 	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
