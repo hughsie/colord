@@ -9,6 +9,7 @@ AM_CPPFLAGS =						\
 	$(LCMS_CFLAGS)					\
 	-I$(top_srcdir)/client				\
 	-I$(top_srcdir)/lib				\
+	-I$(top_builddir)/lib				\
 	-I$(top_srcdir)/src				\
 	-DCD_COMPILATION				\
 	-DCD_DISABLE_DEPRECATED				\

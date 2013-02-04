@@ -8,6 +8,7 @@ AM_CPPFLAGS =						\
 	$(SQLITE_CFLAGS)				\
 	-I$(top_srcdir)/src				\
 	-I$(top_srcdir)/lib				\
+	-I$(top_builddir)/lib				\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DLIBDIR=\"$(libdir)\"				\

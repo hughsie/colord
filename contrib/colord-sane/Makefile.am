@@ -7,6 +7,7 @@ INCLUDES =						\
 	$(DBUS_CFLAGS)					\
 	-I$(top_srcdir)					\
 	-I$(top_srcdir)/lib				\
+	-I$(top_builddir)/lib				\
 	-DG_LOG_DOMAIN=\"CdSane\"			\
 	-DLIBEXECDIR=\"$(libexecdir)\"			\
 	-DDATADIR=\"$(datadir)\"			\
