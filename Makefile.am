@@ -80,7 +80,7 @@ GITIGNOREFILES =					\
 coverity:
 	$(MAKE);					\
 	cd src; $(MAKE) clean; cd -;			\
-	cd libcolord; $(MAKE) clean; cd -;		\
+	cd lib; $(MAKE) clean; cd -;			\
 	cd examples; $(MAKE) clean; cd -;		\
 	cd client; $(MAKE) clean; cd -;			\
 	cd contrib/session-helper; $(MAKE) clean; cd -;	\
