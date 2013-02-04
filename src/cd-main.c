@@ -396,6 +396,7 @@ cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 	const gchar *object_id_tmp;
 	GError *error = NULL;
 	GPtrArray *array;
+	guint64 timestamp;
 	guint i;
 
 	/* get data */
@@ -412,6 +413,25 @@ cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 	/* try to add them */
 	for (i = 0; i < array->len; i++) {
 		object_id_tmp = g_ptr_array_index (array, i);
+
+		/* ensure timestamp is still valid */
+		timestamp = cd_mapping_db_get_timestamp (priv->mapping_db,
+							 cd_device_get_id (device),
+							 object_id_tmp,
+							 &error);
+		if (timestamp == G_MAXUINT64) {
+			g_warning ("CdMain: failed to get timestamp: %s",
+				   error->message);
+			g_clear_error (&error);
+			continue;
+		}
+		if (timestamp == 0) {
+			g_debug ("CdMain: timestamp zero for %s and %s",
+				 cd_device_get_id (device),
+				 object_id_tmp);
+			continue;
+		}
+
 		profile_tmp = cd_profile_array_get_by_id_owner (priv->profiles_array,
 								object_id_tmp,
 								cd_device_get_owner (device));
