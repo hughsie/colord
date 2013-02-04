@@ -47,8 +47,11 @@ libcolordprivate_la_SOURCES =					\
 	cd-buffer.c						\
 	cd-color.c						\
 	cd-enum.c						\
+	cd-it8.c						\
+	cd-it8-utils.c						\
 	cd-math.c
 libcolordprivate_la_LIBADD =					\
+	$(LCMS_LIBS)						\
 	$(GLIB_LIBS)
 libcolordprivate_la_LDFLAGS =					\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)	\
@@ -64,14 +67,11 @@ libcolord_la_SOURCES =						\
 	cd-deprecated.c						\
 	cd-device.c						\
 	cd-device-sync.c					\
-	cd-it8.c						\
-	cd-it8-utils.c						\
 	cd-profile.c						\
 	cd-profile-sync.c					\
 	cd-sensor.c						\
 	cd-sensor-sync.c
 libcolord_la_LIBADD =						\
-	$(LCMS_LIBS)						\
 	$(GLIB_LIBS)						\
 	libcolordprivate.la
 libcolord_la_LDFLAGS =						\
