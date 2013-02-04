@@ -28,10 +28,7 @@
 #include <sane/sane.h>
 #include <gudev/gudev.h>
 #include <dbus/dbus.h>
-
-#include "cd-client.h"
-#include "cd-device.h"
-#include "cd-device-sync.h"
+#include <colord/colord.h>
 
 typedef struct {
 	gchar		*argv0;
