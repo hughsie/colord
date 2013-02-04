@@ -815,26 +815,33 @@ static CdProfile *
 cd_main_get_standard_space_metadata (CdMainPrivate *priv,
 				     const gchar *standard_space)
 {
+	CdProfile *profile_best = NULL;
 	CdProfile *profile = NULL;
 	CdProfile *profile_tmp;
-	gboolean ret;
 	GPtrArray *array;
 	guint i;
+	guint score_best = 0;
+	guint score_tmp;
 
 	/* get all the profiles with this metadata */
 	array = cd_profile_array_get_by_metadata (priv->profiles_array,
 						  CD_PROFILE_METADATA_STANDARD_SPACE,
 						  standard_space);
 
-	/* just use the first system-wide profile */
+	/* use the profile with the largest score */
 	for (i = 0; i < array->len; i++) {
 		profile_tmp = g_ptr_array_index (array, i);
-		ret = cd_profile_get_is_system_wide (profile_tmp);
-		if (ret) {
-			profile = g_object_ref (profile_tmp);
-			goto out;
+		score_tmp = cd_profile_get_score (profile_tmp);
+		if (score_tmp > score_best) {
+			score_best = score_tmp;
+			profile_best = profile_tmp;
 		}
 	}
+	if (profile_best == NULL)
+		goto out;
+
+	/* success */
+	profile = g_object_ref (profile_best);
 out:
 	g_ptr_array_unref (array);
 	return profile;

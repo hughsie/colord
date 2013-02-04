@@ -92,6 +92,7 @@ GHashTable	*cd_profile_get_metadata		(CdProfile	*profile);
 const gchar	*cd_profile_get_metadata_item		(CdProfile	*profile,
 							 const gchar	*key);
 CdProfileKind	 cd_profile_get_kind			(CdProfile	*profile);
+guint		 cd_profile_get_score			(CdProfile	*profile);
 CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);
 void		 cd_profile_watch_sender		(CdProfile	*profile,

@@ -63,6 +63,7 @@ struct _CdProfilePrivate
 	guint				 owner;
 	gchar				**warnings;
 	GMappedFile			*mapped_file;
+	guint				 score;
 };
 
 enum {
@@ -150,6 +151,9 @@ cd_profile_set_is_system_wide (CdProfile *profile, gboolean is_system_wide)
 {
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	profile->priv->is_system_wide = is_system_wide;
+
+	/* by default, prefer systemwide profiles over user profiles */
+	profile->priv->score += 1;
 }
 
 /**
@@ -238,6 +242,9 @@ cd_profile_set_id (CdProfile *profile, const gchar *id)
 
 	g_free (profile->priv->id);
 	profile->priv->id = g_strdup (id);
+
+	/* all profiles have a score initially */
+	profile->priv->score = 1;
 
 	/* now calculate this again */
 	cd_profile_set_object_path (profile);
@@ -1626,6 +1633,22 @@ cd_profile_get_metadata_item (CdProfile *profile, const gchar *key)
 {
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 	return g_hash_table_lookup (profile->priv->metadata, key);
+}
+
+/**
+ * cd_profile_get_score:
+ *
+ * Profiles from official vendors such as http://www.color.org/ should be
+ * more important than profiles generated from source data.
+ *
+ * Return value: A number which corresponds to the importance of the profile,
+ * where larger numbers have more importance than lower numbers.
+ **/
+guint
+cd_profile_get_score (CdProfile *profile)
+{
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+	return profile->priv->score;
 }
 
 /**

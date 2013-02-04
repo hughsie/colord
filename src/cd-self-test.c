@@ -45,6 +45,11 @@ colord_profile_func (void)
 
 	cd_profile_set_id (profile, "dave");
 	g_assert_cmpstr (cd_profile_get_id (profile), ==, "dave");
+	g_assert_cmpint (cd_profile_get_score (profile), ==, 1);
+
+	/* system-wide profiles have a larger importance */
+	cd_profile_set_is_system_wide (profile, TRUE);
+	g_assert_cmpint (cd_profile_get_score (profile), ==, 2);
 
 	g_object_unref (profile);
 }
