@@ -122,7 +122,7 @@ Colord_1_0_gir_SCANNERFLAGS = --identifier-prefix=Cd \
 				--add-include-path=$(srcdir) \
 				--c-include="colord.h"
 Colord_1_0_gir_EXPORT_PACKAGES = colord
-Colord_1_0_gir_LIBS = libcolord.la
+Colord_1_0_gir_LIBS = libcolord.la libcolordprivate.la
 Colord_1_0_gir_FILES = $(introspection_sources)
 INTROSPECTION_GIRS += Colord-1.0.gir
 
