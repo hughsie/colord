@@ -72,12 +72,12 @@ huey_cmd_code_to_string (guchar value)
 		return "read-green";
 	if (value == HUEY_CMD_READ_BLUE)
 		return "read-blue";
-	if (value == HUEY_CMD_SET_VALUE)
-		return "set-value";
-	if (value == HUEY_CMD_GET_VALUE)
-		return "get-value";
-	if (value == HUEY_CMD_UNKNOWN_07)
-		return "unknown07";
+	if (value == HUEY_CMD_SET_INTEGRATION_TIME)
+		return "set-integration-time";
+	if (value == HUEY_CMD_GET_INTEGRATION_TIME)
+		return "get-integration-time";
+	if (value == HUEY_CMD_REGISTER_WRITE)
+		return "reg-write";
 	if (value == HUEY_CMD_REGISTER_READ)
 		return "reg-read";
 	if (value == HUEY_CMD_UNLOCK)
@@ -99,10 +99,10 @@ huey_cmd_code_to_string (guchar value)
 	if (value == HUEY_CMD_UNKNOWN_21)
 		return "unknown21";
 	if (value == HUEY_CMD_GET_AMBIENT)
-		return "ambient";
+		return "get-ambient";
 	if (value == HUEY_CMD_SET_LEDS)
 		return "set-leds";
-	if (value == HUEY_CMD_UNKNOWN_19)
-		return "unknown19";
+	if (value == HUEY_CMD_SENSOR_MEASURE_RGB_ALT)
+		return "measure-rgb-alt";
 	return NULL;
 }

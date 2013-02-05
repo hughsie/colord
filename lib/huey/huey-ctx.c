@@ -49,7 +49,7 @@ static void	huey_ctx_finalize	(GObject	*object);
 /* Picked out of thin air, just to try to match reality...
  * I have no idea why we need to do this, although it probably
  * indicates we doing something wrong. */
-#define HUEY_XYZ_POST_MULTIPLY_SCALE_FACTOR	3.43
+#define HUEY_XYZ_POST_MULTIPLY_FACTOR	3.428
 
 /**
  * HueyCtxPrivate:
@@ -434,7 +434,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 	huey_ctx_convert_device_RGB_to_XYZ (&values,
 					    &color_result,
 					    device_calibration,
-					    HUEY_XYZ_POST_MULTIPLY_SCALE_FACTOR);
+					    HUEY_XYZ_POST_MULTIPLY_FACTOR);
 	g_debug ("finished values: red=%0.6lf, green=%0.6lf, blue=%0.6lf",
 		 color_result.X, color_result.Y, color_result.Z);
 

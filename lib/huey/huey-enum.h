@@ -95,31 +95,40 @@ G_BEGIN_DECLS
 #define HUEY_CMD_READ_BLUE			0x03
 
 /*
- * Set value of some 32 bit register.
+ * Sets a 32 bit integration time register.
  *
  * input:   05 ?? 11 12 13 14 xx xx
  * returns: 00 05 00 00 00 00 00 00
  *              ^--- always the same no matter the input
  *
- * This is never used in profiling
+ * This is not normally used during profiling
  */
-#define HUEY_CMD_SET_VALUE			0x05
+#define HUEY_CMD_SET_INTEGRATION_TIME		0x05
 
 /*
- * Get the value of some 32 bit register.
+ * Get the value of the 32 bit integration time register.
  *
  * input:   06 xx xx xx xx xx xx xx
  * returns: 00 06 11 12 13 14 00 00
- *    4 bytes ----^^^^^^^^^^^ (from HUEY_CMD_SET_VALUE)
+ *    4 bytes ----^^^^^^^^^^^ (from HUEY_CMD_SET_INTEGRATION_TIME)
  *
- * This is some sort of 32bit register on the device.
  * The default value at plug-in is 00 0f 42 40, although during
  * profiling it is set to 00 00 6f 00 and then 00 00 61 00.
  */
-#define HUEY_CMD_GET_VALUE			0x06
+#define HUEY_CMD_GET_INTEGRATION_TIME		0x06
 
-/* NEVER USED */
-#define HUEY_CMD_UNKNOWN_07			0x07
+/*
+ * Writes a register value.
+ *
+ * (sent at startup  after the unlock)
+ * input:   07 0b ff xx xx xx xx xx
+ *                ^^-- data value
+ *             ^^-- register address
+ * returns: 00 xx xx xx xx xx xx xx
+ *
+ * You can only write one byte at a time.
+ */
+#define HUEY_CMD_REGISTER_WRITE			0x07
 
 /*
  * Reads a register value.
@@ -130,7 +139,7 @@ G_BEGIN_DECLS
  * returns: 00 08 0b b8 00 00 00 00
  *      address --^^ ^^-- value
  *
- * It appears you can only ask for one byte at a time.
+ * You can only read one byte at a time.
  */
 #define HUEY_CMD_REGISTER_READ			0x08
 
@@ -278,7 +287,7 @@ G_BEGIN_DECLS
  * Unknown command
  *
  * returns: all NULL for NULL input: times out for f1 f2 f3 f4 f5 f6 f7 f8 */
-#define HUEY_CMD_UNKNOWN_19			0x19
+#define HUEY_CMD_SENSOR_MEASURE_RGB_ALT		0x19
 
 /*
  * Register map:
