@@ -133,12 +133,12 @@ dtp94_device_send_cmd_issue (GUsbDevice *device,
 	/* sent command raw */
 	command_len = strlen (command);
 	ret = dtp94_device_send_data (device,
-			       (const guint8 *) command,
-			       command_len,
-			       buffer,
-			       sizeof (buffer),
-			       &reply_read,
-			       error);
+				      (const guint8 *) command,
+				      command_len,
+				      buffer,
+				      sizeof (buffer),
+				      &reply_read,
+				      error);
 	if (!ret)
 		goto out;
 
@@ -303,10 +303,10 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 
 	/* get sample */
 	ret = dtp94_device_send_data (device,
-			       (const guint8 *) "RM\r", 3,
-			       buffer, sizeof (buffer),
-			       &reply_read,
-			       error);
+				      (const guint8 *) "RM\r", 3,
+				      buffer, sizeof (buffer),
+				      &reply_read,
+				      error);
 	if (!ret)
 		goto out;
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
@@ -353,10 +353,10 @@ dtp94_device_get_serial (GUsbDevice *device, GError **error)
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	ret = dtp94_device_send_data (device,
-			       (const guint8 *) "SV\r", 3,
-			       buffer, sizeof (buffer),
-			       &reply_read,
-			       error);
+				      (const guint8 *) "SV\r", 3,
+				      buffer, sizeof (buffer),
+				      &reply_read,
+				      error);
 	if (!ret)
 		goto out;
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
