@@ -254,7 +254,7 @@ dtp94_device_setup (GUsbDevice *device, GError **error)
 	if (!ret)
 		goto out;
 
-	/* unknown command */
+	/* compensate for offset drift */
 	ret = dtp94_device_send_cmd (device, "0117CF\r", error);
 	if (!ret)
 		goto out;
