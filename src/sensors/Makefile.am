@@ -29,8 +29,6 @@ COLORD_PRIVATE_LIBS =					\
 if CD_BUILD_REVERSE
 
 noinst_PROGRAMS =					\
-	cd-huey-parse					\
-	cd-huey-dump-values				\
 	cd-sensor-dump					\
 	cd-parse-beagle
 
@@ -44,28 +42,6 @@ cd_parse_beagle_LDADD =					\
 	$(top_builddir)/lib/munki/libmunki.la
 
 cd_parse_beagle_CFLAGS =				\
-	$(WARNINGFLAGS_C)
-
-cd_huey_parse_SOURCES =					\
-	cd-huey-parse.c
-
-cd_huey_parse_LDADD =					\
-	$(COLORD_PRIVATE_LIBS)				\
-	$(GLIB_LIBS)					\
-	$(top_builddir)/lib/huey/libhuey.la
-
-cd_huey_parse_CFLAGS =					\
-	$(WARNINGFLAGS_C)
-
-cd_huey_dump_values_SOURCES =				\
-	cd-huey-dump-values.c
-
-cd_huey_dump_values_LDADD =				\
-	$(COLORD_PRIVATE_LIBS)				\
-	$(GUSB_LIBS)					\
-	$(GLIB_LIBS)
-
-cd_huey_dump_values_CFLAGS =				\
 	$(WARNINGFLAGS_C)
 
 cd_sensor_dump_SOURCES =				\
