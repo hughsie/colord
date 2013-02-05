@@ -15,6 +15,7 @@ AM_CPPFLAGS =						\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 COLORD_LIBS =						\
+	$(top_builddir)/lib/colord/libcolordprivate.la	\
 	$(top_builddir)/lib/colord/libcolord.la
 
 noinst_LIBRARIES = libclientprivate.a

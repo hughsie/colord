@@ -17,6 +17,7 @@ INCLUDES =						\
 	-DLOCALEDIR=\""$(localedir)"\"
 
 COLORD_LIBS =						\
+	$(top_builddir)/lib/colord/libcolordprivate.la	\
 	$(top_builddir)/lib/colord/libcolord.la
 
 libexec_PROGRAMS =					\

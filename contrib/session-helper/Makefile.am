@@ -23,6 +23,7 @@ AM_CPPFLAGS =						\
 	-DVERSION="\"$(VERSION)\""
 
 COLORD_LIBS =						\
+	$(top_builddir)/lib/colord/libcolordprivate.la	\
 	$(top_builddir)/lib/colord/libcolord.la
 
 libcolord_includedir = $(includedir)/colord-1/colord-session

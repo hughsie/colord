@@ -30,7 +30,9 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/lib/colord 		\
 	-I$(top_builddir)/lib/colord
 
-COLORD_LIBS = $(top_builddir)/lib/colord/libcolord.la
+COLORD_LIBS =					\
+	$(top_builddir)/lib/colord/libcolordprivate.la	\
+	$(top_builddir)/lib/colord/libcolord.la
 
 GTKDOC_LIBS =					\
 	$(GLIB_LIBS)				\
