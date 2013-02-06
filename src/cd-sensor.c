@@ -1232,6 +1232,18 @@ cd_sensor_get_device (CdSensor *sensor)
 }
 
 /**
+ * cd_sensor_set_model:
+ **/
+static void
+cd_sensor_set_model (CdSensor *sensor,
+		     const gchar *model)
+{
+	if (g_strcmp0 (model, "colormunki") == 0)
+		model = "ColorMunki";
+	sensor->priv->model = g_strdup (model);
+}
+
+/**
  * cd_sensor_set_from_device:
  **/
 gboolean
@@ -1275,14 +1287,14 @@ cd_sensor_set_from_device (CdSensor *sensor,
 
 	/* model */
 	if (use_database)
-		model_tmp = g_strdup (g_udev_device_get_property (device, "ID_MODEL_FROM_DATABASE"));
+		model_tmp = g_udev_device_get_property (device, "ID_MODEL_FROM_DATABASE");
 	if (model_tmp == NULL)
-		model_tmp = g_strdup (g_udev_device_get_property (device, "ID_MODEL"));
+		model_tmp = g_udev_device_get_property (device, "ID_MODEL");
 	if (model_tmp == NULL)
-		model_tmp = g_strdup (g_udev_device_get_sysfs_attr (device, "product"));
+		model_tmp = g_udev_device_get_sysfs_attr (device, "product");
 	if (model_tmp == NULL)
-		model_tmp = "unknown";
-	priv->model = g_strdup (model_tmp);
+		model_tmp = "Unknown";
+	cd_sensor_set_model (sensor, model_tmp);
 
 	/* make name sane */
 	g_strdelimit (priv->model, "_", ' ');
