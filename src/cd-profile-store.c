@@ -231,8 +231,12 @@ cd_profile_store_add_profile (CdProfileStore *profile_store,
 	checksum = cd_profile_get_checksum (profile);
 	profile_tmp = cd_profile_store_get_by_checksum (profile_store, checksum);
 	if (profile_tmp != NULL) {
-		/* remove the old profile in favour of the new one */
-		cd_profile_store_remove_profile (profile_store, profile_tmp);
+		g_warning ("CdProfileStore: Failed to add %s as profile %s "
+			   "already exists with the same checksum of %s",
+			   filename,
+			   cd_profile_get_filename (profile_tmp),
+			   checksum);
+		goto out;
 	}
 
 	/* ensure profiles have the checksum metadata item */
