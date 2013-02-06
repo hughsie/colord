@@ -576,11 +576,11 @@ cd_profile_store_search (CdProfileStore *profile_store,
 						    "/usr/share/color/icc");
 		if (ret)
 			success = TRUE;
-		ret = cd_profile_store_search_path (profile_store, 
+		ret = cd_profile_store_search_path (profile_store,
 						    "/usr/local/share/color/icc");
 		if (ret)
 			success = TRUE;
-		ret = cd_profile_store_search_path (profile_store, 
+		ret = cd_profile_store_search_path (profile_store,
 						    "/Library/ColorSync/Profiles/Displays");
 		if (ret)
 			success = TRUE;
