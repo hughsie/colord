@@ -124,7 +124,7 @@ const gchar	*cd_sensor_get_vendor			(CdSensor	*sensor);
 gboolean	 cd_sensor_get_native			(CdSensor	*sensor);
 gboolean	 cd_sensor_get_embedded			(CdSensor	*sensor);
 gboolean	 cd_sensor_get_locked			(CdSensor	*sensor);
-guint		 cd_sensor_get_caps			(CdSensor	*sensor);
+guint64		 cd_sensor_get_caps			(CdSensor	*sensor);
 gboolean	 cd_sensor_has_cap			(CdSensor	*sensor,
 							 CdSensorCap	 cap);
 GHashTable	*cd_sensor_get_options			(CdSensor	*sensor);

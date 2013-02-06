@@ -65,7 +65,7 @@ struct _CdSensorPrivate
 	gboolean		 native;
 	gboolean		 embedded;
 	gboolean		 locked;
-	guint			 caps;
+	guint64			 caps;
 	GHashTable		*options;
 	GHashTable		*metadata;
 	GDBusProxy		*proxy;
@@ -302,7 +302,7 @@ cd_sensor_get_locked (CdSensor *sensor)
  *
  * Since: 0.1.6
  **/
-guint
+guint64
 cd_sensor_get_caps (CdSensor *sensor)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), 0);
@@ -311,7 +311,7 @@ cd_sensor_get_caps (CdSensor *sensor)
 }
 
 /**
- * cd_sensor_get_caps_item:
+ * cd_sensor_has_cap:
  * @sensor: a #CdSensor instance.
  * @cap: a specified capability, e.g. %CD_SENSOR_CAP_LCD
  *
@@ -326,7 +326,7 @@ cd_sensor_has_cap (CdSensor *sensor, CdSensorCap cap)
 {
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	g_return_val_if_fail (sensor->priv->proxy != NULL, FALSE);
-	return (sensor->priv->caps & (1 << cap)) > 0;
+	return cd_bitfield_contain (sensor->priv->caps, cap);
 }
 
 /**
@@ -337,7 +337,6 @@ cd_sensor_set_caps_from_variant (CdSensor *sensor, GVariant *variant)
 {
 	const gchar **caps_tmp;
 	guint i;
-	guint value;
 
 	/* remove old entries */
 	sensor->priv->caps = 0;
@@ -345,8 +344,8 @@ cd_sensor_set_caps_from_variant (CdSensor *sensor, GVariant *variant)
 	/* insert the new metadata */
 	caps_tmp = g_variant_get_strv (variant, NULL);
 	for (i = 0; caps_tmp[i] != NULL; i++) {
-		value = 1 << cd_sensor_cap_from_string (caps_tmp[i]);
-		sensor->priv->caps += value;
+		cd_bitfield_add (sensor->priv->caps,
+				 cd_sensor_cap_from_string (caps_tmp[i]));
 	}
 }
 
