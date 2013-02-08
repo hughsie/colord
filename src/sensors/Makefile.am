@@ -38,8 +38,8 @@ cd_parse_beagle_SOURCES =				\
 cd_parse_beagle_LDADD =					\
 	$(COLORD_PRIVATE_LIBS)				\
 	$(GLIB_LIBS)					\
-	$(top_builddir)/lib/huey/libhuey.la		\
-	$(top_builddir)/lib/munki/libmunki.la
+	$(top_builddir)/lib/huey/libhuey-private.la	\
+	$(top_builddir)/lib/munki/libmunki-private.la
 
 cd_parse_beagle_CFLAGS =				\
 	$(WARNINGFLAGS_C)
@@ -91,7 +91,7 @@ libcolord_sensor_huey_la_SOURCES =			\
 libcolord_sensor_huey_la_LIBADD =			\
 	$(GLIB_LIBS)					\
 	$(GUSB_LIBS)					\
-	$(top_builddir)/lib/huey/libhuey.la
+	$(top_builddir)/lib/huey/libhuey-private.la
 libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
 
@@ -101,7 +101,7 @@ libcolord_sensor_dtp94_la_SOURCES =			\
 libcolord_sensor_dtp94_la_LIBADD =			\
 	$(GLIB_LIBS)					\
 	$(GUSB_LIBS)					\
-	$(top_builddir)/lib/dtp94/libdtp94.la
+	$(top_builddir)/lib/dtp94/libdtp94-private.la
 libcolord_sensor_dtp94_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_dtp94_la_CFLAGS = $(WARNINGFLAGS_C)
 

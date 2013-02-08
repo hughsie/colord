@@ -13,9 +13,9 @@ COLORD_LIBS =							\
 	$(top_builddir)/lib/colord/libcolordprivate.la
 
 lib_LTLIBRARIES =						\
-	libhuey.la
+	libhuey-private.la
 
-libhuey_la_SOURCES =						\
+libhuey_private_la_SOURCES =					\
 	huey.h							\
 	huey-ctx.c						\
 	huey-ctx.h						\
@@ -24,17 +24,17 @@ libhuey_la_SOURCES =						\
 	huey-enum.c						\
 	huey-enum.h
 
-libhuey_la_LIBADD =						\
+libhuey_private_la_LIBADD =					\
 	$(GUSB_LIBS)						\
 	$(COLORD_LIBS)						\
 	$(GLIB_LIBS)
 
-libhuey_la_LDFLAGS =						\
+libhuey_private_la_LDFLAGS =					\
 	-export-dynamic						\
 	-no-undefined						\
 	-export-symbols-regex '^huey_.*'
 
-libhuey_la_CFLAGS =						\
+libhuey_private_la_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 CLEANFILES = $(BUILT_SOURCES)

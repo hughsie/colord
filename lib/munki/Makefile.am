@@ -13,24 +13,24 @@ COLORD_LIBS =							\
 	$(top_builddir)/lib/colord/libcolordprivate.la
 
 lib_LTLIBRARIES =						\
-	libmunki.la
+	libmunki-private.la
 
-libmunki_la_SOURCES =						\
+libmunki_private_la_SOURCES =					\
 	munki.h							\
 	munki-enum.c						\
 	munki-enum.h
 
-libmunki_la_LIBADD =						\
+libmunki_private_la_LIBADD =					\
 	$(GUSB_LIBS)						\
 	$(COLORD_LIBS)						\
 	$(GLIB_LIBS)
 
-libmunki_la_LDFLAGS =						\
+libmunki_private_la_LDFLAGS =					\
 	-export-dynamic						\
 	-no-undefined						\
 	-export-symbols-regex '^munki_.*'
 
-libmunki_la_CFLAGS =						\
+libmunki_private_la_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 CLEANFILES = $(BUILT_SOURCES)

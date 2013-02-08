@@ -13,26 +13,26 @@ COLORD_LIBS =							\
 	$(top_builddir)/lib/colord/libcolordprivate.la
 
 lib_LTLIBRARIES =						\
-	libdtp94.la
+	libdtp94-private.la
 
-libdtp94_la_SOURCES =						\
+libdtp94_private_la_SOURCES =					\
 	dtp94.h							\
 	dtp94-device.c						\
 	dtp94-device.h						\
 	dtp94-enum.c						\
 	dtp94-enum.h
 
-libdtp94_la_LIBADD =						\
+libdtp94_private_la_LIBADD =					\
 	$(GUSB_LIBS)						\
 	$(COLORD_LIBS)						\
 	$(GLIB_LIBS)
 
-libdtp94_la_LDFLAGS =						\
+libdtp94_private_la_LDFLAGS =					\
 	-export-dynamic						\
 	-no-undefined						\
 	-export-symbols-regex '^dtp94_.*'
 
-libdtp94_la_CFLAGS =						\
+libdtp94_private_la_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 CLEANFILES = $(BUILT_SOURCES)
