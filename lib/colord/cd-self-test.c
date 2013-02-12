@@ -1496,7 +1496,13 @@ colord_client_func (void)
 	gboolean ret;
 	GError *error = NULL;
 
+	/* no running colord to use */
 	client = cd_client_new ();
+	has_colord_process = cd_client_get_has_server (client);
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		goto out;
+	}
 
 	/* check not connected */
 	g_assert (!cd_client_get_connected (client));
@@ -1514,9 +1520,6 @@ colord_client_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
-	/* is there a running colord instance? */
-	has_colord_process = cd_client_get_has_server (client);
-
 	version = cd_client_get_daemon_version (client);
 	version_str = g_strdup_printf ("%i.%i.%i",
 				       CD_MAJOR_VERSION,
@@ -1524,7 +1527,7 @@ colord_client_func (void)
 				       CD_MICRO_VERSION);
 	g_assert_cmpstr (version, ==, version_str);
 	g_free (version_str);
-
+out:
 	g_object_unref (client);
 }
 
@@ -2133,6 +2136,12 @@ colord_device_func (void)
 	gboolean ret;
 	GError *error = NULL;
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	/* create a device with an invlid object path */
 	device = cd_device_new_with_object_path ("/garbage");
 	g_assert (device != NULL);
@@ -2154,6 +2163,12 @@ colord_device_embedded_func (void)
 	gboolean ret;
 	GError *error = NULL;
 	GHashTable *device_props;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
 
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
@@ -2200,6 +2215,12 @@ colord_device_invalid_kind_func (void)
 	GError *error = NULL;
 	GHashTable *device_props;
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	g_assert_no_error (error);
@@ -2232,6 +2253,12 @@ colord_client_standard_space_func (void)
 	CdProfile *profile;
 	gboolean ret;
 	GError *error = NULL;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
 
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
@@ -2388,6 +2415,12 @@ colord_device_seat_func (void)
 	GError *error = NULL;
 	GHashTable *device_props;
 
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
 	/* ensure the seat is set */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
@@ -2439,6 +2472,12 @@ colord_device_enabled_func (void)
 	gboolean ret;
 	GError *error = NULL;
 	GHashTable *device_props;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
 
 	/* ensure the device is enabled by default */
 	client = cd_client_new ();
@@ -2898,8 +2937,8 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/it8{raw}", colord_it8_raw_func);
 	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);
 	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
-	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/client", colord_client_func);
+	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/device{embedded}", colord_device_embedded_func);
 	g_test_add_func ("/colord/device{invalid-kind}", colord_device_invalid_kind_func);
 	g_test_add_func ("/colord/device{duplicate}", colord_device_duplicate_func);
