@@ -162,6 +162,8 @@ cd_client_get_connected (CdClient *client)
  * @client: a #CdClient instance.
  *
  * Gets if the colord server is currently running.
+ * WARNING: This function may block for up to 5 seconds waiting for the daemon
+ * to start if it is not already running.
  *
  * Return value: %TRUE if the colord process is running
  *
@@ -172,21 +174,30 @@ cd_client_get_has_server (CdClient *client)
 {
 	gboolean connected = FALSE;
 	gchar *name_owner = NULL;
+	GDBusProxy *proxy = NULL;
 
 	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
 
-	/* not yet connected */
-	if (client->priv->proxy == NULL)
-		goto out;
-
 	/* get name owner */
-	name_owner = g_dbus_proxy_get_name_owner (client->priv->proxy);
+	proxy = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SYSTEM,
+					       G_DBUS_PROXY_FLAGS_NONE,
+					       NULL,
+					       COLORD_DBUS_SERVICE,
+					       COLORD_DBUS_PATH,
+					       COLORD_DBUS_INTERFACE,
+					       NULL,
+					       NULL);
+	if (proxy == NULL)
+		goto out;
+	name_owner = g_dbus_proxy_get_name_owner (proxy);
 	if (name_owner == NULL)
 		goto out;
 
 	/* just assume it's ready for use */
 	connected = TRUE;
 out:
+	if (proxy != NULL)
+		g_object_unref (proxy);
 	g_free (name_owner);
 	return connected;
 }
