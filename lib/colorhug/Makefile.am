@@ -85,6 +85,7 @@ ch_self_test_SOURCES =						\
 	ch-self-test.c
 
 ch_self_test_LDADD =						\
+	$(top_builddir)/lib/colord/libcolordprivate.la		\
 	$(GLIB_LIBS)						\
 	$(SELFTEST_LIBS)					\
 	$(LCMS_LIBS)						\
