@@ -1504,6 +1504,7 @@ cd_profile_set_filename (CdProfile *profile,
 	/* find out if we have a GResource copy */
 	if (g_str_has_prefix (filename, "/usr/share/color/icc/colord/")) {
 		data = g_build_filename ("/org/freedesktop/colord",
+					 "profiles",
 					 filename + 28,
 					 NULL);
 		gdata = g_resource_lookup_data (cd_get_resource (),
