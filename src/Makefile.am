@@ -41,6 +41,7 @@ COLORD_PRIVATE_LIBS =					\
 cd-resources.c: colord.gresource.xml $(dist_introspection_DATA)
 	glib-compile-resources				\
 		--sourcedir=$(srcdir)			\
+		--sourcedir=$(top_builddir)/data/profiles \
 		--target=$@				\
 		--generate-source			\
 		--c-name cd				\
@@ -48,6 +49,7 @@ cd-resources.c: colord.gresource.xml $(dist_introspection_DATA)
 cd-resources.h: colord.gresource.xml
 	glib-compile-resources				\
 		--sourcedir=$(srcdir)			\
+		--sourcedir=$(top_builddir)/data/profiles \
 		--target=$@				\
 		--generate-header			\
 		--c-name cd				\

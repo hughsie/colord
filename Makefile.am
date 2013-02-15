@@ -17,12 +17,15 @@ SUBDIRS += 						\
 	client						\
 	contrib						\
 	doc						\
-	examples					\
-	src
+	examples
 
 # this needs client/cd-create-profile
 SUBDIRS += 						\
 	data
+
+# this needs data/profiles/*.icc
+SUBDIRS += 						\
+	src
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`

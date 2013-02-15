@@ -31,6 +31,7 @@
 
 #include "cd-common.h"
 #include "cd-profile.h"
+#include "cd-resources.h"
 
 static void     cd_profile_finalize	(GObject     *object);
 
@@ -1449,13 +1450,14 @@ cd_profile_set_filename (CdProfile *profile,
 			 const gchar *filename,
 			 GError **error)
 {
-	cmsHPROFILE lcms_profile = NULL;
-	gboolean ret = FALSE;
-	gchar *fake_md5 = NULL;
-	gchar *data = NULL;
-	gsize len;
-	const gchar *tmp;
 	CdProfilePrivate *priv = profile->priv;
+	cmsHPROFILE lcms_profile = NULL;
+	const gchar *tmp;
+	gboolean ret = FALSE;
+	GBytes *gdata = NULL;
+	gchar *data = NULL;
+	gchar *fake_md5 = NULL;
+	gsize len;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
@@ -1499,15 +1501,32 @@ cd_profile_set_filename (CdProfile *profile,
 #endif
 	}
 
-	/* parse the ICC file */
-	lcms_profile = cmsOpenProfileFromFile (filename, "r");
-	if (lcms_profile == NULL) {
-		g_set_error (error,
-			     CD_PROFILE_ERROR,
-			     CD_PROFILE_ERROR_FAILED_TO_PARSE,
-			     "failed to parse %s",
-			     filename);
-		goto out;
+	/* find out if we have a GResource copy */
+	if (g_str_has_prefix (filename, "/usr/share/color/icc/colord/")) {
+		data = g_build_filename ("/org/freedesktop/colord",
+					 filename + 28,
+					 NULL);
+		gdata = g_resource_lookup_data (cd_get_resource (),
+						data,
+						G_RESOURCE_LOOKUP_FLAGS_NONE,
+						NULL);
+	}
+
+	/* load the ICC file using lcms */
+	if (gdata != NULL) {
+		g_debug ("Using built-in %s", data);
+		lcms_profile = cmsOpenProfileFromMem (g_bytes_get_data (gdata, NULL),
+						      g_bytes_get_size (gdata));
+	} else {
+		lcms_profile = cmsOpenProfileFromFile (filename, "r");
+		if (lcms_profile == NULL) {
+			g_set_error (error,
+				     CD_PROFILE_ERROR,
+				     CD_PROFILE_ERROR_FAILED_TO_PARSE,
+				     "failed to parse %s",
+				     filename);
+			goto out;
+		}
 	}
 
 	/* set the virtual profile from the lcms profile */
@@ -1545,6 +1564,8 @@ cd_profile_set_filename (CdProfile *profile,
 out:
 	g_free (data);
 	g_free (fake_md5);
+	if (gdata != NULL)
+		g_bytes_unref (gdata);
 	if (lcms_profile != NULL)
 		cmsCloseProfile (lcms_profile);
 	return ret;
