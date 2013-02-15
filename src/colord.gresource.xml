@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+ <gresource prefix="/org/freedesktop/colord">
+  <file preprocess="xml-stripblanks" compressed="true">org.freedesktop.ColorManager.xml</file>
+  <file preprocess="xml-stripblanks" compressed="true">org.freedesktop.ColorManager.Device.xml</file>
+  <file preprocess="xml-stripblanks" compressed="true">org.freedesktop.ColorManager.Profile.xml</file>
+  <file preprocess="xml-stripblanks" compressed="true">org.freedesktop.ColorManager.Sensor.xml</file>
+ </gresource>
+</gresources>

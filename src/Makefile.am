@@ -38,6 +38,11 @@ AM_CPPFLAGS =						\
 COLORD_PRIVATE_LIBS =					\
 	$(top_builddir)/lib/colord/libcolordprivate.la
 
+cd-resources.c: colord.gresource.xml $(dist_introspection_DATA)
+	glib-compile-resources --target=$@ --generate-source --c-name cd $(srcdir)/colord.gresource.xml
+cd-resources.h: colord.gresource.xml
+	glib-compile-resources --target=$@ --generate-header --c-name cd $(srcdir)/colord.gresource.xml
+
 libexec_PROGRAMS =					\
 	colord
 
@@ -48,6 +53,8 @@ colord_SOURCES =					\
 	cd-config.h					\
 	cd-debug.c					\
 	cd-debug.h					\
+	cd-resources.c					\
+	cd-resources.h					\
 	cd-device-array.c				\
 	cd-device-array.h				\
 	cd-device.c					\
@@ -127,6 +134,15 @@ install-data-hook:
 		chown $(daemon_user) $(DESTDIR)$(localstatedir)/lib/colord; \
 		chmod 0755 $(DESTDIR)$(localstatedir)/lib/colord; \
 	fi
+
+BUILT_SOURCES =						\
+	cd-resources.c					\
+	cd-resources.h
+
+CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST =						\
+	colord.gresource.xml
 
 TESTS = cd-self-test
 

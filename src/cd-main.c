@@ -32,9 +32,9 @@
 #include <systemd/sd-login.h>
 #endif
 
-#include "cd-debug.h"
 #include "cd-common.h"
 #include "cd-config.h"
+#include "cd-debug.h"
 #include "cd-device-array.h"
 #include "cd-device-db.h"
 #include "cd-device.h"
@@ -43,6 +43,7 @@
 #include "cd-profile-array.h"
 #include "cd-profile.h"
 #include "cd-profile-store.h"
+#include "cd-resources.h"
 #include "cd-sensor-client.h"
 
 typedef struct {
@@ -2139,25 +2140,27 @@ cd_main_timed_exit_cb (gpointer user_data)
 static GDBusNodeInfo *
 cd_main_load_introspection (const gchar *filename, GError **error)
 {
-	gboolean ret;
-	gchar *data = NULL;
+	GBytes *data;
+	gchar *path;
 	GDBusNodeInfo *info = NULL;
-	GFile *file;
 
-	/* load file */
-	file = g_file_new_for_path (filename);
-	ret = g_file_load_contents (file, NULL, &data,
-				    NULL, NULL, error);
-	if (!ret)
+	/* lookup data */
+	path = g_build_filename ("/org/freedesktop/colord", filename, NULL);
+	data = g_resource_lookup_data (cd_get_resource (),
+				       path,
+				       G_RESOURCE_LOOKUP_FLAGS_NONE,
+				       error);
+	if (data == NULL)
 		goto out;
 
 	/* build introspection from XML */
-	info = g_dbus_node_info_new_for_xml (data, error);
+	info = g_dbus_node_info_new_for_xml (g_bytes_get_data (data, NULL), error);
 	if (info == NULL)
 		goto out;
 out:
-	g_object_unref (file);
-	g_free (data);
+	g_free (path);
+	if (data != NULL)
+		g_bytes_unref (data);
 	return info;
 }
 
@@ -2439,36 +2442,32 @@ main (int argc, char *argv[])
 	}
 
 	/* load introspection from file */
-	priv->introspection_daemon = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
-							   COLORD_DBUS_INTERFACE ".xml",
-							   &error);
+	priv->introspection_daemon = cd_main_load_introspection (COLORD_DBUS_INTERFACE ".xml",
+								 &error);
 	if (priv->introspection_daemon == NULL) {
 		g_warning ("CdMain: failed to load daemon introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
 	}
-	priv->introspection_device = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
-							   COLORD_DBUS_INTERFACE_DEVICE ".xml",
-							   &error);
+	priv->introspection_device = cd_main_load_introspection (COLORD_DBUS_INTERFACE_DEVICE ".xml",
+								 &error);
 	if (priv->introspection_device == NULL) {
 		g_warning ("CdMain: failed to load device introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
 	}
-	priv->introspection_profile = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
-							   COLORD_DBUS_INTERFACE_PROFILE ".xml",
-							   &error);
+	priv->introspection_profile = cd_main_load_introspection (COLORD_DBUS_INTERFACE_PROFILE ".xml",
+								  &error);
 	if (priv->introspection_profile == NULL) {
 		g_warning ("CdMain: failed to load profile introspection: %s",
 			   error->message);
 		g_error_free (error);
 		goto out;
 	}
-	priv->introspection_sensor = cd_main_load_introspection (DATADIR "/dbus-1/interfaces/"
-							   COLORD_DBUS_INTERFACE_SENSOR ".xml",
-							   &error);
+	priv->introspection_sensor = cd_main_load_introspection (COLORD_DBUS_INTERFACE_SENSOR ".xml",
+								 &error);
 	if (priv->introspection_sensor == NULL) {
 		g_warning ("CdMain: failed to load sensor introspection: %s",
 			   error->message);
