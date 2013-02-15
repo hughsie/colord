@@ -39,9 +39,19 @@ COLORD_PRIVATE_LIBS =					\
 	$(top_builddir)/lib/colord/libcolordprivate.la
 
 cd-resources.c: colord.gresource.xml $(dist_introspection_DATA)
-	glib-compile-resources --target=$@ --generate-source --c-name cd $(srcdir)/colord.gresource.xml
+	glib-compile-resources				\
+		--sourcedir=$(srcdir)			\
+		--target=$@				\
+		--generate-source			\
+		--c-name cd				\
+		$(srcdir)/colord.gresource.xml
 cd-resources.h: colord.gresource.xml
-	glib-compile-resources --target=$@ --generate-header --c-name cd $(srcdir)/colord.gresource.xml
+	glib-compile-resources				\
+		--sourcedir=$(srcdir)			\
+		--target=$@				\
+		--generate-header			\
+		--c-name cd				\
+		$(srcdir)/colord.gresource.xml
 
 libexec_PROGRAMS =					\
 	colord
