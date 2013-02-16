@@ -151,10 +151,12 @@ ch_test_device_queue_func (void)
 				     NULL,
 				     0);
 
-		/* set BOTH to queue */
+		/* set ALL to queue */
 		ch_device_queue_set_leds (device_queue,
 				          device,
-				          CH_STATUS_LED_GREEN | CH_STATUS_LED_RED,
+				          CH_STATUS_LED_RED |
+				          CH_STATUS_LED_GREEN |
+				          CH_STATUS_LED_BLUE,
 				          50,
 				          100,
 				          5);

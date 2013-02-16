@@ -749,7 +749,8 @@ typedef enum {
 /* Led colors: possible bitfield values */
 typedef enum {
 	CH_STATUS_LED_GREEN	= 1 << 0,
-	CH_STATUS_LED_RED	= 1 << 1
+	CH_STATUS_LED_RED	= 1 << 1,
+	CH_STATUS_LED_BLUE	= 1 << 2
 } ChStatusLed;
 
 /* what frequency divider to use */

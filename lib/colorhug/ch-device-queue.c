@@ -1631,7 +1631,7 @@ ch_device_queue_set_leds (ChDeviceQueue *device_queue,
 
 	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
 	g_return_if_fail (G_USB_IS_DEVICE (device));
-	g_return_if_fail (leds < 0x04);
+	g_return_if_fail (leds < 0x08);
 
 	buffer[0] = leds;
 	buffer[1] = repeat;
