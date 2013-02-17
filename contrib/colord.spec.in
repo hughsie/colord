@@ -175,7 +175,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 /usr/lib/udev/rules.d/*.rules
 %{_libdir}/colord-sensors
 %{_libdir}/colord-plugins
-%ghost %{_localstatedir}/lib/colord/*.db
+%verify(not size md5 mtime) %attr(-,colord,colord) %{_localstatedir}/lib/colord/*.db
 /usr/lib/systemd/system/colord.service
 %{_sysconfdir}/bash_completion.d/*-completion.bash
 
