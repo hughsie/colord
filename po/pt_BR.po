@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Enrico Nicoletto <enrico.BR@gmx.co.uk>, 2013.
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2012-2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-04 21:52+0000\n"
-"PO-Revision-Date: 2013-02-04 22:02+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2013-02-17 21:05+0000\n"
+"PO-Revision-Date: 2013-02-16 20:00+0000\n"
+"Last-Translator: Enrico Nicoletto <enrico.BR@gmx.co.uk>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/freedesktop/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -208,9 +209,9 @@ msgstr "Definir a versão do perfil de ICC"
 
 #. TRANSLATORS: program name
 #: ../client/cd-fix-profile.c:1244 ../client/cd-util.c:2217
-#: ../src/cd-main.c:2387
+#: ../src/cd-main.c:2390
 msgid "Color Management"
-msgstr "Gerenciamento de Cores"
+msgstr "Gerenciamento de cores"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: ../client/cd-util.c:82
@@ -378,31 +379,31 @@ msgstr "Ambiente"
 #. TRANSLATORS: this is the display technology
 #: ../client/cd-util.c:372
 msgid "Calibration"
-msgstr ""
+msgstr "Calibração"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #: ../client/cd-util.c:377
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD Genérico"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: ../client/cd-util.c:382
 msgid "LED Generic"
-msgstr ""
+msgstr "LED Genérico"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 #: ../client/cd-util.c:388
 msgid "Plasma"
-msgstr ""
+msgstr "Plasma"
 
 #. TRANSLATORS: this an unknown display technology
 #: ../client/cd-util.c:391
 msgid "Unknown"
-msgstr ""
+msgstr "Desconhecido"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:446
@@ -438,7 +439,7 @@ msgstr "Travado"
 #. * display types, e.g. LCD, LED, Projector
 #: ../client/cd-util.c:530
 msgid "Capabilities"
-msgstr ""
+msgstr "Capacidades"
 
 #: ../client/cd-util.c:812 ../client/cd-util.c:852 ../client/cd-util.c:916
 #: ../client/cd-util.c:1024
@@ -467,7 +468,7 @@ msgstr "Cor"
 #. TRANSLATORS: command line option
 #: ../client/cd-util.c:2049
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "Mostrar versões de cliente e daemon"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2069
@@ -616,11 +617,11 @@ msgstr "Nenhuma conexão com colord:"
 
 #: ../client/cd-util.c:2250
 msgid "Client version:"
-msgstr ""
+msgstr "Versão do cliente:"
 
 #: ../client/cd-util.c:2252
 msgid "Daemon version:"
-msgstr ""
+msgstr "Versão do daemon:"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:1
 msgid "Default gamma for the display"
@@ -762,15 +763,15 @@ msgid "Show debugging options"
 msgstr "Exibir opções de depuração"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:2369
+#: ../src/cd-main.c:2372
 msgid "Exit after a small delay"
 msgstr "Sair após um pequeno atraso"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:2372
+#: ../src/cd-main.c:2375
 msgid "Exit after the engine has loaded"
 msgstr "Sair após o motor tiver sido carregado"
 
-#: ../src/cd-main.c:2391
+#: ../src/cd-main.c:2394
 msgid "Color Management D-Bus Service"
 msgstr "Serviço D-Bus de Gerenciamento de Cores"

@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2012.
+# Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2012-2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-04 21:52+0000\n"
-"PO-Revision-Date: 2013-02-04 22:02+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2013-02-17 21:05+0000\n"
+"PO-Revision-Date: 2013-02-10 15:20+0000\n"
+"Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian (http://www.transifex.com/projects/p/freedesktop/language/lv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -63,22 +63,22 @@ msgstr "Metadati formātā 'atslega1=veriba1,atslega2=vertiba2'"
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:858
 msgid "Create a named color profile"
-msgstr ""
+msgstr "Izveidot nosauktu krāsu profilu"
 
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:863
 msgid "Create an X11 gamma profile"
-msgstr ""
+msgstr "Izveidot X11 gamma profilu"
 
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:868
 msgid "Create a standard working space"
-msgstr ""
+msgstr "Izveidot standarta darba telpu"
 
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:873
 msgid "Create a profile with a temperature VCGT"
-msgstr ""
+msgstr "Izveidot profilu ar temperatūras VCGT"
 
 #. TRANSLATORS: program name
 #: ../client/cd-create-profile.c:886
@@ -93,7 +93,7 @@ msgstr "Neizdevās parsēt parametrus"
 #. TRANSLATORS: the user forgot to use -o
 #: ../client/cd-create-profile.c:901
 msgid "No output filename specified"
-msgstr "Nav norādīts izvades faila nosaukums"
+msgstr "Nav norādīta izvades datne nosaukums"
 
 #: ../client/cd-fix-profile.c:994
 msgid "Description"
@@ -127,19 +127,19 @@ msgstr "Metadati"
 
 #: ../client/cd-fix-profile.c:1026
 msgid "Red primary"
-msgstr ""
+msgstr "Sarkanā primārā"
 
 #: ../client/cd-fix-profile.c:1031
 msgid "Green primary"
-msgstr ""
+msgstr "Zaļā primārā"
 
 #: ../client/cd-fix-profile.c:1036
 msgid "Blue primary"
-msgstr ""
+msgstr "Zilā primārā"
 
 #: ../client/cd-fix-profile.c:1041
 msgid "Whitepoint"
-msgstr ""
+msgstr "Baltais punkts"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-fix-profile.c:1154 ../client/cd-util.c:2046
@@ -154,7 +154,7 @@ msgstr "Rādīt visu informāciju par profilu"
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1181
 msgid "Generate the VCGT calibration of a given size"
-msgstr ""
+msgstr "Izveidot VCGT kalibrāciju ar doto izmēru"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1186
@@ -204,11 +204,11 @@ msgstr "Automātiski salabo metadatus profilā"
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1231
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "Iestatīt ICC profila versiju"
 
 #. TRANSLATORS: program name
 #: ../client/cd-fix-profile.c:1244 ../client/cd-util.c:2217
-#: ../src/cd-main.c:2387
+#: ../src/cd-main.c:2390
 msgid "Color Management"
 msgstr "Krāsu pārvaldība"
 
@@ -272,12 +272,12 @@ msgstr "Gamma tabula"
 #. TRANSLATORS: if the profile is installed for all users
 #: ../client/cd-util.c:163
 msgid "System Wide"
-msgstr ""
+msgstr "Visā sistēmā"
 
 #. TRANSLATORS: profile filename
 #: ../client/cd-util.c:167
 msgid "Filename"
-msgstr "Faila nosaukums"
+msgstr "Datnes nosaukums"
 
 #. TRANSLATORS: profile identifier
 #: ../client/cd-util.c:171
@@ -286,7 +286,7 @@ msgstr "Profila ID"
 
 #: ../client/cd-util.c:193
 msgid "Warning"
-msgstr ""
+msgstr "Brīdinājums"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -304,13 +304,13 @@ msgstr "Koriģēts"
 #. TRANSLATORS: the device enabled state
 #: ../client/cd-util.c:237
 msgid "Enabled"
-msgstr ""
+msgstr "Aktivēts"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 #: ../client/cd-util.c:242
 msgid "Embedded"
-msgstr ""
+msgstr "Iegults"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
@@ -335,7 +335,7 @@ msgstr "Sērija"
 #. * different sessions running on them
 #: ../client/cd-util.c:268
 msgid "Seat"
-msgstr ""
+msgstr "Vieta"
 
 #. TRANSLATORS: the device identifier
 #: ../client/cd-util.c:290
@@ -378,31 +378,31 @@ msgstr "Apkārtējā gaisma"
 #. TRANSLATORS: this is the display technology
 #: ../client/cd-util.c:372
 msgid "Calibration"
-msgstr ""
+msgstr "Kalibrācija"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #: ../client/cd-util.c:377
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD vispārējs"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: ../client/cd-util.c:382
 msgid "LED Generic"
-msgstr ""
+msgstr "LED vispārējs"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 #: ../client/cd-util.c:388
 msgid "Plasma"
-msgstr ""
+msgstr "Plazma"
 
 #. TRANSLATORS: this an unknown display technology
 #: ../client/cd-util.c:391
 msgid "Unknown"
-msgstr ""
+msgstr "Nezināms"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:446
@@ -417,7 +417,7 @@ msgstr "Sērijas numurs"
 #. TRANSLATORS: sensor identifier
 #: ../client/cd-util.c:472
 msgid "Sensor ID"
-msgstr ""
+msgstr "Sensora ID"
 
 #. TRANSLATORS: the options for the sensor
 #: ../client/cd-util.c:491
@@ -438,7 +438,7 @@ msgstr "Noslēgts"
 #. * display types, e.g. LCD, LED, Projector
 #: ../client/cd-util.c:530
 msgid "Capabilities"
-msgstr ""
+msgstr "Iespējas"
 
 #: ../client/cd-util.c:812 ../client/cd-util.c:852 ../client/cd-util.c:916
 #: ../client/cd-util.c:1024
@@ -453,12 +453,12 @@ msgstr "Sensors"
 #. TRANSLATORS: the user needs to change something on the device
 #: ../client/cd-util.c:950
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "Iestatiet ierīci uz kalibrēšanas pozīciju un spiediet enter taustiņu."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: ../client/cd-util.c:959
 msgid "Set the device to the surface position and press enter."
-msgstr ""
+msgstr "Iestatiet ierīci uz virsmas pozīciju un spiediet enter taustiņu."
 
 #: ../client/cd-util.c:974
 msgid "Color"
@@ -467,7 +467,7 @@ msgstr "Krāsa"
 #. TRANSLATORS: command line option
 #: ../client/cd-util.c:2049
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "Rādīt klienta un dēmona versijas"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2069
@@ -527,7 +527,7 @@ msgstr "Atrast profilu"
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2124
 msgid "Find a profile by filename"
-msgstr "Atrast profilu pēc faila nosaukuma"
+msgstr "Atrast profilu pēc datnes nosaukuma"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2129
@@ -567,7 +567,7 @@ msgstr "Iestata profila identifikatoru"
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2164
 msgid "Sets the profile filename"
-msgstr "Iestata profila faila nosaukumu"
+msgstr "Iestata profila datnes nosaukumu"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2169
@@ -577,7 +577,7 @@ msgstr "Iestata ierīces modeli"
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2174
 msgid "Enables or disables the device"
-msgstr ""
+msgstr "Aktivē vai deaktivē ierīci"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2179
@@ -616,31 +616,31 @@ msgstr "Nav savienojuma ar colord:"
 
 #: ../client/cd-util.c:2250
 msgid "Client version:"
-msgstr ""
+msgstr "Klienta versija:"
 
 #: ../client/cd-util.c:2252
 msgid "Daemon version:"
-msgstr ""
+msgstr "Dēmona versija:"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:1
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "Displeja noklusējuma gamma"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:2
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr ""
+msgstr "Noklusējuma gamma vērtība displejam. Parastās vērtības ir 1.8, 2.2 un 2.4"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:3
 msgid "Default display target whitepoint"
-msgstr ""
+msgstr "Noklusējuma displeja mērķa baltais punkts"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:4
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr ""
+msgstr "Noklusējuma mērķa baltais punkts Kelvinos displeja kalibrācijai, kur 0 nozīmē displeja vietējais. Parasti vērtības ir 6500 (D65) un 5000 (D50)"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -751,7 +751,7 @@ msgstr "Jāautentificējas, lai izmantotu krāsu sensoru"
 #. TRANSLATORS: turn on all debugging
 #: ../src/cd-debug.c:134
 msgid "Show debugging information for all files"
-msgstr "Rādīt atkļūdošanas informāciju visiem failiem"
+msgstr "Rādīt atkļūdošanas informāciju visām datnēm"
 
 #: ../src/cd-debug.c:192
 msgid "Debugging Options"
@@ -762,15 +762,15 @@ msgid "Show debugging options"
 msgstr "Rādīt atkļūdošanas opcijas"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:2369
+#: ../src/cd-main.c:2372
 msgid "Exit after a small delay"
 msgstr "Iziet pēc nelielas aiztures"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:2372
+#: ../src/cd-main.c:2375
 msgid "Exit after the engine has loaded"
 msgstr "Iziet pēc tam, kad dzinējs ir ielādējies"
 
-#: ../src/cd-main.c:2391
+#: ../src/cd-main.c:2394
 msgid "Color Management D-Bus Service"
 msgstr "Krāsu pārvaldības D-Bus serviss"

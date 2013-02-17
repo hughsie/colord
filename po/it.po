@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-04 21:52+0000\n"
-"PO-Revision-Date: 2013-02-04 22:02+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2013-02-17 21:05+0000\n"
+"PO-Revision-Date: 2013-02-05 08:41+0000\n"
+"Last-Translator: milo <milo@ubuntu.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/freedesktop/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -209,7 +209,7 @@ msgstr "Imposta la versione del profilo ICC"
 
 #. TRANSLATORS: program name
 #: ../client/cd-fix-profile.c:1244 ../client/cd-util.c:2217
-#: ../src/cd-main.c:2387
+#: ../src/cd-main.c:2390
 msgid "Color Management"
 msgstr "Gestione colore"
 
@@ -379,31 +379,31 @@ msgstr "Ambiente"
 #. TRANSLATORS: this is the display technology
 #: ../client/cd-util.c:372
 msgid "Calibration"
-msgstr ""
+msgstr "Calibrazione"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #: ../client/cd-util.c:377
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD generico"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: ../client/cd-util.c:382
 msgid "LED Generic"
-msgstr ""
+msgstr "LED generico"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 #: ../client/cd-util.c:388
 msgid "Plasma"
-msgstr ""
+msgstr "Plasma"
 
 #. TRANSLATORS: this an unknown display technology
 #: ../client/cd-util.c:391
 msgid "Unknown"
-msgstr ""
+msgstr "Sconosciuto"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:446
@@ -439,7 +439,7 @@ msgstr "Bloccato"
 #. * display types, e.g. LCD, LED, Projector
 #: ../client/cd-util.c:530
 msgid "Capabilities"
-msgstr ""
+msgstr "Funzionalità"
 
 #: ../client/cd-util.c:812 ../client/cd-util.c:852 ../client/cd-util.c:916
 #: ../client/cd-util.c:1024
@@ -468,7 +468,7 @@ msgstr "Colore"
 #. TRANSLATORS: command line option
 #: ../client/cd-util.c:2049
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "Mostra la versione del client e del demone"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2069
@@ -617,11 +617,11 @@ msgstr "Nessuna connessione a colord:"
 
 #: ../client/cd-util.c:2250
 msgid "Client version:"
-msgstr ""
+msgstr "Versione client:"
 
 #: ../client/cd-util.c:2252
 msgid "Daemon version:"
-msgstr ""
+msgstr "Versione demone:"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:1
 msgid "Default gamma for the display"
@@ -763,15 +763,15 @@ msgid "Show debugging options"
 msgstr "Mostra le opzioni di debug"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:2369
+#: ../src/cd-main.c:2372
 msgid "Exit after a small delay"
 msgstr "Esce dopo un breve ritardo"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:2372
+#: ../src/cd-main.c:2375
 msgid "Exit after the engine has loaded"
 msgstr "Esce dopo aver caricato il motore"
 
-#: ../src/cd-main.c:2391
+#: ../src/cd-main.c:2394
 msgid "Color Management D-Bus Service"
 msgstr "Servizio D-Bus gestione colore"

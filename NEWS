@@ -1,3 +1,24 @@
+Version 0.1.30
+~~~~~~~~~~~~~~
+Released: 2013-02-17
+
+New Features:
+ - Load the instrospection to the colord binary as a GResource (Richard Hughes)
+ - Save the common ICC profiles as GResources in the colord binary to reduce I/O (Richard Hughes)
+ - Support setting the blue LED in the ColorHug Spectro (Richard Hughes)
+
+Bugfixes:
+ - Append -private to the driver libraries as they have no headers installed (Richard Hughes)
+ - cd_sensor_get_caps() returns a bitfield, so make it explicitly 64 bits wide (Richard Hughes)
+ - Do not expect a system proxy when checking if the daemon exists (Richard Hughes)
+ - Do not remove the database files when upgrading the package (Richard Hughes)
+ - Do not show duplicate profiles when icc-profiles-openicc is installed (Richard Hughes)
+ - Fix Colord-1.0.gir build with --no-add-needed (Christopher James Halse Rogers)
+ - Fix linking of ch-self-test (Martin Pitt)
+ - Fix symbol-prefix passed to g-ir-scanner (Evan Nemerson)
+ - Fix up the model name for the ColorMunki (Richard Hughes)
+ - Skip more self tests if the daemon could not be started (Richard Hughes)
+
 Version 0.1.29
 ~~~~~~~~~~~~~~
 Released: 2013-02-04

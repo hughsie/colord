@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-04 21:52+0000\n"
-"PO-Revision-Date: 2013-02-04 22:02+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2013-02-17 21:05+0000\n"
+"PO-Revision-Date: 2013-02-05 08:41+0000\n"
+"Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh (http://www.transifex.com/projects/p/freedesktop/language/kk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -96,7 +96,7 @@ msgstr ""
 
 #: ../client/cd-fix-profile.c:994
 msgid "Description"
-msgstr ""
+msgstr "Сипаттамасы"
 
 #: ../client/cd-fix-profile.c:997
 msgid "Manufacturer"
@@ -207,7 +207,7 @@ msgstr ""
 
 #. TRANSLATORS: program name
 #: ../client/cd-fix-profile.c:1244 ../client/cd-util.c:2217
-#: ../src/cd-main.c:2387
+#: ../src/cd-main.c:2390
 msgid "Color Management"
 msgstr ""
 
@@ -238,7 +238,7 @@ msgstr ""
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: ../client/cd-util.c:132
 msgid "Title"
-msgstr ""
+msgstr "Атауы"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: ../client/cd-util.c:137
@@ -250,7 +250,7 @@ msgstr ""
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: ../client/cd-util.c:142 ../client/cd-util.c:233 ../client/cd-util.c:439
 msgid "Type"
-msgstr ""
+msgstr "Түрі"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -285,7 +285,7 @@ msgstr ""
 
 #: ../client/cd-util.c:193
 msgid "Warning"
-msgstr ""
+msgstr "Ескерту"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -401,7 +401,7 @@ msgstr ""
 #. TRANSLATORS: this an unknown display technology
 #: ../client/cd-util.c:391
 msgid "Unknown"
-msgstr ""
+msgstr "Белгісіз"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:446
@@ -421,7 +421,7 @@ msgstr ""
 #. TRANSLATORS: the options for the sensor
 #: ../client/cd-util.c:491
 msgid "Options"
-msgstr ""
+msgstr "Опциялар"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: ../client/cd-util.c:509
@@ -761,15 +761,15 @@ msgid "Show debugging options"
 msgstr ""
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:2369
+#: ../src/cd-main.c:2372
 msgid "Exit after a small delay"
 msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:2372
+#: ../src/cd-main.c:2375
 msgid "Exit after the engine has loaded"
 msgstr ""
 
-#: ../src/cd-main.c:2391
+#: ../src/cd-main.c:2394
 msgid "Color Management D-Bus Service"
 msgstr ""

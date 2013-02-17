@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2012.
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2012-2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-04 21:52+0000\n"
-"PO-Revision-Date: 2013-02-04 22:02+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2013-02-17 21:05+0000\n"
+"PO-Revision-Date: 2013-02-07 21:30+0000\n"
+"Last-Translator: MirosNik <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/freedesktop/language/sr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -63,22 +63,22 @@ msgstr "Метаподаци у облику „кључ1=вредност1,кљ
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:858
 msgid "Create a named color profile"
-msgstr ""
+msgstr "Прави именовани профил боје"
 
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:863
 msgid "Create an X11 gamma profile"
-msgstr ""
+msgstr "Прави Икс11 гама профил"
 
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:868
 msgid "Create a standard working space"
-msgstr ""
+msgstr "Прави стандардни радни простор"
 
 #. TRANSLATORS: command description
 #: ../client/cd-create-profile.c:873
 msgid "Create a profile with a temperature VCGT"
-msgstr ""
+msgstr "Прави профил са ВЦГТ-ом температуре"
 
 #. TRANSLATORS: program name
 #: ../client/cd-create-profile.c:886
@@ -127,19 +127,19 @@ msgstr "Метаподаци"
 
 #: ../client/cd-fix-profile.c:1026
 msgid "Red primary"
-msgstr ""
+msgstr "Основна црвена"
 
 #: ../client/cd-fix-profile.c:1031
 msgid "Green primary"
-msgstr ""
+msgstr "Основна зелена"
 
 #: ../client/cd-fix-profile.c:1036
 msgid "Blue primary"
-msgstr ""
+msgstr "Основна плава"
 
 #: ../client/cd-fix-profile.c:1041
 msgid "Whitepoint"
-msgstr ""
+msgstr "Бела тачка"
 
 #. TRANSLATORS: command line option
 #: ../client/cd-fix-profile.c:1154 ../client/cd-util.c:2046
@@ -154,7 +154,7 @@ msgstr "Приказује све податке о профилу"
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1181
 msgid "Generate the VCGT calibration of a given size"
-msgstr ""
+msgstr "Ствара ВЦГТ калибрацију дате величине"
 
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1186
@@ -204,11 +204,11 @@ msgstr "Сам поправља метаподатке у профилу"
 #. TRANSLATORS: command description
 #: ../client/cd-fix-profile.c:1231
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "Подешава издање ИЦЦ профила"
 
 #. TRANSLATORS: program name
 #: ../client/cd-fix-profile.c:1244 ../client/cd-util.c:2217
-#: ../src/cd-main.c:2387
+#: ../src/cd-main.c:2390
 msgid "Color Management"
 msgstr "Управљање бојом"
 
@@ -272,7 +272,7 @@ msgstr "Гама табела"
 #. TRANSLATORS: if the profile is installed for all users
 #: ../client/cd-util.c:163
 msgid "System Wide"
-msgstr ""
+msgstr "Свеопште системски"
 
 #. TRANSLATORS: profile filename
 #: ../client/cd-util.c:167
@@ -286,7 +286,7 @@ msgstr "ИБ профила"
 
 #: ../client/cd-util.c:193
 msgid "Warning"
-msgstr ""
+msgstr "Упозорење"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -304,13 +304,13 @@ msgstr "Измењен"
 #. TRANSLATORS: the device enabled state
 #: ../client/cd-util.c:237
 msgid "Enabled"
-msgstr ""
+msgstr "Укључен"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 #: ../client/cd-util.c:242
 msgid "Embedded"
-msgstr ""
+msgstr "Угњежден"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
@@ -335,7 +335,7 @@ msgstr "Серијски"
 #. * different sessions running on them
 #: ../client/cd-util.c:268
 msgid "Seat"
-msgstr ""
+msgstr "Смештај"
 
 #. TRANSLATORS: the device identifier
 #: ../client/cd-util.c:290
@@ -378,31 +378,31 @@ msgstr "Амбијент"
 #. TRANSLATORS: this is the display technology
 #: ../client/cd-util.c:372
 msgid "Calibration"
-msgstr ""
+msgstr "Калибрација"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #: ../client/cd-util.c:377
 msgid "LCD Generic"
-msgstr ""
+msgstr "Општи ЛЦД"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: ../client/cd-util.c:382
 msgid "LED Generic"
-msgstr ""
+msgstr "Општи ЛЕД"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 #: ../client/cd-util.c:388
 msgid "Plasma"
-msgstr ""
+msgstr "Плазма"
 
 #. TRANSLATORS: this an unknown display technology
 #: ../client/cd-util.c:391
 msgid "Unknown"
-msgstr ""
+msgstr "Непознато"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: ../client/cd-util.c:446
@@ -417,7 +417,7 @@ msgstr "Серијски број"
 #. TRANSLATORS: sensor identifier
 #: ../client/cd-util.c:472
 msgid "Sensor ID"
-msgstr ""
+msgstr "ИБ сензора"
 
 #. TRANSLATORS: the options for the sensor
 #: ../client/cd-util.c:491
@@ -438,7 +438,7 @@ msgstr "Закључан"
 #. * display types, e.g. LCD, LED, Projector
 #: ../client/cd-util.c:530
 msgid "Capabilities"
-msgstr ""
+msgstr "Могућности"
 
 #: ../client/cd-util.c:812 ../client/cd-util.c:852 ../client/cd-util.c:916
 #: ../client/cd-util.c:1024
@@ -453,12 +453,12 @@ msgstr "Сензор"
 #. TRANSLATORS: the user needs to change something on the device
 #: ../client/cd-util.c:950
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "Подесите уређај на положај за калибрацију и притисните унеси."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: ../client/cd-util.c:959
 msgid "Set the device to the surface position and press enter."
-msgstr ""
+msgstr "Подесите уређај на положај површине и притисните унеси."
 
 #: ../client/cd-util.c:974
 msgid "Color"
@@ -467,7 +467,7 @@ msgstr "Боја"
 #. TRANSLATORS: command line option
 #: ../client/cd-util.c:2049
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "Приказује издања програма и позадинца"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2069
@@ -577,7 +577,7 @@ msgstr "Поставља модел уређаја"
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2174
 msgid "Enables or disables the device"
-msgstr ""
+msgstr "Укључује или искључује уређај"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2179
@@ -616,31 +616,31 @@ msgstr "Нема везе са колорд-ом:"
 
 #: ../client/cd-util.c:2250
 msgid "Client version:"
-msgstr ""
+msgstr "Издање програма:"
 
 #: ../client/cd-util.c:2252
 msgid "Daemon version:"
-msgstr ""
+msgstr "Издање позадинца:"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:1
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "Основна гама за екран"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:2
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr ""
+msgstr "Основна вредност циљне гаме за екран. Опште вредности су 1.8, 2.2 и 2.4."
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:3
 msgid "Default display target whitepoint"
-msgstr ""
+msgstr "Основна бела тачка циљног екрана"
 
 #: ../contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml.in.h:4
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr ""
+msgstr "Основна циљна бела тачка у Келвинима за калибрацију екрана, где 0 значи изворно екрана. Опште вредности су 6500 за Д65 и 5000 за Д50."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -762,15 +762,15 @@ msgid "Show debugging options"
 msgstr "Прикажи опције за уклањање грешака"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: ../src/cd-main.c:2369
+#: ../src/cd-main.c:2372
 msgid "Exit after a small delay"
 msgstr "Излази након краћег застоја"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: ../src/cd-main.c:2372
+#: ../src/cd-main.c:2375
 msgid "Exit after the engine has loaded"
 msgstr "Излази након учитавања погона"
 
-#: ../src/cd-main.c:2391
+#: ../src/cd-main.c:2394
 msgid "Color Management D-Bus Service"
 msgstr "Услуга Д-сабирнице управљања бојом"

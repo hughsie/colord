@@ -128,6 +128,8 @@ cd_self_test_SOURCES =					\
 	cd-profile-array.h				\
 	cd-profile.c					\
 	cd-profile.h					\
+	cd-resources.c					\
+	cd-resources.h					\
 	cd-self-test.c
 
 cd_self_test_LDADD =					\
