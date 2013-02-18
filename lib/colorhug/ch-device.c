@@ -342,7 +342,7 @@ ch_device_emulate_cb (gpointer user_data)
 	g_simple_async_result_complete_in_idle (helper->res);
 	ch_device_free_helper (helper);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 /**

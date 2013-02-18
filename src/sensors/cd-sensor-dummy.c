@@ -76,7 +76,7 @@ cd_sensor_get_ambient_wait_cb (CdSensorAsyncState *state)
 
 	/* just return without a problem */
 	cd_sensor_get_sample_state_finish (state, NULL);
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static gboolean
@@ -93,7 +93,7 @@ cd_sensor_get_sample_wait_cb (CdSensorAsyncState *state)
 
 	/* just return without a problem */
 	cd_sensor_get_sample_state_finish (state, NULL);
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 void

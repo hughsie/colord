@@ -2131,7 +2131,7 @@ cd_main_timed_exit_cb (gpointer user_data)
 {
 	GMainLoop *loop = (GMainLoop *) user_data;
 	g_main_loop_quit (loop);
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 /**

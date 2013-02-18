@@ -58,7 +58,7 @@ _g_test_hang_check_cb (gpointer user_data)
 {
 	g_main_loop_quit (_test_loop);
 	_test_loop_timeout_id = 0;
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 /**

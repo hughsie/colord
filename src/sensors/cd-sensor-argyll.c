@@ -102,7 +102,7 @@ cd_sensor_get_sample_timeout_cb (CdSensorAsyncState *state)
 			     "spotread timed out");
 	cd_sensor_get_sample_state_finish (state, error);
 	g_error_free (error);
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void

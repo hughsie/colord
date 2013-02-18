@@ -336,7 +336,7 @@ cd_util_idle_loop_quit_cb (gpointer user_data)
 {
 	GMainLoop *loop = (GMainLoop *) user_data;
 	g_main_loop_quit (loop);
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 /**
  * cd_util_sensor_cap_to_string:

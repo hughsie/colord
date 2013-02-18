@@ -161,7 +161,7 @@ cd_spawn_check_child (CdSpawn *spawn)
 	/* this shouldn't happen */
 	if (spawn->priv->finished) {
 		g_warning ("finished twice!");
-		return FALSE;
+		return G_SOURCE_REMOVE;
 	}
 
 	cd_spawn_read_fd_into_buffer (spawn->priv->stdout_fd, spawn->priv->stdout_buf);
@@ -185,16 +185,16 @@ cd_spawn_check_child (CdSpawn *spawn)
 	pid = waitpid (spawn->priv->child_pid, &status, WNOHANG);
 	if (pid == -1) {
 		g_warning ("failed to get the child PID data for %ld", (long)spawn->priv->child_pid);
-		return TRUE;
+		return G_SOURCE_CONTINUE;
 	}
 	if (pid == 0) {
 		/* process still exist, but has not changed state */
-		return TRUE;
+		return G_SOURCE_CONTINUE;
 	}
 	if (pid != spawn->priv->child_pid) {
 		g_warning ("some other process id was returned: got %ld and wanted %ld",
 			     (long)pid, (long)spawn->priv->child_pid);
-		return TRUE;
+		return G_SOURCE_CONTINUE;
 	}
 
 	/* disconnect the poll as there will be no more updates */
@@ -229,7 +229,7 @@ cd_spawn_check_child (CdSpawn *spawn)
 		/* check we are dead and buried */
 		if (!WIFEXITED (status)) {
 			g_warning ("the process did not exit, but waitpid() returned!");
-			return TRUE;
+			return G_SOURCE_CONTINUE;
 		}
 
 		/* get the exit code */
@@ -261,7 +261,7 @@ cd_spawn_check_child (CdSpawn *spawn)
 	g_debug ("emitting exit %s", cd_spawn_exit_type_enum_to_string (spawn->priv->exit));
 	g_signal_emit (spawn, signals [SIGNAL_EXIT], 0, spawn->priv->exit);
 
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 /**
@@ -292,7 +292,7 @@ cd_spawn_sigkill_cb (CdSpawn *spawn)
 	}
 
 	/* never repeat */
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 /**

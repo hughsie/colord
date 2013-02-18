@@ -928,7 +928,7 @@ cd_client_import_hangcheck_cb (gpointer user_data)
 	g_simple_async_result_complete_in_idle (helper->res);
 	helper->hangcheck_id = 0;
 	cd_client_import_free_helper (helper);
-	return FALSE;
+	return G_SOURCE_REMOVE;
 }
 
 static void
