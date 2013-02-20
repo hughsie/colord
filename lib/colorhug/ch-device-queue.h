@@ -288,6 +288,12 @@ void		 ch_device_queue_read_sram		(ChDeviceQueue	*device_queue,
 void		 ch_device_queue_get_temperature	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 gdouble	*temperature);
+void		 ch_device_queue_get_adc_vref_pos	(ChDeviceQueue	*device_queue,
+							 GUsbDevice	*device,
+							 gdouble	*vref);
+void		 ch_device_queue_get_adc_vref_neg	(ChDeviceQueue	*device_queue,
+							 GUsbDevice	*device,
+							 gdouble	*vref);
 
 /* command utility functions */
 gboolean	 ch_device_queue_set_calibration_ccmx	(ChDeviceQueue	*device_queue,

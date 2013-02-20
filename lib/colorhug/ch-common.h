@@ -351,6 +351,32 @@
 #define	CH_CMD_TAKE_READING_XYZ			0x23
 
 /**
+ * CH_CMD_GET_ADC_CALIBRATION_POS:
+ *
+ * Gets the value of the Vref+ ADC adjustment.
+ * @vref is a packed float.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][4:vref]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_GET_ADC_CALIBRATION_POS		0x51
+
+/**
+ * CH_CMD_GET_ADC_CALIBRATION_NEG:
+ *
+ * Gets the value of the Vref- ADC adjustment.
+ * @vref is a packed float.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][4:vref]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_GET_ADC_CALIBRATION_NEG		0x52
+
+/**
  * CH_CMD_RESET:
  *
  * Reset the processor.

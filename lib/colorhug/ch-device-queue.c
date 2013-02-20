@@ -1445,6 +1445,78 @@ ch_device_queue_get_temperature (ChDeviceQueue *device_queue,
 }
 
 /**
+ * ch_device_queue_get_adc_vref_pos:
+ * @device_queue:	A #ChDeviceQueue
+ * @device:		A #GUsbDevice
+ * @vref:		The voltage reference, ranging from 0.0 to 3.3V.
+ *
+ * Gets the ADC Vref+ calibration value.
+ *
+ * NOTE: This command is available on hardware version: 2
+ **/
+void
+ch_device_queue_get_adc_vref_pos (ChDeviceQueue *device_queue,
+				  GUsbDevice *device,
+				  gdouble *vref)
+{
+	guint8 *buffer;
+
+	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
+	g_return_if_fail (G_USB_IS_DEVICE (device));
+	g_return_if_fail (vref != NULL);
+
+	*vref = 0.0f;
+	buffer = g_new0 (guint8, sizeof (ChPackedFloat));
+	ch_device_queue_add_internal (device_queue,
+				     device,
+				     CH_CMD_GET_ADC_CALIBRATION_POS,
+				     NULL,
+				     0,
+				     buffer,
+				     sizeof(ChPackedFloat),
+				     g_free,
+				     ch_device_queue_buffer_to_double_cb,
+				     vref,
+				     NULL);
+}
+
+/**
+ * ch_device_queue_get_adc_vref_neg:
+ * @device_queue:	A #ChDeviceQueue
+ * @device:		A #GUsbDevice
+ * @vref:		The voltage reference, ranging from 0.0 to 3.3V.
+ *
+ * Gets the ADC Vref- calibration value.
+ *
+ * NOTE: This command is available on hardware version: 2
+ **/
+void
+ch_device_queue_get_adc_vref_neg (ChDeviceQueue *device_queue,
+				  GUsbDevice *device,
+				  gdouble *vref)
+{
+	guint8 *buffer;
+
+	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
+	g_return_if_fail (G_USB_IS_DEVICE (device));
+	g_return_if_fail (vref != NULL);
+
+	*vref = 0.0f;
+	buffer = g_new0 (guint8, sizeof (ChPackedFloat));
+	ch_device_queue_add_internal (device_queue,
+				     device,
+				     CH_CMD_GET_ADC_CALIBRATION_NEG,
+				     NULL,
+				     0,
+				     buffer,
+				     sizeof(ChPackedFloat),
+				     g_free,
+				     ch_device_queue_buffer_to_double_cb,
+				     vref,
+				     NULL);
+}
+
+/**
  * ch_device_queue_get_post_scale:
  * @device_queue:	A #ChDeviceQueue
  * @device:		A #GUsbDevice
