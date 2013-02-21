@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -377,6 +377,32 @@
 #define	CH_CMD_GET_ADC_CALIBRATION_NEG		0x52
 
 /**
+ * CH_CMD_GET_CCD_CALIBRATION:
+ *
+ * Gets the spectral indexes for the RGB calibration which are values between 0
+ * and %CH_CCD_SPECTRAL_RESOLUTION pointing to the dominant peak for the color.
+ * Red is nominally 625nm, green 520nm and blue 465nm.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][2:red-idx][2:green-idx][2:blue-idx]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_GET_CCD_CALIBRATION		0x53
+
+/**
+ * CH_CMD_SET_CCD_CALIBRATION:
+ *
+ * Sets the spectral indexes for the RGB calibration.
+ *
+ * IN:  [1:cmd][2:red-idx][2:green-idx][2:blue-idx]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_SET_CCD_CALIBRATION		0x54
+
+/**
  * CH_CMD_RESET:
  *
  * Reset the processor.
@@ -732,6 +758,9 @@
 
 /* where the custom firmware is stored */
 #define CH_EEPROM_ADDR_RUNCODE			0x4000
+
+/* the number of useful samples from the the CCD */
+#define CH_CCD_SPECTRAL_RESOLUTION		3648
 
 /* although each calibration can be stored in 60 bytes,
  * we use a full 64 byte block */

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -1514,6 +1514,69 @@ ch_device_queue_get_adc_vref_neg (ChDeviceQueue *device_queue,
 				     ch_device_queue_buffer_to_double_cb,
 				     vref,
 				     NULL);
+}
+
+/**
+ * ch_device_queue_get_ccd_calibration:
+ * @device_queue:	A #ChDeviceQueue
+ * @device:		A #GUsbDevice
+ * @indexes:		An array of red, green, blue indexes
+ *
+ * Gets the CCD spectral calibration indexes. These are "pointers" to specific
+ * spectral peaks returned by the CCD.
+ *
+ * NOTE: This command is available on hardware version: 2
+ **/
+void
+ch_device_queue_get_ccd_calibration (ChDeviceQueue *device_queue,
+				     GUsbDevice *device,
+				     guint16 *indexes)
+{
+	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
+	g_return_if_fail (G_USB_IS_DEVICE (device));
+	g_return_if_fail (indexes != NULL);
+
+	/* three uint16_t values */
+	ch_device_queue_add (device_queue,
+			     device,
+			     CH_CMD_GET_CCD_CALIBRATION,
+			     NULL,
+			     0,
+			     (guint8 *) indexes,
+			     3 * sizeof (guint16));
+}
+
+/**
+ * ch_device_queue_set_ccd_calibration:
+ * @device_queue:	A #ChDeviceQueue
+ * @device:		A #GUsbDevice
+ * @indexes:		An array of red, green, blue indexes
+ *
+ * Sets the CCD spectral calibration indexes. These are "pointers" to specific
+ * spectral peaks returned by the CCD.
+ *
+ * NOTE: This command is available on hardware version: 2
+ **/
+void
+ch_device_queue_set_ccd_calibration (ChDeviceQueue *device_queue,
+				     GUsbDevice *device,
+				     const guint16 *indexes)
+{
+	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
+	g_return_if_fail (G_USB_IS_DEVICE (device));
+	g_return_if_fail (indexes != NULL);
+	g_return_if_fail (indexes[0] < CH_CCD_SPECTRAL_RESOLUTION);
+	g_return_if_fail (indexes[1] < CH_CCD_SPECTRAL_RESOLUTION);
+	g_return_if_fail (indexes[2] < CH_CCD_SPECTRAL_RESOLUTION);
+
+	/* three uint16_t values */
+	ch_device_queue_add (device_queue,
+			     device,
+			     CH_CMD_SET_CCD_CALIBRATION,
+			     (const guint8 *) indexes,
+			     3 * sizeof (guint16),
+			     NULL,
+			     0);
 }
 
 /**

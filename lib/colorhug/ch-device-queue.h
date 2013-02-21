@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -294,6 +294,12 @@ void		 ch_device_queue_get_adc_vref_pos	(ChDeviceQueue	*device_queue,
 void		 ch_device_queue_get_adc_vref_neg	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 gdouble	*vref);
+void		 ch_device_queue_get_ccd_calibration	(ChDeviceQueue	*device_queue,
+							 GUsbDevice	*device,
+							 guint16	*indexes);
+void		 ch_device_queue_set_ccd_calibration	(ChDeviceQueue	*device_queue,
+							 GUsbDevice	*device,
+							 const guint16	*indexes);
 
 /* command utility functions */
 gboolean	 ch_device_queue_set_calibration_ccmx	(ChDeviceQueue	*device_queue,
