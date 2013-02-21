@@ -1517,6 +1517,35 @@ ch_device_queue_get_adc_vref_neg (ChDeviceQueue *device_queue,
 }
 
 /**
+ * ch_device_queue_take_reading_spectral:
+ * @device_queue:	A #ChDeviceQueue
+ * @device:		A #GUsbDevice
+ * @sram_addr:		The SRAM location where the data is held
+ *
+ * Takes a raw spectral reading.
+ *
+ * NOTE: This command is available on hardware version: 2
+ **/
+void
+ch_device_queue_take_reading_spectral (ChDeviceQueue *device_queue,
+				       GUsbDevice *device,
+				       guint16 *sram_addr)
+{
+	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
+	g_return_if_fail (G_USB_IS_DEVICE (device));
+	g_return_if_fail (sram_addr != NULL);
+
+	*sram_addr = 0x0000;
+	ch_device_queue_add (device_queue,
+			     device,
+			     CH_CMD_TAKE_READING_SPECTRAL,
+			     NULL,
+			     0,
+			     (guint8 *) sram_addr,
+			     sizeof (guint16));
+}
+
+/**
  * ch_device_queue_get_ccd_calibration:
  * @device_queue:	A #ChDeviceQueue
  * @device:		A #GUsbDevice

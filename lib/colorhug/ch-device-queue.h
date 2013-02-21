@@ -294,6 +294,9 @@ void		 ch_device_queue_get_adc_vref_pos	(ChDeviceQueue	*device_queue,
 void		 ch_device_queue_get_adc_vref_neg	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 gdouble	*vref);
+void		 ch_device_queue_take_reading_spectral	(ChDeviceQueue	*device_queue,
+							 GUsbDevice	*device,
+							 guint16	*sram_addr);
 void		 ch_device_queue_get_ccd_calibration	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 guint16	*indexes);

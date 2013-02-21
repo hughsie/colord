@@ -343,12 +343,31 @@
  * If the calibration index > %CH_CALIBRATION_MAX then the calibration
  * map is used to find the default calibration index to use.
  *
+ * If the calibration index is set to %CH_CALIBRATION_SPECTRAL then the
+ * spectral hardware is used if it is available. The CIE 1931 luminosity
+ * function data is used by default.
+ *
  * IN:  [1:cmd][2:calibration-index]
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
  * This command is only available in firmware mode.
  **/
 #define	CH_CMD_TAKE_READING_XYZ			0x23
+
+/**
+ * CH_CMD_TAKE_READING_SPECTRAL:
+ *
+ * Takes a spectral reading putting %CH_CCD_SPECTRAL_RESOLUTION uint16_t values
+ * (typically 7296 bytes) in SRAM.
+ * The values are scaled from 0x0000 to 0x03ff and correspond to the actual
+ * signal amplitude once Vref- and Vref+ have been taken into account.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][4:addr]
+ *
+ * This command is only available in firmware mode.
+ **/
+#define	CH_CMD_TAKE_READING_SPECTRAL		0x50
 
 /**
  * CH_CMD_GET_ADC_CALIBRATION_POS:
@@ -765,6 +784,7 @@
 /* although each calibration can be stored in 60 bytes,
  * we use a full 64 byte block */
 #define	CH_CALIBRATION_MAX			64	/* so finishes at device params */
+#define	CH_CALIBRATION_SPECTRAL			0xffff
 #define	CH_CALIBRATION_DESCRIPTION_LEN		23	/* 60 - (9*4) - 1 */
 
 /* the supported calibration types bitfield */
