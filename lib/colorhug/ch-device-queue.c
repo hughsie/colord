@@ -841,7 +841,7 @@ ch_device_queue_get_calibration_map (ChDeviceQueue *device_queue,
 void
 ch_device_queue_set_calibration_map (ChDeviceQueue *device_queue,
 				     GUsbDevice *device,
-				     guint16 *calibration_map)
+				     const guint16 *calibration_map)
 {
 	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
 	g_return_if_fail (G_USB_IS_DEVICE (device));
@@ -2147,7 +2147,7 @@ ch_device_queue_reset (ChDeviceQueue *device_queue,
  * ch_device_queue_calculate_checksum:
  **/
 static guint8
-ch_device_queue_calculate_checksum (guint8 *data,
+ch_device_queue_calculate_checksum (const guint8 *data,
 				    gsize len)
 {
 	guint8 checksum = 0xff;
@@ -2173,7 +2173,7 @@ void
 ch_device_queue_write_flash (ChDeviceQueue *device_queue,
 			     GUsbDevice *device,
 			     guint16 address,
-			     guint8 *data,
+			     const guint8 *data,
 			     gsize len)
 {
 	guint16 addr_le;
@@ -2752,7 +2752,7 @@ static void
 ch_device_queue_write_sram_internal (ChDeviceQueue *device_queue,
 				     GUsbDevice *device,
 				     guint16 address,
-				     guint8 *data,
+				     const guint8 *data,
 				     gsize len)
 {
 	guint16 addr_le;
@@ -2789,7 +2789,7 @@ void
 ch_device_queue_write_sram (ChDeviceQueue *device_queue,
 			    GUsbDevice *device,
 			    guint16 address,
-			    guint8 *data,
+			    const guint8 *data,
 			    gsize len)
 {
 	gsize chunk_len = 60;
