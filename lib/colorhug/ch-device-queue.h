@@ -203,10 +203,10 @@ void		 ch_device_queue_set_pcb_errata		(ChDeviceQueue	*device_queue,
 							 guint16	 pcb_errata);
 void		 ch_device_queue_get_remote_hash	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
-							 ChSha1	*remote_hash);
+							 ChSha1		*remote_hash);
 void		 ch_device_queue_set_remote_hash	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
-							 ChSha1	*remote_hash);
+							 ChSha1		*remote_hash);
 void		 ch_device_queue_get_dark_offsets	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 CdColorRGB	*value);
