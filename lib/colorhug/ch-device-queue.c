@@ -580,7 +580,7 @@ ch_device_queue_add (ChDeviceQueue	*device_queue,
  *
  * Gets the selected sensor color.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_get_color_select (ChDeviceQueue *device_queue,
@@ -608,7 +608,7 @@ ch_device_queue_get_color_select (ChDeviceQueue *device_queue,
  *
  * Sets the sensor measurement color.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_set_color_select (ChDeviceQueue *device_queue,
@@ -637,7 +637,7 @@ ch_device_queue_set_color_select (ChDeviceQueue *device_queue,
  *
  * Gets the sensor multiplier.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_get_multiplier (ChDeviceQueue *device_queue,
@@ -665,7 +665,7 @@ ch_device_queue_get_multiplier (ChDeviceQueue *device_queue,
  *
  * Sets the sensor multiplier.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_set_multiplier (ChDeviceQueue *device_queue,
@@ -808,7 +808,7 @@ ch_device_queue_set_integral_time (ChDeviceQueue *device_queue,
  *
  * Gets the calibration map.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_get_calibration_map (ChDeviceQueue *device_queue,
@@ -836,7 +836,7 @@ ch_device_queue_get_calibration_map (ChDeviceQueue *device_queue,
  *
  * Sets the calibration map.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_set_calibration_map (ChDeviceQueue *device_queue,
@@ -1004,7 +1004,7 @@ out:
  *
  * Gets the calibration data.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_get_calibration (ChDeviceQueue *device_queue,
@@ -1052,7 +1052,7 @@ ch_device_queue_get_calibration (ChDeviceQueue *device_queue,
  *
  * Sets the calibration data.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_set_calibration (ChDeviceQueue *device_queue,
@@ -1284,7 +1284,7 @@ ch_device_queue_verify_firmware (ChDeviceQueue	*device_queue,
  *
  * Clears a calibration slot.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_clear_calibration (ChDeviceQueue *device_queue,
@@ -1348,7 +1348,7 @@ out:
  *
  * Gets the pre scale value.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_get_pre_scale (ChDeviceQueue *device_queue,
@@ -1384,7 +1384,7 @@ ch_device_queue_get_pre_scale (ChDeviceQueue *device_queue,
  *
  * Sets the pre-scale value.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_set_pre_scale (ChDeviceQueue *device_queue,
@@ -1524,7 +1524,7 @@ ch_device_queue_get_adc_vref_neg (ChDeviceQueue *device_queue,
  *
  * Gets the post scale value.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_get_post_scale (ChDeviceQueue *device_queue,
@@ -1560,7 +1560,7 @@ ch_device_queue_get_post_scale (ChDeviceQueue *device_queue,
  *
  * Sets the post scale value.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_set_post_scale (ChDeviceQueue *device_queue,
@@ -1895,7 +1895,7 @@ out:
  *
  * Gets the device dark offsets.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_get_dark_offsets (ChDeviceQueue *device_queue,
@@ -2025,7 +2025,7 @@ out:
  * Take a RGB triplet of readings from the sensor without applying the
  * calibration matrix.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_take_readings (ChDeviceQueue *device_queue,
@@ -2696,7 +2696,7 @@ ch_device_queue_take_reading_array (ChDeviceQueue *device_queue,
  *
  * Gets the measurement mode.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_get_measure_mode (ChDeviceQueue *device_queue,
@@ -2724,7 +2724,7 @@ ch_device_queue_get_measure_mode (ChDeviceQueue *device_queue,
  *
  * Sets the measurement mode.
  *
- * NOTE: This command is available on hardware version: 1
+ * NOTE: This command is available on hardware version: 1 & 2
  **/
 void
 ch_device_queue_set_measure_mode (ChDeviceQueue *device_queue,
