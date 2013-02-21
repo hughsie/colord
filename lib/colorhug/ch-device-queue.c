@@ -825,7 +825,7 @@ ch_device_queue_get_calibration_map (ChDeviceQueue *device_queue,
 			     NULL,
 			     0,
 			     (guint8 *) calibration_map,
-			     6 * sizeof(guint16));
+			     CH_CALIBRATION_INDEX_MAX * sizeof(guint16));
 }
 
 /**
@@ -851,7 +851,7 @@ ch_device_queue_set_calibration_map (ChDeviceQueue *device_queue,
 			     device,
 			     CH_CMD_SET_CALIBRATION_MAP,
 			     (const guint8 *) calibration_map,
-			     6 * sizeof(guint16),
+			     CH_CALIBRATION_INDEX_MAX * sizeof(guint16),
 			     NULL,
 			     0);
 }
