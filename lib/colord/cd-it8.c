@@ -882,7 +882,7 @@ cd_it8_save_to_data (CdIt8 *it8,
 	/* save any options */
 	for (i = 0; i < it8->priv->options->len; i++) {
 		tmp = g_ptr_array_index (it8->priv->options, i);
-		cmsIT8SetPropertyStr (it8_lcms, tmp, "TRUE");
+		cmsIT8SetPropertyStr (it8_lcms, tmp, "YES");
 	}
 
 	/* write the file */
