@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -1543,61 +1543,21 @@ out:
 }
 
 /**
- * cd_util_profile_set_qualifier:
+ * cd_util_profile_set_property:
  **/
 static gboolean
-cd_util_profile_set_qualifier (CdUtilPrivate *priv, gchar **values, GError **error)
+cd_util_profile_set_property (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	CdProfile *profile = NULL;
 	gboolean ret = TRUE;
 
-	if (g_strv_length (values) < 2) {
+	if (g_strv_length (values) < 3) {
 		ret = FALSE;
 		g_set_error_literal (error,
 				     1, 0,
 				     "Not enough arguments, "
-				     "expected profile path, qualifier "
-				     "e.g. '/org/profile/foo epson.rgb.300dpi'");
-		goto out;
-	}
-
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
-	}
-
-	profile = cd_profile_new_with_object_path (values[0]);
-	ret = cd_profile_set_qualifier_sync (profile, values[1],
-					     NULL, error);
-	if (!ret)
-		goto out;
-out:
-	if (profile != NULL)
-		g_object_unref (profile);
-	return ret;
-}
-
-/**
- * cd_util_profile_set_filename:
- **/
-static gboolean
-cd_util_profile_set_filename (CdUtilPrivate *priv, gchar **values, GError **error)
-{
-	CdProfile *profile = NULL;
-	gboolean ret = TRUE;
-
-	if (g_strv_length (values) < 2) {
-		ret = FALSE;
-		g_set_error_literal (error,
-				     1, 0,
-				     "Not enough arguments, "
-				     "expected profile path, filename "
-				     "e.g. '/org/profile/foo bar.icc'");
+				     "expected profile path key value "
+				     "e.g. '/org/profile/foo qualifier RGB.Matte.300dpi'");
 		goto out;
 	}
 
@@ -1615,8 +1575,11 @@ cd_util_profile_set_filename (CdUtilPrivate *priv, gchar **values, GError **erro
 	ret = cd_profile_connect_sync (profile, NULL, error);
 	if (!ret)
 		goto out;
-	ret = cd_profile_set_filename_sync (profile, values[1],
-					    NULL, error);
+	ret = cd_profile_set_property_sync (profile,
+					    values[1],
+					    values[2],
+					    NULL,
+					    error);
 	if (!ret)
 		goto out;
 out:
@@ -2154,15 +2117,10 @@ main (int argc, char *argv[])
 		     _("Deletes a profile"),
 		     cd_util_delete_profile);
 	cd_util_add (priv->cmd_array,
-		     "profile-set-qualifier",
+		     "profile-set-property",
 		     /* TRANSLATORS: command description */
-		     _("Sets the profile qualifier"),
-		     cd_util_profile_set_qualifier);
-	cd_util_add (priv->cmd_array,
-		     "profile-set-filename",
-		     /* TRANSLATORS: command description */
-		     _("Sets the profile filename"),
-		     cd_util_profile_set_filename);
+		     _("Sets extra properties on the profile"),
+		     cd_util_profile_set_property);
 	cd_util_add (priv->cmd_array,
 		     "device-set-model",
 		     /* TRANSLATORS: command description */
