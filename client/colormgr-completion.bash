@@ -29,11 +29,11 @@ __colormgr_commandlist="
     device-get-profile-for-qualifier
     device-inhibit
     device-make-profile-default
+    device-set-enabled
     device-set-kind
     device-set-model
     device-set-serial
     device-set-vendor
-    device-set-enabled
     find-device
     find-device-by-property
     find-profile
