@@ -520,9 +520,13 @@ colord_client_random_func (void)
 	/* create extra profile */
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
+	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
 	g_hash_table_insert (profile_props,
-			     g_strdup ("Qualifier"),
+			     g_strdup (CD_PROFILE_PROPERTY_QUALIFIER),
 			     g_strdup ("RGB.Glossy.1200dpi"));
+	g_hash_table_insert (profile_props,
+			     g_strdup (CD_PROFILE_PROPERTY_FILENAME),
+			     filename);
 	profile2 = cd_client_create_profile_sync (client,
 						  profile2_id,
 						  CD_OBJECT_SCOPE_TEMP,
@@ -539,7 +543,7 @@ colord_client_random_func (void)
 	g_assert (ret);
 
 	g_assert_cmpstr (cd_profile_get_id (profile2), ==, profile2_id);
-	g_assert_cmpstr (cd_profile_get_format (profile2), ==, NULL);
+	g_assert_cmpstr (cd_profile_get_format (profile2), ==, "ColorSpace..");
 	g_assert_cmpstr (cd_profile_get_qualifier (profile2), ==, "RGB.Glossy.1200dpi");
 
 	/* get new number of profiles */
@@ -548,12 +552,6 @@ colord_client_random_func (void)
 	g_assert (array != NULL);
 	g_assert_cmpint (profiles->len + 2, ==, array->len);
 	g_ptr_array_unref (array);
-
-	/* set profile filename */
-	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
-	ret = cd_profile_set_filename_sync (profile, filename, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (ret);
 
 	/* wait for daemon */
 	_g_test_loop_run_with_timeout (50);
@@ -578,14 +576,18 @@ colord_client_random_func (void)
 	g_object_unref (profile_tmp);
 
 	/* set profile qualifier */
-	ret = cd_profile_set_qualifier_sync (profile, "RGB.Glossy.300dpi",
-					     NULL, &error);
+	ret = cd_profile_set_property_sync (profile,
+					    CD_PROFILE_PROPERTY_QUALIFIER,
+					    "RGB.Glossy.300dpi",
+					    NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
 	/* set profile qualifier */
-	ret = cd_profile_set_qualifier_sync (profile2, "RGB.Matte.300dpi",
-					     NULL, &error);
+	ret = cd_profile_set_property_sync (profile,
+					    CD_PROFILE_PROPERTY_QUALIFIER,
+					    "RGB.Matte.300dpi",
+					    NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -1185,6 +1187,7 @@ colord_icc_meta_dict_func (void)
 	gboolean ret;
 	GError *error = NULL;
 	GHashTable *metadata;
+	GHashTable *profile_props;
 	CdProfile *profile;
 	CdClient *client;
 
@@ -1204,10 +1207,16 @@ colord_icc_meta_dict_func (void)
 	g_assert (ret);
 
 	/* create profile */
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
+	g_hash_table_insert (profile_props,
+			     g_strdup (CD_PROFILE_PROPERTY_FILENAME),
+			     g_strdup (filename));
 	profile = cd_client_create_profile_sync (client,
 						 "profile_metadata_test",
 						 CD_OBJECT_SCOPE_TEMP,
-						 NULL,
+						 profile_props,
 						 NULL,
 						 &error);
 	g_assert_no_error (error);
@@ -1215,12 +1224,6 @@ colord_icc_meta_dict_func (void)
 
 	/* connect */
 	ret = cd_profile_connect_sync (profile, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (ret);
-
-	/* set profile filename */
-	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
-	ret = cd_profile_set_filename_sync (profile, filename, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -1242,6 +1245,7 @@ colord_icc_meta_dict_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	g_hash_table_unref (profile_props);
 	g_object_unref (profile);
 	g_object_unref (client);
 	g_free (filename);
