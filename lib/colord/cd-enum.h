@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -297,6 +297,7 @@ typedef enum {
  * @CD_PROFILE_ERROR_FAILED_TO_PARSE: 	The profile could not be parsed
  * @CD_PROFILE_ERROR_FAILED_TO_READ: 	The profile could not be read
  * @CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE:	Authentication failed
+ * @CD_PROFILE_ERROR_PROPERTY_INVALID:	One or more of the properties was invalid
  *
  * Errors that can be thrown
  */
@@ -308,6 +309,7 @@ typedef enum
 	CD_PROFILE_ERROR_FAILED_TO_PARSE,
 	CD_PROFILE_ERROR_FAILED_TO_READ,
 	CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE,
+	CD_PROFILE_ERROR_PROPERTY_INVALID,
 	CD_PROFILE_ERROR_LAST
 } CdProfileError;
 

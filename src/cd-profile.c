@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -610,6 +610,15 @@ cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			       &property_value);
 		g_debug ("CdProfile %s:SetProperty(%s,%s)",
 			 sender, property_name, property_value);
+		if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FILENAME) == 0) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_PROFILE_ERROR,
+							       CD_PROFILE_ERROR_PROPERTY_INVALID,
+							       "Setting the %s property after "
+							       "profile creation is no longer supported",
+							       property_name);
+			goto out;
+		}
 		ret = cd_profile_set_property_internal (profile,
 							property_name,
 							property_value,
