@@ -1492,7 +1492,6 @@ colord_client_func (void)
 {
 	CdClient *client;
 	const gchar *version;
-	gchar *version_str;
 	gboolean ret;
 	GError *error = NULL;
 
@@ -1521,12 +1520,7 @@ colord_client_func (void)
 	g_assert (ret);
 
 	version = cd_client_get_daemon_version (client);
-	version_str = g_strdup_printf ("%i.%i.%i",
-				       CD_MAJOR_VERSION,
-				       CD_MINOR_VERSION,
-				       CD_MICRO_VERSION);
-	g_assert_cmpstr (version, ==, version_str);
-	g_free (version_str);
+	g_assert_cmpstr (version, !=, NULL);
 out:
 	g_object_unref (client);
 }
