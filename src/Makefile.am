@@ -108,6 +108,12 @@ colord_LDADD =						\
 colord_CFLAGS =						\
 	$(WARNINGFLAGS_C)
 
+TESTS_ENVIRONMENT =					\
+	libtool --mode=execute valgrind			\
+	--quiet						\
+	--leak-check=full				\
+	--show-possibly-lost=no
+
 check_PROGRAMS =					\
 	cd-self-test
 

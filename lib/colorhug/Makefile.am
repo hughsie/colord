@@ -78,6 +78,12 @@ libcolorhug_la_LDFLAGS =					\
 libcolorhug_la_CFLAGS =						\
 	$(WARNINGFLAGS_C)
 
+TESTS_ENVIRONMENT =						\
+	libtool --mode=execute valgrind				\
+	--quiet							\
+	--leak-check=full					\
+	--show-possibly-lost=no
+
 check_PROGRAMS =						\
 	ch-self-test
 
@@ -96,30 +102,7 @@ ch_self_test_CFLAGS = -DEGG_TEST $(AM_CFLAGS) $(WARNINGFLAGS_C)
 
 TESTS = ch-self-test
 
-# check-tool: Run tests under $(TOOL)
-check-tool:
-	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) check \
-	TESTS_ENVIRONMENT='$(TESTS_ENVIRONMENT) $(top_builddir)/libtool --mode=execute \
-	env $(TOOL)'
-
-# Check tests under valgrind.  Saves log to log-valgrind.txt
-VALGRIND_FLAGS = \
-	--tool=memcheck --suppressions=$(srcdir)/.valgrind-suppressions \
-	--track-origins=yes \
-	--leak-check=yes
-	$(EXTRA_VALGRIND_FLAGS)
-CLEANFILES =  log-valgrind.txt
-valgrind_verbose = $(valgrind_verbose_$(V))
-valgrind_verbose_ = $(valgrind_verbose_$(AM_DEFAULT_VERBOSITY))
-valgrind_verbose_0 = | \
-	grep '\(^[^=]\|ERROR SUMMARY\|definitely lost\|indirectly lost\)' | grep -v ': 0'
-# TODO: The following check does not fail if valgrind finds error.  It should.
-check-valgrind:
-	$(AM_V_at)$(MAKE) $(AM_MAKEFLGS) check-tool TOOL="valgrind $(VALGRIND_FLAGS)" \
-	2>&1 | tee log-valgrind.txt $(valgrind_verbose)
-
-.PHONY: check-tool check-valgrind
-
+CLEANFILES =
 if HAVE_INTROSPECTION
 introspection_sources =						\
 	ch-common.c						\

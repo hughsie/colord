@@ -85,6 +85,12 @@ libcolord_la_CFLAGS =						\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = colord.pc
 
+TESTS_ENVIRONMENT =						\
+	libtool --mode=execute valgrind				\
+	--quiet							\
+	--leak-check=full					\
+	--show-possibly-lost=no
+
 check_PROGRAMS =						\
 	cd-self-test
 
