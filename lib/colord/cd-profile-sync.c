@@ -35,6 +35,7 @@
 #include <gio/gio.h>
 
 #include "cd-profile.h"
+#include "cd-deprecated.h"
 #include "cd-profile-sync.h"
 
 /* tiny helper to help us do the async operation */

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -27,6 +27,8 @@
 #define __CD_DEPRECATED_H__
 
 #include <glib-object.h>
+#include <colord/cd-color.h>
+#include <colord/cd-profile.h>
 
 #ifndef CD_DISABLE_DEPRECATED
 
@@ -72,6 +74,21 @@ void		 cd_color_convert_yxy_to_xyz		(const CdColorYxy	*src,
 G_DEPRECATED_FOR(cd_color_xyz_to_yxy)
 void		 cd_color_convert_xyz_to_yxy		(const CdColorXYZ	*src,
 							 CdColorYxy		*dest);
+
+/* Profile helpers were never a good idea as there are too many possible
+ * properties that could need setting.
+ *
+ * Also, allowing setting the filename after creating the profle means we don't
+ * send the FD at creation time which breaks when the daemon doesn't have read
+ * access to the profile. */
+gboolean	 cd_profile_set_filename_sync		(CdProfile	*profile,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
+gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
+							 const gchar	*value,
+							 GCancellable	*cancellable,
+							 GError		**error);
 
 #endif /* CD_DISABLE_DEPRECATED */
 
