@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -33,7 +33,9 @@
  * Gets a string representation of the SHA1 hash.
  *
  * Return value: A string, free with g_free().
- */
+ *
+ * Since: 0.1.29
+ **/
 gchar *
 ch_sha1_to_string (const ChSha1 *sha1)
 {
@@ -60,7 +62,9 @@ ch_sha1_to_string (const ChSha1 *sha1)
  * Parses a SHA1 hash from a string value.
  *
  * Return value: %TRUE for success
- */
+ *
+ * Since: 0.1.29
+ **/
 gboolean
 ch_sha1_parse (const gchar *value, ChSha1 *sha1, GError **error)
 {

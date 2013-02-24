@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -55,7 +55,9 @@ ch_inhx32_parse_uint8 (const gchar *data, guint pos)
  * representation suitable for direct flashing the ColorHug.
  *
  * Return value: packed value to host byte order
- */
+ *
+ * Since: 0.1.29
+ **/
 gboolean
 ch_inhx32_to_bin (const gchar *in_buffer,
 		  guint8 **out_buffer,

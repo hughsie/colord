@@ -361,6 +361,8 @@ out:
  * @user_data:		User data passed to @callback
  *
  * Processes all commands in the command queue.
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_process_async (ChDeviceQueue		*device_queue,
@@ -411,6 +413,8 @@ ch_device_queue_process_async (ChDeviceQueue		*device_queue,
  * Gets the result from the asynchronous function.
  *
  * Return value: %TRUE if the request was fulfilled.
+ *
+ * Since: 0.1.29
  **/
 gboolean
 ch_device_queue_process_finish (ChDeviceQueue	*device_queue,
@@ -464,6 +468,8 @@ ch_device_queue_process_finish_cb (GObject *source,
  * WARNING: this function is syncronous and will block.
  *
  * Return value: %TRUE if the commands were executed successfully.
+ *
+ * Since: 0.1.29
  **/
 gboolean
 ch_device_queue_process (ChDeviceQueue	*device_queue,
@@ -545,6 +551,8 @@ ch_device_queue_add_internal (ChDeviceQueue		*device_queue,
  * @buffer_out_len:	The size of @buffer_out
  *
  * Adds a raw command to the device queue.
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_add (ChDeviceQueue	*device_queue,
@@ -581,6 +589,8 @@ ch_device_queue_add (ChDeviceQueue	*device_queue,
  * Gets the selected sensor color.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_color_select (ChDeviceQueue *device_queue,
@@ -609,6 +619,8 @@ ch_device_queue_get_color_select (ChDeviceQueue *device_queue,
  * Sets the sensor measurement color.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_color_select (ChDeviceQueue *device_queue,
@@ -638,6 +650,8 @@ ch_device_queue_set_color_select (ChDeviceQueue *device_queue,
  * Gets the sensor multiplier.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_multiplier (ChDeviceQueue *device_queue,
@@ -666,6 +680,8 @@ ch_device_queue_get_multiplier (ChDeviceQueue *device_queue,
  * Sets the sensor multiplier.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_multiplier (ChDeviceQueue *device_queue,
@@ -745,6 +761,8 @@ out:
  * Gets the reading integral time.
 
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_integral_time (ChDeviceQueue *device_queue,
@@ -777,6 +795,8 @@ ch_device_queue_get_integral_time (ChDeviceQueue *device_queue,
  * Sets the reading integral time.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_integral_time (ChDeviceQueue *device_queue,
@@ -809,6 +829,8 @@ ch_device_queue_set_integral_time (ChDeviceQueue *device_queue,
  * Gets the calibration map.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_calibration_map (ChDeviceQueue *device_queue,
@@ -837,6 +859,8 @@ ch_device_queue_get_calibration_map (ChDeviceQueue *device_queue,
  * Sets the calibration map.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_calibration_map (ChDeviceQueue *device_queue,
@@ -903,6 +927,8 @@ out:
  * Gets the firmware version.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_firmware_ver (ChDeviceQueue *device_queue,
@@ -1005,6 +1031,8 @@ out:
  * Gets the calibration data.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_calibration (ChDeviceQueue *device_queue,
@@ -1053,6 +1081,8 @@ ch_device_queue_get_calibration (ChDeviceQueue *device_queue,
  * Sets the calibration data.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_calibration (ChDeviceQueue *device_queue,
@@ -1101,6 +1131,8 @@ ch_device_queue_set_calibration (ChDeviceQueue *device_queue,
 
 /**
  * ch_device_queue_set_calibration_ccmx:
+ *
+ * Since: 0.1.29
  **/
 gboolean
 ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
@@ -1192,6 +1224,8 @@ out:
  * Writes new firmware to the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_write_firmware (ChDeviceQueue	*device_queue,
@@ -1244,6 +1278,8 @@ ch_device_queue_write_firmware (ChDeviceQueue	*device_queue,
  * Verifies firmware on the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_verify_firmware (ChDeviceQueue	*device_queue,
@@ -1285,6 +1321,8 @@ ch_device_queue_verify_firmware (ChDeviceQueue	*device_queue,
  * Clears a calibration slot.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_clear_calibration (ChDeviceQueue *device_queue,
@@ -1349,6 +1387,8 @@ out:
  * Gets the pre scale value.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_pre_scale (ChDeviceQueue *device_queue,
@@ -1385,6 +1425,8 @@ ch_device_queue_get_pre_scale (ChDeviceQueue *device_queue,
  * Sets the pre-scale value.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_pre_scale (ChDeviceQueue *device_queue,
@@ -1417,6 +1459,8 @@ ch_device_queue_set_pre_scale (ChDeviceQueue *device_queue,
  * Gets the device temperature.
  *
  * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_temperature (ChDeviceQueue *device_queue,
@@ -1453,6 +1497,8 @@ ch_device_queue_get_temperature (ChDeviceQueue *device_queue,
  * Gets the ADC Vref+ calibration value.
  *
  * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 0.1.31
  **/
 void
 ch_device_queue_get_adc_vref_pos (ChDeviceQueue *device_queue,
@@ -1489,6 +1535,8 @@ ch_device_queue_get_adc_vref_pos (ChDeviceQueue *device_queue,
  * Gets the ADC Vref- calibration value.
  *
  * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 0.1.31
  **/
 void
 ch_device_queue_get_adc_vref_neg (ChDeviceQueue *device_queue,
@@ -1525,6 +1573,8 @@ ch_device_queue_get_adc_vref_neg (ChDeviceQueue *device_queue,
  * Takes a raw spectral reading.
  *
  * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 0.1.31
  **/
 void
 ch_device_queue_take_reading_spectral (ChDeviceQueue *device_queue,
@@ -1555,6 +1605,8 @@ ch_device_queue_take_reading_spectral (ChDeviceQueue *device_queue,
  * spectral peaks returned by the CCD.
  *
  * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 0.1.31
  **/
 void
 ch_device_queue_get_ccd_calibration (ChDeviceQueue *device_queue,
@@ -1585,6 +1637,8 @@ ch_device_queue_get_ccd_calibration (ChDeviceQueue *device_queue,
  * spectral peaks returned by the CCD.
  *
  * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 0.1.31
  **/
 void
 ch_device_queue_set_ccd_calibration (ChDeviceQueue *device_queue,
@@ -1617,6 +1671,8 @@ ch_device_queue_set_ccd_calibration (ChDeviceQueue *device_queue,
  * Gets the post scale value.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_post_scale (ChDeviceQueue *device_queue,
@@ -1653,6 +1709,8 @@ ch_device_queue_get_post_scale (ChDeviceQueue *device_queue,
  * Sets the post scale value.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_post_scale (ChDeviceQueue *device_queue,
@@ -1685,6 +1743,8 @@ ch_device_queue_set_post_scale (ChDeviceQueue *device_queue,
  * Gets the device serial number.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_serial_number (ChDeviceQueue *device_queue,
@@ -1718,6 +1778,8 @@ ch_device_queue_get_serial_number (ChDeviceQueue *device_queue,
  * Sets the device serial number.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_serial_number (ChDeviceQueue *device_queue,
@@ -1750,6 +1812,8 @@ ch_device_queue_set_serial_number (ChDeviceQueue *device_queue,
  * Gets the LED status.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_leds (ChDeviceQueue *device_queue,
@@ -1782,6 +1846,8 @@ ch_device_queue_get_leds (ChDeviceQueue *device_queue,
  * Sets the LED status.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_leds (ChDeviceQueue *device_queue,
@@ -1819,6 +1885,8 @@ ch_device_queue_set_leds (ChDeviceQueue *device_queue,
  * Gets the PCB errata level.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_pcb_errata (ChDeviceQueue *device_queue,
@@ -1848,6 +1916,8 @@ ch_device_queue_get_pcb_errata (ChDeviceQueue *device_queue,
  * Sets the PCB board errata.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_pcb_errata (ChDeviceQueue *device_queue,
@@ -1875,6 +1945,8 @@ ch_device_queue_set_pcb_errata (ChDeviceQueue *device_queue,
  * Gets the remote hash stored on the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_remote_hash (ChDeviceQueue *device_queue,
@@ -1903,6 +1975,8 @@ ch_device_queue_get_remote_hash (ChDeviceQueue *device_queue,
  * Sets the remote hash on the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_remote_hash (ChDeviceQueue *device_queue,
@@ -1930,6 +2004,8 @@ ch_device_queue_set_remote_hash (ChDeviceQueue *device_queue,
  * Writes values to the firmware to be set at device startup.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_write_eeprom (ChDeviceQueue *device_queue,
@@ -1988,6 +2064,8 @@ out:
  * Gets the device dark offsets.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_dark_offsets (ChDeviceQueue *device_queue,
@@ -2023,6 +2101,8 @@ ch_device_queue_get_dark_offsets (ChDeviceQueue *device_queue,
  * Sets the device dark offsets.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_dark_offsets (ChDeviceQueue *device_queue,
@@ -2055,6 +2135,8 @@ ch_device_queue_set_dark_offsets (ChDeviceQueue *device_queue,
  * Take a raw reading from the sensor.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_take_reading_raw (ChDeviceQueue *device_queue,
@@ -2118,6 +2200,8 @@ out:
  * calibration matrix.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_take_readings (ChDeviceQueue *device_queue,
@@ -2183,6 +2267,8 @@ out:
  * Take an XYZ fully cooked reading from the sensor.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_take_readings_xyz (ChDeviceQueue *device_queue,
@@ -2218,6 +2304,8 @@ ch_device_queue_take_readings_xyz (ChDeviceQueue *device_queue,
  * Resets the device back to bootloader mode.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_reset (ChDeviceQueue *device_queue,
@@ -2260,6 +2348,8 @@ ch_device_queue_calculate_checksum (const guint8 *data,
  * Write flash code to the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_write_flash (ChDeviceQueue *device_queue,
@@ -2344,6 +2434,8 @@ out:
  * Read flash code from the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_read_flash (ChDeviceQueue *device_queue,
@@ -2449,6 +2541,8 @@ ch_device_queue_verify_flash_helper_destroy (gpointer data)
  * Verify flash code from the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_verify_flash (ChDeviceQueue *device_queue,
@@ -2498,6 +2592,8 @@ ch_device_queue_verify_flash (ChDeviceQueue *device_queue,
  * Erase program code on the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_erase_flash (ChDeviceQueue *device_queue,
@@ -2535,6 +2631,8 @@ ch_device_queue_erase_flash (ChDeviceQueue *device_queue,
  * ColorHug device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_flash_success (ChDeviceQueue *device_queue,
@@ -2560,6 +2658,8 @@ ch_device_queue_set_flash_success (ChDeviceQueue *device_queue,
  * Boots the device from bootloader to firmware mode.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_boot_flash (ChDeviceQueue *device_queue,
@@ -2584,6 +2684,8 @@ ch_device_queue_boot_flash (ChDeviceQueue *device_queue,
  * Performs some self tests on the device.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_self_test (ChDeviceQueue *device_queue,
@@ -2609,6 +2711,8 @@ ch_device_queue_self_test (ChDeviceQueue *device_queue,
  * Gets the hardware version.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_hardware_version (ChDeviceQueue *device_queue,
@@ -2637,6 +2741,8 @@ ch_device_queue_get_hardware_version (ChDeviceQueue *device_queue,
  * Gets the owner name.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_owner_name (ChDeviceQueue *device_queue,
@@ -2666,6 +2772,8 @@ ch_device_queue_get_owner_name (ChDeviceQueue *device_queue,
  * Sets the owner name.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_owner_name (ChDeviceQueue *device_queue,
@@ -2699,6 +2807,8 @@ ch_device_queue_set_owner_name (ChDeviceQueue *device_queue,
  * Gets the owner email address.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_owner_email (ChDeviceQueue *device_queue,
@@ -2728,6 +2838,8 @@ ch_device_queue_get_owner_email (ChDeviceQueue *device_queue,
  * Sets the owner email address.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_owner_email (ChDeviceQueue *device_queue,
@@ -2761,6 +2873,8 @@ ch_device_queue_set_owner_email (ChDeviceQueue *device_queue,
  * Get an array of raw readings in quick succession.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_take_reading_array (ChDeviceQueue *device_queue,
@@ -2789,6 +2903,8 @@ ch_device_queue_take_reading_array (ChDeviceQueue *device_queue,
  * Gets the measurement mode.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_get_measure_mode (ChDeviceQueue *device_queue,
@@ -2817,6 +2933,8 @@ ch_device_queue_get_measure_mode (ChDeviceQueue *device_queue,
  * Sets the measurement mode.
  *
  * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_set_measure_mode (ChDeviceQueue *device_queue,
@@ -2876,6 +2994,8 @@ ch_device_queue_write_sram_internal (ChDeviceQueue *device_queue,
  * Writes binary data to the SRAM.
  *
  * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_write_sram (ChDeviceQueue *device_queue,
@@ -2945,6 +3065,8 @@ ch_device_queue_read_sram_internal (ChDeviceQueue *device_queue,
  * Reads binary data from the SRAM.
  *
  * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_queue_read_sram (ChDeviceQueue *device_queue,
@@ -3052,6 +3174,8 @@ ch_device_queue_finalize (GObject *object)
 
 /**
  * ch_device_queue_new:
+ *
+ * Since: 0.1.29
  **/
 ChDeviceQueue *
 ch_device_queue_new (void)

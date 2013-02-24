@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -48,6 +48,8 @@ ch_device_error_quark (void)
 
 /**
  * ch_device_open:
+ *
+ * Since: 0.1.29
  **/
 gboolean
 ch_device_open (GUsbDevice *device, GError **error)
@@ -78,6 +80,8 @@ out:
 
 /**
  * ch_device_is_colorhug:
+ *
+ * Since: 0.1.29
  **/
 gboolean
 ch_device_is_colorhug (GUsbDevice *device)
@@ -87,6 +91,8 @@ ch_device_is_colorhug (GUsbDevice *device)
 
 /**
  * ch_device_get_mode:
+ *
+ * Since: 0.1.29
  **/
 ChDeviceMode
 ch_device_get_mode (GUsbDevice *device)
@@ -169,6 +175,8 @@ typedef struct {
  * Gets the result from the asynchronous function.
  *
  * Return value: %TRUE if the request was fulfilled.
+ *
+ * Since: 0.1.29
  **/
 gboolean
 ch_device_write_command_finish (GUsbDevice *device,
@@ -358,6 +366,8 @@ ch_device_emulate_cb (gpointer user_data)
  * @user_data:		User data passed to @callback
  *
  * Sends a message to the device and waits for a reply.
+ *
+ * Since: 0.1.29
  **/
 void
 ch_device_write_command_async (GUsbDevice *device,
@@ -472,6 +482,8 @@ ch_device_write_command_finish_cb (GObject *source,
  * Sends a message to the device and waits for a reply.
  *
  * Return value: %TRUE if the command was executed successfully.
+ *
+ * Since: 0.1.29
  **/
 gboolean
 ch_device_write_command (GUsbDevice *device,

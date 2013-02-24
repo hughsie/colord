@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -33,7 +33,9 @@
  * @pf: A %ChPackedFloat
  *
  * Return value: packed value to host byte order
- */
+ *
+ * Since: 0.1.29
+ **/
 gint32
 ch_packed_float_get_value (const ChPackedFloat *pf)
 {
@@ -50,7 +52,9 @@ ch_packed_float_get_value (const ChPackedFloat *pf)
  * @value: a value in packed format in host byte order.
  *
  * Stores value in host byte order into packed format for device.
- */
+ *
+ * Since: 0.1.29
+ **/
 void
 ch_packed_float_set_value (ChPackedFloat *pf, const gint32 value)
 {
@@ -67,6 +71,8 @@ ch_packed_float_set_value (ChPackedFloat *pf, const gint32 value)
  * @value: a value in IEEE floating point format
  *
  * Converts a packed float to a double.
+ *
+ * Since: 0.1.29
  **/
 void
 ch_packed_float_to_double (const ChPackedFloat *pf, gdouble *value)
@@ -83,6 +89,8 @@ ch_packed_float_to_double (const ChPackedFloat *pf, gdouble *value)
  * @value: a value in IEEE floating point format
  *
  * Converts a double number to a packed float.
+ *
+ * Since: 0.1.29
  **/
 void
 ch_double_to_packed_float (gdouble value, ChPackedFloat *pf)
@@ -103,6 +111,8 @@ ch_double_to_packed_float (gdouble value, ChPackedFloat *pf)
  * Adds two packed floats together using only integer maths.
  *
  * Return value: an error code
+ *
+ * Since: 0.1.29
  **/
 ChError
 ch_packed_float_add (const ChPackedFloat *pf1,
@@ -139,6 +149,8 @@ ch_packed_float_add (const ChPackedFloat *pf1,
  * Multiplies two packed floats together using only integer maths.
  *
  * Return value: an error code
+ *
+ * Since: 0.1.29
  **/
 ChError
 ch_packed_float_multiply (const ChPackedFloat *pf1,

@@ -61,6 +61,8 @@
  * OUT: [1:retval][1:cmd][1:color_select]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_COLOR_SELECT			0x01
 
@@ -73,6 +75,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_COLOR_SELECT			0x02
 
@@ -85,6 +89,8 @@
  * OUT: [1:retval][1:cmd][1:multiplier_value]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_MULTIPLIER			0x03
 
@@ -97,6 +103,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_MULTIPLIER			0x04
 
@@ -109,6 +117,8 @@
  * OUT: [1:retval][1:cmd][2:integral_time]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_INTEGRAL_TIME		0x05
 
@@ -121,6 +131,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_INTEGRAL_TIME		0x06
 
@@ -133,6 +145,8 @@
  * OUT: [1:retval][1:cmd][2:major][2:minor][2:micro]
  *
  * This command is available in bootloader and firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_FIRMWARE_VERSION		0x07
 
@@ -155,6 +169,8 @@
  * OUT: [1:retval][1:cmd][2*9:matrix_value][1:types][23:description]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_CALIBRATION			0x09
 
@@ -167,6 +183,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_CALIBRATION			0x0a
 
@@ -179,6 +197,8 @@
  * OUT: [1:retval][1:cmd][4:serial_number]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_SERIAL_NUMBER		0x0b
 
@@ -191,6 +211,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_SERIAL_NUMBER		0x0c
 
@@ -203,6 +225,8 @@
  * OUT: [1:retval][1:cmd][1:led_state]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_LEDS				0x0d
 
@@ -219,6 +243,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_LEDS				0x0e
 
@@ -231,6 +257,8 @@
  * OUT: [1:retval][1:cmd][2:red][2:green][2:blue]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_DARK_OFFSETS			0x0f
 
@@ -243,6 +271,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_DARK_OFFSETS			0x10
 
@@ -255,6 +285,8 @@
  * OUT: [1:retval][1:cmd][60:owner-name]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_OWNER_NAME			0x11
 
@@ -267,6 +299,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_OWNER_NAME			0x12
 
@@ -279,6 +313,8 @@
  * OUT: [1:retval][1:cmd][60:owner-email]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_OWNER_EMAIL			0x13
 
@@ -291,6 +327,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_OWNER_EMAIL			0x14
 
@@ -303,6 +341,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_WRITE_EEPROM			0x20
 
@@ -315,6 +355,8 @@
  * OUT: [1:retval][1:cmd][4:count]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_TAKE_READING_RAW			0x21
 
@@ -330,6 +372,8 @@
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_TAKE_READINGS			0x22
 
@@ -351,6 +395,8 @@
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_TAKE_READING_XYZ			0x23
 
@@ -366,6 +412,8 @@
  * OUT: [1:retval][1:cmd][4:addr]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.31
  **/
 #define	CH_CMD_TAKE_READING_SPECTRAL		0x50
 
@@ -379,6 +427,8 @@
  * OUT: [1:retval][1:cmd][4:vref]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.31
  **/
 #define	CH_CMD_GET_ADC_CALIBRATION_POS		0x51
 
@@ -392,6 +442,8 @@
  * OUT: [1:retval][1:cmd][4:vref]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.31
  **/
 #define	CH_CMD_GET_ADC_CALIBRATION_NEG		0x52
 
@@ -406,6 +458,8 @@
  * OUT: [1:retval][1:cmd][2:red-idx][2:green-idx][2:blue-idx]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.31
  **/
 #define	CH_CMD_GET_CCD_CALIBRATION		0x53
 
@@ -418,6 +472,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.31
  **/
 #define	CH_CMD_SET_CCD_CALIBRATION		0x54
 
@@ -430,6 +486,8 @@
  * OUT: [1:retval][1:cmd] (but with success the device will disconnect)
  *
  * This command is available in bootloader and firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_RESET				0x24
 
@@ -442,6 +500,8 @@
  * OUT: [1:retval][1:cmd][1:checksum][1-60:data]
  *
  * This command is only available in bootloader mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_READ_FLASH			0x25
 
@@ -456,6 +516,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in bootloader mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_ERASE_FLASH			0x29
 
@@ -469,6 +531,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in bootloader mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_WRITE_FLASH			0x26
 
@@ -481,6 +545,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in bootloader mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_BOOT_FLASH			0x27
 
@@ -507,6 +573,8 @@
  *
  * This command is available in bootloader and firmware mode, although
  * different values of @success are permitted in each.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_FLASH_SUCCESS		0x28
 
@@ -519,6 +587,8 @@
  * OUT: [1:retval][1:cmd][4:scale]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_PRE_SCALE			0x2c
 
@@ -531,6 +601,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_PRE_SCALE			0x2d
 
@@ -543,6 +615,8 @@
  * OUT: [1:retval][1:cmd][4:scale]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_POST_SCALE			0x2a
 
@@ -555,6 +629,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_POST_SCALE			0x2b
 
@@ -579,6 +655,8 @@
  * OUT: [1:retval][1:cmd][6*2:types]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_CALIBRATION_MAP		0x2e
 
@@ -591,6 +669,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_CALIBRATION_MAP		0x2f
 
@@ -609,6 +689,8 @@
  * OUT: [1:retval][1:cmd][1:hw_version]
  *
  * This command is available in bootloader and firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_HARDWARE_VERSION		0x30
 
@@ -629,6 +711,8 @@
  * OUT: [1:retval][1:cmd][30:reading_array]
  *
  * This command is available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_TAKE_READING_ARRAY		0x31
 
@@ -648,6 +732,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_PCB_ERRATA			0x32
 
@@ -660,6 +746,8 @@
  * OUT: [1:retval][1:cmd][2:pcb_errata]
  *
  * This command is available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_PCB_ERRATA			0x33
 
@@ -674,6 +762,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_REMOTE_HASH			0x34
 
@@ -687,6 +777,8 @@
  * OUT: [1:retval][1:cmd][20:sha1_hash]
  *
  * This command is available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_REMOTE_HASH			0x35
 
@@ -701,6 +793,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SET_MEASURE_MODE			0x36
 
@@ -713,6 +807,8 @@
  * OUT: [1:retval][1:cmd][1:measure_mode]
  *
  * This command is available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_MEASURE_MODE			0x37
 
@@ -725,6 +821,8 @@
  * OUT: [1:retval][1:cmd][1-60:data]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_READ_SRAM			0x38
 
@@ -737,6 +835,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_WRITE_SRAM			0x39
 
@@ -749,6 +849,8 @@
  * OUT: [1:retval][1:cmd][4:temperature]
  *
  * This command is only available in firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_GET_TEMPERATURE			0x3b
 
@@ -762,6 +864,8 @@
  * OUT: [1:retval][1:cmd]
  *
  * This command is available in bootloader and firmware mode.
+ *
+ * Since: 0.1.29
  **/
 #define	CH_CMD_SELF_TEST			0x40
 
@@ -827,7 +931,7 @@ typedef enum {
 typedef enum {
 	CH_STATUS_LED_GREEN	= 1 << 0,
 	CH_STATUS_LED_RED	= 1 << 1,
-	CH_STATUS_LED_BLUE	= 1 << 2
+	CH_STATUS_LED_BLUE	= 1 << 2	/* Since: 0.1.29 */
 } ChStatusLed;
 
 /* what frequency divider to use */

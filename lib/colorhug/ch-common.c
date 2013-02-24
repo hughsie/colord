@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -27,6 +27,8 @@
 
 /**
  * ch_strerror:
+ *
+ * Since: 0.1.29
  **/
 const gchar *
 ch_strerror (ChError error_enum)
@@ -141,6 +143,8 @@ ch_strerror (ChError error_enum)
 
 /**
  * ch_color_select_to_string:
+ *
+ * Since: 0.1.29
  **/
 const gchar *
 ch_color_select_to_string (ChColorSelect color_select)
@@ -168,6 +172,8 @@ ch_color_select_to_string (ChColorSelect color_select)
 
 /**
  * ch_multiplier_to_string:
+ *
+ * Since: 0.1.29
  **/
 const gchar *
 ch_multiplier_to_string (ChFreqScale multiplier)
@@ -195,6 +201,8 @@ ch_multiplier_to_string (ChFreqScale multiplier)
 
 /**
  * ch_command_to_string:
+ *
+ * Since: 0.1.29
  **/
 const gchar *
 ch_command_to_string (guint8 cmd)
@@ -336,6 +344,8 @@ ch_command_to_string (guint8 cmd)
 
 /**
  * ch_measure_mode_to_string:
+ *
+ * Since: 0.1.29
  **/
 const gchar *
 ch_measure_mode_to_string (ChMeasureMode measure_mode)
@@ -357,6 +367,8 @@ ch_measure_mode_to_string (ChMeasureMode measure_mode)
 
 /**
  * ch_device_mode_to_string:
+ *
+ * Since: 0.1.29
  **/
 const gchar *
 ch_device_mode_to_string (ChDeviceMode device_mode)
