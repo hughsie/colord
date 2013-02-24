@@ -265,7 +265,9 @@
 /**
  * CH_CMD_SET_DARK_OFFSETS:
  *
- * Set the dark offsets.
+ * Set the dark offsets for use when taking samples when the measure
+ * mode is FREQUENCY. When the measure mode is DURATION these values
+ * have no effect.
  *
  * IN:  [1:cmd][2:red][2:green][2:blue]
  * OUT: [1:retval][1:cmd]
@@ -351,7 +353,7 @@
  *
  * Take a raw reading.
  *
- * IN:  [1:cmd]
+ * IN:  [1:cmd][1:sensor-kind]
  * OUT: [1:retval][1:cmd][4:count]
  *
  * This command is only available in firmware mode.
@@ -368,7 +370,7 @@
  *
  * This command is useful if you want to do an ambient reading.
  *
- * IN:  [1:cmd]
+ * IN:  [1:cmd][1:sensor-kind]
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
  * This command is only available in firmware mode.
@@ -391,7 +393,7 @@
  * spectral hardware is used if it is available. The CIE 1931 luminosity
  * function data is used by default.
  *
- * IN:  [1:cmd][2:calibration-index]
+ * IN:  [1:cmd][2:calibration-index][1:sensor-kind]
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
  * This command is only available in firmware mode.
@@ -985,6 +987,14 @@ typedef enum {
 	CH_MEASURE_MODE_FREQUENCY,
 	CH_MEASURE_MODE_DURATION
 } ChMeasureMode;
+
+/* the sensor to use */
+typedef enum {
+	CH_SENSOR_KIND_MAIN,
+	CH_SENSOR_KIND_AMBIENT,
+	CH_SENSOR_KIND_CCD,
+	CH_SENSOR_KIND_LAST
+} ChSensorKind;
 
 /* any problems with the PCB */
 typedef enum {
