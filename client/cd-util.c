@@ -997,6 +997,8 @@ cd_util_sensor_set_options (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	CdSensor *sensor;
 	gboolean ret = TRUE;
+	gchar *endptr = NULL;
+	gdouble val;
 	GHashTable *options = NULL;
 	GPtrArray *array = NULL;
 	guint i;
@@ -1025,9 +1027,19 @@ cd_util_sensor_set_options (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* prepare options for each sensor */
+	/* prepare options for each sensor
+	 * NOTE: we're guessing the types here */
 	options = g_hash_table_new (g_str_hash, g_str_equal);
-	g_hash_table_insert (options, values[0], g_variant_new_string (values[1]));
+	val = g_ascii_strtod (values[1], &endptr);
+	if (endptr == NULL || endptr[0] == '\0') {
+		g_hash_table_insert (options,
+				     values[0],
+				     g_variant_new_double (val));
+	} else {
+		g_hash_table_insert (options,
+				     values[0],
+				     g_variant_new_string (values[1]));
+	}
 
 	for (i = 0; i < array->len; i++) {
 		sensor = g_ptr_array_index (array, i);
