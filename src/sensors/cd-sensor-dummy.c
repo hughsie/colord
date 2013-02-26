@@ -26,12 +26,15 @@
 #include "config.h"
 
 #include <glib-object.h>
+#include <lcms2.h>
 
 #include "cd-sensor.h"
 
 typedef struct
 {
 	gboolean			 done_startup;
+	CdColorRGB			 sample_fake;
+	cmsHTRANSFORM			 transform_fake;
 } CdSensorDummyPrivate;
 
 /* async state for the sensor readings */
@@ -41,6 +44,12 @@ typedef struct {
 	GSimpleAsyncResult	*res;
 	CdSensor		*sensor;
 } CdSensorAsyncState;
+
+static CdSensorDummyPrivate *
+cd_sensor_dummy_get_private (CdSensor *sensor)
+{
+	return g_object_get_data (G_OBJECT (sensor), "priv");
+}
 
 static void
 cd_sensor_get_sample_state_finish (CdSensorAsyncState *state,
@@ -82,17 +91,33 @@ cd_sensor_get_ambient_wait_cb (CdSensorAsyncState *state)
 static gboolean
 cd_sensor_get_sample_wait_cb (CdSensorAsyncState *state)
 {
+	CdSensorDummyPrivate *priv = cd_sensor_dummy_get_private (state->sensor);
+	GError *error = NULL;
+
+	/* never setup */
+	if (priv->transform_fake == NULL) {
+		g_set_error_literal (&error,
+				     CD_SENSOR_ERROR,
+				     CD_SENSOR_ERROR_NO_SUPPORT,
+				     "no fake transfor set up");
+		cd_sensor_get_sample_state_finish (state, error);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* run the sample through the profile */
 	state->ret = TRUE;
 	state->sample = cd_color_xyz_new ();
-	state->sample->X = 0.1;
-	state->sample->Y = 0.2;
-	state->sample->Z = 0.3;
+	cmsDoTransform (priv->transform_fake,
+			&priv->sample_fake,
+			state->sample, 1);
 
 	/* emulate */
 	cd_sensor_button_pressed (state->sensor);
 
 	/* just return without a problem */
 	cd_sensor_get_sample_state_finish (state, NULL);
+out:
 	return G_SOURCE_REMOVE;
 }
 
@@ -145,10 +170,119 @@ cd_sensor_get_sample_finish (CdSensor *sensor,
 	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
 }
 
+gboolean
+cd_sensor_set_options_finish (CdSensor *sensor,
+			      GAsyncResult *res,
+			      GError **error)
+{
+	GSimpleAsyncResult *simple;
+
+	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	/* failed */
+	simple = G_SIMPLE_ASYNC_RESULT (res);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	/* grab detail */
+	return g_simple_async_result_get_op_res_gboolean (simple);
+}
+
+void
+cd_sensor_set_options_async (CdSensor *sensor,
+			     GHashTable *options,
+			     GCancellable *cancellable,
+			     GAsyncReadyCallback callback,
+			     gpointer user_data)
+{
+	CdSensorDummyPrivate *priv = cd_sensor_dummy_get_private (sensor);
+	GSimpleAsyncResult *res;
+	GList *keys;
+	GList *l;
+	gboolean ret = TRUE;
+	const gchar *key_name;
+	GVariant *value;
+
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+
+	res = g_simple_async_result_new (G_OBJECT (sensor),
+					 callback,
+					 user_data,
+					 cd_sensor_set_options_async);
+
+	/* look for any keys we recognise */
+	keys = g_hash_table_get_keys (options);
+	for (l = keys; l != NULL; l = l->next) {
+		key_name = (const gchar *) l->data;
+		value = g_hash_table_lookup (options, key_name);
+		if (g_strcmp0 (g_variant_get_type_string (value), "d") != 0) {
+			ret = FALSE;
+			g_simple_async_result_set_error (res,
+							 CD_SENSOR_ERROR,
+							 CD_SENSOR_ERROR_NO_SUPPORT,
+							 "unexpected type '%s' not supported",
+							 g_variant_get_type_string (value));
+			break;
+		}
+		if (g_strcmp0 (key_name, "sample[red]") == 0) {
+			priv->sample_fake.R = g_variant_get_double (value);
+		} else if (g_strcmp0 (key_name, "sample[green]") == 0) {
+			priv->sample_fake.G = g_variant_get_double (value);
+		} else if (g_strcmp0 (key_name, "sample[blue]") == 0) {
+			priv->sample_fake.B = g_variant_get_double (value);
+		} else {
+			ret = FALSE;
+			g_simple_async_result_set_error (res,
+							 CD_SENSOR_ERROR,
+							 CD_SENSOR_ERROR_NO_SUPPORT,
+							 "option '%s' is not supported",
+							 key_name);
+			break;
+		}
+	}
+	g_list_free (keys);
+
+	/* success */
+	if (ret)
+		g_simple_async_result_set_op_res_gboolean (res, TRUE);
+
+	/* complete */
+	g_simple_async_result_complete_in_idle (res);
+}
+
 static void
 cd_sensor_unref_private (CdSensorDummyPrivate *priv)
 {
+	if (priv->transform_fake != NULL)
+		cmsDeleteTransform (priv->transform_fake);
 	g_free (priv);
+}
+
+static cmsHTRANSFORM
+cd_sensor_get_fake_transform (CdSensorDummyPrivate *priv)
+{
+	cmsHTRANSFORM transform;
+	cmsHPROFILE profile_srgb;
+	cmsHPROFILE profile_xyz;
+
+	profile_srgb = cmsCreate_sRGBProfile ();
+	profile_xyz = cmsCreateXYZProfile ();
+	transform = cmsCreateTransform (profile_srgb, TYPE_RGB_DBL,
+					profile_xyz, TYPE_XYZ_DBL,
+					INTENT_RELATIVE_COLORIMETRIC,
+					cmsFLAGS_NOOPTIMIZE);
+	if (transform == NULL) {
+		g_warning ("failed to setup RGB -> XYZ transform");
+		goto out;
+	}
+out:
+	if (profile_srgb != NULL)
+		cmsCloseProfile (profile_srgb);
+	if (profile_xyz != NULL)
+		cmsCloseProfile (profile_xyz);
+	return transform;
 }
 
 gboolean
@@ -174,6 +308,8 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 
 	/* create private data */
 	priv = g_new0 (CdSensorDummyPrivate, 1);
+	priv->transform_fake = cd_sensor_get_fake_transform (priv);
+	cd_color_rgb_set (&priv->sample_fake, 0.1, 0.2, 0.3);
 	g_object_set_data_full (G_OBJECT (sensor), "priv", priv,
 				(GDestroyNotify) cd_sensor_unref_private);
 	return TRUE;
