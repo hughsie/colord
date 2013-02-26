@@ -147,9 +147,14 @@ cd_main_calib_idle_delay (guint ms)
 /**
  * cd_main_emit_update_sample:
  **/
-static void
-cd_main_emit_update_sample (CdMainPrivate *priv, CdColorRGB *color)
+static gboolean
+cd_main_emit_update_sample (CdMainPrivate *priv,
+			    CdColorRGB *color,
+			    GError **error)
 {
+	gboolean ret = TRUE;
+	GHashTable *hash = NULL;
+
 	/* emit signal */
 	g_debug ("CdMain: Emitting UpdateSample(%f,%f,%f)",
 		 color->R, color->G, color->B);
@@ -163,7 +168,34 @@ cd_main_emit_update_sample (CdMainPrivate *priv, CdColorRGB *color)
 						      color->G,
 						      color->B),
 				       NULL);
+
+	/* if this is the dummy sensor then set the sample RGB value */
+	if (cd_sensor_get_kind (priv->sensor) == CD_SENSOR_KIND_DUMMY) {
+		hash = g_hash_table_new_full (g_str_hash,
+					      g_str_equal,
+					      g_free,
+					      (GDestroyNotify) g_variant_unref);
+		g_hash_table_insert (hash,
+				     g_strdup ("sample[red]"),
+				     g_variant_new_double (color->R));
+		g_hash_table_insert (hash,
+				     g_strdup ("sample[green]"),
+				     g_variant_new_double (color->G));
+		g_hash_table_insert (hash,
+				     g_strdup ("sample[blue]"),
+				     g_variant_new_double (color->B));
+		ret = cd_sensor_set_options_sync (priv->sensor,
+						  hash,
+						  priv->cancellable,
+						  error);
+		if (!ret)
+			goto out;
+	}
 	cd_main_calib_idle_delay (200);
+out:
+	if (hash != NULL)
+		g_hash_table_unref (hash);
+	return ret;
 }
 
 /**
@@ -357,7 +389,9 @@ cd_main_calib_get_native_whitepoint (CdMainPrivate *priv,
 	rgb.R = 1.0;
 	rgb.G = 1.0;
 	rgb.B = 1.0;
-	cd_main_emit_update_sample (priv, &rgb);
+	ret = cd_main_emit_update_sample (priv, &rgb, error);
+	if (!ret)
+		goto out;
 
 	ret = cd_main_calib_get_sample (priv, &xyz, error);
 	if (!ret)
@@ -746,7 +780,9 @@ cd_main_calib_process (CdMainPrivate *priv,
 		rgb.R = 1.0 / (gdouble) (priv->array->len - 1) * (gdouble) i;
 		rgb.G = 1.0 / (gdouble) (priv->array->len - 1) * (gdouble) i;
 		rgb.B = 1.0 / (gdouble) (priv->array->len - 1) * (gdouble) i;
-		cd_main_emit_update_sample (priv, &rgb);
+		ret = cd_main_emit_update_sample (priv, &rgb, error);
+		if (!ret)
+			goto out;
 
 		/* process this section */
 		item = g_ptr_array_index (priv->array, i);
@@ -1202,7 +1238,9 @@ cd_main_display_get_samples (CdMainPrivate *priv,
 				      i,
 				      &rgb,
 				      NULL);
-		cd_main_emit_update_sample (priv, &rgb);
+		ret = cd_main_emit_update_sample (priv, &rgb, error);
+		if (!ret)
+			goto out;
 		ret = cd_main_calib_get_sample (priv, &xyz, error);
 		if (!ret)
 			goto out;
