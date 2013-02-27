@@ -54,6 +54,7 @@ typedef struct {
 	GPtrArray		*array;
 	cmsCIEXYZ		 whitepoint;
 	gdouble			 native_whitepoint;
+	gdouble			 target_gamma;
 	guint			 target_whitepoint;
 	guint			 screen_brightness;
 	CdIt8			*it8_cal;
@@ -1778,6 +1779,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		/* set the default parameters */
 		priv->quality = CD_PROFILE_QUALITY_MEDIUM;
 		priv->device_kind = CD_SENSOR_CAP_LCD;
+		priv->target_gamma = 2.2;
 		while (g_variant_iter_next (iter, "{&sv}",
 					    &prop_key, &prop_value)) {
 			if (g_strcmp0 (prop_key, "Quality") == 0) {
@@ -1798,6 +1800,9 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 			} else if (g_strcmp0 (prop_key, "Brightness") == 0) {
 				priv->screen_brightness = g_variant_get_uint32 (prop_value);
 				g_debug ("Device brightness: %i", priv->screen_brightness);
+			} else if (g_strcmp0 (prop_key, "Gamma") == 0) {
+				priv->target_gamma = g_variant_get_double (prop_value);
+				g_debug ("Gamma: %.2f", priv->target_gamma);
 			} else {
 				/* not a fatal warning */
 				g_warning ("option %s unsupported", prop_key);
@@ -1827,6 +1832,17 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 			goto out;
 		}
 
+		/* check the gamma */
+		if (priv->target_gamma < 1.0 || priv->target_gamma > 4.0) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SESSION_ERROR,
+							       CD_SESSION_ERROR_INVALID_VALUE,
+							       "invalid target gamma value %f",
+							       priv->target_gamma);
+			goto out;
+		}
+
+		/* check the whitepoint */
 		if (priv->target_whitepoint != 0 &&
 		    (priv->target_whitepoint < 1000 ||
 		     priv->target_whitepoint > 100000)) {

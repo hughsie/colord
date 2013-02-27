@@ -474,6 +474,7 @@ main (int argc, char **argv)
 	gchar *sensor_id = NULL;
 	gchar *title = NULL;
 	GDBusConnection *connection = NULL;
+	gdouble gamma = 2.2f;
 	GError *error = NULL;
 	gint retval = EXIT_FAILURE;
 	GOptionContext *context;
@@ -502,6 +503,9 @@ main (int argc, char **argv)
 		{ "whitepoint", '\0', 0, G_OPTION_ARG_INT, &whitepoint,
 			/* TRANSLATORS: command line option */
 			"Target this specific whitepoint, or 0 for native", NULL },
+		{ "gamma", '\0', 0, G_OPTION_ARG_DOUBLE, &gamma,
+			/* TRANSLATORS: command line option */
+			"Target this gamma (default 2.2)", NULL },
 		{ NULL}
 	};
 
@@ -635,6 +639,10 @@ main (int argc, char **argv)
 			       "{sv}",
 			       "DeviceKind",
 			       g_variant_new_uint32 (CD_SENSOR_CAP_LCD));
+	g_variant_builder_add (&builder,
+			       "{sv}",
+			       "Gamma",
+			       g_variant_new_double (gamma));
 	retvax = g_dbus_proxy_call_sync (priv->proxy,
 					 "Start",
 					 g_variant_new ("(ssa{sv})",
