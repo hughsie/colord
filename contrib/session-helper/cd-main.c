@@ -177,13 +177,13 @@ cd_main_emit_update_sample (CdMainPrivate *priv,
 					      (GDestroyNotify) g_variant_unref);
 		g_hash_table_insert (hash,
 				     g_strdup ("sample[red]"),
-				     g_variant_new_double (color->R));
+				     g_variant_take_ref (g_variant_new_double (color->R)));
 		g_hash_table_insert (hash,
 				     g_strdup ("sample[green]"),
-				     g_variant_new_double (color->G));
+				     g_variant_take_ref (g_variant_new_double (color->G)));
 		g_hash_table_insert (hash,
 				     g_strdup ("sample[blue]"),
-				     g_variant_new_double (color->B));
+				     g_variant_take_ref (g_variant_new_double (color->B)));
 		ret = cd_sensor_set_options_sync (priv->sensor,
 						  hash,
 						  priv->cancellable,
