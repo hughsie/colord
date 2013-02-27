@@ -56,6 +56,7 @@ typedef struct {
 	CdColorXYZ		 absolute_white;
 	gdouble			 native_whitepoint;
 	gdouble			 target_gamma;
+	gdouble			 gamma_scale_factor;
 	guint			 target_whitepoint;
 	guint			 screen_brightness;
 	CdIt8			*it8_cal;
@@ -421,10 +422,12 @@ cd_main_calib_try_item (CdMainPrivate *priv,
 		        gboolean *new_best,
 		        GError **error)
 {
-	gboolean ret = TRUE;
-	gdouble error_tmp;
 	CdColorXYZ xyz;
 	cmsCIELab lab;
+	gboolean ret = TRUE;
+	gdouble error_tmp;
+	gdouble lumi_measured;
+	gdouble lumi_target;
 
 	g_debug ("try %f,%f,%f", item->color.R, item->color.G, item->color.B);
 	cd_main_emit_update_gamma (priv, priv->array);
@@ -436,8 +439,22 @@ cd_main_calib_try_item (CdMainPrivate *priv,
 
 	/* get error */
 	cmsXYZ2Lab (&priv->whitepoint, &lab, (const cmsCIEXYZ *) &xyz);
+
+	/* scale by absolute white luminance */
+	lumi_measured = xyz.Y / priv->absolute_white.Y;
+	lumi_target = pow (item->index_factor, priv->target_gamma);
+	g_debug ("Absolute luminance at this point should be %f but is %f",
+		 lumi_target, lumi_measured);
+
+	/* get sum or squares difference of a,b */
 	error_tmp = sqrt (lab.a * lab.a + lab.b * lab.b);
-	g_debug ("%f\t%f\t%f = %f", lab.L, lab.a, lab.b, error_tmp);
+	g_debug ("Lab: %f\t%f\t%f error %f", lab.L, lab.a, lab.b, error_tmp);
+
+	/* add in gamma error */
+	error_tmp += priv->gamma_scale_factor * ABS (lumi_target - lumi_measured);
+	g_debug ("Total error %f", error_tmp);
+
+	/* is it better than we ever got before */
 	if (error_tmp < item->error) {
 		cd_color_rgb_copy (&item->color, &item->best_so_far);
 		item->error = error_tmp;
@@ -2151,6 +2168,7 @@ main (int argc, char *argv[])
 
 	g_type_init ();
 	priv = g_new0 (CdMainPrivate, 1);
+	priv->gamma_scale_factor = 10.0f;
 	priv->status = CD_SESSION_STATUS_IDLE;
 	priv->interaction_code_last = CD_SESSION_INTERACTION_NONE;
 	priv->cancellable = g_cancellable_new ();
