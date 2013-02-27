@@ -53,6 +53,7 @@ typedef struct {
 	CdSensorCap		 device_kind;
 	GPtrArray		*array;
 	cmsCIEXYZ		 whitepoint;
+	CdColorXYZ		 absolute_white;
 	gdouble			 native_whitepoint;
 	gdouble			 target_gamma;
 	guint			 target_whitepoint;
@@ -397,6 +398,11 @@ cd_main_calib_get_native_whitepoint (CdMainPrivate *priv,
 	ret = cd_main_calib_get_sample (priv, &xyz, error);
 	if (!ret)
 		goto out;
+
+	/* save the absolute XYZ measurement so we can scale each sample->Y
+	 * to 1.0 for the gamma error check */
+	cd_color_xyz_copy (&xyz, &priv->absolute_white);
+	g_debug ("Absolute white: %f", priv->absolute_white.Y);
 
 	cmsXYZ2xyY (&chroma, (cmsCIEXYZ *) &xyz);
 	g_debug ("x:%f,y:%f,Y:%f", chroma.x, chroma.y, chroma.Y);
