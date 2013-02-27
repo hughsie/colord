@@ -72,6 +72,7 @@ typedef struct {
 	CdColorRGB		 color;
 	CdColorRGB		 best_so_far;
 	gdouble			 error;
+	gdouble			 index_factor; /* 0.0 for first point, 1.0 for last and linear in between */
 } CdMainCalibrateItem;
 
 #define CD_SESSION_ERROR			cd_main_error_quark()
@@ -652,6 +653,7 @@ cd_main_calib_interpolate_up (CdMainPrivate *priv,
 		p2 = g_ptr_array_index (old_array, (guint) ceil (mix));
 		result = g_new (CdMainCalibrateItem, 1);
 		result->error = G_MAXDOUBLE;
+		result->index_factor = (gdouble) i / (gdouble) (new_size - 1);
 		cd_color_rgb_set (&result->color, 1.0, 1.0, 1.0);
 		cd_color_rgb_interpolate (&p1->color,
 					  &p2->color,
@@ -698,10 +700,12 @@ cd_main_calib_process (CdMainPrivate *priv,
 	priv->array = g_ptr_array_new_with_free_func (g_free);
 	item = g_new0 (CdMainCalibrateItem, 1);
 	item->error = G_MAXDOUBLE;
+	item->index_factor = 0.0f;
 	cd_color_rgb_set (&item->color, 0.0, 0.0, 0.0);
 	g_ptr_array_add (priv->array, item);
 	item = g_new0 (CdMainCalibrateItem, 1);
 	item->error = G_MAXDOUBLE;
+	item->index_factor = 1.0f;
 	cd_color_rgb_set (&item->color, 1.0, 1.0, 1.0);
 	g_ptr_array_add (priv->array, item);
 	cd_main_emit_update_gamma (priv, priv->array);
