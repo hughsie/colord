@@ -3,14 +3,13 @@ dist_introspection_DATA = 				\
 	org.freedesktop.ColorHelper.xml
 
 AM_CPPFLAGS =						\
+	-I$(top_srcdir)/lib				\
 	$(COLORD_GTK_CFLAGS)				\
 	$(GLIB_CFLAGS)					\
 	$(GNOME_DESKTOP_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
 	-I$(top_srcdir)/client				\
-	-I$(top_srcdir)/lib				\
 	-I$(top_builddir)/lib				\
-	-I$(top_srcdir)/lib/colord			\
 	-I$(top_srcdir)/src				\
 	-DCD_COMPILATION				\
 	-DCD_DISABLE_DEPRECATED				\
@@ -65,8 +64,8 @@ noinst_PROGRAMS =					\
 colord_session_example_SOURCES =			\
 	cd-example.c
 colord_session_example_LDADD =				\
-	$(COLORD_GTK_LIBS)				\
 	$(COLORD_LIBS)					\
+	$(COLORD_GTK_LIBS)				\
 	$(GLIB_LIBS)					\
 	$(GNOME_DESKTOP_LIBS)				\
 	$(LCMS_LIBS) -lm
