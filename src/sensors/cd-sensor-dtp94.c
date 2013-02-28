@@ -65,7 +65,7 @@ cd_sensor_dtp94_get_sample_state_finish (CdSensorAsyncState *state,
 	if (state->ret) {
 		g_simple_async_result_set_op_res_gpointer (state->res,
 							   state->sample,
-							   cd_color_xyz_free);
+							   (GDestroyNotify) cd_color_xyz_free);
 	} else {
 		g_simple_async_result_set_from_error (state->res, error);
 	}

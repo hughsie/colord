@@ -144,6 +144,93 @@ cd_color_yxy_get_type (void)
 }
 
 /**
+ * cd_color_xyz_new:
+ *
+ * Allocates a color value.
+ *
+ * Return value: A newly allocated #CdColorXYZ object
+ *
+ * Since: 0.1.0
+ **/
+CdColorXYZ *
+cd_color_xyz_new (void)
+{
+	return g_slice_new0 (CdColorXYZ);
+}
+
+/**
+ * cd_color_rgb_new:
+ *
+ * Allocates a color value.
+ *
+ * Return value: A newly allocated #CdColorRGB object
+ *
+ * Since: 0.1.0
+ **/
+CdColorRGB *
+cd_color_rgb_new (void)
+{
+	return g_slice_new0 (CdColorRGB);
+}
+
+/**
+ * cd_color_yxy_new:
+ *
+ * Allocates a color value.
+ *
+ * Return value: A newly allocated #CdColorYxy object
+ *
+ * Since: 0.1.0
+ **/
+CdColorYxy *
+cd_color_yxy_new (void)
+{
+	return g_slice_new0 (CdColorYxy);
+}
+
+/**
+ * cd_color_xyz_free:
+ * @src: the color object
+ *
+ * Deallocates a color value.
+ *
+ * Since: 0.1.0
+ **/
+void
+cd_color_xyz_free (CdColorXYZ *src)
+{
+	g_slice_free (CdColorXYZ, src);
+}
+
+/**
+ * cd_color_rgb_free:
+ * @src: the color object
+ *
+ * Deallocates a color value.
+ *
+ * Since: 0.1.0
+ **/
+void
+cd_color_rgb_free (CdColorRGB *src)
+{
+	g_slice_free (CdColorRGB, src);
+}
+
+/**
+ * cd_color_yxy_free:
+ * @src: the color object
+ *
+ * Deallocates a color value.
+ *
+ * Since: 0.1.0
+ **/
+void
+cd_color_yxy_free (CdColorYxy *src)
+{
+	g_slice_free (CdColorYxy, src);
+}
+
+/**
  * cd_color_xyz_set:
  * @dest: the destination color
  * @X: component value

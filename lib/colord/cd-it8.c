@@ -1337,8 +1337,8 @@ cd_it8_init (CdIt8 *it8)
 {
 	it8->priv = CD_IT8_GET_PRIVATE (it8);
 
-	it8->priv->array_rgb = g_ptr_array_new_with_free_func (cd_color_rgb_free);
-	it8->priv->array_xyz = g_ptr_array_new_with_free_func (cd_color_xyz_free);
+	it8->priv->array_rgb = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
+	it8->priv->array_xyz = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_xyz_free);
 	it8->priv->options = g_ptr_array_new_with_free_func (g_free);
 
 	/* ensure the remote errors are registered */
