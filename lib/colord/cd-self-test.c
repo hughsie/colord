@@ -1086,13 +1086,13 @@ colord_sensor_state_notify_cb (GObject *object,
 static void
 colord_sensor_func (void)
 {
-	CdSensor *sensor;
 	CdClient *client;
+	CdColorXYZ *values;
+	CdSensor *sensor;
 	gboolean ret;
 	GError *error = NULL;
+	GHashTable *hash;
 	GPtrArray *array;
-	CdColorXYZ *values;
-//	gdouble ambient = -2.0f;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -1168,6 +1168,27 @@ colord_sensor_func (void)
 	g_assert (cd_sensor_get_locked (sensor));
 	g_clear_error (&error);
 
+	/* setup virtual swatch */
+	hash = g_hash_table_new_full (g_str_hash,
+				      g_str_equal,
+				      g_free,
+				      (GDestroyNotify) g_variant_unref);
+	g_hash_table_insert (hash,
+			     g_strdup ("sample[red]"),
+			     g_variant_take_ref (g_variant_new_double (0.1)));
+	g_hash_table_insert (hash,
+			     g_strdup ("sample[green]"),
+			     g_variant_take_ref (g_variant_new_double (0.2)));
+	g_hash_table_insert (hash,
+			     g_strdup ("sample[blue]"),
+			     g_variant_take_ref (g_variant_new_double (0.3)));
+	ret = cd_sensor_set_options_sync (sensor,
+					  hash,
+					  NULL,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	/* get a sample sync */
 	values = cd_sensor_get_sample_sync (sensor,
 					    CD_SENSOR_CAP_LCD,
@@ -1181,14 +1202,15 @@ colord_sensor_func (void)
 	_g_test_loop_quit ();
 	g_assert_cmpint (_refcount, ==, 2);
 
-	g_assert_cmpfloat (values->X - 0.1f, >, -0.01);
-	g_assert_cmpfloat (values->X - 0.1f, <, 0.01);
-	g_assert_cmpfloat (values->Y - 0.2f, >, -0.01);
-	g_assert_cmpfloat (values->Y - 0.2f, <, 0.01);
-	g_assert_cmpfloat (values->Z - 0.3f, >, -0.01);
-	g_assert_cmpfloat (values->Z - 0.3f, <, 0.01);
-//	g_assert_cmpfloat (ambient + 1.0f, >, -0.01);
-//	g_assert_cmpfloat (ambient + 1.0f, <, 0.01);
+	g_hash_table_unref (hash);
+
+	g_debug ("sample was %f %f %f", values->X, values->Y, values->Z);
+	g_assert_cmpfloat (values->X - 0.027599, >, -0.01);
+	g_assert_cmpfloat (values->X - 0.027599, <, 0.01);
+	g_assert_cmpfloat (values->Y - 0.030403, >, -0.01);
+	g_assert_cmpfloat (values->Y - 0.030403, <, 0.01);
+	g_assert_cmpfloat (values->Z - 0.055636, >, -0.01);
+	g_assert_cmpfloat (values->Z - 0.055636, <, 0.01);
 	cd_color_xyz_free (values);
 
 	/* unlock */
