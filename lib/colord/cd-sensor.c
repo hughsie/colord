@@ -347,6 +347,7 @@ cd_sensor_set_caps_from_variant (CdSensor *sensor, GVariant *variant)
 		cd_bitfield_add (sensor->priv->caps,
 				 cd_sensor_cap_from_string (caps_tmp[i]));
 	}
+	g_free (caps_tmp);
 }
 
 /**
@@ -417,7 +418,7 @@ cd_sensor_dbus_properties_changed_cb (GDBusProxy *proxy,
 	len = g_variant_iter_init (&iter, changed_properties);
 	for (i = 0; i < len; i++) {
 		g_variant_get_child (changed_properties, i,
-				     "{sv}",
+				     "{&sv}",
 				     &property_name,
 				     &property_value);
 		if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_KIND) == 0) {
