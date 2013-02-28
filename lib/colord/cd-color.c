@@ -643,6 +643,21 @@ cd_color_rgb_array_is_monotonic (const GPtrArray *array)
 }
 
 /**
+ * cd_color_rgb_array_new:
+ *
+ * Creates a new RGB array.
+ *
+ * Return value: (element-type CdColorRGB) (transfer full): New array
+ *
+ * Since: 0.1.31
+ **/
+GPtrArray *
+cd_color_rgb_array_new (void)
+{
+	return g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
+}
+
+/**
  * cd_color_rgb_array_interpolate:
  * @array: (element-type CdColorRGB): Input array
  * @new_length: the target length of the return array
@@ -692,7 +707,7 @@ cd_color_rgb_array_interpolate (const GPtrArray *array, guint new_length)
 	}
 
 	/* create new array */
-	result = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
+	result = cd_color_rgb_array_new ();
 	for (i = 0; i < new_length; i++) {
 		rgb = cd_color_rgb_new ();
 		g_ptr_array_add (result, rgb);

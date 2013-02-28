@@ -2872,7 +2872,7 @@ colord_color_interpolate_func (void)
 	gdouble test_data[] = { 0.10, 0.35, 0.40, 0.80, 1.00, -1.0 };
 
 	/* interpolate with values that intentionally trip up Akima */
-	array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
+	array = cd_color_rgb_array_new ();
 	for (i = 0; test_data[i] >= 0.0; i++) {
 		rgb = cd_color_rgb_new ();
 		cd_color_rgb_set (rgb,
