@@ -692,12 +692,15 @@ cd_main_calib_process (CdMainPrivate *priv,
 		       GError **error)
 {
 	CdColorRGB rgb;
+	CdColorRGB *rgb_tmp;
 	CdMainCalibrateItem *item;
 	CdState *state_local;
 	CdState *state_loop;
 	cmsCIExyY whitepoint_tmp;
 	gboolean ret;
 	gdouble temp;
+	GPtrArray *gamma_data = NULL;
+	GPtrArray *vcgt_smoothed = NULL;
 	guint i;
 	guint precision_steps = 0;
 
@@ -848,12 +851,29 @@ cd_main_calib_process (CdMainPrivate *priv,
 	priv->it8_cal = cd_it8_new_with_kind (CD_IT8_KIND_CAL);
 	cd_it8_set_originator (priv->it8_cal, "colord-session");
 	cd_it8_set_instrument (priv->it8_cal, cd_sensor_kind_to_string (cd_sensor_get_kind (priv->sensor)));
-	ret = cd_main_calib_interpolate_up (priv, 256, error);
-	if (!ret)
-		goto out;
+
+	/* flatten source data (but don't copy) */
+	gamma_data = g_ptr_array_new ();
 	for (i = 0; i < priv->array->len; i++) {
 		item = g_ptr_array_index (priv->array, i);
-		cd_it8_add_data (priv->it8_cal, &item->color, NULL);
+		g_ptr_array_add (gamma_data, &item->color);
+	}
+
+	/* smooth the gamma data to avoid jagged peaks */
+	vcgt_smoothed = cd_color_rgb_array_interpolate (gamma_data, 256);
+	if (vcgt_smoothed == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_SESSION_ERROR,
+				     CD_SESSION_ERROR_FAILED_TO_GENERATE_PROFILE,
+				     "Gamma correction table was non-monotonic");
+		goto out;
+	}
+
+	/* write the new smoothed monotonic data */
+	for (i = 0; i < vcgt_smoothed->len; i++) {
+		rgb_tmp = g_ptr_array_index (vcgt_smoothed, i);
+		cd_it8_add_data (priv->it8_cal, rgb_tmp, NULL);
 	}
 
 	/* done */
@@ -861,6 +881,10 @@ cd_main_calib_process (CdMainPrivate *priv,
 	if (!ret)
 		goto out;
 out:
+	if (gamma_data != NULL)
+		g_ptr_array_unref (gamma_data);
+	if (vcgt_smoothed != NULL)
+		g_ptr_array_unref (vcgt_smoothed);
 	return ret;
 }
 
