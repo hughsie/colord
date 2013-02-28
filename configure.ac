@@ -135,6 +135,7 @@ AM_CONDITIONAL(HAVE_GUSB, test x$enable_gusb = xyes)
 
 PKG_CHECK_MODULES(LCMS, lcms2 >= 2.2)
 PKG_CHECK_MODULES(SQLITE, sqlite3)
+PKG_CHECK_MODULES(GSL, gsl)
 
 dnl **** Check for GUDEV ****
 AC_ARG_ENABLE(gudev, AS_HELP_STRING([--enable-gudev],[Enable GUDEV support]),

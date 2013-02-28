@@ -35,6 +35,7 @@ BuildRequires: lcms2-devel >= 2.2
 BuildRequires: libgudev1-devel
 BuildRequires: polkit-devel >= 0.103
 BuildRequires: sqlite-devel
+BuildRequires: gsl-devel
 BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
 BuildRequires: libgusb-devel

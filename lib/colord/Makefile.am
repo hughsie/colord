@@ -7,6 +7,7 @@ endif
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)						\
+	$(GSL_CFLAGS)						\
 	$(LCMS_CFLAGS)						\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/lib					\
@@ -51,6 +52,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-it8-utils.c						\
 	cd-math.c
 libcolordprivate_la_LIBADD =					\
+	$(GSL_LIBS)						\
 	$(LCMS_LIBS)						\
 	$(GLIB_LIBS)
 libcolordprivate_la_LDFLAGS =					\
@@ -72,6 +74,7 @@ libcolord_la_SOURCES =						\
 	cd-sensor.c						\
 	cd-sensor-sync.c
 libcolord_la_LIBADD =						\
+	$(GSL_LIBS)						\
 	$(GLIB_LIBS)						\
 	libcolordprivate.la
 libcolord_la_LDFLAGS =						\
@@ -99,6 +102,7 @@ cd_self_test_SOURCES =						\
 
 cd_self_test_LDADD =						\
 	$(GLIB_LIBS)						\
+	$(GSL_LIBS)						\
 	$(lib_LTLIBRARIES)
 
 cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
@@ -116,6 +120,7 @@ CLEANFILES = $(BUILT_SOURCES)
 
 if HAVE_INTROSPECTION
 introspection_sources =						\
+	$(libcolordprivate_la_SOURCES)				\
 	$(libcolord_la_SOURCES)					\
 	$(libcolordbase_include_HEADERS)
 

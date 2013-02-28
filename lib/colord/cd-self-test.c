@@ -2863,6 +2863,33 @@ cd_test_math_func (void)
 }
 
 static void
+colord_color_interpolate_func (void)
+{
+	GPtrArray *array;
+	GPtrArray *result;
+	guint i;
+	CdColorRGB *rgb;
+	gdouble test_data[] = { 0.10, 0.35, 0.40, 0.80, 1.00, -1.0 };
+
+	/* interpolate with values that intentionally trip up Akima */
+	array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
+	for (i = 0; test_data[i] >= 0.0; i++) {
+		rgb = cd_color_rgb_new ();
+		cd_color_rgb_set (rgb,
+				  test_data[i],
+				  test_data[i] + 0.1,
+				  test_data[i] + 0.2);
+		g_ptr_array_add (array, rgb);
+	}
+	result = cd_color_rgb_array_interpolate (array, 10);
+	g_assert (result != NULL);
+	g_assert_cmpint (result->len, ==, 10);
+
+	g_ptr_array_unref (result);
+	g_ptr_array_unref (array);
+}
+
+static void
 colord_buffer_func (void)
 {
 	guint8 buffer[4];
@@ -2891,6 +2918,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/color", colord_color_func);
+	g_test_add_func ("/colord/color{interpolate}", colord_color_interpolate_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);
 	g_test_add_func ("/colord/it8{raw}", colord_it8_raw_func);
 	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);
