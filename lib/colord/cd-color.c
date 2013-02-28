@@ -30,7 +30,6 @@
 
 #include <math.h>
 #include <glib-object.h>
-#include <gsl/gsl_interp.h>
 
 #include "cd-color.h"
 
@@ -673,6 +672,7 @@ cd_color_rgb_array_new (void)
 GPtrArray *
 cd_color_rgb_array_interpolate (const GPtrArray *array, guint new_length)
 {
+#if 0
 	CdColorRGB *rgb;
 	gboolean ret;
 	gdouble *data[3] = { NULL, NULL, NULL };
@@ -757,6 +757,8 @@ out:
 	for (j = 0; j < 3; j++)
 		g_free (data[j]);
 	return result;
+#endif
+	return cd_color_rgb_array_new ();
 }
 
 /**
