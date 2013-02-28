@@ -42,6 +42,7 @@
 #include <colord/cd-device.h>
 #include <colord/cd-device-sync.h>
 #include <colord/cd-enum.h>
+#include <colord/cd-interp.h>
 #include <colord/cd-it8.h>
 #include <colord/cd-it8-utils.h>
 #include <colord/cd-math.h>

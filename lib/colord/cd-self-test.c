@@ -39,6 +39,7 @@
 #include "cd-color.h"
 #include "cd-device.h"
 #include "cd-device-sync.h"
+#include "cd-interp.h"
 #include "cd-it8.h"
 #include "cd-math.h"
 #include "cd-profile.h"
@@ -2912,6 +2913,58 @@ colord_color_interpolate_func (void)
 }
 
 static void
+colord_interp_func (void)
+{
+	CdInterp *interp;
+	GArray *array_tmp;
+	gboolean ret;
+	gdouble x;
+	gdouble y;
+	GError *error = NULL;
+	guint i;
+	guint new_length = 10;
+
+	/* check name */
+	interp = cd_interp_new ();
+	g_assert_cmpint (cd_interp_get_kind (interp), ==, CD_INTERP_KIND_LAST);
+	g_assert_cmpstr (cd_interp_kind_to_string (cd_interp_get_kind (interp)), ==, "unknown");
+
+	/* insert some data */
+	cd_interp_insert (interp, 0.00, 0.10);
+	cd_interp_insert (interp, 0.25, 0.35);
+	cd_interp_insert (interp, 0.50, 0.40);
+	cd_interp_insert (interp, 0.75, 0.80);
+	cd_interp_insert (interp, 1.00, 1.00);
+
+	/* check X */
+	array_tmp = cd_interp_get_x (interp);
+	g_assert_cmpint (array_tmp->len, ==, 5);
+	g_assert_cmpfloat (*((gdouble *) array_tmp->data), <, 0.01);
+	g_assert_cmpfloat (*((gdouble *) array_tmp->data), >, -0.01);
+
+	/* check Y */
+	array_tmp = cd_interp_get_y (interp);
+	g_assert_cmpint (array_tmp->len, ==, 5);
+	g_assert_cmpfloat (*((gdouble *) array_tmp->data), <, 0.11);
+	g_assert_cmpfloat (*((gdouble *) array_tmp->data), >, 0.09);
+
+	/* check preparing */
+	ret = cd_interp_prepare (interp, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert_cmpint (cd_interp_get_size (interp), ==, 5);
+
+	for (i = 0; i < new_length; i++) {
+		x = (gdouble) i / (gdouble) (new_length - 1);
+		y = cd_interp_eval (interp, x, &error);
+		g_assert_no_error (error);
+		g_debug ("%f, %f", x, y);
+	}
+
+	g_object_unref (interp);
+}
+
+static void
 colord_buffer_func (void)
 {
 	guint8 buffer[4];
@@ -2939,6 +2992,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
+	g_test_add_func ("/colord/interp", colord_interp_func);
 	g_test_add_func ("/colord/color", colord_color_func);
 if(0)	g_test_add_func ("/colord/color{interpolate}", colord_color_interpolate_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);

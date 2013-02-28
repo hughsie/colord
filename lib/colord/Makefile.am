@@ -34,6 +34,7 @@ libcolordbase_include_HEADERS =					\
 	cd-device.h						\
 	cd-device-sync.h					\
 	cd-enum.h						\
+	cd-interp.h						\
 	cd-it8.h						\
 	cd-it8-utils.h						\
 	cd-math.h						\
@@ -47,6 +48,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-buffer.c						\
 	cd-color.c						\
 	cd-enum.c						\
+	cd-interp.c						\
 	cd-it8.c						\
 	cd-it8-utils.c						\
 	cd-math.c
