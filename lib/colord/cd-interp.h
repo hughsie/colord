@@ -85,13 +85,13 @@ typedef enum
  * The kind of interpolation.
  **/
 typedef enum {
+	CD_INTERP_KIND_AKIMA,
 	CD_INTERP_KIND_LAST
 } CdInterpKind;
 
 GType		 cd_interp_get_type		(void);
 GQuark		 cd_interp_error_quark		(void);
 
-CdInterp	*cd_interp_new			(void);
 CdInterpKind	 cd_interp_get_kind		(CdInterp	*interp);
 GArray		*cd_interp_get_x		(CdInterp	*interp);
 GArray		*cd_interp_get_y		(CdInterp	*interp);

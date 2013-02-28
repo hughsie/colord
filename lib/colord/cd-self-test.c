@@ -39,6 +39,7 @@
 #include "cd-color.h"
 #include "cd-device.h"
 #include "cd-device-sync.h"
+#include "cd-interp-akima.h"
 #include "cd-interp.h"
 #include "cd-it8.h"
 #include "cd-math.h"
@@ -2923,11 +2924,14 @@ colord_interp_func (void)
 	GError *error = NULL;
 	guint i;
 	guint new_length = 10;
+	const gdouble data[] = { 0.100000, 0.232810, 0.329704, 0.372559,
+				 0.370252, 0.470252, 0.672559, 0.829704,
+				 0.932810, 1.000000 };
 
 	/* check name */
-	interp = cd_interp_new ();
-	g_assert_cmpint (cd_interp_get_kind (interp), ==, CD_INTERP_KIND_LAST);
-	g_assert_cmpstr (cd_interp_kind_to_string (cd_interp_get_kind (interp)), ==, "unknown");
+	interp = cd_interp_akima_new ();
+	g_assert_cmpint (cd_interp_get_kind (interp), ==, CD_INTERP_KIND_AKIMA);
+	g_assert_cmpstr (cd_interp_kind_to_string (cd_interp_get_kind (interp)), ==, "akima");
 
 	/* insert some data */
 	cd_interp_insert (interp, 0.00, 0.10);
@@ -2958,7 +2962,8 @@ colord_interp_func (void)
 		x = (gdouble) i / (gdouble) (new_length - 1);
 		y = cd_interp_eval (interp, x, &error);
 		g_assert_no_error (error);
-		g_debug ("%f, %f", x, y);
+		g_assert_cmpfloat (y, <, data[i] + 0.01);
+		g_assert_cmpfloat (y, >, data[i] - 0.01);
 	}
 
 	g_object_unref (interp);

@@ -293,6 +293,8 @@ cd_interp_get_kind (CdInterp *interp)
 const gchar *
 cd_interp_kind_to_string (CdInterpKind kind)
 {
+	if (kind == CD_INTERP_KIND_AKIMA)
+		return "akima";
 	return "unknown";
 }
 
@@ -393,21 +395,4 @@ cd_interp_finalize (GObject *object)
 	g_array_unref (interp->priv->y);
 
 	G_OBJECT_CLASS (cd_interp_parent_class)->finalize (object);
-}
-
-/**
- * cd_interp_new:
- *
- * Creates a new #CdInterp object.
- *
- * Return value: a new CdInterp object.
- *
- * Since: 0.1.31
- **/
-CdInterp *
-cd_interp_new (void)
-{
-	CdInterp *interp;
-	interp = g_object_new (CD_TYPE_INTERP, NULL);
-	return CD_INTERP (interp);
 }
