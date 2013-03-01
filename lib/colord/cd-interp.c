@@ -293,6 +293,8 @@ cd_interp_get_kind (CdInterp *interp)
 const gchar *
 cd_interp_kind_to_string (CdInterpKind kind)
 {
+	if (kind == CD_INTERP_KIND_LINEAR)
+		return "linear";
 	if (kind == CD_INTERP_KIND_AKIMA)
 		return "akima";
 	return "unknown";

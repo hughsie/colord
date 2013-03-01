@@ -85,6 +85,7 @@ typedef enum
  * The kind of interpolation.
  **/
 typedef enum {
+	CD_INTERP_KIND_LINEAR,
 	CD_INTERP_KIND_AKIMA,
 	CD_INTERP_KIND_LAST
 } CdInterpKind;

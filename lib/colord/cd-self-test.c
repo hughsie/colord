@@ -40,6 +40,7 @@
 #include "cd-device.h"
 #include "cd-device-sync.h"
 #include "cd-interp-akima.h"
+#include "cd-interp-linear.h"
 #include "cd-interp.h"
 #include "cd-it8.h"
 #include "cd-math.h"
@@ -2914,7 +2915,7 @@ colord_color_interpolate_func (void)
 }
 
 static void
-colord_interp_func (void)
+colord_interp_linear_func (void)
 {
 	CdInterp *interp;
 	GArray *array_tmp;
@@ -2924,14 +2925,14 @@ colord_interp_func (void)
 	GError *error = NULL;
 	guint i;
 	guint new_length = 10;
-	const gdouble data[] = { 0.100000, 0.232810, 0.329704, 0.372559,
-				 0.370252, 0.470252, 0.672559, 0.829704,
-				 0.932810, 1.000000 };
+	const gdouble data[] = { 0.100000, 0.211111, 0.322222, 0.366667,
+				 0.388889, 0.488889, 0.666667, 0.822222,
+				 0.911111, 1.000000 };
 
 	/* check name */
-	interp = cd_interp_akima_new ();
-	g_assert_cmpint (cd_interp_get_kind (interp), ==, CD_INTERP_KIND_AKIMA);
-	g_assert_cmpstr (cd_interp_kind_to_string (cd_interp_get_kind (interp)), ==, "akima");
+	interp = cd_interp_linear_new ();
+	g_assert_cmpint (cd_interp_get_kind (interp), ==, CD_INTERP_KIND_LINEAR);
+	g_assert_cmpstr (cd_interp_kind_to_string (CD_INTERP_KIND_LINEAR), ==, "linear");
 
 	/* insert some data */
 	cd_interp_insert (interp, 0.00, 0.10);
@@ -2958,6 +2959,48 @@ colord_interp_func (void)
 	g_assert (ret);
 	g_assert_cmpint (cd_interp_get_size (interp), ==, 5);
 
+	/* check values */
+	for (i = 0; i < new_length; i++) {
+		x = (gdouble) i / (gdouble) (new_length - 1);
+		y = cd_interp_eval (interp, x, &error);
+		g_assert_no_error (error);
+		g_assert_cmpfloat (y, <, data[i] + 0.01);
+	}
+	g_object_unref (interp);
+}
+
+static void
+colord_interp_akima_func (void)
+{
+	CdInterp *interp;
+	gboolean ret;
+	gdouble x;
+	gdouble y;
+	GError *error = NULL;
+	guint i;
+	guint new_length = 10;
+	const gdouble data[] = { 0.100000, 0.232810, 0.329704, 0.372559,
+				 0.370252, 0.470252, 0.672559, 0.829704,
+				 0.932810, 1.000000 };
+
+	/* check name */
+	interp = cd_interp_akima_new ();
+	g_assert_cmpint (cd_interp_get_kind (interp), ==, CD_INTERP_KIND_AKIMA);
+	g_assert_cmpstr (cd_interp_kind_to_string (cd_interp_get_kind (interp)), ==, "akima");
+
+	/* insert some data */
+	cd_interp_insert (interp, 0.00, 0.10);
+	cd_interp_insert (interp, 0.25, 0.35);
+	cd_interp_insert (interp, 0.50, 0.40);
+	cd_interp_insert (interp, 0.75, 0.80);
+	cd_interp_insert (interp, 1.00, 1.00);
+
+	/* prepare */
+	ret = cd_interp_prepare (interp, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check values */
 	for (i = 0; i < new_length; i++) {
 		x = (gdouble) i / (gdouble) (new_length - 1);
 		y = cd_interp_eval (interp, x, &error);
@@ -2997,7 +3040,8 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
-	g_test_add_func ("/colord/interp", colord_interp_func);
+	g_test_add_func ("/colord/interp{linear}", colord_interp_linear_func);
+	g_test_add_func ("/colord/interp{akima}", colord_interp_akima_func);
 	g_test_add_func ("/colord/color", colord_color_func);
 if(0)	g_test_add_func ("/colord/color{interpolate}", colord_color_interpolate_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);

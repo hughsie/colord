@@ -35,6 +35,7 @@ libcolordbase_include_HEADERS =					\
 	cd-device-sync.h					\
 	cd-enum.h						\
 	cd-interp-akima.h					\
+	cd-interp-linear.h					\
 	cd-interp.h						\
 	cd-it8.h						\
 	cd-it8-utils.h						\
@@ -50,6 +51,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-color.c						\
 	cd-enum.c						\
 	cd-interp-akima.c					\
+	cd-interp-linear.c					\
 	cd-interp.c						\
 	cd-it8.c						\
 	cd-it8-utils.c						\

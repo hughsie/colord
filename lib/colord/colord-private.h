@@ -38,6 +38,7 @@
 #include <colord/cd-color.h>
 #include <colord/cd-enum.h>
 #include <colord/cd-interp-akima.h>
+#include <colord/cd-interp-linear.h>
 #include <colord/cd-interp.h>
 #include <colord/cd-it8.h>
 #include <colord/cd-math.h>
