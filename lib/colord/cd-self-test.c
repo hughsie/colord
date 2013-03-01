@@ -3043,7 +3043,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/interp{linear}", colord_interp_linear_func);
 	g_test_add_func ("/colord/interp{akima}", colord_interp_akima_func);
 	g_test_add_func ("/colord/color", colord_color_func);
-if(0)	g_test_add_func ("/colord/color{interpolate}", colord_color_interpolate_func);
+	g_test_add_func ("/colord/color{interpolate}", colord_color_interpolate_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);
 	g_test_add_func ("/colord/it8{raw}", colord_it8_raw_func);
 	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);

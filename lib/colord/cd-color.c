@@ -32,6 +32,9 @@
 #include <glib-object.h>
 
 #include "cd-color.h"
+#include "cd-interp.h"
+#include "cd-interp-akima.h"
+#include "cd-interp-linear.h"
 
 /**
  * cd_color_xyz_dup:
@@ -663,7 +666,7 @@ cd_color_rgb_array_new (void)
  *
  * Interpolate the RGB array to a different size.
  * This uses the Akima interpolation algorithm unless the array would become
- * non-monotonic, in which case it falls back to cubic spline and then linear.
+ * non-monotonic, in which case it falls back to linear interpolation.
  *
  * Return value: (element-type CdColorRGB) (transfer full): An array of size @new_length or %NULL
  *
@@ -672,39 +675,19 @@ cd_color_rgb_array_new (void)
 GPtrArray *
 cd_color_rgb_array_interpolate (const GPtrArray *array, guint new_length)
 {
-#if 0
 	CdColorRGB *rgb;
+	CdInterp *interp[3];
 	gboolean ret;
-	gdouble *data[3] = { NULL, NULL, NULL };
 	gdouble tmp;
-	gdouble *x = NULL;
 	GPtrArray *result = NULL;
-	gsl_interp_accel *acc = NULL;
-	gsl_interp *interp[3];
 	guint i;
 	guint j;
 	guint m;
-	const gsl_interp_type *methods[] = { gsl_interp_akima,
-					     gsl_interp_cspline,
-					     gsl_interp_linear,
-					     NULL };
 
 	/* check if monotonic */
 	ret = cd_color_rgb_array_is_monotonic (array);
 	if (!ret)
 		goto out;
-
-	/* flattern data */
-	x = g_new0 (gdouble, array->len);
-	for (j = 0; j < 3; j++)
-		data[j] = g_new0 (gdouble, array->len);
-	for (i = 0; i < array->len; i++) {
-		rgb = g_ptr_array_index (array, i);
-		x[i] = (gdouble) i / (gdouble) (array->len - 1);
-		data[0][i] = rgb->R;
-		data[1][i] = rgb->G;
-		data[2][i] = rgb->B;
-	}
 
 	/* create new array */
 	result = cd_color_rgb_array_new ();
@@ -714,33 +697,39 @@ cd_color_rgb_array_interpolate (const GPtrArray *array, guint new_length)
 	}
 
 	/* try each interpolation method in turn */
-	acc = gsl_interp_accel_alloc();
-	for (m = 0; methods[m] != NULL; m++) {
-
-		/* is this method applicable */
-		if (gsl_interp_type_min_size (methods[m]) > array->len)
-			continue;
+	for (m = 0; m < 2; m++) {
 
 		/* setup interpolation */
 		for (j = 0; j < 3; j++) {
-			interp[j] = gsl_interp_alloc (methods[m], array->len);
-			gsl_interp_init (interp[j], x, data[j], array->len);
+			if (m == 0)
+				interp[j] = cd_interp_akima_new ();
+			else if (m == 1)
+				interp[j] = cd_interp_linear_new ();
+		}
+
+		/* add data */
+		for (i = 0; i < array->len; i++) {
+			rgb = g_ptr_array_index (array, i);
+			tmp = (gdouble) i / (gdouble) (array->len - 1);
+			cd_interp_insert (interp[0], tmp, rgb->R);
+			cd_interp_insert (interp[1], tmp, rgb->G);
+			cd_interp_insert (interp[2], tmp, rgb->B);
 		}
 
 		/* do interpolation of array */
-		g_debug ("Using %s interpolation to smooth %i entries",
-			 gsl_interp_name (interp[0]), new_length);
+		for (j = 0; j < 3; j++)
+			cd_interp_prepare (interp[j], NULL);
 		for (i = 0; i < new_length; i++) {
 			tmp = (gdouble) i / (gdouble) (new_length - 1);
 			rgb = g_ptr_array_index (result, i);
-			rgb->R = gsl_interp_eval (interp[0], x, data[0], tmp, acc);
-			rgb->G = gsl_interp_eval (interp[1], x, data[1], tmp, acc);
-			rgb->B = gsl_interp_eval (interp[2], x, data[2], tmp, acc);
+			rgb->R = cd_interp_eval (interp[0], tmp, NULL);
+			rgb->G = cd_interp_eval (interp[1], tmp, NULL);
+			rgb->B = cd_interp_eval (interp[2], tmp, NULL);
 		}
 
 		/* tear down the interpolation */
 		for (j = 0; j < 3; j++)
-			gsl_interp_free (interp[j]);
+			g_object_unref (interp[j]);
 
 		/* check if monotonic */
 		ret = cd_color_rgb_array_is_monotonic (result);
@@ -748,17 +737,9 @@ cd_color_rgb_array_interpolate (const GPtrArray *array, guint new_length)
 			break;
 
 		/* try harder */
-		g_debug ("Interpolation made the curve non-monotonic...");
 	}
 out:
-	if (acc != NULL)
-		gsl_interp_accel_free (acc);
-	g_free (x);
-	for (j = 0; j < 3; j++)
-		g_free (data[j]);
 	return result;
-#endif
-	return cd_color_rgb_array_new ();
 }
 
 /**
