@@ -20,10 +20,10 @@
  */
 
 /**
- * SECTION:cd-interp_linear
- * @short_description: InterpLinearolate 2D data using a variety of methods
+ * SECTION:cd-interp-linear
+ * @short_description: Interpolate data using a linear method
  *
- * This object is a superclass of different interp_linearolation methods.
+ * This object implements linear interpolation of 2D ordered data.
  */
 
 #include "config.h"

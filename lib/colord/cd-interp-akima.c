@@ -20,10 +20,10 @@
  */
 
 /**
- * SECTION:cd-interp_akima
- * @short_description: InterpAkimaolate 2D data using a variety of methods
+ * SECTION:cd-interp-akima
+ * @short_description: Interpolate data using the Akima method
  *
- * This object is a superclass of different interp_akimaolation methods.
+ * This object implements Akima interpolation of 2D ordered data.
  */
 
 #include "config.h"

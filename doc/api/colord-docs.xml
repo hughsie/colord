@@ -71,35 +71,38 @@
     <xi:include href="dbus/org.freedesktop.ColorManager.Sensor.ref.xml"><xi:fallback /></xi:include>
   </reference>
 
-  <reference id="libcolord">
+  <reference id="libcolordprivate">
     <title>libcolord GObjects</title>
     <partintro>
       <para>
-        This part documents GObjects used in libcolord.
+        This part documents GObjects used in libcolordprivate.
       </para>
     </partintro>
-    <xi:include href="xml/cd-client.xml"/>
-    <xi:include href="xml/cd-device.xml"/>
-    <xi:include href="xml/cd-profile.xml"/>
-    <xi:include href="xml/cd-sensor.xml"/>
+    <xi:include href="xml/cd-color.xml"/>
+    <xi:include href="xml/cd-interp-akima.xml"/>
+    <xi:include href="xml/cd-interp-linear.xml"/>
+    <xi:include href="xml/cd-interp.xml"/>
+    <xi:include href="xml/cd-it8-utils.xml"/>
     <xi:include href="xml/cd-it8.xml"/>
+    <xi:include href="xml/cd-math.xml"/>
+    <xi:include href="xml/cd-version.xml"/>
   </reference>
 
-  <reference id="libcolord-glib-helpers">
-    <title>libcolord-glib helpers</title>
+  <reference id="libcolord">
+    <title>libcolord</title>
     <partintro>
       <para>
-        This part documents helper funtions in libcolord-glib.
+        This part documents helper funtions in libcolord.
       </para>
     </partintro>
     <xi:include href="xml/cd-client-sync.xml"/>
+    <xi:include href="xml/cd-client.xml"/>
     <xi:include href="xml/cd-device-sync.xml"/>
+    <xi:include href="xml/cd-device.xml"/>
     <xi:include href="xml/cd-profile-sync.xml"/>
+    <xi:include href="xml/cd-profile.xml"/>
     <xi:include href="xml/cd-sensor-sync.xml"/>
-    <xi:include href="xml/cd-it8-utils.xml"/>
-    <xi:include href="xml/cd-version.xml"/>
-    <xi:include href="xml/cd-math.xml"/>
-    <xi:include href="xml/cd-color.xml"/>
+    <xi:include href="xml/cd-sensor.xml"/>
   </reference>
 
   <index>
