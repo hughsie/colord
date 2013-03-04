@@ -396,7 +396,8 @@ echo "
         File descriptor fallback:  ${enable_fd_fallback}
         External volume searching: ${enable_volume_search}
         SANE support:              ${has_sane}
-        GUDEV support:             ${enable_gudev}
+        GUdev support:             ${enable_gudev}
+        GUsb support:              ${enable_gusb}
         Extra print profiles:      ${enable_print_profiles}
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
