@@ -2,7 +2,7 @@ SUBDIRS =						\
 	colord
 
 if HAVE_GUSB
-SUBDIRS +=
+SUBDIRS +=						\
 	colorhug					\
 	dtp94						\
 	huey						\
