@@ -21,6 +21,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #ifdef USE_POLKIT
 #include <polkit/polkit.h>
 #endif
@@ -253,4 +255,61 @@ out:
 	if (file != NULL)
 		g_object_unref (file);
 	return ret;
+}
+
+/**
+ * cd_main_vendor_display_name:
+ **/
+gchar *
+cd_main_vendor_display_name (const gchar *vendor)
+{
+	GString *display_name;
+	guint i;
+	const gchar *suffixes[] =
+		{ "Co.", "Co", "Inc.", "Inc", "Ltd.", "Ltd",
+		  "Corporation", "Incorporated", "Limited",
+		  NULL };
+	struct {
+		const gchar *old;
+		const gchar *new;
+	} vendor_names[] = {
+		{ "Acer Technologies", "Acer" },
+		{ "Apple Computer Inc", "Apple" },
+		{ "BTC Korea Co., Ltd", "BTC" },
+		{ "Eizo Nanao Corporation", "Eizo" },
+		{ "Fujitsu Siemens Computers GmbH", "Fujitsu Siemens" },
+		{ "Goldstar Company Ltd", "Goldstar" },
+		{ "Hewlett-Packard", "Hewlett Packard" },
+		{ "HP", "Hewlett Packard" },
+		{ "HWP", "Hewlett Packard" },
+		{ "Lenovo Group Limited", "Lenovo" },
+		{ "LENOVO", "Lenovo" },
+		{ "MARANTZ JAPAN, INC.", "Marantz" },
+		{ "NIKON", "Nikon" },
+		{ "Philips Consumer Electronics Company", "Philips" },
+		{ "SAM", "Samsung" },
+		{ "Samsung Electric Company", "Samsung" },
+		{ "samsung", "Samsung" },
+		{ "Toshiba America Info Systems Inc", "Toshiba" },
+		{ NULL, NULL }
+	};
+
+	/* correct some company names */
+	for (i = 0; vendor_names[i].old != NULL; i++) {
+		if (g_str_has_prefix (vendor, vendor_names[i].old)) {
+			display_name = g_string_new (vendor_names[i].new);
+			goto out;
+		}
+	}
+
+	/* get rid of suffixes */
+	display_name = g_string_new (vendor);
+	for (i = 0; suffixes[i] != NULL; i++) {
+		if (g_str_has_suffix (display_name->str, suffixes[i]))
+			g_string_truncate (display_name,
+					   display_name->len - strlen (suffixes[i]));
+	}
+	g_strchomp (display_name->str);
+out:
+	return g_string_free (display_name, FALSE);
 }

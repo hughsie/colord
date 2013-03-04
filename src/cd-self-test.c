@@ -38,6 +38,27 @@
 #include "cd-profile.h"
 
 static void
+colord_common_func (void)
+{
+	gchar *tmp;
+
+	/* exact match in quirk db */
+	tmp = cd_main_vendor_display_name ("NIKON");
+	g_assert_cmpstr (tmp, ==, "Nikon");
+	g_free (tmp);
+
+	/* suffix that needs removing */
+	tmp = cd_main_vendor_display_name ("Hughski Ltd.");
+	g_assert_cmpstr (tmp, ==, "Hughski");
+	g_free (tmp);
+
+	/* suffix that needs removing */
+	tmp = cd_main_vendor_display_name ("Acme Inc");
+	g_assert_cmpstr (tmp, ==, "Acme");
+	g_free (tmp);
+}
+
+static void
 colord_profile_func (void)
 {
 	CdProfile *profile;
@@ -461,6 +482,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/common", colord_common_func);
 	g_test_add_func ("/colord/mapping-db{alter}", cd_mapping_db_alter_func);
 	g_test_add_func ("/colord/mapping-db{convert}", cd_mapping_db_convert_func);
 	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);

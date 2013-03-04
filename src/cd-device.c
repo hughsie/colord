@@ -878,42 +878,14 @@ cd_device_string_remove_suffix (gchar *vendor, const gchar *suffix)
 	g_strchomp (vendor);
 }
 
-struct {
-	const gchar *old;
-	const gchar *new;
-} vendor_names[] = {
-	{ "HP", "Hewlett Packard" },
-	{ "Hewlett-Packard", "Hewlett Packard" },
-	{ "LENOVO", "Lenovo" },
-	{ "NIKON", "Nikon" },
-	{ "samsung", "Samsung" },
-	{ NULL, NULL }
-};
-
 /**
  * cd_device_set_vendor:
  **/
 static void
 cd_device_set_vendor (CdDevice *device, const gchar *vendor)
 {
-	CdDevicePrivate *priv = device->priv;
-	guint i;
-
-	g_free (priv->vendor);
-
-	/* correct some company names */
-	for (i = 0; vendor_names[i].old != NULL; i++) {
-		if (g_str_has_prefix (vendor, vendor_names[i].old)) {
-			priv->vendor = g_strdup (vendor_names[i].new);
-			return;
-		}
-	}
-
-	priv->vendor = g_strdup (vendor);
-
-	/* get rid of crap suffixes */
-	cd_device_string_remove_suffix (priv->vendor, "Ltd.");
-	cd_device_string_remove_suffix (priv->vendor, "Co.");
+	g_free (device->priv->vendor);
+	device->priv->vendor = cd_main_vendor_display_name (vendor);
 }
 
 /**
