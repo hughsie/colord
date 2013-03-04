@@ -1016,11 +1016,25 @@ cd_profile_check_primaries (cmsHPROFILE profile)
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIEXYZ *tmp;
 
+	/* The values used to check are based on the following ultra-wide
+	 * gamut profile XYZ values:
+	 *
+	 * CIERGB:
+	 * Red:		0.486893 0.174667 -0.001251
+	 * Green:	0.306320 0.824768 0.016998
+	 * Blue:	0.170990 0.000565 0.809158
+
+	 * ProPhoto RGB:
+	 * Red:		0.797546 0.288025 0.000000
+	 * Green:	0.135315 0.711899 -0.000015
+	 * Blue:	0.031342 0.000076 0.824921
+	 */
+
 	/* check red */
 	tmp = cmsReadTag (profile, cmsSigRedColorantTag);
 	if (tmp == NULL)
 		goto out;
-	if (tmp->X < 0.0f || tmp->Y < 0.0f || tmp->Z < 0.0f) {
+	if (tmp->X > 0.85f || tmp->Y < 0.15f || tmp->Z < -0.01) {
 		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
 		goto out;
 	}
@@ -1029,7 +1043,7 @@ cd_profile_check_primaries (cmsHPROFILE profile)
 	tmp = cmsReadTag (profile, cmsSigGreenColorantTag);
 	if (tmp == NULL)
 		goto out;
-	if (tmp->X < 0.0f || tmp->Y < 0.0f || tmp->Z < 0.0f) {
+	if (tmp->X < 0.10f || tmp->Y > 0.85f || tmp->Z < -0.01f) {
 		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
 		goto out;
 	}
@@ -1038,7 +1052,7 @@ cd_profile_check_primaries (cmsHPROFILE profile)
 	tmp = cmsReadTag (profile, cmsSigBlueColorantTag);
 	if (tmp == NULL)
 		goto out;
-	if (tmp->X < 0.0f || tmp->Y < 0.0f || tmp->Z < 0.0f) {
+	if (tmp->X < 0.10f || tmp->Y < 0.01f || tmp->Z > 0.87f) {
 		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
 		goto out;
 	}
