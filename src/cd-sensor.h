@@ -26,11 +26,14 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-#include <gusb.h>
 #include <colord-private.h>
 
 #ifdef HAVE_GUDEV
 #include <gudev/gudev.h>
+#endif
+
+#ifdef HAVE_GUSB
+#include <gusb.h>
 #endif
 
 #include "cd-common.h"
@@ -86,12 +89,14 @@ gboolean	 cd_sensor_set_from_device	(CdSensor		*sensor,
 						 GUdevDevice		*device,
 						 GError			**error);
 GUdevDevice	*cd_sensor_get_device		(CdSensor		*sensor);
+void		 cd_sensor_set_index		(CdSensor		*sensor,
+						 guint			 idx);
+#endif
+#ifdef HAVE_GUSB
 GUsbDevice	*cd_sensor_open_usb_device	(CdSensor		*sensor,
 						 gint			 config,
 						 gint			 interface,
 						 GError			**error);
-void		 cd_sensor_set_index		(CdSensor		*sensor,
-						 guint			 idx);
 #endif
 void		 cd_sensor_button_pressed	(CdSensor		*sensor);
 gboolean	 cd_sensor_dump			(CdSensor		*sensor,

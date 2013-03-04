@@ -103,8 +103,10 @@ struct _CdSensorPrivate
 	CdSensorIface			*desc;
 	GHashTable			*options;
 	GHashTable			*metadata;
+#ifdef HAVE_GUSB
 	GUsbContext			*usb_ctx;
 	GUsbDeviceList			*device_list;
+#endif
 };
 
 enum {
@@ -1158,6 +1160,7 @@ cd_sensor_get_device_path (CdSensor *sensor)
 #endif
 }
 
+#ifdef HAVE_GUSB
 /**
  * cd_sensor_open_usb_device:
  **/
@@ -1207,6 +1210,7 @@ out:
 		g_object_unref (device);
 	return device_success;
 }
+#endif
 
 /**
  * cd_sensor_add_cap:
@@ -1583,8 +1587,10 @@ cd_sensor_init (CdSensor *sensor)
 	sensor->priv = CD_SENSOR_GET_PRIVATE (sensor);
 	sensor->priv->state = CD_SENSOR_STATE_IDLE;
 	sensor->priv->mode = CD_SENSOR_CAP_UNKNOWN;
+#ifdef HAVE_GUSB
 	sensor->priv->usb_ctx = g_usb_context_new (NULL);
 	sensor->priv->device_list = g_usb_device_list_new (sensor->priv->usb_ctx);
+#endif
 	sensor->priv->options = g_hash_table_new_full (g_str_hash,
 						       g_str_equal,
 						       (GDestroyNotify) g_free,
@@ -1620,8 +1626,10 @@ cd_sensor_finalize (GObject *object)
 	g_free (priv->object_path);
 	g_hash_table_unref (priv->options);
 	g_hash_table_unref (priv->metadata);
+#ifdef HAVE_GUSB
 	g_object_unref (priv->usb_ctx);
 	g_object_unref (priv->device_list);
+#endif
 #ifdef HAVE_GUDEV
 	if (priv->device != NULL)
 		g_object_unref (priv->device);
