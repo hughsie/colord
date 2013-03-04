@@ -34,6 +34,10 @@
 
 #define __COLORD_H_INSIDE__
 
+#ifdef CD_DISABLE_DEPRECATED
+ #define CD_USE_ALLOC_GSLICE
+#endif
+
 #include <colord/cd-buffer.h>
 #include <colord/cd-client.h>
 #include <colord/cd-client-sync.h>
