@@ -12,7 +12,8 @@ AM_CPPFLAGS = \
 COLORD_LIBS =							\
 	$(top_builddir)/lib/colord/libcolordprivate.la
 
-lib_LTLIBRARIES =						\
+privlibdir=$(libdir)/colord-sensors
+privlib_LTLIBRARIES =						\
 	libhuey-private.la
 
 libhuey_private_la_SOURCES =					\
@@ -32,6 +33,7 @@ libhuey_private_la_LIBADD =					\
 libhuey_private_la_LDFLAGS =					\
 	-export-dynamic						\
 	-no-undefined						\
+	-avoid-version                                          \
 	-export-symbols-regex '^huey_.*'
 
 libhuey_private_la_CFLAGS =					\

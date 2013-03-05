@@ -12,7 +12,8 @@ AM_CPPFLAGS = \
 COLORD_LIBS =							\
 	$(top_builddir)/lib/colord/libcolordprivate.la
 
-lib_LTLIBRARIES =						\
+privlibdir=$(libdir)/colord-sensors
+privlib_LTLIBRARIES =						\
 	libdtp94-private.la
 
 libdtp94_private_la_SOURCES =					\
@@ -30,6 +31,7 @@ libdtp94_private_la_LIBADD =					\
 libdtp94_private_la_LDFLAGS =					\
 	-export-dynamic						\
 	-no-undefined						\
+	-avoid-version                                          \
 	-export-symbols-regex '^dtp94_.*'
 
 libdtp94_private_la_CFLAGS =					\
