@@ -413,3 +413,10 @@ if test x$enable_polkit = xno; then
 	echo "** YOU ARE NOT USING A SECURE DAEMON. ALL USERS CAN DO ANYTHING! **"
 	echo "*******************************************************************"
 fi
+
+# warn that using the default root user isn't always a good idea
+if test x$daemon_user = xroot; then
+	echo "*******************************************************************"
+	echo "** RUNNING THIS AS root ISN'T A GOOD IDEA SEE --with-daemon-user **"
+	echo "*******************************************************************"
+fi
