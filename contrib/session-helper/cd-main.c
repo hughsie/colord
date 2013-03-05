@@ -1211,7 +1211,7 @@ cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret;
 	gchar *command;
-	gchar *stderr = NULL;
+	gchar *stderr_data = NULL;
 	gint exit_status = 0;
 	gchar *cmd_debug = NULL;
 	GPtrArray *array = NULL;
@@ -1247,7 +1247,7 @@ cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 			    0,
 			    NULL, NULL,
 			    NULL,
-			    &stderr,
+			    &stderr_data,
 			    &exit_status,
 			    error);
 	if (!ret)
@@ -1257,14 +1257,14 @@ cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 		g_set_error (error,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_GENERATE_PROFILE,
-			     "colprof failed: %s", stderr);
+			     "colprof failed: %s", stderr_data);
 		goto out;
 	}
 out:
 	if (array != NULL)
 		g_ptr_array_unref (array);
 	g_free (command);
-	g_free (stderr);
+	g_free (stderr_data);
 	g_free (cmd_debug);
 	return ret;
 }
