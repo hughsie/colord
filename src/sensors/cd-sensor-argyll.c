@@ -342,6 +342,8 @@ cd_sensor_to_argyll_name (CdSensor *sensor)
 		return "GretagMacbeth i1 Pro";
 	case CD_SENSOR_KIND_COLOR_MUNKI_PHOTO:
 		return "X-Rite ColorMunki";
+	case CD_SENSOR_KIND_COLOR_MUNKI_SMILE:
+		return "ColorMunki Smile";
 	case CD_SENSOR_KIND_COLORIMTRE_HCFR:
 		return "Colorimtre HCFR";
 	case CD_SENSOR_KIND_SPYDER2:
