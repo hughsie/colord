@@ -54,6 +54,9 @@ ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2007", ENV{COLORD_SENSOR_KIND}="colo
 # Colorimtre HCFR
 ATTRS{idVendor}=="04db", ATTRS{idProduct}=="005b", ENV{COLORD_SENSOR_KIND}="colorimtre-hcfr", ENV{COLORD_SENSOR_CAPS}="projector"
 
+# Spyder 1
+ATTRS{idVendor}=="085c", ATTRS{idProduct}=="0100", ENV{COLORD_SENSOR_KIND}="spyder", ENV{COLORD_SENSOR_CAPS}="lcd crt"
+
 # Spyder 2
 ATTRS{idVendor}=="085c", ATTRS{idProduct}=="0200", ENV{COLORD_SENSOR_KIND}="spyder2", ENV{COLORD_SENSOR_CAPS}="lcd crt"
 
