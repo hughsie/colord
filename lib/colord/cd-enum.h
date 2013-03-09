@@ -229,6 +229,7 @@ typedef enum {
  * used, but may be of limited use.
  **/
 typedef enum {
+	/* FIXME: next API break, add CD_PROFILE_WARNING_UNKNOWN */
 	CD_PROFILE_WARNING_NONE,			/* Since: 0.1.25 */
 	CD_PROFILE_WARNING_DESCRIPTION_MISSING,		/* Since: 0.1.25 */
 	CD_PROFILE_WARNING_COPYRIGHT_MISSING,		/* Since: 0.1.25 */
@@ -253,6 +254,7 @@ typedef enum {
  * The quality of the profile produced through calibration.
  **/
 typedef enum {
+	/* FIXME: next API break, add CD_PROFILE_QUALITY_UNKNOWN */
 	CD_PROFILE_QUALITY_LOW,
 	CD_PROFILE_QUALITY_MEDIUM,
 	CD_PROFILE_QUALITY_HIGH,

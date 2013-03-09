@@ -1246,53 +1246,174 @@ out:
 static void
 colord_enum_func (void)
 {
-	CdClientError client_error;
-	CdDeviceError device_error;
-	CdProfileError profile_error;
-	CdProfileWarning warning;
-	CdSensorError sensor_error;
 	const gchar *tmp;
+	guint enum_tmp;
 	guint i;
 
 	/* CdSensorError */
 	for (i = 0; i < CD_SENSOR_ERROR_LAST; i++) {
 		tmp = cd_sensor_error_to_string (i);
 		g_assert_cmpstr (tmp, !=, NULL);
-		sensor_error = cd_sensor_error_from_string (tmp);
-		g_assert_cmpint (sensor_error, !=, CD_SENSOR_ERROR_LAST);
+		enum_tmp = cd_sensor_error_from_string (tmp);
+		g_assert_cmpint (enum_tmp, !=, CD_SENSOR_ERROR_LAST);
 	}
 
 	/* CdProfileError */
 	for (i = 0; i < CD_PROFILE_ERROR_LAST; i++) {
 		tmp = cd_profile_error_to_string (i);
 		g_assert_cmpstr (tmp, !=, NULL);
-		profile_error = cd_profile_error_from_string (tmp);
-		g_assert_cmpint (profile_error, !=, CD_PROFILE_ERROR_LAST);
+		enum_tmp = cd_profile_error_from_string (tmp);
+		g_assert_cmpint (enum_tmp, !=, CD_PROFILE_ERROR_LAST);
 	}
 
 	/* CdDeviceError */
 	for (i = 0; i < CD_DEVICE_ERROR_LAST; i++) {
 		tmp = cd_device_error_to_string (i);
 		g_assert_cmpstr (tmp, !=, NULL);
-		device_error = cd_device_error_from_string (tmp);
-		g_assert_cmpint (device_error, !=, CD_DEVICE_ERROR_LAST);
+		enum_tmp = cd_device_error_from_string (tmp);
+		g_assert_cmpint (enum_tmp, !=, CD_DEVICE_ERROR_LAST);
 	}
 
 	/* CdClientError */
 	for (i = 0; i < CD_CLIENT_ERROR_LAST; i++) {
 		tmp = cd_client_error_to_string (i);
 		g_assert_cmpstr (tmp, !=, NULL);
-		client_error = cd_client_error_from_string (tmp);
-		g_assert_cmpint (client_error, !=, CD_CLIENT_ERROR_LAST);
+		enum_tmp = cd_client_error_from_string (tmp);
+		g_assert_cmpint (enum_tmp, !=, CD_CLIENT_ERROR_LAST);
 	}
 
-	/* CdProfileWarning */
-	for (i = 0; i < CD_PROFILE_WARNING_LAST; i++) {
-		tmp = cd_profile_warning_to_string (i);
-		g_assert_cmpstr (tmp, !=, "unknown");
-		warning = cd_profile_warning_from_string (tmp);
-		g_assert_cmpint (warning, !=, CD_PROFILE_WARNING_LAST);
+	/* CdSensorKind */
+	for (i = CD_SENSOR_KIND_UNKNOWN + 1; i < CD_SENSOR_KIND_LAST; i++) {
+		tmp = cd_sensor_kind_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_sensor_kind_from_string (tmp);
+		if (enum_tmp == CD_SENSOR_KIND_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
 	}
+
+	/* CdDeviceKind */
+	for (i = CD_DEVICE_KIND_UNKNOWN + 1; i < CD_DEVICE_KIND_LAST; i++) {
+		tmp = cd_device_kind_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_device_kind_from_string (tmp);
+		if (enum_tmp == CD_DEVICE_KIND_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdProfileKind */
+	for (i = CD_PROFILE_KIND_UNKNOWN + 1; i < CD_PROFILE_KIND_LAST; i++) {
+		tmp = cd_profile_kind_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_profile_kind_from_string (tmp);
+		if (enum_tmp == CD_PROFILE_KIND_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdRenderingIntent */
+	for (i = CD_RENDERING_INTENT_UNKNOWN + 1; i < CD_RENDERING_INTENT_LAST; i++) {
+		tmp = cd_rendering_intent_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_rendering_intent_from_string (tmp);
+		if (enum_tmp == CD_RENDERING_INTENT_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdColorSpace */
+	for (i = CD_COLORSPACE_UNKNOWN + 1; i < CD_COLORSPACE_LAST; i++) {
+		tmp = cd_colorspace_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_colorspace_from_string (tmp);
+		if (enum_tmp == CD_COLORSPACE_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdDeviceRelation */
+	for (i = CD_DEVICE_RELATION_UNKNOWN + 1; i < CD_DEVICE_RELATION_LAST; i++) {
+		tmp = cd_device_relation_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_device_relation_from_string (tmp);
+		if (enum_tmp == CD_DEVICE_RELATION_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdObjectScope */
+	for (i = CD_OBJECT_SCOPE_UNKNOWN + 1; i < CD_OBJECT_SCOPE_LAST; i++) {
+		tmp = cd_object_scope_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_object_scope_from_string (tmp);
+		if (enum_tmp == CD_OBJECT_SCOPE_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdSensorState */
+	for (i = CD_SENSOR_STATE_UNKNOWN + 1; i < CD_SENSOR_STATE_LAST; i++) {
+		tmp = cd_sensor_state_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_sensor_state_from_string (tmp);
+		if (enum_tmp == CD_SENSOR_STATE_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdSensorCap */
+	for (i = CD_SENSOR_CAP_UNKNOWN + 1; i < CD_SENSOR_CAP_LAST; i++) {
+		tmp = cd_sensor_cap_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_sensor_cap_from_string (tmp);
+		if (enum_tmp == CD_SENSOR_CAP_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdSensorCap */
+	for (i = CD_STANDARD_SPACE_UNKNOWN + 1; i < CD_STANDARD_SPACE_LAST; i++) {
+		tmp = cd_standard_space_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_standard_space_from_string (tmp);
+		if (enum_tmp == CD_STANDARD_SPACE_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+#if 0
+	/* CdProfileWarning */
+	for (i = CD_PROFILE_WARNING_UNKNOWN + 1; i < CD_PROFILE_WARNING_LAST; i++) {
+		tmp = cd_standard_space_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_standard_space_from_string (tmp);
+		if (enum_tmp == CD_PROFILE_WARNING_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+
+	/* CdProfileQuality */
+	for (i = CD_PROFILE_QUALITY_UNKNOWN + 1; i < CD_PROFILE_QUALITY_LAST; i++) {
+		tmp = cd_profile_quality_to_string (i);
+		if (g_strcmp0 (tmp, "unknown") == 0)
+			g_warning ("no enum for %i", i);
+		enum_tmp = cd_profile_quality_from_string (tmp);
+		if (enum_tmp == CD_PROFILE_QUALITY_UNKNOWN)
+			g_warning ("no enum for %s", tmp);
+		g_assert_cmpint (enum_tmp, ==, i);
+	}
+#endif
 }
 
 static void

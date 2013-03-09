@@ -36,6 +36,222 @@
 #include "cd-enum.h"
 
 /**
+ * CdEnumMatch:
+ *
+ * Matching an enumerated type to a string
+ **/
+typedef struct {
+	guint		 value;
+	const gchar	*string;
+} CdEnumMatch;
+
+static const CdEnumMatch enum_sensor_kind[] = {
+	{CD_SENSOR_KIND_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_SENSOR_KIND_COLORHUG,			"colorhug"},
+	{CD_SENSOR_KIND_COLORHUG_SPECTRO,		"colorhug-spectro"},
+	{CD_SENSOR_KIND_COLORIMTRE_HCFR,		"colorimtre-hcfr"},
+	{CD_SENSOR_KIND_COLOR_MUNKI_PHOTO,		"color-munki-photo"},
+	{CD_SENSOR_KIND_COLOR_MUNKI_SMILE,		"color-munki-smile"},
+	{CD_SENSOR_KIND_DTP20,				"dtp20"},
+	{CD_SENSOR_KIND_DTP22,				"dtp22"},
+	{CD_SENSOR_KIND_DTP41,				"dtp41"},
+	{CD_SENSOR_KIND_DTP51,				"dtp51"},
+	{CD_SENSOR_KIND_DTP92,				"dtp92"},
+	{CD_SENSOR_KIND_DTP94,				"dtp94"},
+	{CD_SENSOR_KIND_DUMMY,				"dummy"},
+	{CD_SENSOR_KIND_HUEY,				"huey"},
+	{CD_SENSOR_KIND_I1_DISPLAY1,			"i1-display1"},
+	{CD_SENSOR_KIND_I1_DISPLAY2,			"i1-display2"},
+	{CD_SENSOR_KIND_I1_DISPLAY3,			"i1-display3"},
+	{CD_SENSOR_KIND_I1_MONITOR,			"i1-monitor"},
+	{CD_SENSOR_KIND_I1_PRO,				"i1-pro"},
+	{CD_SENSOR_KIND_SPECTRO_SCAN,			"spectro-scan"},
+	{CD_SENSOR_KIND_SPYDER2,			"spyder2"},
+	{CD_SENSOR_KIND_SPYDER3,			"spyder3"},
+	{CD_SENSOR_KIND_SPYDER4,			"spyder4"},
+	{CD_SENSOR_KIND_SPYDER,				"spyder"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_device_kind[] = {
+	{CD_DEVICE_KIND_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_DEVICE_KIND_CAMERA,				"camera"},
+	{CD_DEVICE_KIND_DISPLAY,			"display"},
+	{CD_DEVICE_KIND_PRINTER,			"printer"},
+	{CD_DEVICE_KIND_SCANNER,			"scanner"},
+	{CD_DEVICE_KIND_WEBCAM,				"webcam"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_profile_kind[] = {
+	{CD_PROFILE_KIND_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_PROFILE_KIND_ABSTRACT,			"abstract"},
+	{CD_PROFILE_KIND_COLORSPACE_CONVERSION,		"colorspace-conversion"},
+	{CD_PROFILE_KIND_DEVICELINK,			"devicelink"},
+	{CD_PROFILE_KIND_DISPLAY_DEVICE,		"display-device"},
+	{CD_PROFILE_KIND_INPUT_DEVICE,			"input-device"},
+	{CD_PROFILE_KIND_NAMED_COLOR,			"named-color"},
+	{CD_PROFILE_KIND_OUTPUT_DEVICE,			"output-device"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_rendering_intent[] = {
+	{CD_RENDERING_INTENT_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC,	"absolute-colorimetric"},
+	{CD_RENDERING_INTENT_PERCEPTUAL,		"perceptual"},
+	{CD_RENDERING_INTENT_RELATIVE_COLORIMETRIC,	"relative-colorimetric"},
+	{CD_RENDERING_INTENT_SATURATION,		"saturation"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_colorspace[] = {
+	{CD_COLORSPACE_UNKNOWN,				"unknown"},	/* fall though value */
+	{CD_COLORSPACE_CMY,				"cmy"},
+	{CD_COLORSPACE_CMYK,				"cmyk"},
+	{CD_COLORSPACE_GRAY,				"gray"},
+	{CD_COLORSPACE_HSV,				"hsv"},
+	{CD_COLORSPACE_LAB,				"lab"},
+	{CD_COLORSPACE_LUV,				"luv"},
+	{CD_COLORSPACE_RGB,				"rgb"},
+	{CD_COLORSPACE_XYZ,				"xyz"},
+	{CD_COLORSPACE_YCBCR,				"ycbcr"},
+	{CD_COLORSPACE_YXY,				"yxy"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_device_relation[] = {
+	{CD_DEVICE_RELATION_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_DEVICE_RELATION_HARD,			"hard"},
+	{CD_DEVICE_RELATION_SOFT,			"soft"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_device_mode[] = {
+	{CD_DEVICE_MODE_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_DEVICE_MODE_PHYSICAL,			"physical"},
+	{CD_DEVICE_MODE_VIRTUAL,			"virtual"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_object_scope[] = {
+	{CD_OBJECT_SCOPE_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_OBJECT_SCOPE_DISK,				"disk"},
+	{CD_OBJECT_SCOPE_NORMAL,			"normal"},
+	{CD_OBJECT_SCOPE_TEMP,				"temp"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_sensor_state[] = {
+	{CD_SENSOR_STATE_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_SENSOR_STATE_BUSY,				"busy"},
+	{CD_SENSOR_STATE_IDLE,				"idle"},
+	{CD_SENSOR_STATE_MEASURING,			"measuring"},
+	{CD_SENSOR_STATE_STARTING,			"starting"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_sensor_cap[] = {
+	{CD_SENSOR_CAP_UNKNOWN,				"unknown"},	/* fall though value */
+	{CD_SENSOR_CAP_AMBIENT,				"ambient"},
+	{CD_SENSOR_CAP_CALIBRATION,			"calibration"},
+	{CD_SENSOR_CAP_CRT,				"crt"},
+	{CD_SENSOR_CAP_LCD,				"lcd"},
+	{CD_SENSOR_CAP_LED,				"led"},
+	{CD_SENSOR_CAP_PLASMA,				"plasma"},
+	{CD_SENSOR_CAP_PRINTER,				"printer"},
+	{CD_SENSOR_CAP_PROJECTOR,			"projector"},
+	{CD_SENSOR_CAP_SPOT,				"spot"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_standard_space[] = {
+	{CD_STANDARD_SPACE_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_STANDARD_SPACE_ADOBE_RGB,			"adobe-rgb"},
+	{CD_STANDARD_SPACE_PROPHOTO_RGB,		"prophoto-rgb"},
+	{CD_STANDARD_SPACE_SRGB,			"srgb"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_profile_warning[] = {
+//	{CD_PROFILE_WARNING_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_PROFILE_WARNING_COPYRIGHT_MISSING,		"copyright-missing"},
+	{CD_PROFILE_WARNING_DESCRIPTION_MISSING,	"description-missing"},
+	{CD_PROFILE_WARNING_GRAY_AXIS_INVALID,		"gray-axis-invalid"},
+	{CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC,	"gray-axis-non-monotonic"},
+	{CD_PROFILE_WARNING_NONE,			"none"},
+	{CD_PROFILE_WARNING_PRIMARIES_INVALID,		"primaries-invalid"},
+	{CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE,	"primaries-non-additive"},
+	{CD_PROFILE_WARNING_PRIMARIES_UNLIKELY,		"primaries-unlikely"},
+	{CD_PROFILE_WARNING_SCUM_DOT,			"scum-dot"},
+	{CD_PROFILE_WARNING_VCGT_NON_MONOTONIC,		"vcgt-non-monotonic"},
+	{CD_PROFILE_WARNING_WHITEPOINT_INVALID,		"whitepoint-invalid"},
+	{0, NULL}
+};
+
+static const CdEnumMatch enum_profile_quality[] = {
+//	{CD_PROFILE_QUALITY_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_PROFILE_QUALITY_HIGH,			"high"},
+	{CD_PROFILE_QUALITY_LOW,			"low"},
+	{CD_PROFILE_QUALITY_MEDIUM,			"medium"},
+	{0, NULL}
+};
+
+/**
+ * cd_enum_from_string:
+ * @table: A #CdEnumMatch enum table of values
+ * @string: the string constant to search for, e.g. "desktop-gnome"
+ *
+ * Search for a string value in a table of constants.
+ *
+ * Return value: the enumerated constant value, e.g. PK_SIGTYPE_ENUM_GPG
+ */
+static guint
+cd_enum_from_string (const CdEnumMatch *table, const gchar *string)
+{
+	const gchar *string_tmp;
+	guint i;
+
+	/* return the first entry on non-found or error */
+	if (string == NULL)
+		return table[0].value;
+	for (i = 0; ; i++) {
+		string_tmp = table[i].string;
+		if (string_tmp == NULL)
+			break;
+		if (g_strcmp0 (string, string_tmp) == 0)
+			return table[i].value;
+	}
+	return table[0].value;
+}
+
+/**
+ * cd_enum_to_string:
+ * @table: A #CdEnumMatch enum table of values
+ * @value: the enumerated constant value, e.g. PK_SIGTYPE_ENUM_GPG
+ *
+ * Search for a enum value in a table of constants.
+ *
+ * Return value: the string constant, e.g. "desktop-gnome"
+ */
+static const gchar *
+cd_enum_to_string (const CdEnumMatch *table, guint value)
+{
+	guint i;
+	guint tmp;
+	const gchar *string_tmp;
+
+	for (i=0;;i++) {
+		string_tmp = table[i].string;
+		if (string_tmp == NULL)
+			break;
+		tmp = table[i].value;
+		if (tmp == value)
+			return table[i].string;
+	}
+	return table[0].string;
+}
+
+/**
  * cd_device_kind_to_string:
  *
  * Converts a #CdDeviceKind to a string.
@@ -47,28 +263,7 @@
 const gchar *
 cd_device_kind_to_string (CdDeviceKind kind_enum)
 {
-	const gchar *kind = NULL;
-	switch (kind_enum) {
-	case CD_DEVICE_KIND_DISPLAY:
-		kind = "display";
-		break;
-	case CD_DEVICE_KIND_SCANNER:
-		kind = "scanner";
-		break;
-	case CD_DEVICE_KIND_PRINTER:
-		kind = "printer";
-		break;
-	case CD_DEVICE_KIND_CAMERA:
-		kind = "camera";
-		break;
-	case CD_DEVICE_KIND_WEBCAM:
-		kind = "webcam";
-		break;
-	default:
-		kind = "unknown";
-		break;
-	}
-	return kind;
+	return cd_enum_to_string (enum_device_kind, kind_enum);
 }
 
 /**
@@ -83,19 +278,7 @@ cd_device_kind_to_string (CdDeviceKind kind_enum)
 CdDeviceKind
 cd_device_kind_from_string (const gchar *type)
 {
-	if (type == NULL)
-		return CD_DEVICE_KIND_UNKNOWN;
-	if (g_strcmp0 (type, "display") == 0)
-		return CD_DEVICE_KIND_DISPLAY;
-	if (g_strcmp0 (type, "scanner") == 0)
-		return CD_DEVICE_KIND_SCANNER;
-	if (g_strcmp0 (type, "printer") == 0)
-		return CD_DEVICE_KIND_PRINTER;
-	if (g_strcmp0 (type, "camera") == 0)
-		return CD_DEVICE_KIND_CAMERA;
-	if (g_strcmp0 (type, "webcam") == 0)
-		return CD_DEVICE_KIND_WEBCAM;
-	return CD_DEVICE_KIND_UNKNOWN;
+	return cd_enum_from_string (enum_device_kind, type);
 }
 
 /**
@@ -106,21 +289,7 @@ cd_device_kind_from_string (const gchar *type)
 const gchar *
 cd_profile_kind_to_string (CdProfileKind kind)
 {
-	if (kind == CD_PROFILE_KIND_INPUT_DEVICE)
-		return "input-device";
-	if (kind == CD_PROFILE_KIND_DISPLAY_DEVICE)
-		return "display-device";
-	if (kind == CD_PROFILE_KIND_OUTPUT_DEVICE)
-		return "output-device";
-	if (kind == CD_PROFILE_KIND_DEVICELINK)
-		return "devicelink";
-	if (kind == CD_PROFILE_KIND_COLORSPACE_CONVERSION)
-		return "colorspace-conversion";
-	if (kind == CD_PROFILE_KIND_ABSTRACT)
-		return "abstract";
-	if (kind == CD_PROFILE_KIND_NAMED_COLOR)
-		return "named-color";
-	return "unknown";
+	return cd_enum_to_string (enum_profile_kind, kind);
 }
 
 /**
@@ -131,21 +300,7 @@ cd_profile_kind_to_string (CdProfileKind kind)
 CdProfileKind
 cd_profile_kind_from_string (const gchar *profile_kind)
 {
-	if (g_strcmp0 (profile_kind, "input-device") == 0)
-		return CD_PROFILE_KIND_INPUT_DEVICE;
-	if (g_strcmp0 (profile_kind, "display-device") == 0)
-		return CD_PROFILE_KIND_DISPLAY_DEVICE;
-	if (g_strcmp0 (profile_kind, "output-device") == 0)
-		return CD_PROFILE_KIND_OUTPUT_DEVICE;
-	if (g_strcmp0 (profile_kind, "devicelink") == 0)
-		return CD_PROFILE_KIND_DEVICELINK;
-	if (g_strcmp0 (profile_kind, "colorspace-conversion") == 0)
-		return CD_PROFILE_KIND_COLORSPACE_CONVERSION;
-	if (g_strcmp0 (profile_kind, "abstract") == 0)
-		return CD_PROFILE_KIND_ABSTRACT;
-	if (g_strcmp0 (profile_kind, "named-color") == 0)
-		return CD_PROFILE_KIND_NAMED_COLOR;
-	return CD_PROFILE_KIND_UNKNOWN;
+	return cd_enum_from_string (enum_profile_kind, profile_kind);
 }
 
 /**
@@ -154,15 +309,7 @@ cd_profile_kind_from_string (const gchar *profile_kind)
 const gchar *
 cd_rendering_intent_to_string (CdRenderingIntent rendering_intent)
 {
-	if (rendering_intent == CD_RENDERING_INTENT_PERCEPTUAL)
-		return "perceptual";
-	if (rendering_intent == CD_RENDERING_INTENT_RELATIVE_COLORIMETRIC)
-		return "relative-colorimetric";
-	if (rendering_intent == CD_RENDERING_INTENT_SATURATION)
-		return "saturation";
-	if (rendering_intent == CD_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC)
-		return "absolute-colorimetric";
-	return "unknown";
+	return cd_enum_to_string (enum_rendering_intent, rendering_intent);
 }
 
 /**
@@ -171,15 +318,7 @@ cd_rendering_intent_to_string (CdRenderingIntent rendering_intent)
 CdRenderingIntent
 cd_rendering_intent_from_string (const gchar *rendering_intent)
 {
-	if (g_strcmp0 (rendering_intent, "perceptual") == 0)
-		return CD_RENDERING_INTENT_PERCEPTUAL;
-	if (g_strcmp0 (rendering_intent, "relative-colorimetric") == 0)
-		return CD_RENDERING_INTENT_RELATIVE_COLORIMETRIC;
-	if (g_strcmp0 (rendering_intent, "saturation") == 0)
-		return CD_RENDERING_INTENT_SATURATION;
-	if (g_strcmp0 (rendering_intent, "absolute-colorimetric") == 0)
-		return CD_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC;
-	return CD_RENDERING_INTENT_UNKNOWN;
+	return cd_enum_from_string (enum_rendering_intent, rendering_intent);
 }
 
 /**
@@ -188,27 +327,7 @@ cd_rendering_intent_from_string (const gchar *rendering_intent)
 const gchar *
 cd_colorspace_to_string (CdColorspace colorspace)
 {
-	if (colorspace == CD_COLORSPACE_XYZ)
-		return "xyz";
-	if (colorspace == CD_COLORSPACE_LAB)
-		return "lab";
-	if (colorspace == CD_COLORSPACE_LUV)
-		return "luv";
-	if (colorspace == CD_COLORSPACE_YCBCR)
-		return "ycbcr";
-	if (colorspace == CD_COLORSPACE_YXY)
-		return "yxy";
-	if (colorspace == CD_COLORSPACE_RGB)
-		return "rgb";
-	if (colorspace == CD_COLORSPACE_GRAY)
-		return "gray";
-	if (colorspace == CD_COLORSPACE_HSV)
-		return "hsv";
-	if (colorspace == CD_COLORSPACE_CMYK)
-		return "cmyk";
-	if (colorspace == CD_COLORSPACE_CMY)
-		return "cmy";
-	return "unknown";
+	return cd_enum_to_string (enum_colorspace, colorspace);
 }
 
 /**
@@ -217,27 +336,7 @@ cd_colorspace_to_string (CdColorspace colorspace)
 CdColorspace
 cd_colorspace_from_string (const gchar *colorspace)
 {
-	if (g_strcmp0 (colorspace, "xyz") == 0)
-		return CD_COLORSPACE_XYZ;
-	if (g_strcmp0 (colorspace, "lab") == 0)
-		return CD_COLORSPACE_LAB;
-	if (g_strcmp0 (colorspace, "luv") == 0)
-		return CD_COLORSPACE_LUV;
-	if (g_strcmp0 (colorspace, "ycbcr") == 0)
-		return CD_COLORSPACE_YCBCR;
-	if (g_strcmp0 (colorspace, "yxy") == 0)
-		return CD_COLORSPACE_YXY;
-	if (g_strcmp0 (colorspace, "rgb") == 0)
-		return CD_COLORSPACE_RGB;
-	if (g_strcmp0 (colorspace, "gray") == 0)
-		return CD_COLORSPACE_GRAY;
-	if (g_strcmp0 (colorspace, "hsv") == 0)
-		return CD_COLORSPACE_HSV;
-	if (g_strcmp0 (colorspace, "cmyk") == 0)
-		return CD_COLORSPACE_CMYK;
-	if (g_strcmp0 (colorspace, "cmy") == 0)
-		return CD_COLORSPACE_CMY;
-	return CD_COLORSPACE_UNKNOWN;
+	return cd_enum_from_string (enum_colorspace, colorspace);
 }
 
 /**
@@ -246,11 +345,7 @@ cd_colorspace_from_string (const gchar *colorspace)
 const gchar *
 cd_device_mode_to_string (CdDeviceMode device_mode)
 {
-	if (device_mode == CD_DEVICE_MODE_PHYSICAL)
-		return "physical";
-	if (device_mode == CD_DEVICE_MODE_VIRTUAL)
-		return "virtual";
-	return "unknown";
+	return cd_enum_to_string (enum_device_mode, device_mode);
 }
 
 /**
@@ -259,11 +354,7 @@ cd_device_mode_to_string (CdDeviceMode device_mode)
 CdDeviceMode
 cd_device_mode_from_string (const gchar *device_mode)
 {
-	if (g_strcmp0 (device_mode, "physical") == 0)
-		return CD_DEVICE_MODE_PHYSICAL;
-	if (g_strcmp0 (device_mode, "virtual") == 0)
-		return CD_DEVICE_MODE_VIRTUAL;
-	return CD_DEVICE_MODE_UNKNOWN;
+	return cd_enum_from_string (enum_device_mode, device_mode);
 }
 
 /**
@@ -272,11 +363,7 @@ cd_device_mode_from_string (const gchar *device_mode)
 const gchar *
 cd_device_relation_to_string (CdDeviceRelation device_relation)
 {
-	if (device_relation == CD_DEVICE_RELATION_HARD)
-		return "hard";
-	if (device_relation == CD_DEVICE_RELATION_SOFT)
-		return "soft";
-	return "unknown";
+	return cd_enum_to_string (enum_device_relation, device_relation);
 }
 
 /**
@@ -285,11 +372,7 @@ cd_device_relation_to_string (CdDeviceRelation device_relation)
 CdDeviceRelation
 cd_device_relation_from_string (const gchar *device_relation)
 {
-	if (g_strcmp0 (device_relation, "hard") == 0)
-		return CD_DEVICE_RELATION_HARD;
-	if (g_strcmp0 (device_relation, "soft") == 0)
-		return CD_DEVICE_RELATION_SOFT;
-	return CD_DEVICE_MODE_UNKNOWN;
+	return cd_enum_from_string (enum_device_relation, device_relation);
 }
 
 /**
@@ -298,13 +381,7 @@ cd_device_relation_from_string (const gchar *device_relation)
 const gchar *
 cd_object_scope_to_string (CdObjectScope object_scope)
 {
-	if (object_scope == CD_OBJECT_SCOPE_NORMAL)
-		return "normal";
-	if (object_scope == CD_OBJECT_SCOPE_TEMP)
-		return "temp";
-	if (object_scope == CD_OBJECT_SCOPE_DISK)
-		return "disk";
-	return "unknown";
+	return cd_enum_to_string (enum_object_scope, object_scope);
 }
 
 /**
@@ -313,13 +390,7 @@ cd_object_scope_to_string (CdObjectScope object_scope)
 CdObjectScope
 cd_object_scope_from_string (const gchar *object_scope)
 {
-	if (g_strcmp0 (object_scope, "normal") == 0)
-		return CD_OBJECT_SCOPE_NORMAL;
-	if (g_strcmp0 (object_scope, "temp") == 0)
-		return CD_OBJECT_SCOPE_TEMP;
-	if (g_strcmp0 (object_scope, "disk") == 0)
-		return CD_OBJECT_SCOPE_DISK;
-	return CD_OBJECT_SCOPE_UNKNOWN;
+	return cd_enum_from_string (enum_object_scope, object_scope);
 }
 
 /**
@@ -333,51 +404,7 @@ cd_object_scope_from_string (const gchar *object_scope)
 const gchar *
 cd_sensor_kind_to_string (CdSensorKind sensor_kind)
 {
-	if (sensor_kind == CD_SENSOR_KIND_DUMMY)
-		return "dummy";
-	if (sensor_kind == CD_SENSOR_KIND_HUEY)
-		return "huey";
-	if (sensor_kind == CD_SENSOR_KIND_COLOR_MUNKI_PHOTO)
-		return "color-munki-photo";
-	if (sensor_kind == CD_SENSOR_KIND_SPYDER)
-		return "spyder";
-	if (sensor_kind == CD_SENSOR_KIND_SPYDER2)
-		return "spyder2";
-	if (sensor_kind == CD_SENSOR_KIND_SPYDER3)
-		return "spyder3";
-	if (sensor_kind == CD_SENSOR_KIND_SPYDER4)
-		return "spyder4";
-	if (sensor_kind == CD_SENSOR_KIND_DTP20)
-		return "dtp20";
-	if (sensor_kind == CD_SENSOR_KIND_DTP22)
-		return "dtp22";
-	if (sensor_kind == CD_SENSOR_KIND_DTP41)
-		return "dtp41";
-	if (sensor_kind == CD_SENSOR_KIND_DTP51)
-		return "dtp51";
-	if (sensor_kind == CD_SENSOR_KIND_DTP92)
-		return "dtp92";
-	if (sensor_kind == CD_SENSOR_KIND_DTP94)
-		return "dtp94";
-	if (sensor_kind == CD_SENSOR_KIND_SPECTRO_SCAN)
-		return "spectro-scan";
-	if (sensor_kind == CD_SENSOR_KIND_I1_PRO)
-		return "i1-pro";
-	if (sensor_kind == CD_SENSOR_KIND_I1_MONITOR)
-		return "i1-monitor";
-	if (sensor_kind == CD_SENSOR_KIND_COLORIMTRE_HCFR)
-		return "colorimtre-hcfr";
-	if (sensor_kind == CD_SENSOR_KIND_I1_DISPLAY1)
-		return "i1-display1";
-	if (sensor_kind == CD_SENSOR_KIND_I1_DISPLAY2)
-		return "i1-display2";
-	if (sensor_kind == CD_SENSOR_KIND_I1_DISPLAY3)
-		return "i1-display3";
-	if (sensor_kind == CD_SENSOR_KIND_COLORHUG)
-		return "colorhug";
-	if (sensor_kind == CD_SENSOR_KIND_COLORHUG_SPECTRO)
-		return "colorhug-spectro";
-	return "unknown";
+	return cd_enum_to_string (enum_sensor_kind, sensor_kind);
 }
 
 /**
@@ -391,46 +418,7 @@ cd_sensor_kind_to_string (CdSensorKind sensor_kind)
 CdSensorKind
 cd_sensor_kind_from_string (const gchar *sensor_kind)
 {
-	if (g_strcmp0 (sensor_kind, "dummy") == 0)
-		return CD_SENSOR_KIND_DUMMY;
-	if (g_strcmp0 (sensor_kind, "huey") == 0)
-		return CD_SENSOR_KIND_HUEY;
-	if (g_strcmp0 (sensor_kind, "color-munki") == 0 ||
-	    g_strcmp0 (sensor_kind, "color-munki-photo") == 0)
-		return CD_SENSOR_KIND_COLOR_MUNKI_PHOTO;
-	if (g_strcmp0 (sensor_kind, "spyder") == 0)
-		return CD_SENSOR_KIND_SPYDER;
-	if (g_strcmp0 (sensor_kind, "spyder2") == 0)
-		return CD_SENSOR_KIND_SPYDER2;
-	if (g_strcmp0 (sensor_kind, "spyder3") == 0)
-		return CD_SENSOR_KIND_SPYDER3;
-	if (g_strcmp0 (sensor_kind, "spyder4") == 0)
-		return CD_SENSOR_KIND_SPYDER4;
-	if (g_strcmp0 (sensor_kind, "dtp20") == 0)
-		return CD_SENSOR_KIND_DTP20;
-	if (g_strcmp0 (sensor_kind, "dtp22") == 0)
-		return CD_SENSOR_KIND_DTP22;
-	if (g_strcmp0 (sensor_kind, "dtp41") == 0)
-		return CD_SENSOR_KIND_DTP41;
-	if (g_strcmp0 (sensor_kind, "dtp51") == 0)
-		return CD_SENSOR_KIND_DTP51;
-	if (g_strcmp0 (sensor_kind, "dtp94") == 0)
-		return CD_SENSOR_KIND_DTP94;
-	if (g_strcmp0 (sensor_kind, "spectro-scan") == 0)
-		return CD_SENSOR_KIND_SPECTRO_SCAN;
-	if (g_strcmp0 (sensor_kind, "i1-pro") == 0)
-		return CD_SENSOR_KIND_I1_PRO;
-	if (g_strcmp0 (sensor_kind, "colorimtre-hcfr") == 0)
-		return CD_SENSOR_KIND_COLORIMTRE_HCFR;
-	if (g_strcmp0 (sensor_kind, "i1-display3") == 0)
-		return CD_SENSOR_KIND_I1_DISPLAY3;
-	if (g_strcmp0 (sensor_kind, "colorhug") == 0)
-		return CD_SENSOR_KIND_COLORHUG;
-	if (g_strcmp0 (sensor_kind, "colorhug-spectro") == 0)
-		return CD_SENSOR_KIND_COLORHUG_SPECTRO;
-	if (g_strcmp0 (sensor_kind, "color-munki-smile") == 0)
-		return CD_SENSOR_KIND_COLOR_MUNKI_SMILE;
-	return CD_SENSOR_KIND_UNKNOWN;
+	return cd_enum_from_string (enum_sensor_kind, sensor_kind);
 }
 
 /**
@@ -444,15 +432,7 @@ cd_sensor_kind_from_string (const gchar *sensor_kind)
 const gchar *
 cd_sensor_state_to_string (CdSensorState sensor_state)
 {
-	if (sensor_state == CD_SENSOR_STATE_STARTING)
-		return "starting";
-	if (sensor_state == CD_SENSOR_STATE_IDLE)
-		return "idle";
-	if (sensor_state == CD_SENSOR_STATE_MEASURING)
-		return "measuring";
-	if (sensor_state == CD_SENSOR_STATE_BUSY)
-		return "busy";
-	return "unknown";
+	return cd_enum_to_string (enum_sensor_state, sensor_state);
 }
 
 /**
@@ -466,15 +446,7 @@ cd_sensor_state_to_string (CdSensorState sensor_state)
 CdSensorState
 cd_sensor_state_from_string (const gchar *sensor_state)
 {
-	if (g_strcmp0 (sensor_state, "starting") == 0)
-		return CD_SENSOR_STATE_STARTING;
-	if (g_strcmp0 (sensor_state, "idle") == 0)
-		return CD_SENSOR_STATE_IDLE;
-	if (g_strcmp0 (sensor_state, "measuring") == 0)
-		return CD_SENSOR_STATE_MEASURING;
-	if (g_strcmp0 (sensor_state, "busy") == 0)
-		return CD_SENSOR_STATE_BUSY;
-	return CD_SENSOR_STATE_UNKNOWN;
+	return cd_enum_from_string (enum_sensor_state, sensor_state);
 }
 
 /**
@@ -488,25 +460,7 @@ cd_sensor_state_from_string (const gchar *sensor_state)
 const gchar *
 cd_sensor_cap_to_string (CdSensorCap sensor_cap)
 {
-	if (sensor_cap == CD_SENSOR_CAP_LCD)
-		return "lcd";
-	if (sensor_cap == CD_SENSOR_CAP_CRT)
-		return "crt";
-	if (sensor_cap == CD_SENSOR_CAP_PRINTER)
-		return "printer";
-	if (sensor_cap == CD_SENSOR_CAP_PROJECTOR)
-		return "projector";
-	if (sensor_cap == CD_SENSOR_CAP_SPOT)
-		return "spot";
-	if (sensor_cap == CD_SENSOR_CAP_AMBIENT)
-		return "ambient";
-	if (sensor_cap == CD_SENSOR_CAP_CALIBRATION)
-		return "calibration";
-	if (sensor_cap == CD_SENSOR_CAP_LED)
-		return "led";
-	if (sensor_cap == CD_SENSOR_CAP_PLASMA)
-		return "plasma";
-	return "unknown";
+	return cd_enum_to_string (enum_sensor_cap, sensor_cap);
 }
 
 /**
@@ -520,25 +474,7 @@ cd_sensor_cap_to_string (CdSensorCap sensor_cap)
 CdSensorCap
 cd_sensor_cap_from_string (const gchar *sensor_cap)
 {
-	if (g_strcmp0 (sensor_cap, "lcd") == 0)
-		return CD_SENSOR_CAP_LCD;
-	if (g_strcmp0 (sensor_cap, "crt") == 0)
-		return CD_SENSOR_CAP_CRT;
-	if (g_strcmp0 (sensor_cap, "printer") == 0)
-		return CD_SENSOR_CAP_PRINTER;
-	if (g_strcmp0 (sensor_cap, "projector") == 0)
-		return CD_SENSOR_CAP_PROJECTOR;
-	if (g_strcmp0 (sensor_cap, "spot") == 0)
-		return CD_SENSOR_CAP_SPOT;
-	if (g_strcmp0 (sensor_cap, "ambient") == 0)
-		return CD_SENSOR_CAP_AMBIENT;
-	if (g_strcmp0 (sensor_cap, "calibration") == 0)
-		return CD_SENSOR_CAP_CALIBRATION;
-	if (g_strcmp0 (sensor_cap, "led") == 0)
-		return CD_SENSOR_CAP_LED;
-	if (g_strcmp0 (sensor_cap, "plasma") == 0)
-		return CD_SENSOR_CAP_PLASMA;
-	return CD_SENSOR_CAP_UNKNOWN;
+	return cd_enum_from_string (enum_sensor_cap, sensor_cap);
 }
 
 /**
@@ -552,13 +488,7 @@ cd_sensor_cap_from_string (const gchar *sensor_cap)
 const gchar *
 cd_standard_space_to_string (CdStandardSpace standard_space)
 {
-	if (standard_space == CD_STANDARD_SPACE_SRGB)
-		return "srgb";
-	if (standard_space == CD_STANDARD_SPACE_ADOBE_RGB)
-		return "adobe-rgb";
-	if (standard_space == CD_STANDARD_SPACE_PROPHOTO_RGB)
-		return "prophoto-rgb";
-	return "unknown";
+	return cd_enum_to_string (enum_standard_space, standard_space);
 }
 
 /**
@@ -572,11 +502,7 @@ cd_standard_space_to_string (CdStandardSpace standard_space)
 CdStandardSpace
 cd_standard_space_from_string (const gchar *standard_space)
 {
-	if (g_strcmp0 (standard_space, "srgb") == 0)
-		return CD_STANDARD_SPACE_SRGB;
-	if (g_strcmp0 (standard_space, "adobe-rgb") == 0)
-		return CD_STANDARD_SPACE_ADOBE_RGB;
-	return CD_STANDARD_SPACE_UNKNOWN;
+	return cd_enum_from_string (enum_standard_space, standard_space);
 }
 
 /**
@@ -591,46 +517,7 @@ cd_standard_space_from_string (const gchar *standard_space)
 const gchar *
 cd_profile_warning_to_string (CdProfileWarning kind_enum)
 {
-	const gchar *kind = NULL;
-	switch (kind_enum) {
-	case CD_PROFILE_WARNING_NONE:
-		kind = "none";
-		break;
-	case CD_PROFILE_WARNING_DESCRIPTION_MISSING:
-		kind = "description-missing";
-		break;
-	case CD_PROFILE_WARNING_COPYRIGHT_MISSING:
-		kind = "copyright-missing";
-		break;
-	case CD_PROFILE_WARNING_VCGT_NON_MONOTONIC:
-		kind = "vcgt-non-monotonic";
-		break;
-	case CD_PROFILE_WARNING_SCUM_DOT:
-		kind = "scum-dot";
-		break;
-	case CD_PROFILE_WARNING_GRAY_AXIS_INVALID:
-		kind = "gray-axis-invalid";
-		break;
-	case CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC:
-		kind = "gray-axis-non-monotonic";
-		break;
-	case CD_PROFILE_WARNING_PRIMARIES_INVALID:
-		kind = "primaries-invalid";
-		break;
-	case CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE:
-		kind = "primaries-non-additive";
-		break;
-	case CD_PROFILE_WARNING_PRIMARIES_UNLIKELY:
-		kind = "primaries-unlikely";
-		break;
-	case CD_PROFILE_WARNING_WHITEPOINT_INVALID:
-		kind = "whitepoint-invalid";
-		break;
-	default:
-		kind = "unknown";
-		break;
-	}
-	return kind;
+	return cd_enum_to_string (enum_profile_warning, kind_enum);
 }
 
 /**
@@ -645,29 +532,7 @@ cd_profile_warning_to_string (CdProfileWarning kind_enum)
 CdProfileWarning
 cd_profile_warning_from_string (const gchar *type)
 {
-	if (g_strcmp0 (type, "none") == 0)
-		return CD_PROFILE_WARNING_NONE;
-	if (g_strcmp0 (type, "description-missing") == 0)
-		return CD_PROFILE_WARNING_DESCRIPTION_MISSING;
-	if (g_strcmp0 (type, "copyright-missing") == 0)
-		return CD_PROFILE_WARNING_COPYRIGHT_MISSING;
-	if (g_strcmp0 (type, "vcgt-non-monotonic") == 0)
-		return CD_PROFILE_WARNING_VCGT_NON_MONOTONIC;
-	if (g_strcmp0 (type, "scum-dot") == 0)
-		return CD_PROFILE_WARNING_SCUM_DOT;
-	if (g_strcmp0 (type, "gray-axis-invalid") == 0)
-		return CD_PROFILE_WARNING_GRAY_AXIS_INVALID;
-	if (g_strcmp0 (type, "gray-axis-non-monotonic") == 0)
-		return CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC;
-	if (g_strcmp0 (type, "primaries-invalid") == 0)
-		return CD_PROFILE_WARNING_PRIMARIES_INVALID;
-	if (g_strcmp0 (type, "primaries-non-additive") == 0)
-		return CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE;
-	if (g_strcmp0 (type, "primaries-unlikely") == 0)
-		return CD_PROFILE_WARNING_PRIMARIES_UNLIKELY;
-	if (g_strcmp0 (type, "whitepoint-invalid") == 0)
-		return CD_PROFILE_WARNING_WHITEPOINT_INVALID;
-	return CD_PROFILE_WARNING_LAST;
+	return cd_enum_from_string (enum_profile_warning, type);
 }
 
 /**
@@ -682,22 +547,7 @@ cd_profile_warning_from_string (const gchar *type)
 const gchar *
 cd_profile_quality_to_string (CdProfileQuality quality_enum)
 {
-	const gchar *kind = NULL;
-	switch (quality_enum) {
-	case CD_PROFILE_QUALITY_LOW:
-		kind = "low";
-		break;
-	case CD_PROFILE_QUALITY_MEDIUM:
-		kind = "medium";
-		break;
-	case CD_PROFILE_QUALITY_HIGH:
-		kind = "high";
-		break;
-	default:
-		kind = "unknown";
-		break;
-	}
-	return kind;
+	return cd_enum_to_string (enum_profile_quality, quality_enum);
 }
 
 /**
@@ -712,13 +562,7 @@ cd_profile_quality_to_string (CdProfileQuality quality_enum)
 CdProfileQuality
 cd_profile_quality_from_string (const gchar *quality)
 {
-	if (g_strcmp0 (quality, "low") == 0)
-		return CD_PROFILE_QUALITY_LOW;
-	if (g_strcmp0 (quality, "medium") == 0)
-		return CD_PROFILE_QUALITY_MEDIUM;
-	if (g_strcmp0 (quality, "high") == 0)
-		return CD_PROFILE_QUALITY_HIGH;
-	return CD_PROFILE_QUALITY_LAST;
+	return cd_enum_from_string (enum_profile_quality, quality);
 }
 
 /**
