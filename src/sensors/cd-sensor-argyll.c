@@ -392,6 +392,14 @@ cd_sensor_find_device_details (CdSensor *sensor, GError **error)
 	/* split into lines and search */
 	lines = g_strsplit (stdout, "\n", -1);
 	argyll_name = cd_sensor_to_argyll_name (sensor);
+	if (argyll_name == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_SENSOR_ERROR,
+				     CD_SENSOR_ERROR_INTERNAL,
+				     "Failed to find sensor");
+		goto out;
+	}
 	for (i = 0; lines[i] != NULL; i++) {
 
 		/* look for the communication port listing of the
