@@ -71,6 +71,7 @@ ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2005", ENV{COLORD_SENSOR_KIND}="huey
 
 # Huey, built into Thinkpad w700
 ATTRS{idVendor}=="0765", ATTRS{idProduct}=="5001", ENV{COLORD_SENSOR_KIND}="huey", ENV{COLORD_SENSOR_EMBEDDED}="1"
+ATTRS{idVendor}=="0765", ATTRS{idProduct}=="5010", ENV{COLORD_SENSOR_KIND}="huey", ENV{COLORD_SENSOR_EMBEDDED}="1"
 
 # ColorHug (legacy)
 ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="f8da", ENV{COLORD_SENSOR_KIND}="colorhug"
