@@ -211,6 +211,21 @@ cd_sensor_get_y_arg_for_cap (CdSensorCap cap)
 	case CD_SENSOR_CAP_PROJECTOR:
 		arg = "-yp";
 		break;
+	case CD_SENSOR_CAP_LCD_CCFL:
+		arg = "-yf";
+		break;
+	case CD_SENSOR_CAP_LCD_RGB_LED:
+		arg = "-yb";
+		break;
+	case CD_SENSOR_CAP_WIDE_GAMUT_LCD_CCFL:
+		arg = "-yL";
+		break;
+	case CD_SENSOR_CAP_WIDE_GAMUT_LCD_RGB_LED:
+		arg = "-yB";
+		break;
+	case CD_SENSOR_CAP_LCD_WHITE_LED:
+		arg = "-ye";
+		break;
 	default:
 		break;
 	}

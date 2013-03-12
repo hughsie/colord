@@ -387,6 +387,34 @@ cd_util_sensor_cap_to_string (CdSensorCap sensor_cap)
 		 * http://en.wikipedia.org/wiki/Plasma_display */
 		return _("Plasma");
 	}
+	if (sensor_cap == CD_SENSOR_CAP_LCD_CCFL) {
+		/* TRANSLATORS: this is the display technology,
+		 * where LCD stands for 'Liquid Crystal Display'
+		 * and CCFL stands for 'Cold Cathode Fluorescent Lamp' */
+		return _("LCD CCFL");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_LCD_RGB_LED) {
+		/* TRANSLATORS: this is the display technology where
+		 * RGB stands for 'Red Green Blue' and LED stands for
+		 * 'Light Emitted Diode' */
+		return _("LCD RGB LED");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_WIDE_GAMUT_LCD_CCFL) {
+		/* TRANSLATORS: this is the display technology, where
+		 * wide gamut means the display primaries are much
+		 * better than normal consumer monitors */
+		return _("Wide Gamut LCD CCFL");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_WIDE_GAMUT_LCD_RGB_LED) {
+		/* TRANSLATORS: this is the display technology */
+		return _("Wide Gamut LCD RGB LED");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_LCD_WHITE_LED) {
+		/* TRANSLATORS: this is the display technology, where
+		 * white means the color of the backlight, i.e. not
+		 * RGB LED */
+		return _("LCD White LED");
+	}
 	/* TRANSLATORS: this an unknown display technology */
 	return _("Unknown");
 }

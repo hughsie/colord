@@ -155,12 +155,17 @@ static const CdEnumMatch enum_sensor_cap[] = {
 	{CD_SENSOR_CAP_AMBIENT,				"ambient"},
 	{CD_SENSOR_CAP_CALIBRATION,			"calibration"},
 	{CD_SENSOR_CAP_CRT,				"crt"},
+	{CD_SENSOR_CAP_LCD_CCFL,			"lcd-ccfl"},
 	{CD_SENSOR_CAP_LCD,				"lcd"},
+	{CD_SENSOR_CAP_LCD_RGB_LED,			"lcd-rgb-led"},
+	{CD_SENSOR_CAP_LCD_WHITE_LED,			"lcd-white-led"},
 	{CD_SENSOR_CAP_LED,				"led"},
 	{CD_SENSOR_CAP_PLASMA,				"plasma"},
 	{CD_SENSOR_CAP_PRINTER,				"printer"},
 	{CD_SENSOR_CAP_PROJECTOR,			"projector"},
 	{CD_SENSOR_CAP_SPOT,				"spot"},
+	{CD_SENSOR_CAP_WIDE_GAMUT_LCD_CCFL,		"wide-gamut-lcd-ccfl"},
+	{CD_SENSOR_CAP_WIDE_GAMUT_LCD_RGB_LED,		"wide-gamut-lcd-rgb-led"},
 	{0, NULL}
 };
 
