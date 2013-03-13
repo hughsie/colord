@@ -96,6 +96,7 @@ colord_SOURCES +=					\
 endif
 
 colord_LDADD =						\
+	$(LIBM)						\
 	$(SQLITE_LIBS)					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\

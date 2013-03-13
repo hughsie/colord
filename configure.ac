@@ -119,6 +119,9 @@ GETTEXT_PACKAGE=AC_PACKAGE_NAME
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE(GETTEXT_PACKAGE, "AC_PACKAGE_NAME", [foo])
 
+LT_LIB_M
+AC_SUBST(LIBM)
+
 GLIB_GSETTINGS
 
 dnl ---------------------------------------------------------------------------

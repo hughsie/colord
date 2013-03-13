@@ -57,6 +57,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-it8-utils.c						\
 	cd-math.c
 libcolordprivate_la_LIBADD =					\
+	$(LIBM)							\
 	$(LCMS_LIBS)						\
 	$(GLIB_LIBS)
 libcolordprivate_la_LDFLAGS =					\
