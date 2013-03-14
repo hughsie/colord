@@ -2143,14 +2143,14 @@ ch_device_queue_take_reading_raw (ChDeviceQueue *device_queue,
 				  GUsbDevice *device,
 				  guint32 *take_reading)
 {
-	ch_device_queue_take_reading_raw2 (device_queue,
+	ch_device_queue_take_reading_full (device_queue,
 					   device,
 					   CH_SENSOR_KIND_MAIN,
 					   take_reading);
 }
 
 /**
- * ch_device_queue_take_reading_raw2:
+ * ch_device_queue_take_reading_full:
  * @device_queue:	A #ChDeviceQueue
  * @device:		A #GUsbDevice
  * @sensor_kind:	A #ChSensorKind, e.g. %CH_SENSOR_KIND_AMBIENT
@@ -2163,7 +2163,7 @@ ch_device_queue_take_reading_raw (ChDeviceQueue *device_queue,
  * Since: 0.1.29
  **/
 void
-ch_device_queue_take_reading_raw2 (ChDeviceQueue *device_queue,
+ch_device_queue_take_reading_full (ChDeviceQueue *device_queue,
 				   GUsbDevice *device,
 				   ChSensorKind sensor_kind,
 				   guint32 *take_reading)
@@ -2233,14 +2233,14 @@ ch_device_queue_take_readings (ChDeviceQueue *device_queue,
 			       GUsbDevice *device,
 			       CdColorRGB *value)
 {
-	ch_device_queue_take_readings2 (device_queue,
-					device,
-					CH_SENSOR_KIND_MAIN,
-					value);
+	ch_device_queue_take_readings_full (device_queue,
+					    device,
+					    CH_SENSOR_KIND_MAIN,
+					    value);
 }
 
 /**
- * ch_device_queue_take_readings2:
+ * ch_device_queue_take_readings_full:
  * @device_queue:	A #ChDeviceQueue
  * @device:		A #GUsbDevice
  * @value:		The #CdColorRGB of the raw reading
@@ -2253,10 +2253,10 @@ ch_device_queue_take_readings (ChDeviceQueue *device_queue,
  * Since: 0.1.31
  **/
 void
-ch_device_queue_take_readings2 (ChDeviceQueue *device_queue,
-				GUsbDevice *device,
-				ChSensorKind sensor_kind,
-				CdColorRGB *value)
+ch_device_queue_take_readings_full (ChDeviceQueue *device_queue,
+				    GUsbDevice *device,
+				    ChSensorKind sensor_kind,
+				    CdColorRGB *value)
 {
 	guint8 *buffer;
 
@@ -2326,15 +2326,15 @@ ch_device_queue_take_readings_xyz (ChDeviceQueue *device_queue,
 				   guint16 calibration_index,
 				   CdColorXYZ *value)
 {
-	ch_device_queue_take_readings_xyz2 (device_queue,
-					    device,
-					    calibration_index,
-					    CH_SENSOR_KIND_MAIN,
-					    value);
+	ch_device_queue_take_readings_xyz_full (device_queue,
+						device,
+						calibration_index,
+						CH_SENSOR_KIND_MAIN,
+						value);
 }
 
 /**
- * ch_device_queue_take_readings_xyz2:
+ * ch_device_queue_take_readings_xyz_full:
  * @device_queue:	A #ChDeviceQueue
  * @device:		A #GUsbDevice
  * @calibration_index:	A calibration index
@@ -2348,11 +2348,11 @@ ch_device_queue_take_readings_xyz (ChDeviceQueue *device_queue,
  * Since: 0.1.31
  **/
 void
-ch_device_queue_take_readings_xyz2 (ChDeviceQueue *device_queue,
-				    GUsbDevice *device,
-				    guint16 calibration_index,
-				    ChSensorKind sensor_kind,
-				    CdColorXYZ *value)
+ch_device_queue_take_readings_xyz_full (ChDeviceQueue *device_queue,
+					GUsbDevice *device,
+					guint16 calibration_index,
+					ChSensorKind sensor_kind,
+					CdColorXYZ *value)
 {
 	guint8 *buffer;
 	guint8 buffer_tx[3];

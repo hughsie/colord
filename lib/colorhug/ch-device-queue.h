@@ -219,14 +219,14 @@ void		 ch_device_queue_write_eeprom		(ChDeviceQueue	*device_queue,
 void		 ch_device_queue_take_reading_raw	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 guint32	*take_reading);
-void		 ch_device_queue_take_reading_raw2	(ChDeviceQueue	*device_queue,
+void		 ch_device_queue_take_reading_full	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 ChSensorKind	 sensor_kind,
 							 guint32	*take_reading);
 void		 ch_device_queue_take_readings		(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 CdColorRGB	*value);
-void		 ch_device_queue_take_readings2		(ChDeviceQueue	*device_queue,
+void		 ch_device_queue_take_readings_full	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 ChSensorKind	 sensor_kind,
 							 CdColorRGB	*value);
@@ -234,7 +234,7 @@ void		 ch_device_queue_take_readings_xyz	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 guint16	 calibration_index,
 							 CdColorXYZ	*value);
-void		 ch_device_queue_take_readings_xyz2	(ChDeviceQueue	*device_queue,
+void		 ch_device_queue_take_readings_xyz_full	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 guint16	 calibration_index,
 							 ChSensorKind	 sensor_kind,
