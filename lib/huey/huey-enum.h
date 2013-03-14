@@ -51,7 +51,9 @@ G_BEGIN_DECLS
  *
  *  input:   00 00 00 00 3f 00 00 00
  * returns: 00 00 43 69 72 30 30 31  (or)
- *     "Cir001" --^^^^^^^^^^^^^^^^^ -- Circuit1?...
+ *     "Cir001" --^^^^^^^^^^^^^^^^^ (Pantone Huey)
+ *          c0 00 xx xx xx xx xx xx
+ *     "huL002" --^^^^^^^^^^^^^^^^^ (Lenovo Huey)
  *          c0 00 4c 6f 63 6b 65 64
  *     "locked" --^^^^^^^^^^^^^^^^^
  */
@@ -146,11 +148,13 @@ G_BEGIN_DECLS
 /*
  * Unlock a locked sensor.
  *
- * input:   0e 47 72 4d 62 6b 65 64
- *  "GrMbked"--^^^^^^^^^^^^^^^^^^^^
+ * input:   0e 47 72 4d 62 6b 65 64 (Pantone Huey)
+ *  "GrMb"--^^^^^^^^^^^
+ *          0e 47 72 4d 62 6b 65 64 (Lenovo Huey)
+ *  "huyL"--^^^^^^^^^^^
  * returns: 00 0e 00 00 00 00 00 00
  *
- * It might be only GrMbk that is needed to unlock.
+ * Only GrMbk or huyL is needed to unlock, the rest is just junk data.
  * We still don't know how to 'lock' a device, it just kinda happens.
  */
 #define HUEY_CMD_UNLOCK				0x0e

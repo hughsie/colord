@@ -187,9 +187,9 @@ huey_device_unlock (GUsbDevice *device, GError **error)
 	request[2] = 'r';
 	request[3] = 'M';
 	request[4] = 'b';
-	request[5] = 'k'; /* <- perhaps junk, need to test next time locked */
-	request[6] = 'e'; /* <-         "" */
-	request[7] = 'd'; /* <-         "" */
+	request[5] = '\0';
+	request[6] = '\0';
+	request[7] = '\0';
 
 	/* no idea why the hardware gets 'locked' */
 	ret = huey_device_send_data (device,
