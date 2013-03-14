@@ -81,10 +81,12 @@ void		 cd_color_convert_xyz_to_yxy		(const CdColorXYZ	*src,
  * Also, allowing setting the filename after creating the profle means we don't
  * send the FD at creation time which breaks when the daemon doesn't have read
  * access to the profile. */
+G_DEPRECATED_FOR(cd_profile_set_property_sync)
 gboolean	 cd_profile_set_filename_sync		(CdProfile	*profile,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
 							 GError		**error);
+G_DEPRECATED_FOR(cd_profile_set_property_sync)
 gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
