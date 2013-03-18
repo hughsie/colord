@@ -1,3 +1,39 @@
+Version 0.1.31
+~~~~~~~~~~~~~~
+Released: 2013-03-18
+
+New Features:
+ - Add more sensor capabilities to support the latest ArgyllCMS release (Richard Hughes)
+ - Calculate the display calibration based on the Lab and target display gamma (Richard Hughes)
+ - Emulate a perfect sRGB screen when returning XYZ values from the dummy sensor (Richard Hughes)
+ - Interpolate the gamma data to the VCGT size using Akima (Richard Hughes)
+ - libcolord: Add Akima and Linear 2D interpolation classes (Richard Hughes)
+ - libcolord: Switch CdColor to using the GSlice allocator (Richard Hughes)
+ - libcolorhug: Add commands to get the ADC Vref+ and Vref- (Richard Hughes)
+ - libcolorhug: Add extensions to the take_reading_x() commands to set the sensor type (Richard Hughes)
+ - libcolorhug: Add the ability to get and set the CCD calibration values (Richard Hughes)
+ - libcolorhug: Add the ability to get a spectral reading from the device (Richard Hughes)
+ - Run the self test programs in 'make check' under valgrind (Richard Hughes)
+
+Bugfixes:
+ - Add a warning if compiling with --with-daemon-user=root (Richard Hughes)
+ - Add some more display vendor names to the display fixup table (Richard Hughes)
+ - Deprecate both the cd_profile_set_$foo_sync() functions (Richard Hughes)
+ - Do not show a critical warning if an unmatched sensor is connected (Richard Hughes)
+ - Fix build on OpenBSD (Antoine Jacoutot)
+ - Fix compile with --disable-gusb (Richard Hughes)
+ - Fix the argyll sensor driver when using the ColorMunki Smile (Richard Hughes)
+ - Fix the gamut warning to check primaries wider than CIERGB and ProPhoto (Richard Hughes)
+ - Fix unusual crash in cd_main_get_cmdline_for_pid (Christopher James Halse Rogers)
+ - Guess the option type when using 'colormgr sensor-set-options' (Richard Hughes)
+ - libcolord: ArgyllCMS uses 'YES' for IT8 options (Richard Hughes)
+ - libcolord: Fix two small memory leaks when getting details about a sensor (Richard Hughes)
+ - Move the private sensor libraries out of the pure lib space (Dominique Leuenberger)
+ - Rename the colormgr 'profile-set-$foo' commands to 'profile-set-property' (Richard Hughes)
+ - Return an error if the client tries to change the profile filename after creation (Richard Hughes)
+ - Set the target gamma when using the session-helper (Richard Hughes)
+ - Setup the devices for another embedded Huey colorimeter and the original Spyder (Richard Hughes)
+
 Version 0.1.30
 ~~~~~~~~~~~~~~
 Released: 2013-02-17
