@@ -27,7 +27,7 @@ if test -z $AUTORECONF; then
         exit 1
 fi
 
-gtkdocize || exit $?
+gtkdocize --copy || exit $?
 autopoint --force
 ACLOCAL="${ACLOCAL-aclocal} $ACLOCAL_FLAGS"  AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
 
