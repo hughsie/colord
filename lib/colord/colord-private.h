@@ -40,6 +40,7 @@
 
 #include <colord/cd-buffer.h>
 #include <colord/cd-color.h>
+#include <colord/cd-dom.h>
 #include <colord/cd-enum.h>
 #include <colord/cd-interp-akima.h>
 #include <colord/cd-interp-linear.h>

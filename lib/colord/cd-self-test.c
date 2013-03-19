@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -39,6 +39,7 @@
 #include "cd-color.h"
 #include "cd-device.h"
 #include "cd-device-sync.h"
+#include "cd-dom.h"
 #include "cd-interp-akima.h"
 #include "cd-interp-linear.h"
 #include "cd-interp.h"
@@ -1414,6 +1415,89 @@ colord_enum_func (void)
 		g_assert_cmpint (enum_tmp, ==, i);
 	}
 #endif
+}
+
+static void
+colord_dom_func (void)
+{
+	CdDom *dom;
+	const gchar *markup = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><html> <body> <p class='1'>moo1</p> <p wrap='false'>moo2</p>\n</body> </html>";
+	const GNode *tmp;
+	gboolean ret;
+	gchar *str;
+	GError *error = NULL;
+
+	dom = cd_dom_new ();
+
+	/* parse */
+	ret = cd_dom_parse_xml_data (dom, markup, -1, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* to string */
+	str = cd_dom_to_string (dom);
+	g_assert_cmpstr (str, ==, "  <html> []\n   <body> []\n    <p> [moo1]\n    <p> [moo2]\n");
+	g_free (str);
+
+	/* get node */
+	tmp = cd_dom_get_node (dom, NULL, "html/body");
+	g_assert (tmp != NULL);
+	g_assert_cmpstr (cd_dom_get_node_name (tmp), ==, "body");
+
+	/* get children */
+	tmp = tmp->children;
+	g_assert_cmpstr (cd_dom_get_node_name (tmp), ==, "p");
+	g_assert_cmpstr (cd_dom_get_node_data (tmp), ==, "moo1");
+	g_assert_cmpstr (cd_dom_get_node_attribute (tmp, "class"), ==, "1");
+
+	tmp = tmp->next;
+	g_assert_cmpstr (cd_dom_get_node_name (tmp), ==, "p");
+	g_assert_cmpstr (cd_dom_get_node_data (tmp), ==, "moo2");
+	g_assert_cmpstr (cd_dom_get_node_attribute (tmp, "wrap"), ==, "false");
+
+	g_object_unref (dom);
+}
+
+static void
+colord_dom_color_func (void)
+{
+	CdColorLab lab;
+	CdColorRGB rgb;
+	CdDom *dom;
+	const gchar *markup = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+		"<named>"
+		" <color>"
+		"  <name>Dave</name>"
+		"  <L>12.34</L>"
+		"  <a>0.56</a>"
+		"  <b>0.78</b>"
+		" </color>"
+		"</named>";
+	const GNode *tmp;
+	gboolean ret;
+	GError *error = NULL;
+
+	dom = cd_dom_new ();
+
+	/* parse */
+	ret = cd_dom_parse_xml_data (dom, markup, -1, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get node */
+	tmp = cd_dom_get_node (dom, NULL, "named/color");
+	g_assert (tmp != NULL);
+
+	/* get value */
+	ret = cd_dom_get_node_lab (tmp, &lab);
+	g_assert (ret);
+	g_debug ("Lab = %f, %f, %f", lab.L, lab.a, lab.b);
+
+	/* get value */
+	ret = cd_dom_get_node_rgb (tmp, &rgb);
+	g_assert (!ret);
+
+	g_object_unref (dom);
 }
 
 static void
@@ -3161,6 +3245,8 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
+	g_test_add_func ("/colord/dom", colord_dom_func);
+	g_test_add_func ("/colord/dom{color}", colord_dom_color_func);
 	g_test_add_func ("/colord/interp{linear}", colord_interp_linear_func);
 	g_test_add_func ("/colord/interp{akima}", colord_interp_akima_func);
 	g_test_add_func ("/colord/color", colord_color_func);

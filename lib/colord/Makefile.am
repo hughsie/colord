@@ -33,6 +33,7 @@ libcolordbase_include_HEADERS =					\
 	cd-deprecated.h						\
 	cd-device.h						\
 	cd-device-sync.h					\
+	cd-dom.h						\
 	cd-enum.h						\
 	cd-interp-akima.h					\
 	cd-interp-linear.h					\
@@ -49,6 +50,7 @@ libcolordbase_include_HEADERS =					\
 libcolordprivate_la_SOURCES =					\
 	cd-buffer.c						\
 	cd-color.c						\
+	cd-dom.c						\
 	cd-enum.c						\
 	cd-interp-akima.c					\
 	cd-interp-linear.c					\
