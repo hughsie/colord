@@ -9,3 +9,5 @@ to ensure hard work is not duplicated.
 * device.Modified has to be saved in the database (even for temp devices)
 
 * Test device.Modified gets changed on profile changes
+
+* Have a look at the timestamp in the database and how it relates to multiple users.
