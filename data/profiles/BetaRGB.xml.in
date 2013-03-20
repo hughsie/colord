@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>BetaRGB</name>
+ <description>Beta RGB</description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>beta-rgb</standard_space>
+ <gamma>2.2</gamma>
+ <whitepoint>D50</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6888</x>
+   <y>0.3112</y>
+   <Y>0.303273</Y>
+  </red>
+  <green>
+   <x>0.1986</x>
+   <y>0.7551</y>
+   <Y>0.663786</Y>
+  </green>
+  <blue>
+   <x>0.1265</x>
+   <y>0.0352</y>
+   <Y>0.032941</Y>
+  </blue>
+ </primaries>
+</profile>

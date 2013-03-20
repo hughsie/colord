@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>ECI-RGBv2</name>
+ <description>ECI RGB v2</description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>eci-rgb-v2</standard_space>
+ <gamma>L*</gamma>
+ <whitepoint>D50</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6700</x>
+   <y>0.3300</y>
+   <Y>0.320250</Y>
+  </red>
+  <green>
+   <x>0.2100</x>
+   <y>0.7100</y>
+   <Y>0.602071</Y>
+  </green>
+  <blue>
+   <x>0.1400</x>
+   <y>0.0800</y>
+   <Y>0.077679</Y>
+  </blue>
+ </primaries>
+</profile>

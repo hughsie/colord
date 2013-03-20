@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>AppleRGB</name>
+ <description>Apple RGB</description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>apple-rgb</standard_space>
+ <gamma>1.8</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6250</x>
+   <y>0.3400</y>
+   <Y>0.244634</Y>
+  </red>
+  <green>
+   <x>0.2800</x>
+   <y>0.5950</y>
+   <Y>0.672034</Y>
+  </green>
+  <blue>
+   <x>0.1550</x>
+   <y>0.0700</y>
+   <Y>0.083332</Y>
+  </blue>
+ </primaries>
+</profile>

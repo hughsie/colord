@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>BruceRGB</name>
+ <description>Bruce RGB</description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>bruce-rgb</standard_space>
+ <gamma>2.2</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6400</x>
+   <y>0.3300</y>
+   <Y>0.240995</Y>
+  </red>
+  <green>
+   <x>0.2800</x>
+   <y>0.6500</y>
+   <Y>0.683554</Y>
+  </green>
+  <blue>
+   <x>0.1500</x>
+   <y>0.0600</y>
+   <Y>0.075452</Y>
+  </blue>
+ </primaries>
+</profile>

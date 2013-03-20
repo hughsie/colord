@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>AdobeRGB1998</name>
+ <_description>Compatible with Adobe RGB (1998)</_description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>adobe-rgb</standard_space>
+ <gamma>2.2</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6400</x>
+   <y>0.3300</y>
+   <Y>0.297361</Y>
+  </red>
+  <green>
+   <x>0.2100</x>
+   <y>0.7100</y>
+   <Y>0.627355</Y>
+  </green>
+  <blue>
+   <x>0.1500</x>
+   <y>0.0600</y>
+   <Y>0.075285</Y>
+  </blue>
+ </primaries>
+</profile>

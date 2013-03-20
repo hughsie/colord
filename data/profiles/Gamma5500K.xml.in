@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>Gamma6500K</name>
+ <type>temperature</type>
+ <description>D55</description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>test</data_source>
+ <temperature>5503</temperature>
+ <gamma>1.0</gamma>
+</profile>

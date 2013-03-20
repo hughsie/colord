@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>bluish</name>
+ <type>x11-gamma</type>
+ <_description>Blue</_description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>test</data_source>
+ <x11_gamma>
+  <R>0.7</R>
+  <G>0.8</G>
+  <B>1.0</B>
+ </x11_gamma>
+</profile>

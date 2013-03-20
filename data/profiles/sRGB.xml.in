@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>sRGB</name>
+ <description>sRGB</description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>srgb</standard_space>
+ <gamma>sRGB</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6400</x>
+   <y>0.3300</y>
+   <Y>0.212656</Y>
+  </red>
+  <green>
+   <x>0.3000</x>
+   <y>0.6000</y>
+   <Y>0.715158</Y>
+  </green>
+  <blue>
+   <x>0.1500</x>
+   <y>0.0600</y>
+   <Y>0.072186</Y>
+  </blue>
+ </primaries>
+</profile>

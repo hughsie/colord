@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>BestRGB</name>
+ <description>Best RGB</description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>best-rgb</standard_space>
+ <gamma>2.2</gamma>
+ <whitepoint>D50</whitepoint>
+ <primaries>
+  <red>
+   <x>0.7347</x>
+   <y>0.2653</y>
+   <Y>0.228457</Y>
+  </red>
+  <green>
+   <x>0.2150</x>
+   <y>0.7750</y>
+   <Y>0.737352</Y>
+  </green>
+  <blue>
+   <x>0.1300</x>
+   <y>0.0350</y>
+   <Y>0.034191</Y>
+  </blue>
+ </primaries>
+</profile>
