@@ -207,9 +207,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %endif
 
 # monitor test profiles
-%{_icccolordir}/colord/bluish.icc
+%{_icccolordir}/colord/Bluish.icc
 %{_icccolordir}/colord/SwappedRedAndGreen.icc
-%{_icccolordir}/colord/gamma*.icc
+%{_icccolordir}/colord/Gamma*.icc
 
 # named color profiles
 %{_icccolordir}/colord/x11-colors.icc
@@ -242,7 +242,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_icccolordir}/colord/WideGamutRGB.icc
 
 # other named color profiles not generally useful
-%{_icccolordir}/colord/crayons.icc
+%{_icccolordir}/colord/Crayons.icc
 
 %files devel
 %{_includedir}/colord-1

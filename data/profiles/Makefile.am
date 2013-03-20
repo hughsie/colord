@@ -45,11 +45,11 @@ generatedprofiles =					\
 	sRGB.icc					\
 	WideGamutRGB.icc				\
 	SwappedRedAndGreen.icc				\
-	bluish.icc					\
-	gamma5000.icc					\
-	gamma5500.icc					\
-	gamma6500.icc					\
-	crayons.icc					\
+	Bluish.icc					\
+	Gamma5000K.icc					\
+	Gamma5500K.icc					\
+	Gamma6500K.icc					\
+	Crayons.icc					\
 	x11-colors.icc
 
 if CD_BUILD_PRINT_PROFILES
@@ -70,204 +70,128 @@ endif
 profiles_DATA =						\
 	$(generatedprofiles)
 
+AdobeRGB1998.icc: AdobeRGB1998.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/AdobeRGB1998.xml
+AppleRGB.icc: AppleRGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/AppleRGB.xml
+BestRGB.icc: BestRGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/BestRGB.xml
+BetaRGB.icc: BetaRGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/BetaRGB.xml
+BruceRGB.icc: BruceRGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/BruceRGB.xml
+CIE-RGB.icc: CIE-RGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/CIE-RGB.xml
+ColorMatchRGB.icc: ColorMatchRGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/ColorMatchRGB.xml
+DonRGB4.icc: DonRGB4.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/DonRGB4.xml
+ECI-RGBv2.icc: ECI-RGBv2.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/ECI-RGBv2.xml
+EktaSpacePS5.icc: EktaSpacePS5.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/EktaSpacePS5.xml
+NTSC-RGB.icc: NTSC-RGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/NTSC-RGB.xml
+PAL-RGB.icc: PAL-RGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/PAL-RGB.xml
+ProPhotoRGB.icc: ProPhotoRGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/ProPhotoRGB.xml
+SMPTE-C-RGB.icc: SMPTE-C-RGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/SMPTE-C-RGB.xml
+sRGB.icc: $(top_builddir)/client/cd-create-profile
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/sRGB.xml
+WideGamutRGB.icc: WideGamutRGB.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/WideGamutRGB.xml
+SwappedRedAndGreen.icc: SwappedRedAndGreen.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/SwappedRedAndGreen.xml
+x11-colors.icc: x11-colors.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/x11-colors.xml
+Crayons.icc: Crayons.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/Crayons.xml
+Bluish.icc: Bluish.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/Bluish.xml
+Gamma6500K.icc: Gamma6500K.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/Gamma6500K.xml
+Gamma5500K.icc: Gamma5500K.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/Gamma5500K.xml
+Gamma5000K.icc: Gamma5000K.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(srcdir)/Gamma5000K.xml
+
+if CD_BUILD_PRINT_PROFILES
 colprof_manufacturer = "Argyll Color Management System"
 colprof_options = -nc -v -qh -bh
 copyright = "This profile is free of known copyright restrictions."
 license = "CC0"
 
-AdobeRGB1998.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Compatible with Adobe RGB (1998)" \
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=adobe-rgb" \
-		2.2 D65					\
-		0.6400 0.3300 0.297361			\
-		0.2100 0.7100 0.627355			\
-		0.1500 0.0600 0.075285
-AppleRGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Apple RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=apple-rgb" \
-		1.8 D65					\
-		0.6250 0.3400 0.244634			\
-		0.2800 0.5950 0.672034			\
-		0.1550 0.0700 0.083332
-BestRGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Best RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=best-rgb" \
-		2.2 D50					\
-		0.7347 0.2653 0.228457			\
-		0.2150 0.7750 0.737352			\
-		0.1300 0.0350 0.034191
-BetaRGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Beta RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=beta-rgb" \
-		2.2 D50					\
-		0.6888 0.3112 0.303273			\
-		0.1986 0.7551 0.663786			\
-		0.1265 0.0352 0.032941
-BruceRGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Bruce RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=bruce-rgb" \
-		2.2 D65					\
-		0.6400 0.3300 0.240995			\
-		0.2800 0.6500 0.683554			\
-		0.1500 0.0600 0.075452
-CIE-RGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "CIE RGB"			\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=cie-rgb" \
-		2.2 E					\
-		0.7350 0.2650 0.176204			\
-		0.2740 0.7170 0.812985			\
-		0.1670 0.0090 0.010811
-ColorMatchRGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "ColorMatch RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=colormatch-rgb"	\
-		1.8 D50					\
-		0.6300 0.3400 0.274884			\
-		0.2950 0.6050 0.658132			\
-		0.1500 0.0750 0.066985
-DonRGB4.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Don RGB 4"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=don-rgb4" \
-		2.2 D50					\
-		0.6960 0.3000 0.278350			\
-		0.2150 0.7650 0.687970			\
-		0.1300 0.0350 0.033680
-ECI-RGBv2.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "ECI RGB v2"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=eci-rgb-v2" \
-		L* D50					\
-		0.6700 0.3300 0.320250			\
-		0.2100 0.7100 0.602071			\
-		0.1400 0.0800 0.077679
-EktaSpacePS5.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Ekta Space PS5"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=ekta-space-ps5" \
-		2.2 D50					\
-		0.6950 0.3050 0.260629			\
-		0.2600 0.7000 0.734946			\
-		0.1100 0.0050 0.004425
-NTSC-RGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "NTSC RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=ntsc-rgb" \
-		2.2 C					\
-		0.6700 0.3300 0.298839			\
-		0.2100 0.7100 0.586811			\
-		0.1400 0.0800 0.114350
-PAL-RGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "PAL/SECAM RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=pal-rgb" \
-		2.2 D65					\
-		0.6400 0.3300 0.222021			\
-		0.2900 0.6000 0.706645			\
-		0.1500 0.0600 0.071334
-ProPhotoRGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "ProPhoto RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=prophoto-rgb" \
-		1.8 D50					\
-		0.7347 0.2653 0.288040			\
-		0.1596 0.8404 0.711874			\
-		0.0366 0.0001 0.000086
-SMPTE-C-RGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "SMPTE-C RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=smpte-c-rgb" \
-		2.2 D65					\
-		0.6300 0.3400 0.212395			\
-		0.3100 0.5950 0.701049			\
-		0.1550 0.0700 0.086556
-sRGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "sRGB"			\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=srgb" \
-		sRGB D65				\
-		0.6400 0.3300 0.212656			\
-		0.3000 0.6000 0.715158			\
-		0.1500 0.0600 0.072186
-WideGamutRGB.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Wide Gamut RGB"		\
-		--metadata "License=$(license),DATA_source=standard,STANDARD_space=wide-gamut-rgb" \
-		2.2 D50					\
-		0.7350 0.2650 0.258187			\
-		0.1150 0.8260 0.724938			\
-		0.1570 0.0180 0.016875
-
-SwappedRedAndGreen.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-standard-space			\
-		--description "Swapped Red & Green"	\
-		--metadata "License=$(license),DATA_source=test" \
-		sRGB D65				\
-		0.3000 0.6000 0.715158			\
-		0.6400 0.3300 0.212656			\
-		0.1500 0.0600 0.072186
-
-x11-colors.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-named-color srgb "X11" ""	\
-		--metadata "License=$(license)"		\
-		--description "X11 Colors"		\
-		$(srcdir)/x11-colors.csv
-crayons.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		create-named-color lab "Crayon" ""	\
-		$(srcdir)/crayons.csv				\
-		--metadata "License=$(license)"		\
-		--description "Crayon Colors"
-bluish.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		--description "Blue"			\
-		--metadata "License=$(license),DATA_source=test" \
-		create-x11-gamma			\
-		0.7 0.8 1.0
-gamma6500.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		--description "D65"			\
-		--metadata "License=$(license),DATA_source=test" \
-		create-temperature			\
-		6504 1.0
-gamma5500.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		--description "D55"			\
-		--metadata "License=$(license),DATA_source=test" \
-		create-temperature			\
-		5503 1.0
-gamma5000.icc:
-	$(top_builddir)/client/cd-create-profile --output $@ \
-		--description "D50"			\
-		--metadata "License=$(license),DATA_source=test" \
-		create-temperature			\
-		5003 1.0
-
-if CD_BUILD_PRINT_PROFILES
 FOGRA27L_coated.icc: FOGRA27L.ti3
 	$(AM_V_GEN)						\
 	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
@@ -394,8 +318,6 @@ ISOnewspaper26.icc: IFRA26S.ti3
 endif
 
 sourcedata =						\
-	x11-colors.csv					\
-	crayons.csv					\
 	AdobeRGB1998.xml.in				\
 	AppleRGB.xml.in					\
 	BestRGB.xml.in					\
