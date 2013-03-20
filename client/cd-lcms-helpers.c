@@ -35,7 +35,7 @@ _cmsWriteTagTextAscii (cmsHPROFILE lcms_profile,
 {
 	cmsBool ret;
 	cmsMLU *mlu = cmsMLUalloc (0, 1);
-	cmsMLUsetASCII (mlu, "EN", "us", text);
+	cmsMLUsetASCII (mlu, "en", "US", text);
 	ret = cmsWriteTag (lcms_profile, sig, mlu);
 	cmsMLUfree (mlu);
 	return ret;
