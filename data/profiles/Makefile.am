@@ -74,117 +74,117 @@ AdobeRGB1998.icc: AdobeRGB1998.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/AdobeRGB1998.xml
+		$(builddir)/AdobeRGB1998.xml
 AppleRGB.icc: AppleRGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/AppleRGB.xml
+		$(builddir)/AppleRGB.xml
 BestRGB.icc: BestRGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/BestRGB.xml
+		$(builddir)/BestRGB.xml
 BetaRGB.icc: BetaRGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/BetaRGB.xml
+		$(builddir)/BetaRGB.xml
 BruceRGB.icc: BruceRGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/BruceRGB.xml
+		$(builddir)/BruceRGB.xml
 CIE-RGB.icc: CIE-RGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/CIE-RGB.xml
+		$(builddir)/CIE-RGB.xml
 ColorMatchRGB.icc: ColorMatchRGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/ColorMatchRGB.xml
+		$(builddir)/ColorMatchRGB.xml
 DonRGB4.icc: DonRGB4.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/DonRGB4.xml
+		$(builddir)/DonRGB4.xml
 ECI-RGBv2.icc: ECI-RGBv2.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/ECI-RGBv2.xml
+		$(builddir)/ECI-RGBv2.xml
 EktaSpacePS5.icc: EktaSpacePS5.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/EktaSpacePS5.xml
+		$(builddir)/EktaSpacePS5.xml
 NTSC-RGB.icc: NTSC-RGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/NTSC-RGB.xml
+		$(builddir)/NTSC-RGB.xml
 PAL-RGB.icc: PAL-RGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/PAL-RGB.xml
+		$(builddir)/PAL-RGB.xml
 ProPhotoRGB.icc: ProPhotoRGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/ProPhotoRGB.xml
+		$(builddir)/ProPhotoRGB.xml
 SMPTE-C-RGB.icc: SMPTE-C-RGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/SMPTE-C-RGB.xml
+		$(builddir)/SMPTE-C-RGB.xml
 sRGB.icc: $(top_builddir)/client/cd-create-profile
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/sRGB.xml
+		$(builddir)/sRGB.xml
 WideGamutRGB.icc: WideGamutRGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/WideGamutRGB.xml
+		$(builddir)/WideGamutRGB.xml
 SwappedRedAndGreen.icc: SwappedRedAndGreen.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/SwappedRedAndGreen.xml
+		$(builddir)/SwappedRedAndGreen.xml
 x11-colors.icc: x11-colors.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/x11-colors.xml
+		$(builddir)/x11-colors.xml
 Crayons.icc: Crayons.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/Crayons.xml
+		$(builddir)/Crayons.xml
 Bluish.icc: Bluish.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/Bluish.xml
+		$(builddir)/Bluish.xml
 Gamma6500K.icc: Gamma6500K.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/Gamma6500K.xml
+		$(builddir)/Gamma6500K.xml
 Gamma5500K.icc: Gamma5500K.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/Gamma5500K.xml
+		$(builddir)/Gamma5500K.xml
 Gamma5000K.icc: Gamma5000K.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(srcdir)/Gamma5000K.xml
+		$(builddir)/Gamma5000K.xml
 
 if CD_BUILD_PRINT_PROFILES
 colprof_manufacturer = "Argyll Color Management System"
@@ -360,7 +360,6 @@ DISTCLEANFILES =					\
 	$(noinst_DATA)
 
 EXTRA_DIST =						\
-	$(noinst_DATA)					\
 	$(sourcedata)
 
 -include $(top_srcdir)/git.mk
