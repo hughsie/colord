@@ -243,7 +243,8 @@ gamma5000.icc:
 
 if CD_BUILD_PRINT_PROFILES
 FOGRA27L_coated.icc: FOGRA27L.ti3
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -253,7 +254,8 @@ FOGRA27L_coated.icc: FOGRA27L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra27l $@
 FOGRA28L_webcoated.icc: FOGRA28L.ti3
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -263,7 +265,8 @@ FOGRA28L_webcoated.icc: FOGRA28L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra28l $@
 FOGRA29L_uncoated.icc: FOGRA29L.ti3
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -273,7 +276,8 @@ FOGRA29L_uncoated.icc: FOGRA29L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra29l $@
 FOGRA30L_uncoated_yellowish.icc: FOGRA30L.ti3
-	${COLPROF} -kp 0 .3 1. 1. .48 -l340		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 1. 1. .48 -l340			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -283,7 +287,8 @@ FOGRA30L_uncoated_yellowish.icc: FOGRA30L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra30l $@
 FOGRA39L_coated.icc: FOGRA39L.ti3
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -293,7 +298,8 @@ FOGRA39L_coated.icc: FOGRA39L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra39l $@
 FOGRA40L_SC_paper.icc: FOGRA40L.ti3
-	${COLPROF} -kp 0 .3 1. 1. .48 -l340		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 1. 1. .48 -l340			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -303,7 +309,8 @@ FOGRA40L_SC_paper.icc: FOGRA40L.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra40l $@
 GRACoL_TR006_coated.icc: TR006.ti3
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300	\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -313,7 +320,8 @@ GRACoL_TR006_coated.icc: TR006.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr006 $@
 SNAP_TR002_newsprint.icc: TR002.ti3
-	${COLPROF} -kp 0 .4 1. 1. .1 -l320		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .4 1. 1. .1 -l320			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -323,7 +331,8 @@ SNAP_TR002_newsprint.icc: TR002.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr002 $@
 SWOP_TR003_coated_3.icc: TR003.ti3
-	${COLPROF} -kp 0 .3 .94 .94 .4 -l300		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 .94 .94 .4 -l300			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -333,7 +342,8 @@ SWOP_TR003_coated_3.icc: TR003.ti3
 	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
 	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr003 $@
 SWOP_TR005_coated_5.icc: TR005.ti3
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300		\
+	$(AM_V_GEN)						\
+	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
 		-C $(copyright)					\
@@ -345,6 +355,7 @@ SWOP_TR005_coated_5.icc: TR005.ti3
 
 # Total Ink = 230%, Maximum Black = 95%
 ISOnewspaper26.icc: IFRA26S.ti3
+	$(AM_V_GEN)						\
 	${COLPROF} -kr -l230 -L100 -cpp -dpp			\
 		$(colprof_options)				\
 		-A $(colprof_manufacturer)			\
