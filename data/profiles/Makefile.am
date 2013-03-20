@@ -1,5 +1,31 @@
 .NOTPARALLEL:
 
+@INTLTOOL_XML_RULE@
+noinst_DATA =					\
+	AdobeRGB1998.xml			\
+	AppleRGB.xml				\
+	BestRGB.xml				\
+	BetaRGB.xml				\
+	Bluish.xml				\
+	BruceRGB.xml				\
+	CIE-RGB.xml				\
+	ColorMatchRGB.xml			\
+	Crayons.xml				\
+	DonRGB4.xml				\
+	ECI-RGBv2.xml				\
+	EktaSpacePS5.xml			\
+	Gamma5000K.xml				\
+	Gamma5500K.xml				\
+	Gamma6500K.xml				\
+	NTSC-RGB.xml				\
+	PAL-RGB.xml				\
+	ProPhotoRGB.xml				\
+	SMPTE-C-RGB.xml				\
+	sRGB.xml				\
+	SwappedRedAndGreen.xml			\
+	WideGamutRGB.xml			\
+	x11-colors.xml
+
 profilesdir = $(datadir)/color/icc/colord
 generatedprofiles =					\
 	AdobeRGB1998.icc				\
@@ -370,6 +396,29 @@ endif
 sourcedata =						\
 	x11-colors.csv					\
 	crayons.csv					\
+	AdobeRGB1998.xml.in				\
+	AppleRGB.xml.in					\
+	BestRGB.xml.in					\
+	BetaRGB.xml.in					\
+	Bluish.xml.in					\
+	BruceRGB.xml.in					\
+	CIE-RGB.xml.in					\
+	ColorMatchRGB.xml.in				\
+	Crayons.xml.in					\
+	DonRGB4.xml.in					\
+	ECI-RGBv2.xml.in				\
+	EktaSpacePS5.xml.in				\
+	Gamma5000K.xml.in				\
+	Gamma5500K.xml.in				\
+	Gamma6500K.xml.in				\
+	NTSC-RGB.xml.in					\
+	PAL-RGB.xml.in					\
+	ProPhotoRGB.xml.in				\
+	SMPTE-C-RGB.xml.in				\
+	sRGB.xml.in					\
+	SwappedRedAndGreen.xml.in			\
+	WideGamutRGB.xml.in				\
+	x11-colors.xml.in				\
 	FOGRA27L.ti3					\
 	FOGRA28L.ti3					\
 	FOGRA29L.ti3					\
@@ -385,7 +434,11 @@ sourcedata =						\
 CLEANFILES =						\
 	$(generatedprofiles)
 
+DISTCLEANFILES =					\
+	$(noinst_DATA)
+
 EXTRA_DIST =						\
+	$(noinst_DATA)					\
 	$(sourcedata)
 
 -include $(top_srcdir)/git.mk
