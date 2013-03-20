@@ -85,6 +85,8 @@ gboolean	 cd_dom_get_node_yxy			(const GNode	*node,
 							 CdColorYxy	*yxy);
 gboolean	 cd_dom_get_node_lab			(const GNode	*node,
 							 CdColorLab	*lab);
+GHashTable	*cd_dom_get_node_localized		(const GNode	*node,
+							 const gchar	*key);
 
 G_END_DECLS
 

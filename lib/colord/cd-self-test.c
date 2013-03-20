@@ -1501,6 +1501,47 @@ colord_dom_color_func (void)
 }
 
 static void
+colord_dom_localized_func (void)
+{
+	CdColorLab lab;
+	CdColorRGB rgb;
+	CdDom *dom;
+	const gchar *markup = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+		"<profile>"
+		" <copyright>Colors cannot be copyrighted</copyright>"
+		" <copyright xml:lang=\"en_GB\">Colours cannot be copyrighted</copyright>"
+		"</profile>";
+	const gchar *lang;
+	const GNode *tmp;
+	gboolean ret;
+	GError *error = NULL;
+	GHashTable *hash;
+
+	dom = cd_dom_new ();
+
+	/* parse */
+	ret = cd_dom_parse_xml_data (dom, markup, -1, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get node */
+	tmp = cd_dom_get_node (dom, NULL, "profile");
+	g_assert (tmp != NULL);
+
+	hash = cd_dom_get_node_localized (tmp, "copyright");
+	g_assert (hash != NULL);
+	lang = g_hash_table_lookup (hash, "");
+	g_assert_cmpstr (lang, ==, "Colors cannot be copyrighted");
+	lang = g_hash_table_lookup (hash, "en_GB");
+	g_assert_cmpstr (lang, ==, "Colours cannot be copyrighted");
+	lang = g_hash_table_lookup (hash, "fr_FR");
+	g_assert_cmpstr (lang, ==, NULL);
+	g_hash_table_unref (hash);
+
+	g_object_unref (dom);
+}
+
+static void
 colord_color_func (void)
 {
 	CdColorXYZ *xyz;
@@ -3247,6 +3288,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/dom", colord_dom_func);
 	g_test_add_func ("/colord/dom{color}", colord_dom_color_func);
+	g_test_add_func ("/colord/dom{localized}", colord_dom_localized_func);
 	g_test_add_func ("/colord/interp{linear}", colord_interp_linear_func);
 	g_test_add_func ("/colord/interp{akima}", colord_interp_akima_func);
 	g_test_add_func ("/colord/color", colord_color_func);

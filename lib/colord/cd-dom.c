@@ -504,6 +504,55 @@ out:
 }
 
 /**
+ * cd_dom_get_node_localized:
+ * @node: a #GNode
+ * @key: the key to use, e.g. "copyright"
+ *
+ * Extracts localized values from the DOM tree
+ *
+ * Return value: (transfer full): A hash table with the locale (e.g. en_GB) as the key
+ *
+ * Since: 0.1.31
+ **/
+GHashTable *
+cd_dom_get_node_localized (const GNode *node, const gchar *key)
+{
+	CdDomNodeData *data;
+	const gchar *xml_lang;
+	const gchar *data_unlocalized;
+	const gchar *data_localized;
+	GHashTable *hash = NULL;
+	GNode *tmp;
+
+	/* does it exist? */
+	tmp = cd_dom_get_child_node (node, key);
+	if (tmp == NULL)
+		goto out;
+	data_unlocalized = cd_dom_get_node_data (tmp);
+
+	/* find a node called name */
+	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	for (tmp = node->children; tmp != NULL; tmp = tmp->next) {
+		data = tmp->data;
+		if (data == NULL)
+			continue;
+		if (g_strcmp0 (data->name, key) != 0)
+			continue;
+
+		/* avoid storing identical strings */
+		xml_lang = g_hash_table_lookup (data->attributes, "xml:lang");
+		data_localized = data->cdata->str;
+		if (xml_lang != NULL && g_strcmp0 (data_unlocalized, data_localized) == 0)
+			continue;
+		g_hash_table_insert (hash,
+				     g_strdup (xml_lang != NULL ? xml_lang : ""),
+				     g_strdup (data_localized));
+	}
+out:
+	return hash;
+}
+
+/**
  * cd_dom_destroy_node_cb:
  **/
 static gboolean
