@@ -525,6 +525,153 @@ out:
 }
 
 /**
+ * utf8_to_wchar_t:
+ **/
+static wchar_t *
+utf8_to_wchar_t (const char *src)
+{
+	gssize len;
+	gssize converted;
+	wchar_t *buf = NULL;
+
+	len = mbstowcs (NULL, src, 0);
+	if (len < 0) {
+		g_warning ("Invalid UTF-8 in string %s", src);
+		goto out;
+	}
+	len += 1;
+	buf = g_malloc (sizeof (wchar_t) * len);
+	converted = mbstowcs (buf, src, len - 1);
+	g_assert (converted != -1);
+	buf[converted] = '\0';
+out:
+	return buf;
+}
+
+typedef struct {
+	gchar		*language_code;	/* will always be xx\0 */
+	gchar		*country_code;	/* will always be xx\0 */
+	wchar_t		*wtext;
+} CdMluObject;
+
+/**
+ * cd_util_mlu_object_free:
+ **/
+static void
+cd_util_mlu_object_free (gpointer data)
+{
+	CdMluObject *obj = (CdMluObject *) data;
+	g_free (obj->language_code);
+	g_free (obj->country_code);
+	g_free (obj->wtext);
+	g_free (obj);
+}
+
+/**
+ * cd_util_mlu_object_parse:
+ **/
+static CdMluObject *
+cd_util_mlu_object_parse (const gchar *locale, const gchar *utf8_text)
+{
+	CdMluObject *obj = NULL;
+	gchar **split = NULL;
+	guint type;
+	wchar_t *wtext;
+
+	/* untranslated version */
+	if (locale == NULL || locale[0] == '\0') {
+		obj = g_new0 (CdMluObject, 1);
+		obj->wtext = utf8_to_wchar_t (utf8_text);;
+		goto out;
+	}
+
+	/* ignore ##@latin */
+	if (g_strstr_len (locale, -1, "@") != NULL)
+		goto out;
+	split = g_strsplit (locale, "_", -1);
+	if (strlen (split[0]) != 2)
+		goto out;
+	type = g_strv_length (split);
+	if (type > 2)
+		goto out;
+
+	/* convert to wchars */
+	wtext = utf8_to_wchar_t (utf8_text);
+	if (wtext == NULL)
+		goto out;
+
+	/* lv */
+	if (type == 1) {
+		obj = g_new0 (CdMluObject, 1);
+		obj->language_code = g_strdup (split[0]);
+		obj->wtext = wtext;
+		goto out;
+	}
+
+	/* en_GB */
+	if (strlen (split[1]) != 2)
+		goto out;
+	obj = g_new0 (CdMluObject, 1);
+	obj->language_code = g_strdup (split[0]);
+	obj->country_code = g_strdup (split[1]);
+	obj->wtext = wtext;
+out:
+	g_strfreev (split);
+	return obj;
+}
+
+/**
+ * cd_util_write_tag_localized:
+ **/
+static gboolean
+cd_util_write_tag_localized (cmsHPROFILE lcms_profile,
+			     cmsTagSignature sig,
+			     GHashTable *hash)
+{
+	CdMluObject *obj;
+	cmsMLU *mlu;
+	const gchar *locale;
+	gboolean ret;
+	GList *keys;
+	GList *l;
+	GPtrArray *array;
+	guint i;
+
+	/* convert all the hash entries into CdMluObject's */
+	keys = g_hash_table_get_keys (hash);
+	array = g_ptr_array_new_with_free_func (cd_util_mlu_object_free);
+	for (l = keys; l != NULL; l = l->next) {
+		locale = l->data;
+		obj = cd_util_mlu_object_parse (locale,
+						g_hash_table_lookup (hash, locale));
+		if (obj == NULL)
+			continue;
+		g_ptr_array_add (array, obj);
+	}
+	g_list_free (keys);
+
+	/* create MLU object to hold all the translations */
+	mlu = cmsMLUalloc (0, array->len);
+	for (i = 0; i < array->len; i++) {
+		obj = g_ptr_array_index (array, i);
+		ret = cmsMLUsetWide (mlu,
+				     obj->language_code != NULL ? obj->language_code : cmsNoLanguage,
+				     obj->country_code != NULL ? obj->country_code : cmsNoCountry,
+				     obj->wtext);
+		if (!ret)
+			goto out;
+	}
+
+	/* write tag */
+	ret = cmsWriteTag (lcms_profile, sig, mlu);
+	if (!ret)
+		goto out;
+out:
+	cmsMLUfree (mlu);
+	return ret;
+}
+
+/**
  * cd_util_create_from_xml:
  **/
 static gboolean
@@ -538,6 +685,7 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 	const GNode *tmp;
 	gboolean ret = TRUE;
 	gchar *data = NULL;
+	GHashTable *hash;
 	gssize data_len = -1;
 
 	/* parse the XML into DOM */
@@ -623,49 +771,53 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 	}
 
 	/* optional localized keys */
-	tmp = cd_dom_get_node (dom, profile, "description");
-	if (tmp != NULL) {
-		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
-					     cmsSigProfileDescriptionTag,
-					     cd_dom_get_node_data (tmp));
+	hash = cd_dom_get_node_localized (profile, "description");
+	if (hash != NULL) {
+		ret = cd_util_write_tag_localized (priv->lcms_profile,
+						   cmsSigProfileDescriptionTag,
+						   hash);
 		if (!ret) {
 			g_set_error_literal (error, 1, 0,
 					     "failed to write description");
 			goto out;
 		}
+		g_hash_table_unref (hash);
 	}
-	tmp = cd_dom_get_node (dom, profile, "copyright");
-	if (tmp != NULL) {
-		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
-					     cmsSigCopyrightTag,
-					     cd_dom_get_node_data (tmp));
+	hash = cd_dom_get_node_localized (profile, "copyright");
+	if (hash != NULL) {
+		ret = cd_util_write_tag_localized (priv->lcms_profile,
+						   cmsSigCopyrightTag,
+						   hash);
 		if (!ret) {
 			g_set_error_literal (error, 1, 0,
 					     "failed to write copyright");
 			goto out;
 		}
+		g_hash_table_unref (hash);
 	}
-	tmp = cd_dom_get_node (dom, profile, "model");
-	if (tmp != NULL) {
-		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
-					     cmsSigDeviceModelDescTag,
-					     cd_dom_get_node_data (tmp));
+	hash = cd_dom_get_node_localized (profile, "model");
+	if (hash != NULL) {
+		ret = cd_util_write_tag_localized (priv->lcms_profile,
+						   cmsSigDeviceModelDescTag,
+						   hash);
 		if (!ret) {
 			g_set_error_literal (error, 1, 0,
 					     "failed to write model");
 			goto out;
 		}
+		g_hash_table_unref (hash);
 	}
-	tmp = cd_dom_get_node (dom, profile, "manufacturer");
-	if (tmp != NULL) {
-		ret = _cmsWriteTagTextAscii (priv->lcms_profile,
-					     cmsSigDeviceMfgDescTag,
-					     cd_dom_get_node_data (tmp));
+	hash = cd_dom_get_node_localized (profile, "manufacturer");
+	if (hash != NULL) {
+		ret = cd_util_write_tag_localized (priv->lcms_profile,
+						   cmsSigDeviceMfgDescTag,
+						   hash);
 		if (!ret) {
 			g_set_error_literal (error, 1, 0,
 					     "failed to write manufacturer");
 			goto out;
 		}
+		g_hash_table_unref (hash);
 	}
 out:
 	g_free (data);
