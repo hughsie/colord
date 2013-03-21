@@ -94,6 +94,8 @@ void		 cd_color_xyz_copy			(const CdColorXYZ	*src,
 							 CdColorXYZ		*dest);
 void		 cd_color_yxy_copy			(const CdColorYxy	*src,
 							 CdColorYxy		*dest);
+void		 cd_color_lab_copy			(const CdColorLab	*src,
+							 CdColorLab		*dest);
 void		 cd_color_xyz_clear			(CdColorXYZ		*dest);
 void		 cd_color_rgb_copy			(const CdColorRGB	*src,
 							 CdColorRGB		*dest);

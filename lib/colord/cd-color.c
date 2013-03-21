@@ -380,6 +380,26 @@ cd_color_yxy_copy (const CdColorYxy *src, CdColorYxy *dest)
 }
 
 /**
+ * cd_color_lab_copy:
+ * @src: the source color
+ * @dest: the destination color
+ *
+ * Deep copies a color value.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_color_lab_copy (const CdColorLab *src, CdColorLab *dest)
+{
+	g_return_if_fail (src != NULL);
+	g_return_if_fail (dest != NULL);
+
+	dest->L = src->L;
+	dest->a = src->a;
+	dest->b = src->b;
+}
+
+/**
  * cd_color_rgb_copy:
  * @src: the source color
  * @dest: the destination color
