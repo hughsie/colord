@@ -47,6 +47,7 @@ static void	cd_icc_finalize		(GObject	*object);
 struct _CdIccPrivate
 {
 	cmsHPROFILE		 lcms_profile;
+	gchar			*filename;
 	guint32			 size;
 };
 
@@ -55,6 +56,7 @@ G_DEFINE_TYPE (CdIcc, cd_icc, G_TYPE_OBJECT)
 enum {
 	PROP_0,
 	PROP_SIZE,
+	PROP_FILENAME,
 	PROP_LAST
 };
 
@@ -377,6 +379,7 @@ cd_icc_load_file (CdIcc *icc,
 		  GFile *file,
 		  GError **error)
 {
+	CdIccPrivate *priv = icc->priv;
 	gboolean ret = FALSE;
 	gchar *data = NULL;
 	GError *error_local = NULL;
@@ -402,6 +405,9 @@ cd_icc_load_file (CdIcc *icc,
 	ret = cd_icc_load_data (icc, (const guint8 *) data, length, error);
 	if (!ret)
 		goto out;
+
+	/* save filename for later */
+	priv->filename = g_file_get_path (file);
 out:
 	g_free (data);
 	return ret;
@@ -488,6 +494,24 @@ cd_icc_get_size (CdIcc *icc)
 }
 
 /**
+ * cd_icc_get_filename:
+ * @icc: A valid #CdIcc
+ *
+ * Gets the filename of the ICC data, if one exists.
+ *
+ * Return value: A filename, or %NULL
+ *
+ * Since: 0.1.32
+ **/
+const gchar *
+cd_icc_get_filename (CdIcc *icc)
+{
+	CdIccPrivate *priv = icc->priv;
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return priv->filename;
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
@@ -499,6 +523,9 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 	switch (prop_id) {
 	case PROP_SIZE:
 		g_value_set_uint (value, priv->size);
+		break;
+	case PROP_FILENAME:
+		g_value_set_string (value, priv->filename);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -540,6 +567,14 @@ cd_icc_class_init (CdIccClass *klass)
 				   G_PARAM_READABLE);
 	g_object_class_install_property (object_class, PROP_SIZE, pspec);
 
+	/**
+	 * CdIcc:filename:
+	 */
+	pspec = g_param_spec_string ("filename", NULL, NULL,
+				     NULL,
+				     G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_FILENAME, pspec);
+
 	g_type_class_add_private (klass, sizeof (CdIccPrivate));
 }
 
@@ -561,6 +596,7 @@ cd_icc_finalize (GObject *object)
 	CdIcc *icc = CD_ICC (object);
 	CdIccPrivate *priv = icc->priv;
 
+	g_free (priv->filename);
 	if (priv->lcms_profile != NULL)
 		cmsCloseProfile (priv->lcms_profile);
 

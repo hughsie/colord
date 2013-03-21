@@ -97,6 +97,7 @@ gboolean	 cd_icc_load_fd				(CdIcc		*icc,
 gchar		*cd_icc_to_string			(CdIcc		*icc);
 gpointer	 cd_icc_get_handle			(CdIcc		*icc);
 guint32		 cd_icc_get_size			(CdIcc		*icc);
+const gchar	*cd_icc_get_filename			(CdIcc		*icc);
 
 G_END_DECLS
 

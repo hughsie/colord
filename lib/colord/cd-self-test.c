@@ -3308,6 +3308,7 @@ colord_icc_func (void)
 
 	/* check profile properties */
 	g_assert_cmpint (cd_icc_get_size (icc), ==, 25244);
+	g_assert (g_str_has_suffix (cd_icc_get_filename (icc), "ibm-t61.icc"));
 
 	/* marshall to a string */
 	tmp = cd_icc_to_string (icc);
