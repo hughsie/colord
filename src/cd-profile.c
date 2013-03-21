@@ -1475,8 +1475,11 @@ cd_profile_set_filename (CdProfile *profile,
 {
 	CdProfilePrivate *priv = profile->priv;
 	cmsHPROFILE lcms_profile = NULL;
+	CdIcc *icc = NULL;
 	const gchar *tmp;
 	gboolean ret = FALSE;
+	GError *error_local = NULL;
+	GFile *file = NULL;
 	GBytes *gdata = NULL;
 	gchar *data = NULL;
 	gchar *fake_md5 = NULL;
@@ -1537,21 +1540,26 @@ cd_profile_set_filename (CdProfile *profile,
 	}
 
 	/* load the ICC file using lcms */
+	icc = cd_icc_new ();
 	if (gdata != NULL) {
 		g_debug ("Using built-in %s", data);
-		lcms_profile = cmsOpenProfileFromMem (g_bytes_get_data (gdata, NULL),
-						      g_bytes_get_size (gdata));
+		ret = cd_icc_load_data (icc,
+					 g_bytes_get_data (gdata, NULL),
+					 g_bytes_get_size (gdata),
+					 &error_local);
 	} else {
-		lcms_profile = cmsOpenProfileFromFile (filename, "r");
-		if (lcms_profile == NULL) {
-			g_set_error (error,
+		file = g_file_new_for_path (filename);
+		ret = cd_icc_load_file (icc, file, &error_local);
+	}
+	if (!ret) {
+		g_set_error_literal (error,
 				     CD_PROFILE_ERROR,
 				     CD_PROFILE_ERROR_FAILED_TO_PARSE,
-				     "failed to parse %s",
-				     filename);
-			goto out;
-		}
+				     error_local->message);
+		g_error_free (error_local);
+		goto out;
 	}
+	lcms_profile = cd_icc_get_handle (icc);
 
 	/* set the virtual profile from the lcms profile */
 	ret = cd_profile_set_from_profile (profile, lcms_profile, error);
@@ -1590,8 +1598,10 @@ out:
 	g_free (fake_md5);
 	if (gdata != NULL)
 		g_bytes_unref (gdata);
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
+	if (icc != NULL)
+		g_object_unref (icc);
+	if (file != NULL)
+		g_object_unref (file);
 	return ret;
 }
 
@@ -1603,10 +1613,11 @@ cd_profile_set_fd (CdProfile *profile,
 		   gint fd,
 		   GError **error)
 {
-	cmsHPROFILE lcms_profile = NULL;
-	FILE *stream = NULL;
-	gboolean ret = FALSE;
+	CdIcc *icc = NULL;
+	GError *error_local = NULL;
 	CdProfilePrivate *priv = profile->priv;
+	cmsHPROFILE lcms_profile = NULL;
+	gboolean ret = FALSE;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
@@ -1620,14 +1631,15 @@ cd_profile_set_fd (CdProfile *profile,
 		goto out;
 	}
 
-	/* convert the file descriptor to a stream */
-	stream = fdopen (fd, "r");
-	if (stream == NULL) {
-		g_set_error (error,
-			     CD_PROFILE_ERROR,
-			     CD_PROFILE_ERROR_FAILED_TO_READ,
-			     "failed to open stream from fd %i",
-			     fd);
+	/* open fd and parse the file */
+	icc = cd_icc_new ();
+	ret = cd_icc_load_fd (icc, fd, &error_local);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_PROFILE_ERROR,
+				     CD_PROFILE_ERROR_FAILED_TO_READ,
+				     error_local->message);
+		g_error_free (error_local);
 		goto out;
 	}
 
@@ -1644,17 +1656,8 @@ cd_profile_set_fd (CdProfile *profile,
 	}
 #endif
 
-	/* parse the ICC file */
-	lcms_profile = cmsOpenProfileFromStream (stream, "r");
-	if (lcms_profile == NULL) {
-		g_set_error_literal (error,
-				     CD_PROFILE_ERROR,
-				     CD_PROFILE_ERROR_FAILED_TO_READ,
-				     "failed to open stream");
-		goto out;
-	}
-
 	/* set the virtual profile from the lcms profile */
+	lcms_profile = cd_icc_get_handle (icc);
 	ret = cd_profile_set_from_profile (profile, lcms_profile, error);
 	if (!ret)
 		goto out;
@@ -1662,8 +1665,8 @@ cd_profile_set_fd (CdProfile *profile,
 	/* emit all the things that could have changed */
 	cd_profile_emit_parsed_property_changed (profile);
 out:
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
+	if (icc != NULL)
+		g_object_unref (icc);
 	return ret;
 }
 
