@@ -1290,7 +1290,7 @@ out:
  **/
 static gboolean
 cd_profile_set_from_profile (CdProfile *profile,
-			     cmsHPROFILE lcms_profile,
+			     CdIcc *icc,
 			     GError **error)
 {
 	CdProfilePrivate *priv = profile->priv;
@@ -1302,8 +1302,10 @@ cd_profile_set_from_profile (CdProfile *profile,
 	gchar text[1024];
 	guint i;
 	struct tm created;
+	cmsHPROFILE lcms_profile;
 
 	/* get the description as the title */
+	lcms_profile = cd_icc_get_handle (icc);
 	cmsGetProfileInfoASCII (lcms_profile,
 				cmsInfoDescription,
 				"en", "US",
@@ -1311,31 +1313,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 	priv->title = cd_profile_fixup_title (text);
 
 	/* get the profile kind */
-	switch (cmsGetDeviceClass (lcms_profile)) {
-	case cmsSigInputClass:
-		priv->kind = CD_PROFILE_KIND_INPUT_DEVICE;
-		break;
-	case cmsSigDisplayClass:
-		priv->kind = CD_PROFILE_KIND_DISPLAY_DEVICE;
-		break;
-	case cmsSigOutputClass:
-		priv->kind = CD_PROFILE_KIND_OUTPUT_DEVICE;
-		break;
-	case cmsSigLinkClass:
-		priv->kind = CD_PROFILE_KIND_DEVICELINK;
-		break;
-	case cmsSigColorSpaceClass:
-		priv->kind = CD_PROFILE_KIND_COLORSPACE_CONVERSION;
-		break;
-	case cmsSigAbstractClass:
-		priv->kind = CD_PROFILE_KIND_ABSTRACT;
-		break;
-	case cmsSigNamedColorClass:
-		priv->kind = CD_PROFILE_KIND_NAMED_COLOR;
-		break;
-	default:
-		priv->kind = CD_PROFILE_KIND_UNKNOWN;
-	}
+	priv->kind = cd_icc_get_kind (icc);
 
 	/* get colorspace */
 	color_space = cmsGetColorSpace (lcms_profile);
@@ -1474,7 +1452,6 @@ cd_profile_set_filename (CdProfile *profile,
 			 GError **error)
 {
 	CdProfilePrivate *priv = profile->priv;
-	cmsHPROFILE lcms_profile = NULL;
 	CdIcc *icc = NULL;
 	const gchar *tmp;
 	gboolean ret = FALSE;
@@ -1559,10 +1536,9 @@ cd_profile_set_filename (CdProfile *profile,
 		g_error_free (error_local);
 		goto out;
 	}
-	lcms_profile = cd_icc_get_handle (icc);
 
 	/* set the virtual profile from the lcms profile */
-	ret = cd_profile_set_from_profile (profile, lcms_profile, error);
+	ret = cd_profile_set_from_profile (profile, icc, error);
 	if (!ret)
 		goto out;
 
@@ -1616,7 +1592,6 @@ cd_profile_set_fd (CdProfile *profile,
 	CdIcc *icc = NULL;
 	GError *error_local = NULL;
 	CdProfilePrivate *priv = profile->priv;
-	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret = FALSE;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
@@ -1657,8 +1632,7 @@ cd_profile_set_fd (CdProfile *profile,
 #endif
 
 	/* set the virtual profile from the lcms profile */
-	lcms_profile = cd_icc_get_handle (icc);
-	ret = cd_profile_set_from_profile (profile, lcms_profile, error);
+	ret = cd_profile_set_from_profile (profile, icc, error);
 	if (!ret)
 		goto out;
 

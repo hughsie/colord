@@ -46,6 +46,7 @@ static void	cd_icc_finalize		(GObject	*object);
  **/
 struct _CdIccPrivate
 {
+	CdProfileKind		 kind;
 	cmsHPROFILE		 lcms_profile;
 	gchar			*filename;
 	gdouble			 version;
@@ -59,6 +60,7 @@ enum {
 	PROP_SIZE,
 	PROP_FILENAME,
 	PROP_VERSION,
+	PROP_KIND,
 	PROP_LAST
 };
 
@@ -147,6 +149,10 @@ cd_icc_to_string (CdIcc *icc)
 	/* version */
 	g_string_append_printf (str, "  Version\t= %.1f\n",
 				cd_icc_get_version (icc));
+
+	/* device class */
+	g_string_append_printf (str, "  Profile Kind\t= %s\n",
+				cd_profile_kind_to_string (cd_icc_get_kind (icc)));
 
 	/* print tags */
 	g_string_append (str, "\n");
@@ -328,6 +334,33 @@ cd_icc_load (CdIcc *icc)
 
 	/* get version */
 	priv->version = cmsGetProfileVersion (priv->lcms_profile);
+
+	/* get the profile kind */
+	switch (cmsGetDeviceClass (priv->lcms_profile)) {
+	case cmsSigInputClass:
+		priv->kind = CD_PROFILE_KIND_INPUT_DEVICE;
+		break;
+	case cmsSigDisplayClass:
+		priv->kind = CD_PROFILE_KIND_DISPLAY_DEVICE;
+		break;
+	case cmsSigOutputClass:
+		priv->kind = CD_PROFILE_KIND_OUTPUT_DEVICE;
+		break;
+	case cmsSigLinkClass:
+		priv->kind = CD_PROFILE_KIND_DEVICELINK;
+		break;
+	case cmsSigColorSpaceClass:
+		priv->kind = CD_PROFILE_KIND_COLORSPACE_CONVERSION;
+		break;
+	case cmsSigAbstractClass:
+		priv->kind = CD_PROFILE_KIND_ABSTRACT;
+		break;
+	case cmsSigNamedColorClass:
+		priv->kind = CD_PROFILE_KIND_NAMED_COLOR;
+		break;
+	default:
+		priv->kind = CD_PROFILE_KIND_UNKNOWN;
+	}
 }
 
 /**
@@ -553,6 +586,23 @@ cd_icc_get_version (CdIcc *icc)
 }
 
 /**
+ * cd_icc_get_kind:
+ * @icc: a #CdIcc instance.
+ *
+ * Gets the profile kind.
+ *
+ * Return value: The kind, e.g. CD_PROFILE_KIND_INPUT
+ *
+ * Since: 0.1.32
+ **/
+CdProfileKind
+cd_icc_get_kind (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), CD_PROFILE_KIND_UNKNOWN);
+	return icc->priv->kind;
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
@@ -570,6 +620,9 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 		break;
 	case PROP_VERSION:
 		g_value_set_double (value, priv->version);
+		break;
+	case PROP_KIND:
+		g_value_set_uint (value, priv->kind);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -627,6 +680,14 @@ cd_icc_class_init (CdIccClass *klass)
 				     G_PARAM_READABLE);
 	g_object_class_install_property (object_class, PROP_VERSION, pspec);
 
+	/**
+	 * CdIcc:kind:
+	 */
+	pspec = g_param_spec_uint ("kind", NULL, NULL,
+				   0, G_MAXUINT, 0,
+				   G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_KIND, pspec);
+
 	g_type_class_add_private (klass, sizeof (CdIccPrivate));
 }
 
@@ -637,6 +698,7 @@ static void
 cd_icc_init (CdIcc *icc)
 {
 	icc->priv = CD_ICC_GET_PRIVATE (icc);
+	icc->priv->kind = CD_PROFILE_KIND_UNKNOWN;
 }
 
 /**
