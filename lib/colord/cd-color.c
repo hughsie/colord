@@ -81,6 +81,7 @@ cd_color_yxy_dup (const CdColorYxy *src)
 	CdColorYxy *dest;
 	g_return_val_if_fail (src != NULL, NULL);
 	dest = cd_color_yxy_new ();
+	dest->Y = src->Y;
 	dest->x = src->x;
 	dest->y = src->y;
 	return dest;
