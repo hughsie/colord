@@ -47,9 +47,16 @@ static void	cd_icc_finalize		(GObject	*object);
 struct _CdIccPrivate
 {
 	cmsHPROFILE		 lcms_profile;
+	guint32			 size;
 };
 
 G_DEFINE_TYPE (CdIcc, cd_icc, G_TYPE_OBJECT)
+
+enum {
+	PROP_0,
+	PROP_SIZE,
+	PROP_LAST
+};
 
 /**
  * cd_icc_error_quark:
@@ -127,6 +134,11 @@ cd_icc_to_string (CdIcc *icc)
 
 	/* print header */
 	str = g_string_new ("icc:\nHeader:\n");
+
+	/* print size */
+	tmp = cd_icc_get_size (icc);
+	if (tmp > 0)
+		g_string_append_printf (str, "  Size\t\t= %i bytes\n", tmp);
 
 	/* print tags */
 	g_string_append (str, "\n");
@@ -343,6 +355,9 @@ cd_icc_load_data (CdIcc *icc,
 				     "failed to load: not an ICC icc");
 		goto out;
 	}
+
+	/* save length to avoid trusting the profile */
+	priv->size = data_len;
 out:
 	return ret;
 }
@@ -457,13 +472,74 @@ cd_icc_get_handle (CdIcc *icc)
 }
 
 /**
+ * cd_icc_get_size:
+ *
+ * Gets the ICC profile file size
+ *
+ * Return value: The size in bytes, or 0 for unknown.
+ *
+ * Since: 0.1.32
+ **/
+guint32
+cd_icc_get_size (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), 0);
+	return icc->priv->size;
+}
+
+/**
+ * cd_icc_get_property:
+ **/
+static void
+cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+{
+	CdIcc *icc = CD_ICC (object);
+	CdIccPrivate *priv = icc->priv;
+
+	switch (prop_id) {
+	case PROP_SIZE:
+		g_value_set_uint (value, priv->size);
+		break;
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+/**
+ * cd_icc_set_property:
+ **/
+static void
+cd_icc_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
+{
+	switch (prop_id) {
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+/**
  * cd_icc_class_init:
  */
 static void
 cd_icc_class_init (CdIccClass *klass)
 {
+	GParamSpec *pspec;
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
 	object_class->finalize = cd_icc_finalize;
+	object_class->get_property = cd_icc_get_property;
+	object_class->set_property = cd_icc_set_property;
+
+	/**
+	 * CdIcc:size:
+	 */
+	pspec = g_param_spec_uint ("size", NULL, NULL,
+				   0, G_MAXUINT, 0,
+				   G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_SIZE, pspec);
+
 	g_type_class_add_private (klass, sizeof (CdIccPrivate));
 }
 

@@ -3306,6 +3306,9 @@ colord_icc_func (void)
 	handle = cd_icc_get_handle (icc);
 	g_assert (handle != NULL);
 
+	/* check profile properties */
+	g_assert_cmpint (cd_icc_get_size (icc), ==, 25244);
+
 	/* marshall to a string */
 	tmp = cd_icc_to_string (icc);
 	g_assert_cmpstr (tmp, !=, NULL);
