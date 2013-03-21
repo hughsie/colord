@@ -1503,8 +1503,6 @@ colord_dom_color_func (void)
 static void
 colord_dom_localized_func (void)
 {
-	CdColorLab lab;
-	CdColorRGB rgb;
 	CdDom *dom;
 	const gchar *markup = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
 		"<profile>"
