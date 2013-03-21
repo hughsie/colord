@@ -28,6 +28,8 @@
 
 #include <glib.h>
 #include <lcms2.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "cd-icc.h"
 
@@ -66,6 +68,38 @@ cd_icc_error_quark (void)
 }
 
 /**
+ * cd_icc_fix_utf8_string:
+ *
+ * NC entries are supposed to be 7-bit ASCII, although some profile vendors
+ * try to be clever which breaks handling them as UTF-8.
+ **/
+static gboolean
+cd_icc_fix_utf8_string (GString *string)
+{
+	guint i;
+	guchar tmp;
+
+	/* replace clever characters */
+	for (i = 0; i < string->len; i++) {
+		tmp = (guchar) string->str[i];
+
+		/* (R) */
+		if (tmp == 0xae) {
+			string->str[i] = 0xc2;
+			g_string_insert_c (string, i + 1, tmp);
+			i += 1;
+		}
+
+		/* unknown */
+		if (tmp == 0x86)
+			g_string_erase (string, i, 1);
+	}
+
+	/* check if we repaired it okay */
+	return g_utf8_validate (string->str, string->len, NULL);
+}
+
+/**
  * cd_icc_to_string:
  * @icc: a #CdIcc instance.
  *
@@ -78,10 +112,184 @@ cd_icc_error_quark (void)
 gchar *
 cd_icc_to_string (CdIcc *icc)
 {
+	CdIccPrivate *priv = icc->priv;
+	cmsInt32Number tag_size;
+	cmsTagSignature sig;
+	cmsTagTypeSignature tag_type;
+	gboolean ret;
+	gchar tag_str[5] = "    ";
 	GString *str;
+	guint32 i;
+	guint32 number_tags;
+	guint32 tmp;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
 	/* print header */
 	str = g_string_new ("icc:\nHeader:\n");
+
+	/* print tags */
+	g_string_append (str, "\n");
+	number_tags = cmsGetTagCount (priv->lcms_profile);
+	for (i = 0; i < number_tags; i++) {
+		sig = cmsGetTagSignature (priv->lcms_profile, i);
+
+		/* convert to text */
+		tmp = GUINT32_FROM_BE (sig);
+		memcpy (tag_str, &tmp, 4);
+
+		/* print header */
+		g_string_append_printf (str, "tag %02i:\n", i);
+		g_string_append_printf (str, "  sig\t'%s' [0x%x]\n", tag_str, sig);
+		tag_size = cmsReadRawTag (priv->lcms_profile, sig, &tmp, 4);
+		memcpy (tag_str, &tmp, 4);
+		tag_type = GUINT32_FROM_BE (tmp);
+		g_string_append_printf (str, "  type\t'%s' [0x%x]\n", tag_str, tag_type);
+		g_string_append_printf (str, "  size\t%i\n", tag_size);
+
+		/* print tag details */
+		switch (tag_type) {
+		case cmsSigTextType:
+		case cmsSigTextDescriptionType:
+		case cmsSigMultiLocalizedUnicodeType:
+		{
+			cmsMLU *mlu;
+			gchar text_buffer[128];
+			guint32 text_size;
+
+			g_string_append_printf (str, "Text:\n");
+			mlu = cmsReadTag (priv->lcms_profile, sig);
+			if (mlu == NULL) {
+				g_string_append_printf (str, "  Info:\t\tMLU invalid!\n");
+				break;
+			}
+			text_size = cmsMLUgetASCII (mlu,
+						    cmsNoLanguage,
+						    cmsNoCountry,
+						    text_buffer,
+						    sizeof (text_buffer));
+			if (text_size > 0) {
+				g_string_append_printf (str, "  en_US:\t%s [%i bytes]\n",
+							text_buffer, text_size);
+			}
+			break;
+		}
+		case cmsSigXYZType:
+		{
+			cmsCIEXYZ *xyz;
+			xyz = cmsReadTag (priv->lcms_profile, sig);
+			g_string_append_printf (str, "XYZ:\n");
+			g_string_append_printf (str, "  X:%f Y:%f Z:%f\n",
+						xyz->X, xyz->Y, xyz->Z);
+			break;
+		}
+		case cmsSigCurveType:
+		{
+			cmsToneCurve *curve;
+			gdouble estimated_gamma;
+			g_string_append_printf (str, "Curve:\n");
+			curve = cmsReadTag (priv->lcms_profile, sig);
+			estimated_gamma = cmsEstimateGamma (curve, 0.01);
+			if (estimated_gamma > 0) {
+				g_string_append_printf (str,
+							"  Curve is gamma of %f\n",
+							estimated_gamma);
+			}
+			break;
+		}
+		case cmsSigDictType:
+		{
+			cmsHANDLE dict;
+			const cmsDICTentry *entry;
+			gchar ascii_name[1024];
+			gchar ascii_value[1024];
+
+			g_string_append_printf (str, "Dictionary:\n");
+			dict = cmsReadTag (priv->lcms_profile, sig);
+			for (entry = cmsDictGetEntryList (dict);
+			     entry != NULL;
+			     entry = cmsDictNextEntry (entry)) {
+
+				/* convert from wchar_t to UTF-8 */
+				wcstombs (ascii_name, entry->Name, sizeof (ascii_name));
+				wcstombs (ascii_value, entry->Value, sizeof (ascii_value));
+				g_string_append_printf (str, "  %s\t->\t%s\n",
+							ascii_name, ascii_value);
+			}
+			break;
+		}
+		case cmsSigNamedColor2Type:
+		{
+			CdColorLab lab;
+			cmsNAMEDCOLORLIST *nc2;
+			cmsUInt16Number pcs[3];
+			gchar name[cmsMAX_PATH];
+			gchar prefix[33];
+			gchar suffix[33];
+			GString *string;
+			guint j;
+
+			g_string_append_printf (str, "Named colors:\n");
+			nc2 = cmsReadTag (priv->lcms_profile, sig);
+			if (nc2 == NULL) {
+				g_string_append_printf (str, "  Info:\t\tNC invalid!\n");
+				continue;
+			}
+
+			/* get the number of NCs */
+			tmp = cmsNamedColorCount (nc2);
+			if (tmp == 0) {
+				g_string_append_printf (str, "  Info:\t\tNo NC's!\n");
+				continue;
+			}
+			for (j = 0; j < tmp; j++) {
+
+				/* parse title */
+				string = g_string_new ("");
+				ret = cmsNamedColorInfo (nc2, j,
+							 name,
+							 prefix,
+							 suffix,
+							 (cmsUInt16Number *)&pcs,
+							 NULL);
+				if (!ret) {
+					g_string_append_printf (str, "  Info:\t\tFailed to get NC #%i", j);
+					continue;
+				}
+				if (prefix[0] != '\0')
+					g_string_append_printf (string, "%s ", prefix);
+				g_string_append (string, name);
+				if (suffix[0] != '\0')
+					g_string_append_printf (string, " %s", suffix);
+
+				/* check is valid */
+				ret = g_utf8_validate (string->str, string->len, NULL);
+				if (!ret) {
+					g_string_append (str, "  Info:\t\tInvalid 7 bit ASCII / UTF8\n");
+					ret = cd_icc_fix_utf8_string (string);
+					if (!ret) {
+						g_string_append (str, "  Info:\t\tIFailed to fix: skipping entry\n");
+						continue;
+					}
+				}
+
+				/* get color */
+				cmsLabEncoded2Float ((cmsCIELab *) &lab, pcs);
+				g_string_append_printf (str, "  %03i:\t %s\tL:%.2f a:%.3f b:%.3f\n",
+							j,
+							string->str,
+							lab.L, lab.a, lab.b);
+				g_string_free (string, TRUE);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+
+		/* done! */
+		g_string_append_printf (str, "\n");
+	}
 
 	/* remove trailing newline */
 	if (str->len > 0)

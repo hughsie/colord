@@ -28,6 +28,7 @@ libclientprivate_a_SOURCES =				\
 bin_PROGRAMS =						\
 	colormgr					\
 	cd-create-profile				\
+	cd-iccdump					\
 	cd-fix-profile
 
 colormgr_SOURCES =					\
@@ -52,6 +53,19 @@ cd_fix_profile_LDADD =					\
 	-lm
 
 cd_fix_profile_CFLAGS =					\
+	$(WARNINGFLAGS_C)
+
+cd_iccdump_SOURCES =					\
+	cd-iccdump.c
+
+cd_iccdump_LDADD =					\
+	libclientprivate.a				\
+	$(GLIB_LIBS)					\
+	$(LCMS_LIBS)					\
+	$(COLORD_LIBS)					\
+	-lm
+
+cd_iccdump_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
 cd_create_profile_SOURCES =				\
