@@ -40,6 +40,7 @@
 #include "cd-device.h"
 #include "cd-device-sync.h"
 #include "cd-dom.h"
+#include "cd-icc.h"
 #include "cd-interp-akima.h"
 #include "cd-interp-linear.h"
 #include "cd-interp.h"
@@ -3272,6 +3273,48 @@ colord_buffer_func (void)
 	g_assert_cmpint (cd_buffer_read_uint16_le (buffer), ==, 8192);
 }
 
+static void
+colord_icc_func (void)
+{
+	CdIcc *icc;
+	gboolean ret;
+	gchar *filename;
+	gchar *tmp;
+	GError *error = NULL;
+	GFile *file;
+	gpointer handle;
+
+	/* test invalid */
+	icc = cd_icc_new ();
+	file = g_file_new_for_path ("not-going-to-exist.icc");
+	ret = cd_icc_load_file (icc, file, &error);
+	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_FAILED_TO_OPEN);
+	g_assert (!ret);
+	g_clear_error (&error);
+	g_object_unref (file);
+
+	/* test actual file */
+	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_load_file (icc, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_free (filename);
+
+	/* get handle */
+	handle = cd_icc_get_handle (icc);
+	g_assert (handle != NULL);
+
+	/* marshall to a string */
+	tmp = cd_icc_to_string (icc);
+	g_assert_cmpstr (tmp, !=, NULL);
+	g_debug ("CdIcc: '%s'", tmp);
+	g_free (tmp);
+
+	g_object_unref (icc);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -3282,6 +3325,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/dom", colord_dom_func);
