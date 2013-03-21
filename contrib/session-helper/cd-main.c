@@ -1099,14 +1099,14 @@ out:
 static gboolean
 cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 {
+	CdIcc *icc;
 	cmsHANDLE dict_md = NULL;
 	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret;
 	gchar *brightness_str = NULL;
-	gchar *data = NULL;
 	gchar *profile_fn = NULL;
 	gchar *profile_path = NULL;
-	gsize len;
+	GFile *file = NULL;
 
 	/* get profile */
 	profile_fn = g_strdup_printf ("%s.icc", priv->basename);
@@ -1115,19 +1115,12 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 					 NULL);
 
 	/* open profile */
-	ret = g_file_get_contents (profile_path, &data, &len, error);
+	icc = cd_icc_new ();
+	file = g_file_new_for_path (profile_path);
+	ret = cd_icc_load_file (icc, file, error);
 	if (!ret)
 		goto out;
-	lcms_profile = cmsOpenProfileFromMem (data, len);
-	if (lcms_profile == NULL) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_SESSION_ERROR,
-			     CD_SESSION_ERROR_FAILED_TO_OPEN_PROFILE,
-			     "failed to open profile %s",
-			     profile_path);
-		goto out;
-	}
+	lcms_profile = cd_icc_get_handle (icc);
 
 	/* add DICT data */
 	dict_md = cmsDictAlloc (NULL);
@@ -1195,11 +1188,12 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 out:
 	g_free (profile_fn);
 	g_free (profile_path);
-	g_free (data);
 	if (dict_md != NULL)
 		cmsDictFree (dict_md);
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
+	if (icc != NULL)
+		g_object_unref (icc);
+	if (file != NULL)
+		g_object_unref (file);
 	return ret;
 }
 
