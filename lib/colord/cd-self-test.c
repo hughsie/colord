@@ -3311,6 +3311,7 @@ colord_icc_func (void)
 	g_assert_cmpfloat (cd_icc_get_version (icc), ==, 3.4);
 	g_assert (g_str_has_suffix (cd_icc_get_filename (icc), "ibm-t61.icc"));
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_DISPLAY_DEVICE);
+	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_RGB);
 
 	/* marshall to a string */
 	tmp = cd_icc_to_string (icc);

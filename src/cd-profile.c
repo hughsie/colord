@@ -1295,7 +1295,6 @@ cd_profile_set_from_profile (CdProfile *profile,
 {
 	CdProfilePrivate *priv = profile->priv;
 	CdProfileWarning warning;
-	cmsColorSpaceSignature color_space;
 	const gchar *value;
 	GArray *flags = NULL;
 	gboolean ret = FALSE;
@@ -1314,43 +1313,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 
 	/* get the profile kind */
 	priv->kind = cd_icc_get_kind (icc);
-
-	/* get colorspace */
-	color_space = cmsGetColorSpace (lcms_profile);
-	switch (color_space) {
-	case cmsSigXYZData:
-		priv->colorspace = CD_COLORSPACE_XYZ;
-		break;
-	case cmsSigLabData:
-		priv->colorspace = CD_COLORSPACE_LAB;
-		break;
-	case cmsSigLuvData:
-		priv->colorspace = CD_COLORSPACE_LUV;
-		break;
-	case cmsSigYCbCrData:
-		priv->colorspace = CD_COLORSPACE_YCBCR;
-		break;
-	case cmsSigYxyData:
-		priv->colorspace = CD_COLORSPACE_YXY;
-		break;
-	case cmsSigRgbData:
-		priv->colorspace = CD_COLORSPACE_RGB;
-		break;
-	case cmsSigGrayData:
-		priv->colorspace = CD_COLORSPACE_GRAY;
-		break;
-	case cmsSigHsvData:
-		priv->colorspace = CD_COLORSPACE_HSV;
-		break;
-	case cmsSigCmykData:
-		priv->colorspace = CD_COLORSPACE_CMYK;
-		break;
-	case cmsSigCmyData:
-		priv->colorspace = CD_COLORSPACE_CMY;
-		break;
-	default:
-		priv->colorspace = CD_COLORSPACE_UNKNOWN;
-	}
+	priv->colorspace = cd_icc_get_colorspace (icc);
 
 	/* get metadata from the DICTionary */
 	cd_profile_set_metadata_from_profile (profile, lcms_profile);

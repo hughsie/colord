@@ -101,6 +101,7 @@ guint32		 cd_icc_get_size			(CdIcc		*icc);
 const gchar	*cd_icc_get_filename			(CdIcc		*icc);
 gdouble		 cd_icc_get_version			(CdIcc		*icc);
 CdProfileKind	 cd_icc_get_kind			(CdIcc		*icc);
+CdColorspace	 cd_icc_get_colorspace			(CdIcc		*icc);
 
 G_END_DECLS
 

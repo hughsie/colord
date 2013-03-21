@@ -46,6 +46,7 @@ static void	cd_icc_finalize		(GObject	*object);
  **/
 struct _CdIccPrivate
 {
+	CdColorspace		 colorspace;
 	CdProfileKind		 kind;
 	cmsHPROFILE		 lcms_profile;
 	gchar			*filename;
@@ -61,6 +62,7 @@ enum {
 	PROP_FILENAME,
 	PROP_VERSION,
 	PROP_KIND,
+	PROP_COLORSPACE,
 	PROP_LAST
 };
 
@@ -153,6 +155,10 @@ cd_icc_to_string (CdIcc *icc)
 	/* device class */
 	g_string_append_printf (str, "  Profile Kind\t= %s\n",
 				cd_profile_kind_to_string (cd_icc_get_kind (icc)));
+
+	/* colorspace */
+	g_string_append_printf (str, "  Colorspace\t= %s\n",
+				cd_colorspace_to_string (cd_icc_get_colorspace (icc)));
 
 	/* print tags */
 	g_string_append (str, "\n");
@@ -360,6 +366,42 @@ cd_icc_load (CdIcc *icc)
 		break;
 	default:
 		priv->kind = CD_PROFILE_KIND_UNKNOWN;
+	}
+
+	/* get colorspace */
+	switch (cmsGetColorSpace (priv->lcms_profile)) {
+	case cmsSigXYZData:
+		priv->colorspace = CD_COLORSPACE_XYZ;
+		break;
+	case cmsSigLabData:
+		priv->colorspace = CD_COLORSPACE_LAB;
+		break;
+	case cmsSigLuvData:
+		priv->colorspace = CD_COLORSPACE_LUV;
+		break;
+	case cmsSigYCbCrData:
+		priv->colorspace = CD_COLORSPACE_YCBCR;
+		break;
+	case cmsSigYxyData:
+		priv->colorspace = CD_COLORSPACE_YXY;
+		break;
+	case cmsSigRgbData:
+		priv->colorspace = CD_COLORSPACE_RGB;
+		break;
+	case cmsSigGrayData:
+		priv->colorspace = CD_COLORSPACE_GRAY;
+		break;
+	case cmsSigHsvData:
+		priv->colorspace = CD_COLORSPACE_HSV;
+		break;
+	case cmsSigCmykData:
+		priv->colorspace = CD_COLORSPACE_CMYK;
+		break;
+	case cmsSigCmyData:
+		priv->colorspace = CD_COLORSPACE_CMY;
+		break;
+	default:
+		priv->colorspace = CD_COLORSPACE_UNKNOWN;
 	}
 }
 
@@ -603,6 +645,23 @@ cd_icc_get_kind (CdIcc *icc)
 }
 
 /**
+ * cd_icc_get_colorspace:
+ * @icc: a #CdIcc instance.
+ *
+ * Gets the profile colorspace
+ *
+ * Return value: The profile colorspace, e.g. %CD_COLORSPACE_RGB
+ *
+ * Since: 0.1.32
+ **/
+CdColorspace
+cd_icc_get_colorspace (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), CD_COLORSPACE_UNKNOWN);
+	return icc->priv->colorspace;
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
@@ -623,6 +682,9 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 		break;
 	case PROP_KIND:
 		g_value_set_uint (value, priv->kind);
+		break;
+	case PROP_COLORSPACE:
+		g_value_set_uint (value, priv->colorspace);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -688,6 +750,14 @@ cd_icc_class_init (CdIccClass *klass)
 				   G_PARAM_READABLE);
 	g_object_class_install_property (object_class, PROP_KIND, pspec);
 
+	/**
+	 * CdIcc:colorspace:
+	 */
+	pspec = g_param_spec_uint ("colorspace", NULL, NULL,
+				   0, G_MAXUINT, 0,
+				   G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_COLORSPACE, pspec);
+
 	g_type_class_add_private (klass, sizeof (CdIccPrivate));
 }
 
@@ -699,6 +769,7 @@ cd_icc_init (CdIcc *icc)
 {
 	icc->priv = CD_ICC_GET_PRIVATE (icc);
 	icc->priv->kind = CD_PROFILE_KIND_UNKNOWN;
+	icc->priv->colorspace = CD_COLORSPACE_UNKNOWN;
 }
 
 /**
