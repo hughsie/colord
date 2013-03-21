@@ -36,6 +36,12 @@
 #include "cd-interp-akima.h"
 #include "cd-interp-linear.h"
 
+/* this is private */
+struct _CdColorSwatch {
+	gchar		*name;
+	CdColorLab	 value;
+};
+
 /**
  * cd_color_xyz_dup:
  *
@@ -85,6 +91,46 @@ cd_color_yxy_dup (const CdColorYxy *src)
 	dest->x = src->x;
 	dest->y = src->y;
 	return dest;
+}
+
+/**
+ * cd_color_swatch_dup:
+ *
+ * Since: 0.1.32
+ **/
+CdColorSwatch *
+cd_color_swatch_dup (const CdColorSwatch *src)
+{
+	CdColorSwatch *dest;
+	g_return_val_if_fail (src != NULL, NULL);
+	dest = cd_color_swatch_new ();
+	dest->name = g_strdup (src->name);
+	cd_color_lab_copy (&src->value, &dest->value);
+	return dest;
+}
+
+/**
+ * cd_color_swatch_get_name:
+ *
+ * Since: 0.1.32
+ **/
+const gchar *
+cd_color_swatch_get_name (const CdColorSwatch *swatch)
+{
+	g_return_val_if_fail (swatch != NULL, NULL);
+	return swatch->name;
+}
+
+/**
+ * cd_color_swatch_get_value:
+ *
+ * Since: 0.1.32
+ **/
+const CdColorLab *
+cd_color_swatch_get_value (const CdColorSwatch *swatch)
+{
+	g_return_val_if_fail (swatch != NULL, NULL);
+	return &swatch->value;
 }
 
 /**
@@ -148,6 +194,26 @@ cd_color_yxy_get_type (void)
 }
 
 /**
+ * cd_color_swatch_get_type:
+ *
+ * Gets a specific type.
+ *
+ * Return value: a #GType
+ *
+ * Since: 0.1.32
+ **/
+GType
+cd_color_swatch_get_type (void)
+{
+	static GType type_id = 0;
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("CdColorSwatch",
+							(GBoxedCopyFunc) cd_color_swatch_dup,
+							(GBoxedFreeFunc) cd_color_swatch_free);
+	return type_id;
+}
+
+/**
  * cd_color_xyz_new:
  *
  * Allocates a color value.
@@ -205,6 +271,21 @@ cd_color_yxy_new (void)
 }
 
 /**
+ * cd_color_swatch_new:
+ *
+ * Allocates a color value.
+ *
+ * Return value: A newly allocated #CdColorYxy object
+ *
+ * Since: 0.1.32
+ **/
+CdColorSwatch *
+cd_color_swatch_new (void)
+{
+	return g_slice_new0 (CdColorSwatch);
+}
+
+/**
  * cd_color_xyz_free:
  * @src: the color object
  *
@@ -256,6 +337,21 @@ cd_color_yxy_free (CdColorYxy *src)
 #else
 	g_free (src);
 #endif
+}
+
+/**
+ * cd_color_swatch_free:
+ * @src: the color object
+ *
+ * Deallocates a color swatch.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_color_swatch_free (CdColorSwatch *src)
+{
+	g_free (src->name);
+	g_slice_free (CdColorSwatch, src);
 }
 
 /**
@@ -337,6 +433,41 @@ cd_color_yxy_set (CdColorYxy *dest, gdouble Y, gdouble x, gdouble y)
 	dest->Y = Y;
 	dest->x = x;
 	dest->y = y;
+}
+
+/**
+ * cd_color_swatch_set_name:
+ * @dest: the destination swatch
+ * @name: component name
+ *
+ * Initialises a swatch name.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_color_swatch_set_name (CdColorSwatch *dest, const gchar *name)
+{
+	g_return_if_fail (dest != NULL);
+	g_return_if_fail (name != NULL);
+	g_free (dest->name);
+	dest->name = g_strdup (name);
+}
+
+/**
+ * cd_color_swatch_set_value:
+ * @dest: the destination swatch
+ * @value: component value
+ *
+ * Initialises a swatch value.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_color_swatch_set_value (CdColorSwatch *dest, const CdColorLab *value)
+{
+	g_return_if_fail (dest != NULL);
+	g_return_if_fail (value != NULL);
+	cd_color_lab_copy (value, &dest->value);
 }
 
 /**
