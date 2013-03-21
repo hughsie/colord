@@ -48,6 +48,7 @@ struct _CdIccPrivate
 {
 	cmsHPROFILE		 lcms_profile;
 	gchar			*filename;
+	gdouble			 version;
 	guint32			 size;
 };
 
@@ -57,6 +58,7 @@ enum {
 	PROP_0,
 	PROP_SIZE,
 	PROP_FILENAME,
+	PROP_VERSION,
 	PROP_LAST
 };
 
@@ -141,6 +143,10 @@ cd_icc_to_string (CdIcc *icc)
 	tmp = cd_icc_get_size (icc);
 	if (tmp > 0)
 		g_string_append_printf (str, "  Size\t\t= %i bytes\n", tmp);
+
+	/* version */
+	g_string_append_printf (str, "  Version\t= %.1f\n",
+				cd_icc_get_version (icc));
 
 	/* print tags */
 	g_string_append (str, "\n");
@@ -313,6 +319,18 @@ cd_icc_to_string (CdIcc *icc)
 }
 
 /**
+ * cd_icc_load:
+ **/
+static void
+cd_icc_load (CdIcc *icc)
+{
+	CdIccPrivate *priv = icc->priv;
+
+	/* get version */
+	priv->version = cmsGetProfileVersion (priv->lcms_profile);
+}
+
+/**
  * cd_icc_load_data:
  * @icc: a #CdIcc instance.
  * @data: binary data
@@ -360,6 +378,9 @@ cd_icc_load_data (CdIcc *icc,
 
 	/* save length to avoid trusting the profile */
 	priv->size = data_len;
+
+	/* load cached data */
+	cd_icc_load (icc);
 out:
 	return ret;
 }
@@ -457,6 +478,9 @@ cd_icc_load_fd (CdIcc *icc,
 				     "failed to open stream");
 		goto out;
 	}
+
+	/* load cached data */
+	cd_icc_load (icc);
 out:
 	return ret;
 }
@@ -512,6 +536,23 @@ cd_icc_get_filename (CdIcc *icc)
 }
 
 /**
+ * cd_icc_get_version:
+ * @icc: a #CdIcc instance.
+ *
+ * Gets the ICC profile version, typically 2.1 or 4.2
+ *
+ * Return value: A floating point version number, or 0.0 for unknown
+ *
+ * Since: 0.1.32
+ **/
+gdouble
+cd_icc_get_version (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), 0.0f);
+	return icc->priv->version;
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
@@ -526,6 +567,9 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 		break;
 	case PROP_FILENAME:
 		g_value_set_string (value, priv->filename);
+		break;
+	case PROP_VERSION:
+		g_value_set_double (value, priv->version);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -574,6 +618,14 @@ cd_icc_class_init (CdIccClass *klass)
 				     NULL,
 				     G_PARAM_READABLE);
 	g_object_class_install_property (object_class, PROP_FILENAME, pspec);
+
+	/**
+	 * CdIcc:version:
+	 */
+	pspec = g_param_spec_double ("version", NULL, NULL,
+				     0, G_MAXFLOAT, 0,
+				     G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_VERSION, pspec);
 
 	g_type_class_add_private (klass, sizeof (CdIccPrivate));
 }
