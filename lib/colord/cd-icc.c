@@ -164,6 +164,21 @@ cd_icc_to_string (CdIcc *icc)
 	g_string_append_printf (str, "  Colorspace\t= %s\n",
 				cd_colorspace_to_string (cd_icc_get_colorspace (icc)));
 
+
+	/* PCS */
+	g_string_append (str, "  Conn. Space\t= ");
+	switch (cmsGetPCS (priv->lcms_profile)) {
+	case cmsSigXYZData:
+		g_string_append (str, "xyz\n");
+		break;
+	case cmsSigLabData:
+		g_string_append (str, "lab\n");
+		break;
+	default:
+		g_string_append (str, "unknown\n");
+		break;
+	}
+
 	/* date and time */
 	created = cd_icc_get_created (icc);
 	if (created != NULL) {
