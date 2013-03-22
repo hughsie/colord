@@ -189,6 +189,16 @@ cd_icc_to_string (CdIcc *icc)
 		g_date_time_unref (created);
 	}
 
+	/* profile use flags */
+	g_string_append (str, "  Flags\t\t= ");
+	tmp = cmsGetHeaderFlags (priv->lcms_profile);
+	g_string_append (str, (tmp & cmsEmbeddedProfileTrue) > 0 ?
+				"Embedded profile" : "Not embedded profile");
+	g_string_append (str, ", ");
+	g_string_append (str, (tmp & cmsUseWithEmbeddedDataOnly) > 0 ?
+				"Use with embedded data only" : "Use anywhere");
+	g_string_append (str, "\n");
+
 	/* print tags */
 	g_string_append (str, "\n");
 	number_tags = cmsGetTagCount (priv->lcms_profile);
