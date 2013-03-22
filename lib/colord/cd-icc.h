@@ -55,6 +55,8 @@ typedef struct
  * CdIccError:
  * @CD_ICC_ERROR_FAILED_TO_OPEN:	Failed to open file
  * @CD_ICC_ERROR_FAILED_TO_PARSE:	Failed to parse data
+ * @CD_ICC_ERROR_INVALID_LOCALE:	Locale was invalid
+ * @CD_ICC_ERROR_NO_DATA:		No data to read
  *
  * The ICC error code.
  *
@@ -63,6 +65,8 @@ typedef struct
 typedef enum {
 	CD_ICC_ERROR_FAILED_TO_OPEN,
 	CD_ICC_ERROR_FAILED_TO_PARSE,
+	CD_ICC_ERROR_INVALID_LOCALE,
+	CD_ICC_ERROR_NO_DATA,
 	CD_ICC_ERROR_LAST
 } CdIccError;
 
@@ -108,6 +112,18 @@ const gchar	*cd_icc_get_metadata_item		(CdIcc		*icc,
 GPtrArray	*cd_icc_get_named_colors		(CdIcc		*icc);
 gboolean	 cd_icc_get_can_delete			(CdIcc		*icc);
 GDateTime	*cd_icc_get_created			(CdIcc		*icc);
+const gchar	*cd_icc_get_description			(CdIcc		*icc,
+							 const gchar	*locale,
+							 GError		**error);
+const gchar	*cd_icc_get_copyright			(CdIcc		*icc,
+							 const gchar	*locale,
+							 GError		**error);
+const gchar	*cd_icc_get_manufacturer		(CdIcc		*icc,
+							 const gchar	*locale,
+							 GError		**error);
+const gchar	*cd_icc_get_model			(CdIcc		*icc,
+							 const gchar	*locale,
+							 GError		**error);
 
 G_END_DECLS
 

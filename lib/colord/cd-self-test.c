@@ -3277,6 +3277,7 @@ static void
 colord_icc_func (void)
 {
 	CdIcc *icc;
+	const gchar *str;
 	gboolean ret;
 	gchar *created_str;
 	gchar *filename;
@@ -3337,6 +3338,73 @@ colord_icc_func (void)
 	g_free (created_str);
 	g_date_time_unref (created);
 
+	/* open a non-localized profile */
+	str = cd_icc_get_description (icc, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (str, ==, "Huey, LENOVO - 6464Y1H - 15\" (2009-12-23)");
+	str = cd_icc_get_description (icc, "en_GB", &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (str, ==, "Huey, LENOVO - 6464Y1H - 15\" (2009-12-23)");
+	str = cd_icc_get_description (icc, "fr", &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (str, ==, "Huey, LENOVO - 6464Y1H - 15\" (2009-12-23)");
+
+	g_object_unref (icc);
+}
+
+static void
+colord_icc_localized_func (void)
+{
+	CdIcc *icc;
+	const gchar *str;
+	gboolean ret;
+	gchar *filename;
+	GError *error = NULL;
+	GFile *file;
+
+	/* open a localized profile */
+	icc = cd_icc_new ();
+	filename = _g_test_realpath (PROFILESDIR "/Crayons.icc");
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_load_file (icc, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_free (filename);
+
+	/* open a non-localized profile */
+	str = cd_icc_get_description (icc, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (str, ==, "Crayon Colors");
+	str = cd_icc_get_description (icc, "en_US.UTF-8", &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (str, ==, "Crayon Colors");
+	str = cd_icc_get_description (icc, "en_GB.UTF-8", &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (str, ==, "Crayon Colours");
+
+	/* get missing data */
+	str = cd_icc_get_manufacturer (icc, NULL, &error);
+	g_assert_error (error,
+			CD_ICC_ERROR,
+			CD_ICC_ERROR_NO_DATA);
+	g_assert_cmpstr (str, ==, NULL);
+	g_clear_error (&error);
+
+	/* use an invalid locale */
+	str = cd_icc_get_description (icc, "cra_ZY", &error);
+	g_assert_error (error,
+			CD_ICC_ERROR,
+			CD_ICC_ERROR_INVALID_LOCALE);
+	g_assert_cmpstr (str, ==, NULL);
+	g_clear_error (&error);
+	str = cd_icc_get_description (icc, "cra", &error);
+	g_assert_error (error,
+			CD_ICC_ERROR,
+			CD_ICC_ERROR_INVALID_LOCALE);
+	g_assert_cmpstr (str, ==, NULL);
+	g_clear_error (&error);
+
 	g_object_unref (icc);
 }
 
@@ -3351,6 +3419,7 @@ main (int argc, char **argv)
 
 	/* tests go here */
 	g_test_add_func ("/colord/icc", colord_icc_func);
+	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/dom", colord_dom_func);

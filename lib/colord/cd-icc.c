@@ -39,6 +39,14 @@ static void	cd_icc_finalize		(GObject	*object);
 
 #define CD_ICC_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_ICC, CdIccPrivate))
 
+typedef enum {
+	CD_MLUC_DESCRIPTION,
+	CD_MLUC_COPYRIGHT,
+	CD_MLUC_MANUFACTURER,
+	CD_MLUC_MODEL,
+	CD_MLUC_LAST
+} CdIccMluc;
+
 /**
  * CdIccPrivate:
  *
@@ -52,6 +60,7 @@ struct _CdIccPrivate
 	gboolean		 can_delete;
 	gchar			*filename;
 	gdouble			 version;
+	GHashTable		*mluc_data[CD_MLUC_LAST];
 	GHashTable		*metadata;
 	guint32			 size;
 };
@@ -931,6 +940,223 @@ out:
 }
 
 /**
+ * cd_icc_get_mluc_data:
+ **/
+static const gchar *
+cd_icc_get_mluc_data (CdIcc *icc,
+		      const gchar *locale,
+		      CdIccMluc mluc,
+		      cmsTagSignature *sigs,
+		      GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsMLU *mlu = NULL;
+	const gchar *country_code = "\0\0\0";
+	const gchar *language_code = "\0\0\0";
+	const gchar *value;
+	gchar *key = NULL;
+	gchar text_buffer[128];
+	gchar *tmp;
+	gsize rc;
+	guint32 text_size;
+	guint i;
+	wchar_t wtext[128];
+
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+
+	/* en_US is signified by missing codes */
+	if (locale != NULL && g_str_has_prefix (locale, "en_US"))
+		locale = NULL;
+
+	/* does cache entry exist already? */
+	value = g_hash_table_lookup (priv->mluc_data[mluc],
+				     locale != NULL ? locale : "");
+	if (value != NULL)
+		goto out;
+
+	/* convert the locale into something we can use as a key, in this case
+	 * 'en_GB.UTF-8' -> 'en_GB'
+	 * 'fr'          -> 'fr' */
+	if (locale != NULL) {
+		key = g_strdup (locale);
+		g_strdelimit (key, ".(", '\0');
+
+		/* decompose it into language and country codes */
+		tmp = g_strstr_len (key, -1, "_");
+		language_code = key;
+		if (tmp != NULL) {
+			country_code = tmp + 1;
+			*tmp = '\0';
+		}
+
+		/* check the format is correct */
+		if (strlen (language_code) != 2) {
+			g_set_error (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_INVALID_LOCALE,
+				     "invalid locale: %s", locale);
+			goto out;
+		}
+		if (country_code != NULL &&
+		    country_code[0] != '\0' &&
+		    strlen (country_code) != 2) {
+			g_set_error (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_INVALID_LOCALE,
+				     "invalid locale: %s", locale);
+			goto out;
+		}
+	}
+
+	/* read each MLU entry in order of preference */
+	for (i = 0; sigs[i] != 0; i++) {
+		mlu = cmsReadTag (priv->lcms_profile, sigs[i]);
+		if (mlu != NULL)
+			break;
+	}
+	if (mlu == NULL) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_NO_DATA,
+				     "cmsSigProfile*Tag mising");
+		goto out;
+	}
+	text_size = cmsMLUgetWide (mlu,
+				   language_code,
+				   country_code,
+				   wtext,
+				   sizeof (wtext));
+	if (text_size == 0)
+		goto out;
+	rc = wcstombs (text_buffer,
+		       wtext,
+		       sizeof (text_buffer));
+	if (rc == (gsize) -1) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_NO_DATA,
+				     "invalid UTF-8");
+		goto out;
+	}
+
+	/* insert into locale cache */
+	tmp = g_strdup (text_buffer);
+	g_hash_table_insert (priv->mluc_data[mluc],
+			     g_strdup (locale != NULL ? locale : ""),
+			     tmp);
+	value = tmp;
+out:
+	g_free (key);
+	return value;
+}
+
+/**
+ * cd_icc_get_description:
+ * @icc: A valid #CdIcc
+ * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
+ * @error: A #GError or %NULL
+ *
+ * Gets the profile description.
+ * If the translated text is not available in the selected locale then the
+ * default untranslated (en_US) text is returned.
+ *
+ * Return value: The text as a UTF-8 string, or %NULL of the locale is invalid
+ *               or the tag does not exist.
+ *
+ * Since: 0.1.32
+ **/
+const gchar *
+cd_icc_get_description (CdIcc *icc, const gchar *locale, GError **error)
+{
+	cmsTagSignature sigs[] = { 0x6473636d, /* 'dscm' */
+				   cmsSigProfileDescriptionTag,
+				   0 };
+	return cd_icc_get_mluc_data (icc,
+				     locale,
+				     CD_MLUC_DESCRIPTION,
+				     sigs,
+				     error);
+}
+
+/**
+ * cd_icc_get_copyright:
+ * @icc: A valid #CdIcc
+ * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
+ * @error: A #GError or %NULL
+ *
+ * Gets the profile copyright.
+ * If the translated text is not available in the selected locale then the
+ * default untranslated (en_US) text is returned.
+ *
+ * Return value: The text as a UTF-8 string, or %NULL of the locale is invalid
+ *               or the tag does not exist.
+ *
+ * Since: 0.1.32
+ **/
+const gchar *
+cd_icc_get_copyright (CdIcc *icc, const gchar *locale, GError **error)
+{
+	cmsTagSignature sigs[] = { cmsSigCopyrightTag, 0 };
+	return cd_icc_get_mluc_data (icc,
+				     locale,
+				     CD_MLUC_COPYRIGHT,
+				     sigs,
+				     error);
+}
+
+/**
+ * cd_icc_get_manufacturer:
+ * @icc: A valid #CdIcc
+ * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
+ * @error: A #GError or %NULL
+ *
+ * Gets the profile manufacturer.
+ * If the translated text is not available in the selected locale then the
+ * default untranslated (en_US) text is returned.
+ *
+ * Return value: The text as a UTF-8 string, or %NULL of the locale is invalid
+ *               or the tag does not exist.
+ *
+ * Since: 0.1.32
+ **/
+const gchar *
+cd_icc_get_manufacturer (CdIcc *icc, const gchar *locale, GError **error)
+{
+	cmsTagSignature sigs[] = { cmsSigDeviceMfgDescTag, 0 };
+	return cd_icc_get_mluc_data (icc,
+				     locale,
+				     CD_MLUC_MANUFACTURER,
+				     sigs,
+				     error);
+}
+
+/**
+ * cd_icc_get_model:
+ * @icc: A valid #CdIcc
+ * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
+ * @error: A #GError or %NULL
+ *
+ * Gets the profile model.
+ * If the translated text is not available in the selected locale then the
+ * default untranslated (en_US) text is returned.
+ *
+ * Return value: The text as a UTF-8 string, or %NULL of the locale is invalid
+ *               or the tag does not exist.
+ *
+ * Since: 0.1.32
+ **/
+const gchar *
+cd_icc_get_model (CdIcc *icc, const gchar *locale, GError **error)
+{
+	cmsTagSignature sigs[] = { cmsSigDeviceModelDescTag, 0 };
+	return cd_icc_get_mluc_data (icc,
+				     locale,
+				     CD_MLUC_MODEL,
+				     sigs,
+				     error);
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
@@ -1047,6 +1273,8 @@ cd_icc_class_init (CdIccClass *klass)
 static void
 cd_icc_init (CdIcc *icc)
 {
+	guint i;
+
 	icc->priv = CD_ICC_GET_PRIVATE (icc);
 	icc->priv->kind = CD_PROFILE_KIND_UNKNOWN;
 	icc->priv->colorspace = CD_COLORSPACE_UNKNOWN;
@@ -1054,6 +1282,12 @@ cd_icc_init (CdIcc *icc)
 						     g_str_equal,
 						     g_free,
 						     g_free);
+	for (i = 0; i < CD_MLUC_LAST; i++) {
+		icc->priv->mluc_data[i] = g_hash_table_new_full (g_str_hash,
+								 g_str_equal,
+								 g_free,
+								 g_free);
+	}
 }
 
 /**
@@ -1064,9 +1298,12 @@ cd_icc_finalize (GObject *object)
 {
 	CdIcc *icc = CD_ICC (object);
 	CdIccPrivate *priv = icc->priv;
+	guint i;
 
 	g_free (priv->filename);
 	g_hash_table_destroy (priv->metadata);
+	for (i = 0; i < CD_MLUC_LAST; i++)
+		g_hash_table_destroy (priv->mluc_data[i]);
 	if (priv->lcms_profile != NULL)
 		cmsCloseProfile (priv->lcms_profile);
 

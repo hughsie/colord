@@ -1262,20 +1262,17 @@ cd_profile_set_from_profile (CdProfile *profile,
 	const gchar *value;
 	GArray *flags = NULL;
 	gboolean ret = FALSE;
-	gchar text[1024];
-	GHashTable *metadata;
-	GList *keys;
+	GHashTable *metadata = NULL;
+	GList *keys = NULL;
 	GList *l;
 	guint i;
 	struct tm created;
 
 	/* get the description as the title */
-	lcms_profile = cd_icc_get_handle (icc);
-	cmsGetProfileInfoASCII (lcms_profile,
-				cmsInfoDescription,
-				"en", "US",
-				text, 1024);
-	priv->title = cd_profile_fixup_title (text);
+	value = cd_icc_get_description (icc, NULL, error);
+	if (value == NULL)
+		goto out;
+	priv->title =  cd_profile_fixup_title (value);
 
 	/* get the profile kind */
 	priv->kind = cd_icc_get_kind (icc);
@@ -1313,6 +1310,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 	}
 
 	/* get the profile created time and date */
+	lcms_profile = cd_icc_get_handle (icc);
 	ret = cmsGetHeaderCreationDateTime (lcms_profile, &created);
 	if (ret) {
 		priv->created = mktime (&created);
@@ -1339,8 +1337,10 @@ cd_profile_set_from_profile (CdProfile *profile,
 
 	/* success */
 	ret = TRUE;
+out:
 	g_list_free (keys);
-	g_hash_table_unref (metadata);
+	if (metadata != NULL)
+		g_hash_table_unref (metadata);
 	if (flags != NULL)
 		g_array_unref (flags);
 	return ret;
