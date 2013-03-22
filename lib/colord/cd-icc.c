@@ -811,6 +811,25 @@ cd_icc_get_metadata_item (CdIcc *icc, const gchar *key)
 }
 
 /**
+ * cd_icc_add_metadata:
+ * @icc: A valid #CdIcc
+ * @key: the metadata key
+ * @value: the metadata value
+ *
+ * Sets an item of data to the profile metadata, overwriting it if
+ * it already exists.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_add_metadata (CdIcc *icc, const gchar *key, const gchar *value)
+{
+	g_hash_table_insert (icc->priv->metadata,
+			     g_strdup (key),
+			     g_strdup (value));
+}
+
+/**
  * cd_icc_get_named_colors:
  * @icc: a #CdIcc instance.
  *
