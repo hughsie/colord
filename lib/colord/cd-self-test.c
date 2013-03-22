@@ -3313,6 +3313,7 @@ colord_icc_func (void)
 	g_assert (g_str_has_suffix (cd_icc_get_filename (icc), "ibm-t61.icc"));
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_DISPLAY_DEVICE);
 	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_RGB);
+	g_assert (cd_icc_get_named_colors (icc) == NULL);
 
 	/* check metadata */
 	metadata = cd_icc_get_metadata (icc);

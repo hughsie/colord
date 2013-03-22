@@ -714,6 +714,78 @@ cd_icc_get_metadata_item (CdIcc *icc, const gchar *key)
 }
 
 /**
+ * cd_icc_get_named_colors:
+ * @icc: a #CdIcc instance.
+ *
+ * Gets any named colors in the profile
+ *
+ * Return value: (transfer container): An array of #CdColorSwatch or %NULL if no colors exist
+ *
+ * Since: 0.1.32
+ **/
+GPtrArray *
+cd_icc_get_named_colors (CdIcc *icc)
+{
+	CdColorLab lab;
+	CdColorSwatch *swatch;
+	CdIccPrivate *priv = icc->priv;
+	cmsNAMEDCOLORLIST *nc2;
+	cmsUInt16Number pcs[3];
+	gboolean ret;
+	gchar name[cmsMAX_PATH];
+	gchar prefix[33];
+	gchar suffix[33];
+	GPtrArray *array = NULL;
+	GString *string;
+	guint j;
+	guint size;
+
+	/* do any named colors exist? */
+	nc2 = cmsReadTag (priv->lcms_profile, cmsSigNamedColor2Type);
+	if (nc2 == NULL)
+		goto out;
+
+	/* get each NC */
+	array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_swatch_free);
+	size = cmsNamedColorCount (nc2);
+	for (j = 0; j < size; j++) {
+
+		/* parse title */
+		ret = cmsNamedColorInfo (nc2, j,
+					 name,
+					 prefix,
+					 suffix,
+					 (cmsUInt16Number *) &pcs,
+					 NULL);
+		if (!ret)
+			continue;
+		string = g_string_new ("");
+		if (prefix[0] != '\0')
+			g_string_append_printf (string, "%s ", prefix);
+		g_string_append (string, name);
+		if (suffix[0] != '\0')
+			g_string_append_printf (string, " %s", suffix);
+
+		/* check is valid */
+		ret = g_utf8_validate (string->str, string->len, NULL);
+		if (!ret)
+			ret = cd_icc_fix_utf8_string (string);
+
+		/* save color if valid */
+		if (ret) {
+			cmsLabEncoded2Float ((cmsCIELab *) &lab, pcs);
+			swatch = cd_color_swatch_new ();
+			cd_color_swatch_set_name (swatch, string->str);
+			cd_color_swatch_set_value (swatch, (const CdColorLab *) &lab);
+			g_ptr_array_add (array, swatch);
+		}
+		g_string_free (string, TRUE);
+	}
+out:
+	return array;
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
