@@ -106,6 +106,7 @@ GHashTable	*cd_icc_get_metadata			(CdIcc		*icc);
 const gchar	*cd_icc_get_metadata_item		(CdIcc		*icc,
 							 const gchar	*key);
 GPtrArray	*cd_icc_get_named_colors		(CdIcc		*icc);
+gboolean	 cd_icc_get_can_delete			(CdIcc		*icc);
 
 G_END_DECLS
 

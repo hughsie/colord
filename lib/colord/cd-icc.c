@@ -49,6 +49,7 @@ struct _CdIccPrivate
 	CdColorspace		 colorspace;
 	CdProfileKind		 kind;
 	cmsHPROFILE		 lcms_profile;
+	gboolean		 can_delete;
 	gchar			*filename;
 	gdouble			 version;
 	GHashTable		*metadata;
@@ -64,6 +65,7 @@ enum {
 	PROP_VERSION,
 	PROP_KIND,
 	PROP_COLORSPACE,
+	PROP_CAN_DELETE,
 	PROP_LAST
 };
 
@@ -498,6 +500,7 @@ cd_icc_load_file (CdIcc *icc,
 	gboolean ret = FALSE;
 	gchar *data = NULL;
 	GError *error_local = NULL;
+	GFileInfo *info = NULL;
 	gsize length;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
@@ -521,9 +524,29 @@ cd_icc_load_file (CdIcc *icc,
 	if (!ret)
 		goto out;
 
+	/* find out if the user could delete this profile */
+	info = g_file_query_info (file,
+				  G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE,
+				  G_FILE_QUERY_INFO_NONE,
+				  NULL,
+				  &error_local);
+	if (info == NULL) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_OPEN,
+			     "failed to query file: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+	priv->can_delete = g_file_info_get_attribute_boolean (info,
+							      G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE);
+
 	/* save filename for later */
 	priv->filename = g_file_get_path (file);
 out:
+	if (info != NULL)
+		g_object_unref (info);
 	g_free (data);
 	return ret;
 }
@@ -786,6 +809,25 @@ out:
 }
 
 /**
+ * cd_icc_get_can_delete:
+ * @icc: a #CdIcc instance.
+ *
+ * Finds out if the profile could be deleted.
+ * This is only applicable for profiles loaded with cd_icc_load_file() as
+ * obviously data and fd's cannot be sanely unlinked.
+ *
+ * Return value: %TRUE if g_file_delete() would likely work
+ *
+ * Since: 0.1.32
+ **/
+gboolean
+cd_icc_get_can_delete (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+	return icc->priv->can_delete;
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
@@ -809,6 +851,9 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 		break;
 	case PROP_COLORSPACE:
 		g_value_set_uint (value, priv->colorspace);
+		break;
+	case PROP_CAN_DELETE:
+		g_value_set_boolean (value, priv->can_delete);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -881,6 +926,14 @@ cd_icc_class_init (CdIccClass *klass)
 				   0, G_MAXUINT, 0,
 				   G_PARAM_READABLE);
 	g_object_class_install_property (object_class, PROP_COLORSPACE, pspec);
+
+	/**
+	 * CdIcc:can-delete:
+	 */
+	pspec = g_param_spec_boolean ("can-delete", NULL, NULL,
+				      FALSE,
+				      G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_CAN_DELETE, pspec);
 
 	g_type_class_add_private (klass, sizeof (CdIccPrivate));
 }
