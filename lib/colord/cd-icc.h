@@ -97,12 +97,14 @@ gboolean	 cd_icc_load_data			(CdIcc		*icc,
 							 GError		**error);
 gboolean	 cd_icc_load_file			(CdIcc		*icc,
 							 GFile		*file,
+							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_icc_load_fd				(CdIcc		*icc,
 							 gint		 fd,
 							 GError		**error);
 gboolean	 cd_icc_save_file			(CdIcc		*icc,
 							 GFile		*file,
+							 GCancellable	*cancellable,
 							 GError		**error);
 gchar		*cd_icc_to_string			(CdIcc		*icc);
 gpointer	 cd_icc_get_handle			(CdIcc		*icc);

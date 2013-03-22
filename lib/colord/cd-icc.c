@@ -570,6 +570,7 @@ out:
 gboolean
 cd_icc_save_file (CdIcc *icc,
 		  GFile *file,
+		  GCancellable *cancellable,
 		  GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
@@ -614,7 +615,7 @@ cd_icc_save_file (CdIcc *icc,
 				       FALSE,
 				       G_FILE_CREATE_NONE,
 				       NULL,
-				       NULL,
+				       cancellable,
 				       &error_local);
 	if (!ret) {
 		g_set_error (error,
@@ -643,6 +644,7 @@ out:
 gboolean
 cd_icc_load_file (CdIcc *icc,
 		  GFile *file,
+		  GCancellable *cancellable,
 		  GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
@@ -656,7 +658,7 @@ cd_icc_load_file (CdIcc *icc,
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
 
 	/* load files */
-	ret = g_file_load_contents (file, NULL, &data, &length,
+	ret = g_file_load_contents (file, cancellable, &data, &length,
 				    NULL, &error_local);
 	if (!ret) {
 		g_set_error (error,
@@ -677,7 +679,7 @@ cd_icc_load_file (CdIcc *icc,
 	info = g_file_query_info (file,
 				  G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE,
 				  G_FILE_QUERY_INFO_NONE,
-				  NULL,
+				  cancellable,
 				  &error_local);
 	if (info == NULL) {
 		g_set_error (error,

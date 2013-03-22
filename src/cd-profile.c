@@ -1466,7 +1466,7 @@ cd_profile_set_filename (CdProfile *profile,
 					 &error_local);
 	} else {
 		file = g_file_new_for_path (filename);
-		ret = cd_icc_load_file (icc, file, &error_local);
+		ret = cd_icc_load_file (icc, file, NULL, &error_local);
 	}
 	if (!ret) {
 		g_set_error_literal (error,

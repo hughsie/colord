@@ -1117,7 +1117,7 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	/* open profile */
 	icc = cd_icc_new ();
 	file = g_file_new_for_path (profile_path);
-	ret = cd_icc_load_file (icc, file, error);
+	ret = cd_icc_load_file (icc, file, priv->cancellable, error);
 	if (!ret)
 		goto out;
 	lcms_profile = cd_icc_get_handle (icc);
