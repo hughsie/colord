@@ -199,6 +199,26 @@ cd_icc_to_string (CdIcc *icc)
 				"Use with embedded data only" : "Use anywhere");
 	g_string_append (str, "\n");
 
+	/* rendering intent */
+	g_string_append (str, "  Rndrng Intnt\t= ");
+	switch (cmsGetHeaderRenderingIntent (priv->lcms_profile)) {
+	case INTENT_PERCEPTUAL:
+		g_string_append (str, "perceptual\n");
+		break;
+	case INTENT_RELATIVE_COLORIMETRIC:
+		g_string_append (str, "relative-colorimetric\n");
+		break;
+	case INTENT_SATURATION:
+		g_string_append (str, "saturation\n");
+		break;
+	case INTENT_ABSOLUTE_COLORIMETRIC:
+		g_string_append (str, "absolute-colorimetric\n");
+		break;
+	default:
+		g_string_append (str, "unknown\n");
+		break;
+	}
+
 	/* print tags */
 	g_string_append (str, "\n");
 	number_tags = cmsGetTagCount (priv->lcms_profile);
