@@ -136,6 +136,7 @@ cd_icc_to_string (CdIcc *icc)
 	cmsTagTypeSignature tag_type;
 	gboolean ret;
 	gchar tag_str[5] = "    ";
+	GDateTime *created;
 	GString *str;
 	guint32 i;
 	guint32 number_tags;
@@ -162,6 +163,16 @@ cd_icc_to_string (CdIcc *icc)
 	/* colorspace */
 	g_string_append_printf (str, "  Colorspace\t= %s\n",
 				cd_colorspace_to_string (cd_icc_get_colorspace (icc)));
+
+	/* date and time */
+	created = cd_icc_get_created (icc);
+	if (created != NULL) {
+		gchar *created_str;
+		created_str = g_date_time_format (created, "%F, %T");
+		g_string_append_printf (str, "  Date, Time\t= %s\n", created_str);
+		g_free (created_str);
+		g_date_time_unref (created);
+	}
 
 	/* print tags */
 	g_string_append (str, "\n");
@@ -825,6 +836,44 @@ cd_icc_get_can_delete (CdIcc *icc)
 {
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	return icc->priv->can_delete;
+}
+
+/**
+ * cd_icc_get_created:
+ * @icc: A valid #CdIcc
+ *
+ * Gets the ICC creation date and time.
+ *
+ * Return value: A #GDateTime object, or %NULL for not set
+ *
+ * Since: 0.1.32
+ **/
+GDateTime *
+cd_icc_get_created (CdIcc *icc)
+{
+	CdIccPrivate *priv = icc->priv;
+	gboolean ret;
+	GDateTime *created = NULL;
+	struct tm created_tm;
+	time_t created_t;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+
+
+	/* get the profile creation time and date */
+	ret = cmsGetHeaderCreationDateTime (priv->lcms_profile, &created_tm);
+	if (!ret)
+		goto out;
+
+	/* convert to UNIX time */
+	created_t = mktime (&created_tm);
+	if (created_t == (time_t) -1)
+		goto out;
+
+	/* instantiate object */
+	created = g_date_time_new_from_unix_utc (created_t);
+out:
+	return created;
 }
 
 /**

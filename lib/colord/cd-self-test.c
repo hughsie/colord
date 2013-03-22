@@ -3278,8 +3278,10 @@ colord_icc_func (void)
 {
 	CdIcc *icc;
 	gboolean ret;
+	gchar *created_str;
 	gchar *filename;
 	gchar *tmp;
+	GDateTime *created;
 	GError *error = NULL;
 	GFile *file;
 	GHashTable *metadata;
@@ -3326,6 +3328,14 @@ colord_icc_func (void)
 	g_assert_cmpstr (tmp, !=, NULL);
 	g_debug ("CdIcc: '%s'", tmp);
 	g_free (tmp);
+
+	/* check created time */
+	created = cd_icc_get_created (icc);
+	g_assert (created != NULL);
+	created_str = g_date_time_format (created, "%F, %T");
+	g_assert_cmpstr (created_str, ==, "2009-12-23, 22:20:46");
+	g_free (created_str);
+	g_date_time_unref (created);
 
 	g_object_unref (icc);
 }
