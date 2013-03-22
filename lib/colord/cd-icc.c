@@ -556,6 +556,81 @@ out:
 }
 
 /**
+ * cd_icc_save_file:
+ * @icc: a #CdIcc instance.
+ * @file: a #GFile
+ * @error: A #GError or %NULL
+ *
+ * Saves an ICC profile to a local or remote file.
+ *
+ * Return vale: %TRUE for success.
+ *
+ * Since: 0.1.32
+ **/
+gboolean
+cd_icc_save_file (CdIcc *icc,
+		  GFile *file,
+		  GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	gboolean ret = FALSE;
+	gchar *data = NULL;
+	GError *error_local = NULL;
+	gsize length;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+	g_return_val_if_fail (G_IS_FILE (file), FALSE);
+
+	/* get size of profile */
+	ret = cmsSaveProfileToMem (priv->lcms_profile,
+				   NULL,
+				   (guint32 *) &length);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file");
+		goto out;
+	}
+
+	/* allocate and get profile data */
+	data = g_new0 (gchar, length);
+	ret = cmsSaveProfileToMem (priv->lcms_profile,
+				   data,
+				   (guint32 *) &length);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file to memory");
+		goto out;
+	}
+
+	/* actually write file */
+	ret = g_file_replace_contents (file,
+				       data,
+				       length,
+				       NULL,
+				       FALSE,
+				       G_FILE_CREATE_NONE,
+				       NULL,
+				       NULL,
+				       &error_local);
+	if (!ret) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "failed to dump ICC file: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+out:
+	g_free (data);
+	return ret;
+}
+
+/**
  * cd_icc_load_file:
  * @icc: a #CdIcc instance.
  * @file: a #GFile

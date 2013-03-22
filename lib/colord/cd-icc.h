@@ -57,6 +57,7 @@ typedef struct
  * @CD_ICC_ERROR_FAILED_TO_PARSE:	Failed to parse data
  * @CD_ICC_ERROR_INVALID_LOCALE:	Locale was invalid
  * @CD_ICC_ERROR_NO_DATA:		No data to read
+ * @CD_ICC_ERROR_FAILED_TO_SAVE:	Failed to save file
  *
  * The ICC error code.
  *
@@ -67,6 +68,7 @@ typedef enum {
 	CD_ICC_ERROR_FAILED_TO_PARSE,
 	CD_ICC_ERROR_INVALID_LOCALE,
 	CD_ICC_ERROR_NO_DATA,
+	CD_ICC_ERROR_FAILED_TO_SAVE,
 	CD_ICC_ERROR_LAST
 } CdIccError;
 
@@ -98,6 +100,9 @@ gboolean	 cd_icc_load_file			(CdIcc		*icc,
 							 GError		**error);
 gboolean	 cd_icc_load_fd				(CdIcc		*icc,
 							 gint		 fd,
+							 GError		**error);
+gboolean	 cd_icc_save_file			(CdIcc		*icc,
+							 GFile		*file,
 							 GError		**error);
 gchar		*cd_icc_to_string			(CdIcc		*icc);
 gpointer	 cd_icc_get_handle			(CdIcc		*icc);
