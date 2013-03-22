@@ -51,6 +51,7 @@ struct _CdIccPrivate
 	cmsHPROFILE		 lcms_profile;
 	gchar			*filename;
 	gdouble			 version;
+	GHashTable		*metadata;
 	guint32			 size;
 };
 
@@ -337,6 +338,7 @@ static void
 cd_icc_load (CdIcc *icc)
 {
 	CdIccPrivate *priv = icc->priv;
+	cmsHANDLE dict;
 
 	/* get version */
 	priv->version = cmsGetProfileVersion (priv->lcms_profile);
@@ -402,6 +404,23 @@ cd_icc_load (CdIcc *icc)
 		break;
 	default:
 		priv->colorspace = CD_COLORSPACE_UNKNOWN;
+	}
+
+	/* read optional metadata? */
+	dict = cmsReadTag (priv->lcms_profile, cmsSigMetaTag);
+	if (dict != NULL) {
+		const cmsDICTentry *entry;
+		gchar ascii_name[1024];
+		gchar ascii_value[1024];
+		for (entry = cmsDictGetEntryList (dict);
+		     entry != NULL;
+		     entry = cmsDictNextEntry (entry)) {
+			wcstombs (ascii_name, entry->Name, sizeof (ascii_name));
+			wcstombs (ascii_value, entry->Value, sizeof (ascii_value));
+			g_hash_table_insert (priv->metadata,
+					     g_strdup (ascii_name),
+					     g_strdup (ascii_value));
+		}
 	}
 }
 
@@ -662,6 +681,39 @@ cd_icc_get_colorspace (CdIcc *icc)
 }
 
 /**
+ * cd_icc_get_metadata:
+ * @icc: A valid #CdIcc
+ *
+ * Gets all the metadata from the ICC profile.
+ *
+ * Return value: (transfer container): The profile metadata
+ *
+ * Since: 0.1.32
+ **/
+GHashTable *
+cd_icc_get_metadata (CdIcc *icc)
+{
+	return g_hash_table_ref (icc->priv->metadata);
+}
+
+/**
+ * cd_icc_get_metadata_item:
+ * @icc: A valid #CdIcc
+ * @key: the dictionary key
+ *
+ * Gets an item of data from the ICC metadata store.
+ *
+ * Return value: The dictionary data, or %NULL if the key does not exist.
+ *
+ * Since: 0.1.32
+ **/
+const gchar *
+cd_icc_get_metadata_item (CdIcc *icc, const gchar *key)
+{
+	return (const gchar *) g_hash_table_lookup (icc->priv->metadata, key);
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
@@ -770,6 +822,10 @@ cd_icc_init (CdIcc *icc)
 	icc->priv = CD_ICC_GET_PRIVATE (icc);
 	icc->priv->kind = CD_PROFILE_KIND_UNKNOWN;
 	icc->priv->colorspace = CD_COLORSPACE_UNKNOWN;
+	icc->priv->metadata = g_hash_table_new_full (g_str_hash,
+						     g_str_equal,
+						     g_free,
+						     g_free);
 }
 
 /**
@@ -782,6 +838,7 @@ cd_icc_finalize (GObject *object)
 	CdIccPrivate *priv = icc->priv;
 
 	g_free (priv->filename);
+	g_hash_table_destroy (priv->metadata);
 	if (priv->lcms_profile != NULL)
 		cmsCloseProfile (priv->lcms_profile);
 

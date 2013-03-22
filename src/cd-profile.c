@@ -851,44 +851,6 @@ out:
 }
 
 /**
- * cd_profile_set_metadata_from_profile:
- **/
-static void
-cd_profile_set_metadata_from_profile (CdProfile *profile,
-				      cmsHPROFILE lcms_profile)
-{
-	cmsHANDLE dict;
-	const cmsDICTentry* entry;
-	gchar ascii_name[1024];
-	gchar ascii_value[1024];
-	CdProfilePrivate *priv = profile->priv;
-
-	/* does profile have metadata? */
-	dict = cmsReadTag (lcms_profile, cmsSigMetaTag);
-	if (dict == NULL) {
-		g_debug ("%s (%s) has no DICT tag",
-			 priv->id ? priv->id : "new profile",
-			 priv->filename);
-		return;
-	}
-
-	/* read each bit of metadata */
-	for (entry = cmsDictGetEntryList (dict);
-	     entry != NULL;
-	     entry = cmsDictNextEntry (entry)) {
-
-		/* convert from wchar_t to char */
-		wcstombs (ascii_name, entry->Name, sizeof (ascii_name));
-		wcstombs (ascii_value, entry->Value, sizeof (ascii_value));
-		g_debug ("Adding metadata %s=%s",
-			 ascii_name, ascii_value);
-		g_hash_table_insert (priv->metadata,
-				     g_strdup (ascii_name),
-				     g_strdup (ascii_value));
-	}
-}
-
-/**
  * cd_profile_fixup_title:
  **/
 static gchar *
@@ -1295,13 +1257,17 @@ cd_profile_set_from_profile (CdProfile *profile,
 {
 	CdProfilePrivate *priv = profile->priv;
 	CdProfileWarning warning;
+	cmsHPROFILE lcms_profile;
+	const gchar *key;
 	const gchar *value;
 	GArray *flags = NULL;
 	gboolean ret = FALSE;
 	gchar text[1024];
+	GHashTable *metadata;
+	GList *keys;
+	GList *l;
 	guint i;
 	struct tm created;
-	cmsHPROFILE lcms_profile;
 
 	/* get the description as the title */
 	lcms_profile = cd_icc_get_handle (icc);
@@ -1315,8 +1281,17 @@ cd_profile_set_from_profile (CdProfile *profile,
 	priv->kind = cd_icc_get_kind (icc);
 	priv->colorspace = cd_icc_get_colorspace (icc);
 
-	/* get metadata from the DICTionary */
-	cd_profile_set_metadata_from_profile (profile, lcms_profile);
+	/* get metadata */
+	metadata = cd_icc_get_metadata (icc);
+	keys = g_hash_table_get_keys (metadata);
+	for (l = keys; l != NULL; l = l->next) {
+		key = l->data;
+		value = g_hash_table_lookup (metadata, key);
+		g_debug ("Adding metadata %s=%s", key, value);
+		g_hash_table_insert (priv->metadata,
+				     g_strdup (key),
+				     g_strdup (value));
+	}
 
 	/* set the format from the metadata */
 	value = g_hash_table_lookup (priv->metadata,
@@ -1364,6 +1339,8 @@ cd_profile_set_from_profile (CdProfile *profile,
 
 	/* success */
 	ret = TRUE;
+	g_list_free (keys);
+	g_hash_table_unref (metadata);
 	if (flags != NULL)
 		g_array_unref (flags);
 	return ret;

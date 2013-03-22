@@ -102,6 +102,9 @@ const gchar	*cd_icc_get_filename			(CdIcc		*icc);
 gdouble		 cd_icc_get_version			(CdIcc		*icc);
 CdProfileKind	 cd_icc_get_kind			(CdIcc		*icc);
 CdColorspace	 cd_icc_get_colorspace			(CdIcc		*icc);
+GHashTable	*cd_icc_get_metadata			(CdIcc		*icc);
+const gchar	*cd_icc_get_metadata_item		(CdIcc		*icc,
+							 const gchar	*key);
 
 G_END_DECLS
 

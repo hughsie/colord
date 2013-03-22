@@ -3282,6 +3282,7 @@ colord_icc_func (void)
 	gchar *tmp;
 	GError *error = NULL;
 	GFile *file;
+	GHashTable *metadata;
 	gpointer handle;
 
 	/* test invalid */
@@ -3312,6 +3313,12 @@ colord_icc_func (void)
 	g_assert (g_str_has_suffix (cd_icc_get_filename (icc), "ibm-t61.icc"));
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_DISPLAY_DEVICE);
 	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_RGB);
+
+	/* check metadata */
+	metadata = cd_icc_get_metadata (icc);
+	g_assert_cmpint (g_hash_table_size (metadata), ==, 1);
+	g_hash_table_unref (metadata);
+	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "EDID_md5"), ==, "f09e42aa86585d1bb6687d3c322ed0c1");
 
 	/* marshall to a string */
 	tmp = cd_icc_to_string (icc);
