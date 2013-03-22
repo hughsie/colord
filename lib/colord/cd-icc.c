@@ -141,6 +141,7 @@ cd_icc_to_string (CdIcc *icc)
 	guint32 i;
 	guint32 number_tags;
 	guint32 tmp;
+	guint8 profile_id[4];
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
@@ -218,6 +219,14 @@ cd_icc_to_string (CdIcc *icc)
 		g_string_append (str, "unknown\n");
 		break;
 	}
+
+	/* profile ID */
+	cmsGetHeaderProfileID (priv->lcms_profile, profile_id);
+	g_string_append_printf (str, "  Profile ID\t= 0x%02x%02x%02x%02x\n",
+				profile_id[0],
+				profile_id[1],
+				profile_id[2],
+				profile_id[3]);
 
 	/* print tags */
 	g_string_append (str, "\n");
