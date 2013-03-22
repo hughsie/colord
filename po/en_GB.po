@@ -671,6 +671,49 @@ msgid ""
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
 msgstr "The default target whitepoint in Kelvin for display calibration, with 0 meaning display native. Common values are 6500 for D65 and 5000 for D50."
 
+#: ../data/profiles/AdobeRGB1998.xml.in.h:1
+msgid "Compatible with Adobe RGB (1998)"
+msgstr "Compatible with Adobe RGB (1998)"
+
+#: ../data/profiles/AdobeRGB1998.xml.in.h:2
+#: ../data/profiles/AppleRGB.xml.in.h:1 ../data/profiles/BestRGB.xml.in.h:1
+#: ../data/profiles/BetaRGB.xml.in.h:1 ../data/profiles/Bluish.xml.in.h:2
+#: ../data/profiles/BruceRGB.xml.in.h:1 ../data/profiles/CIE-RGB.xml.in.h:1
+#: ../data/profiles/ColorMatchRGB.xml.in.h:1
+#: ../data/profiles/Crayons.xml.in.h:2 ../data/profiles/DonRGB4.xml.in.h:1
+#: ../data/profiles/ECI-RGBv2.xml.in.h:1
+#: ../data/profiles/EktaSpacePS5.xml.in.h:1
+#: ../data/profiles/Gamma5000K.xml.in.h:1
+#: ../data/profiles/Gamma5500K.xml.in.h:1
+#: ../data/profiles/Gamma6500K.xml.in.h:1 ../data/profiles/NTSC-RGB.xml.in.h:1
+#: ../data/profiles/PAL-RGB.xml.in.h:1 ../data/profiles/ProPhotoRGB.xml.in.h:1
+#: ../data/profiles/SMPTE-C-RGB.xml.in.h:1 ../data/profiles/sRGB.xml.in.h:1
+#: ../data/profiles/SwappedRedAndGreen.xml.in.h:2
+#: ../data/profiles/WideGamutRGB.xml.in.h:2
+#: ../data/profiles/x11-colors.xml.in.h:2
+msgid "This profile is free of known copyright restrictions"
+msgstr "This profile is free of known copyright restrictions"
+
+#: ../data/profiles/Bluish.xml.in.h:1
+msgid "Blue"
+msgstr "Blue"
+
+#: ../data/profiles/Crayons.xml.in.h:1
+msgid "Crayon Colors"
+msgstr "Crayon Colours"
+
+#: ../data/profiles/SwappedRedAndGreen.xml.in.h:1
+msgid "Swapped Red and Green"
+msgstr "Swapped Red and Green"
+
+#: ../data/profiles/WideGamutRGB.xml.in.h:1
+msgid "Wide Gamut RGB"
+msgstr "Wide Gamut RGB"
+
+#: ../data/profiles/x11-colors.xml.in.h:1
+msgid "X11 Colors"
+msgstr "X11 Colours"
+
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #. 
