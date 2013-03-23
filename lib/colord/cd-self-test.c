@@ -3417,6 +3417,12 @@ colord_icc_localized_func (void)
 	g_assert_cmpstr (str, ==, NULL);
 	g_clear_error (&error);
 
+	/* add localized data */
+	cd_icc_set_description (icc, "fr.UTF-8", "Couleurs crayon");
+	str = cd_icc_get_description (icc, "fr.UTF-8", &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (str, ==, "Couleurs crayon");
+
 	g_object_unref (icc);
 }
 

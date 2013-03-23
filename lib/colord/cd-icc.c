@@ -1267,6 +1267,82 @@ cd_icc_get_model (CdIcc *icc, const gchar *locale, GError **error)
 }
 
 /**
+ * cd_icc_set_description:
+ * @icc: A valid #CdIcc
+ * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
+ * @value: New string value
+ *
+ * Sets the profile description for a specific locale.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_description (CdIcc *icc, const gchar *locale, const gchar *value)
+{
+	CdIccPrivate *priv = icc->priv;
+	g_hash_table_insert (priv->mluc_data[CD_MLUC_DESCRIPTION],
+			     g_strdup (locale != NULL ? locale : ""),
+			     g_strdup (value));
+}
+
+/**
+ * cd_icc_set_copyright:
+ * @icc: A valid #CdIcc
+ * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
+ * @value: New string value
+ *
+ * Sets the profile _copyright for a specific locale.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_copyright (CdIcc *icc, const gchar *locale, const gchar *value)
+{
+	CdIccPrivate *priv = icc->priv;
+	g_hash_table_insert (priv->mluc_data[CD_MLUC_COPYRIGHT],
+			     g_strdup (locale != NULL ? locale : ""),
+			     g_strdup (value));
+}
+
+/**
+ * cd_icc_set_manufacturer:
+ * @icc: A valid #CdIcc
+ * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
+ * @value: New string value
+ *
+ * Sets the profile manufacturer for a specific locale.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_manufacturer (CdIcc *icc, const gchar *locale, const gchar *value)
+{
+	CdIccPrivate *priv = icc->priv;
+	g_hash_table_insert (priv->mluc_data[CD_MLUC_MANUFACTURER],
+			     g_strdup (locale != NULL ? locale : ""),
+			     g_strdup (value));
+}
+
+/**
+ * cd_icc_set_model:
+ * @icc: A valid #CdIcc
+ * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
+ * @value: New string value
+ *
+ * Sets the profile model for a specific locale.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_model (CdIcc *icc, const gchar *locale, const gchar *value)
+{
+	CdIccPrivate *priv = icc->priv;
+	g_hash_table_insert (priv->mluc_data[CD_MLUC_MODEL],
+			     g_strdup (locale != NULL ? locale : ""),
+			     g_strdup (value));
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void

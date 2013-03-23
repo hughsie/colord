@@ -164,6 +164,18 @@ const gchar	*cd_icc_get_manufacturer		(CdIcc		*icc,
 const gchar	*cd_icc_get_model			(CdIcc		*icc,
 							 const gchar	*locale,
 							 GError		**error);
+void		 cd_icc_set_description			(CdIcc		*icc,
+							 const gchar	*locale,
+							 const gchar	*value);
+void		 cd_icc_set_copyright			(CdIcc		*icc,
+							 const gchar	*locale,
+							 const gchar	*value);
+void		 cd_icc_set_manufacturer		(CdIcc		*icc,
+							 const gchar	*locale,
+							 const gchar	*value);
+void		 cd_icc_set_model			(CdIcc		*icc,
+							 const gchar	*locale,
+							 const gchar	*value);
 
 G_END_DECLS
 
