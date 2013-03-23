@@ -501,6 +501,15 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags)
 		}
 	}
 
+	/* read default translations */
+	cd_icc_get_description (icc, NULL, NULL);
+	cd_icc_get_copyright (icc, NULL, NULL);
+	cd_icc_get_manufacturer (icc, NULL, NULL);
+	cd_icc_get_model (icc, NULL, NULL);
+	if ((flags & CD_ICC_LOAD_FLAGS_TRANSLATIONS) > 0) {
+		/* FIXME: get the locale list from LCMS */
+	}
+
 	/* read named colors if the client cares */
 	if ((flags & CD_ICC_LOAD_FLAGS_NAMED_COLORS) > 0)
 		cd_icc_load_named_colors (icc);
