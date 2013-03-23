@@ -3400,7 +3400,25 @@ colord_icc_save_func (void)
 	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	cd_icc_set_description (icc, "fr.UTF-8", "Couleurs crayon");
 
-	/* TODO: Save to /tmp and reparse file */
+	/* Save to /tmp and reparse new file */
+	file = g_file_new_for_path ("/tmp/new.icc");
+	ret = cd_icc_save_file (icc,
+				file,
+				CD_ICC_SAVE_FLAGS_NONE,
+				NULL,
+				&error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (icc);
+	icc = cd_icc_new ();
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				&error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
 
 	/* verify changed values */
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_OUTPUT_DEVICE);

@@ -409,6 +409,39 @@ cd_icc_to_string (CdIcc *icc)
 	return g_string_free (str, FALSE);
 }
 
+/* map lcms profile class to colord type */
+const struct {
+	cmsProfileClassSignature	lcms;
+	CdProfileKind			colord;
+} map_profile_kind[] = {
+	{ cmsSigInputClass,		CD_PROFILE_KIND_INPUT_DEVICE },
+	{ cmsSigDisplayClass,		CD_PROFILE_KIND_DISPLAY_DEVICE },
+	{ cmsSigOutputClass,		CD_PROFILE_KIND_OUTPUT_DEVICE },
+	{ cmsSigLinkClass,		CD_PROFILE_KIND_DEVICELINK },
+	{ cmsSigColorSpaceClass,	CD_PROFILE_KIND_COLORSPACE_CONVERSION },
+	{ cmsSigAbstractClass,		CD_PROFILE_KIND_ABSTRACT },
+	{ cmsSigNamedColorClass,	CD_PROFILE_KIND_NAMED_COLOR },
+	{ 0,				CD_PROFILE_KIND_LAST }
+};
+
+/* map lcms colorspace to colord type */
+const struct {
+	cmsColorSpaceSignature		lcms;
+	CdColorspace			colord;
+} map_colorspace[] = {
+	{ cmsSigXYZData,		CD_COLORSPACE_XYZ },
+	{ cmsSigLabData,		CD_COLORSPACE_LAB },
+	{ cmsSigLuvData,		CD_COLORSPACE_LUV },
+	{ cmsSigYCbCrData,		CD_COLORSPACE_YCBCR },
+	{ cmsSigYxyData,		CD_COLORSPACE_YXY },
+	{ cmsSigRgbData,		CD_COLORSPACE_RGB },
+	{ cmsSigGrayData,		CD_COLORSPACE_GRAY },
+	{ cmsSigHsvData,		CD_COLORSPACE_HSV },
+	{ cmsSigCmykData,		CD_COLORSPACE_CMYK },
+	{ cmsSigCmyData,		CD_COLORSPACE_CMY },
+	{ 0,				CD_COLORSPACE_LAST }
+};
+
 /**
  * cd_icc_load:
  **/
@@ -416,72 +449,30 @@ static void
 cd_icc_load (CdIcc *icc, CdIccLoadFlags flags)
 {
 	CdIccPrivate *priv = icc->priv;
+	cmsColorSpaceSignature colorspace;
 	cmsHANDLE dict;
+	cmsProfileClassSignature profile_class;
+	guint i;
 
 	/* get version */
 	priv->version = cmsGetProfileVersion (priv->lcms_profile);
 
-	/* get the profile kind */
-	switch (cmsGetDeviceClass (priv->lcms_profile)) {
-	case cmsSigInputClass:
-		priv->kind = CD_PROFILE_KIND_INPUT_DEVICE;
-		break;
-	case cmsSigDisplayClass:
-		priv->kind = CD_PROFILE_KIND_DISPLAY_DEVICE;
-		break;
-	case cmsSigOutputClass:
-		priv->kind = CD_PROFILE_KIND_OUTPUT_DEVICE;
-		break;
-	case cmsSigLinkClass:
-		priv->kind = CD_PROFILE_KIND_DEVICELINK;
-		break;
-	case cmsSigColorSpaceClass:
-		priv->kind = CD_PROFILE_KIND_COLORSPACE_CONVERSION;
-		break;
-	case cmsSigAbstractClass:
-		priv->kind = CD_PROFILE_KIND_ABSTRACT;
-		break;
-	case cmsSigNamedColorClass:
-		priv->kind = CD_PROFILE_KIND_NAMED_COLOR;
-		break;
-	default:
-		priv->kind = CD_PROFILE_KIND_UNKNOWN;
+	/* convert profile kind */
+	profile_class = cmsGetDeviceClass (priv->lcms_profile);
+	for (i = 0; map_profile_kind[i].colord != CD_PROFILE_KIND_LAST; i++) {
+		if (map_profile_kind[i].lcms == profile_class) {
+			priv->kind = map_profile_kind[i].colord;
+			break;
+		}
 	}
 
-	/* get colorspace */
-	switch (cmsGetColorSpace (priv->lcms_profile)) {
-	case cmsSigXYZData:
-		priv->colorspace = CD_COLORSPACE_XYZ;
-		break;
-	case cmsSigLabData:
-		priv->colorspace = CD_COLORSPACE_LAB;
-		break;
-	case cmsSigLuvData:
-		priv->colorspace = CD_COLORSPACE_LUV;
-		break;
-	case cmsSigYCbCrData:
-		priv->colorspace = CD_COLORSPACE_YCBCR;
-		break;
-	case cmsSigYxyData:
-		priv->colorspace = CD_COLORSPACE_YXY;
-		break;
-	case cmsSigRgbData:
-		priv->colorspace = CD_COLORSPACE_RGB;
-		break;
-	case cmsSigGrayData:
-		priv->colorspace = CD_COLORSPACE_GRAY;
-		break;
-	case cmsSigHsvData:
-		priv->colorspace = CD_COLORSPACE_HSV;
-		break;
-	case cmsSigCmykData:
-		priv->colorspace = CD_COLORSPACE_CMYK;
-		break;
-	case cmsSigCmyData:
-		priv->colorspace = CD_COLORSPACE_CMY;
-		break;
-	default:
-		priv->colorspace = CD_COLORSPACE_UNKNOWN;
+	/* convert colorspace */
+	colorspace = cmsGetColorSpace (priv->lcms_profile);
+	for (i = 0; map_colorspace[i].colord != CD_COLORSPACE_LAST; i++) {
+		if (map_colorspace[i].lcms == colorspace) {
+			priv->colorspace = map_colorspace[i].colord;
+			break;
+		}
 	}
 
 	/* read optional metadata? */
@@ -598,9 +589,28 @@ cd_icc_save_file (CdIcc *icc,
 	gchar *data = NULL;
 	GError *error_local = NULL;
 	gsize length;
+	guint i;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
+
+	/* convert profile kind */
+	for (i = 0; map_profile_kind[i].colord != CD_PROFILE_KIND_LAST; i++) {
+		if (map_profile_kind[i].colord == priv->kind) {
+			cmsSetDeviceClass (priv->lcms_profile,
+					   map_profile_kind[i].lcms);
+			break;
+		}
+	}
+
+	/* convert colorspace */
+	for (i = 0; map_colorspace[i].colord != CD_COLORSPACE_LAST; i++) {
+		if (map_colorspace[i].colord == priv->colorspace) {
+			cmsSetColorSpace (priv->lcms_profile,
+					  map_colorspace[i].lcms);
+			break;
+		}
+	}
 
 	/* get size of profile */
 	ret = cmsSaveProfileToMem (priv->lcms_profile,
