@@ -3361,6 +3361,51 @@ colord_icc_func (void)
 	g_assert_no_error (error);
 	g_assert_cmpstr (str, ==, "Huey, LENOVO - 6464Y1H - 15\" (2009-12-23)");
 
+	/* modify some details about the profile */
+	cd_icc_set_colorspace (icc, CD_COLORSPACE_XYZ);
+	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
+
+	g_object_unref (icc);
+}
+
+static void
+colord_icc_save_func (void)
+{
+	CdIcc *icc;
+	gboolean ret;
+	gchar *filename;
+	GError *error = NULL;
+	GFile *file;
+
+	/* load source file */
+	icc = cd_icc_new ();
+	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				&error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_free (filename);
+
+	/* check original values */
+	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_DISPLAY_DEVICE);
+	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_RGB);
+
+	/* modify some details about the profile */
+	cd_icc_set_colorspace (icc, CD_COLORSPACE_XYZ);
+	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
+	cd_icc_set_description (icc, "fr.UTF-8", "Couleurs crayon");
+
+	/* TODO: Save to /tmp and reparse file */
+
+	/* verify changed values */
+	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_OUTPUT_DEVICE);
+	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_XYZ);
+
 	g_object_unref (icc);
 }
 
@@ -3442,6 +3487,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
+	g_test_add_func ("/colord/icc{save}", colord_icc_save_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/dom", colord_dom_func);

@@ -146,7 +146,11 @@ guint32		 cd_icc_get_size			(CdIcc		*icc);
 const gchar	*cd_icc_get_filename			(CdIcc		*icc);
 gdouble		 cd_icc_get_version			(CdIcc		*icc);
 CdProfileKind	 cd_icc_get_kind			(CdIcc		*icc);
+void		 cd_icc_set_kind			(CdIcc		*icc,
+							 CdProfileKind	 kind);
 CdColorspace	 cd_icc_get_colorspace			(CdIcc		*icc);
+void		 cd_icc_set_colorspace			(CdIcc		*icc,
+							 CdColorspace	 colorspace);
 GHashTable	*cd_icc_get_metadata			(CdIcc		*icc);
 const gchar	*cd_icc_get_metadata_item		(CdIcc		*icc,
 							 const gchar	*key);

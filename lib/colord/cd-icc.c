@@ -855,7 +855,7 @@ cd_icc_get_version (CdIcc *icc)
  *
  * Gets the profile kind.
  *
- * Return value: The kind, e.g. CD_PROFILE_KIND_INPUT
+ * Return value: The kind, e.g. %CD_PROFILE_KIND_INPUT
  *
  * Since: 0.1.32
  **/
@@ -864,6 +864,23 @@ cd_icc_get_kind (CdIcc *icc)
 {
 	g_return_val_if_fail (CD_IS_ICC (icc), CD_PROFILE_KIND_UNKNOWN);
 	return icc->priv->kind;
+}
+
+/**
+ * cd_icc_set_kind:
+ * @icc: a #CdIcc instance.
+ * @kind: the profile kind, e.g. %CD_PROFILE_KIND_DISPLAY_DEVICE
+ *
+ * Sets the profile kind.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_kind (CdIcc *icc, CdProfileKind kind)
+{
+	g_return_if_fail (CD_IS_ICC (icc));
+	icc->priv->kind = kind;
+	g_object_notify (G_OBJECT (icc), "kind");
 }
 
 /**
@@ -881,6 +898,23 @@ cd_icc_get_colorspace (CdIcc *icc)
 {
 	g_return_val_if_fail (CD_IS_ICC (icc), CD_COLORSPACE_UNKNOWN);
 	return icc->priv->colorspace;
+}
+
+/**
+ * cd_icc_set_colorspace:
+ * @icc: a #CdIcc instance.
+ * @colorspace: the profile colorspace, e.g. %CD_COLORSPACE_RGB
+ *
+ * Sets the colorspace kind.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_colorspace (CdIcc *icc, CdColorspace colorspace)
+{
+	g_return_if_fail (CD_IS_ICC (icc));
+	icc->priv->colorspace = colorspace;
+	g_object_notify (G_OBJECT (icc), "colorspace");
 }
 
 /**
@@ -1407,7 +1441,14 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 static void
 cd_icc_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
+	CdIcc *icc = CD_ICC (object);
 	switch (prop_id) {
+	case PROP_KIND:
+		cd_icc_set_kind (icc, g_value_get_uint (value));
+		break;
+	case PROP_COLORSPACE:
+		cd_icc_set_colorspace (icc, g_value_get_uint (value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1456,7 +1497,7 @@ cd_icc_class_init (CdIccClass *klass)
 	 */
 	pspec = g_param_spec_uint ("kind", NULL, NULL,
 				   0, G_MAXUINT, 0,
-				   G_PARAM_READABLE);
+				   G_PARAM_READWRITE);
 	g_object_class_install_property (object_class, PROP_KIND, pspec);
 
 	/**
@@ -1464,7 +1505,7 @@ cd_icc_class_init (CdIccClass *klass)
 	 */
 	pspec = g_param_spec_uint ("colorspace", NULL, NULL,
 				   0, G_MAXUINT, 0,
-				   G_PARAM_READABLE);
+				   G_PARAM_READWRITE);
 	g_object_class_install_property (object_class, PROP_COLORSPACE, pspec);
 
 	/**
