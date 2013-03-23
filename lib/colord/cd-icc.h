@@ -90,6 +90,7 @@ typedef struct
 /**
  * CdIccLoadFlags:
  * @CD_ICC_LOAD_FLAGS_NONE:		No flags set.
+ * @CD_ICC_LOAD_FLAGS_NAMED_COLORS:	Parse any named colors in the profile.
  *
  * Flags used when loading an ICC profile.
  *
@@ -97,6 +98,7 @@ typedef struct
  **/
 typedef enum {
 	CD_ICC_LOAD_FLAGS_NONE		= 0,
+	CD_ICC_LOAD_FLAGS_NAMED_COLORS	= (1 << 0),
 	CD_ICC_LOAD_FLAGS_LAST
 } CdIccLoadFlags;
 

@@ -35,6 +35,7 @@
 
 static void	cd_icc_class_init	(CdIccClass	*klass);
 static void	cd_icc_init		(CdIcc		*icc);
+static void	cd_icc_load_named_colors (CdIcc		*icc);
 static void	cd_icc_finalize		(GObject	*object);
 
 #define CD_ICC_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_ICC, CdIccPrivate))
@@ -63,6 +64,7 @@ struct _CdIccPrivate
 	GHashTable		*mluc_data[CD_MLUC_LAST];
 	GHashTable		*metadata;
 	guint32			 size;
+	GPtrArray		*named_colors;
 };
 
 G_DEFINE_TYPE (CdIcc, cd_icc, G_TYPE_OBJECT)
@@ -498,6 +500,10 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags)
 					     g_strdup (ascii_value));
 		}
 	}
+
+	/* read named colors if the client cares */
+	if ((flags & CD_ICC_LOAD_FLAGS_NAMED_COLORS) > 0)
+		cd_icc_load_named_colors (icc);
 }
 
 /**
@@ -921,17 +927,10 @@ cd_icc_add_metadata (CdIcc *icc, const gchar *key, const gchar *value)
 }
 
 /**
- * cd_icc_get_named_colors:
- * @icc: a #CdIcc instance.
- *
- * Gets any named colors in the profile
- *
- * Return value: (transfer container): An array of #CdColorSwatch or %NULL if no colors exist
- *
- * Since: 0.1.32
+ * cd_icc_load_named_colors:
  **/
-GPtrArray *
-cd_icc_get_named_colors (CdIcc *icc)
+static void
+cd_icc_load_named_colors (CdIcc *icc)
 {
 	CdColorLab lab;
 	CdColorSwatch *swatch;
@@ -942,7 +941,6 @@ cd_icc_get_named_colors (CdIcc *icc)
 	gchar name[cmsMAX_PATH];
 	gchar prefix[33];
 	gchar suffix[33];
-	GPtrArray *array = NULL;
 	GString *string;
 	guint j;
 	guint size;
@@ -953,7 +951,6 @@ cd_icc_get_named_colors (CdIcc *icc)
 		goto out;
 
 	/* get each NC */
-	array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_swatch_free);
 	size = cmsNamedColorCount (nc2);
 	for (j = 0; j < size; j++) {
 
@@ -984,12 +981,31 @@ cd_icc_get_named_colors (CdIcc *icc)
 			swatch = cd_color_swatch_new ();
 			cd_color_swatch_set_name (swatch, string->str);
 			cd_color_swatch_set_value (swatch, (const CdColorLab *) &lab);
-			g_ptr_array_add (array, swatch);
+			g_ptr_array_add (icc->priv->named_colors, swatch);
 		}
 		g_string_free (string, TRUE);
 	}
 out:
-	return array;
+	return;
+}
+
+/**
+ * cd_icc_get_named_colors:
+ * @icc: a #CdIcc instance.
+ *
+ * Gets any named colors in the profile.
+ * This function will only return results if the profile was loaded with the
+ * %CD_ICC_LOAD_FLAGS_NAMED_COLORS flag.
+ *
+ * Return value: (transfer container): An array of #CdColorSwatch
+ *
+ * Since: 0.1.32
+ **/
+GPtrArray *
+cd_icc_get_named_colors (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return g_ptr_array_ref (icc->priv->named_colors);
 }
 
 /**
@@ -1464,6 +1480,7 @@ cd_icc_init (CdIcc *icc)
 	icc->priv = CD_ICC_GET_PRIVATE (icc);
 	icc->priv->kind = CD_PROFILE_KIND_UNKNOWN;
 	icc->priv->colorspace = CD_COLORSPACE_UNKNOWN;
+	icc->priv->named_colors = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_swatch_free);
 	icc->priv->metadata = g_hash_table_new_full (g_str_hash,
 						     g_str_equal,
 						     g_free,
@@ -1487,6 +1504,7 @@ cd_icc_finalize (GObject *object)
 	guint i;
 
 	g_free (priv->filename);
+	g_ptr_array_unref (priv->named_colors);
 	g_hash_table_destroy (priv->metadata);
 	for (i = 0; i < CD_MLUC_LAST; i++)
 		g_hash_table_destroy (priv->mluc_data[i]);

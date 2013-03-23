@@ -3287,6 +3287,7 @@ colord_icc_func (void)
 	GFile *file;
 	GHashTable *metadata;
 	gpointer handle;
+	GPtrArray *array;
 
 	/* test invalid */
 	icc = cd_icc_new ();
@@ -3324,7 +3325,10 @@ colord_icc_func (void)
 	g_assert (g_str_has_suffix (cd_icc_get_filename (icc), "ibm-t61.icc"));
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_DISPLAY_DEVICE);
 	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_RGB);
-	g_assert (cd_icc_get_named_colors (icc) == NULL);
+	array = cd_icc_get_named_colors (icc);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 0);
+	g_ptr_array_unref (array);
 
 	/* check metadata */
 	metadata = cd_icc_get_metadata (icc);
