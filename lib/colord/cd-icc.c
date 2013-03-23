@@ -411,7 +411,7 @@ cd_icc_to_string (CdIcc *icc)
  * cd_icc_load:
  **/
 static void
-cd_icc_load (CdIcc *icc)
+cd_icc_load (CdIcc *icc, CdIccLoadFlags flags)
 {
 	CdIccPrivate *priv = icc->priv;
 	cmsHANDLE dict;
@@ -505,6 +505,7 @@ cd_icc_load (CdIcc *icc)
  * @icc: a #CdIcc instance.
  * @data: binary data
  * @data_len: Length of @data
+ * @flags: a set of #CdIccLoadFlags
  * @error: A #GError or %NULL
  *
  * Loads an ICC profile from raw byte data.
@@ -515,6 +516,7 @@ gboolean
 cd_icc_load_data (CdIcc *icc,
 		  const guint8 *data,
 		  gsize data_len,
+		  CdIccLoadFlags flags,
 		  GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
@@ -550,7 +552,7 @@ cd_icc_load_data (CdIcc *icc,
 	priv->size = data_len;
 
 	/* load cached data */
-	cd_icc_load (icc);
+	cd_icc_load (icc, flags);
 out:
 	return ret;
 }
@@ -559,6 +561,8 @@ out:
  * cd_icc_save_file:
  * @icc: a #CdIcc instance.
  * @file: a #GFile
+ * @flags: a set of #CdIccSaveFlags
+ * @cancellable: A #GCancellable or %NULL
  * @error: A #GError or %NULL
  *
  * Saves an ICC profile to a local or remote file.
@@ -570,6 +574,7 @@ out:
 gboolean
 cd_icc_save_file (CdIcc *icc,
 		  GFile *file,
+		  CdIccSaveFlags flags,
 		  GCancellable *cancellable,
 		  GError **error)
 {
@@ -635,6 +640,8 @@ out:
  * cd_icc_load_file:
  * @icc: a #CdIcc instance.
  * @file: a #GFile
+ * @flags: a set of #CdIccLoadFlags
+ * @cancellable: A #GCancellable or %NULL
  * @error: A #GError or %NULL
  *
  * Loads an ICC profile from a local or remote file.
@@ -644,6 +651,7 @@ out:
 gboolean
 cd_icc_load_file (CdIcc *icc,
 		  GFile *file,
+		  CdIccLoadFlags flags,
 		  GCancellable *cancellable,
 		  GError **error)
 {
@@ -671,7 +679,11 @@ cd_icc_load_file (CdIcc *icc,
 	}
 
 	/* parse the data */
-	ret = cd_icc_load_data (icc, (const guint8 *) data, length, error);
+	ret = cd_icc_load_data (icc,
+				(const guint8 *) data,
+				length,
+				flags,
+				error);
 	if (!ret)
 		goto out;
 
@@ -706,6 +718,7 @@ out:
  * cd_icc_load_fd:
  * @icc: a #CdIcc instance.
  * @fd: a file descriptor
+ * @flags: a set of #CdIccLoadFlags
  * @error: A #GError or %NULL
  *
  * Loads an ICC profile from an open file descriptor.
@@ -715,6 +728,7 @@ out:
 gboolean
 cd_icc_load_fd (CdIcc *icc,
 		gint fd,
+		CdIccLoadFlags flags,
 		GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
@@ -748,7 +762,7 @@ cd_icc_load_fd (CdIcc *icc,
 	}
 
 	/* load cached data */
-	cd_icc_load (icc);
+	cd_icc_load (icc, flags);
 out:
 	return ret;
 }

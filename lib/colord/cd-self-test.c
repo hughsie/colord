@@ -3291,7 +3291,11 @@ colord_icc_func (void)
 	/* test invalid */
 	icc = cd_icc_new ();
 	file = g_file_new_for_path ("not-going-to-exist.icc");
-	ret = cd_icc_load_file (icc, file, NULL, &error);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				&error);
 	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_FAILED_TO_OPEN);
 	g_assert (!ret);
 	g_clear_error (&error);
@@ -3300,7 +3304,11 @@ colord_icc_func (void)
 	/* test actual file */
 	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
 	file = g_file_new_for_path (filename);
-	ret = cd_icc_load_file (icc, file, NULL, &error);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				&error);
 	g_assert_no_error (error);
 	g_assert (ret);
 	g_object_unref (file);
@@ -3366,7 +3374,11 @@ colord_icc_localized_func (void)
 	icc = cd_icc_new ();
 	filename = _g_test_realpath (PROFILESDIR "/Crayons.icc");
 	file = g_file_new_for_path (filename);
-	ret = cd_icc_load_file (icc, file, NULL, &error);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				&error);
 	g_assert_no_error (error);
 	g_assert (ret);
 	g_object_unref (file);

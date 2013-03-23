@@ -59,7 +59,11 @@ cd_iccdump_print_file (const gchar *filename, GError **error)
 	/* load the profile */
 	icc = cd_icc_new ();
 	file = g_file_new_for_path (filename);
-	ret = cd_icc_load_file (icc, file, NULL, error);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				error);
 	if (!ret)
 		goto out;
 

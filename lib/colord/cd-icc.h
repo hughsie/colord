@@ -87,6 +87,32 @@ typedef struct
 	void (*_cd_icc_reserved8) (void);
 } CdIccClass;
 
+/**
+ * CdIccLoadFlags:
+ * @CD_ICC_LOAD_FLAGS_NONE:		No flags set.
+ *
+ * Flags used when loading an ICC profile.
+ *
+ * Since: 0.1.32
+ **/
+typedef enum {
+	CD_ICC_LOAD_FLAGS_NONE		= 0,
+	CD_ICC_LOAD_FLAGS_LAST
+} CdIccLoadFlags;
+
+/**
+ * CdIccSaveFlags:
+ * @CD_ICC_SAVE_FLAGS_NONE:		No flags set.
+ *
+ * Flags used when saving an ICC profile.
+ *
+ * Since: 0.1.32
+ **/
+typedef enum {
+	CD_ICC_SAVE_FLAGS_NONE		= 0,
+	CD_ICC_SAVE_FLAGS_LAST
+} CdIccSaveFlags;
+
 GType		 cd_icc_get_type			(void);
 GQuark		 cd_icc_error_quark			(void);
 CdIcc		*cd_icc_new				(void);
@@ -94,16 +120,20 @@ CdIcc		*cd_icc_new				(void);
 gboolean	 cd_icc_load_data			(CdIcc		*icc,
 							 const guint8	*data,
 							 gsize		 data_len,
+							 CdIccLoadFlags	 flags,
 							 GError		**error);
 gboolean	 cd_icc_load_file			(CdIcc		*icc,
 							 GFile		*file,
+							 CdIccLoadFlags	 flags,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gboolean	 cd_icc_load_fd				(CdIcc		*icc,
 							 gint		 fd,
+							 CdIccLoadFlags	 flags,
 							 GError		**error);
 gboolean	 cd_icc_save_file			(CdIcc		*icc,
 							 GFile		*file,
+							 CdIccSaveFlags	 flags,
 							 GCancellable	*cancellable,
 							 GError		**error);
 gchar		*cd_icc_to_string			(CdIcc		*icc);
