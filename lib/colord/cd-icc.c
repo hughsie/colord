@@ -129,6 +129,17 @@ cd_icc_fix_utf8_string (GString *string)
 }
 
 /**
+ * cd_icc_uint32_to_str:
+ **/
+static void
+cd_icc_uint32_to_str (guint32 id, gchar *str)
+{
+	/* this is a hack */
+	memcpy (str, &id, 4);
+	str[4] = '\0';
+}
+
+/**
  * cd_icc_to_string:
  * @icc: a #CdIcc instance.
  *
@@ -246,14 +257,13 @@ cd_icc_to_string (CdIcc *icc)
 		sig = cmsGetTagSignature (priv->lcms_profile, i);
 
 		/* convert to text */
-		tmp = GUINT32_FROM_BE (sig);
-		memcpy (tag_str, &tmp, 4);
+		cd_icc_uint32_to_str (GUINT32_FROM_BE (sig), tag_str);
 
 		/* print header */
 		g_string_append_printf (str, "tag %02i:\n", i);
 		g_string_append_printf (str, "  sig\t'%s' [0x%x]\n", tag_str, sig);
 		tag_size = cmsReadRawTag (priv->lcms_profile, sig, &tmp, 4);
-		memcpy (tag_str, &tmp, 4);
+		cd_icc_uint32_to_str (tmp, tag_str);
 		tag_type = GUINT32_FROM_BE (tmp);
 		g_string_append_printf (str, "  type\t'%s' [0x%x]\n", tag_str, tag_type);
 		g_string_append_printf (str, "  size\t%i\n", tag_size);
