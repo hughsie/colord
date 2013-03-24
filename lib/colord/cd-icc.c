@@ -886,6 +886,16 @@ cd_icc_save_file (CdIcc *icc,
 	if (!ret)
 		goto out;
 
+	/* write profile id */
+	ret = cmsMD5computeID (priv->lcms_profile);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to compute profile id");
+		goto out;
+	}
+
 	/* get size of profile */
 	ret = cmsSaveProfileToMem (priv->lcms_profile,
 				   NULL,
