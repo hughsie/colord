@@ -103,6 +103,8 @@ typedef enum {
 	CD_ICC_LOAD_FLAGS_NAMED_COLORS	= (1 << 0),
 	CD_ICC_LOAD_FLAGS_TRANSLATIONS	= (1 << 1),
 	CD_ICC_LOAD_FLAGS_METADATA	= (1 << 2),
+	/* new entries go here: */
+	CD_ICC_LOAD_FLAGS_ALL		= 0xff,
 	CD_ICC_LOAD_FLAGS_LAST
 } CdIccLoadFlags;
 

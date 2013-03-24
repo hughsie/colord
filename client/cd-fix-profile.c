@@ -957,99 +957,6 @@ out:
 }
 
 /**
- * cd_util_dump:
- **/
-static gboolean
-cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
-{
-	cmsCIExyY yxy;
-	cmsHANDLE dict;
-	cmsHPROFILE lcms_profile = NULL;
-	const cmsCIEXYZ *xyz;
-	const cmsDICTentry* entry;
-	gboolean ret = TRUE;
-	gchar ascii_name[1024];
-	gchar ascii_value[1024];
-
-	/* check arguments */
-	if (g_strv_length (values) != 1) {
-		ret = FALSE;
-		g_set_error_literal (error, 1, 0,
-				     "invalid input, expect 'filename'");
-		goto out;
-	}
-
-	/* set value */
-	g_print ("Using filename %s\n", values[0]);
-	lcms_profile = cmsOpenProfileFromFile (values[0], "r");
-	if (lcms_profile == NULL) {
-		g_set_error (error, 1, 0,
-			     "failed to open profile %s",
-			     values[0]);
-		ret = FALSE;
-		goto out;
-	}
-	ret = cmsGetProfileInfoASCII (lcms_profile, cmsInfoDescription, "en", "US", ascii_name, 1024);
-	if (ret)
-		g_print ("%s\t%s\n", _("Description"), ascii_name);
-	ret = cmsGetProfileInfoASCII (lcms_profile, cmsInfoManufacturer, "en", "US", ascii_name, 1024);
-	if (ret)
-		g_print ("%s\t%s\n", _("Manufacturer"), ascii_name);
-	ret = cmsGetProfileInfoASCII (lcms_profile, cmsInfoModel, "en", "US", ascii_name, 1024);
-	if (ret)
-		g_print ("%s\t%s\n", _("Model"), ascii_name);
-	ret = cmsGetProfileInfoASCII (lcms_profile, cmsInfoCopyright, "en", "US", ascii_name, 1024);
-	if (ret)
-		g_print ("%s\t%s\n", _("Copyright"), ascii_name);
-
-	/* does profile have metadata? */
-	dict = cmsReadTag (lcms_profile, cmsSigMetaTag);
-	if (dict == NULL) {
-		g_print ("%s\n", _("No metadata"));
-	} else {
-		for (entry = cmsDictGetEntryList (dict);
-		     entry != NULL;
-		     entry = cmsDictNextEntry (entry)) {
-
-			/* convert from wchar_t to char */
-			wcstombs (ascii_name, entry->Name, sizeof (ascii_name));
-			wcstombs (ascii_value, entry->Value, sizeof (ascii_value));
-			g_print ("%s %s\t=\t%s\n",
-				 _("Metadata"), ascii_name, ascii_value);
-		}
-	}
-
-	/* show Yxy primaries */
-	xyz = cmsReadTag (lcms_profile, cmsSigRedColorantTag);
-	if (xyz != NULL) {
-		cmsXYZ2xyY (&yxy, xyz);
-		g_print ("%s:\t%0.3f, %0.3f\n", _("Red primary"), yxy.x, yxy.y);
-	}
-	xyz = cmsReadTag (lcms_profile, cmsSigGreenColorantTag);
-	if (xyz != NULL) {
-		cmsXYZ2xyY (&yxy, xyz);
-		g_print ("%s:\t%0.3f, %0.3f\n", _("Green primary"), yxy.x, yxy.y);
-	}
-	xyz = cmsReadTag (lcms_profile, cmsSigBlueColorantTag);
-	if (xyz != NULL) {
-		cmsXYZ2xyY (&yxy, xyz);
-		g_print ("%s:\t%0.3f, %0.3f\n", _("Blue primary"), yxy.x, yxy.y);
-	}
-	xyz = cmsReadTag (lcms_profile, cmsSigMediaWhitePointTag);
-	if (xyz != NULL) {
-		cmsXYZ2xyY (&yxy, xyz);
-		g_print ("%s:\t%0.3f, %0.3f\n", _("Whitepoint"), yxy.x, yxy.y);
-	}
-
-	/* success */
-	ret = TRUE;
-out:
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
-	return ret;
-}
-
-/**
  * cd_util_generate_vcgt:
  **/
 static gboolean
@@ -1167,14 +1074,10 @@ main (int argc, char *argv[])
 	/* create helper object */
 	priv = g_new0 (CdUtilPrivate, 1);
 	priv->client = cd_client_new ();
+	priv->locale = g_strdup (locale);
 
 	/* add commands */
 	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_util_item_free);
-	cd_util_add (priv->cmd_array,
-		     "dump",
-		     /* TRANSLATORS: command description */
-		     _("Show all the details about the profile"),
-		     cd_util_dump);
 	cd_util_add (priv->cmd_array,
 		     "extract-vcgt",
 		     /* TRANSLATORS: command description */
