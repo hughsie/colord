@@ -61,7 +61,7 @@ struct _CdIccPrivate
 	gboolean		 can_delete;
 	gchar			*filename;
 	gdouble			 version;
-	GHashTable		*mluc_data[CD_MLUC_LAST];
+	GHashTable		*mluc_data[CD_MLUC_LAST]; /* key is 'en_GB' or '' for default */
 	GHashTable		*metadata;
 	guint32			 size;
 	GPtrArray		*named_colors;
@@ -1162,6 +1162,25 @@ out:
 }
 
 /**
+ * cd_icc_get_locale_key:
+ **/
+static gchar *
+cd_icc_get_locale_key (const gchar *locale)
+{
+	gchar *locale_key;
+
+	/* en_US is the default locale in an ICC profile */
+	if (locale == NULL || g_str_has_prefix (locale, "en_US")) {
+		locale_key = g_strdup ("");
+		goto out;
+	}
+	locale_key = g_strdup (locale);
+	g_strdelimit (locale_key, ".(", '\0');
+out:
+	return locale_key;
+}
+
+/**
  * cd_icc_get_mluc_data:
  **/
 static const gchar *
@@ -1176,7 +1195,7 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	const gchar *country_code = "\0\0\0";
 	const gchar *language_code = "\0\0\0";
 	const gchar *value;
-	gchar *key = NULL;
+	gchar *locale_key = NULL;
 	gchar text_buffer[128];
 	gchar *tmp;
 	gsize rc;
@@ -1186,26 +1205,20 @@ cd_icc_get_mluc_data (CdIcc *icc,
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
-	/* en_US is signified by missing codes */
-	if (locale != NULL && g_str_has_prefix (locale, "en_US"))
-		locale = NULL;
-
 	/* does cache entry exist already? */
-	value = g_hash_table_lookup (priv->mluc_data[mluc],
-				     locale != NULL ? locale : "");
+	locale_key = cd_icc_get_locale_key (locale);
+	value = g_hash_table_lookup (priv->mluc_data[mluc], locale_key);
 	if (value != NULL)
 		goto out;
 
 	/* convert the locale into something we can use as a key, in this case
 	 * 'en_GB.UTF-8' -> 'en_GB'
 	 * 'fr'          -> 'fr' */
-	if (locale != NULL) {
-		key = g_strdup (locale);
-		g_strdelimit (key, ".(", '\0');
+	if (locale_key[0] != '\0') {
 
 		/* decompose it into language and country codes */
-		tmp = g_strstr_len (key, -1, "_");
-		language_code = key;
+		tmp = g_strstr_len (locale_key, -1, "_");
+		language_code = locale_key;
 		if (tmp != NULL) {
 			country_code = tmp + 1;
 			*tmp = '\0';
@@ -1264,11 +1277,11 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	/* insert into locale cache */
 	tmp = g_strdup (text_buffer);
 	g_hash_table_insert (priv->mluc_data[mluc],
-			     g_strdup (locale != NULL ? locale : ""),
+			     g_strdup (locale_key),
 			     tmp);
 	value = tmp;
 out:
-	g_free (key);
+	g_free (locale_key);
 	return value;
 }
 
@@ -1393,7 +1406,7 @@ cd_icc_set_description (CdIcc *icc, const gchar *locale, const gchar *value)
 {
 	CdIccPrivate *priv = icc->priv;
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_DESCRIPTION],
-			     g_strdup (locale != NULL ? locale : ""),
+			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
 }
 
@@ -1412,7 +1425,7 @@ cd_icc_set_copyright (CdIcc *icc, const gchar *locale, const gchar *value)
 {
 	CdIccPrivate *priv = icc->priv;
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_COPYRIGHT],
-			     g_strdup (locale != NULL ? locale : ""),
+			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
 }
 
@@ -1431,7 +1444,7 @@ cd_icc_set_manufacturer (CdIcc *icc, const gchar *locale, const gchar *value)
 {
 	CdIccPrivate *priv = icc->priv;
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_MANUFACTURER],
-			     g_strdup (locale != NULL ? locale : ""),
+			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
 }
 
@@ -1450,7 +1463,7 @@ cd_icc_set_model (CdIcc *icc, const gchar *locale, const gchar *value)
 {
 	CdIccPrivate *priv = icc->priv;
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_MODEL],
-			     g_strdup (locale != NULL ? locale : ""),
+			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
 }
 
