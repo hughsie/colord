@@ -3400,7 +3400,7 @@ colord_icc_save_func (void)
 	/* modify some details about the profile */
 	cd_icc_set_colorspace (icc, CD_COLORSPACE_XYZ);
 	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
-	cd_icc_set_description (icc, "fr.UTF-8", "Couleurs crayon");
+	cd_icc_add_metadata (icc, "SelfTest", "true");
 
 	/* Save to /tmp and reparse new file */
 	file = g_file_new_for_path ("/tmp/new.icc");
@@ -3425,6 +3425,7 @@ colord_icc_save_func (void)
 	/* verify changed values */
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_XYZ);
+	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "SelfTest"), ==, "true");
 
 	g_object_unref (icc);
 }
