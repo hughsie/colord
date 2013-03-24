@@ -1217,6 +1217,7 @@ cd_icc_set_colorspace (CdIcc *icc, CdColorspace colorspace)
 GHashTable *
 cd_icc_get_metadata (CdIcc *icc)
 {
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 	return g_hash_table_ref (icc->priv->metadata);
 }
 
@@ -1234,6 +1235,8 @@ cd_icc_get_metadata (CdIcc *icc)
 const gchar *
 cd_icc_get_metadata_item (CdIcc *icc, const gchar *key)
 {
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	g_return_val_if_fail (key != NULL, NULL);
 	return (const gchar *) g_hash_table_lookup (icc->priv->metadata, key);
 }
 
@@ -1251,9 +1254,29 @@ cd_icc_get_metadata_item (CdIcc *icc, const gchar *key)
 void
 cd_icc_add_metadata (CdIcc *icc, const gchar *key, const gchar *value)
 {
+	g_return_if_fail (CD_IS_ICC (icc));
+	g_return_if_fail (key != NULL);
+	g_return_if_fail (value != NULL);
 	g_hash_table_insert (icc->priv->metadata,
 			     g_strdup (key),
 			     g_strdup (value));
+}
+
+/**
+ * cd_icc_remove_metadata:
+ * @icc: A valid #CdIcc
+ * @key: the metadata key
+ *
+ * Removes an item of metadata.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_remove_metadata (CdIcc *icc, const gchar *key)
+{
+	g_return_if_fail (CD_IS_ICC (icc));
+	g_return_if_fail (key != NULL);
+	g_hash_table_remove (icc->priv->metadata, key);
 }
 
 /**

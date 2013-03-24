@@ -3402,6 +3402,7 @@ colord_icc_save_func (void)
 	cd_icc_set_colorspace (icc, CD_COLORSPACE_XYZ);
 	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	cd_icc_add_metadata (icc, "SelfTest", "true");
+	cd_icc_remove_metadata (icc, "EDID_md5");
 	cd_icc_set_description (icc, "fr.UTF-8", "Couleurs crayon");
 
 	/* Save to /tmp and reparse new file */
@@ -3428,6 +3429,7 @@ colord_icc_save_func (void)
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_XYZ);
 	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "SelfTest"), ==, "true");
+	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "EDID_md5"), ==, NULL);
 	str = cd_icc_get_description (icc, "fr.UTF-8", &error);
 	g_assert_no_error (error);
 	g_assert_cmpstr (str, ==, "Couleurs crayon");
