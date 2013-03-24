@@ -816,7 +816,7 @@ cd_icc_save_file (CdIcc *icc,
 	gchar *data = NULL;
 	GError *error_local = NULL;
 	GList *l;
-	GList *md_keys;
+	GList *md_keys = NULL;
 	gsize length;
 	guint i;
 
@@ -845,22 +845,26 @@ cd_icc_save_file (CdIcc *icc,
 	cmsSetProfileVersion (priv->lcms_profile, priv->version);
 
 	/* save metadata */
-	dict = cmsDictAlloc (NULL);
-	md_keys = g_hash_table_get_keys (priv->metadata);
-	if (md_keys != NULL) {
-		for (l = md_keys; l != NULL; l = l->next) {
-			key = l->data;
-			value = g_hash_table_lookup (priv->metadata, key);
-			_cmsDictAddEntryAscii (dict, key, value);
+	if (g_hash_table_size (priv->metadata) != 0) {
+		dict = cmsDictAlloc (NULL);
+		md_keys = g_hash_table_get_keys (priv->metadata);
+		if (md_keys != NULL) {
+			for (l = md_keys; l != NULL; l = l->next) {
+				key = l->data;
+				value = g_hash_table_lookup (priv->metadata, key);
+				_cmsDictAddEntryAscii (dict, key, value);
+			}
 		}
-	}
-	ret = cmsWriteTag (priv->lcms_profile, cmsSigMetaTag, dict);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "cannot write metadata");
-		goto out;
+		ret = cmsWriteTag (priv->lcms_profile, cmsSigMetaTag, dict);
+		if (!ret) {
+			g_set_error_literal (error,
+					     CD_ICC_ERROR,
+					     CD_ICC_ERROR_FAILED_TO_SAVE,
+					     "cannot write metadata");
+			goto out;
+		}
+	} else {
+		cmsWriteTag (priv->lcms_profile, cmsSigMetaTag, NULL);
 	}
 
 	/* save translations */
