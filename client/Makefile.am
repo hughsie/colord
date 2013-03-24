@@ -20,8 +20,6 @@ COLORD_LIBS =						\
 
 noinst_LIBRARIES = libclientprivate.a
 libclientprivate_a_SOURCES =				\
-	cd-common.c					\
-	cd-common.h					\
 	cd-lcms-helpers.c				\
 	cd-lcms-helpers.h
 

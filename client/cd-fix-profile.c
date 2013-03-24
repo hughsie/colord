@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2009-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2009-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -28,13 +28,16 @@
 #include <stdlib.h>
 #include <colord/colord.h>
 
-#include "cd-common.h"
 #include "cd-lcms-helpers.h"
+
+#define CD_PROFILE_DEFAULT_COPYRIGHT_STRING	"This profile is free of known copyright restrictions."
 
 typedef struct {
 	GOptionContext		*context;
 	GPtrArray		*cmd_array;
 	CdClient		*client;
+	CdIcc			*icc;
+	gchar			*locale;
 } CdUtilPrivate;
 
 typedef gboolean (*CdUtilPrivateCb)	(CdUtilPrivate	*util,
@@ -176,144 +179,33 @@ out:
 }
 
 /**
- * cd_util_profile_read:
- **/
-static cmsHPROFILE
-cd_util_profile_read (const gchar *filename, GError **error)
-{
-	cmsHPROFILE lcms_profile = NULL;
-	gboolean ret;
-	gchar *data = NULL;
-	gsize len;
-
-	ret = g_file_get_contents (filename, &data, &len, error);
-	if (!ret)
-		goto out;
-
-	lcms_profile = cmsOpenProfileFromMem (data, len);
-	if (lcms_profile == NULL) {
-		g_set_error (error, 1, 0,
-			     "failed to open profile %s",
-			     filename);
-		goto out;
-	}
-out:
-	g_free (data);
-	return lcms_profile;
-}
-
-/**
- * cd_util_profile_write:
+ * cd_util_set_copyright:
  **/
 static gboolean
-cd_util_profile_write (cmsHPROFILE lcms_profile, const gchar *filename, GError **error)
+cd_util_set_copyright (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	gboolean ret;
-
-	/* write profile id */
-	ret = cmsMD5computeID (lcms_profile);
-	if (!ret) {
-		g_set_error (error, 1, 0,
-			     "failed to compute profile id for %s",
-			     filename);
-		goto out;
-	}
-
-	/* save file */
-	ret = cmsSaveProfileToFile (lcms_profile, filename);
-	if (!ret) {
-		g_set_error (error, 1, 0,
-			     "failed to save profile to %s",
-			     filename);
-		goto out;
-	}
-out:
-	return ret;
-}
-
-/**
- * cd_util_profile_set_text_acsii:
- **/
-static gboolean
-cd_util_profile_set_text_acsii (cmsHPROFILE lcms_profile,
-				cmsTagSignature sig,
-				const gchar *value,
-				GError **error)
-{
-	gboolean ret;
-
-	ret = _cmsWriteTagTextAscii (lcms_profile, sig, value);
-	if (!ret) {
-		g_set_error (error, 1, 0,
-			     "failed to write '%s'",
-			     value);
-		goto out;
-	}
-out:
-	return ret;
-}
-
-/**
- * cd_util_set_info_text:
- **/
-static gboolean
-cd_util_set_info_text (CdUtilPrivate *priv,
-		       cmsTagSignature sig,
-		       gchar **values,
-		       GError **error)
-{
-	cmsHPROFILE lcms_profile = NULL;
-	const gchar *value;
 	gboolean ret = TRUE;
 
 	/* check arguments */
 	if (g_strv_length (values) != 2) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
-				     "invalid input, expect 'value' 'filename'");
+				     "invalid input, expect 'filename' 'value'");
 		goto out;
 	}
 
-	/* open profile */
-	lcms_profile = cd_util_profile_read (values[1], error);
-	if (lcms_profile == NULL) {
-		ret = FALSE;
-		goto out;
-	}
-
-	/* these are default values */
-	if (sig == cmsSigCopyrightTag &&
-	    g_strcmp0 (values[0], "") == 0) {
-		value = CD_PROFILE_DEFAULT_COPYRIGHT_STRING;
+	/* set new value */
+	if (values[1][0] == '\0') {
+		cd_icc_set_copyright (priv->icc,
+				      priv->locale,
+				      CD_PROFILE_DEFAULT_COPYRIGHT_STRING);
 	} else {
-		value = values[0];
+		cd_icc_set_copyright (priv->icc,
+				      priv->locale,
+				      values[1]);
 	}
-
-	/* update value */
-	ret = cd_util_profile_set_text_acsii (lcms_profile,
-					      sig,
-					      value,
-					      error);
-	if (!ret)
-		goto out;
-
-	/* write new file */
-	ret = cd_util_profile_write (lcms_profile, values[1], error);
-	if (!ret)
-		goto out;
 out:
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
 	return ret;
-}
-
-/**
- * cd_util_set_copyright:
- **/
-static gboolean
-cd_util_set_copyright (CdUtilPrivate *priv, gchar **values, GError **error)
-{
-	return cd_util_set_info_text (priv, cmsSigCopyrightTag, values, error);
 }
 
 /**
@@ -322,7 +214,20 @@ cd_util_set_copyright (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_set_description (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	return cd_util_set_info_text (priv, cmsInfoDescription, values, error);
+	gboolean ret = TRUE;
+
+	/* check arguments */
+	if (g_strv_length (values) != 2) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect 'filename' 'value'");
+		goto out;
+	}
+
+	/* set new value */
+	cd_icc_set_description (priv->icc, priv->locale, values[1]);
+out:
+	return ret;
 }
 
 /**
@@ -331,7 +236,20 @@ cd_util_set_description (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_set_manufacturer (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	return cd_util_set_info_text (priv, cmsInfoManufacturer, values, error);
+	gboolean ret = TRUE;
+
+	/* check arguments */
+	if (g_strv_length (values) != 2) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect 'filename' 'value'");
+		goto out;
+	}
+
+	/* set new value */
+	cd_icc_set_manufacturer (priv->icc, priv->locale, values[1]);
+out:
+	return ret;
 }
 
 /**
@@ -340,7 +258,20 @@ cd_util_set_manufacturer (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	return cd_util_set_info_text (priv, cmsInfoModel, values, error);
+	gboolean ret = TRUE;
+
+	/* check arguments */
+	if (g_strv_length (values) != 2) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect 'filename' 'value'");
+		goto out;
+	}
+
+	/* set new value */
+	cd_icc_set_model (priv->icc, priv->locale, values[1]);
+out:
+	return ret;
 }
 
 /**
@@ -349,41 +280,14 @@ cd_util_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_clear_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	cmsHANDLE dict = NULL;
-	cmsHPROFILE lcms_profile = NULL;
-	gboolean ret = TRUE;
-
-	/* check arguments */
-	if (g_strv_length (values) != 1) {
-		ret = FALSE;
-		g_set_error_literal (error, 1, 0,
-				     "invalid input, expect 'filename'");
+	GHashTable *md;
+	md = cd_icc_get_metadata (priv->icc);
+	if (md == NULL)
 		goto out;
-	}
-
-	/* open profile */
-	lcms_profile = cd_util_profile_read (values[0], error);
-	if (lcms_profile == NULL) {
-		ret = FALSE;
-		goto out;
-	}
-
-	/* clear dict */
-	ret = cmsWriteTag (lcms_profile, cmsSigMetaTag, dict);
-	if (!ret) {
-		g_set_error_literal (error, 1, 0,
-				     "cannot write empty dict tag");
-		goto out;
-	}
-
-	/* write new file */
-	ret = cd_util_profile_write (lcms_profile, values[0], error);
-	if (!ret)
-		goto out;
+	g_hash_table_remove_all (md);
+	g_hash_table_unref (md);
 out:
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -539,12 +443,12 @@ out:
  **/
 static gdouble
 cd_util_get_profile_coverage (CdUtilPrivate *priv,
-			      cmsHPROFILE profile,
 			      CdStandardSpace standard_space,
 			      GError **error)
 {
 	gchar *filename = NULL;
 	gdouble coverage = -1.0f;
+	cmsHPROFILE profile;
 
 	/* get the correct standard space */
 	filename = cd_util_get_standard_space_filename (priv,
@@ -554,6 +458,7 @@ cd_util_get_profile_coverage (CdUtilPrivate *priv,
 		goto out;
 
 	/* work out the coverage */
+	profile = cd_icc_get_handle (priv->icc);
 	coverage = cd_util_get_coverage (profile, filename, error);
 	if (coverage < 0.0f)
 		goto out;
@@ -568,7 +473,6 @@ out:
 static gboolean
 cd_util_set_version (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	cmsHPROFILE lcms_profile = NULL;
 	gboolean ret = TRUE;
 	gchar *endptr = NULL;
 	gdouble version;
@@ -597,21 +501,9 @@ cd_util_set_version (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* open profile and set version */
-	lcms_profile = cd_util_profile_read (values[0], error);
-	if (lcms_profile == NULL) {
-		ret = FALSE;
-		goto out;
-	}
-	cmsSetProfileVersion (lcms_profile, version);
-
-	/* write new file */
-	ret = cd_util_profile_write (lcms_profile, values[0], error);
-	if (!ret)
-		goto out;
+	/* set version */
+	cd_icc_set_version (priv->icc, version);
 out:
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
 	return ret;
 }
 
@@ -621,14 +513,9 @@ out:
 static gboolean
 cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	cmsHANDLE dict_new = NULL;
-	cmsHANDLE dict_old = NULL;
-	cmsHPROFILE lcms_profile = NULL;
-	const cmsDICTentry *entry;
 	gboolean ret = TRUE;
-	gchar name[1024];
-	gdouble coverage;
 	gchar *coverage_tmp;
+	gdouble coverage;
 
 	/* check arguments */
 	if (g_strv_length (values) != 1) {
@@ -638,59 +525,26 @@ cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* open profile */
-	lcms_profile = cd_util_profile_read (values[0], error);
-	if (lcms_profile == NULL) {
-		ret = FALSE;
-		goto out;
-	}
-
-	/* copy everything except the CMF keys */
-	dict_old = cmsReadTag (lcms_profile, cmsSigMetaTag);
-	if (dict_old == NULL) {
-		ret = FALSE;
-		g_set_error_literal (error, 1, 0,
-				     "no metadata present");
-		goto out;
-	}
-
-	/* copy, but ignore the gamut keys */
-	dict_new = cmsDictAlloc (NULL);
-	for (entry = cmsDictGetEntryList (dict_old);
-	     entry != NULL;
-	     entry = cmsDictNextEntry (entry)) {
-		wcstombs (name, entry->Name, sizeof (name));
-		if (g_str_has_prefix (name, "GAMUT_volume") == 0)
-			continue;
-		cmsDictAddEntry (dict_new,
-				 entry->Name,
-				 entry->Value,
-				 NULL,
-				 NULL);
-	}
-
 	/* get coverages of common spaces */
-	if (cmsGetColorSpace (lcms_profile) == cmsSigRgbData) {
+	if (cd_icc_get_colorspace (priv->icc) == CD_COLORSPACE_RGB) {
 
 		/* get the gamut coverage for sRGB */
 		coverage = cd_util_get_profile_coverage (priv,
-							  lcms_profile,
-							  CD_STANDARD_SPACE_ADOBE_RGB,
-							  error);
+							 CD_STANDARD_SPACE_ADOBE_RGB,
+							 error);
 		if (coverage < 0.0) {
 			ret = FALSE;
 			goto out;
 		}
 		coverage_tmp = g_strdup_printf ("%f", coverage);
-		_cmsDictAddEntryAscii (dict_new,
-				       "GAMUT_coverage(adobe-rgb)",
-				       coverage_tmp);
+		cd_icc_add_metadata (priv->icc,
+				     "GAMUT_coverage(adobe-rgb)",
+				     coverage_tmp);
 		g_free (coverage_tmp);
 		g_debug ("coverage of AdobeRGB: %f%%", coverage * 100.0f);
 
 		/* get the gamut coverage for AdobeRGB */
 		coverage = cd_util_get_profile_coverage (priv,
-							 lcms_profile,
 							 CD_STANDARD_SPACE_SRGB,
 							 error);
 		if (coverage < 0.0) {
@@ -698,33 +552,18 @@ cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 			goto out;
 		}
 		coverage_tmp = g_strdup_printf ("%f", coverage);
-		_cmsDictAddEntryAscii (dict_new,
-				       "GAMUT_coverage(srgb)",
-				       coverage_tmp);
+		cd_icc_add_metadata (priv->icc,
+				     "GAMUT_coverage(srgb)",
+				     coverage_tmp);
 		g_free (coverage_tmp);
 		g_debug ("coverage of sRGB: %f%%", coverage * 100.0f);
 	}
 
 	/* add CMS defines */
-	_cmsDictAddEntryAscii (dict_new,
-			       CD_PROFILE_METADATA_CMF_VERSION,
-			       PACKAGE_VERSION);
-	ret = cmsWriteTag (lcms_profile, cmsSigMetaTag, dict_new);
-	if (!ret) {
-		g_set_error_literal (error, 1, 0,
-				     "cannot initialize dict tag");
-		goto out;
-	}
-
-	/* write new file */
-	ret = cd_util_profile_write (lcms_profile, values[0], error);
-	if (!ret)
-		goto out;
+	cd_icc_add_metadata (priv->icc,
+			     CD_PROFILE_METADATA_CMF_VERSION,
+			     PACKAGE_VERSION);
 out:
-	if (dict_new != NULL)
-		cmsDictFree (dict_new);
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
 	return ret;
 }
 
@@ -734,12 +573,7 @@ out:
 static gboolean
 cd_util_init_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	cmsHANDLE dict_new = NULL;
-	cmsHANDLE dict_old = NULL;
-	cmsHPROFILE lcms_profile = NULL;
-	const cmsDICTentry *entry;
 	gboolean ret = TRUE;
-	gchar name[1024];
 
 	/* check arguments */
 	if (g_strv_length (values) != 1) {
@@ -749,67 +583,17 @@ cd_util_init_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* open profile */
-	lcms_profile = cd_util_profile_read (values[0], error);
-	if (lcms_profile == NULL) {
-		ret = FALSE;
-		goto out;
-	}
-
-	/* copy everything except the CMF keys */
-	dict_old = cmsReadTag (lcms_profile, cmsSigMetaTag);
-	if (dict_old == NULL) {
-		ret = FALSE;
-		g_set_error_literal (error, 1, 0,
-				     "no metadata present");
-		goto out;
-	}
-
-	/* copy, but ignore the key */
-	dict_new = cmsDictAlloc (NULL);
-	for (entry = cmsDictGetEntryList (dict_old);
-	     entry != NULL;
-	     entry = cmsDictNextEntry (entry)) {
-		wcstombs (name, entry->Name, sizeof (name));
-		if (g_strcmp0 (name, CD_PROFILE_METADATA_CMF_PRODUCT) == 0)
-			continue;
-		if (g_strcmp0 (name, CD_PROFILE_METADATA_CMF_BINARY) == 0)
-			continue;
-		if (g_strcmp0 (name, CD_PROFILE_METADATA_CMF_VERSION) == 0)
-			continue;
-		cmsDictAddEntry (dict_new,
-				 entry->Name,
-				 entry->Value,
-				 NULL,
-				 NULL);
-	}
-
 	/* add CMS defines */
-	_cmsDictAddEntryAscii (dict_new,
-			       CD_PROFILE_METADATA_CMF_PRODUCT,
-			       PACKAGE_NAME);
-	_cmsDictAddEntryAscii (dict_new,
-			       CD_PROFILE_METADATA_CMF_BINARY,
-			       "cd-fix-profile");
-	_cmsDictAddEntryAscii (dict_new,
-			       CD_PROFILE_METADATA_CMF_VERSION,
-			       PACKAGE_VERSION);
-	ret = cmsWriteTag (lcms_profile, cmsSigMetaTag, dict_new);
-	if (!ret) {
-		g_set_error_literal (error, 1, 0,
-				     "cannot initialize dict tag");
-		goto out;
-	}
-
-	/* write new file */
-	ret = cd_util_profile_write (lcms_profile, values[0], error);
-	if (!ret)
-		goto out;
+	cd_icc_add_metadata (priv->icc,
+			     CD_PROFILE_METADATA_CMF_PRODUCT,
+			     PACKAGE_NAME);
+	cd_icc_add_metadata (priv->icc,
+			     CD_PROFILE_METADATA_CMF_BINARY,
+			     "cd-fix-profile");
+	cd_icc_add_metadata (priv->icc,
+			     CD_PROFILE_METADATA_CMF_VERSION,
+			     PACKAGE_VERSION);
 out:
-	if (dict_new != NULL)
-		cmsDictFree (dict_new);
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
 	return ret;
 }
 
@@ -819,69 +603,19 @@ out:
 static gboolean
 cd_util_remove_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	cmsHANDLE dict_new = NULL;
-	cmsHANDLE dict_old = NULL;
-	cmsHPROFILE lcms_profile = NULL;
-	const cmsDICTentry *entry;
 	gboolean ret = TRUE;
-	gchar name[1024];
 
 	/* check arguments */
 	if (g_strv_length (values) != 2) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
-				     "invalid input, expect 'key' 'filename'");
+				     "invalid input, expect 'filename' 'key'");
 		goto out;
 	}
 
-	/* open profile */
-	lcms_profile = cd_util_profile_read (values[1], error);
-	if (lcms_profile == NULL) {
-		ret = FALSE;
-		goto out;
-	}
-
-	/* copy everything except the key */
-	dict_old = cmsReadTag (lcms_profile, cmsSigMetaTag);
-	if (dict_old == NULL) {
-		ret = FALSE;
-		g_set_error_literal (error, 1, 0,
-				     "no metadata present");
-		goto out;
-	}
-
-	/* copy, but ignore the key */
-	dict_new = cmsDictAlloc (NULL);
-	for (entry = cmsDictGetEntryList (dict_old);
-	     entry != NULL;
-	     entry = cmsDictNextEntry (entry)) {
-		wcstombs (name, entry->Name, sizeof (name));
-		if (g_strcmp0 (name, values[0]) == 0)
-			continue;
-		cmsDictAddEntry (dict_new,
-				 entry->Name,
-				 entry->Value,
-				 NULL,
-				 NULL);
-	}
-
-	/* write the new dict */
-	ret = cmsWriteTag (lcms_profile, cmsSigMetaTag, dict_new);
-	if (!ret) {
-		g_set_error_literal (error, 1, 0,
-				     "cannot initialize dict tag");
-		goto out;
-	}
-
-	/* write new file */
-	ret = cd_util_profile_write (lcms_profile, values[1], error);
-	if (!ret)
-		goto out;
+	/* remove entry */
+	cd_icc_remove_metadata (priv->icc, values[1]);
 out:
-	if (dict_new != NULL)
-		cmsDictFree (dict_new);
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
 	return ret;
 }
 
@@ -891,68 +625,19 @@ out:
 static gboolean
 cd_util_add_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	cmsHANDLE dict_new = NULL;
-	cmsHANDLE dict_old = NULL;
-	cmsHPROFILE lcms_profile = NULL;
-	const cmsDICTentry *entry;
 	gboolean ret = TRUE;
-	gchar name[1024];
 
 	/* check arguments */
 	if (g_strv_length (values) != 3) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
-				     "invalid input, expect 'key' 'value' 'filename'");
+				     "invalid input, expect 'filename' 'key' 'value'");
 		goto out;
-	}
-
-	/* open profile */
-	lcms_profile = cd_util_profile_read (values[2], error);
-	if (lcms_profile == NULL) {
-		ret = FALSE;
-		goto out;
-	}
-
-	/* add CMS defines */
-	dict_old = cmsReadTag (lcms_profile, cmsSigMetaTag);
-	if (dict_old == NULL)
-		dict_old = cmsDictAlloc (NULL);
-
-	/* copy, but ignore the key */
-	dict_new = cmsDictAlloc (NULL);
-	for (entry = cmsDictGetEntryList (dict_old);
-	     entry != NULL;
-	     entry = cmsDictNextEntry (entry)) {
-		wcstombs (name, entry->Name, sizeof (name));
-		if (g_strcmp0 (name, values[0]) == 0)
-			continue;
-		cmsDictAddEntry (dict_new,
-				 entry->Name,
-				 entry->Value,
-				 NULL,
-				 NULL);
 	}
 
 	/* add new entry */
-	_cmsDictAddEntryAscii (dict_new,
-			       values[0],
-			       values[1]);
-	ret = cmsWriteTag (lcms_profile, cmsSigMetaTag, dict_new);
-	if (!ret) {
-		g_set_error_literal (error, 1, 0,
-				     "cannot write new dict tag");
-		goto out;
-	}
-
-	/* write new file */
-	ret = cd_util_profile_write (lcms_profile, values[2], error);
-	if (!ret)
-		goto out;
+	cd_icc_add_metadata (priv->icc, values[1], values[2]);
 out:
-	if (dict_new != NULL)
-		cmsDictFree (dict_new);
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
 	return ret;
 }
 
@@ -962,10 +647,10 @@ out:
 static gboolean
 cd_util_generate_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	cmsHPROFILE lcms_profile = NULL;
-	gboolean ret = TRUE;
-	const cmsToneCurve **vcgt;
 	cmsFloat32Number in;
+	cmsHPROFILE lcms_profile;
+	const cmsToneCurve **vcgt;
+	gboolean ret = TRUE;
 	guint i;
 	guint size;
 
@@ -986,17 +671,8 @@ cd_util_generate_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* set value */
-	lcms_profile = cmsOpenProfileFromFile (values[0], "r");
-	if (lcms_profile == NULL) {
-		g_set_error (error, 1, 0,
-			     "failed to open profile %s",
-			     values[0]);
-		ret = FALSE;
-		goto out;
-	}
-
 	/* does profile have VCGT */
+	lcms_profile = cd_icc_get_handle (priv->icc);
 	vcgt = cmsReadTag (lcms_profile, cmsSigVcgtTag);
 	if (vcgt == NULL || vcgt[0] == NULL) {
 		ret = FALSE;
@@ -1018,8 +694,6 @@ cd_util_generate_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
 	/* success */
 	ret = TRUE;
 out:
-	if (lcms_profile != NULL)
-		cmsCloseProfile (lcms_profile);
 	return ret;
 }
 
@@ -1050,15 +724,20 @@ int
 main (int argc, char *argv[])
 {
 	CdUtilPrivate *priv;
-	gboolean ret;
+	gboolean ret = TRUE;
 	gboolean verbose = FALSE;
 	gchar *cmd_descriptions = NULL;
+	gchar *locale = NULL;
 	GError *error = NULL;
+	GFile *file = NULL;
 	guint retval = 1;
 	const GOptionEntry options[] = {
 		{ "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
 			/* TRANSLATORS: command line option */
 			_("Show extra debugging information"), NULL },
+		{ "locale", 'v', 0, G_OPTION_ARG_STRING, &locale,
+			/* TRANSLATORS: command line option */
+			_("The locale to use when setting localized text"), NULL },
 		{ NULL}
 	};
 
@@ -1164,10 +843,40 @@ main (int argc, char *argv[])
 				   cd_util_ignore_cb, NULL);
 	}
 
-	/* get connection to colord */
+	/* the first option is always the filename */
+	if (argc < 2) {
+		g_print ("%s\n", "Filename must be the first argument");
+		goto out;
+	}
+
+	/* open file */
+	file = g_file_new_for_path (argv[1]);
+	priv->icc = cd_icc_new ();
+	ret = cd_icc_load_file (priv->icc,
+				file,
+				CD_ICC_LOAD_FLAGS_ALL,
+				NULL,
+				&error);
+	if (!ret) {
+		g_print ("%s\n", error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* run the specified command */
-	ret = cd_util_run (priv, argv[1], (gchar**) &argv[2], &error);
+	ret = cd_util_run (priv, argv[2], (gchar**) &argv[2], &error);
+	if (!ret) {
+		g_print ("%s\n", error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* save file */
+	ret = cd_icc_save_file (priv->icc,
+				file,
+				CD_ICC_SAVE_FLAGS_NONE,
+				NULL,
+				&error);
 	if (!ret) {
 		g_print ("%s\n", error->message);
 		g_error_free (error);
@@ -1181,9 +890,15 @@ out:
 		if (priv->cmd_array != NULL)
 			g_ptr_array_unref (priv->cmd_array);
 		g_option_context_free (priv->context);
+		if (priv->icc != NULL)
+			g_object_unref (priv->icc);
 		g_object_unref (priv->client);
+		g_free (priv->locale);
 		g_free (priv);
 	}
+	if (file != NULL)
+		g_object_unref (file);
+	g_free (locale);
 	g_free (cmd_descriptions);
 	return retval;
 }

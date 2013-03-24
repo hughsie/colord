@@ -29,7 +29,6 @@
 #include <math.h>
 #include <colord-private.h>
 
-#include "cd-common.h"
 #include "cd-lcms-helpers.h"
 
 typedef struct {
