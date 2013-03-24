@@ -841,6 +841,9 @@ cd_icc_save_file (CdIcc *icc,
 		}
 	}
 
+	/* set version */
+	cmsSetProfileVersion (priv->lcms_profile, priv->version);
+
 	/* save metadata */
 	dict = cmsDictAlloc (NULL);
 	md_keys = g_hash_table_get_keys (priv->metadata);
@@ -1144,6 +1147,23 @@ cd_icc_get_version (CdIcc *icc)
 {
 	g_return_val_if_fail (CD_IS_ICC (icc), 0.0f);
 	return icc->priv->version;
+}
+
+/**
+ * cd_icc_set_version:
+ * @icc: a #CdIcc instance.
+ * @version: the profile version, e.g. 2.1 or 4.0
+ *
+ * Sets the profile version.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_version (CdIcc *icc, gdouble version)
+{
+	g_return_if_fail (CD_IS_ICC (icc));
+	icc->priv->version = version;
+	g_object_notify (G_OBJECT (icc), "version");
 }
 
 /**
@@ -1782,6 +1802,9 @@ cd_icc_set_property (GObject *object, guint prop_id, const GValue *value, GParam
 	case PROP_COLORSPACE:
 		cd_icc_set_colorspace (icc, g_value_get_uint (value));
 		break;
+	case PROP_VERSION:
+		cd_icc_set_version (icc, g_value_get_double (value));
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -1822,7 +1845,7 @@ cd_icc_class_init (CdIccClass *klass)
 	 */
 	pspec = g_param_spec_double ("version", NULL, NULL,
 				     0, G_MAXFLOAT, 0,
-				     G_PARAM_READABLE);
+				     G_PARAM_READWRITE);
 	g_object_class_install_property (object_class, PROP_VERSION, pspec);
 
 	/**
