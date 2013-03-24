@@ -476,19 +476,25 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags)
 	}
 
 	/* read optional metadata? */
-	dict = cmsReadTag (priv->lcms_profile, cmsSigMetaTag);
-	if (dict != NULL) {
-		const cmsDICTentry *entry;
-		gchar ascii_name[1024];
-		gchar ascii_value[1024];
-		for (entry = cmsDictGetEntryList (dict);
-		     entry != NULL;
-		     entry = cmsDictNextEntry (entry)) {
-			wcstombs (ascii_name, entry->Name, sizeof (ascii_name));
-			wcstombs (ascii_value, entry->Value, sizeof (ascii_value));
-			g_hash_table_insert (priv->metadata,
-					     g_strdup (ascii_name),
-					     g_strdup (ascii_value));
+	if ((flags & CD_ICC_LOAD_FLAGS_METADATA) > 0) {
+		dict = cmsReadTag (priv->lcms_profile, cmsSigMetaTag);
+		if (dict != NULL) {
+			const cmsDICTentry *entry;
+			gchar ascii_name[1024];
+			gchar ascii_value[1024];
+			for (entry = cmsDictGetEntryList (dict);
+			     entry != NULL;
+			     entry = cmsDictNextEntry (entry)) {
+				wcstombs (ascii_name,
+					  entry->Name,
+					  sizeof (ascii_name));
+				wcstombs (ascii_value,
+					  entry->Value,
+					  sizeof (ascii_value));
+				g_hash_table_insert (priv->metadata,
+						     g_strdup (ascii_name),
+						     g_strdup (ascii_value));
+			}
 		}
 	}
 

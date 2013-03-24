@@ -1463,13 +1463,13 @@ cd_profile_set_filename (CdProfile *profile,
 		ret = cd_icc_load_data (icc,
 					g_bytes_get_data (gdata, NULL),
 					g_bytes_get_size (gdata),
-					CD_ICC_LOAD_FLAGS_NONE,
+					CD_ICC_LOAD_FLAGS_METADATA,
 					&error_local);
 	} else {
 		file = g_file_new_for_path (filename);
 		ret = cd_icc_load_file (icc,
 					file,
-					CD_ICC_LOAD_FLAGS_NONE,
+					CD_ICC_LOAD_FLAGS_METADATA,
 					NULL,
 					&error_local);
 	}
@@ -1555,7 +1555,7 @@ cd_profile_set_fd (CdProfile *profile,
 	icc = cd_icc_new ();
 	ret = cd_icc_load_fd (icc,
 			      fd,
-			      CD_ICC_LOAD_FLAGS_NONE,
+			      CD_ICC_LOAD_FLAGS_METADATA,
 			      &error_local);
 	if (!ret) {
 		g_set_error_literal (error,

@@ -3307,7 +3307,9 @@ colord_icc_func (void)
 	file = g_file_new_for_path (filename);
 	ret = cd_icc_load_file (icc,
 				file,
-				CD_ICC_LOAD_FLAGS_NONE,
+				CD_ICC_LOAD_FLAGS_METADATA |
+				 CD_ICC_LOAD_FLAGS_NAMED_COLORS |
+				 CD_ICC_LOAD_FLAGS_TRANSLATIONS,
 				NULL,
 				&error);
 	g_assert_no_error (error);
@@ -3383,7 +3385,7 @@ colord_icc_save_func (void)
 	file = g_file_new_for_path (filename);
 	ret = cd_icc_load_file (icc,
 				file,
-				CD_ICC_LOAD_FLAGS_NONE,
+				CD_ICC_LOAD_FLAGS_METADATA,
 				NULL,
 				&error);
 	g_assert_no_error (error);
@@ -3413,7 +3415,7 @@ colord_icc_save_func (void)
 	icc = cd_icc_new ();
 	ret = cd_icc_load_file (icc,
 				file,
-				CD_ICC_LOAD_FLAGS_NONE,
+				CD_ICC_LOAD_FLAGS_METADATA,
 				NULL,
 				&error);
 	g_assert_no_error (error);
