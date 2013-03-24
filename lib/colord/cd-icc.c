@@ -580,6 +580,214 @@ out:
 }
 
 /**
+ * utf8_to_wchar_t:
+ **/
+static wchar_t *
+utf8_to_wchar_t (const char *src)
+{
+	gssize len;
+	gssize converted;
+	wchar_t *buf = NULL;
+
+	len = mbstowcs (NULL, src, 0);
+	if (len < 0) {
+		g_warning ("Invalid UTF-8 in string %s", src);
+		goto out;
+	}
+	len += 1;
+	buf = g_malloc (sizeof (wchar_t) * len);
+	converted = mbstowcs (buf, src, len - 1);
+	g_assert (converted != -1);
+	buf[converted] = '\0';
+out:
+	return buf;
+}
+
+/**
+ * _cmsDictAddEntryAscii:
+ **/
+static cmsBool
+_cmsDictAddEntryAscii (cmsHANDLE dict,
+		       const gchar *key,
+		       const gchar *value)
+{
+	cmsBool ret = FALSE;
+	wchar_t *mb_key = NULL;
+	wchar_t *mb_value = NULL;
+
+	mb_key = utf8_to_wchar_t (key);
+	if (mb_key == NULL)
+		goto out;
+	mb_value = utf8_to_wchar_t (value);
+	if (mb_value == NULL)
+		goto out;
+	ret = cmsDictAddEntry (dict, mb_key, mb_value, NULL, NULL);
+out:
+	g_free (mb_key);
+	g_free (mb_value);
+	return ret;
+}
+
+typedef struct {
+	gchar		*language_code;	/* will always be xx\0 */
+	gchar		*country_code;	/* will always be xx\0 */
+	wchar_t		*wtext;
+} CdMluObject;
+
+/**
+ * cd_util_mlu_object_free:
+ **/
+static void
+cd_util_mlu_object_free (gpointer data)
+{
+	CdMluObject *obj = (CdMluObject *) data;
+	g_free (obj->language_code);
+	g_free (obj->country_code);
+	g_free (obj->wtext);
+	g_free (obj);
+}
+
+/**
+ * cd_util_mlu_object_parse:
+ **/
+static CdMluObject *
+cd_util_mlu_object_parse (const gchar *locale, const gchar *utf8_text)
+{
+	CdMluObject *obj = NULL;
+	gchar *key = NULL;
+	gchar **split = NULL;
+	guint type;
+	wchar_t *wtext;
+
+	/* untranslated version */
+	if (locale == NULL || locale[0] == '\0') {
+		obj = g_new0 (CdMluObject, 1);
+		obj->wtext = utf8_to_wchar_t (utf8_text);
+		goto out;
+	}
+
+	/* ignore ##@latin */
+	if (g_strstr_len (locale, -1, "@") != NULL)
+		goto out;
+
+	key = g_strdup (locale);
+	g_strdelimit (key, ".", '\0');
+	split = g_strsplit (key, "_", -1);
+	if (strlen (split[0]) != 2)
+		goto out;
+	type = g_strv_length (split);
+	if (type > 2)
+		goto out;
+
+	/* convert to wchars */
+	wtext = utf8_to_wchar_t (utf8_text);
+	if (wtext == NULL)
+		goto out;
+
+	/* lv */
+	if (type == 1) {
+		obj = g_new0 (CdMluObject, 1);
+		obj->language_code = g_strdup (split[0]);
+		obj->wtext = wtext;
+		goto out;
+	}
+
+	/* en_GB */
+	if (strlen (split[1]) != 2)
+		goto out;
+	obj = g_new0 (CdMluObject, 1);
+	obj->language_code = g_strdup (split[0]);
+	obj->country_code = g_strdup (split[1]);
+	obj->wtext = wtext;
+out:
+	g_free (key);
+	g_strfreev (split);
+	return obj;
+}
+
+/**
+ * cd_util_write_tag_localized:
+ **/
+static gboolean
+cd_util_write_tag_localized (CdIcc *icc,
+			     cmsTagSignature sig,
+			     GHashTable *hash,
+			     GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	CdMluObject *obj;
+	cmsMLU *mlu = NULL;
+	const gchar *locale;
+	gboolean ret = TRUE;
+	GList *keys;
+	GList *l;
+	GPtrArray *array;
+	guint i;
+
+	/* convert all the hash entries into CdMluObject's */
+	keys = g_hash_table_get_keys (hash);
+	array = g_ptr_array_new_with_free_func (cd_util_mlu_object_free);
+	for (l = keys; l != NULL; l = l->next) {
+		locale = l->data;
+		obj = cd_util_mlu_object_parse (locale,
+						g_hash_table_lookup (hash, locale));
+		if (obj == NULL)
+			continue;
+		g_ptr_array_add (array, obj);
+	}
+
+	/* delete tag if there is no data */
+	if (array->len == 0) {
+		cmsWriteTag (priv->lcms_profile, sig, NULL);
+		goto out;
+	}
+
+	/* promote V2 profiles so we can write a 'mluc' type */
+	if (array->len > 1 && priv->version < 4.0)
+		cmsSetProfileVersion (priv->lcms_profile, 4.0);
+
+	/* create MLU object to hold all the translations */
+	mlu = cmsMLUalloc (NULL, array->len);
+	for (i = 0; i < array->len; i++) {
+		obj = g_ptr_array_index (array, i);
+		ret = cmsMLUsetWide (mlu,
+				     obj->language_code != NULL ? obj->language_code : cmsNoLanguage,
+				     obj->country_code != NULL ? obj->country_code : cmsNoCountry,
+				     obj->wtext);
+		if (!ret) {
+			g_set_error_literal (error,
+					     CD_ICC_ERROR,
+					     CD_ICC_ERROR_FAILED_TO_SAVE,
+					     "cannot write MLU text");
+			goto out;
+		}
+	}
+
+	/* write tag */
+	ret = cmsWriteTag (priv->lcms_profile, sig, mlu);
+	if (!ret) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "cannot write tag: 0x%x",
+			     sig);
+		goto out;
+	}
+
+	/* remove apple-specific cmsSigProfileDescriptionTagML */
+	if (sig == cmsSigProfileDescriptionTag) {
+		cmsWriteTag (priv->lcms_profile,
+			     0x6473636d,
+			     NULL);
+	}
+out:
+	g_list_free (keys);
+	if (mlu != NULL)
+		cmsMLUfree (mlu);
+	return ret;
+}
+
+/**
  * cd_icc_save_file:
  * @icc: a #CdIcc instance.
  * @file: a #GFile
@@ -651,6 +859,32 @@ cd_icc_save_file (CdIcc *icc,
 				     "cannot write metadata");
 		goto out;
 	}
+
+	/* save translations */
+	ret = cd_util_write_tag_localized (icc,
+					   cmsSigProfileDescriptionTag,
+					   priv->mluc_data[CD_MLUC_DESCRIPTION],
+					   error);
+	if (!ret)
+		goto out;
+	ret = cd_util_write_tag_localized (icc,
+					   cmsSigCopyrightTag,
+					   priv->mluc_data[CD_MLUC_COPYRIGHT],
+					   error);
+	if (!ret)
+		goto out;
+	ret = cd_util_write_tag_localized (icc,
+					   cmsSigDeviceMfgDescTag,
+					   priv->mluc_data[CD_MLUC_MANUFACTURER],
+					   error);
+	if (!ret)
+		goto out;
+	ret = cd_util_write_tag_localized (icc,
+					   cmsSigDeviceModelDescTag,
+					   priv->mluc_data[CD_MLUC_MODEL],
+					   error);
+	if (!ret)
+		goto out;
 
 	/* get size of profile */
 	ret = cmsSaveProfileToMem (priv->lcms_profile,

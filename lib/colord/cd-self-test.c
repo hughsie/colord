@@ -1533,7 +1533,7 @@ colord_dom_localized_func (void)
 	g_assert_cmpstr (lang, ==, "Colors cannot be copyrighted");
 	lang = g_hash_table_lookup (hash, "en_GB");
 	g_assert_cmpstr (lang, ==, "Colours cannot be copyrighted");
-	lang = g_hash_table_lookup (hash, "fr_FR");
+	lang = g_hash_table_lookup (hash, "fr");
 	g_assert_cmpstr (lang, ==, NULL);
 	g_hash_table_unref (hash);
 
@@ -3374,6 +3374,7 @@ static void
 colord_icc_save_func (void)
 {
 	CdIcc *icc;
+	const gchar *str;
 	gboolean ret;
 	gchar *filename;
 	GError *error = NULL;
@@ -3401,6 +3402,7 @@ colord_icc_save_func (void)
 	cd_icc_set_colorspace (icc, CD_COLORSPACE_XYZ);
 	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	cd_icc_add_metadata (icc, "SelfTest", "true");
+	cd_icc_set_description (icc, "fr.UTF-8", "Couleurs crayon");
 
 	/* Save to /tmp and reparse new file */
 	file = g_file_new_for_path ("/tmp/new.icc");
@@ -3426,6 +3428,9 @@ colord_icc_save_func (void)
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_XYZ);
 	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "SelfTest"), ==, "true");
+	str = cd_icc_get_description (icc, "fr.UTF-8", &error);
+	g_assert_no_error (error);
+	g_assert_cmpstr (str, ==, "Couleurs crayon");
 
 	g_object_unref (icc);
 }
