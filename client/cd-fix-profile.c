@@ -28,8 +28,6 @@
 #include <stdlib.h>
 #include <colord/colord.h>
 
-#include "cd-lcms-helpers.h"
-
 #define CD_PROFILE_DEFAULT_COPYRIGHT_STRING	"This profile is free of known copyright restrictions."
 
 typedef struct {
@@ -735,7 +733,7 @@ main (int argc, char *argv[])
 		{ "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
 			/* TRANSLATORS: command line option */
 			_("Show extra debugging information"), NULL },
-		{ "locale", 'v', 0, G_OPTION_ARG_STRING, &locale,
+		{ "locale", '\0', 0, G_OPTION_ARG_STRING, &locale,
 			/* TRANSLATORS: command line option */
 			_("The locale to use when setting localized text"), NULL },
 		{ NULL}
@@ -753,7 +751,6 @@ main (int argc, char *argv[])
 	/* create helper object */
 	priv = g_new0 (CdUtilPrivate, 1);
 	priv->client = cd_client_new ();
-	priv->locale = g_strdup (locale);
 
 	/* add commands */
 	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_util_item_free);
@@ -834,6 +831,9 @@ main (int argc, char *argv[])
 		g_error_free (error);
 		goto out;
 	}
+
+	/* use explicit locale */
+	priv->locale = g_strdup (locale);
 
 	/* set verbose? */
 	if (verbose) {

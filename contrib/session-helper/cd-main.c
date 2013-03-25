@@ -31,7 +31,6 @@
 
 #include "cd-debug.h"
 #include "cd-state.h"
-#include "cd-lcms-helpers.h"
 #include "cd-session.h"
 
 typedef struct {

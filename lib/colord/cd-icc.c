@@ -842,7 +842,8 @@ cd_icc_save_file (CdIcc *icc,
 	}
 
 	/* set version */
-	cmsSetProfileVersion (priv->lcms_profile, priv->version);
+	if (priv->version > 0.0)
+		cmsSetProfileVersion (priv->lcms_profile, priv->version);
 
 	/* save metadata */
 	if (g_hash_table_size (priv->metadata) != 0) {
@@ -1100,6 +1101,31 @@ cd_icc_get_handle (CdIcc *icc)
 {
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 	return icc->priv->lcms_profile;
+}
+
+/**
+ * cd_icc_set_handle:
+ * @icc: a #CdIcc instance.
+ * @handle: a cmsHPROFILE instance
+ *
+ * Set the internal cmsHPROFILE instance. This may be required if you create
+ * the profile using cmsCreateRGBProfile() and then want to use the
+ * functionality in #CdIcc.
+ *
+ * Do not call cmsCloseProfile() on @handle in the caller, this will be done
+ * when the @icc object is finalized. Treat the profile like it's been adopted
+ * by this module.
+ *
+ * Additionally, this function cannot be called more than once, and also can't
+ * be called if cd_icc_load_file() has previously been used on the @icc object.
+ **/
+void
+cd_icc_set_handle (CdIcc *icc, gpointer handle)
+{
+	g_return_if_fail (CD_IS_ICC (icc));
+	g_return_if_fail (handle != NULL);
+	g_return_if_fail (icc->priv->lcms_profile == NULL);
+	icc->priv->lcms_profile = handle;
 }
 
 /**

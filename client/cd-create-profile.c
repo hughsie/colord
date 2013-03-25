@@ -29,11 +29,10 @@
 #include <math.h>
 #include <colord-private.h>
 
-#include "cd-lcms-helpers.h"
-
 typedef struct {
 	GOptionContext		*context;
 	cmsHPROFILE		 lcms_profile;
+	CdIcc			*icc;
 } CdUtilPrivate;
 
 static gint lcms_error_code = 0;
@@ -524,153 +523,6 @@ out:
 }
 
 /**
- * utf8_to_wchar_t:
- **/
-static wchar_t *
-utf8_to_wchar_t (const char *src)
-{
-	gssize len;
-	gssize converted;
-	wchar_t *buf = NULL;
-
-	len = mbstowcs (NULL, src, 0);
-	if (len < 0) {
-		g_warning ("Invalid UTF-8 in string %s", src);
-		goto out;
-	}
-	len += 1;
-	buf = g_malloc (sizeof (wchar_t) * len);
-	converted = mbstowcs (buf, src, len - 1);
-	g_assert (converted != -1);
-	buf[converted] = '\0';
-out:
-	return buf;
-}
-
-typedef struct {
-	gchar		*language_code;	/* will always be xx\0 */
-	gchar		*country_code;	/* will always be xx\0 */
-	wchar_t		*wtext;
-} CdMluObject;
-
-/**
- * cd_util_mlu_object_free:
- **/
-static void
-cd_util_mlu_object_free (gpointer data)
-{
-	CdMluObject *obj = (CdMluObject *) data;
-	g_free (obj->language_code);
-	g_free (obj->country_code);
-	g_free (obj->wtext);
-	g_free (obj);
-}
-
-/**
- * cd_util_mlu_object_parse:
- **/
-static CdMluObject *
-cd_util_mlu_object_parse (const gchar *locale, const gchar *utf8_text)
-{
-	CdMluObject *obj = NULL;
-	gchar **split = NULL;
-	guint type;
-	wchar_t *wtext;
-
-	/* untranslated version */
-	if (locale == NULL || locale[0] == '\0') {
-		obj = g_new0 (CdMluObject, 1);
-		obj->wtext = utf8_to_wchar_t (utf8_text);;
-		goto out;
-	}
-
-	/* ignore ##@latin */
-	if (g_strstr_len (locale, -1, "@") != NULL)
-		goto out;
-	split = g_strsplit (locale, "_", -1);
-	if (strlen (split[0]) != 2)
-		goto out;
-	type = g_strv_length (split);
-	if (type > 2)
-		goto out;
-
-	/* convert to wchars */
-	wtext = utf8_to_wchar_t (utf8_text);
-	if (wtext == NULL)
-		goto out;
-
-	/* lv */
-	if (type == 1) {
-		obj = g_new0 (CdMluObject, 1);
-		obj->language_code = g_strdup (split[0]);
-		obj->wtext = wtext;
-		goto out;
-	}
-
-	/* en_GB */
-	if (strlen (split[1]) != 2)
-		goto out;
-	obj = g_new0 (CdMluObject, 1);
-	obj->language_code = g_strdup (split[0]);
-	obj->country_code = g_strdup (split[1]);
-	obj->wtext = wtext;
-out:
-	g_strfreev (split);
-	return obj;
-}
-
-/**
- * cd_util_write_tag_localized:
- **/
-static gboolean
-cd_util_write_tag_localized (cmsHPROFILE lcms_profile,
-			     cmsTagSignature sig,
-			     GHashTable *hash)
-{
-	CdMluObject *obj;
-	cmsMLU *mlu;
-	const gchar *locale;
-	gboolean ret;
-	GList *keys;
-	GList *l;
-	GPtrArray *array;
-	guint i;
-
-	/* convert all the hash entries into CdMluObject's */
-	keys = g_hash_table_get_keys (hash);
-	array = g_ptr_array_new_with_free_func (cd_util_mlu_object_free);
-	for (l = keys; l != NULL; l = l->next) {
-		locale = l->data;
-		obj = cd_util_mlu_object_parse (locale,
-						g_hash_table_lookup (hash, locale));
-		if (obj == NULL)
-			continue;
-		g_ptr_array_add (array, obj);
-	}
-	g_list_free (keys);
-
-	/* create MLU object to hold all the translations */
-	mlu = cmsMLUalloc (0, array->len);
-	for (i = 0; i < array->len; i++) {
-		obj = g_ptr_array_index (array, i);
-		ret = cmsMLUsetWide (mlu,
-				     obj->language_code != NULL ? obj->language_code : cmsNoLanguage,
-				     obj->country_code != NULL ? obj->country_code : cmsNoCountry,
-				     obj->wtext);
-		if (!ret)
-			goto out;
-	}
-
-	/* write tag */
-	ret = cmsWriteTag (lcms_profile, sig, mlu);
-	if (!ret)
-		goto out;
-out:
-	cmsMLUfree (mlu);
-	return ret;
-}
-
-/**
  * cd_util_create_from_xml:
  **/
 static gboolean
@@ -679,7 +531,6 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 			 GError **error)
 {
 	CdDom *dom = NULL;
-	cmsHANDLE dict = NULL;
 	const GNode *profile;
 	const GNode *tmp;
 	gboolean ret = TRUE;
@@ -729,95 +580,53 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 		goto out;
 	}
 
+	/* convert into a CdIcc object */
+	cd_icc_set_handle (priv->icc, priv->lcms_profile);
+
 	/* also write metadata */
-	dict = cmsDictAlloc (NULL);
 	tmp = cd_dom_get_node (dom, profile, "license");
 	if (tmp != NULL) {
-		_cmsDictAddEntryAscii (dict,
-				       CD_PROFILE_METADATA_LICENSE,
-				       cd_dom_get_node_data (tmp));
+		cd_icc_add_metadata (priv->icc,
+				     CD_PROFILE_METADATA_LICENSE,
+				     cd_dom_get_node_data (tmp));
 	}
 	tmp = cd_dom_get_node (dom, profile, "standard_space");
 	if (tmp != NULL) {
-		_cmsDictAddEntryAscii (dict,
-				       CD_PROFILE_METADATA_STANDARD_SPACE,
-				       cd_dom_get_node_data (tmp));
+		cd_icc_add_metadata (priv->icc,
+				     CD_PROFILE_METADATA_STANDARD_SPACE,
+				     cd_dom_get_node_data (tmp));
 	}
 	tmp = cd_dom_get_node (dom, profile, "data_source");
 	if (tmp != NULL) {
-		_cmsDictAddEntryAscii (dict,
-				       CD_PROFILE_METADATA_DATA_SOURCE,
-				       cd_dom_get_node_data (tmp));
+		cd_icc_add_metadata (priv->icc,
+				     CD_PROFILE_METADATA_DATA_SOURCE,
+				     cd_dom_get_node_data (tmp));
 	}
 
 	/* add CMS defines */
-	_cmsDictAddEntryAscii (dict,
-			       CD_PROFILE_METADATA_CMF_PRODUCT,
-			       PACKAGE_NAME);
-	_cmsDictAddEntryAscii (dict,
-			       CD_PROFILE_METADATA_CMF_BINARY,
-			       "cd-create-profile");
-	_cmsDictAddEntryAscii (dict,
-			       CD_PROFILE_METADATA_CMF_VERSION,
-			       PACKAGE_VERSION);
-
-	/* just write dict */
-	ret = cmsWriteTag (priv->lcms_profile, cmsSigMetaTag, dict);
-	if (!ret) {
-		g_set_error_literal (error, 1, 0,
-				     "cannot write metadata");
-		goto out;
-	}
+	cd_icc_add_metadata (priv->icc,
+			     CD_PROFILE_METADATA_CMF_PRODUCT,
+			     PACKAGE_NAME);
+	cd_icc_add_metadata (priv->icc,
+			     CD_PROFILE_METADATA_CMF_BINARY,
+			     "cd-create-profile");
+	cd_icc_add_metadata (priv->icc,
+			     CD_PROFILE_METADATA_CMF_VERSION,
+			     PACKAGE_VERSION);
 
 	/* optional localized keys */
 	hash = cd_dom_get_node_localized (profile, "description");
-	if (hash != NULL) {
-		ret = cd_util_write_tag_localized (priv->lcms_profile,
-						   cmsSigProfileDescriptionTag,
-						   hash);
-		if (!ret) {
-			g_set_error_literal (error, 1, 0,
-					     "failed to write description");
-			goto out;
-		}
-		g_hash_table_unref (hash);
-	}
+	if (hash != NULL)
+		cd_icc_set_description_items (priv->icc, hash);
 	hash = cd_dom_get_node_localized (profile, "copyright");
-	if (hash != NULL) {
-		ret = cd_util_write_tag_localized (priv->lcms_profile,
-						   cmsSigCopyrightTag,
-						   hash);
-		if (!ret) {
-			g_set_error_literal (error, 1, 0,
-					     "failed to write copyright");
-			goto out;
-		}
-		g_hash_table_unref (hash);
-	}
+	if (hash != NULL)
+		cd_icc_set_copyright_items (priv->icc, hash);
 	hash = cd_dom_get_node_localized (profile, "model");
-	if (hash != NULL) {
-		ret = cd_util_write_tag_localized (priv->lcms_profile,
-						   cmsSigDeviceModelDescTag,
-						   hash);
-		if (!ret) {
-			g_set_error_literal (error, 1, 0,
-					     "failed to write model");
-			goto out;
-		}
-		g_hash_table_unref (hash);
-	}
+	if (hash != NULL)
+		cd_icc_set_model_items (priv->icc, hash);
 	hash = cd_dom_get_node_localized (profile, "manufacturer");
-	if (hash != NULL) {
-		ret = cd_util_write_tag_localized (priv->lcms_profile,
-						   cmsSigDeviceMfgDescTag,
-						   hash);
-		if (!ret) {
-			g_set_error_literal (error, 1, 0,
-					     "failed to write manufacturer");
-			goto out;
-		}
-		g_hash_table_unref (hash);
-	}
+	if (hash != NULL)
+		cd_icc_set_manufacturer_items (priv->icc, hash);
 out:
 	g_free (data);
 	if (dom != NULL)
@@ -825,9 +634,9 @@ out:
 	return ret;
 }
 
-/*
+/**
  * main:
- */
+ **/
 int
 main (int argc, char **argv)
 {
@@ -836,6 +645,7 @@ main (int argc, char **argv)
 	gchar *cmd_descriptions = NULL;
 	gchar *filename = NULL;
 	GError *error = NULL;
+	GFile *file = NULL;
 	guint retval = EXIT_FAILURE;
 
 	const GOptionEntry options[] = {
@@ -858,6 +668,7 @@ main (int argc, char **argv)
 	g_assert (ret);
 
 	priv = g_new0 (CdUtilPrivate, 1);
+	priv->icc = cd_icc_new ();
 	priv->context = g_option_context_new (NULL);
 
 	/* TRANSLATORS: program name */
@@ -888,23 +699,29 @@ main (int argc, char **argv)
 		goto out;
 	}
 
-	/* write profile id */
-	ret = cmsMD5computeID (priv->lcms_profile);
-	if (!ret || lcms_error_code != 0) {
-		g_warning ("failed to write profile id");
+	/* write file */
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_save_file (priv->icc,
+				file,
+				CD_ICC_SAVE_FLAGS_NONE,
+				NULL,
+				&error);
+	if (!ret) {
+		g_print ("%s\n", error->message);
+		g_error_free (error);
 		goto out;
 	}
 
 	/* success */
 	retval = EXIT_SUCCESS;
-	cmsSaveProfileToFile (priv->lcms_profile, filename);
 out:
 	if (priv != NULL) {
-		if (priv->lcms_profile != NULL)
-			cmsCloseProfile (priv->lcms_profile);
 		g_option_context_free (priv->context);
+		g_object_unref (priv->icc);
 		g_free (priv);
 	}
+	if (file != NULL)
+		g_object_unref (file);
 	g_free (cmd_descriptions);
 	g_free (filename);
 	return retval;

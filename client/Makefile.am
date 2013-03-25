@@ -18,11 +18,6 @@ COLORD_LIBS =						\
 	$(top_builddir)/lib/colord/libcolordprivate.la	\
 	$(top_builddir)/lib/colord/libcolord.la
 
-noinst_LIBRARIES = libclientprivate.a
-libclientprivate_a_SOURCES =				\
-	cd-lcms-helpers.c				\
-	cd-lcms-helpers.h
-
 bin_PROGRAMS =						\
 	colormgr					\
 	cd-create-profile				\
@@ -33,7 +28,6 @@ colormgr_SOURCES =					\
 	cd-util.c
 
 colormgr_LDADD =					\
-	libclientprivate.a				\
 	$(COLORD_LIBS)					\
 	$(GLIB_LIBS)
 
@@ -44,7 +38,6 @@ cd_fix_profile_SOURCES =				\
 	cd-fix-profile.c
 
 cd_fix_profile_LDADD =					\
-	libclientprivate.a				\
 	$(GLIB_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(COLORD_LIBS)					\
@@ -57,7 +50,6 @@ cd_iccdump_SOURCES =					\
 	cd-iccdump.c
 
 cd_iccdump_LDADD =					\
-	libclientprivate.a				\
 	$(GLIB_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(COLORD_LIBS)					\
@@ -70,7 +62,6 @@ cd_create_profile_SOURCES =				\
 	cd-create-profile.c
 
 cd_create_profile_LDADD =				\
-	libclientprivate.a				\
 	$(GLIB_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(COLORD_LIBS)					\

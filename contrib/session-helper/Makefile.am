@@ -33,8 +33,6 @@ libexec_PROGRAMS =					\
 	colord-session
 
 colord_session_SOURCES =				\
-	$(top_srcdir)/client/cd-lcms-helpers.c		\
-	$(top_srcdir)/client/cd-lcms-helpers.h		\
 	$(top_srcdir)/src/cd-debug.c			\
 	$(top_srcdir)/src/cd-debug.h			\
 	cd-session.h					\
