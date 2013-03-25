@@ -1702,6 +1702,35 @@ cd_icc_set_description (CdIcc *icc, const gchar *locale, const gchar *value)
 }
 
 /**
+ * cd_icc_set_description_items:
+ * @icc: A valid #CdIcc
+ * @values: New translated values, with the key being the locale.
+ *
+ * Sets the profile descriptions for specific locales.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_description_items (CdIcc *icc, GHashTable *values)
+{
+	const gchar *key;
+	const gchar *value;
+	GList *keys;
+	GList *l;
+
+	g_return_if_fail (CD_IS_ICC (icc));
+
+	/* add each translation */
+	keys = g_hash_table_get_keys (values);
+	for (l = keys; l != NULL; l = l->next) {
+		key = l->data;
+		value = g_hash_table_lookup (values, key);
+		cd_icc_set_description (icc, key, value);
+	}
+	g_list_free (keys);
+}
+
+/**
  * cd_icc_set_copyright:
  * @icc: A valid #CdIcc
  * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
@@ -1718,6 +1747,35 @@ cd_icc_set_copyright (CdIcc *icc, const gchar *locale, const gchar *value)
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_COPYRIGHT],
 			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
+}
+
+/**
+ * cd_icc_set_copyright_items:
+ * @icc: A valid #CdIcc
+ * @values: New translated values, with the key being the locale.
+ *
+ * Sets the profile copyrights for specific locales.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_copyright_items (CdIcc *icc, GHashTable *values)
+{
+	const gchar *key;
+	const gchar *value;
+	GList *keys;
+	GList *l;
+
+	g_return_if_fail (CD_IS_ICC (icc));
+
+	/* add each translation */
+	keys = g_hash_table_get_keys (values);
+	for (l = keys; l != NULL; l = l->next) {
+		key = l->data;
+		value = g_hash_table_lookup (values, key);
+		cd_icc_set_copyright (icc, key, value);
+	}
+	g_list_free (keys);
 }
 
 /**
@@ -1740,6 +1798,35 @@ cd_icc_set_manufacturer (CdIcc *icc, const gchar *locale, const gchar *value)
 }
 
 /**
+ * cd_icc_set_manufacturer_items:
+ * @icc: A valid #CdIcc
+ * @values: New translated values, with the key being the locale.
+ *
+ * Sets the profile manufacturers for specific locales.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_manufacturer_items (CdIcc *icc, GHashTable *values)
+{
+	const gchar *key;
+	const gchar *value;
+	GList *keys;
+	GList *l;
+
+	g_return_if_fail (CD_IS_ICC (icc));
+
+	/* add each translation */
+	keys = g_hash_table_get_keys (values);
+	for (l = keys; l != NULL; l = l->next) {
+		key = l->data;
+		value = g_hash_table_lookup (values, key);
+		cd_icc_set_manufacturer (icc, key, value);
+	}
+	g_list_free (keys);
+}
+
+/**
  * cd_icc_set_model:
  * @icc: A valid #CdIcc
  * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
@@ -1756,6 +1843,35 @@ cd_icc_set_model (CdIcc *icc, const gchar *locale, const gchar *value)
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_MODEL],
 			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
+}
+
+/**
+ * cd_icc_set_model_items:
+ * @icc: A valid #CdIcc
+ * @values: New translated values, with the key being the locale.
+ *
+ * Sets the profile models for specific locales.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_icc_set_model_items (CdIcc *icc, GHashTable *values)
+{
+	const gchar *key;
+	const gchar *value;
+	GList *keys;
+	GList *l;
+
+	g_return_if_fail (CD_IS_ICC (icc));
+
+	/* add each translation */
+	keys = g_hash_table_get_keys (values);
+	for (l = keys; l != NULL; l = l->next) {
+		key = l->data;
+		value = g_hash_table_lookup (values, key);
+		cd_icc_set_model (icc, key, value);
+	}
+	g_list_free (keys);
 }
 
 /**
