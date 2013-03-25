@@ -13,7 +13,6 @@ AM_CPPFLAGS = \
 	-DCD_COMPILATION					\
 	-DG_LOG_DOMAIN=\"libcolord\"				\
 	-DTESTDATADIR=\""$(top_srcdir)/data/tests"\"		\
-	-DPROFILESDIR=\""$(top_srcdir)/data/profiles"\"		\
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"
 
 lib_LTLIBRARIES =						\

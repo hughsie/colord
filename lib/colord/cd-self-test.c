@@ -3451,7 +3451,7 @@ colord_icc_localized_func (void)
 
 	/* open a localized profile */
 	icc = cd_icc_new ();
-	filename = _g_test_realpath (PROFILESDIR "/Crayons.icc");
+	filename = _g_test_realpath (TESTDATADIR "/crayons.icc");
 	file = g_file_new_for_path (filename);
 	ret = cd_icc_load_file (icc,
 				file,
