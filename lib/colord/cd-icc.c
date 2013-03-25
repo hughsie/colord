@@ -155,6 +155,7 @@ cd_icc_to_string (CdIcc *icc)
 	CdIccPrivate *priv = icc->priv;
 	cmsInt32Number tag_size;
 	cmsTagSignature sig;
+	cmsTagSignature sig_link;
 	cmsTagTypeSignature tag_type;
 	gboolean ret;
 	gchar tag_str[5] = "    ";
@@ -262,6 +263,15 @@ cd_icc_to_string (CdIcc *icc)
 		/* print header */
 		g_string_append_printf (str, "tag %02i:\n", i);
 		g_string_append_printf (str, "  sig\t'%s' [0x%x]\n", tag_str, sig);
+
+		/* is this linked to another data area? */
+		sig_link = cmsTagLinkedTo (priv->lcms_profile, sig);
+		if (sig_link != 0) {
+			cd_icc_uint32_to_str (GUINT32_FROM_BE (sig_link), tag_str);
+			g_string_append_printf (str, "  link\t'%s' [0x%x]\n", tag_str, sig_link);
+			continue;
+		}
+
 		tag_size = cmsReadRawTag (priv->lcms_profile, sig, &tmp, 4);
 		cd_icc_uint32_to_str (tmp, tag_str);
 		tag_type = GUINT32_FROM_BE (tmp);
