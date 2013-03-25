@@ -1293,7 +1293,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 	priv->has_vcgt = cmsIsTag (lcms_profile, cmsSigVcgtTag);
 
 	/* get the checksum for the profile if we can */
-	priv->checksum = cd_profile_get_checksum (icc);
+	priv->checksum = g_strdup (cd_icc_get_checksum (icc));
 
 	/* get any warnings for the profile */
 	flags = cd_profile_get_warnings (lcms_profile);
