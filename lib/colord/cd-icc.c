@@ -59,6 +59,7 @@ struct _CdIccPrivate
 	CdProfileKind		 kind;
 	cmsHPROFILE		 lcms_profile;
 	gboolean		 can_delete;
+	gchar			*checksum;
 	gchar			*filename;
 	gdouble			 version;
 	GHashTable		*mluc_data[CD_MLUC_LAST]; /* key is 'en_GB' or '' for default */
@@ -77,6 +78,7 @@ enum {
 	PROP_KIND,
 	PROP_COLORSPACE,
 	PROP_CAN_DELETE,
+	PROP_CHECKSUM,
 	PROP_LAST
 };
 
@@ -463,6 +465,36 @@ const struct {
 };
 
 /**
+ * cd_icc_get_precooked_md5:
+ **/
+static gchar *
+cd_icc_get_precooked_md5 (cmsHPROFILE lcms_profile)
+{
+	cmsUInt8Number icc_id[16];
+	gboolean md5_precooked = FALSE;
+	gchar *md5 = NULL;
+	guint i;
+
+	/* check to see if we have a pre-cooked MD5 */
+	cmsGetHeaderProfileID (lcms_profile, icc_id);
+	for (i = 0; i < 16; i++) {
+		if (icc_id[i] != 0) {
+			md5_precooked = TRUE;
+			break;
+		}
+	}
+	if (md5_precooked == FALSE)
+		goto out;
+
+	/* convert to a hex string */
+	md5 = g_new0 (gchar, 32 + 1);
+	for (i = 0; i < 16; i++)
+		g_snprintf (md5 + i * 2, 3, "%02x", icc_id[i]);
+out:
+	return md5;
+}
+
+/**
  * cd_icc_load:
  **/
 static void
@@ -517,6 +549,9 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags)
 			}
 		}
 	}
+
+	/* get precooked profile ID if one exists */
+	priv->checksum = cd_icc_get_precooked_md5 (priv->lcms_profile);
 
 	/* read default translations */
 	cd_icc_get_description (icc, NULL, NULL);
@@ -585,6 +620,14 @@ cd_icc_load_data (CdIcc *icc,
 
 	/* load cached data */
 	cd_icc_load (icc, flags);
+
+	/* calculate the data MD5 if there was no embedded profile */
+	if (priv->checksum == NULL &&
+	    (flags & CD_ICC_LOAD_FLAGS_FALLBACK_MD5) > 0) {
+		priv->checksum = g_compute_checksum_for_data (G_CHECKSUM_MD5,
+							      (const guchar *) data,
+							      data_len);
+	}
 out:
 	return ret;
 }
@@ -1471,7 +1514,6 @@ cd_icc_get_created (CdIcc *icc)
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
-
 	/* get the profile creation time and date */
 	ret = cmsGetHeaderCreationDateTime (priv->lcms_profile, &created_tm);
 	if (!ret)
@@ -1486,6 +1528,26 @@ cd_icc_get_created (CdIcc *icc)
 	created = g_date_time_new_from_unix_utc (created_t);
 out:
 	return created;
+}
+
+/**
+ * cd_icc_get_checksum:
+ * @icc: A valid #CdIcc
+ *
+ * Gets the profile checksum if one exists.
+ * This will either be the embedded profile ID, or the file checksum if
+ * the #CdIcc object was loaded using cd_icc_load_data() or cd_icc_load_file()
+ * and the %CD_ICC_LOAD_FLAGS_FALLBACK_MD5 flag is used.
+ *
+ * Return value: An embedded MD5 checksum, or %NULL for not set
+ *
+ * Since: 0.1.32
+ **/
+const gchar *
+cd_icc_get_checksum (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return icc->priv->checksum;
 }
 
 /**
@@ -1938,6 +2000,9 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 	case PROP_CAN_DELETE:
 		g_value_set_boolean (value, priv->can_delete);
 		break;
+	case PROP_CHECKSUM:
+		g_value_set_string (value, priv->checksum);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -2028,6 +2093,14 @@ cd_icc_class_init (CdIccClass *klass)
 				      G_PARAM_READABLE);
 	g_object_class_install_property (object_class, PROP_CAN_DELETE, pspec);
 
+	/**
+	 * CdIcc:checksum:
+	 */
+	pspec = g_param_spec_string ("checksum", NULL, NULL,
+				     NULL,
+				     G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_CHECKSUM, pspec);
+
 	g_type_class_add_private (klass, sizeof (CdIccPrivate));
 }
 
@@ -2066,6 +2139,7 @@ cd_icc_finalize (GObject *object)
 	guint i;
 
 	g_free (priv->filename);
+	g_free (priv->checksum);
 	g_ptr_array_unref (priv->named_colors);
 	g_hash_table_destroy (priv->metadata);
 	for (i = 0; i < CD_MLUC_LAST; i++)

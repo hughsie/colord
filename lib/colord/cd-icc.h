@@ -93,6 +93,8 @@ typedef struct
  * @CD_ICC_LOAD_FLAGS_NAMED_COLORS:	Parse any named colors in the profile.
  * @CD_ICC_LOAD_FLAGS_TRANSLATIONS:	Parse all translations in the profile.
  * @CD_ICC_LOAD_FLAGS_METADATA:		Parse the metadata in the profile.
+ * @CD_ICC_LOAD_FLAGS_FALLBACK_MD5:	Calculate the profile MD5 if a profile
+ * 					ID was not supplied in the profile.
  *
  * Flags used when loading an ICC profile.
  *
@@ -103,6 +105,7 @@ typedef enum {
 	CD_ICC_LOAD_FLAGS_NAMED_COLORS	= (1 << 0),
 	CD_ICC_LOAD_FLAGS_TRANSLATIONS	= (1 << 1),
 	CD_ICC_LOAD_FLAGS_METADATA	= (1 << 2),
+	CD_ICC_LOAD_FLAGS_FALLBACK_MD5	= (1 << 3),
 	/* new entries go here: */
 	CD_ICC_LOAD_FLAGS_ALL		= 0xff,
 	CD_ICC_LOAD_FLAGS_LAST
@@ -170,6 +173,7 @@ void		 cd_icc_remove_metadata			(CdIcc		*icc,
 GPtrArray	*cd_icc_get_named_colors		(CdIcc		*icc);
 gboolean	 cd_icc_get_can_delete			(CdIcc		*icc);
 GDateTime	*cd_icc_get_created			(CdIcc		*icc);
+const gchar	*cd_icc_get_checksum			(CdIcc		*icc);
 const gchar	*cd_icc_get_description			(CdIcc		*icc,
 							 const gchar	*locale,
 							 GError		**error);

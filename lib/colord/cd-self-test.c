@@ -3323,6 +3323,7 @@ colord_icc_func (void)
 
 	/* check profile properties */
 	g_assert_cmpint (cd_icc_get_size (icc), ==, 25244);
+	g_assert_cmpstr (cd_icc_get_checksum (icc), ==, "9ace8cce8baac8d492a93a2a232d7702");
 	g_assert_cmpfloat (cd_icc_get_version (icc), ==, 3.4);
 	g_assert (g_str_has_suffix (cd_icc_get_filename (icc), "ibm-t61.icc"));
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_DISPLAY_DEVICE);
@@ -3362,10 +3363,6 @@ colord_icc_func (void)
 	str = cd_icc_get_description (icc, "fr", &error);
 	g_assert_no_error (error);
 	g_assert_cmpstr (str, ==, "Huey, LENOVO - 6464Y1H - 15\" (2009-12-23)");
-
-	/* modify some details about the profile */
-	cd_icc_set_colorspace (icc, CD_COLORSPACE_XYZ);
-	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
 
 	g_object_unref (icc);
 }
