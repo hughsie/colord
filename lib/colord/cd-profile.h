@@ -30,6 +30,7 @@
 #include <gio/gio.h>
 
 #include "cd-enum.h"
+#include "cd-icc.h"
 
 G_BEGIN_DECLS
 
@@ -124,6 +125,10 @@ gchar		*cd_profile_to_string			(CdProfile	*profile);
 gboolean	 cd_profile_equal			(CdProfile	*profile1,
 							 CdProfile	*profile2);
 gboolean	 cd_profile_has_access			(CdProfile	*profile);
+CdIcc		*cd_profile_load_icc			(CdProfile	*profile,
+							 CdIccLoadFlags	 flags,
+							 GCancellable	*cancellable,
+							 GError		**error);
 
 G_END_DECLS
 

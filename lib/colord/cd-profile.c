@@ -1148,6 +1148,47 @@ cd_profile_equal (CdProfile *profile1, CdProfile *profile2)
 	return g_strcmp0 (profile1->priv->id, profile2->priv->id) == 0;
 }
 
+/**
+ * cd_profile_load_icc:
+ * @profile: a #CdProfile instance.
+ * @flags: options for loading the profile
+ * @cancellable: A #GCancellable, or %NULL
+ * @error: A #GError or %NULL
+ *
+ * Loads a local ICC object from the abstract profile.
+ *
+ * Return value: (transfer full): A new #CdIcc object, or %NULL for error
+ *
+ * Since: 0.1.8
+ **/
+CdIcc *
+cd_profile_load_icc (CdProfile *profile,
+		     CdIccLoadFlags flags,
+		     GCancellable *cancellable,
+		     GError **error)
+{
+	CdIcc *icc = NULL;
+	CdIcc *icc_tmp;
+	gboolean ret;
+	GFile *file;
+
+	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
+
+	/* load local instance */
+	icc_tmp = cd_icc_new ();
+	file = g_file_new_for_path (profile->priv->filename);
+	ret = cd_icc_load_file (icc_tmp, file, flags, cancellable, error);
+	if (!ret)
+		goto out;
+
+	/* success */
+	icc = g_object_ref (icc_tmp);
+out:
+	g_object_unref (file);
+	g_object_unref (icc_tmp);
+	return icc;
+}
+
 /*
  * _cd_profile_set_property:
  */
