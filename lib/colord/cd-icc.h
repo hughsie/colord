@@ -58,6 +58,7 @@ typedef struct
  * @CD_ICC_ERROR_INVALID_LOCALE:	Locale was invalid
  * @CD_ICC_ERROR_NO_DATA:		No data to read
  * @CD_ICC_ERROR_FAILED_TO_SAVE:	Failed to save file
+ * @CD_ICC_ERROR_FAILED_TO_CREATE:	Failed to create file
  *
  * The ICC error code.
  *
@@ -69,6 +70,7 @@ typedef enum {
 	CD_ICC_ERROR_INVALID_LOCALE,
 	CD_ICC_ERROR_NO_DATA,
 	CD_ICC_ERROR_FAILED_TO_SAVE,
+	CD_ICC_ERROR_FAILED_TO_CREATE,
 	CD_ICC_ERROR_LAST
 } CdIccError;
 
@@ -206,6 +208,13 @@ void		 cd_icc_set_model			(CdIcc		*icc,
 							 const gchar	*value);
 void		 cd_icc_set_model_items			(CdIcc		*icc,
 							 GHashTable	*values);
+gboolean	 cd_icc_create_from_edid		(CdIcc		*icc,
+							 gdouble	 gamma_value,
+							 const CdColorYxy *red,
+							 const CdColorYxy *green,
+							 const CdColorYxy *blue,
+							 const CdColorYxy *white,
+							 GError		**error);
 
 G_END_DECLS
 

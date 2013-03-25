@@ -1973,6 +1973,93 @@ cd_icc_set_model_items (CdIcc *icc, GHashTable *values)
 }
 
 /**
+ * cd_icc_create_from_edid:
+ * @icc: A valid #CdIcc
+ * @gamma_value: approximate device gamma
+ * @red: primary color value
+ * @green: primary color value
+ * @blue: primary color value
+ * @white: whitepoint value
+ * @error: A #GError, or %NULL
+ *
+ * Creates an ICC profile from EDID data.
+ *
+ * Return value: %TRUE for success
+ *
+ * Since: 0.1.32
+ **/
+gboolean
+cd_icc_create_from_edid (CdIcc *icc,
+			 gdouble gamma_value,
+			 const CdColorYxy *red,
+			 const CdColorYxy *green,
+			 const CdColorYxy *blue,
+			 const CdColorYxy *white,
+			 GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsCIExyYTRIPLE chroma;
+	cmsCIExyY white_point;
+	cmsToneCurve *transfer_curve[3] = { NULL, NULL, NULL };
+	gboolean ret = FALSE;
+
+	/* not loaded */
+	if (priv->lcms_profile != NULL) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_CREATE,
+				     "already loaded or generated");
+		goto out;
+	}
+
+	/* copy data from our structures (which are the wrong packing
+	 * size for lcms2) */
+	chroma.Red.x = red->x;
+	chroma.Red.y = red->y;
+	chroma.Green.x = green->x;
+	chroma.Green.y = green->y;
+	chroma.Blue.x = blue->x;
+	chroma.Blue.y = blue->y;
+	white_point.x = white->x;
+	white_point.y = white->y;
+	white_point.Y = 1.0;
+
+	/* estimate the transfer function for the gamma */
+	transfer_curve[0] = cmsBuildGamma (NULL, gamma_value);
+	transfer_curve[1] = transfer_curve[0];
+	transfer_curve[2] = transfer_curve[0];
+
+	/* create our generated ICC */
+	priv->lcms_profile = cmsCreateRGBProfile (&white_point,
+						  &chroma,
+						  transfer_curve);
+	if (priv->lcms_profile == NULL) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_CREATE,
+			     "failed to create profile with chroma and gamma");
+		goto out;
+	}
+
+	/* set header options */
+	cmsSetHeaderRenderingIntent (priv->lcms_profile, INTENT_PERCEPTUAL);
+	cmsSetDeviceClass (priv->lcms_profile, cmsSigDisplayClass);
+
+	/* set the data source so we don't ever prompt the user to
+	* recalibrate (as the EDID data won't have changed) */
+	cd_icc_add_metadata (icc,
+			     CD_PROFILE_METADATA_DATA_SOURCE,
+			     CD_PROFILE_METADATA_DATA_SOURCE_EDID);
+
+	/* success */
+	ret = TRUE;
+out:
+	if (transfer_curve[0] != NULL)
+		cmsFreeToneCurve (transfer_curve[0]);
+	return ret;
+}
+
+/**
  * cd_icc_get_property:
  **/
 static void
