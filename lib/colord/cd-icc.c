@@ -49,7 +49,7 @@ typedef enum {
 } CdIccMluc;
 
 #ifndef HAVE_LCMS_GET_HEADER_CREATOR
-#define ProfileDescriptionML	0x6473636d
+#define cmsSigProfileDescriptionMLTag	0x6473636d
 #endif
 
 /**
