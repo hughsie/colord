@@ -48,6 +48,10 @@ typedef enum {
 	CD_MLUC_LAST
 } CdIccMluc;
 
+#ifndef HAVE_LCMS_GET_HEADER_CREATOR
+#define ProfileDescriptionML	0x6473636d
+#endif
+
 /**
  * CdIccPrivate:
  *
@@ -848,7 +852,7 @@ cd_util_write_tag_localized (CdIcc *icc,
 	/* remove apple-specific cmsSigProfileDescriptionTagML */
 	if (sig == cmsSigProfileDescriptionTag) {
 		cmsWriteTag (priv->lcms_profile,
-			     0x6473636d,
+			     cmsSigProfileDescriptionMLTag,
 			     NULL);
 	}
 out:
@@ -1710,7 +1714,7 @@ out:
 const gchar *
 cd_icc_get_description (CdIcc *icc, const gchar *locale, GError **error)
 {
-	cmsTagSignature sigs[] = { 0x6473636d, /* 'dscm' */
+	cmsTagSignature sigs[] = { cmsSigProfileDescriptionMLTag,
 				   cmsSigProfileDescriptionTag,
 				   0 };
 	return cd_icc_get_mluc_data (icc,
