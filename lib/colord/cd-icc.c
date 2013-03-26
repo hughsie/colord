@@ -256,6 +256,13 @@ cd_icc_to_string (CdIcc *icc)
 		break;
 	}
 
+#ifdef HAVE_LCMS_GET_HEADER_CREATOR
+	/* creator */
+	tmp = cmsGetHeaderCreator (priv->lcms_profile);
+	cd_icc_uint32_to_str (GUINT32_FROM_BE (tmp), tag_str);
+	g_string_append_printf (str, "  Creator\t= %s\n", tag_str);
+#endif
+
 	/* profile ID */
 	cmsGetHeaderProfileID (priv->lcms_profile, profile_id);
 	g_string_append_printf (str, "  Profile ID\t= 0x%02x%02x%02x%02x\n",
