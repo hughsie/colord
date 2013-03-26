@@ -3,6 +3,13 @@
  <name>WideGamutRGB</name>
  <_description>Wide Gamut RGB</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that -->
+ <_model>
+  This working space was designed by Adobe Systems to capture many more colors
+  than Adobe RGB.
+  This profile is used to print to devices such as film recorders and can define
+  many colors that cannot be displayed on a computer screen.
+ </_model>
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>wide-gamut-rgb</standard_space>

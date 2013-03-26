@@ -3,6 +3,11 @@
  <name>CIE-RGB</name>
  <description>CIE RGB</description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: theoretical in that the profile primaries are not real colors -->
+ <_model>
+  This theoretical profile is designed for use in color experiments.
+  You probably don't want to use this profile as a working space or a display profile.
+ </_model>
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>cie-rgb</standard_space>

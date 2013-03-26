@@ -3,6 +3,11 @@
  <name>DonRGB4</name>
  <description>Don RGB 4</description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: saturated means vivid bright colors -->
+ <_model>
+  This working space can display more saturated colors than Adobe RGB and is
+  suitable for images with highly saturated colors often used in advertisements.
+ </_model>
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>don-rgb4</standard_space>

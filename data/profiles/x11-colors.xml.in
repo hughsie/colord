@@ -3,6 +3,14 @@
  <name>x11-colors</name>
  <_description>X11 Colors</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!--
+  TRANSLATORS: A 'named color profile' contains a list of color swatches that
+  look the same on all computer screens
+ -->
+ <_model>
+  This named color profile contains all the colors defined by X11, assuming the
+  source colors were supposed to be sRGB.
+ </_model>
  <license>CC0</license>
  <named>
   <color>

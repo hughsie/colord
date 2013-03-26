@@ -3,6 +3,14 @@
  <name>ColorMatchRGB</name>
  <description>ColorMatch RGB</description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't translate -->
+ <_model>
+  This profile was designed by Radius for the PressView monitor.
+  Only use this profile as a display profile or as a working space as the
+  profile is not significantly different to sRGB.
+  You should only need to use this profile if viewing images created on a
+  PressView monitor.
+ </_model>
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>colormatch-rgb</standard_space>

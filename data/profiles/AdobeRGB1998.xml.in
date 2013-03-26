@@ -3,6 +3,16 @@
  <name>AdobeRGB1998</name>
  <_description>Compatible with Adobe RGB (1998)</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+  <!--
+  TRANSLATORS: a working space is a profile you use for editing,
+  'SWOP' is also a trademark so don't translate that
+  -->
+ <_model>
+  This working space was designed to encompass most of the possible colors
+  available on a CMYK color printer and is similar to the NTSC-RGB profile.
+  This is a popular choice for editing photographs and for use in printing,
+  as all the SWOP colors can be reproduced.
+ </_model>
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>adobe-rgb</standard_space>

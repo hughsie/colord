@@ -3,6 +3,14 @@
  <name>Crayons</name>
  <_description>Crayon Colors</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!--
+  TRANSLATORS: 'Crayola' is a trademark, please don't translate,
+  also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
+ -->
+ <_model>
+  This named color profile contains all the Crayola crayon colors in popular use.
+  It is a test profile designed for testing embedding named colors into documents.
+ </_model>
  <license>CC0</license>
  <named>
   <color>

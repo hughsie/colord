@@ -3,6 +3,14 @@
  <name>ProPhotoRGB</name>
  <description>ProPhoto RGB</description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: Please don't translate 'RGB' or 'RAW' -->
+ <_model>
+  Originally designed by Eastman Kodak and called ROMM RGB, this profile can
+  display a very large number of colors and is used by many photographers for
+  archiving RAW images.
+  Unless you are working with 16 bits per channel precision, you may see color
+  banding when editing images.
+ </_model>
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>prophoto-rgb</standard_space>

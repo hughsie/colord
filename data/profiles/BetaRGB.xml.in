@@ -3,6 +3,13 @@
  <name>BetaRGB</name>
  <description>Beta RGB</description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: 'shadow detail' is the number of black colors you can see -->
+ <_model>
+  This working space can display more saturated colors than Adobe RGB.
+  It is less prone to quantisation errors compared to ProPhoto RGB, although
+  more shadow detail is preserved.
+  In most instances ProPhoto RGB is probably a better choice.
+ </_model>
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>beta-rgb</standard_space>

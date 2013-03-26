@@ -3,6 +3,15 @@
  <name>NTSC-RGB</name>
  <description>NTSC RGB</description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!--
+  TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
+  Same Color' as it's really a poor choice compared to sRGB
+ -->
+ <_model>
+  This profile emulates the range of colors used with the NTSC video standard.
+  It is an obsolete standard that has been replaced by SMTE-C.
+  You should only use this profile to decode archived video.
+ </_model>
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>ntsc-rgb</standard_space>
