@@ -166,6 +166,7 @@ cd_icc_to_string (CdIcc *icc)
 	guint32 i;
 	guint32 number_tags;
 	guint32 tmp;
+	guint64 header_flags;
 	guint8 profile_id[4];
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
@@ -223,6 +224,16 @@ cd_icc_to_string (CdIcc *icc)
 	g_string_append (str, ", ");
 	g_string_append (str, (tmp & cmsUseWithEmbeddedDataOnly) > 0 ?
 				"Use with embedded data only" : "Use anywhere");
+	g_string_append (str, "\n");
+
+	/* header attributes */
+	cmsGetHeaderAttributes (priv->lcms_profile, &header_flags);
+	g_string_append (str, "  Dev. Attrbts\t= ");
+	g_string_append (str, (header_flags & cmsTransparency) > 0 ?
+				"transparency" : "reflective");
+	g_string_append (str, ", ");
+	g_string_append (str, (header_flags & cmsMatte) > 0 ?
+				"matte" : "glossy");
 	g_string_append (str, "\n");
 
 	/* rendering intent */
