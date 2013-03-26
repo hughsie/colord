@@ -3368,6 +3368,30 @@ colord_icc_func (void)
 }
 
 static void
+colord_icc_edid_func (void)
+{
+	CdColorYxy blue;
+	CdColorYxy green;
+	CdColorYxy red;
+	CdColorYxy white;
+	CdIcc *icc;
+	gboolean ret;
+	GError *error = NULL;
+
+	/* create a profile from the EDID data */
+	icc = cd_icc_new ();
+	cd_color_yxy_set (&red, 1.0f, 0.569336f, 0.332031f);
+	cd_color_yxy_set (&green, 1.0f, 0.311523f, 0.543945f);
+	cd_color_yxy_set (&blue, 1.0f, 0.149414f, 0.131836f);
+	cd_color_yxy_set (&white, 1.0f, 0.313477f, 0.329102f);
+	ret = cd_icc_create_from_edid (icc, 2.2f, &red, &green, &blue, &white, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_object_unref (icc);
+}
+
+static void
 colord_icc_save_func (void)
 {
 	CdIcc *icc;
@@ -3514,6 +3538,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
+	g_test_add_func ("/colord/icc{edid}", colord_icc_edid_func);
 	g_test_add_func ("/colord/icc{save}", colord_icc_save_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
