@@ -8,7 +8,7 @@
   PC screen
   -->
  <_model>
-  This working space can display more saturated colors than Adobe RGB and is
+  This editing space can display more saturated colors than Adobe RGB and is
   suitable for images with highly saturated colors often used in advertisements.
   It is very similar to DonRGB4, but can show super-saturated red colors
   sometimes present in Fujichrome Velvia.

@@ -5,7 +5,7 @@
  <_copyright>This profile is free of known copyright restrictions</_copyright>
  <!-- TRANSLATORS: 'shadow detail' is the number of black colors you can see -->
  <_model>
-  This working space can display more saturated colors than Adobe RGB.
+  This editing space can display more saturated colors than Adobe RGB.
   It is less prone to quantisation errors compared to ProPhoto RGB, although
   more shadow detail is preserved.
   In most instances ProPhoto RGB is probably a better choice.

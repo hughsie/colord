@@ -5,7 +5,7 @@
  <_copyright>This profile is free of known copyright restrictions</_copyright>
  <!-- TRANSLATORS: saturated means vivid bright colors -->
  <_model>
-  This working space can display more saturated colors than Adobe RGB and is
+  This editing space can display more saturated colors than Adobe RGB and is
   suitable for images with highly saturated colors often used in advertisements.
  </_model>
  <license>CC0</license>

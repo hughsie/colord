@@ -5,10 +5,9 @@
  <_copyright>This profile is free of known copyright restrictions</_copyright>
  <!-- TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate -->
  <_model>
-  This is an RGB working space for use with Adobe Photoshop 5.0 and later.
+  This is an RGB editing space for use with Adobe Photoshop 5.0 and later.
   It was designed as an output-centric compromise between ColorMatch RGB and
   Adobe RGB and used to be prefered by some photograph printing services.
-  Adobe RGB is probably a better choice for most users.
  </_model>
  <license>CC0</license>
  <data_source>standard</data_source>

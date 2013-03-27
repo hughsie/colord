@@ -3,9 +3,9 @@
  <name>ECI-RGBv2</name>
  <description>ECI RGB v2</description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
- <!-- TRANSLATORS: luminance is a technical word for brightness -->
+ <!-- TRANSLATORS: lightness is a technical word for brightness -->
  <_model>
-  This profile was designed with a luminance gamma curve which means the monitor
+  This profile was designed with a lightness gamma curve which means the monitor
   will have to be also calibrated in the same way.
   This profile is only useful for advanced users and is not recommended for
   general use.

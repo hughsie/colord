@@ -8,11 +8,11 @@
   unspecified color profile
  -->
  <_model>
-  This general purpose profile was designed by Hewlett-Packard and Microsoft for
-  Trinitron PC monitors and lives on as the default profile on the Internet for
-  untagged RGB colors and used in HDTV.
+  This general purpose profile was designed by Hewlett-Packard and Microsoft
+  and lives on as the default profile on the Internet for untagged RGB colors
+  and used in HDTV.
   Most uncalibrated monitors are able to display all the colors available in
-  sRGB, although this profile is a poor choice for printing.
+  sRGB, although this profile is sometimes a poor choice for printing.
  </_model>
  <license>CC0</license>
  <data_source>standard</data_source>

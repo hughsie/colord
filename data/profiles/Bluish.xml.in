@@ -4,13 +4,11 @@
  <type>x11-gamma</type>
  <_description>Blue</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
- <!--
-  TRANSLATORS: the gamma tables are the lookup tables in the GPU that map one
-  color to another
- -->
+ <!-- TRANSLATORS: the lookup tables in the GPU map one color to another -->
  <_model>
   This test profile is used to make all colors on the screen slightly more
-  blue by altering the screen gamma tables to check the calibration is being applied correctly.
+  blue by altering the video card lookup table.
+  This allows the user to check the calibration is being applied correctly.
  </_model>
  <license>CC0</license>
  <data_source>test</data_source>

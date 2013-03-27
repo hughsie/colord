@@ -6,8 +6,8 @@
  <!-- TRANSLATORS: Please don't translate 'RGB' or 'RAW' -->
  <_model>
   Originally designed by Eastman Kodak and called ROMM RGB, this profile can
-  display a very large number of colors and is used by many photographers for
-  archiving RAW images.
+  display a very large range of colors and is used by many photographers for
+  rendering, editing and archiving RAW images.
   Unless you are working with 16 bits per channel precision, you may see color
   banding when editing images.
  </_model>
