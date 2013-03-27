@@ -192,11 +192,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 # common colorspaces
 %dir %{_icccolordir}/colord
 %{_icccolordir}/colord/AdobeRGB1998.icc
-%{_icccolordir}/colord/AppleRGB.icc
-%{_icccolordir}/colord/CIE-RGB.icc
-%{_icccolordir}/colord/ColorMatchRGB.icc
-%{_icccolordir}/colord/NTSC-RGB.icc
-%{_icccolordir}/colord/PAL-RGB.icc
 %{_icccolordir}/colord/ProPhotoRGB.icc
 %{_icccolordir}/colord/SMPTE-C-RGB.icc
 %{_icccolordir}/colord/sRGB.icc
@@ -208,8 +203,6 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 # monitor test profiles
 %{_icccolordir}/colord/Bluish.icc
-%{_icccolordir}/colord/SwappedRedAndGreen.icc
-%{_icccolordir}/colord/Gamma*.icc
 
 # named color profiles
 %{_icccolordir}/colord/x11-colors.icc
@@ -233,12 +226,19 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %endif
 
 # other colorspaces not often used
+%{_icccolordir}/colord/AppleRGB.icc
 %{_icccolordir}/colord/BestRGB.icc
 %{_icccolordir}/colord/BetaRGB.icc
 %{_icccolordir}/colord/BruceRGB.icc
+%{_icccolordir}/colord/CIE-RGB.icc
+%{_icccolordir}/colord/ColorMatchRGB.icc
 %{_icccolordir}/colord/DonRGB4.icc
 %{_icccolordir}/colord/ECI-RGBv2.icc
 %{_icccolordir}/colord/EktaSpacePS5.icc
+%{_icccolordir}/colord/Gamma*.icc
+%{_icccolordir}/colord/NTSC-RGB.icc
+%{_icccolordir}/colord/PAL-RGB.icc
+%{_icccolordir}/colord/SwappedRedAndGreen.icc
 %{_icccolordir}/colord/WideGamutRGB.icc
 
 # other named color profiles not generally useful
