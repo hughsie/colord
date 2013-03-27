@@ -978,10 +978,18 @@ cd_util_write_tag_localized (CdIcc *icc,
 	mlu = cmsMLUalloc (NULL, array->len);
 	for (i = 0; i < array->len; i++) {
 		obj = g_ptr_array_index (array, i);
-		ret = cmsMLUsetWide (mlu,
-				     obj->language_code != NULL ? obj->language_code : cmsNoLanguage,
-				     obj->country_code != NULL ? obj->country_code : cmsNoCountry,
-				     obj->wtext);
+		if (obj->language_code == NULL &&
+		    obj->country_code == NULL) {
+			/* the default translation is encoded as en_US rather
+			 * than NoLanguage_NoCountry as the latter means
+			 * 'the first entry' when reading */
+			ret = cmsMLUsetWide (mlu, "en", "US", obj->wtext);
+		} else {
+			ret = cmsMLUsetWide (mlu,
+					     obj->language_code != NULL ? obj->language_code : cmsNoLanguage,
+					     obj->country_code != NULL ? obj->country_code : cmsNoCountry,
+					     obj->wtext);
+		}
 		if (!ret) {
 			g_set_error_literal (error,
 					     CD_ICC_ERROR,
@@ -1807,6 +1815,10 @@ cd_icc_get_mluc_data (CdIcc *icc,
 				     "invalid locale: %s", locale);
 			goto out;
 		}
+	} else {
+		/* lcms maps this to 'default' */
+		language_code = "en";
+		country_code = "US";
 	}
 
 	/* read each MLU entry in order of preference */
