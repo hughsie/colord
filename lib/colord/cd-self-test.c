@@ -3277,6 +3277,7 @@ static void
 colord_icc_func (void)
 {
 	CdIcc *icc;
+	const CdColorXYZ *xyz_tmp;
 	const gchar *str;
 	gboolean ret;
 	gchar *created_str;
@@ -3309,6 +3310,7 @@ colord_icc_func (void)
 				file,
 				CD_ICC_LOAD_FLAGS_METADATA |
 				 CD_ICC_LOAD_FLAGS_NAMED_COLORS |
+				 CD_ICC_LOAD_FLAGS_PRIMARIES |
 				 CD_ICC_LOAD_FLAGS_TRANSLATIONS,
 				NULL,
 				&error);
@@ -3332,6 +3334,17 @@ colord_icc_func (void)
 	g_assert (array != NULL);
 	g_assert_cmpint (array->len, ==, 0);
 	g_ptr_array_unref (array);
+
+	/* check profile primaries */
+	xyz_tmp = cd_icc_get_red (icc);
+	g_assert_cmpfloat (ABS (xyz_tmp->X - 0.405), <, 0.01);
+	g_assert_cmpfloat (ABS (xyz_tmp->Y - 0.230), <, 0.01);
+	g_assert_cmpfloat (ABS (xyz_tmp->Z - 0.031), <, 0.01);
+	xyz_tmp = cd_icc_get_white (icc);
+	g_assert_cmpfloat (ABS (xyz_tmp->X - 0.969), <, 0.01);
+	g_assert_cmpfloat (ABS (xyz_tmp->Y - 1.000), <, 0.01);
+	g_assert_cmpfloat (ABS (xyz_tmp->Z - 0.854), <, 0.01);
+	g_assert_cmpint (cd_icc_get_temperature (icc), ==, 5000);
 
 	/* check metadata */
 	metadata = cd_icc_get_metadata (icc);

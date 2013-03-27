@@ -97,6 +97,7 @@ typedef struct
  * @CD_ICC_LOAD_FLAGS_METADATA:		Parse the metadata in the profile.
  * @CD_ICC_LOAD_FLAGS_FALLBACK_MD5:	Calculate the profile MD5 if a profile
  * 					ID was not supplied in the profile.
+ * @CD_ICC_LOAD_FLAGS_PRIMARIES:	Parse the primaries in the profile.
  *
  * Flags used when loading an ICC profile.
  *
@@ -108,6 +109,7 @@ typedef enum {
 	CD_ICC_LOAD_FLAGS_TRANSLATIONS	= (1 << 1),
 	CD_ICC_LOAD_FLAGS_METADATA	= (1 << 2),
 	CD_ICC_LOAD_FLAGS_FALLBACK_MD5	= (1 << 3),
+	CD_ICC_LOAD_FLAGS_PRIMARIES	= (1 << 4),
 	/* new entries go here: */
 	CD_ICC_LOAD_FLAGS_ALL		= 0xff,
 	CD_ICC_LOAD_FLAGS_LAST
@@ -208,6 +210,11 @@ void		 cd_icc_set_model			(CdIcc		*icc,
 							 const gchar	*value);
 void		 cd_icc_set_model_items			(CdIcc		*icc,
 							 GHashTable	*values);
+const CdColorXYZ *cd_icc_get_red			(CdIcc		*icc);
+const CdColorXYZ *cd_icc_get_green			(CdIcc		*icc);
+const CdColorXYZ *cd_icc_get_blue			(CdIcc		*icc);
+const CdColorXYZ *cd_icc_get_white			(CdIcc		*icc);
+guint		 cd_icc_get_temperature			(CdIcc		*icc);
 gboolean	 cd_icc_create_from_edid		(CdIcc		*icc,
 							 gdouble	 gamma_value,
 							 const CdColorYxy *red,

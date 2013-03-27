@@ -70,6 +70,11 @@ struct _CdIccPrivate
 	GHashTable		*metadata;
 	guint32			 size;
 	GPtrArray		*named_colors;
+	guint			 temperature;
+	CdColorXYZ		 white;
+	CdColorXYZ		 red;
+	CdColorXYZ		 green;
+	CdColorXYZ		 blue;
 };
 
 G_DEFINE_TYPE (CdIcc, cd_icc, G_TYPE_OBJECT)
@@ -83,6 +88,11 @@ enum {
 	PROP_COLORSPACE,
 	PROP_CAN_DELETE,
 	PROP_CHECKSUM,
+	PROP_RED,
+	PROP_GREEN,
+	PROP_BLUE,
+	PROP_WHITE,
+	PROP_TEMPERATURE,
 	PROP_LAST
 };
 
@@ -517,15 +527,146 @@ out:
 }
 
 /**
+ * cd_icc_calc_whitepoint:
+ **/
+static gboolean
+cd_icc_calc_whitepoint (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsBool bpc[2] = { FALSE, FALSE };
+	cmsCIExyY tmp;
+	cmsCIEXYZ whitepoint;
+	cmsFloat64Number adaption[2] = { 0, 0 };
+	cmsHPROFILE profiles[2];
+	cmsHTRANSFORM transform;
+	cmsUInt32Number intents[2] = { INTENT_ABSOLUTE_COLORIMETRIC,
+				       INTENT_ABSOLUTE_COLORIMETRIC };
+	gboolean got_temperature;
+	gboolean ret = TRUE;
+	gdouble temp_float;
+	guint8 data[3] = { 255, 255, 255 };
+
+	/* do Lab to RGB transform to get primaries */
+	profiles[0] = priv->lcms_profile;
+	profiles[1] = cmsCreateXYZProfile ();
+	transform = cmsCreateExtendedTransform (NULL,
+						2,
+						profiles,
+						bpc,
+						intents,
+						adaption,
+						NULL, 0, /* gamut ICC */
+						TYPE_RGB_8,
+						TYPE_XYZ_DBL,
+						cmsFLAGS_NOOPTIMIZE);
+	if (transform == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_PARSE,
+				     "failed to setup RGB -> XYZ transform");
+		goto out;
+	}
+
+	/* run white through the transform */
+	cmsDoTransform (transform, data, &whitepoint, 1);
+	cd_color_xyz_set (&priv->white,
+			  whitepoint.X,
+			  whitepoint.Y,
+			  whitepoint.Z);
+
+	/* get temperature rounded to nearest 100K */
+	cmsXYZ2xyY (&tmp, &whitepoint);
+	got_temperature = cmsTempFromWhitePoint (&temp_float, &tmp);
+	if (got_temperature)
+		priv->temperature = (((guint) temp_float) / 100) * 100;
+out:
+	if (profiles[1] != NULL)
+		cmsCloseProfile (profiles[1]);
+	if (transform != NULL)
+		cmsDeleteTransform (transform);
+	return ret;
+}
+
+/**
+ * cd_icc_load_primaries:
+ **/
+static gboolean
+cd_icc_load_primaries (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsCIEXYZ *cie_xyz;
+	cmsHPROFILE xyz_profile = NULL;
+	cmsHTRANSFORM transform = NULL;
+	gboolean ret = TRUE;
+	gdouble rgb_values[3];
+
+	/* get white point */
+	ret = cd_icc_calc_whitepoint (icc, error);
+	if (!ret)
+		goto out;
+
+	/* get the illuminants from the primaries */
+	cie_xyz = cmsReadTag (priv->lcms_profile, cmsSigRedMatrixColumnTag);
+	if (cie_xyz != NULL) {
+		cd_color_xyz_copy ((CdColorXYZ *) cie_xyz, &priv->red);
+		cie_xyz = cmsReadTag (priv->lcms_profile, cmsSigGreenMatrixColumnTag);
+		cd_color_xyz_copy ((CdColorXYZ *) cie_xyz, &priv->green);
+		cie_xyz = cmsReadTag (priv->lcms_profile, cmsSigBlueMatrixColumnTag);
+		cd_color_xyz_copy ((CdColorXYZ *) cie_xyz, &priv->blue);
+		goto out;
+	}
+
+	/* get the illuminants by running it through the profile */
+	xyz_profile = cmsCreateXYZProfile ();
+	transform = cmsCreateTransform (priv->lcms_profile, TYPE_RGB_DBL,
+					xyz_profile, TYPE_XYZ_DBL,
+					INTENT_PERCEPTUAL, 0);
+	if (transform == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_PARSE,
+				     "failed to setup RGB -> XYZ transform");
+		goto out;
+	}
+
+	/* red */
+	rgb_values[0] = 1.0;
+	rgb_values[1] = 0.0;
+	rgb_values[2] = 0.0;
+	cmsDoTransform (transform, rgb_values, &priv->red, 1);
+
+	/* green */
+	rgb_values[0] = 0.0;
+	rgb_values[1] = 1.0;
+	rgb_values[2] = 0.0;
+	cmsDoTransform (transform, rgb_values, &priv->green, 1);
+
+	/* blue */
+	rgb_values[0] = 0.0;
+	rgb_values[1] = 0.0;
+	rgb_values[2] = 1.0;
+	cmsDoTransform (transform, rgb_values, &priv->blue, 1);
+out:
+	if (transform != NULL)
+		cmsDeleteTransform (transform);
+	if (xyz_profile != NULL)
+		cmsCloseProfile (xyz_profile);
+	return ret;
+}
+
+/**
  * cd_icc_load:
  **/
-static void
-cd_icc_load (CdIcc *icc, CdIccLoadFlags flags)
+static gboolean
+cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
 	cmsColorSpaceSignature colorspace;
 	cmsHANDLE dict;
 	cmsProfileClassSignature profile_class;
+	gboolean ret = TRUE;
 	guint i;
 
 	/* get version */
@@ -587,6 +728,16 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags)
 	/* read named colors if the client cares */
 	if ((flags & CD_ICC_LOAD_FLAGS_NAMED_COLORS) > 0)
 		cd_icc_load_named_colors (icc);
+
+	/* read primaries if the client cares */
+	if ((flags & CD_ICC_LOAD_FLAGS_PRIMARIES) > 0 &&
+	    priv->colorspace == CD_COLORSPACE_RGB) {
+		ret = cd_icc_load_primaries (icc, error);
+		if (!ret)
+			goto out;
+	}
+out:
+	return ret;
 }
 
 /**
@@ -641,7 +792,9 @@ cd_icc_load_data (CdIcc *icc,
 	priv->size = data_len;
 
 	/* load cached data */
-	cd_icc_load (icc, flags);
+	ret = cd_icc_load (icc, flags, error);
+	if (!ret)
+		goto out;
 
 	/* calculate the data MD5 if there was no embedded profile */
 	if (priv->checksum == NULL &&
@@ -1157,7 +1310,9 @@ cd_icc_load_fd (CdIcc *icc,
 	}
 
 	/* load cached data */
-	cd_icc_load (icc, flags);
+	ret = cd_icc_load (icc, flags, error);
+	if (!ret)
+		goto out;
 out:
 	return ret;
 }
@@ -1995,6 +2150,101 @@ cd_icc_set_model_items (CdIcc *icc, GHashTable *values)
 }
 
 /**
+ * cd_icc_get_temperature:
+ * @icc: A valid #CdIcc
+ *
+ * Gets the ICC color temperature, rounded to the nearest 100K.
+ * This function will only return results if the profile was loaded with the
+ * %CD_ICC_LOAD_FLAGS_PRIMARIES flag.
+ *
+ * Return value: The color temperature in Kelvin, or 0 for error.
+ *
+ * Since: 0.1.32
+ **/
+guint
+cd_icc_get_temperature (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), 0);
+	return icc->priv->temperature;
+}
+
+/**
+ * cd_icc_get_red:
+ * @icc: a valid #CdIcc instance
+ *
+ * Gets the profile red chromaticity value.
+ * This function will only return results if the profile was loaded with the
+ * %CD_ICC_LOAD_FLAGS_PRIMARIES flag.
+ *
+ * Return value: the #CdColorXYZ value
+ *
+ * Since: 0.1.32
+ **/
+const CdColorXYZ *
+cd_icc_get_red (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return &icc->priv->red;
+}
+
+/**
+ * cd_icc_get_green:
+ * @icc: a valid #CdIcc instance
+ *
+ * Gets the profile green chromaticity value.
+ * This function will only return results if the profile was loaded with the
+ * %CD_ICC_LOAD_FLAGS_PRIMARIES flag.
+ *
+ * Return value: the #CdColorXYZ value
+ *
+ * Since: 0.1.32
+ **/
+const CdColorXYZ *
+cd_icc_get_green (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return &icc->priv->green;
+}
+
+/**
+ * cd_icc_get_blue:
+ * @icc: a valid #CdIcc instance
+ *
+ * Gets the profile red chromaticity value.
+ * This function will only return results if the profile was loaded with the
+ * %CD_ICC_LOAD_FLAGS_PRIMARIES flag.
+ *
+ * Return value: the #CdColorXYZ value
+ *
+ * Since: 0.1.32
+ **/
+const CdColorXYZ *
+cd_icc_get_blue (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return &icc->priv->blue;
+}
+
+/**
+ * cd_icc_get_white:
+ * @icc: a valid #CdIcc instance
+ *
+ * Gets the profile white point.
+ * This function will only return results if the profile was loaded with the
+ * %CD_ICC_LOAD_FLAGS_PRIMARIES flag.
+ *
+ * Return value: the #CdColorXYZ value
+ *
+ * Since: 0.1.32
+ **/
+const CdColorXYZ *
+cd_icc_get_white (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return &icc->priv->white;
+}
+
+/**
  * cd_icc_create_from_edid:
  * @icc: A valid #CdIcc
  * @gamma_value: approximate device gamma
@@ -2112,6 +2362,21 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 	case PROP_CHECKSUM:
 		g_value_set_string (value, priv->checksum);
 		break;
+	case PROP_WHITE:
+		g_value_set_boxed (value, g_boxed_copy (CD_TYPE_COLOR_XYZ, &priv->white));
+		break;
+	case PROP_RED:
+		g_value_set_boxed (value, g_boxed_copy (CD_TYPE_COLOR_XYZ, &priv->red));
+		break;
+	case PROP_GREEN:
+		g_value_set_boxed (value, g_boxed_copy (CD_TYPE_COLOR_XYZ, &priv->green));
+		break;
+	case PROP_BLUE:
+		g_value_set_boxed (value, g_boxed_copy (CD_TYPE_COLOR_XYZ, &priv->blue));
+		break;
+	case PROP_TEMPERATURE:
+		g_value_set_uint (value, priv->temperature);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 		break;
@@ -2210,6 +2475,46 @@ cd_icc_class_init (CdIccClass *klass)
 				     G_PARAM_READABLE);
 	g_object_class_install_property (object_class, PROP_CHECKSUM, pspec);
 
+	/**
+	 * CdIcc:white:
+	 */
+	pspec = g_param_spec_boxed ("white", NULL, NULL,
+				    CD_TYPE_COLOR_XYZ,
+				    G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_WHITE, pspec);
+
+	/**
+	 * CdIcc:red:
+	 */
+	pspec = g_param_spec_boxed ("red", NULL, NULL,
+				    CD_TYPE_COLOR_XYZ,
+				    G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_RED, pspec);
+
+	/**
+	 * CdIcc:green:
+	 */
+	pspec = g_param_spec_boxed ("green", NULL, NULL,
+				    CD_TYPE_COLOR_XYZ,
+				    G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_GREEN, pspec);
+
+	/**
+	 * CdIcc:blue:
+	 */
+	pspec = g_param_spec_boxed ("blue", NULL, NULL,
+				    CD_TYPE_COLOR_XYZ,
+				    G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_BLUE, pspec);
+
+	/**
+	 * CdIcc:temperature:
+	 */
+	pspec = g_param_spec_uint ("temperature", NULL, NULL,
+				   0, G_MAXUINT, 0,
+				   G_PARAM_READABLE);
+	g_object_class_install_property (object_class, PROP_TEMPERATURE, pspec);
+
 	g_type_class_add_private (klass, sizeof (CdIccPrivate));
 }
 
@@ -2235,6 +2540,10 @@ cd_icc_init (CdIcc *icc)
 								 g_free,
 								 g_free);
 	}
+	cd_color_xyz_clear (&icc->priv->white);
+	cd_color_xyz_clear (&icc->priv->red);
+	cd_color_xyz_clear (&icc->priv->green);
+	cd_color_xyz_clear (&icc->priv->blue);
 }
 
 /**
