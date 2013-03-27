@@ -3590,6 +3590,7 @@ colord_icc_localized_func (void)
 	const gchar *str;
 	gboolean ret;
 	gchar *filename;
+	gchar *tmp;
 	GError *error = NULL;
 	GFile *file;
 
@@ -3606,6 +3607,12 @@ colord_icc_localized_func (void)
 	g_assert (ret);
 	g_object_unref (file);
 	g_free (filename);
+
+	/* marshall to a string */
+	tmp = cd_icc_to_string (icc);
+	g_assert_cmpstr (tmp, !=, NULL);
+	g_debug ("CdIcc: '%s'", tmp);
+	g_free (tmp);
 
 	/* open a non-localized profile */
 	str = cd_icc_get_description (icc, NULL, &error);

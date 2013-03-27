@@ -340,6 +340,14 @@ cd_icc_to_string (CdIcc *icc)
 			cmsMLU *mlu;
 			gchar text_buffer[128];
 			guint32 text_size;
+#ifdef HAVE_LCMS_MLU_TRANSLATIONS_COUNT
+			gchar country_code[3] = "\0\0\0";
+			gchar language_code[3] = "\0\0\0";
+			gsize rc;
+			guint32 j;
+			guint32 mlu_size;
+			wchar_t wtext[128];
+#endif
 
 			g_string_append_printf (str, "Text:\n");
 			mlu = cmsReadTag (priv->lcms_profile, sig);
@@ -347,6 +355,40 @@ cd_icc_to_string (CdIcc *icc)
 				g_string_append_printf (str, "  Info:\t\tMLU invalid!\n");
 				break;
 			}
+#ifdef HAVE_LCMS_MLU_TRANSLATIONS_COUNT
+			mlu_size = cmsMLUtranslationsCount (mlu);
+			if (mlu_size == 0)
+				g_string_append_printf (str, "  Info:\t\tMLU empty!\n");
+			for (j = 0; j < mlu_size; j++) {
+				ret = cmsMLUtranslationsCodes (mlu,
+							       j,
+							       language_code,
+							       country_code);
+				if (!ret)
+					continue;
+				text_size = cmsMLUgetWide (mlu,
+							   language_code,
+							   country_code,
+							   wtext,
+							   sizeof (wtext));
+				if (text_size == 0)
+					continue;
+				rc = wcstombs (text_buffer,
+					       wtext,
+					       sizeof (text_buffer));
+				if (rc == (gsize) -1) {
+					g_string_append_printf (str, "  %s_%s:\tInvalid!\n",
+								language_code[0] != '\0' ? language_code : "en",
+								country_code[0] != '\0' ? country_code : "US");
+					continue;
+				}
+				g_string_append_printf (str, "  %s_%s:\t%s [%i bytes]\n",
+							language_code[0] != '\0' ? language_code : "**",
+							country_code[0] != '\0' ? country_code : "**",
+							text_buffer,
+							text_size);
+			}
+#else
 			text_size = cmsMLUgetASCII (mlu,
 						    cmsNoLanguage,
 						    cmsNoCountry,
@@ -356,6 +398,7 @@ cd_icc_to_string (CdIcc *icc)
 				g_string_append_printf (str, "  en_US:\t%s [%i bytes]\n",
 							text_buffer, text_size);
 			}
+#endif
 			break;
 		}
 		case cmsSigXYZType:

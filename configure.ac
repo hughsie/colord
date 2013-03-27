@@ -157,6 +157,10 @@ AC_CHECK_LIB(lcms2, cmsGetToneCurveEstimatedTableEntries, have_lcms_table_entrie
 if test x$have_lcms_table_entries != x; then
 	AC_DEFINE(HAVE_LCMS_GET_TABLE_ENTRIES,1,[cmsGetToneCurveEstimatedTableEntries is available])
 fi
+AC_CHECK_LIB(lcms2, cmsMLUtranslationsCount, have_lcms_mlu_translations_count=yes)
+if test x$have_lcms_mlu_translations_count != x; then
+	AC_DEFINE(HAVE_LCMS_MLU_TRANSLATIONS_COUNT,1,[cmsMLUtranslationsCount is available])
+fi
 
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 
