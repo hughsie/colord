@@ -77,6 +77,23 @@ cd_color_rgb_dup (const CdColorRGB *src)
 }
 
 /**
+ * cd_color_lab_dup:
+ *
+ * Since: 0.1.32
+ **/
+CdColorLab *
+cd_color_lab_dup (const CdColorLab *src)
+{
+	CdColorLab *dest;
+	g_return_val_if_fail (src != NULL, NULL);
+	dest = cd_color_lab_new ();
+	dest->L = src->L;
+	dest->a = src->a;
+	dest->b = src->b;
+	return dest;
+}
+
+/**
  * cd_color_yxy_dup:
  *
  * Since: 0.1.27
@@ -174,6 +191,26 @@ cd_color_rgb_get_type (void)
 }
 
 /**
+ * cd_color_lab_get_type:
+ *
+ * Gets a specific type.
+ *
+ * Return value: a #GType
+ *
+ * Since: 0.1.32
+ **/
+GType
+cd_color_lab_get_type (void)
+{
+	static GType type_id = 0;
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("CdColorLab",
+							(GBoxedCopyFunc) cd_color_lab_dup,
+							(GBoxedFreeFunc) cd_color_lab_free);
+	return type_id;
+}
+
+/**
  * cd_color_yxy_get_type:
  *
  * Gets a specific type.
@@ -252,6 +289,21 @@ cd_color_rgb_new (void)
 }
 
 /**
+ * cd_color_lab_new:
+ *
+ * Allocates a color value.
+ *
+ * Return value: A newly allocated #CdColorLab object
+ *
+ * Since: 0.1.32
+ **/
+CdColorLab *
+cd_color_lab_new (void)
+{
+	return g_slice_new0 (CdColorLab);
+}
+
+/**
  * cd_color_yxy_new:
  *
  * Allocates a color value.
@@ -319,6 +371,20 @@ cd_color_rgb_free (CdColorRGB *src)
 #else
 	g_free (src);
 #endif
+}
+
+/**
+ * cd_color_lab_free:
+ * @src: the color object
+ *
+ * Deallocates a color value.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_color_lab_free (CdColorLab *src)
+{
+	g_slice_free (CdColorLab, src);
 }
 
 /**
@@ -412,6 +478,27 @@ cd_color_rgb_set (CdColorRGB *dest, gdouble R, gdouble G, gdouble B)
 	dest->R = R;
 	dest->G = G;
 	dest->B = B;
+}
+
+/**
+ * cd_color_lab_set:
+ * @dest: the destination color
+ * @L: component value
+ * @a: component value
+ * @b: component value
+ *
+ * Initialises a color value.
+ *
+ * Since: 0.1.32
+ **/
+void
+cd_color_lab_set (CdColorLab *dest, gdouble L, gdouble a, gdouble b)
+{
+	g_return_if_fail (dest != NULL);
+
+	dest->L = L;
+	dest->a = a;
+	dest->b = b;
 }
 
 /**
