@@ -1770,12 +1770,12 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	const gchar *language_code = "\0\0\0";
 	const gchar *value;
 	gchar *locale_key = NULL;
-	gchar text_buffer[128];
+	gchar *text_buffer = NULL;
 	gchar *tmp;
 	gsize rc;
 	guint32 text_size;
 	guint i;
-	wchar_t wtext[128];
+	wchar_t *wtext = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
@@ -1834,16 +1834,28 @@ cd_icc_get_mluc_data (CdIcc *icc,
 				     "cmsSigProfile*Tag mising");
 		goto out;
 	}
+
+	/* get required size for wide chars */
+	text_size = cmsMLUgetWide (mlu,
+				   language_code,
+				   country_code,
+				   NULL,
+				   0);
+	if (text_size == 0)
+		goto out;
+
+	/* load wide chars */
+	wtext = g_new (wchar_t, text_size);
 	text_size = cmsMLUgetWide (mlu,
 				   language_code,
 				   country_code,
 				   wtext,
-				   sizeof (wtext));
+				   text_size);
 	if (text_size == 0)
 		goto out;
-	rc = wcstombs (text_buffer,
-		       wtext,
-		       sizeof (text_buffer));
+
+	/* get required size for UTF-8 */
+	rc = wcstombs (NULL, wtext, 0);
 	if (rc == (gsize) -1) {
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
@@ -1851,6 +1863,10 @@ cd_icc_get_mluc_data (CdIcc *icc,
 				     "invalid UTF-8");
 		goto out;
 	}
+
+	/* load UTF-8 */
+	text_buffer = g_new0 (gchar, rc + 1);
+	wcstombs (text_buffer, wtext, rc);
 
 	/* insert into locale cache */
 	tmp = g_strdup (text_buffer);
@@ -1860,6 +1876,8 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	value = tmp;
 out:
 	g_free (locale_key);
+	g_free (text_buffer);
+	g_free (wtext);
 	return value;
 }
 
