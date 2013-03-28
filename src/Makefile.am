@@ -162,7 +162,7 @@ BUILT_SOURCES =						\
 	cd-resources.c					\
 	cd-resources.h
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) *.log *.trs
 
 EXTRA_DIST =						\
 	colord.gresource.xml

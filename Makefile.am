@@ -70,6 +70,7 @@ MAINTAINERCLEANFILES =					\
 	$(srcdir)/missing				\
 	$(srcdir)/mkinstalldirs				\
 	$(srcdir)/omf.make				\
+	$(srcdir)/test-driver				\
 	$(srcdir)/xmldocs.make				\
 	$(srcdir)/gtk-doc.make				\
 	$(srcdir)/ChangeLog				\

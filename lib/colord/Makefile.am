@@ -123,7 +123,7 @@ EXTRA_DIST =							\
 MAINTAINERCLEANFILES =						\
 	$(noinst_LIBRARIES)
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) *.log *.trs
 
 if HAVE_INTROSPECTION
 introspection_sources =						\

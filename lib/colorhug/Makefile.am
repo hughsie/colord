@@ -102,7 +102,8 @@ ch_self_test_CFLAGS = -DEGG_TEST $(AM_CFLAGS) $(WARNINGFLAGS_C)
 
 TESTS = ch-self-test
 
-CLEANFILES =
+CLEANFILES = *.log *.trs
+
 if HAVE_INTROSPECTION
 introspection_sources =						\
 	ch-common.c						\
