@@ -1053,7 +1053,7 @@ cd_icc_save_file (CdIcc *icc,
 	GError *error_local = NULL;
 	GList *l;
 	GList *md_keys = NULL;
-	gsize length;
+	gsize length = 0;
 	guint i;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
@@ -1149,6 +1149,18 @@ cd_icc_save_file (CdIcc *icc,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_SAVE,
 				     "failed to dump ICC file");
+		goto out;
+	}
+
+	/* sanity check to 16Mb */
+	if (length == 0 || length > 16 * 1024 * 1024) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "failed to save ICC file, requested %" G_GSIZE_FORMAT
+			     "bytes and limit is 16Mb",
+			     length);
 		goto out;
 	}
 
