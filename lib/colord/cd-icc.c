@@ -28,6 +28,7 @@
 
 #include <glib.h>
 #include <lcms2.h>
+#include <locale.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -813,10 +814,14 @@ out:
 static wchar_t *
 utf8_to_wchar_t (const char *src)
 {
+	const gchar *orig_locale;
 	gssize len;
 	gssize converted;
 	wchar_t *buf = NULL;
 
+	/* switch the locale to a known UTF-8 LC_CTYPE */
+	orig_locale = setlocale (LC_CTYPE, NULL);
+	setlocale (LC_CTYPE, "en_US.UTF-8");
 	len = mbstowcs (NULL, src, 0);
 	if (len < 0) {
 		g_warning ("Invalid UTF-8 in string %s", src);
@@ -828,6 +833,7 @@ utf8_to_wchar_t (const char *src)
 	g_assert (converted != -1);
 	buf[converted] = '\0';
 out:
+	setlocale (LC_CTYPE, orig_locale);
 	return buf;
 }
 
