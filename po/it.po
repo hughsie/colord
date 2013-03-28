@@ -5,12 +5,13 @@
 # Translators:
 # Luca Ferretti <elle.uca@libero.it>, 2011.
 # Milo Casagrande <milo@ubuntu.com>, 2013.
+# Richard Hughes <richard@hughsie.com>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-18 12:26+0000\n"
-"PO-Revision-Date: 2013-03-18 12:26+0000\n"
+"POT-Creation-Date: 2013-03-28 10:43+0000\n"
+"PO-Revision-Date: 2013-03-28 10:43+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,199 +20,111 @@ msgstr ""
 "Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#. TRANSLATORS: this is a command alias
-#: ../client/cd-create-profile.c:90 ../client/cd-fix-profile.c:89
-#: ../client/cd-util.c:621
-#, c-format
-msgid "Alias to %s"
-msgstr "Alias per %s"
-
-#: ../client/cd-create-profile.c:168 ../client/cd-fix-profile.c:167
-#: ../client/cd-util.c:699
-msgid "Command not found, valid commands are:"
-msgstr "Comando non trovato, comandi validi sono:"
-
 #. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:822
-msgid "The profile description"
-msgstr "La descrizione del profilo"
-
-#. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:825
-msgid "The profile copyright"
-msgstr "Il copyright del profilo"
-
-#. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:828
-msgid "The device model"
-msgstr "Il modello del dispositivo"
-
-#. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:831
-msgid "The device manufacturer"
-msgstr "Il produttore del dispositivo"
-
-#. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:834
+#: ../client/cd-create-profile.c:654
 msgid "Profile to create"
 msgstr "Profilo da creare"
 
-#. TRANSLATORS: command line option
-#: ../client/cd-create-profile.c:837
-msgid "The metadata in 'key1=value1,key2=value2' format"
-msgstr "I meta-dati nel formato \"chiave1=valore1,chiave2=valore2\""
-
-#. TRANSLATORS: command description
-#: ../client/cd-create-profile.c:858
-msgid "Create a named color profile"
-msgstr "Crea un profilo di colore con nome"
-
-#. TRANSLATORS: command description
-#: ../client/cd-create-profile.c:863
-msgid "Create an X11 gamma profile"
-msgstr "Crea un profilo gamma X11"
-
-#. TRANSLATORS: command description
-#: ../client/cd-create-profile.c:868
-msgid "Create a standard working space"
-msgstr "Crea uno spazio di lavoro normale"
-
-#. TRANSLATORS: command description
-#: ../client/cd-create-profile.c:873
-msgid "Create a profile with a temperature VCGT"
-msgstr "Crea un profilo con una temperatura VCGT"
-
 #. TRANSLATORS: program name
-#: ../client/cd-create-profile.c:886
+#: ../client/cd-create-profile.c:675
 msgid "ICC profile creation program"
 msgstr "Programma creazione profilo ICC"
 
-#: ../client/cd-create-profile.c:892 ../client/cd-fix-profile.c:1250
-#: ../client/cd-util.c:2221
+#: ../client/cd-create-profile.c:681 ../client/cd-fix-profile.c:829
+#: ../client/cd-iccdump.c:109 ../client/cd-util.c:2221
 msgid "Failed to parse arguments"
 msgstr "Analisi degli argomenti non riuscita"
 
 #. TRANSLATORS: the user forgot to use -o
-#: ../client/cd-create-profile.c:901
+#: ../client/cd-create-profile.c:690
 msgid "No output filename specified"
 msgstr "Nessun nome di file di output specificato"
 
-#: ../client/cd-fix-profile.c:994
-msgid "Description"
-msgstr "Descrizione"
+#. TRANSLATORS: this is a command alias
+#: ../client/cd-fix-profile.c:90 ../client/cd-util.c:621
+#, c-format
+msgid "Alias to %s"
+msgstr "Alias per %s"
 
-#: ../client/cd-fix-profile.c:997
-msgid "Manufacturer"
-msgstr "Produttore"
-
-#. TRANSLATORS: the device model
-#. TRANSLATORS: sensor model
-#: ../client/cd-fix-profile.c:1000 ../client/cd-util.c:246
-#: ../client/cd-util.c:488
-msgid "Model"
-msgstr "Modello"
-
-#: ../client/cd-fix-profile.c:1003
-msgid "Copyright"
-msgstr "Copyright"
-
-#: ../client/cd-fix-profile.c:1008
-msgid "No metadata"
-msgstr "Nessun meta-dato"
-
-#. TRANSLATORS: the metadata for the device
-#. TRANSLATORS: the metadata for the sensor
-#: ../client/cd-fix-profile.c:1018 ../client/cd-util.c:185
-#: ../client/cd-util.c:324 ../client/cd-util.c:532
-msgid "Metadata"
-msgstr "Metadati"
-
-#: ../client/cd-fix-profile.c:1026
-msgid "Red primary"
-msgstr "Rosso primario"
-
-#: ../client/cd-fix-profile.c:1031
-msgid "Green primary"
-msgstr "Verde primario"
-
-#: ../client/cd-fix-profile.c:1036
-msgid "Blue primary"
-msgstr "Blu primario"
-
-#: ../client/cd-fix-profile.c:1041
-msgid "Whitepoint"
-msgstr "Punto di bianco"
+#: ../client/cd-fix-profile.c:168 ../client/cd-util.c:699
+msgid "Command not found, valid commands are:"
+msgstr "Comando non trovato, comandi validi sono:"
 
 #. TRANSLATORS: command line option
-#: ../client/cd-fix-profile.c:1154 ../client/cd-util.c:2049
+#: ../client/cd-fix-profile.c:735 ../client/cd-util.c:2049
 msgid "Show extra debugging information"
 msgstr "Mostra informazioni di debug"
 
-#. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1176
-msgid "Show all the details about the profile"
-msgstr "Mostra tutti i dettagli riguardo il profilo"
+#. TRANSLATORS: command line option
+#: ../client/cd-fix-profile.c:738
+msgid "The locale to use when setting localized text"
+msgstr ""
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1181
+#: ../client/cd-fix-profile.c:760
 msgid "Generate the VCGT calibration of a given size"
 msgstr "Genera la calibrazione VCGT di una determinata dimensione"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1186
+#: ../client/cd-fix-profile.c:765
 msgid "Clear any metadata in the profile"
 msgstr "Pulisce tutti i meta-dati nel profilo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1191
+#: ../client/cd-fix-profile.c:770
 msgid "Initialize any metadata for the profile"
 msgstr "Inizializza qualsiasi meta-dato per il profilo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1196
+#: ../client/cd-fix-profile.c:775
 msgid "Add a metadata item to the profile"
 msgstr "Aggiunge un elemento meta-dato al profilo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1201
+#: ../client/cd-fix-profile.c:780
 msgid "Remove a metadata item from the profile"
 msgstr "Rimuove un elemento meta-dato dal profilo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1206
+#: ../client/cd-fix-profile.c:785
 msgid "Sets the copyright string"
 msgstr "Imposta il copyright"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1211
+#: ../client/cd-fix-profile.c:790
 msgid "Sets the description string"
 msgstr "Imposta la descrizione"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1216
+#: ../client/cd-fix-profile.c:795
 msgid "Sets the manufacturer string"
 msgstr "Imposta il produttore"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1221
+#: ../client/cd-fix-profile.c:800
 msgid "Sets the model string"
 msgstr "Imposta il modello"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1226
+#: ../client/cd-fix-profile.c:805
 msgid "Automatically fix metadata in the profile"
 msgstr "Blocca automaticamente i meta-dati nel profilo"
 
 #. TRANSLATORS: command description
-#: ../client/cd-fix-profile.c:1231
+#: ../client/cd-fix-profile.c:810
 msgid "Set the ICC profile version"
 msgstr "Imposta la versione del profilo ICC"
 
 #. TRANSLATORS: program name
-#: ../client/cd-fix-profile.c:1244 ../client/cd-util.c:2215
+#: ../client/cd-fix-profile.c:823 ../client/cd-util.c:2215
 #: ../src/cd-main.c:2394
 msgid "Color Management"
 msgstr "Gestione colore"
+
+#. TRANSLATORS: program name
+#: ../client/cd-iccdump.c:104
+msgid "ICC profile dump program"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: ../client/cd-util.c:82
@@ -285,6 +198,12 @@ msgstr "Nome file"
 msgid "Profile ID"
 msgstr "ID profilo"
 
+#. TRANSLATORS: the metadata for the device
+#. TRANSLATORS: the metadata for the sensor
+#: ../client/cd-util.c:185 ../client/cd-util.c:324 ../client/cd-util.c:532
+msgid "Metadata"
+msgstr "Metadati"
+
 #: ../client/cd-util.c:193
 msgid "Warning"
 msgstr "Avviso"
@@ -312,6 +231,12 @@ msgstr "Abilitato"
 #: ../client/cd-util.c:242
 msgid "Embedded"
 msgstr "Incorporato"
+
+#. TRANSLATORS: the device model
+#. TRANSLATORS: sensor model
+#: ../client/cd-util.c:246 ../client/cd-util.c:488
+msgid "Model"
+msgstr "Modello"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
@@ -405,33 +330,33 @@ msgstr "Plasma"
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 #: ../client/cd-util.c:394
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 #: ../client/cd-util.c:400
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 #: ../client/cd-util.c:406
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL gamut esteso"
 
 #. TRANSLATORS: this is the display technology
 #: ../client/cd-util.c:410
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED gamut esteso"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 #: ../client/cd-util.c:416
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD LED bianco"
 
 #. TRANSLATORS: this an unknown display technology
 #: ../client/cd-util.c:419
@@ -596,7 +521,7 @@ msgstr "Elimina un profilo"
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2162
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "Imposta proprietà addizionali nel profilo"
 
 #. TRANSLATORS: command description
 #: ../client/cd-util.c:2167
@@ -670,6 +595,234 @@ msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
 msgstr "Il punto di bianco in Kelvin predefinito per la calibrazione dello schermo: 0 indica nativo. Valori comuni sono 6500 per D65 e 5000 per D50."
+
+#: ../data/profiles/AdobeRGB1998.xml.in.h:1
+msgid "Compatible with Adobe RGB (1998)"
+msgstr "Compatibile con Adobe RGB (1998)"
+
+#: ../data/profiles/AdobeRGB1998.xml.in.h:2
+#: ../data/profiles/AppleRGB.xml.in.h:1 ../data/profiles/BestRGB.xml.in.h:1
+#: ../data/profiles/BetaRGB.xml.in.h:1 ../data/profiles/Bluish.xml.in.h:2
+#: ../data/profiles/BruceRGB.xml.in.h:1 ../data/profiles/CIE-RGB.xml.in.h:1
+#: ../data/profiles/ColorMatchRGB.xml.in.h:1
+#: ../data/profiles/Crayons.xml.in.h:2 ../data/profiles/DonRGB4.xml.in.h:1
+#: ../data/profiles/ECI-RGBv2.xml.in.h:1
+#: ../data/profiles/EktaSpacePS5.xml.in.h:1
+#: ../data/profiles/Gamma5000K.xml.in.h:1
+#: ../data/profiles/Gamma5500K.xml.in.h:1
+#: ../data/profiles/Gamma6500K.xml.in.h:1 ../data/profiles/NTSC-RGB.xml.in.h:1
+#: ../data/profiles/PAL-RGB.xml.in.h:1 ../data/profiles/ProPhotoRGB.xml.in.h:1
+#: ../data/profiles/SMPTE-C-RGB.xml.in.h:1 ../data/profiles/sRGB.xml.in.h:1
+#: ../data/profiles/SwappedRedAndGreen.xml.in.h:2
+#: ../data/profiles/WideGamutRGB.xml.in.h:2
+#: ../data/profiles/x11-colors.xml.in.h:2
+msgid "This profile is free of known copyright restrictions"
+msgstr "Questo profilo non presente alcune restrizioni di copyright"
+
+#. TRANSLATORS: a editing space is a profile you use for editing,
+#. 'SWOP' is also a trademark so don't translate that
+#. 
+#: ../data/profiles/AdobeRGB1998.xml.in.h:7
+msgid ""
+"This editing space was designed as SMPTE-240M and encompasses most of the "
+"possible colors available on a CMYK color printer. This is a popular choice "
+"for editing photographs and for use in printing, as all the SWOP colors can "
+"be reproduced."
+msgstr ""
+
+#. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
+#. trademarks,
+#. don't translate those
+#. 
+#: ../data/profiles/AppleRGB.xml.in.h:6
+msgid ""
+"This legacy profile was originally created by Adobe for use with Photoshop "
+"and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
+"is similar to sRGB, it should not be used as a display profile or for new "
+"images."
+msgstr ""
+
+#. TRANSLATORS: super-saturated is in reference to colors you can't show on a
+#. PC screen
+#. 
+#: ../data/profiles/BestRGB.xml.in.h:6
+msgid ""
+"This editing space can display more saturated colors than Adobe RGB and is "
+"suitable for images with highly saturated colors often used in "
+"advertisements. It is very similar to DonRGB4, but can show super-saturated "
+"red colors sometimes present in Fujichrome Velvia."
+msgstr ""
+
+#. TRANSLATORS: 'shadow detail' is the number of black colors you can see
+#: ../data/profiles/BetaRGB.xml.in.h:3
+msgid ""
+"This editing space can display more saturated colors than Adobe RGB. It is "
+"less prone to quantisation errors compared to ProPhoto RGB, although more "
+"shadow detail is preserved. In most instances ProPhoto RGB is probably a "
+"better choice."
+msgstr ""
+
+#: ../data/profiles/Bluish.xml.in.h:1
+msgid "Blue"
+msgstr "Blu"
+
+#. TRANSLATORS: the lookup tables in the GPU map one color to another
+#: ../data/profiles/Bluish.xml.in.h:4
+msgid ""
+"This test profile is used to make all colors on the screen slightly more "
+"blue by altering the video card lookup table. This allows the user to check "
+"the calibration is being applied correctly."
+msgstr ""
+
+#. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
+#: ../data/profiles/BruceRGB.xml.in.h:3
+msgid ""
+"This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
+"was designed as an output-centric compromise between ColorMatch RGB and "
+"Adobe RGB and used to be preferred by some photograph printing services."
+msgstr ""
+
+#. TRANSLATORS: theoretical in that the profile primaries are not real colors
+#: ../data/profiles/CIE-RGB.xml.in.h:3
+msgid ""
+"This theoretical profile is designed for use in color experiments. You "
+"probably don't want to use this profile as a editing space or a display "
+"profile."
+msgstr ""
+
+#. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
+#. translate
+#: ../data/profiles/ColorMatchRGB.xml.in.h:3
+msgid ""
+"This profile was designed by Radius for the PressView monitor. Only use this"
+" profile as a display profile or as a editing space as the profile is not "
+"significantly different to sRGB. You should only need to use this profile if"
+" viewing images created on a PressView monitor."
+msgstr ""
+
+#: ../data/profiles/Crayons.xml.in.h:1
+msgid "Crayon Colors"
+msgstr "Colori pastello"
+
+#. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
+#. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
+#. 
+#: ../data/profiles/Crayons.xml.in.h:7
+msgid ""
+"This named color profile contains all the Crayola crayon colors in popular "
+"use. It is a test profile designed for testing embedding named colors into "
+"documents."
+msgstr ""
+
+#. TRANSLATORS: saturated means vivid bright colors
+#: ../data/profiles/DonRGB4.xml.in.h:3
+msgid ""
+"This editing space can display more saturated colors than Adobe RGB and is "
+"suitable for images with highly saturated colors often used in "
+"advertisements."
+msgstr ""
+
+#. TRANSLATORS: lightness is a technical word for brightness
+#: ../data/profiles/ECI-RGBv2.xml.in.h:3
+msgid ""
+"This profile was designed with a lightness gamma curve which means the "
+"monitor will have to be also calibrated in the same way. This profile is "
+"only useful for advanced users and is not recommended for general use."
+msgstr ""
+
+#. TRANSLATORS: negatives refers to the film on which a negative image is
+#. stored
+#: ../data/profiles/EktaSpacePS5.xml.in.h:3
+msgid ""
+"This profile was designed for storing archives of scanned transparency film."
+" It is suitable for storing images from color negatives, although nowadays "
+"ProPhoto RGB is a more popular profile for archival."
+msgstr ""
+
+#. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
+#. Same Color' as it's really a poor choice compared to sRGB
+#. 
+#: ../data/profiles/NTSC-RGB.xml.in.h:6
+msgid ""
+"This profile defines the range of colors used with the NTSC video standard. "
+"It is an obsolete standard that has been replaced by SMTE-C. You should only"
+" use this profile to decode archived video."
+msgstr ""
+
+#. TRANSLATORS: Please don't translate PAL or SECAM
+#: ../data/profiles/PAL-RGB.xml.in.h:3
+msgid ""
+"This profile defines the range of colors used with the PAL and SECAM video "
+"standards and is very similar to sRGB. You should only use this profile to "
+"encode or decode video."
+msgstr ""
+
+#. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
+#: ../data/profiles/ProPhotoRGB.xml.in.h:3
+msgid ""
+"Originally designed by Eastman Kodak and called ROMM RGB, this profile can "
+"display a very large range of colors and is used by many photographers for "
+"rendering, editing and archiving RAW images. Unless you are working with 16 "
+"bits per channel precision, you may see color banding when editing images."
+msgstr ""
+
+#. TRANSLATORS: studio recording means 'shows you'll see on TV'
+#: ../data/profiles/SMPTE-C-RGB.xml.in.h:3
+msgid ""
+"This is the current standard used by North America and Japan for studio "
+"recording. You should only use this profile to encode or decode video."
+msgstr ""
+
+#. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
+#. unspecified color profile
+#. 
+#: ../data/profiles/sRGB.xml.in.h:6
+msgid ""
+"This general purpose profile was designed by Hewlett-Packard and Microsoft "
+"and lives on as the default profile on the Internet for untagged RGB colors "
+"and used in HDTV. Most uncalibrated monitors are able to display most of the"
+" colors available in sRGB, although this profile is sometimes a poor choice "
+"for printing."
+msgstr ""
+
+#: ../data/profiles/SwappedRedAndGreen.xml.in.h:1
+msgid "Swapped Red and Green"
+msgstr "Rosso e verde invertiti"
+
+#. TRANSLATORS: channels refer to the RGB values in an image
+#: ../data/profiles/SwappedRedAndGreen.xml.in.h:4
+msgid ""
+"This test profile swaps the red and green channels and is useful as a visual"
+" check that profiles are being applied correctly. If this profile is applied"
+" twice, the image looks unchanged."
+msgstr ""
+
+#: ../data/profiles/WideGamutRGB.xml.in.h:1
+msgid "Wide Gamut RGB"
+msgstr "RGB gamut esteso"
+
+#. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
+#: ../data/profiles/WideGamutRGB.xml.in.h:4
+msgid ""
+"This editing space was designed by Adobe Systems to capture many more colors"
+" than Adobe RGB. This profile is used to print to devices such as film "
+"recorders and can define many colors that cannot be displayed on a computer "
+"screen. Unless you are working with 16 bits per channel precision, you may "
+"see color banding when editing images."
+msgstr ""
+
+#: ../data/profiles/x11-colors.xml.in.h:1
+msgid "X11 Colors"
+msgstr "Colori X11"
+
+#. TRANSLATORS: A 'named color profile' contains a list of color swatches that
+#. look the same on all computer screens
+#. 
+#: ../data/profiles/x11-colors.xml.in.h:7
+msgid ""
+"This named color profile contains all the colors defined by X11, assuming "
+"the source colors were supposed to be sRGB."
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices

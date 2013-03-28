@@ -7,7 +7,7 @@
  <_model>
   This is an RGB editing space for use with Adobe Photoshop 5.0 and later.
   It was designed as an output-centric compromise between ColorMatch RGB and
-  Adobe RGB and used to be prefered by some photograph printing services.
+  Adobe RGB and used to be preferred by some photograph printing services.
  </_model>
  <license>CC0</license>
  <data_source>standard</data_source>

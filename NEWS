@@ -1,3 +1,31 @@
+Version 0.1.32
+~~~~~~~~~~~~~~
+Released: 2013-03-28
+
+Notes:
+ - This release is really for the translators. Now that the ICC profiles have
+   translatable generic names and also short descriptions we can get to work
+   creating some really great profiles.
+ - Most commits for this release were for the translated profile feature, so
+   feel free to skip this and wait for 0.1.33 if you're waiting for juicy new
+   features or specific bugfixes.
+
+New Features:
+ - Add a new tool 'cd-iccdump' that can dump V4 and V2 profiles (Richard Hughes)
+ - Add translated descriptions to the ICC profiles (Richard Hughes)
+ - libcolord: Add an object which is a named colord (Richard Hughes)
+ - libcolord: Add an object to factor out the profile load and save (Richard Hughes)
+ - libcolord: Add a really simple XML DOM extractor (Richard Hughes)
+ - libcolord: Add some helpers for dealing with CdColorLab objects (Richard Hughes)
+ - Translate some of the profile source XML file descriptions and licences (Richard Hughes)
+ - Use an XML source format for the generated profiles (Richard Hughes)
+
+Bugfixes:
+ - libcolord: Correctly copy CdColorYxy->Y when used as a property (Richard Hughes)
+ - lib: Fix the licence boilerplate in the sensor libs (Richard Hughes)
+ - Set the default profile locale to be en_US, not EN_us (Richard Hughes)
+ - Use gtkdocize --copy in autogen.sh (Christopher James Halse Rogers)
+
 Version 0.1.31
 ~~~~~~~~~~~~~~
 Released: 2013-03-18
