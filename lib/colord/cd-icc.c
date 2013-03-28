@@ -1648,7 +1648,7 @@ out:
  * This function will only return results if the profile was loaded with the
  * %CD_ICC_LOAD_FLAGS_NAMED_COLORS flag.
  *
- * Return value: (transfer container): An array of #CdColorSwatch
+ * Return value: (transfer container) (element-type CdColorSwatch): An array of color swatches
  *
  * Since: 0.1.32
  **/
