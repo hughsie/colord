@@ -832,24 +832,44 @@ out:
 }
 
 /**
- * _cmsDictAddEntryAscii:
+ * cd_util_write_dict_entry:
  **/
-static cmsBool
-_cmsDictAddEntryAscii (cmsHANDLE dict,
-		       const gchar *key,
-		       const gchar *value)
+static gboolean
+cd_util_write_dict_entry (cmsHANDLE dict,
+			  const gchar *key,
+			  const gchar *value,
+			  GError **error)
 {
-	cmsBool ret = FALSE;
+	gboolean ret = FALSE;
 	wchar_t *mb_key = NULL;
 	wchar_t *mb_value = NULL;
 
 	mb_key = utf8_to_wchar_t (key);
-	if (mb_key == NULL)
+	if (mb_key == NULL) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "Failed to write invalid ASCII key: '%s'",
+			     key);
 		goto out;
+	}
 	mb_value = utf8_to_wchar_t (value);
-	if (mb_value == NULL)
+	if (mb_value == NULL) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "Failed to write invalid ASCII value: '%s'",
+			     value);
 		goto out;
+	}
 	ret = cmsDictAddEntry (dict, mb_key, mb_value, NULL, NULL);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "Failed to write dict entry");
+		goto out;
+	}
 out:
 	g_free (mb_key);
 	g_free (mb_value);
@@ -889,8 +909,11 @@ cd_util_mlu_object_parse (const gchar *locale, const gchar *utf8_text)
 
 	/* untranslated version */
 	if (locale == NULL || locale[0] == '\0') {
+		wtext = utf8_to_wchar_t (utf8_text);
+		if (wtext == NULL)
+			goto out;
 		obj = g_new0 (CdMluObject, 1);
-		obj->wtext = utf8_to_wchar_t (utf8_text);
+		obj->wtext = wtext;
 		goto out;
 	}
 
@@ -946,6 +969,7 @@ cd_util_write_tag_localized (CdIcc *icc,
 	CdMluObject *obj;
 	cmsMLU *mlu = NULL;
 	const gchar *locale;
+	const gchar *value;
 	gboolean ret = TRUE;
 	GList *keys;
 	GList *l;
@@ -957,10 +981,13 @@ cd_util_write_tag_localized (CdIcc *icc,
 	array = g_ptr_array_new_with_free_func (cd_util_mlu_object_free);
 	for (l = keys; l != NULL; l = l->next) {
 		locale = l->data;
-		obj = cd_util_mlu_object_parse (locale,
-						g_hash_table_lookup (hash, locale));
-		if (obj == NULL)
+		value = g_hash_table_lookup (hash, locale);
+		obj = cd_util_mlu_object_parse (locale, value);
+		if (obj == NULL) {
+			g_warning ("failed to parse localized text: %s[%s]",
+				   value, locale);
 			continue;
+		}
 		g_ptr_array_add (array, obj);
 	}
 
@@ -1089,7 +1116,10 @@ cd_icc_save_file (CdIcc *icc,
 			for (l = md_keys; l != NULL; l = l->next) {
 				key = l->data;
 				value = g_hash_table_lookup (priv->metadata, key);
-				_cmsDictAddEntryAscii (dict, key, value);
+				ret = cd_util_write_dict_entry (dict, key,
+								value, error);
+				if (!ret)
+					goto out;
 			}
 		}
 		ret = cmsWriteTag (priv->lcms_profile, cmsSigMetaTag, dict);
