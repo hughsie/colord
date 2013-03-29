@@ -11,7 +11,7 @@
   This general purpose profile was designed by Hewlett-Packard and Microsoft
   and lives on as the default profile on the Internet for untagged RGB colors
   and used in HDTV.
-  Most uncalibrated monitors are able to display most of the colors available in
+  Most uncalibrated displays are able to display most of the colors available in
   sRGB, although this profile is sometimes a poor choice for printing.
  </_model>
  <license>CC0</license>
