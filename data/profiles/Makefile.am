@@ -12,6 +12,7 @@ noinst_DATA =					\
 	ColorMatchRGB.xml			\
 	Crayons.xml				\
 	DonRGB4.xml				\
+	ECI-RGBv1.xml				\
 	ECI-RGBv2.xml				\
 	EktaSpacePS5.xml			\
 	Gamma5000K.xml				\
@@ -36,6 +37,7 @@ generatedprofiles =					\
 	CIE-RGB.icc					\
 	ColorMatchRGB.icc				\
 	DonRGB4.icc					\
+	ECI-RGBv1.icc					\
 	ECI-RGBv2.icc					\
 	EktaSpacePS5.icc				\
 	NTSC-RGB.icc					\
@@ -110,6 +112,11 @@ DonRGB4.icc: DonRGB4.xml
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
 		$(builddir)/DonRGB4.xml
+ECI-RGBv1.icc: ECI-RGBv1.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/ECI-RGBv1.xml
 ECI-RGBv2.icc: ECI-RGBv2.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
@@ -328,6 +335,7 @@ sourcedata =						\
 	ColorMatchRGB.xml.in				\
 	Crayons.xml.in					\
 	DonRGB4.xml.in					\
+	ECI-RGBv1.xml.in				\
 	ECI-RGBv2.xml.in				\
 	EktaSpacePS5.xml.in				\
 	Gamma5000K.xml.in				\

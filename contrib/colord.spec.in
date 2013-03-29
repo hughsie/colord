@@ -233,6 +233,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_icccolordir}/colord/CIE-RGB.icc
 %{_icccolordir}/colord/ColorMatchRGB.icc
 %{_icccolordir}/colord/DonRGB4.icc
+%{_icccolordir}/colord/ECI-RGBv1.icc
 %{_icccolordir}/colord/ECI-RGBv2.icc
 %{_icccolordir}/colord/EktaSpacePS5.icc
 %{_icccolordir}/colord/Gamma*.icc

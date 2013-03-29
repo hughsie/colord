@@ -13,6 +13,7 @@ data/profiles/CIE-RGB.xml.in
 data/profiles/ColorMatchRGB.xml.in
 data/profiles/Crayons.xml.in
 data/profiles/DonRGB4.xml.in
+data/profiles/ECI-RGBv1.xml.in
 data/profiles/ECI-RGBv2.xml.in
 data/profiles/EktaSpacePS5.xml.in
 data/profiles/Gamma5000K.xml.in
