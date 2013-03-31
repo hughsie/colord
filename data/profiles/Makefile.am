@@ -147,7 +147,7 @@ SMPTE-C-RGB.icc: SMPTE-C-RGB.xml
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
 		$(builddir)/SMPTE-C-RGB.xml
-sRGB.icc: $(top_builddir)/client/cd-create-profile
+sRGB.icc: sRGB.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
