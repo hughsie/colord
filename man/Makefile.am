@@ -16,10 +16,13 @@ endif
 
 if HAVE_DOCBOOK2MAN
 colormgr.1: colormgr.sgml
+	$(AM_V_GEN)					\
 	docbook2man $? > /dev/null
 cd-create-profile.1: cd-create-profile.sgml
+	$(AM_V_GEN)					\
 	docbook2man $? > /dev/null
 cd-fix-profile.1: cd-fix-profile.sgml
+	$(AM_V_GEN)					\
 	docbook2man $? > /dev/null
 endif
 
