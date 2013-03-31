@@ -146,6 +146,10 @@ gboolean	 cd_icc_load_fd				(CdIcc		*icc,
 							 gint		 fd,
 							 CdIccLoadFlags	 flags,
 							 GError		**error);
+gboolean	 cd_icc_load_handle			(CdIcc		*icc,
+							 gpointer	 handle,
+							 CdIccLoadFlags	 flags,
+							 GError		**error);
 gboolean	 cd_icc_save_file			(CdIcc		*icc,
 							 GFile		*file,
 							 CdIccSaveFlags	 flags,
@@ -153,8 +157,6 @@ gboolean	 cd_icc_save_file			(CdIcc		*icc,
 							 GError		**error);
 gchar		*cd_icc_to_string			(CdIcc		*icc);
 gpointer	 cd_icc_get_handle			(CdIcc		*icc);
-void		 cd_icc_set_handle			(CdIcc		*icc,
-							 gpointer	 handle);
 guint32		 cd_icc_get_size			(CdIcc		*icc);
 const gchar	*cd_icc_get_filename			(CdIcc		*icc);
 gdouble		 cd_icc_get_version			(CdIcc		*icc);

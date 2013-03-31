@@ -579,7 +579,12 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 	}
 
 	/* convert into a CdIcc object */
-	cd_icc_set_handle (priv->icc, priv->lcms_profile);
+	ret = cd_icc_load_handle (priv->icc,
+				  priv->lcms_profile,
+				  CD_ICC_LOAD_FLAGS_NONE,
+				  error);
+	if (!ret)
+		goto out;
 
 	/* also write metadata */
 	tmp = cd_dom_get_node (dom, profile, "license");

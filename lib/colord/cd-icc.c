@@ -1390,9 +1390,11 @@ cd_icc_get_handle (CdIcc *icc)
 }
 
 /**
- * cd_icc_set_handle:
+ * cd_icc_load_handle:
  * @icc: a #CdIcc instance.
  * @handle: a cmsHPROFILE instance
+ * @flags: a set of #CdIccLoadFlags
+ * @error: A #GError or %NULL
  *
  * Set the internal cmsHPROFILE instance. This may be required if you create
  * the profile using cmsCreateRGBProfile() and then want to use the
@@ -1404,14 +1406,29 @@ cd_icc_get_handle (CdIcc *icc)
  *
  * Additionally, this function cannot be called more than once, and also can't
  * be called if cd_icc_load_file() has previously been used on the @icc object.
+ *
+ * Since: 0.1.33
  **/
-void
-cd_icc_set_handle (CdIcc *icc, gpointer handle)
+gboolean
+cd_icc_load_handle (CdIcc *icc,
+		    gpointer handle,
+		    CdIccLoadFlags flags,
+		    GError **error)
 {
-	g_return_if_fail (CD_IS_ICC (icc));
-	g_return_if_fail (handle != NULL);
-	g_return_if_fail (icc->priv->lcms_profile == NULL);
-	icc->priv->lcms_profile = handle;
+	CdIccPrivate *priv = icc->priv;
+	gboolean ret;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+	g_return_val_if_fail (handle != NULL, FALSE);
+	g_return_val_if_fail (priv->lcms_profile == NULL, FALSE);
+
+	/* load profile */
+	priv->lcms_profile = handle;
+	ret = cd_icc_load (icc, flags, error);
+	if (!ret)
+		goto out;
+out:
+	return ret;
 }
 
 /**
