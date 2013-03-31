@@ -99,7 +99,7 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	const GNode *node_stle;
 	const GNode *node_stpo;
 	const GNode *tmp;
-	gboolean ret;
+	gboolean ret = FALSE;
 	gchar *debug_stdout = NULL;
 	gchar *debug_stderr = NULL;
 	gchar *data = NULL;
@@ -115,12 +115,21 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	GFile *output_file = NULL;
 	GFile *ti3_file = NULL;
 	gint exit_status = 0;
-	GPtrArray *argv;
+	GPtrArray *argv = NULL;
 	gsize len = 0;
+
+#ifndef TOOL_COLPROF
+	/* no support */
+	g_set_error_literal (error, 1, 0,
+			     "not compiled with --enable-print-profiles");
+	goto out;
+#endif
 
 	/* create common options */
 	argv = g_ptr_array_new_with_free_func (g_free);
+#ifdef TOOL_COLPROF
 	g_ptr_array_add (argv, g_strdup (TOOL_COLPROF));
+#endif
 	g_ptr_array_add (argv, g_strdup ("-nc"));	/* no embedded ti3 */
 	g_ptr_array_add (argv, g_strdup ("-qh"));	/* high quality */
 	g_ptr_array_add (argv, g_strdup ("-bh"));	/* high quality B2A */
@@ -272,7 +281,8 @@ out:
 	g_free (debug_stderr);
 	g_free (data);
 	g_free (output_fn);
-	g_ptr_array_unref (argv);
+	if (argv != NULL)
+		g_ptr_array_unref (argv);
 	return ret;
 }
 
