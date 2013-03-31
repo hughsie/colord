@@ -1,10 +1,21 @@
-CTI3
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <_description>FOGRA27L Coated</_description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <manufacturer>ArgyllCMS</manufacturer>
+ <license>CC0</license>
+ <data_source>fogra27l</data_source>
+ <stle>0.0</stle>
+ <stpo>0.3</stpo>
+ <enpo>0.94</enpo>
+ <enle>0.94</enle>
+ <shape>0.48</shape>
+ <tlimit>300</tlimit>
+ <data_ti3>CTI3
 KEYWORD "DEVICE_CLASS"
 DEVICE_CLASS "OUTPUT"
 KEYWORD "COLOR_REP"
 COLOR_REP "CMYK_LAB"
-
 ORIGINATOR       "FOGRA, www.fogra.org"
 DESCRIPTOR       "FOGRA27"
 CREATED          "September 2003"
@@ -1502,3 +1513,5 @@ BEGIN_DATA
 1484    40     3    40    40   20.45   24.21   16.77   56.30  -13.44    7.05
 1485     3    40    40    40   24.53   22.00   13.05   54.02   15.01   12.55
 END_DATA
+</data_ti3>
+</profile>

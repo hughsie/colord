@@ -1,15 +1,26 @@
-CTI3
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <_description>SNAP TR002 Newsprint</_description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <manufacturer>ArgyllCMS</manufacturer>
+ <license>CC0</license>
+ <data_source>tr002</data_source>
+ <stle>0.0</stle>
+ <stpo>0.4</stpo>
+ <enpo>1.0</enpo>
+ <enle>1.0</enle>
+ <shape>0.1</shape>
+ <tlimit>320</tlimit>
+ <data_ti3>CTI3
 KEYWORD "DEVICE_CLASS"
 DEVICE_CLASS "OUTPUT"
 KEYWORD "COLOR_REP"
 COLOR_REP "CMYK_LAB"
-
 ORIGINATOR  "ANSI CGATS and SNAP Committee"
 FILE_DESCRIPTOR "Color Characterization Data for Coldset Printing on Newsprint"
 CREATED  "December 2006"
 # This file is provided in support of ANSI CGATS/SNAP TR 002-2007 which is titled
-# ANSI CGATS/SNAP TR 002-2007 Graphic Technology — Color Characterization Data
+# ANSI CGATS/SNAP TR 002-2007 Graphic Technology Â— Color Characterization Data
 # for Coldset Printing on Newsprint.
 # These data represent the average of 102 sets of measurements as described in
 # ANSI CGATS/SNAP TR 002-2007 noted above.
@@ -24,12 +35,10 @@ ILLUMINANT "D50"
 MEASUREMENT_GEOMETRY "0:45"
 OBSERVER "CIE 2 degree"
 SAMPLE_BACKING "Black"
-
 NUMBER_OF_FIELDS   11
 BEGIN_DATA_FORMAT
 SAMPLE_ID CMYK_C CMYK_M CMYK_Y CMYK_K XYZ_X XYZ_Y XYZ_Z LAB_L LAB_A LAB_B
 END_DATA_FORMAT
-
 NUMBER_OF_SETS     928
 BEGIN_DATA
 1 100 0 0 0 18.71 24.5 35.94 56.58 -23.4 -26.45
@@ -961,3 +970,5 @@ BEGIN_DATA
 927 100 70 100 80 6.95 7.46 5.9 32.83 -2.33 1.15
 928 100 100 100 80 6.76 7.03 5.75 31.88 -0.2 0.26
 END_DATA
+</data_ti3>
+</profile>

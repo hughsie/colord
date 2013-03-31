@@ -1,15 +1,24 @@
-CTI3
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <_description>IFRA26 Newsprint</_description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <manufacturer>ArgyllCMS</manufacturer>
+ <license>CC0</license>
+ <data_source>ifra26</data_source>
+ <input_viewing_conditions>pp</input_viewing_conditions>
+ <output_viewing_conditions>pp</output_viewing_conditions>
+ <tlimit>230</tlimit>
+ <klimit>95</klimit>
+ <data_ti3>CTI3
 KEYWORD "DEVICE_CLASS"
 DEVICE_CLASS "OUTPUT"
 KEYWORD "COLOR_REP"
 COLOR_REP "CMYK_LAB"
-
 ORIGINATOR	"Ifra. www.ifra.com"
 DESCRIPTOR	"Ifra26S"
 CREATED	"30.06.2004"
 INSTRUMENTATION	"GRETAGMACBETH SpectroScan. D50. 2 degree. geometry 45/0. no polarisation filter. white backing"
-PRINT_CONDITIONS	"Newspaper Coldset-Offset printing according to ISO/DIS 12647-3:2004. standard newsprint. screen ruling 40 l/cm ± 2 l/cm"
+PRINT_CONDITIONS	"Newspaper Coldset-Offset printing according to ISO/DIS 12647-3:2004. standard newsprint. screen ruling 40 l/cm Â± 2 l/cm"
 NUMBER_OF_FIELDS	11
 BEGIN_DATA_FORMAT
 SAMPLE_ID	CMYK_C	CMYK_M	CMYK_Y	CMYK_K	XYZ_X	XYZ_Y	XYZ_Z	LAB_L	LAB_A	LAB_B
@@ -945,3 +954,5 @@ BEGIN_DATA
 927	100	70	100	80	7.57	8.07	6.15	34.13	-1.93	2.25
 928	100	100	100	80	7.3	7.58	5.99	33.09	-0.06	1.2
 END_DATA
+</data_ti3>
+</profile>

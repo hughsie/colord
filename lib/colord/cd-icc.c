@@ -384,6 +384,19 @@ cd_icc_to_string (CdIcc *icc)
 			}
 			break;
 		}
+		case cmsSigVcgtType:
+		{
+			const cmsToneCurve **vcgt;
+			g_string_append (str, "VideoCardGammaTable:\n");
+			vcgt = cmsReadTag (priv->lcms_profile, sig);
+			if (vcgt == NULL || vcgt[0] == NULL) {
+				g_debug ("icc does not have any VCGT data");
+				continue;
+			}
+			g_string_append_printf (str, "  channels\t = %i\n", 3);
+			g_string_append_printf (str, "  entries\t = %i\n",
+						cmsGetToneCurveEstimatedTableEntries (vcgt[0]));
+		}
 		case cmsSigNamedColor2Type:
 		{
 			CdColorLab lab;

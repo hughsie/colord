@@ -341,6 +341,7 @@ if test x$enable_print_profiles != xno; then
 	if test "$COLPROF" = "false"; then
 		AC_MSG_ERROR([colprof not found, please install argyllcms])
 	fi
+	AC_DEFINE_UNQUOTED([TOOL_COLPROF], ["$COLPROF"], [Full path of colprof binary])
 fi
 
 # per-machine directory

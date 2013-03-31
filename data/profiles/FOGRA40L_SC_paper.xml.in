@@ -1,10 +1,21 @@
-CTI3
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <_description>FOGRA40L SC Paper</_description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <manufacturer>ArgyllCMS</manufacturer>
+ <license>CC0</license>
+ <data_source>fogra40l</data_source>
+ <stle>0.0</stle>
+ <stpo>0.3</stpo>
+ <enpo>1.0</enpo>
+ <enle>1.0</enle>
+ <shape>0.48</shape>
+ <tlimit>340</tlimit>
+ <data_ti3>CTI3
 KEYWORD "DEVICE_CLASS"
 DEVICE_CLASS "OUTPUT"
 KEYWORD "COLOR_REP"
 COLOR_REP "CMYK_LAB"
-
 ORIGINATOR "Fogra, www.fogra.org"
 DESCRIPTOR "FOGRA40L"
 CREATED    "December 2006"
@@ -1634,3 +1645,5 @@ BEGIN_DATA
 1616   100     0   100    10    7.92   15.16    5.97   45.85  -49.27   23.29
 1617   100   100     0    10    5.65    4.86   13.54   26.32   11.79  -36.53
 END_DATA
+</data_ti3>
+</profile>

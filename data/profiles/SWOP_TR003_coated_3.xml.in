@@ -1,10 +1,21 @@
-CTI3
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <_description>SWOP TR003 Coated</_description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <manufacturer>ArgyllCMS</manufacturer>
+ <license>CC0</license>
+ <data_source>tr003</data_source>
+ <stle>0.0</stle>
+ <stpo>0.3</stpo>
+ <enpo>0.94</enpo>
+ <enle>0.94</enle>
+ <shape>0.4</shape>
+ <tlimit>300</tlimit>
+ <data_ti3>CTI3
 KEYWORD "DEVICE_CLASS"
 DEVICE_CLASS "OUTPUT"
 KEYWORD "COLOR_REP"
 COLOR_REP "CMYK_LAB"
-
 ORIGINATOR  "ANSI CGATS and SWOP Committee"
 FILE_DESCRIPTOR "Color Characterization Data for SWOP proofing on Grade 3 coated paper"
 CREATED  "8/3/2006   Time: 20:57"
@@ -23,12 +34,10 @@ SAMPLE_BACKING "White"
 # over black is XYZ_X =73.96, XYZ_Y = 77.05, XYZ_Z = 64.97
 # Data extracted from this characterization data set for the IDEAliance ISO 12647-7 Digital Control Strip 2007
 #  is available at www.SWOP.org
-
 NUMBER_OF_FIELDS   11
 BEGIN_DATA_FORMAT
 SAMPLE_ID  CMYK_C CMYK_M CMYK_Y CMYK_K XYZ_X XYZ_Y XYZ_Z LAB_L LAB_A LAB_B
 END_DATA_FORMAT
-
 NUMBER_OF_SETS    1617
 BEGIN_DATA
 1 0 0 0 0 78.9 81.83 67.53 92.5 0 0
@@ -1649,3 +1658,5 @@ BEGIN_DATA
 1616 100 0 100 10 7.89 17.06 7.08 48.34 -60.23 22.71
 1617 100 100 0 10 5.62 4.43 14.51 25.06 16.85 -41.25
 END_DATA
+</data_ti3>
+</profile>

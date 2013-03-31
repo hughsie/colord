@@ -15,15 +15,26 @@ noinst_DATA =					\
 	ECI-RGBv1.xml				\
 	ECI-RGBv2.xml				\
 	EktaSpacePS5.xml			\
+	FOGRA27L_coated.xml			\
+	FOGRA28L_webcoated.xml			\
+	FOGRA29L_uncoated.xml			\
+	FOGRA30L_uncoated_yellowish.xml		\
+	FOGRA39L_coated.xml			\
+	FOGRA40L_SC_paper.xml			\
 	Gamma5000K.xml				\
 	Gamma5500K.xml				\
 	Gamma6500K.xml				\
+	GRACoL_TR006_coated.xml			\
+	ISOnewspaper26.xml			\
 	NTSC-RGB.xml				\
 	PAL-RGB.xml				\
 	ProPhotoRGB.xml				\
 	SMPTE-C-RGB.xml				\
+	SNAP_TR002_newsprint.xml		\
 	sRGB.xml				\
 	SwappedRedAndGreen.xml			\
+	SWOP_TR003_coated_3.xml			\
+	SWOP_TR005_coated_5.xml			\
 	WideGamutRGB.xml			\
 	x11-colors.xml
 
@@ -56,7 +67,6 @@ generatedprofiles =					\
 
 if CD_BUILD_PRINT_PROFILES
 generatedprofiles +=					\
-	ISOnewspaper26.icc				\
 	FOGRA27L_coated.icc				\
 	FOGRA28L_webcoated.icc				\
 	FOGRA29L_uncoated.icc				\
@@ -66,7 +76,8 @@ generatedprofiles +=					\
 	GRACoL_TR006_coated.icc				\
 	SNAP_TR002_newsprint.icc			\
 	SWOP_TR003_coated_3.icc				\
-	SWOP_TR005_coated_5.icc
+	SWOP_TR005_coated_5.icc				\
+	ISOnewspaper26.icc
 endif
 
 profiles_DATA =						\
@@ -194,134 +205,61 @@ Gamma5000K.icc: Gamma5000K.xml
 		$(builddir)/Gamma5000K.xml
 
 if CD_BUILD_PRINT_PROFILES
-colprof_manufacturer = "Argyll Color Management System"
-colprof_options = -nc -v -qh -bh
-copyright = "This profile is free of known copyright restrictions."
-license = "CC0"
-
-FOGRA27L_coated.icc: FOGRA27L.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "FOGRA27L Coated"				\
-		-O $@ $(top_srcdir)/data/profiles/FOGRA27L;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra27l $@
-FOGRA28L_webcoated.icc: FOGRA28L.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "FOGRA28L Web Coated"			\
-		-O $@ $(top_srcdir)/data/profiles/FOGRA28L;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra28l $@
-FOGRA29L_uncoated.icc: FOGRA29L.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "FOGRA29L Uncoated"				\
-		-O $@ $(top_srcdir)/data/profiles/FOGRA29L;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra29l $@
-FOGRA30L_uncoated_yellowish.icc: FOGRA30L.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 1. 1. .48 -l340			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "FOGRA30L Uncoated Yellowish"		\
-		-O $@ $(top_srcdir)/data/profiles/FOGRA30L;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra30l $@
-FOGRA39L_coated.icc: FOGRA39L.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "FOGRA39L Coated"				\
-		-O $@ $(top_srcdir)/data/profiles/FOGRA39L;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra39l $@
-FOGRA40L_SC_paper.icc: FOGRA40L.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 1. 1. .48 -l340			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "FOGRA40L SC Paper"				\
-		-O $@ $(top_srcdir)/data/profiles/FOGRA40L;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space fogra40l $@
-GRACoL_TR006_coated.icc: TR006.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "GRACoL TR006 Coated"			\
-		-O $@ $(top_srcdir)/data/profiles/TR006;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr006 $@
-SNAP_TR002_newsprint.icc: TR002.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .4 1. 1. .1 -l320			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "SNAP TR002 Newsprint"			\
-		-O $@ $(top_srcdir)/data/profiles/TR002;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr002 $@
-SWOP_TR003_coated_3.icc: TR003.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 .94 .94 .4 -l300			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "SWOP TR003 Coated"				\
-		-O $@ $(top_srcdir)/data/profiles/TR003;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr003 $@
-SWOP_TR005_coated_5.icc: TR005.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kp 0 .3 .94 .94 .48 -l300			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "SWOP TR005 Coated"				\
-		-O $@ $(top_srcdir)/data/profiles/TR005;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space tr005 $@
-
-# Total Ink = 230%, Maximum Black = 95%
-ISOnewspaper26.icc: IFRA26S.ti3
-	$(AM_V_GEN)						\
-	${COLPROF} -kr -l230 -L100 -cpp -dpp			\
-		$(colprof_options)				\
-		-A $(colprof_manufacturer)			\
-		-C $(copyright)					\
-		-D "IFRA26 Newsprint"				\
-		-O $@ $(top_srcdir)/data/profiles/IFRA26S;
-	$(top_builddir)/client/cd-fix-profile md-add License $(license) $@;
-	$(top_builddir)/client/cd-fix-profile md-add DATA_source standard $@;
-	$(top_builddir)/client/cd-fix-profile md-add STANDARD_space ifra26 $@
+FOGRA27L_coated.icc: FOGRA27L_coated.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/FOGRA27L_coated.xml
+FOGRA28L_webcoated.icc: FOGRA28L_webcoated.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/FOGRA28L_webcoated.xml
+FOGRA29L_uncoated.icc: FOGRA29L_uncoated.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/FOGRA29L_uncoated.xml
+FOGRA30L_uncoated_yellowish.icc: FOGRA30L_uncoated_yellowish.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/FOGRA30L_uncoated_yellowish.xml
+FOGRA39L_coated.icc: FOGRA39L_coated.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/FOGRA39L_coated.xml
+FOGRA40L_SC_paper.icc: FOGRA40L_SC_paper.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/FOGRA40L_SC_paper.xml
+GRACoL_TR006_coated.icc: GRACoL_TR006_coated.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/GRACoL_TR006_coated.xml
+SNAP_TR002_newsprint.icc: SNAP_TR002_newsprint.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/SNAP_TR002_newsprint.xml
+SWOP_TR003_coated_3.icc: SWOP_TR003_coated_3.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/SWOP_TR003_coated_3.xml
+SWOP_TR005_coated_5.icc: SWOP_TR005_coated_5.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/SWOP_TR005_coated_5.xml
+ISOnewspaper26.icc: ISOnewspaper26.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/ISOnewspaper26.xml
 endif
 
 sourcedata =						\
@@ -338,28 +276,28 @@ sourcedata =						\
 	ECI-RGBv1.xml.in				\
 	ECI-RGBv2.xml.in				\
 	EktaSpacePS5.xml.in				\
+	FOGRA27L_coated.xml.in				\
+	FOGRA28L_webcoated.xml.in			\
+	FOGRA29L_uncoated.xml.in			\
+	FOGRA30L_uncoated_yellowish.xml.in		\
+	FOGRA39L_coated.xml.in				\
+	FOGRA40L_SC_paper.xml.in			\
 	Gamma5000K.xml.in				\
 	Gamma5500K.xml.in				\
 	Gamma6500K.xml.in				\
+	GRACoL_TR006_coated.xml.in			\
+	ISOnewspaper26.xml.in				\
 	NTSC-RGB.xml.in					\
 	PAL-RGB.xml.in					\
 	ProPhotoRGB.xml.in				\
 	SMPTE-C-RGB.xml.in				\
+	SNAP_TR002_newsprint.xml.in			\
 	sRGB.xml.in					\
 	SwappedRedAndGreen.xml.in			\
+	SWOP_TR003_coated_3.xml.in			\
+	SWOP_TR005_coated_5.xml.in			\
 	WideGamutRGB.xml.in				\
-	x11-colors.xml.in				\
-	FOGRA27L.ti3					\
-	FOGRA28L.ti3					\
-	FOGRA29L.ti3					\
-	FOGRA30L.ti3					\
-	FOGRA39L.ti3					\
-	FOGRA40L.ti3					\
-	IFRA26S.ti3					\
-	TR002.ti3					\
-	TR003.ti3					\
-	TR005.ti3					\
-	TR006.ti3
+	x11-colors.xml.in
 
 CLEANFILES =						\
 	$(generatedprofiles)

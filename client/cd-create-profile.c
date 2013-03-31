@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include <glib/gi18n.h>
+#include <gio/gio.h>
 #include <locale.h>
 #include <lcms2.h>
 #include <lcms2_plugin.h>
@@ -77,6 +78,201 @@ set_vcgt_from_data (cmsHPROFILE profile,
 	/* free the tonecurves */
 	for (i = 0; i < 3; i++)
 		cmsFreeToneCurve (vcgt_curve[i]);
+	return ret;
+}
+
+/**
+ * cd_util_create_colprof:
+ **/
+static gboolean
+cd_util_create_colprof (CdUtilPrivate *priv,
+			CdDom *dom,
+			const GNode *root,
+			GError **error)
+{
+	const gchar *basename = "profile";
+	const gchar *data_ti3;
+	const gchar *viewcond;
+	const GNode *node_enle;
+	const GNode *node_enpo;
+	const GNode *node_shape;
+	const GNode *node_stle;
+	const GNode *node_stpo;
+	const GNode *tmp;
+	gboolean ret;
+	gchar *debug_stdout = NULL;
+	gchar *debug_stderr = NULL;
+	gchar *data = NULL;
+	gchar *output_fn = NULL;
+	gchar *ti3_fn = NULL;
+	gdouble enle;
+	gdouble enpo;
+	gdouble klimit;
+	gdouble shape;
+	gdouble stle;
+	gdouble stpo;
+	gdouble tlimit;
+	GFile *output_file = NULL;
+	GFile *ti3_file = NULL;
+	gint exit_status = 0;
+	GPtrArray *argv;
+	gsize len = 0;
+
+	/* create common options */
+	argv = g_ptr_array_new_with_free_func (g_free);
+	g_ptr_array_add (argv, g_strdup (TOOL_COLPROF));
+	g_ptr_array_add (argv, g_strdup ("-nc"));	/* no embedded ti3 */
+	g_ptr_array_add (argv, g_strdup ("-qh"));	/* high quality */
+	g_ptr_array_add (argv, g_strdup ("-bh"));	/* high quality B2A */
+
+	/* get values */
+	node_stle = cd_dom_get_node (dom, root, "stle");
+	node_stpo = cd_dom_get_node (dom, root, "stpo");
+	node_enpo = cd_dom_get_node (dom, root, "enpo");
+	node_enle = cd_dom_get_node (dom, root, "enle");
+	node_shape = cd_dom_get_node (dom, root, "shape");
+	if (node_stle != NULL && node_stpo != NULL && node_enpo != NULL &&
+	    node_enle != NULL && node_shape != NULL) {
+		stle = cd_dom_get_node_data_as_double (node_stle);
+		stpo = cd_dom_get_node_data_as_double (node_stpo);
+		enpo = cd_dom_get_node_data_as_double (node_enpo);
+		enle = cd_dom_get_node_data_as_double (node_enle);
+		shape = cd_dom_get_node_data_as_double (node_shape);
+		if (stle == G_MAXDOUBLE || stpo == G_MAXDOUBLE || enpo == G_MAXDOUBLE ||
+		    enle == G_MAXDOUBLE || shape == G_MAXDOUBLE) {
+			ret = FALSE;
+			g_set_error_literal (error, 1, 0,
+					     "XML error: invalid stle, stpo, enpo, enle, shape");
+			goto out;
+		}
+		g_ptr_array_add (argv, g_strdup ("-kp"));
+		g_ptr_array_add (argv, g_strdup_printf ("%f", stle));
+		g_ptr_array_add (argv, g_strdup_printf ("%f", stpo));
+		g_ptr_array_add (argv, g_strdup_printf ("%f", enpo));
+		g_ptr_array_add (argv, g_strdup_printf ("%f", enle));
+		g_ptr_array_add (argv, g_strdup_printf ("%f", shape));
+	}
+
+	/* total ink limit */
+	tmp = cd_dom_get_node (dom, root, "tlimit");
+	if (tmp != NULL) {
+		tlimit = cd_dom_get_node_data_as_double (tmp);
+		if (tlimit == G_MAXDOUBLE) {
+			ret = FALSE;
+			g_set_error_literal (error, 1, 0,
+					     "XML error: invalid tlimit");
+			goto out;
+		}
+		g_ptr_array_add (argv, g_strdup_printf ("-l%.0f", tlimit));
+	}
+
+	/* black ink limit */
+	tmp = cd_dom_get_node (dom, root, "klimit");
+	if (tmp != NULL) {
+		klimit = cd_dom_get_node_data_as_double (tmp);
+		if (klimit == G_MAXDOUBLE) {
+			ret = FALSE;
+			g_set_error_literal (error, 1, 0,
+					     "XML error: invalid klimit");
+			goto out;
+		}
+		g_ptr_array_add (argv, g_strdup_printf ("-L%.0f", klimit));
+	}
+
+	/* input viewing conditions */
+	tmp = cd_dom_get_node (dom, root, "input_viewing_conditions");
+	if (tmp != NULL) {
+		viewcond = cd_dom_get_node_data (tmp);
+		g_ptr_array_add (argv, g_strdup_printf ("-c%s", viewcond));
+	}
+
+	/* output viewing conditions */
+	tmp = cd_dom_get_node (dom, root, "output_viewing_conditions");
+	if (tmp != NULL) {
+		viewcond = cd_dom_get_node_data (tmp);
+		g_ptr_array_add (argv, g_strdup_printf ("-d%s", viewcond));
+	}
+
+	/* get source filename and copy into working directory */
+	tmp = cd_dom_get_node (dom, root, "data_ti3");
+	if (tmp == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "XML error: no data_ti3");
+		goto out;
+	}
+	data_ti3 = cd_dom_get_node_data (tmp);
+	ti3_fn = g_strdup_printf ("/tmp/%s.ti3", basename);
+	ti3_file = g_file_new_for_path (ti3_fn);
+	ret = g_file_replace_contents (ti3_file,
+				       data_ti3,
+				       strlen (data_ti3),
+				       NULL,
+				       FALSE,
+				       G_FILE_CREATE_NONE,
+				       NULL,
+				       NULL,
+				       error);
+	if (!ret)
+		goto out;
+
+	/* ensure temporary icc profile does not already exist */
+	output_fn = g_strdup_printf ("/tmp/%s.icc", basename);
+	output_file = g_file_new_for_path (output_fn);
+	if (g_file_query_exists (output_file, NULL)) {
+		ret = g_file_delete (output_file, NULL, error);
+		if (!ret)
+			goto out;
+	}
+
+	/* run colprof in working directory */
+	g_ptr_array_add (argv, g_strdup_printf ("-O%s.icc", basename));
+	g_ptr_array_add (argv, g_strdup (basename));
+	g_ptr_array_add (argv, NULL);
+	ret = g_spawn_sync ("/tmp",
+			    (gchar **) argv->pdata,
+			    NULL,
+			    0,
+			    NULL, NULL,
+			    &debug_stdout,
+			    &debug_stderr,
+			    &exit_status,
+			    error);
+	if (!ret)
+		goto out;
+
+	/* load resulting .icc file */
+	ret = g_file_load_contents (output_file, NULL, &data, &len, NULL, error);
+	if (!ret)
+		goto out;
+
+	/* open /tmp/$basename.icc as hProfile */
+	priv->lcms_profile = cmsOpenProfileFromMem (data, len);
+	if (priv->lcms_profile == NULL) {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "Failed to open generated %s, output was: %s [%s]",
+			     output_fn, debug_stdout, debug_stderr);
+		goto out;
+	}
+
+	/* delete temp files */
+	ret = g_file_delete (output_file, NULL, error);
+	if (!ret)
+		goto out;
+	ret = g_file_delete (ti3_file, NULL, error);
+	if (!ret)
+		goto out;
+out:
+	if (ti3_file != NULL)
+		g_object_unref (ti3_file);
+	if (output_file != NULL)
+		g_object_unref (output_file);
+	g_free (debug_stdout);
+	g_free (debug_stderr);
+	g_free (data);
+	g_free (output_fn);
+	g_ptr_array_unref (argv);
 	return ret;
 }
 
@@ -569,6 +765,10 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 			goto out;
 	} else if (cd_dom_get_node (dom, profile, "named") != NULL) {
 		ret = cd_util_create_named_color (priv, dom, profile, error);
+		if (!ret)
+			goto out;
+	} else if (cd_dom_get_node (dom, profile, "data_ti3") != NULL) {
+		ret = cd_util_create_colprof (priv, dom, profile, error);
 		if (!ret)
 			goto out;
 	} else {

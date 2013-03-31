@@ -1,10 +1,21 @@
-CTI3
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <_description>GRACoL TR006 Coated</_description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <manufacturer>ArgyllCMS</manufacturer>
+ <license>CC0</license>
+ <data_source>tr006</data_source>
+ <stle>0.0</stle>
+ <stpo>0.3</stpo>
+ <enpo>0.94</enpo>
+ <enle>0.94</enle>
+ <shape>0.48</shape>
+ <tlimit>300</tlimit>
+ <data_ti3>CTI3
 KEYWORD "DEVICE_CLASS"
 DEVICE_CLASS "OUTPUT"
 KEYWORD "COLOR_REP"
 COLOR_REP "CMYK_LAB"
-
 ORIGINATOR  "ANSI CGATS and GRACoL Committee"
 FILE_DESCRIPTOR "Color Characterization Data for GRACoL printing on Grade 1 coated paper, ISO 12647-2 Paper type 1"
 CREATED  "8/28/2006"
@@ -23,12 +34,10 @@ SAMPLE_BACKING "White"
 # over black is XYZ_X =81.066, XYZ_Y = 84.15, XYZ_Z = 73.00
 # Data extracted from this characterization data set for the IDEAliance ISO 12647-7 Digital Control Strip 2007
 #  is available at www.GRACOL.org
-
 NUMBER_OF_FIELDS   11
 BEGIN_DATA_FORMAT
 SAMPLE_ID  CMYK_C CMYK_M CMYK_Y CMYK_K XYZ_X XYZ_Y XYZ_Z LAB_L LAB_A LAB_B
 END_DATA_FORMAT
-
 NUMBER_OF_SETS    1617
 BEGIN_DATA
 1 0 0 0 0 84.47 87.62 74.52 95 -0.02 -1.96
@@ -1649,3 +1658,5 @@ BEGIN_DATA
 1616 100 0 100 10 6.72 15.65 6.33 46.51 -63.72 22.77
 1617 100 100 0 10 4.67 3.72 13.5 22.71 15.45 -42.66
 END_DATA
+</data_ti3>
+</profile>
