@@ -322,7 +322,7 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	const gchar *data;
 	const GNode *tmp;
 	gboolean ret;
-	gdouble tgamma;
+	gdouble curve_gamma;
 
 	/* parse gamma */
 	tmp = cd_dom_get_node (dom, root, "gamma");
@@ -345,15 +345,15 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	} else {
-		tgamma = cd_dom_get_node_data_as_double (tmp);
-		if (tgamma == G_MAXDOUBLE) {
+		curve_gamma = cd_dom_get_node_data_as_double (tmp);
+		if (curve_gamma == G_MAXDOUBLE) {
 			ret = FALSE;
 			g_set_error (error, 1, 0,
 				     "failed to parse gamma: '%s'",
 				     data);
 			goto out;
 		}
-		transfer[0] = cmsBuildGamma (NULL, tgamma);
+		transfer[0] = cmsBuildGamma (NULL, curve_gamma);
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	}
@@ -455,7 +455,7 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 	const GNode *tmp;
 	const guint size = 256;
 	gboolean ret;
-	gdouble gamma;
+	gdouble curve_gamma;
 	guint16 data[3][256];
 	guint i;
 	guint temp;
@@ -485,8 +485,8 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 		g_set_error_literal (error, 1, 0, "XML error, expected gamma");
 		goto out;
 	}
-	gamma = cd_dom_get_node_data_as_double (tmp);
-	if (gamma == G_MAXDOUBLE) {
+	curve_gamma = cd_dom_get_node_data_as_double (tmp);
+	if (curve_gamma == G_MAXDOUBLE) {
 		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "failed to parse gamma: '%s'",
@@ -497,11 +497,11 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 	/* generate the VCGT table */
 	cd_color_get_blackbody_rgb (temp, &white_point);
 	for (i = 0; i < size; i++) {
-		data[0][i] = pow ((gdouble) i / size, 1.0 / gamma) *
+		data[0][i] = pow ((gdouble) i / size, 1.0 / curve_gamma) *
 				  0xffff * white_point.R;
-		data[1][i] = pow ((gdouble) i / size, 1.0 / gamma) *
+		data[1][i] = pow ((gdouble) i / size, 1.0 / curve_gamma) *
 				  0xffff * white_point.G;
-		data[2][i] = pow ((gdouble) i / size, 1.0 / gamma) *
+		data[2][i] = pow ((gdouble) i / size, 1.0 / curve_gamma) *
 				  0xffff * white_point.B;
 	}
 
