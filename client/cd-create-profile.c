@@ -322,7 +322,6 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	const gchar *data;
 	const GNode *tmp;
 	gboolean ret;
-	gchar *endptr = NULL;
 	gdouble tgamma;
 
 	/* parse gamma */
@@ -346,8 +345,8 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	} else {
-		tgamma = g_ascii_strtod (data, &endptr);
-		if (endptr != NULL && endptr[0] != '\0') {
+		tgamma = cd_dom_get_node_data_as_double (tmp);
+		if (tgamma == G_MAXDOUBLE) {
 			ret = FALSE;
 			g_set_error (error, 1, 0,
 				     "failed to parse gamma: '%s'",
@@ -456,7 +455,6 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 	const GNode *tmp;
 	const guint size = 256;
 	gboolean ret;
-	gchar *endptr = NULL;
 	gdouble gamma;
 	guint16 data[3][256];
 	guint i;
@@ -487,8 +485,8 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 		g_set_error_literal (error, 1, 0, "XML error, expected gamma");
 		goto out;
 	}
-	gamma = g_ascii_strtod (cd_dom_get_node_data (tmp), &endptr);
-	if (endptr != NULL && endptr[0] != '\0') {
+	gamma = cd_dom_get_node_data_as_double (tmp);
+	if (gamma == G_MAXDOUBLE) {
 		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "failed to parse gamma: '%s'",

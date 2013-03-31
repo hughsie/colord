@@ -77,6 +77,8 @@ const GNode	*cd_dom_get_node			(CdDom		*dom,
 							 const gchar	*path);
 const gchar	*cd_dom_get_node_name			(const GNode	*node);
 const gchar	*cd_dom_get_node_data			(const GNode	*node);
+gint		 cd_dom_get_node_data_as_int		(const GNode	*node);
+gdouble		 cd_dom_get_node_data_as_double		(const GNode	*node);
 const gchar	*cd_dom_get_node_attribute		(const GNode	*node,
 							 const gchar	*key);
 gboolean	 cd_dom_get_node_rgb			(const GNode	*node,

@@ -308,6 +308,80 @@ cd_dom_get_node_data (const GNode *node)
 }
 
 /**
+ * cd_dom_get_node_data_as_double:
+ * @node: a #GNode
+ *
+ * Gets the node data, e.g. 7.4
+ *
+ * Return value: floating point value, or %G_MAXDOUBLE for error
+ *
+ * Since: 0.1.32
+ **/
+gdouble
+cd_dom_get_node_data_as_double (const GNode *node)
+{
+	const gchar *tmp;
+	gchar *endptr = NULL;
+	gdouble value = G_MAXDOUBLE;
+	gdouble value_tmp;
+
+	g_return_val_if_fail (node != NULL, G_MAXDOUBLE);
+
+	/* get string */
+	tmp = cd_dom_get_node_data (node);
+	if (tmp == NULL)
+		goto out;
+
+	/* convert to string */
+	value_tmp = g_ascii_strtod (tmp, &endptr);
+	if (endptr != NULL && endptr[0] != '\0')
+		goto out;
+
+	/* success */
+	value = value_tmp;
+out:
+	return value;
+}
+
+/**
+ * cd_dom_get_node_data_as_int:
+ * @node: a #GNode
+ *
+ * Gets the node data, e.g. 128
+ *
+ * Return value: signed integer value, or %G_MAXINT for error
+ *
+ * Since: 0.1.32
+ **/
+gint
+cd_dom_get_node_data_as_int (const GNode *node)
+{
+	const gchar *tmp;
+	gchar *endptr = NULL;
+	gint64 value_tmp;
+	gint value = G_MAXINT;
+
+	g_return_val_if_fail (node != NULL, G_MAXINT);
+
+	/* get string */
+	tmp = cd_dom_get_node_data (node);
+	if (tmp == NULL)
+		goto out;
+
+	/* convert to string */
+	value_tmp = g_ascii_strtoll (tmp, &endptr, 10);
+	if (endptr != NULL && endptr[0] != '\0')
+		goto out;
+	if (value_tmp > G_MAXINT || value_tmp < G_MININT)
+		goto out;
+
+	/* success */
+	value = (gint) value_tmp;
+out:
+	return value;
+}
+
+/**
  * cd_dom_get_node_attribute:
  * @node: a #GNode
  *
