@@ -131,8 +131,8 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	g_ptr_array_add (argv, g_strdup (TOOL_COLPROF));
 #endif
 	g_ptr_array_add (argv, g_strdup ("-nc"));	/* no embedded ti3 */
-	g_ptr_array_add (argv, g_strdup ("-qh"));	/* high quality */
-	g_ptr_array_add (argv, g_strdup ("-bh"));	/* high quality B2A */
+	g_ptr_array_add (argv, g_strdup ("-qm"));	/* medium quality */
+	g_ptr_array_add (argv, g_strdup ("-bm"));	/* medium quality B2A */
 
 	/* get values */
 	node_stle = cd_dom_get_node (dom, root, "stle");
