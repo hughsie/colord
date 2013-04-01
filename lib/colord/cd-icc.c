@@ -978,6 +978,54 @@ out:
 }
 
 /**
+ * cd_util_write_tag_ascii:
+ **/
+static gboolean
+cd_util_write_tag_ascii (CdIcc *icc,
+			 cmsTagSignature sig,
+			 GHashTable *hash,
+			 GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsMLU *mlu = NULL;
+	const gchar *value;
+	gboolean ret = TRUE;
+
+	/* get default value */
+	value = g_hash_table_lookup (hash, "");
+	if (value == NULL) {
+		cmsWriteTag (priv->lcms_profile, sig, NULL);
+		goto out;
+	}
+
+	/* set value */
+	mlu = cmsMLUalloc (NULL, 1);
+	ret = cmsMLUsetASCII (mlu, "en", "US", value);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "cannot write MLU text");
+		goto out;
+	}
+
+	/* write tag */
+	ret = cmsWriteTag (priv->lcms_profile, sig, mlu);
+	if (!ret) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "cannot write tag: 0x%x",
+			     sig);
+		goto out;
+	}
+out:
+	if (mlu != NULL)
+		cmsMLUfree (mlu);
+	return ret;
+}
+
+/**
  * cd_util_write_tag_localized:
  **/
 static gboolean
@@ -989,7 +1037,6 @@ cd_util_write_tag_localized (CdIcc *icc,
 	CdIccPrivate *priv = icc->priv;
 	CdMluObject *obj;
 	cmsMLU *mlu = NULL;
-	cmsMLU *mlu_v2 = NULL;
 	const gchar *locale;
 	const gchar *value;
 	gboolean ret = TRUE;
@@ -1016,67 +1063,7 @@ cd_util_write_tag_localized (CdIcc *icc,
 	/* delete tag if there is no data */
 	if (array->len == 0) {
 		cmsWriteTag (priv->lcms_profile, sig, NULL);
-#ifdef HAVE_LCMS_GET_HEADER_CREATOR
-		if (sig == cmsSigProfileDescriptionTag) {
-			cmsWriteTag (priv->lcms_profile,
-				     cmsSigProfileDescriptionMLTag,
-				     NULL);
-		}
-#endif
 		goto out;
-	}
-
-	/* v1 profiles cannot have a mluc type for cmsSigProfileDescriptionTag
-	 * so use the non-standard Apple extension cmsSigProfileDescriptionTagML
-	 * and only write a en_US version for the description */
-	if (sig == cmsSigProfileDescriptionTag) {
-		if (array->len > 1 && priv->version < 4.0) {
-
-			/* find the default en_US translation */
-			for (i = 0; i < array->len; i++) {
-				obj = g_ptr_array_index (array, i);
-				if (obj->language_code == NULL &&
-				    obj->country_code == NULL) {
-					break;
-				}
-			}
-
-			/* create MLU object which will be saved as ASCII */
-			mlu_v2 = cmsMLUalloc (NULL, 1);
-			ret = cmsMLUsetWide (mlu_v2, "en", "US", obj->wtext);
-			if (!ret) {
-				g_set_error_literal (error,
-						     CD_ICC_ERROR,
-						     CD_ICC_ERROR_FAILED_TO_SAVE,
-						     "cannot write MLU text");
-				goto out;
-			}
-
-			/* write tag */
-			ret = cmsWriteTag (priv->lcms_profile, sig, mlu_v2);
-			if (!ret) {
-				g_set_error (error,
-					     CD_ICC_ERROR,
-					     CD_ICC_ERROR_FAILED_TO_SAVE,
-					     "cannot write tag: 0x%x",
-					     sig);
-				goto out;
-			}
-
-			/* override */
-#ifdef HAVE_LCMS_GET_HEADER_CREATOR
-			sig = cmsSigProfileDescriptionMLTag;
-#else
-			ret = TRUE;
-			goto out;
-#endif
-		} else {
-#ifdef HAVE_LCMS_GET_HEADER_CREATOR
-			cmsWriteTag (priv->lcms_profile,
-				     cmsSigProfileDescriptionMLTag,
-				     NULL);
-#endif
-		}
 	}
 
 	/* create MLU object to hold all the translations */
@@ -1118,8 +1105,6 @@ out:
 	g_list_free (keys);
 	if (mlu != NULL)
 		cmsMLUfree (mlu);
-	if (mlu_v2 != NULL)
-		cmsMLUfree (mlu_v2);
 	return ret;
 }
 
@@ -1208,30 +1193,69 @@ cd_icc_save_file (CdIcc *icc,
 	}
 
 	/* save translations */
-	ret = cd_util_write_tag_localized (icc,
-					   cmsSigProfileDescriptionTag,
-					   priv->mluc_data[CD_MLUC_DESCRIPTION],
-					   error);
-	if (!ret)
-		goto out;
-	ret = cd_util_write_tag_localized (icc,
-					   cmsSigCopyrightTag,
-					   priv->mluc_data[CD_MLUC_COPYRIGHT],
-					   error);
-	if (!ret)
-		goto out;
-	ret = cd_util_write_tag_localized (icc,
-					   cmsSigDeviceMfgDescTag,
-					   priv->mluc_data[CD_MLUC_MANUFACTURER],
-					   error);
-	if (!ret)
-		goto out;
-	ret = cd_util_write_tag_localized (icc,
-					   cmsSigDeviceModelDescTag,
-					   priv->mluc_data[CD_MLUC_MODEL],
-					   error);
-	if (!ret)
-		goto out;
+	if (priv->version < 4.0) {
+		/* v2 profiles cannot have a mluc type for cmsSigProfileDescriptionTag
+		 * so use the non-standard Apple extension cmsSigProfileDescriptionTagML
+		 * and only write a en_US version for the description */
+		ret = cd_util_write_tag_ascii (icc,
+					       cmsSigProfileDescriptionTag,
+					       priv->mluc_data[CD_MLUC_DESCRIPTION],
+					       error);
+		if (!ret)
+			goto out;
+#ifdef HAVE_LCMS_GET_HEADER_CREATOR
+		ret = cd_util_write_tag_localized (icc,
+						   cmsSigProfileDescriptionMLTag,
+						   priv->mluc_data[CD_MLUC_DESCRIPTION],
+						   error);
+		if (!ret)
+			goto out;
+#endif
+		ret = cd_util_write_tag_ascii (icc,
+					       cmsSigCopyrightTag,
+					       priv->mluc_data[CD_MLUC_COPYRIGHT],
+					       error);
+		if (!ret)
+			goto out;
+		ret = cd_util_write_tag_ascii (icc,
+					       cmsSigDeviceMfgDescTag,
+					       priv->mluc_data[CD_MLUC_MANUFACTURER],
+					       error);
+		if (!ret)
+			goto out;
+		ret = cd_util_write_tag_ascii (icc,
+						   cmsSigDeviceModelDescTag,
+						   priv->mluc_data[CD_MLUC_MODEL],
+						   error);
+		if (!ret)
+			goto out;
+	} else {
+		/* v4 profiles can use mluc types for all fields */
+		ret = cd_util_write_tag_localized (icc,
+						   cmsSigProfileDescriptionTag,
+						   priv->mluc_data[CD_MLUC_DESCRIPTION],
+						   error);
+		if (!ret)
+			goto out;
+		ret = cd_util_write_tag_localized (icc,
+						   cmsSigCopyrightTag,
+						   priv->mluc_data[CD_MLUC_COPYRIGHT],
+						   error);
+		if (!ret)
+			goto out;
+		ret = cd_util_write_tag_localized (icc,
+						   cmsSigDeviceMfgDescTag,
+						   priv->mluc_data[CD_MLUC_MANUFACTURER],
+						   error);
+		if (!ret)
+			goto out;
+		ret = cd_util_write_tag_localized (icc,
+						   cmsSigDeviceModelDescTag,
+						   priv->mluc_data[CD_MLUC_MODEL],
+						   error);
+		if (!ret)
+			goto out;
+	}
 
 	/* write profile id */
 	ret = cmsMD5computeID (priv->lcms_profile);
