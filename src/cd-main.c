@@ -1637,11 +1637,16 @@ cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 
 	if (g_strcmp0 (property_name, "DaemonVersion") == 0) {
 		retval = g_variant_new_string (VERSION);
-	} else {
-		g_critical ("failed to get property %s",
-			    property_name);
+		goto out;
 	}
 
+	/* return an error */
+	g_set_error (error,
+		     CD_CLIENT_ERROR,
+		     CD_CLIENT_ERROR_INTERNAL,
+		     "failed to get daemon property %s",
+		     property_name);
+out:
 	return retval;
 }
 

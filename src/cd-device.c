@@ -1651,7 +1651,12 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
-	g_critical ("failed to get property %s", property_name);
+	/* return an error */
+	g_set_error (error,
+		     CD_DEVICE_ERROR,
+		     CD_DEVICE_ERROR_INTERNAL,
+		     "failed to get device property %s",
+		     property_name);
 out:
 	g_strfreev (bus_names);
 	return retval;

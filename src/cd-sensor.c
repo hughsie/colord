@@ -1096,7 +1096,12 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 
-	g_critical ("failed to get property %s", property_name);
+	/* return an error */
+	g_set_error (error,
+		     CD_SENSOR_ERROR,
+		     CD_SENSOR_ERROR_INTERNAL,
+		     "failed to get sensor property %s",
+		     property_name);
 out:
 	return retval;
 }
