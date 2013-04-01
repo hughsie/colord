@@ -2,7 +2,7 @@
 
 # Building the extra print profiles requires colprof, +4Gb of RAM and
 # quite a lot of time. Don't enable this for test builds.
-%define enable_print_profiles 0
+%define enable_print_profiles 1
 
 # SANE is pretty insane when it comes to handling devices, and we get AVCs
 # popping up all over the place.
