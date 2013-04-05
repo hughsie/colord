@@ -219,6 +219,8 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_icccolordir}/colord/FOGRA29L_uncoated.icc
 %{_icccolordir}/colord/FOGRA30L_uncoated_yellowish.icc
 %{_icccolordir}/colord/FOGRA40L_SC_paper.icc
+%{_icccolordir}/colord/FOGRA45L_lwc.icc
+%{_icccolordir}/colord/FOGRA47L_uncoated.icc
 %{_icccolordir}/colord/GRACoL*.icc
 %{_icccolordir}/colord/ISOnewspaper26.icc
 %{_icccolordir}/colord/SNAP*.icc

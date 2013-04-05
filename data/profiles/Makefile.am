@@ -21,6 +21,8 @@ noinst_DATA =					\
 	FOGRA30L_uncoated_yellowish.xml		\
 	FOGRA39L_coated.xml			\
 	FOGRA40L_SC_paper.xml			\
+	FOGRA45L_lwc.xml			\
+	FOGRA47L_uncoated.xml			\
 	Gamma5000K.xml				\
 	Gamma5500K.xml				\
 	Gamma6500K.xml				\
@@ -73,6 +75,8 @@ generatedprofiles +=					\
 	FOGRA30L_uncoated_yellowish.icc			\
 	FOGRA39L_coated.icc				\
 	FOGRA40L_SC_paper.icc				\
+	FOGRA45L_lwc.icc				\
+	FOGRA47L_uncoated.icc				\
 	GRACoL_TR006_coated.icc				\
 	SNAP_TR002_newsprint.icc			\
 	SWOP_TR003_coated_3.icc				\
@@ -235,6 +239,16 @@ FOGRA40L_SC_paper.icc: FOGRA40L_SC_paper.xml
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
 		$(builddir)/FOGRA40L_SC_paper.xml
+FOGRA45L_lwc.icc: FOGRA45L_lwc.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/FOGRA45L_lwc.xml
+FOGRA47L_uncoated.icc: FOGRA47L_uncoated.xml
+	$(AM_V_GEN)					\
+	$(top_builddir)/client/cd-create-profile	\
+		--output $@				\
+		$(builddir)/FOGRA47L_uncoated.xml
 GRACoL_TR006_coated.icc: GRACoL_TR006_coated.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
@@ -282,6 +296,8 @@ sourcedata =						\
 	FOGRA30L_uncoated_yellowish.xml.in		\
 	FOGRA39L_coated.xml.in				\
 	FOGRA40L_SC_paper.xml.in			\
+	FOGRA45L_lwc.xml.in				\
+	FOGRA47L_uncoated.xml.in			\
 	Gamma5000K.xml.in				\
 	Gamma5500K.xml.in				\
 	Gamma6500K.xml.in				\

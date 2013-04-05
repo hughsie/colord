@@ -22,6 +22,8 @@ data/profiles/FOGRA29L_uncoated.xml.in
 data/profiles/FOGRA30L_uncoated_yellowish.xml.in
 data/profiles/FOGRA39L_coated.xml.in
 data/profiles/FOGRA40L_SC_paper.xml.in
+data/profiles/FOGRA45L_lwc.xml.in
+data/profiles/FOGRA47L_uncoated.xml.in
 data/profiles/Gamma5000K.xml.in
 data/profiles/Gamma5500K.xml.in
 data/profiles/Gamma6500K.xml.in
