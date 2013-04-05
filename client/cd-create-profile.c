@@ -100,6 +100,7 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	const GNode *node_stpo;
 	const GNode *tmp;
 	gboolean ret = FALSE;
+	gchar *cmdline = NULL;
 	gchar *debug_stdout = NULL;
 	gchar *debug_stderr = NULL;
 	gchar *data = NULL;
@@ -250,6 +251,16 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	if (!ret)
 		goto out;
 
+	/* failed */
+	if (exit_status != 0) {
+		ret = FALSE;
+		cmdline = g_strjoinv (" ", (gchar **) argv->pdata);
+		g_set_error (error, 1, 0,
+			     "Failed to generate %s using '%s'\nOutput: %s\nError:\t%s",
+			     output_fn, cmdline, debug_stdout, debug_stderr);
+		goto out;
+	}
+
 	/* load resulting .icc file */
 	ret = g_file_load_contents (output_file, NULL, &data, &len, NULL, error);
 	if (!ret)
@@ -260,8 +271,8 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	if (priv->lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error (error, 1, 0,
-			     "Failed to open generated %s, output was: %s [%s]",
-			     output_fn, debug_stdout, debug_stderr);
+			     "Failed to open generated %s",
+			     output_fn);
 		goto out;
 	}
 
@@ -280,6 +291,7 @@ out:
 	g_free (debug_stdout);
 	g_free (debug_stderr);
 	g_free (data);
+	g_free (cmdline);
 	g_free (output_fn);
 	if (argv != NULL)
 		g_ptr_array_unref (argv);
