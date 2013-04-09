@@ -188,9 +188,10 @@ cd_it8_parse_luminance (const gchar *text, CdColorXYZ *xyz, GError **error)
 			     text);
 		goto out;
 	}
-	xyz->X = atof (split[0]);
-	xyz->Y = atof (split[1]);
-	xyz->Z = atof (split[2]);
+
+	xyz->X = g_ascii_strtod (split[0], NULL);
+	xyz->Y = g_ascii_strtod (split[1], NULL);
+	xyz->Z = g_ascii_strtod (split[2], NULL);
 out:
 	g_strfreev (split);
 	return ret;
