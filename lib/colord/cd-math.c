@@ -358,7 +358,7 @@ cd_mat33_matrix_multiply (const CdMat3x3 *mat_src1, const CdMat3x3 *mat_src2, Cd
 	cd_mat33_clear (mat_dest);
 	for (i = 0; i < 3; i++) {
 		for (j = 0; j < 3; j++) {
-			for (k=0; k<3; k++) {
+			for (k = 0; k < 3; k++) {
 				dest[3 * i + j] += src1[i * 3 + k] * src2[k * 3 + j];
 			}
 		}
