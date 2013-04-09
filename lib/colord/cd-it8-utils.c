@@ -29,6 +29,7 @@
 #include "config.h"
 
 #include <glib-object.h>
+#include <math.h>
 
 #include "cd-color.h"
 #include "cd-it8-utils.h"
@@ -193,10 +194,12 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	CdMat3x3 m_rgb;
 	CdMat3x3 m_rgb_inv;
 	CdMat3x3 n_rgb;
+	const gdouble *data;
 	gboolean ret;
 	gchar *tmp = NULL;
 	gdouble m_lumi = 0.0f;
 	gdouble n_lumi = 0.0f;
+	guint i;
 
 	/* read reference matrix */
 	ret = ch_it8_utils_4color_decompose (it8_reference, &n_rgb, &n_lumi, error);
@@ -227,6 +230,17 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 				  &calibration);
 	tmp = cd_mat33_to_string (&calibration);
 	g_debug ("device calibration = %s", tmp);
+
+	/* check there are no nan's or inf's */
+	data = cd_mat33_get_data (&calibration);
+	for (i = 0; i < 9; i++) {
+		if (fpclassify (data[i]) != FP_NORMAL) {
+			ret = FALSE;
+			g_set_error (error, 1, 0,
+				     "Matrix value %i non-normal: %f", i, data[i]);
+			goto out;
+		}
+	}
 
 	/* save to ccmx file */
 	cd_it8_set_matrix (it8_ccmx, &calibration);
