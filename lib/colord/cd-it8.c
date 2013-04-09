@@ -799,7 +799,7 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 				      it8->priv->instrument);
 	}
 
-	/* just load the matrix */
+	/* just save the matrix */
 	cmsIT8SetDataRowColDbl (it8_lcms, 0, 0, it8->priv->matrix.m00);
 	cmsIT8SetDataRowColDbl (it8_lcms, 0, 1, it8->priv->matrix.m01);
 	cmsIT8SetDataRowColDbl (it8_lcms, 0, 2, it8->priv->matrix.m02);

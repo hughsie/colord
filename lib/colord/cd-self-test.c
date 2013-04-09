@@ -45,6 +45,7 @@
 #include "cd-interp-linear.h"
 #include "cd-interp.h"
 #include "cd-it8.h"
+#include "cd-it8-utils.h"
 #include "cd-math.h"
 #include "cd-profile.h"
 #include "cd-profile-sync.h"
@@ -243,6 +244,46 @@ colord_it8_normalized_func (void)
 	g_object_unref (it8);
 	g_object_unref (file);
 	g_object_unref (file_new);
+}
+
+static void
+colord_it8_ccmx_util_func (void)
+{
+	CdIt8 *ccmx;
+	CdIt8 *meas;
+	CdIt8 *ref;
+	gboolean ret;
+	gchar *filename;
+	GError *error = NULL;
+	GFile *file;
+
+	/* load reference */
+	filename = _g_test_realpath (TESTDATADIR "/reference.ti3");
+	file = g_file_new_for_path (filename);
+	ref = cd_it8_new ();
+	ret = cd_it8_load_from_file (ref, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+
+	/* load measured */
+	filename = _g_test_realpath (TESTDATADIR "/measured.ti3");
+	file = g_file_new_for_path (filename);
+	meas = cd_it8_new ();
+	ret = cd_it8_load_from_file (meas, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+
+	/* calculate CCMX */
+	ccmx = cd_it8_new_with_kind (CD_IT8_KIND_CCMX);
+	ret = cd_it8_utils_calculate_ccmx (ref, meas, ccmx, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_object_unref (ref);
+	g_object_unref (meas);
+	g_object_unref (ccmx);
 }
 
 static void
@@ -3566,6 +3607,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/it8{raw}", colord_it8_raw_func);
 	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);
 	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
+	g_test_add_func ("/colord/it8{ccmx-util", colord_it8_ccmx_util_func);
 	g_test_add_func ("/colord/client", colord_client_func);
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/device{embedded}", colord_device_embedded_func);
