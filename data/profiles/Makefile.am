@@ -27,7 +27,7 @@ noinst_DATA =					\
 	Gamma5500K.xml				\
 	Gamma6500K.xml				\
 	GRACoL_TR006_coated.xml			\
-	ISOnewspaper26.xml			\
+	IFRA26S_2004_newsprint.xml			\
 	NTSC-RGB.xml				\
 	PAL-RGB.xml				\
 	ProPhotoRGB.xml				\
@@ -81,7 +81,7 @@ generatedprofiles +=					\
 	SNAP_TR002_newsprint.icc			\
 	SWOP_TR003_coated_3.icc				\
 	SWOP_TR005_coated_5.icc				\
-	ISOnewspaper26.icc
+	IFRA26S_2004_newsprint.icc
 endif
 
 profiles_DATA =						\
@@ -269,11 +269,11 @@ SWOP_TR005_coated_5.icc: SWOP_TR005_coated_5.xml
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
 		$(builddir)/SWOP_TR005_coated_5.xml
-ISOnewspaper26.icc: ISOnewspaper26.xml
+IFRA26S_2004_newsprint.icc: IFRA26S_2004_newsprint.xml
 	$(AM_V_GEN)					\
 	$(top_builddir)/client/cd-create-profile	\
 		--output $@				\
-		$(builddir)/ISOnewspaper26.xml
+		$(builddir)/IFRA26S_2004_newsprint.xml
 endif
 
 sourcedata =						\
@@ -302,7 +302,7 @@ sourcedata =						\
 	Gamma5500K.xml.in				\
 	Gamma6500K.xml.in				\
 	GRACoL_TR006_coated.xml.in			\
-	ISOnewspaper26.xml.in				\
+	IFRA26S_2004_newsprint.xml.in			\
 	NTSC-RGB.xml.in					\
 	PAL-RGB.xml.in					\
 	ProPhotoRGB.xml.in				\

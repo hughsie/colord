@@ -28,7 +28,7 @@ data/profiles/Gamma5000K.xml.in
 data/profiles/Gamma5500K.xml.in
 data/profiles/Gamma6500K.xml.in
 data/profiles/GRACoL_TR006_coated.xml.in
-data/profiles/ISOnewspaper26.xml.in
+data/profiles/IFRA26S_2004_newsprint.xml.in
 data/profiles/NTSC-RGB.xml.in
 data/profiles/PAL-RGB.xml.in
 data/profiles/ProPhotoRGB.xml.in

@@ -2,7 +2,7 @@
 
 # Building the extra print profiles requires colprof, +4Gb of RAM and
 # quite a lot of time. Don't enable this for test builds.
-%define enable_print_profiles 1
+%define enable_print_profiles 0
 
 # SANE is pretty insane when it comes to handling devices, and we get AVCs
 # popping up all over the place.
@@ -222,7 +222,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_icccolordir}/colord/FOGRA45L_lwc.icc
 %{_icccolordir}/colord/FOGRA47L_uncoated.icc
 %{_icccolordir}/colord/GRACoL*.icc
-%{_icccolordir}/colord/ISOnewspaper26.icc
+%{_icccolordir}/colord/IFRA26S_2004_newsprint.icc
 %{_icccolordir}/colord/SNAP*.icc
 %{_icccolordir}/colord/SWOP*.icc
 %endif
