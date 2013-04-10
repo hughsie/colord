@@ -2,6 +2,11 @@
 <profile>
  <_description>FOGRA47L Uncoated</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: gsm stands for "grams per square meter" -->
+ <_model>
+  This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated
+  white (paper type 4) for 60 l/cm sheetfed offset printing.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>fogra47l</data_source>

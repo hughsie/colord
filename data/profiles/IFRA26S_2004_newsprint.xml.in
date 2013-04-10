@@ -2,6 +2,15 @@
 <profile>
  <_description>IFRA26S 2004 Newsprint</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!--
+  TRANSLATORS: TVI stands for 'tone value increase' and is another name for
+  dot gain, coldset means letting the ink dry without heating it
+ -->
+ <_model>
+  This profile is use for printing on newsprint, and is an ISO12647-3:2005
+  compliant profile designed for a printing press exhibiting 26% TVI (dot gain).
+  It is recommended by WAN-IFRA for coldset printing on newsprint worldwide.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>ifra26</data_source>

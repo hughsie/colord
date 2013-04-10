@@ -2,6 +2,12 @@
 <profile>
  <_description>FOGRA27L Coated</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: positive as in not a negative image of what's printed -->
+ <_model>
+  This profile is used for positive plate making, printing on paper types 1 and
+  2 (coated or matte), sheetfed offset.
+  This profile set should no longer be used for production, use FOGRA39L instead.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>fogra27l</data_source>

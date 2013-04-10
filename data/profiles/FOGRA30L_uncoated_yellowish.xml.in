@@ -2,6 +2,11 @@
 <profile>
  <_description>FOGRA30L Uncoated Yellowish</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: uncoated means "without expensive glossy coating" -->
+ <_model>
+  This profile is used for positive plate making, printing on paper type 5
+  (uncoated yellowish), sheetfed offset.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>fogra30l</data_source>

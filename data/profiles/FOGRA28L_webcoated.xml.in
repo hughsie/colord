@@ -2,6 +2,15 @@
 <profile>
  <_description>FOGRA28L Web Coated</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!--
+  TRANSLATORS: paper grade 3 is just a description meaning "not very white",
+  LCW stands for Light Weight Coated
+ -->
+ <_model>
+  This profile is used for positive plate making, printing on paper type 3 (LWC),
+  webfed offset.
+  This profile should no longer be used for production, use FOGRA45 instead.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>fogra28l</data_source>

@@ -2,6 +2,11 @@
 <profile>
  <_description>GRACoL TR006 Coated</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: coated = smooth and expensive -->
+ <_model>
+  This profile is used for printing on U.S. grade 1 and 2 coated paper,
+  sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>tr006</data_source>

@@ -2,6 +2,12 @@
 <profile>
  <_description>FOGRA45L Lightweight Coated</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: ISO is a trademark -->
+ <_model>
+  This ISO 12647-2:2004 compliant profile is used for printing on improved
+  light-weight coated (LWC) paper for 60 l/cm heatset web offset printing.
+  It replaces FOGRA28L.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>fogra45l</data_source>

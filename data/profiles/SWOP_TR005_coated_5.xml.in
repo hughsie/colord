@@ -2,6 +2,12 @@
 <profile>
  <_description>SWOP TR005 Coated</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: FOGRA is a trademark -->
+ <_model>
+  This profile is used for printing on U.S. grade 5 coated paper, sheetfed
+  offset and gravure.
+  It is use for standard magazine printing with yellowish paper.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>tr005</data_source>

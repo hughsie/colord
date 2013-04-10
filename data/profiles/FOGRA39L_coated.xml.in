@@ -2,6 +2,15 @@
 <profile>
  <_description>FOGRA39L Coated</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!--
+  TRANSLATORS: coated refers to the high quality paper covering making the paper
+  better quality, GRACoL is also a trademark don't translate please
+  -->
+ <_model>
+  This profile is used for printing on paper types 1 and 2 (coated or matte),
+  sheetfed offset.
+  This profile is not significantly different from U.S. GRACoL 2006 (TR 006).
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>fogra39l</data_source>

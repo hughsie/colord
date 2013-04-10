@@ -2,6 +2,12 @@
 <profile>
  <_description>SNAP TR002 Newsprint</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: CGATS is a trademark -->
+ <_model>
+  This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on newsprint
+  in the U.S., coldset offset.
+  The TVI (dot gain) is 26%.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>tr002</data_source>

@@ -2,6 +2,11 @@
 <profile>
  <_description>FOGRA40L SC Paper</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: supercalendered means "super smoothed and thin" -->
+ <_model>
+  This profile is used for printing on SC (supercalendered) paper, webfed offset.
+  There is no known U.S. equivalent.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>fogra40l</data_source>

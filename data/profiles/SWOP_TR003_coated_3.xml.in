@@ -2,6 +2,12 @@
 <profile>
  <_description>SWOP TR003 Coated</_description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!-- TRANSLATORS: FOGRA is a trademark -->
+ <_model>
+  This profile is used for printing on U.S. grade 3 coated paper, sheetfed
+  offset and gravure.
+  It is used for high quality magazine printing with white paper.
+ </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
  <data_source>tr003</data_source>
