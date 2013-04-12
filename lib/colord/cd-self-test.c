@@ -24,6 +24,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <math.h>
+#include <locale.h>
 
 #include <string.h>
 #include <glib.h>
@@ -185,6 +186,48 @@ colord_it8_raw_func (void)
 	g_object_unref (it8);
 	g_object_unref (file);
 	g_object_unref (file_new);
+}
+
+static void
+colord_it8_locale_func (void)
+{
+	CdIt8 *ccmx;
+	CdMat3x3 mat;
+	const gchar *orig_locale;
+	gboolean ret;
+	gchar *data;
+	GError *error = NULL;
+
+	/* set to a locale with ',' as the decimal point */
+	orig_locale = setlocale (LC_NUMERIC, NULL);
+	setlocale (LC_NUMERIC, "nl_BE.UTF-8");
+
+	ccmx = cd_it8_new_with_kind (CD_IT8_KIND_CCMX);
+	cd_mat33_clear (&mat);
+	mat.m00 = 1.234;
+	cd_it8_set_matrix (ccmx, &mat);
+	cd_it8_set_enable_created (ccmx, FALSE);
+	ret = cd_it8_save_to_data (ccmx, &data, NULL, &error);
+
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert_cmpstr (data, ==, "CCMX   \n"
+				   "DESCRIPTOR	\"Device Correction Matrix\"\n"
+				   "COLOR_REP	\"XYZ\"\n"
+				   "NUMBER_OF_FIELDS	3\n"
+				   "NUMBER_OF_SETS	3\n"
+				   "BEGIN_DATA_FORMAT\n"
+				   " XYZ_X	XYZ_Y	XYZ_Z\n"
+				   "END_DATA_FORMAT\n"
+				   "BEGIN_DATA\n"
+				   " 1.234	0	0\n"
+				   " 0	0	0\n"
+				   " 0	0	0\n"
+				   "END_DATA\n");
+	setlocale (LC_NUMERIC, orig_locale);
+
+	g_free (data);
+	g_object_unref (ccmx);
 }
 
 static void
@@ -3605,6 +3648,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/color{interpolate}", colord_color_interpolate_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);
 	g_test_add_func ("/colord/it8{raw}", colord_it8_raw_func);
+	g_test_add_func ("/colord/it8{locale}", colord_it8_locale_func);
 	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);
 	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
 	g_test_add_func ("/colord/it8{ccmx-util", colord_it8_ccmx_util_func);
