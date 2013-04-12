@@ -128,6 +128,8 @@ void		 cd_it8_set_instrument		(CdIt8		*it8,
 						 const gchar	*instrument);
 void		 cd_it8_set_reference		(CdIt8		*it8,
 						 const gchar	*reference);
+void		 cd_it8_set_enable_created	(CdIt8		*it8,
+						 gboolean	 enable_created);
 void		 cd_it8_add_data		(CdIt8		*it8,
 						 const CdColorRGB *rgb,
 						 const CdColorXYZ *xyz);
@@ -145,6 +147,7 @@ const gchar	*cd_it8_get_title		(CdIt8		*it8);
 gboolean	 cd_it8_get_spectral		(CdIt8		*it8);
 const gchar	*cd_it8_get_instrument		(CdIt8		*it8);
 const gchar	*cd_it8_get_reference		(CdIt8		*it8);
+gboolean	 cd_it8_get_enable_created	(CdIt8		*it8);
 guint		 cd_it8_get_data_size		(CdIt8		*it8);
 gboolean	 cd_it8_get_data_item		(CdIt8		*it8,
 						 guint		 idx,

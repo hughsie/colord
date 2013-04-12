@@ -53,6 +53,7 @@ struct _CdIt8Private
 	CdMat3x3		 matrix;
 	gboolean		 normalized;
 	gboolean		 spectral;
+	gboolean		 enable_created;
 	gchar			*instrument;
 	gchar			*reference;
 	gchar			*originator;
@@ -263,6 +264,24 @@ cd_it8_get_reference (CdIt8 *it8)
 {
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
 	return it8->priv->reference;
+}
+
+/**
+ * cd_it8_get_enable_created:
+ * @it8: a #CdIt8 instance.
+ *
+ * Gets if the 'CREATED' attribute will be written. This is typically only
+ * set in the self test programs.
+ *
+ * Return value: The reference, or %NULL if unset
+ *
+ * Since: 0.1.33
+ **/
+gboolean
+cd_it8_get_enable_created (CdIt8 *it8)
+{
+	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
+	return it8->priv->enable_created;
 }
 
 /**
@@ -837,7 +856,7 @@ cd_it8_save_to_data (CdIt8 *it8,
 	gboolean ret;
 	gchar *data_tmp = NULL;
 	gchar *date_str = NULL;
-	GDateTime *datetime;
+	GDateTime *datetime = NULL;
 	gsize size_tmp = 0;
 	guint i;
 
@@ -860,9 +879,11 @@ cd_it8_save_to_data (CdIt8 *it8,
 
 	/* set time and date in crazy ArgllCMS format, e.g.
 	 * 'Wed Dec 19 18:47:57 2012' */
-	datetime = g_date_time_new_now_local ();
-	date_str = g_date_time_format (datetime, "%a %b %d %H:%M:%S %Y");
-	cmsIT8SetPropertyStr (it8_lcms, "CREATED", date_str);
+	if (it8->priv->enable_created) {
+		datetime = g_date_time_new_now_local ();
+		date_str = g_date_time_format (datetime, "%a %b %d %H:%M:%S %Y");
+		cmsIT8SetPropertyStr (it8_lcms, "CREATED", date_str);
+	}
 
 	/* set ti1 and ti3 specific data */
 	if (it8->priv->kind == CD_IT8_KIND_TI1 ||
@@ -903,7 +924,8 @@ cd_it8_save_to_data (CdIt8 *it8,
 out:
 	if (it8_lcms != NULL)
 		cmsIT8Free (it8_lcms);
-	g_date_time_unref (datetime);
+	if (datetime != NULL)
+		g_date_time_unref (datetime);
 	g_free (data_tmp);
 	g_free (date_str);
 	return ret;
@@ -1065,6 +1087,24 @@ cd_it8_set_reference (CdIt8 *it8, const gchar *reference)
 
 	g_free (it8->priv->reference);
 	it8->priv->reference = g_strdup (reference);
+}
+
+/**
+ * cd_it8_set_enable_created:
+ * @it8: a #CdIt8 instance.
+ * @enable_created: Is 'CREATED' should be written
+ *
+ * Sets if the 'CREATED' attribute should be written. This is mainly useful
+ * in the self test programs where we want to string compare the output data
+ * with a known reference.
+ *
+ * Since: 0.1.33
+ **/
+void
+cd_it8_set_enable_created (CdIt8 *it8, gboolean enable_created)
+{
+	g_return_if_fail (CD_IS_IT8 (it8));
+	it8->priv->enable_created = enable_created;
 }
 
 /**
@@ -1342,6 +1382,7 @@ cd_it8_init (CdIt8 *it8)
 	it8->priv->array_rgb = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
 	it8->priv->array_xyz = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_xyz_free);
 	it8->priv->options = g_ptr_array_new_with_free_func (g_free);
+	it8->priv->enable_created = TRUE;
 
 	/* ensure the remote errors are registered */
 	cd_it8_error_quark ();
