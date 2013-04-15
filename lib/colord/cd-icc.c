@@ -1027,6 +1027,17 @@ out:
 }
 
 /**
+ * cd_util_sort_mlu_array_cb:
+ **/
+static gint
+cd_util_sort_mlu_array_cb (gconstpointer a, gconstpointer b)
+{
+	CdMluObject *sa = *((CdMluObject **) a);
+	CdMluObject *sb = *((CdMluObject **) b);
+	return g_strcmp0 (sa->language_code, sb->language_code);
+}
+
+/**
  * cd_util_write_tag_localized:
  **/
 static gboolean
@@ -1066,6 +1077,9 @@ cd_util_write_tag_localized (CdIcc *icc,
 		cmsWriteTag (priv->lcms_profile, sig, NULL);
 		goto out;
 	}
+
+	/* sort the data so we always write the default first */
+	g_ptr_array_sort (array, cd_util_sort_mlu_array_cb);
 
 	/* create MLU object to hold all the translations */
 	mlu = cmsMLUalloc (NULL, array->len);
