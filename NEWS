@@ -1,3 +1,30 @@
+Version 0.1.33
+~~~~~~~~~~~~~~
+Released: 2013-04-16
+
+Notes:
+ - This release is is designed for stable distros. There are quite a few nice
+   bugfixes and also quite a few new translations for all the generated profiles.
+
+New Features:
+ - Add some profile descriptions for the CMYK profiles (Richard Hughes)
+ - Add the FOGRA45L and FOGRA47L CMYK profiles (Richard Hughes)
+ - Include the eciRGBv1 gamma 1.8 profile (Richard Hughes)
+ - libcolord: Add cd_it8_set_enable_created (Richard Hughes)
+ - libcolord: Add helpers for int and double values from the DOM (Richard Hughes)
+
+Bugfixes:
+ - Add ifdef for cmsGetToneCurveEstimatedTableEntries (Richard Hughes)
+ - Build the print profiles from XML descriptions (Richard Hughes)
+ - Check the generated CCMX matrix for invalid data (Richard Hughes)
+ - Do not print a warning if the DBus property does not exist (Richard Hughes)
+ - Ensure mbstowcs() has an LC_CTYPE of 'en_US.UTF-8' (Richard Hughes)
+ - libcolord: Always write C-locale floating point values in IT8 files (Richard Hughes)
+ - libcolord: Initialize the value of the CCMX matrix (Richard Hughes)
+ - libcolord: Return the correct result from cd_mat33_matrix_multiply (Richard Hughes)
+ - Never promote localized v2 ICC profiles to v4 (Richard Hughes)
+ - Rename ISOnewspaper26 to IFRA26S_2004_newsprint (Richard Hughes)
+
 Version 0.1.32
 ~~~~~~~~~~~~~~
 Released: 2013-03-28
