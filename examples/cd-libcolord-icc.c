@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <colord.h>
+#include <locale.h>
 
 int
 main (int argc, char *argv[])
@@ -38,6 +39,8 @@ main (int argc, char *argv[])
 		g_warning ("usage: cd-libcolord-icc.c filename, e.g. /usr/share/color/icc/colord/sRGB.icc");
 		goto out;
 	}
+
+	setlocale (LC_ALL, "");
 
 	g_type_init ();
 
