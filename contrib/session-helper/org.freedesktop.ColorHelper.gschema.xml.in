@@ -17,5 +17,13 @@
         Common values are 6500 for D65 and 5000 for D50.
       </_description>
     </key>
+    <key name="profile-upload-uri" type="s">
+      <default>'http://www.hughski.com/profile-store.php'</default>
+      <_summary>Web service profile upload URI</_summary>
+      <_description>
+        The URI of the web service that allows the calibration tools to upload a
+        specific profile to the Internet.
+      </_description>
+    </key>
   </schema>
 </schemalist>
