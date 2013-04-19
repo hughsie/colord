@@ -69,33 +69,13 @@ It is <a href="http://lists.freedesktop.org/archives/openicc/2010q2/002167.html"
 <code>/usr/lib/color</code> directory.
 </p>
 
-<h1>GNOME Color Manager</h1>
-
-<p>
-GNOME Color Manager is a session framework that makes it easy to manage, install and generate color profiles in the GNOME desktop.
-</p>
-<ul>
-<li>Deep integration into GNOME and GTK+.</li>
-<li>Official inclusion as core module since GNOME 2.32.</li>
-<li>36 official translations.</li>
-<li>Shipped by all of the big distributions already.</li>
-<li>Allows per-user and per-system configuration and defaults.</li>
-<li>Supports the ICC Profiles in X specification.</li>
-<li>Uses <a href="http://www.argyllcms.com/">ArgyllCMS</a>, so huge number of calibration devices supported.</li>
-<li>Supports the Huey device as a native device which does not use the ArgyllCMS driver</li>
-<li>GPLv2+ licence which makes it Free Software.</li>
-<li>Provides a simple to use cross-platform <a href="http://git.gnome.org/browse/gnome-color-manager/plain/src/org.gnome.ColorManager.xml">D-Bus interface</a> for applications to use.</li>
-<li>Used by <a href="https://launchpad.net/simple-scan">simple scan</a> for calibration data.</li>
-<li>Used by gnome-screenshot for the window ICC profile.</li>
-</ul>
-<p>
-GNOME Color Manager is a ''thin solution'' where it defers to the application the pixbuf transforming (using something like <a href="http://www.littlecms.com/">lcms</a>, or <a href="http://cairographics.org/">cairo</a>) and only providing a <a href="http://projects.gnome.org/gnome-color-manager/screenshots.html">simple UI</a> and minimalist D-Bus interface for interested applications to query.
-</p>
-
 <h2>What the binaries do</h2>
 
 <p>
-GCM ships quite a few data files and binary files. Most users will interact with ICC files by double clicking on them, and with color management using ''System Settings->Color''. It's not expected that users should need to run any command line programs at all.
+colord ships quite a few data files and binary files.
+Most users will interact with ICC files by double clicking on them, and with
+color management using 'System Settings->Color'.
+It's not expected that users should need to run any command line programs at all.
 </p>
 
 <h1>General points:</h1>
@@ -112,7 +92,6 @@ It's a cliché, but KDE users do want options, and GNOME users do want
 things to 'just work'.
 You can't design a library, or even an application for those different
 user types.
-This is why I developed <b>GNOME</b> Color Manager, not ColorManager.
 </p>
 <p>
 I do think the concept of a <i>monolithic CMS</i> is flawed.
@@ -120,16 +99,14 @@ Color management has to be integral to the stack, so Xorg, GTK, Cairo,
 etc. all have to play their part.
 You can't really push a monolithic library when you need to interface
 with so many parts of the stack.
-I see GCM as a the cherry on colord, with all the heavy lifting being
-done by cairo, lcms and <a href="http://www.argyllcms.com/">ArgyllCMS</a>.
-GCM just provides the configuration widgets in the session and makes the
-data available to applications.
+I see all the heavy lifting being done by cairo, lcms and
+<a href="http://www.argyllcms.com/">ArgyllCMS</a>.
 </p>
 
 <p>Back to the <a href="index.html">main page</a></p>
 
 <p class="footer">
- Copyright <a href="mailto:richard@hughsie.com">Richard Hughes 2011</a><br/>
+ Copyright <a href="mailto:richard@hughsie.com">Richard Hughes 2011 - 2013</a><br/>
  <a href="http://validator.w3.org/check/referer">Optimized</a>
  for <a href="http://www.w3.org/">standards</a>.
 </p>
