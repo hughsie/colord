@@ -276,6 +276,8 @@ cd_main_auto_add_from_md (CdMainPrivate *priv,
 {
 	const gchar *device_id;
 	const gchar *profile_id;
+	const gchar *tmp;
+	const gchar **warnings;
 	gboolean ret = FALSE;
 	GError *error = NULL;
 	guint64 timestamp;
@@ -295,6 +297,17 @@ cd_main_auto_add_from_md (CdMainPrivate *priv,
 		g_debug ("CdMain: Not doing MD add %s to %s due to removal",
 			 profile_id, device_id);
 		goto out;
+	}
+
+	/* if the auto-EDID profile has warnings then do not add this */
+	tmp = cd_profile_get_metadata_item (profile, CD_PROFILE_METADATA_DATA_SOURCE);
+	if (g_strcmp0 (tmp, CD_PROFILE_METADATA_DATA_SOURCE_EDID) == 0) {
+		warnings = cd_profile_get_warnings (profile);
+		if (g_strv_length ((gchar **) warnings) > 0) {
+			g_debug ("CdMain: NOT MD add %s to %s as profile has warnings",
+				 profile_id, device_id);
+			goto out;
+		}
 	}
 
 	/* auto-add soft relationship */
