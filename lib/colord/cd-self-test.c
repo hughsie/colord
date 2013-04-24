@@ -3363,6 +3363,7 @@ colord_icc_func (void)
 	CdIcc *icc;
 	const CdColorXYZ *xyz_tmp;
 	const gchar *str;
+	GArray *warnings;
 	gboolean ret;
 	gchar *created_str;
 	gchar *filename;
@@ -3435,6 +3436,11 @@ colord_icc_func (void)
 	g_assert_cmpint (g_hash_table_size (metadata), ==, 1);
 	g_hash_table_unref (metadata);
 	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "EDID_md5"), ==, "f09e42aa86585d1bb6687d3c322ed0c1");
+
+	/* check warnings */
+	warnings = cd_icc_get_warnings (icc);
+	g_assert_cmpint (warnings->len, ==, 0);
+	g_array_unref (warnings);
 
 	/* marshall to a string */
 	tmp = cd_icc_to_string (icc);

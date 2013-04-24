@@ -217,6 +217,7 @@ const CdColorXYZ *cd_icc_get_green			(CdIcc		*icc);
 const CdColorXYZ *cd_icc_get_blue			(CdIcc		*icc);
 const CdColorXYZ *cd_icc_get_white			(CdIcc		*icc);
 guint		 cd_icc_get_temperature			(CdIcc		*icc);
+GArray		*cd_icc_get_warnings			(CdIcc		*icc);
 gboolean	 cd_icc_create_from_edid		(CdIcc		*icc,
 							 gdouble	 gamma_value,
 							 const CdColorYxy *red,
