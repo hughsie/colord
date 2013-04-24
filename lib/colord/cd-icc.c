@@ -2838,7 +2838,7 @@ out:
  *
  * Returns any warnings with profiles
  *
- * Return value: Array of %CdProfileWarning enum values
+ * Return value: (transfer container) (element-type CdProfileWarning): An array of warning values
  *
  * Since: 0.1.34
  **/
