@@ -157,6 +157,16 @@ if test x$enable_gudev != xno; then
 fi
 AM_CONDITIONAL(HAVE_GUDEV, test x$enable_gudev = xyes)
 
+dnl **** Bash completion ****
+AC_ARG_ENABLE(bash_completion, AS_HELP_STRING([--enable-bash-completion],[Enable bash completion]),
+	      enable_bash_completion=$enableval, enable_bash_completion=yes)
+if test x$enable_bash_completion != xno; then
+	PKG_CHECK_MODULES([BASH_COMPLETION], [bash-completion >= 2.0])
+	BASH_COMPLETIONS_DIR="`pkg-config --variable=completionsdir bash-completion`"
+	AC_SUBST([BASH_COMPLETIONS_DIR])
+fi
+AM_CONDITIONAL([HAVE_BASH_COMPLETION],[test "x$enable_bash_completion" = "xyes"])
+
 dnl ---------------------------------------------------------------------------
 dnl - Is docbook2man available?
 dnl ---------------------------------------------------------------------------
@@ -408,6 +418,7 @@ echo "
         Reverse engineering tools: ${enable_reverse}
         File descriptor fallback:  ${enable_fd_fallback}
         External volume searching: ${enable_volume_search}
+        BASH completion support:   ${enable_bash_completion}
         SANE support:              ${has_sane}
         GUdev support:             ${enable_gudev}
         GUsb support:              ${enable_gusb}

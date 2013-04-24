@@ -171,13 +171,13 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/man/man1/*.1.gz
 %{_datadir}/colord
+%{_datadir}/bash-completion/completions/colormgr
 %config %{_sysconfdir}/colord.conf
 /usr/lib/udev/rules.d/*.rules
 %{_libdir}/colord-sensors
 %{_libdir}/colord-plugins
 %verify(not size md5 mtime) %attr(-,colord,colord) %{_localstatedir}/lib/colord/*.db
 /usr/lib/systemd/system/colord.service
-%{_sysconfdir}/bash_completion.d/*-completion.bash
 
 # session helper
 %{_libexecdir}/colord-session

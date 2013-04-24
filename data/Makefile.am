@@ -33,6 +33,11 @@ if HAVE_SYSTEMD
 EXTRA_DIST += $(systemdservicemain_in_files)
 endif
 
+if HAVE_BASH_COMPLETION
+bashcompletiondir = $(BASH_COMPLETIONS_DIR)
+dist_bashcompletion_DATA = colormgr
+endif
+
 CLEANFILES =						\
 	$(dist_profile_DATA)
 
