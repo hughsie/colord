@@ -30,6 +30,8 @@
            send_interface="org.freedesktop.DBus.Properties"/>
     <allow send_destination="org.freedesktop.ColorManager"
            send_interface="org.freedesktop.DBus.Introspectable"/>
+    <allow send_destination="org.freedesktop.ColorManager"
+           send_interface="org.freedesktop.DBus.Peer"/>
   </policy>
 
 </busconfig>
