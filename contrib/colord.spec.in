@@ -153,10 +153,15 @@ exit 0
 %post
 /sbin/ldconfig
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+%systemd_post colord.service
+
+%preun
+%systemd_preun colord.service
 
 %postun
 /sbin/ldconfig
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+%systemd_postun colord.service
 
 %files -f %{name}.lang
 %doc README AUTHORS NEWS COPYING
