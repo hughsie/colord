@@ -101,6 +101,7 @@ gboolean	 cd_profile_set_property_internal	(CdProfile	*profile,
 							 const gchar	*property,
 							 const gchar	*value,
 							 GError		**error);
+const gchar	**cd_profile_get_warnings		(CdProfile	*profile);
 
 G_END_DECLS
 

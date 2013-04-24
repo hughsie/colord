@@ -965,6 +965,15 @@ out:
 }
 
 /**
+ * cd_profile_get_warnings:
+ **/
+const gchar **
+cd_profile_get_warnings (CdProfile *profile)
+{
+	return (const gchar **) profile->priv->warnings;
+}
+
+/**
  * cd_profile_emit_parsed_property_changed:
  **/
 static void
