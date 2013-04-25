@@ -227,6 +227,7 @@ typedef enum {
  * @CD_PROFILE_WARNING_GRAY_AXIS_INVALID: There is significant a/b for gray
  * @CD_PROFILE_WARNING_GRAY_AXIS_NON_MONOTONIC: The gray ramp is not monotonic
  * @CD_PROFILE_WARNING_PRIMARIES_INVALID: One or more of the primaries are invalid
+ * @CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE: The primaries to not add to give D50 white
  * @CD_PROFILE_WARNING_PRIMARIES_UNLIKELY: One or more of the primaries are outside of ROMM RGB
  * @CD_PROFILE_WARNING_WHITEPOINT_INVALID: RGB 255,255,255 does not return D50
  *
