@@ -190,6 +190,7 @@ static const CdEnumMatch enum_profile_warning[] = {
 	{CD_PROFILE_WARNING_SCUM_DOT,			"scum-dot"},
 	{CD_PROFILE_WARNING_VCGT_NON_MONOTONIC,		"vcgt-non-monotonic"},
 	{CD_PROFILE_WARNING_WHITEPOINT_INVALID,		"whitepoint-invalid"},
+	{CD_PROFILE_WARNING_WHITEPOINT_UNLIKELY,	"whitepoint-unlikely"},
 	{0, NULL}
 };
 

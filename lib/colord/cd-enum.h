@@ -230,6 +230,7 @@ typedef enum {
  * @CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE: The primaries to not add to give D50 white
  * @CD_PROFILE_WARNING_PRIMARIES_UNLIKELY: One or more of the primaries are outside of ROMM RGB
  * @CD_PROFILE_WARNING_WHITEPOINT_INVALID: RGB 255,255,255 does not return D50
+ * @CD_PROFILE_WARNING_WHITEPOINT_UNLIKELY: Whitepoint is outside of usual range
  *
  * The warning about the profile. Profiles with warnings can still be
  * used, but may be of limited use.
@@ -247,6 +248,7 @@ typedef enum {
 	CD_PROFILE_WARNING_PRIMARIES_NON_ADDITIVE,	/* Since: 0.1.25 */
 	CD_PROFILE_WARNING_PRIMARIES_UNLIKELY,		/* Since: 0.1.25 */
 	CD_PROFILE_WARNING_WHITEPOINT_INVALID,		/* Since: 0.1.25 */
+	CD_PROFILE_WARNING_WHITEPOINT_UNLIKELY,		/* Since: 0.1.34 */
 	/*< private >*/
 	CD_PROFILE_WARNING_LAST
 } CdProfileWarning;

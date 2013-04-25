@@ -2534,6 +2534,26 @@ out:
 }
 
 /**
+ * cd_icc_check_whitepoint:
+ **/
+static CdProfileWarning
+cd_icc_check_whitepoint (CdIcc *icc)
+{
+	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
+	guint temp = icc->priv->temperature;
+
+	/* not set */
+	if (temp == 0)
+		goto out;
+
+	/* hardcoded sanity check */
+	if (temp < 3000 || temp > 10000)
+		warning = CD_PROFILE_WARNING_WHITEPOINT_UNLIKELY;
+out:
+	return warning;
+}
+
+/**
  * cd_icc_check_vcgt:
  **/
 static CdProfileWarning
@@ -2874,6 +2894,11 @@ cd_icc_get_warnings (CdIcc *icc)
 	/* not a RGB space */
 	if (cmsGetColorSpace (icc->priv->lcms_profile) != cmsSigRgbData)
 		goto out;
+
+	/* does profile have an unlikely whitepoint */
+	warning = cd_icc_check_whitepoint (icc);
+	if (warning != CD_PROFILE_WARNING_NONE)
+		g_array_append_val (flags, warning);
 
 	/* does profile have monotonic VCGT */
 	warning = cd_icc_check_vcgt (icc->priv->lcms_profile);
