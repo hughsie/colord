@@ -72,6 +72,7 @@
         </doc:doc>
       </arg>
       <arg type='a{sv}' name='options' direction='in'>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In2" value="QVariantMap"/>
         <doc:doc>
           <doc:summary>
             <doc:para>
@@ -131,6 +132,7 @@
         </doc:doc>
       </arg>
       <arg type='a{sv}' name='details' direction='out'>
+        <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QVariantMap"/>
         <doc:doc>
           <doc:summary>
             <doc:para>
@@ -197,6 +199,7 @@
         </doc:description>
       </doc:doc>
       <arg type='a(ddd)' name='gamma' direction='out'>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="CdGamaList"/>
         <doc:doc>
           <doc:summary>
             <doc:para>

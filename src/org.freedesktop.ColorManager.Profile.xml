@@ -35,6 +35,7 @@
 
     <!--***********************************************************-->
     <property name='Metadata' type='a{ss}' access='read'>
+      <annotation name="org.qtproject.QtDBus.QtTypeName" value="CdStringMap"/>
       <doc:doc>
         <doc:description>
           <doc:para>
