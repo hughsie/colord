@@ -285,7 +285,7 @@
           </doc:para>
         </doc:description>
       </doc:doc>
-      <arg type='s' name='standard-space' direction='in'>
+      <arg type='s' name='standard_space' direction='in'>
         <doc:doc>
           <doc:summary>
             <doc:para>
