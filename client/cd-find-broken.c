@@ -46,8 +46,6 @@ parse_filename (const gchar *filename, GString *csv, GError **error)
 	if (!ret)
 		goto out;
 
-g_print ("%s\t%i\n", cd_icc_get_filename (icc), cd_icc_get_temperature (icc));
-
 	/* any problems */
 	warnings = cd_icc_get_warnings (icc);
 	if (warnings->len == 0) 
