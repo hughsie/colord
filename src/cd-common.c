@@ -268,29 +268,51 @@ cd_main_vendor_display_name (const gchar *vendor)
 	const gchar *suffixes[] =
 		{ "Co.", "Co", "Inc.", "Inc", "Ltd.", "Ltd",
 		  "Corporation", "Incorporated", "Limited",
+		  "GmbH", "corp.",
 		  NULL };
 	struct {
 		const gchar *old;
 		const gchar *new;
 	} vendor_names[] = {
+		{ "Acer, inc.", "Acer" },
 		{ "Acer Technologies", "Acer" },
+		{ "AOC Intl", "AOC" },
 		{ "Apple Computer Inc", "Apple" },
+		{ "Arnos Insturments & Computer Systems", "Arnos" },
+		{ "ASUSTeK Computer Inc.", "ASUSTeK" },
+		{ "ASUSTeK COMPUTER INC.", "ASUSTeK" },
 		{ "BTC Korea Co., Ltd", "BTC" },
+		{ "CASIO COMPUTER CO.,LTD", "Casio" },
 		{ "Eizo Nanao Corporation", "Eizo" },
+		{ "FUJITSU", "Fujitsu" },
 		{ "Fujitsu Siemens Computers GmbH", "Fujitsu Siemens" },
+		{ "Funai Electric Co., Ltd.", "Funai" },
+		{ "Gigabyte Technology Co., Ltd.", "Gigabyte" },
 		{ "Goldstar Company Ltd", "Goldstar" },
 		{ "Hewlett-Packard", "Hewlett Packard" },
+		{ "Hewlett-Packard", "Hewlett Packard" },
+		{ "Hitachi America Ltd", "Hitachi" },
 		{ "HP", "Hewlett Packard" },
 		{ "HWP", "Hewlett Packard" },
+		{ "IBM France", "IBM" },
 		{ "Lenovo Group Limited", "Lenovo" },
 		{ "LENOVO", "Lenovo" },
+		{ "Liyama North America", "Liyama" },
 		{ "MARANTZ JAPAN, INC.", "Marantz" },
+		{ "Mitsubishi Electric Corporation", "Mitsubishi" },
 		{ "NIKON", "Nikon" },
 		{ "Philips Consumer Electronics Company", "Philips" },
 		{ "SAM", "Samsung" },
 		{ "Samsung Electric Company", "Samsung" },
 		{ "samsung", "Samsung" },
+		{ "SAMSUNG", "Samsung" },
+		{ "Sanyo Electric Co.,Ltd.", "Sanyo" },
+		{ "System manufacturer", "Unknown" },
+		{ "To Be Filled By O.E.M.", "Unknown" },
 		{ "Toshiba America Info Systems Inc", "Toshiba" },
+		{ "TOSHIBA", "Toshiba" },
+		{ "Unknown vendor", "Unknown" },
+		{ "Zalman Tech Co., Ltd.", "Zalman" },
 		{ NULL, NULL }
 	};
 
