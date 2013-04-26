@@ -25,15 +25,32 @@
 #include <colord.h>
 #include <locale.h>
 
+typedef struct {
+	GHashTable	*cmfbinary;
+	GHashTable	*vendors;
+	GHashTable	*vendors_no_serial;
+	GString		*csv_all;
+	GString		*csv_fail;
+	guint		 has_serial_numbers;
+} CdFindBrokenPriv;
+
+/**
+ * cd_find_broken_parse_filename:
+ */
 static gboolean
-parse_filename (const gchar *filename, GString *csv, GError **error)
+cd_find_broken_parse_filename (CdFindBrokenPriv *priv,
+			       const gchar *filename,
+			       GError **error)
 {
 	CdIcc *icc = NULL;
 	CdProfileWarning warning;
+	const gchar *vendor;
+	const gchar *tmp;
 	GArray *warnings = NULL;
 	gboolean ret;
 	GFile *file = NULL;
 	guint i;
+	guint *val;
 
 	/* load file */
 	icc = cd_icc_new ();
@@ -46,22 +63,68 @@ parse_filename (const gchar *filename, GString *csv, GError **error)
 	if (!ret)
 		goto out;
 
+	/* append to CSV file */
+	g_string_append_printf (priv->csv_all, "%s,\"%s\",\"%s\",%s,%s,%.1f,%s,%s\n",
+				cd_icc_get_filename (icc),
+				cd_icc_get_manufacturer (icc, NULL, NULL),
+				cd_icc_get_model (icc, NULL, NULL),
+				cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_DATA_SOURCE),
+				cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_EDID_SERIAL),
+				cd_icc_get_version (icc),
+				cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_CMF_BINARY),
+				cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_CMF_VERSION));
+
+	/* get vendor */
+	vendor = cd_icc_get_manufacturer (icc, NULL, NULL);
+	if (vendor == NULL)
+		vendor = "Unknown";
+	val = g_hash_table_lookup (priv->vendors, vendor);
+	if (val == NULL) {
+		val = g_new0 (guint, 1);
+		g_hash_table_insert (priv->vendors, g_strdup (vendor), val);
+	}
+	(*val)++;
+
+	/* count those with serial numbers */
+	tmp = cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_EDID_SERIAL);
+	if (tmp != NULL && tmp[0] != '\0') {
+		priv->has_serial_numbers++;
+	} else {
+		val = g_hash_table_lookup (priv->vendors_no_serial, vendor);
+		if (val == NULL) {
+			val = g_new0 (guint, 1);
+			g_hash_table_insert (priv->vendors_no_serial, g_strdup (vendor), val);
+		}
+		(*val)++;
+	}
+
+	/* get CMF binary */
+	tmp = cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_CMF_BINARY);
+	if (tmp == NULL)
+		tmp = "Unknown";
+	val = g_hash_table_lookup (priv->cmfbinary, tmp);
+	if (val == NULL) {
+		val = g_new0 (guint, 1);
+		g_hash_table_insert (priv->cmfbinary, g_strdup (tmp), val);
+	}
+	(*val)++;
+
 	/* any problems */
 	warnings = cd_icc_get_warnings (icc);
-	if (warnings->len == 0) 
+	if (warnings->len == 0)
 		goto out;
 
 	/* append to CSV file */
-	g_string_append_printf (csv, "%s,\"%s\",\"%s\",",
+	g_string_append_printf (priv->csv_fail, "%s,\"%s\",\"%s\",",
 				cd_icc_get_filename (icc),
 				cd_icc_get_manufacturer (icc, NULL, NULL),
 				cd_icc_get_model (icc, NULL, NULL));
 	for (i = 0; i < warnings->len; i++) {
 		warning = g_array_index (warnings, CdProfileWarning, i);
-		g_string_append_printf (csv, "%s|",
+		g_string_append_printf (priv->csv_fail, "%s|",
 					cd_profile_warning_to_string (warning));
 	}
-	csv->str[csv->len - 1] = '\n';
+	priv->csv_fail->str[priv->csv_fail->len - 1] = '\n';
 out:
 	if (warnings != NULL)
 		g_array_unref (warnings);
@@ -70,17 +133,33 @@ out:
 	return ret;
 }
 
+/**
+ * cd_find_broken_strcmp_func:
+ */
+static gint
+cd_find_broken_strcmp_func (gconstpointer a, gconstpointer b)
+{
+	return g_strcmp0 ((const gchar *) a, (const gchar *) b);
+}
+
+/**
+ * main:
+ */
 int
 main (int argc, char *argv[])
 {
-	const gchar *failures = "./results.csv";
+	CdFindBrokenPriv *priv = NULL;
+	const gchar *fn_all = "./all.csv";
+	const gchar *fn_failures = "./results.csv";
 	gboolean ret;
 	GError *error = NULL;
 	gint retval = EXIT_FAILURE;
-	GString *csv = NULL;
+	GList *l;
+	GList *list;
 	guint i;
 	guint total = 0;
 	guint total_with_warnings = 0;
+	guint *val;
 
 	if (argc < 2) {
 		g_warning ("usage: cd-find-broken.c filename, e.g. 'uploads/*'");
@@ -91,12 +170,18 @@ main (int argc, char *argv[])
 
 	g_type_init ();
 
-	/* create CSV header */
-	csv = g_string_new ("filename,vendor,model,warnings\n");
+	/* create CSV headers */
+	priv = g_new0 (CdFindBrokenPriv, 1);
+	priv->csv_all = g_string_new ("filename,vendor,model,serial,data_source,version,cmf_binary,cmf_version\n");
+	priv->csv_fail = g_string_new ("filename,vendor,model,warnings\n");
+	priv->vendors = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->vendors_no_serial = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->cmfbinary = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->has_serial_numbers = 0;
 
 	/* scan each file */
 	for (i = 1; i < (guint) argc; i++) {
-		ret = parse_filename (argv[i], csv, &error);
+		ret = cd_find_broken_parse_filename (priv, argv[i], &error);
 		if (!ret) {
 			g_warning ("failed to parse %s: %s",
 				   argv[i], error->message);
@@ -106,16 +191,61 @@ main (int argc, char *argv[])
 
 	/* print stats */
 	total = argc - 1;
-	for (i = 0; i < csv->len; i++) {
-		if (csv->str[i] == '\n')
+	for (i = 0; i < priv->csv_fail->len; i++) {
+		if (priv->csv_fail->str[i] == '\n')
 			total_with_warnings++;
 	}
 	g_print ("Total profiles scanned: %i\n",  total);
-	g_print ("Profiles with invalid or unlikely primaries: %i\n",  total_with_warnings);
-	g_print ("EDIDs are valid %.1f%% of the time\n", 100.0f - (gdouble) 100.0f * total_with_warnings / total);
+	g_print ("Profiles with invalid or unlikely primaries: %i [%.1f%%]\n",
+		 total_with_warnings,
+		 (gdouble) 100.0f * total_with_warnings / total);
+	g_print ("Profiles with valid serial numbers: %i [%.1f%%]\n",
+		 priv->has_serial_numbers,
+		 (gdouble) 100.0f * priv->has_serial_numbers / total);
 
-	/* save the file */
-	ret = g_file_set_contents (failures, csv->str, -1, &error);
+	/* extract vendors */
+	if (FALSE) {
+		list = g_hash_table_get_keys (priv->vendors);
+		list = g_list_sort (list, cd_find_broken_strcmp_func);
+		g_print ("Vendor list:\n");
+		for (l = list; l != NULL; l = l->next) {
+			val = (guint *) g_hash_table_lookup (priv->vendors, l->data);
+			g_print ("\"%s\",%i\n", (const gchar *) l->data, *val);
+		}
+		g_list_free (list);
+	}
+
+	/* extract vendors without serial numbers */
+	if (FALSE) {
+		list = g_hash_table_get_keys (priv->vendors_no_serial);
+		list = g_list_sort (list, cd_find_broken_strcmp_func);
+		g_print ("Vendors who don't write serial numbers:\n");
+		for (l = list; l != NULL; l = l->next) {
+			val = (guint *) g_hash_table_lookup (priv->vendors_no_serial, l->data);
+			g_print ("\"%s\",%i\n", (const gchar *) l->data, *val);
+		}
+		g_list_free (list);
+	}
+
+	/* extract cmfbinary */
+	if (FALSE) {
+		list = g_hash_table_get_keys (priv->cmfbinary);
+		g_print ("CMF list:\n");
+		for (l = list; l != NULL; l = l->next) {
+			val = (guint *) g_hash_table_lookup (priv->cmfbinary, l->data);
+			g_print ("\"%s\",%i\n", (const gchar *) l->data, *val);
+		}
+		g_list_free (list);
+	}
+
+	/* save the files */
+	ret = g_file_set_contents (fn_all, priv->csv_all->str, -1, &error);
+	if (!ret) {
+		g_warning ("%s", error->message);
+		g_error_free (error);
+		goto out;
+	}
+	ret = g_file_set_contents (fn_failures, priv->csv_fail->str, -1, &error);
 	if (!ret) {
 		g_warning ("%s", error->message);
 		g_error_free (error);
@@ -123,10 +253,16 @@ main (int argc, char *argv[])
 	}
 
 	/* success */
-	g_print ("Failures written to %s\n", failures);
+	g_print ("Written to %s and %s\n", fn_failures, fn_all);
 	retval = EXIT_SUCCESS;
 out:
-	if (csv != NULL)
-		g_string_free (csv, TRUE);
+	if (priv != NULL) {
+		g_hash_table_unref (priv->cmfbinary);
+		g_hash_table_unref (priv->vendors);
+		g_hash_table_unref (priv->vendors_no_serial);
+		g_string_free (priv->csv_all, TRUE);
+		g_string_free (priv->csv_fail, TRUE);
+	}
+	g_free (priv);
 	return retval;
 }
