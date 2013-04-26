@@ -434,6 +434,7 @@ typedef enum {
 
 /* defined in metadata-spec.txt */
 #define CD_DEVICE_METADATA_XRANDR_NAME		"XRANDR_name"
+#define CD_DEVICE_METADATA_OUTPUT_EDID_MD5	"OutputEdidMd5"
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY	"OutputPriority"
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY_PRIMARY	"primary"
 #define CD_DEVICE_METADATA_OUTPUT_PRIORITY_SECONDARY	"secondary"
