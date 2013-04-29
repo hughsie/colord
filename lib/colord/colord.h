@@ -58,6 +58,7 @@
 #include <colord/cd-profile-sync.h>
 #include <colord/cd-sensor.h>
 #include <colord/cd-sensor-sync.h>
+#include <colord/cd-transform.h>
 #include <colord/cd-version.h>
 
 #undef __COLORD_H_INSIDE__
