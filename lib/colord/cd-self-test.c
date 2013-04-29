@@ -52,6 +52,7 @@
 #include "cd-profile-sync.h"
 #include "cd-sensor.h"
 #include "cd-sensor-sync.h"
+#include "cd-transform.h"
 #include "cd-version.h"
 
 static gboolean has_colord_process = FALSE;
@@ -3629,6 +3630,61 @@ colord_icc_localized_func (void)
 	g_object_unref (icc);
 }
 
+static void
+colord_transform_func (void)
+{
+	CdTransform *transform;
+	gboolean ret;
+	GError *error = NULL;
+	guint8 data_in[3] = { 127, 32, 64 };
+	guint8 data_out[3];
+	CdIcc *icc;
+	gchar *filename;
+	GFile *file;
+
+	/* setup transform with 8 bit RGB */
+	transform = cd_transform_new ();
+	cd_transform_set_intent (transform, CD_RENDERING_INTENT_PERCEPTUAL);
+	g_assert_cmpint (cd_transform_get_intent (transform), ==, CD_RENDERING_INTENT_PERCEPTUAL);
+	cd_transform_set_format (transform, CD_PIXEL_FORMAT_RGB_8);
+	g_assert_cmpint (cd_transform_get_format (transform), ==, CD_PIXEL_FORMAT_RGB_8);
+
+	/* setup profiles */
+	cd_transform_set_input (transform, NULL);
+	cd_transform_set_abstract (transform, NULL);
+
+	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
+	file = g_file_new_for_path (filename);
+	icc = cd_icc_new ();
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				&error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	cd_transform_set_output (transform, icc);
+	g_free (filename);
+	g_object_unref (file);
+	g_object_unref (icc);
+
+	/* run through profile */
+	ret = cd_transform_process (transform,
+				    data_in,
+				    data_out,
+				    1, 1, 1,
+				    NULL,
+				    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_assert_cmpint (data_out[0], ==, 144);
+	g_assert_cmpint (data_out[1], ==, 0);
+	g_assert_cmpint (data_out[2], ==, 69);
+
+	g_object_unref (transform);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -3639,6 +3695,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
 	g_test_add_func ("/colord/icc{edid}", colord_icc_edid_func);

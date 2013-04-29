@@ -46,6 +46,7 @@ libcolordbase_include_HEADERS =					\
 	cd-profile-sync.h					\
 	cd-sensor.h						\
 	cd-sensor-sync.h					\
+	cd-transform.h						\
 	cd-version.h
 
 libcolordprivate_la_SOURCES =					\
@@ -59,6 +60,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-interp.c						\
 	cd-it8.c						\
 	cd-it8-utils.c						\
+	cd-transform.c						\
 	cd-math.c
 libcolordprivate_la_LIBADD =					\
 	$(LIBM)							\

@@ -104,6 +104,15 @@ static const CdEnumMatch enum_rendering_intent[] = {
 	{0, NULL}
 };
 
+static const CdEnumMatch enum_pixel_format[] = {
+	{CD_PIXEL_FORMAT_UNKNOWN,			"unknown"},	/* fall though value */
+	{CD_PIXEL_FORMAT_RGB_8,				"rgb-8"},
+	{CD_PIXEL_FORMAT_RGB_16,			"rgb-16"},
+	{CD_PIXEL_FORMAT_RGBA_8,			"rgba-8"},
+	{CD_PIXEL_FORMAT_RGBA_16,			"rgba-16"},
+	{0, NULL}
+};
+
 static const CdEnumMatch enum_colorspace[] = {
 	{CD_COLORSPACE_UNKNOWN,				"unknown"},	/* fall though value */
 	{CD_COLORSPACE_CMY,				"cmy"},
@@ -325,6 +334,24 @@ CdRenderingIntent
 cd_rendering_intent_from_string (const gchar *rendering_intent)
 {
 	return cd_enum_from_string (enum_rendering_intent, rendering_intent);
+}
+
+/**
+ * cd_pixel_format_to_string:
+ **/
+const gchar *
+cd_pixel_format_to_string (CdPixelFormat pixel_format)
+{
+	return cd_enum_to_string (enum_pixel_format, pixel_format);
+}
+
+/**
+ * cd_pixel_format_from_string:
+ **/
+CdPixelFormat
+cd_pixel_format_from_string (const gchar *pixel_format)
+{
+	return cd_enum_from_string (enum_pixel_format, pixel_format);
 }
 
 /**

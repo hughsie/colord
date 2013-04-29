@@ -95,6 +95,20 @@ typedef enum {
 } CdRenderingIntent;
 
 /**
+ * CdPixelFormat:
+ *
+ * The pixel format of an image.
+ **/
+typedef enum {
+	CD_PIXEL_FORMAT_UNKNOWN,
+	CD_PIXEL_FORMAT_RGB_8,
+	CD_PIXEL_FORMAT_RGB_16,
+	CD_PIXEL_FORMAT_RGBA_8,
+	CD_PIXEL_FORMAT_RGBA_16,
+	CD_PIXEL_FORMAT_LAST
+} CdPixelFormat;
+
+/**
  * CdColorspace:
  *
  * The known colorspace.
@@ -498,6 +512,8 @@ const gchar	*cd_profile_kind_to_string		(CdProfileKind		 profile_kind);
 CdProfileKind	 cd_profile_kind_from_string		(const gchar		*profile_kind);
 CdRenderingIntent cd_rendering_intent_from_string	(const gchar		*rendering_intent);
 const gchar	*cd_rendering_intent_to_string		(CdRenderingIntent	 rendering_intent);
+CdPixelFormat	 cd_pixel_format_from_string		(const gchar		*pixel_format);
+const gchar	*cd_pixel_format_to_string		(CdPixelFormat		 pixel_format);
 const gchar	*cd_colorspace_to_string		(CdColorspace		 colorspace);
 CdColorspace	 cd_colorspace_from_string		(const gchar		*colorspace);
 const gchar	*cd_device_mode_to_string		(CdDeviceMode		 device_mode);
