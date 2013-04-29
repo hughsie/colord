@@ -50,7 +50,6 @@ guint		 cd_main_get_sender_pid		(GDBusConnection *connection,
 gchar		*cd_main_ensure_dbus_path	(const gchar	*object_path);
 gboolean	 cd_main_mkdir_with_parents	(const gchar	*filename,
 						 GError		**error);
-gchar		*cd_main_vendor_display_name	(const gchar	*vendor);
 
 #endif /* __CD_COMMON_H__ */
 

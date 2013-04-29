@@ -44,6 +44,7 @@ libcolordbase_include_HEADERS =					\
 	cd-math.h						\
 	cd-profile.h						\
 	cd-profile-sync.h					\
+	cd-quirk.h						\
 	cd-sensor.h						\
 	cd-sensor-sync.h					\
 	cd-transform.h						\
@@ -60,8 +61,9 @@ libcolordprivate_la_SOURCES =					\
 	cd-interp.c						\
 	cd-it8.c						\
 	cd-it8-utils.c						\
-	cd-transform.c						\
-	cd-math.c
+	cd-math.c						\
+	cd-quirk.c						\
+	cd-transform.c
 libcolordprivate_la_LIBADD =					\
 	$(LIBM)							\
 	$(LCMS_LIBS)						\

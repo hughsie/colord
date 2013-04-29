@@ -43,17 +43,17 @@ colord_common_func (void)
 	gchar *tmp;
 
 	/* exact match in quirk db */
-	tmp = cd_main_vendor_display_name ("NIKON");
+	tmp = cd_quirk_vendor_name ("NIKON");
 	g_assert_cmpstr (tmp, ==, "Nikon");
 	g_free (tmp);
 
 	/* suffix that needs removing */
-	tmp = cd_main_vendor_display_name ("Hughski Ltd.");
+	tmp = cd_quirk_vendor_name ("Hughski Ltd.");
 	g_assert_cmpstr (tmp, ==, "Hughski");
 	g_free (tmp);
 
 	/* suffix that needs removing */
-	tmp = cd_main_vendor_display_name ("Acme Inc");
+	tmp = cd_quirk_vendor_name ("Acme Inc");
 	g_assert_cmpstr (tmp, ==, "Acme");
 	g_free (tmp);
 }

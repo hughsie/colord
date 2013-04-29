@@ -56,6 +56,7 @@
 #include <colord/cd-math.h>
 #include <colord/cd-profile.h>
 #include <colord/cd-profile-sync.h>
+#include <colord/cd-quirk.h>
 #include <colord/cd-sensor.h>
 #include <colord/cd-sensor-sync.h>
 #include <colord/cd-transform.h>

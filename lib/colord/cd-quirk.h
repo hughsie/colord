@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -19,39 +19,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-/**
- * SECTION:colord
- * @short_description: Client objects for accessing colord
- *
- * These objects allow client programs to get access to devices that can
- * be color managed and profiles for changing them.
- *
- * See also: #CdClient, #CdDevice
- */
-
-#ifndef __COLORD_PRIVATE_H__
-#define __COLORD_PRIVATE_H__
-
-#define __COLORD_H_INSIDE__
-
-#ifdef CD_DISABLE_DEPRECATED
- #define CD_USE_ALLOC_GSLICE
+#if !defined (__COLORD_H_INSIDE__) && !defined (CD_COMPILATION)
+#error "Only <colord.h> can be included directly."
 #endif
 
-#include <colord/cd-buffer.h>
-#include <colord/cd-color.h>
-#include <colord/cd-dom.h>
-#include <colord/cd-enum.h>
-#include <colord/cd-icc.h>
-#include <colord/cd-interp-akima.h>
-#include <colord/cd-interp-linear.h>
-#include <colord/cd-interp.h>
-#include <colord/cd-it8.h>
-#include <colord/cd-math.h>
-#include <colord/cd-quirk.h>
-#include <colord/cd-transform.h>
+#ifndef __CD_QUIRK_H
+#define __CD_QUIRK_H
 
-#undef __COLORD_H_INSIDE__
+#include <glib-object.h>
 
-#endif /* __COLORD_PRIVATE_H__ */
+G_BEGIN_DECLS
+
+gchar		*cd_quirk_vendor_name		(const gchar	*vendor);
+
+G_END_DECLS
+
+#endif /* __CD_QUIRK_H */
 

@@ -28,6 +28,7 @@
 typedef struct {
 	GHashTable	*cmfbinary;
 	GHashTable	*vendors;
+	GHashTable	*vendors_broken;
 	GHashTable	*vendors_no_serial;
 	GString		*csv_all;
 	GString		*csv_fail;
@@ -44,10 +45,10 @@ cd_find_broken_parse_filename (CdFindBrokenPriv *priv,
 {
 	CdIcc *icc = NULL;
 	CdProfileWarning warning;
-	const gchar *vendor;
 	const gchar *tmp;
 	GArray *warnings = NULL;
 	gboolean ret;
+	gchar *vendor = NULL;
 	GFile *file = NULL;
 	guint i;
 	guint *val;
@@ -74,10 +75,12 @@ cd_find_broken_parse_filename (CdFindBrokenPriv *priv,
 				cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_CMF_BINARY),
 				cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_CMF_VERSION));
 
-	/* get vendor */
-	vendor = cd_icc_get_manufacturer (icc, NULL, NULL);
-	if (vendor == NULL)
-		vendor = "Unknown";
+	/* get quirked vendor */
+	tmp = cd_icc_get_manufacturer (icc, NULL, NULL);
+	if (tmp == NULL)
+		vendor = g_strdup ("Unknown");
+	else
+		vendor = cd_quirk_vendor_name (tmp);
 	val = g_hash_table_lookup (priv->vendors, vendor);
 	if (val == NULL) {
 		val = g_new0 (guint, 1);
@@ -114,6 +117,14 @@ cd_find_broken_parse_filename (CdFindBrokenPriv *priv,
 	if (warnings->len == 0)
 		goto out;
 
+	/* count those with problems */
+	val = g_hash_table_lookup (priv->vendors_broken, vendor);
+	if (val == NULL) {
+		val = g_new0 (guint, 1);
+		g_hash_table_insert (priv->vendors_broken, g_strdup (vendor), val);
+	}
+	(*val)++;
+
 	/* append to CSV file */
 	g_string_append_printf (priv->csv_fail, "%s,\"%s\",\"%s\",",
 				cd_icc_get_filename (icc),
@@ -130,6 +141,7 @@ out:
 		g_array_unref (warnings);
 	g_object_unref (file);
 	g_object_unref (icc);
+	g_free (vendor);
 	return ret;
 }
 
@@ -176,6 +188,7 @@ main (int argc, char *argv[])
 	priv->csv_fail = g_string_new ("filename,vendor,model,warnings\n");
 	priv->vendors = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->vendors_no_serial = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	priv->vendors_broken = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->cmfbinary = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 	priv->has_serial_numbers = 0;
 
@@ -211,6 +224,18 @@ main (int argc, char *argv[])
 		g_print ("Vendor list:\n");
 		for (l = list; l != NULL; l = l->next) {
 			val = (guint *) g_hash_table_lookup (priv->vendors, l->data);
+			g_print ("\"%s\",%i\n", (const gchar *) l->data, *val);
+		}
+		g_list_free (list);
+	}
+
+	/* extract vendors that ship broken primaries */
+	if (FALSE) {
+		list = g_hash_table_get_keys (priv->vendors_broken);
+		list = g_list_sort (list, cd_find_broken_strcmp_func);
+		g_print ("Vendors who ship broken primaries:\n");
+		for (l = list; l != NULL; l = l->next) {
+			val = (guint *) g_hash_table_lookup (priv->vendors_broken, l->data);
 			g_print ("\"%s\",%i\n", (const gchar *) l->data, *val);
 		}
 		g_list_free (list);
@@ -261,6 +286,7 @@ out:
 		g_hash_table_unref (priv->cmfbinary);
 		g_hash_table_unref (priv->vendors);
 		g_hash_table_unref (priv->vendors_no_serial);
+		g_hash_table_unref (priv->vendors_broken);
 		g_string_free (priv->csv_all, TRUE);
 		g_string_free (priv->csv_fail, TRUE);
 	}

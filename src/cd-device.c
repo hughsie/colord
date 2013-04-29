@@ -885,7 +885,7 @@ static void
 cd_device_set_vendor (CdDevice *device, const gchar *vendor)
 {
 	g_free (device->priv->vendor);
-	device->priv->vendor = cd_main_vendor_display_name (vendor);
+	device->priv->vendor = cd_quirk_vendor_name (vendor);
 }
 
 /**
