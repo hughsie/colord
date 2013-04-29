@@ -195,6 +195,7 @@ main (int argc, char *argv[])
 		if (priv->csv_fail->str[i] == '\n')
 			total_with_warnings++;
 	}
+	total_with_warnings--;
 	g_print ("Total profiles scanned: %i\n",  total);
 	g_print ("Profiles with invalid or unlikely primaries: %i [%.1f%%]\n",
 		 total_with_warnings,
