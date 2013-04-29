@@ -77,6 +77,11 @@ typedef enum {
 
 /**
  * CdRenderingIntent:
+ * @CD_RENDERING_INTENT_UNKNOWN:		Unknown rendering intent
+ * @CD_RENDERING_INTENT_PERCEPTUAL:		Used for photos as it maintains contrast
+ * @CD_RENDERING_INTENT_RELATIVE_COLORIMETRIC:	Used for graphic design and named colors
+ * @CD_RENDERING_INTENT_SATURATION:		Used for business charts as it maintains saturation without dithering
+ * @CD_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC:	Used when a specific color is required
  *
  * The rendering intent.
  **/
