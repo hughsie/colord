@@ -21,7 +21,7 @@
 
 /**
  * SECTION:cd-icc
- * @short_description: A XML parser that exposes a ICC tree
+ * @short_description: An object to read and write a binary ICC profile
  */
 
 #include "config.h"
