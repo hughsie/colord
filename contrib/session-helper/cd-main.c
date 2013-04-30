@@ -40,7 +40,9 @@ typedef struct {
 	GDBusConnection		*connection;
 	GDBusNodeInfo		*introspection;
 	GMainLoop		*loop;
+	GSettings		*settings;
 	guint32			 progress;
+	guint			 sample_delay;
 	guint			 watcher_id;
 	CdState			*state;
 
@@ -194,7 +196,7 @@ cd_main_emit_update_sample (CdMainPrivate *priv,
 		if (!ret)
 			goto out;
 	}
-	cd_main_calib_idle_delay (200);
+	cd_main_calib_idle_delay (priv->sample_delay);
 out:
 	if (hash != NULL)
 		g_hash_table_unref (hash);
@@ -2175,6 +2177,8 @@ main (int argc, char *argv[])
 	priv->interaction_code_last = CD_SESSION_INTERACTION_NONE;
 	priv->cancellable = g_cancellable_new ();
 	priv->loop = g_main_loop_new (NULL, FALSE);
+	priv->settings = g_settings_new ("org.freedesktop.ColorHelper");
+	priv->sample_delay = g_settings_get_int (priv->settings, "sample-delay");
 
 	/* track progress of the calibration */
 	priv->state = cd_state_new ();
@@ -2237,6 +2241,8 @@ out:
 	if (owner_id > 0)
 		g_bus_unown_name (owner_id);
 	g_main_loop_unref (priv->loop);
+	if (priv->settings != NULL)
+		g_object_unref (priv->settings);
 	if (priv->client != NULL)
 		g_object_unref (priv->client);
 	if (priv->connection != NULL)
