@@ -2582,6 +2582,107 @@ out:
 }
 
 /**
+ * cd_icc_get_response:
+ * @icc: A valid #CdIcc
+ * @size: the size of the curve to generate
+ * @error: a valid #GError, or %NULL
+ *
+ * Generates a response curve of a specified size.
+ *
+ * Return value: (transfer container) (element-type CdColorRGB): response data, or %NULL for error
+ **/
+GPtrArray *
+cd_icc_get_response (CdIcc *icc, guint size, GError **error)
+{
+	CdColorRGB *data;
+	CdColorspace colorspace;
+	cmsHPROFILE srgb_profile = NULL;
+	cmsHTRANSFORM transform = NULL;
+	const guint component_width = 3;
+	gdouble tmp;
+	gdouble *values_in = NULL;
+	gdouble *values_out = NULL;
+	gfloat divadd;
+	gfloat divamount;
+	GPtrArray *array = NULL;
+	guint i;
+
+	/* run through the icc */
+	colorspace = cd_icc_get_colorspace (icc);
+	if (colorspace != CD_COLORSPACE_RGB) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_INVALID_COLORSPACE,
+				     "Only RGB colorspaces are supported");
+		goto out;
+	}
+
+	/* create input array */
+	values_in = g_new0 (gdouble, size * 3 * component_width);
+	divamount = 1.0f / (gfloat) (size - 1);
+	for (i = 0; i < size; i++) {
+		divadd = divamount * (gfloat) i;
+
+		/* red */
+		values_in[(i * 3 * component_width) + 0] = divadd;
+		values_in[(i * 3 * component_width) + 1] = 0.0f;
+		values_in[(i * 3 * component_width) + 2] = 0.0f;
+
+		/* green */
+		values_in[(i * 3 * component_width) + 3] = 0.0f;
+		values_in[(i * 3 * component_width) + 4] = divadd;
+		values_in[(i * 3 * component_width) + 5] = 0.0f;
+
+		/* blue */
+		values_in[(i * 3 * component_width) + 6] = 0.0f;
+		values_in[(i * 3 * component_width) + 7] = 0.0f;
+		values_in[(i * 3 * component_width) + 8] = divadd;
+	}
+
+	/* create a transform from icc to sRGB */
+	values_out = g_new0 (gdouble, size * 3 * component_width);
+	srgb_profile = cmsCreate_sRGBProfile ();
+	transform = cmsCreateTransform (icc->priv->lcms_profile, TYPE_RGB_DBL,
+					srgb_profile, TYPE_RGB_DBL,
+					INTENT_PERCEPTUAL, 0);
+	if (transform == NULL) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_NO_DATA,
+				     "Failed to setup transform");
+		goto out;
+	}
+	cmsDoTransform (transform, values_in, values_out, size * 3);
+
+	/* create output array */
+	array = cd_color_rgb_array_new ();
+	for (i = 0; i < size; i++) {
+		data = cd_color_rgb_new ();
+		cd_color_rgb_set (data, 0.0f, 0.0f, 0.0f);
+
+		/* only save curve data if it is positive */
+		tmp = values_out[(i * 3 * component_width) + 0];
+		if (tmp > 0.0f)
+			data->R = tmp;
+		tmp = values_out[(i * 3 * component_width) + 4];
+		if (tmp > 0.0f)
+			data->G = tmp;
+		tmp = values_out[(i * 3 * component_width) + 8];
+		if (tmp > 0.0f)
+			data->B = tmp;
+		g_ptr_array_add (array, data);
+	}
+out:
+	g_free (values_in);
+	g_free (values_out);
+	if (transform != NULL)
+		cmsDeleteTransform (transform);
+	if (srgb_profile != NULL)
+		cmsCloseProfile (srgb_profile);
+	return array;
+}
+
+/**
  * cd_icc_set_vcgt:
  * @icc: A valid #CdIcc
  * @vcgt: (element-type CdColorRGB): video card calibration data
