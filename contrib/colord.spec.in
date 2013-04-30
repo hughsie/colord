@@ -125,6 +125,9 @@ ulimit -Sv 2000000
 %if 0%{?enable_sane}
         --enable-sane \
 %endif
+%if !0%{?rhel}
+        --enable-libcolordcompat \
+%endif
         --disable-static \
         --disable-rpath \
         --disable-examples \

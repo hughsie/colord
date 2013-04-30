@@ -35,6 +35,7 @@ DISTCHECK_CONFIGURE_FLAGS =				\
 	--enable-fd-fallback				\
 	--enable-gtk					\
 	--enable-sane					\
+	--enable-libcolordcompat			\
 	--disable-print-profiles			\
 	--disable-bash-completion			\
 	--enable-gtk-doc				\

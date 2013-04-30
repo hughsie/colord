@@ -212,7 +212,14 @@ if test "x$with_systemdsystemunitdir" != "xno"; then
 fi
 AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$systemdsystemunitdir"])
 
-
+dnl **** Check if we should build libcolordcompat ****
+AC_ARG_ENABLE(libcolordcompat, AS_HELP_STRING([--enable-libcolordcompat],
+					      [Enable libcolordcompat.so which is used by ArgyllCMS]),
+	      build_libcolordcompat=$enableval, build_libcolordcompat=no)
+if test x$build_libcolordcompat != xno; then
+	AC_DEFINE(BUILD_LIBCOLORDCOMPAT,1,[Build libcolordcompat.so])
+fi
+AM_CONDITIONAL(BUILD_LIBCOLORDCOMPAT, test x$build_libcolordcompat = xyes)
 
 dnl ---------------------------------------------------------------------------
 dnl - Use libsystemd-login to track the process seat
@@ -402,6 +409,7 @@ lib/colord/Makefile
 lib/colorhug/Makefile
 lib/colorhug/colorhug.pc
 lib/colorhug/ch-version.h
+lib/compat/Makefile
 lib/dtp94/Makefile
 lib/huey/Makefile
 lib/munki/Makefile
@@ -428,6 +436,7 @@ echo "
         GUdev support:             ${enable_gudev}
         GUsb support:              ${enable_gusb}
         Extra print profiles:      ${enable_print_profiles}
+        Building libcolordcompat:  ${build_libcolordcompat}
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
         udev rules.d dir:          ${with_udevrulesdir}
