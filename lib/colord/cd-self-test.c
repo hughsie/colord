@@ -3362,6 +3362,7 @@ static void
 colord_icc_func (void)
 {
 	CdIcc *icc;
+	const CdColorRGB *rgb_tmp;
 	const CdColorXYZ *xyz_tmp;
 	const gchar *str;
 	GArray *warnings;
@@ -3408,6 +3409,21 @@ colord_icc_func (void)
 	/* get handle */
 	handle = cd_icc_get_handle (icc);
 	g_assert (handle != NULL);
+
+	/* check VCGT */
+	array = cd_icc_get_vcgt (icc, 256, &error);
+	g_assert_no_error (error);
+	g_assert (array != NULL);
+	g_assert_cmpint (array->len, ==, 256);
+	rgb_tmp = g_ptr_array_index (array, 0);
+	g_assert_cmpfloat (rgb_tmp->R, <, 0.02);
+	g_assert_cmpfloat (rgb_tmp->G, <, 0.02);
+	g_assert_cmpfloat (rgb_tmp->B, <, 0.02);
+	rgb_tmp = g_ptr_array_index (array, 255);
+	g_assert_cmpfloat (rgb_tmp->R, >, 0.98);
+	g_assert_cmpfloat (rgb_tmp->G, >, 0.98);
+	g_assert_cmpfloat (rgb_tmp->B, >, 0.08);
+	g_ptr_array_unref (array);
 
 	/* check profile properties */
 	g_assert_cmpint (cd_icc_get_size (icc), ==, 25244);

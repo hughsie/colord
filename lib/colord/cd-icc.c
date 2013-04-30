@@ -2532,6 +2532,120 @@ out:
 }
 
 /**
+ * cd_icc_get_vcgt:
+ * @icc: A valid #CdIcc
+ * @size: the desired size of the table data
+ * @error: A #GError or %NULL
+ *
+ * Gets the video card calibration data from the profile.
+ *
+ * Return value: (transfer container) (element-type CdColorRGB): VCGT data, or %NULL for error
+ *
+ * Since: 0.1.34
+ **/
+GPtrArray *
+cd_icc_get_vcgt (CdIcc *icc, guint size, GError **error)
+{
+	CdColorRGB *tmp;
+	cmsFloat32Number in;
+	const cmsToneCurve **vcgt;
+	GPtrArray *array = NULL;
+	guint i;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	g_return_val_if_fail (icc->priv->lcms_profile != NULL, FALSE);
+
+	/* get tone curves from icc */
+	vcgt = cmsReadTag (icc->priv->lcms_profile, cmsSigVcgtType);
+	if (vcgt == NULL || vcgt[0] == NULL) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_NO_DATA,
+				     "icc does not have any VCGT data");
+		goto out;
+	}
+
+	/* create array */
+	array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
+	for (i = 0; i < size; i++) {
+		in = (gdouble) i / (gdouble) (size - 1);
+		tmp = cd_color_rgb_new ();
+		cd_color_rgb_set (tmp,
+				  cmsEvalToneCurveFloat(vcgt[0], in),
+				  cmsEvalToneCurveFloat(vcgt[1], in),
+				  cmsEvalToneCurveFloat(vcgt[2], in));
+		g_ptr_array_add (array, tmp);
+	}
+out:
+	return array;
+
+}
+
+/**
+ * cd_icc_set_vcgt:
+ * @icc: A valid #CdIcc
+ * @vcgt: (element-type CdColorRGB): video card calibration data
+ * @error: A #GError or %NULL
+ *
+ * Sets the Video Card Gamma Table from the profile.
+ *
+ * Return vale: %TRUE for success.
+ *
+ * Since: 0.1.34
+ **/
+gboolean
+cd_icc_set_vcgt (CdIcc *icc, GPtrArray *vcgt, GError **error)
+{
+	CdColorRGB *tmp;
+	cmsToneCurve *curve[3];
+	gboolean ret;
+	guint16 *blue;
+	guint16 *green;
+	guint16 *red;
+	guint i;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+	g_return_val_if_fail (icc->priv->lcms_profile != NULL, FALSE);
+
+	/* unwrap data */
+	red = g_new0 (guint16, vcgt->len);
+	green = g_new0 (guint16, vcgt->len);
+	blue = g_new0 (guint16, vcgt->len);
+	for (i = 0; i < vcgt->len; i++) {
+		tmp = g_ptr_array_index (vcgt, i);
+		red[i]   = tmp->R * (gdouble) 0xffff;
+		green[i] = tmp->G * (gdouble) 0xffff;
+		blue[i]  = tmp->B * (gdouble) 0xffff;
+	}
+
+	/* build tone curve */
+	curve[0] = cmsBuildTabulatedToneCurve16 (NULL, vcgt->len, red);
+	curve[1] = cmsBuildTabulatedToneCurve16 (NULL, vcgt->len, green);
+	curve[2] = cmsBuildTabulatedToneCurve16 (NULL, vcgt->len, blue);
+
+	/* smooth it */
+	for (i = 0; i < 3; i++)
+		cmsSmoothToneCurve (curve[i], 5);
+
+	/* write the tag */
+	ret = cmsWriteTag (icc->priv->lcms_profile, cmsSigVcgtType, curve);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_NO_DATA,
+				     "failed to write VCGT data");
+		goto out;
+	}
+out:
+	for (i = 0; i < 3; i++)
+		cmsFreeToneCurve (curve[i]);
+	g_free (red);
+	g_free (green);
+	g_free (blue);
+	return ret;
+}
+
+/**
  * cd_icc_check_whitepoint:
  **/
 static CdProfileWarning

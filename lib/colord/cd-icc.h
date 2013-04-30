@@ -225,6 +225,12 @@ gboolean	 cd_icc_create_from_edid		(CdIcc		*icc,
 							 const CdColorYxy *blue,
 							 const CdColorYxy *white,
 							 GError		**error);
+GPtrArray	*cd_icc_get_vcgt			(CdIcc		*icc,
+							 guint		 size,
+							 GError		**error);
+gboolean	 cd_icc_set_vcgt			(CdIcc		*icc,
+							 GPtrArray	*vcgt,
+							 GError		**error);
 
 G_END_DECLS
 
