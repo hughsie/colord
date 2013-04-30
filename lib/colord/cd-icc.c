@@ -2590,6 +2590,8 @@ out:
  * Generates a response curve of a specified size.
  *
  * Return value: (transfer container) (element-type CdColorRGB): response data, or %NULL for error
+ *
+ * Since: 0.1.34
  **/
 GPtrArray *
 cd_icc_get_response (CdIcc *icc, guint size, GError **error)
