@@ -199,7 +199,7 @@
         </doc:description>
       </doc:doc>
       <arg type='a(ddd)' name='gamma' direction='out'>
-      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="CdGamaList"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="CdGammaList"/>
         <doc:doc>
           <doc:summary>
             <doc:para>
