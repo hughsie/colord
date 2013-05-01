@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Luca Ferretti <elle.uca@libero.it>, 2011.
-# Milo Casagrande <milo@ubuntu.com>, 2013.
-# Richard Hughes <richard@hughsie.com>, 2013.
+# Luca Ferretti <elle.uca@libero.it>, 2011
+# milo <milo@ubuntu.com>, 2013
+# milo <milo@ubuntu.com>, 2013
+# Richard Hughes <richard@hughsie.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-16 09:08+0100\n"
-"PO-Revision-Date: 2013-04-16 08:09+0000\n"
+"POT-Creation-Date: 2013-05-01 09:30+0100\n"
+"PO-Revision-Date: 2013-05-01 08:30+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -165,7 +166,7 @@ msgstr "ID profilo"
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 msgid "Metadata"
-msgstr "Metadati"
+msgstr "Meta-dati"
 
 msgid "Warning"
 msgstr "Avviso"
@@ -484,6 +485,23 @@ msgid ""
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
 msgstr "Il punto di bianco in Kelvin predefinito per la calibrazione dello schermo: 0 indica nativo. Valori comuni sono 6500 per D65 e 5000 per D50."
 
+msgid "Delay between sample intervals"
+msgstr ""
+
+msgid ""
+"This is the delay between setting the sample color and asking the measuring "
+"instrument to take a sample. It is required because both the graphics driver"
+" and the display itself introduce latency."
+msgstr ""
+
+msgid "Web service profile upload URI"
+msgstr ""
+
+msgid ""
+"The URI of the web service that allows the calibration tools to upload a "
+"specific profile to the Internet."
+msgstr ""
+
 msgid "Compatible with Adobe RGB (1998)"
 msgstr "Compatibile con Adobe RGB (1998)"
 
@@ -612,7 +630,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "Questo profilo è utilizzato nella creazione di lastre positive, per stampa su carta di tipo 1 e 2 (patinata od opaca), per stampa offset a fogli. Non dovrebbe essere più utilizzato per la produzione: usare invece FOGRA39L."
 
 msgid "FOGRA28L Web Coated"
 msgstr "FOGRA28L Web Coated"
@@ -624,7 +642,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "Questo profilo è utilizzato nella creazione di lastre positive, per stampa su carta di tipo 3 (LWC), per stampa offset a rullo. Non dovrebbe essere più utilizzato per la produzione: usare invece FOGRA45."
 
 msgid "FOGRA29L Uncoated"
 msgstr "FOGRA29L Uncoated"
@@ -635,7 +653,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr ""
+msgstr "Questo profilo è utilizzato nella creazione di lastre positive, per stampa su carta di tipo 4 (bianca non patinata), per stampa offset a fogli. Non dovrebbe essere più utilizzato per la produzione: usare invece FOGRA47."
 
 msgid "FOGRA30L Uncoated Yellowish"
 msgstr "FOGRA30L Uncoated Yellowish"
@@ -644,7 +662,7 @@ msgstr "FOGRA30L Uncoated Yellowish"
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr ""
+msgstr "Questo profilo è utilizzato nella creazione di lastre positive, per stampa su carta di tipo 5 (giallognola non patinata), per stampa offset a fogli."
 
 msgid "FOGRA39L Coated"
 msgstr "FOGRA39L Coated"
@@ -657,7 +675,7 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr ""
+msgstr "Questo profilo è utilizzato per stampare su carta di tipo 1 e 2 (patinata od opaca), stampa offset a fogli, e non è molto diverso da U.S. GRACoL 2006 (TR 006)."
 
 msgid "FOGRA40L SC Paper"
 msgstr "FOGRA40L SC Paper"
@@ -666,26 +684,26 @@ msgstr "FOGRA40L SC Paper"
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr ""
+msgstr "Questo profilo è utilizzato per stampare su carta supercalandrata (SC), stampa offset a rullo. Non esiste un equivalente U.S."
 
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L Lightweight Coated"
 
 #. TRANSLATORS: ISO is a trademark
 msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr ""
+msgstr "Questo profilo compatibile con ISO 12647-2:2004 è usato per stampare su carta patinata leggera (LWC) per stampa offset a rulli di 60 l/cm riscaldata. Sostituisce FOGRA28L."
 
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "FOGRA47L Uncoated"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr ""
+msgstr "Questo profilo compatibile con ISO 12647-2 è usato per stampare su carta bianca non patinata 115 g/m² (tipo 4) per stampa offset a fogli di 60 l/cm."
 
 msgid "GRACoL TR006 Coated"
 msgstr "GRACoL TR006 Coated"
@@ -694,10 +712,10 @@ msgstr "GRACoL TR006 Coated"
 msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
-msgstr ""
+msgstr "Questo profilo è utilizzato per stampare su carta patinata U.S di grado 1 e 2, per stampa offset a fogli o per rotocalcografia. È l'equivalente U.S di FOGRA39."
 
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 Newsprint"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -708,7 +726,7 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr ""
+msgstr "Questo profilo è utilizzato per stampare su newsprint. È un profilo compatibile con ISO12647-3:2005, progettato per la stampa a pressa con un TVI (dot gain) del 26%. È consigliato da WAN-IFRA per stampa a freddo su carta newsprint."
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -748,7 +766,7 @@ msgstr "SNAP TR002 Newsprint"
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr ""
+msgstr "Questo è un profilo basato su ANSI CGATS/SNAP TR 002-2007 per stampare su newsprint in U.S., stampa offset a freddo. Ha un TVI (dot gain) del 26%."
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -769,7 +787,7 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr "Questo profilo di test inverte i canali rosso e verde ed è utile come controllo visivo per verificare che i profili vengono applicati correttamente. Se questo profilo viene applicato due volte, l'immagine non viene alterata."
+msgstr "Questo profilo di test inverte i canali rosso e verde ed è utile come controllo visivo per verificare che i profili vengano applicati correttamente. Se questo profilo viene applicato due volte, l'immagine non viene alterata."
 
 msgid "SWOP TR003 Coated"
 msgstr "SWOP TR003 Coated"
@@ -779,7 +797,7 @@ msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr ""
+msgstr "Questo profilo è utilizzato per stampare su carta patinata U.S di grado 3, per stampa offset a fogli e rotocalcografia. È utilizzato per stampa di riviste ad alta qualità su carta bianca."
 
 msgid "SWOP TR005 Coated"
 msgstr "SWOP TR005 Coated"
@@ -789,10 +807,10 @@ msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr ""
+msgstr "Questo profilo è utilizzato per stampare su carta patinata U.S di grado 5, per stampa offset a fogli e rotocalcografia. È utilizzato per stampa di riviste su carta giallognola."
 
 msgid "Wide Gamut RGB"
-msgstr "RGB gamut esteso"
+msgstr "Gamut RGB esteso"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 msgid ""
@@ -918,7 +936,7 @@ msgstr "Esce dopo un breve ritardo"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
-msgstr "Esce dopo aver caricato il motore"
+msgstr "Esce dopo il caricamento del motore"
 
 msgid "Color Management D-Bus Service"
 msgstr "Servizio D-Bus gestione colore"

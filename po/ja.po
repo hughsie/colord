@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Hajime Taira <htaira@redhat.com>, 2012.
-# Ryo Fujita <rfujita@redhat.com>, 2012.
-# Tomoyuki KATO <tomo@dream.daynight.jp>, 2012-2013.
+# Hajime Taira <htaira@redhat.com>, 2012
+# Ryo Fujita <rfujita@redhat.com>, 2012
+# Tomoyuki KATO <tomo@dream.daynight.jp>, 2012-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-16 09:08+0100\n"
-"PO-Revision-Date: 2013-04-16 08:09+0000\n"
+"POT-Creation-Date: 2013-05-01 09:30+0100\n"
+"PO-Revision-Date: 2013-05-01 08:30+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -483,6 +483,23 @@ msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
 msgstr "ディスプレイ較正のためのケルビン単位の標準ターゲットホワイトポイント。0 を用いるとディスプレイネイティブを意味します。一般的な値は、D65 向け 6500、D50 向け 5000 です。"
+
+msgid "Delay between sample intervals"
+msgstr ""
+
+msgid ""
+"This is the delay between setting the sample color and asking the measuring "
+"instrument to take a sample. It is required because both the graphics driver"
+" and the display itself introduce latency."
+msgstr ""
+
+msgid "Web service profile upload URI"
+msgstr ""
+
+msgid ""
+"The URI of the web service that allows the calibration tools to upload a "
+"specific profile to the Internet."
+msgstr ""
 
 msgid "Compatible with Adobe RGB (1998)"
 msgstr "Adobe RGB (1998) 互換"

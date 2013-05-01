@@ -1,3 +1,28 @@
+Version 0.1.34
+~~~~~~~~~~~~~~
+Released: 2013-05-01
+
+New Features:
+ - Add a ICC transform object for simple RGB conversions (Richard Hughes)
+ - Add an example for using CdIcc in applications (Richard Hughes)
+ - Add an internal program to scan a directory of ICC profiles for warnings (Richard Hughes)
+ - Add a warning for RGB profiles with unlikely whitepoint values (Richard Hughes)
+ - Add a webservice URI example that can upload a profile to the Internet (Richard Hughes)
+ - Add device metadata OutputEdidMd5 so we can build a UCMM shim layer (Richard Hughes)
+ - Add functionality to return the response of the CdIcc profile object (Richard Hughes)
+ - Add getting and setting the VCGT table in CdIcc (Richard Hughes)
+ - Add new systemd macros to the example spec file (Václav Pavlín)
+ - Add Qt DBus annotations (Daniel Nicoletti)
+
+Bugfixes:
+ - Allow clients to call org.freedesktop.DBus.Peer (Richard Hughes)
+ - Correct a lot more company names when creating devices (Richard Hughes)
+ - Do not automatically add EDID profiles with warnings to devices (Richard Hughes)
+ - Fix building RGB working space profiles when using OpenBSD/sparc64 (Stefan Sperling)
+ - Fix standard-space property name into a compilable name (Daniel Nicoletti)
+ - Increase the delay between patches in the session-helper (Richard Hughes)
+ - Install the bash completion support into /usr (Richard Hughes)
+
 Version 0.1.33
 ~~~~~~~~~~~~~~
 Released: 2013-04-16

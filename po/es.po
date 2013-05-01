@@ -3,19 +3,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Adolfo Jayme Barrientos <fitoschido@gmail.com>, 2013.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2012-2013.
-# Fernando Gonzalez Blanco <fgonz@fedoraproject.org>, 2009.
-# Javier Alejandro Castro <javier.alejandro.castro@gmail.com>, 2008.
-# Jorge González <aloriel@gmail.com>, 2011.
-# Jorge González <jorgegonz@svn.gnome.org>, 2011.
-# Richard Hughes <richard@hughsie.com>, 2011.
+# Adolfo Jayme <fitoschido@gmail.com>, 2013
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2012-2013
+# Fernando Gonzalez Blanco <fgonz@fedoraproject.org>, 2009
+# Javier Alejandro Castro <javier.alejandro.castro@gmail.com>, 2008
+# Jorge González <aloriel@gmail.com>, 2011
+# Jorge González <jorgegonz@svn.gnome.org>, 2011
+# Richard Hughes <richard@hughsie.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-16 09:08+0100\n"
-"PO-Revision-Date: 2013-04-16 08:09+0000\n"
+"POT-Creation-Date: 2013-05-01 09:30+0100\n"
+"PO-Revision-Date: 2013-05-01 08:30+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -488,6 +488,23 @@ msgid ""
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
 msgstr "El punto blanco predeterminado del dispositivo en Kelvin para calibrado de la pantalla, donde 0 significa en nativo de la pantalla. Los valores habituales son 6500 para D65 y 5000 para D50."
 
+msgid "Delay between sample intervals"
+msgstr ""
+
+msgid ""
+"This is the delay between setting the sample color and asking the measuring "
+"instrument to take a sample. It is required because both the graphics driver"
+" and the display itself introduce latency."
+msgstr ""
+
+msgid "Web service profile upload URI"
+msgstr ""
+
+msgid ""
+"The URI of the web service that allows the calibration tools to upload a "
+"specific profile to the Internet."
+msgstr ""
+
 msgid "Compatible with Adobe RGB (1998)"
 msgstr ""
 
@@ -808,7 +825,7 @@ msgid ""
 msgstr ""
 
 msgid "X11 Colors"
-msgstr ""
+msgstr "Colores X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens

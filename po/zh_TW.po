@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Cheng-Chia Tseng <pswo10680@gmail.com>, 2011, 2012.
+# Cheng-Chia Tseng <pswo10680@gmail.com>, 2011-2012
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-16 09:08+0100\n"
-"PO-Revision-Date: 2013-04-16 08:09+0000\n"
+"POT-Creation-Date: 2013-05-01 09:30+0100\n"
+"PO-Revision-Date: 2013-05-01 08:30+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -47,11 +47,11 @@ msgstr "顯示額外除錯資訊"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "設定本地化文字時要使用的語言地區"
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
-msgstr ""
+msgstr "產生指定大小的 VCGT 校正"
 
 #. TRANSLATORS: command description
 msgid "Clear any metadata in the profile"
@@ -91,7 +91,7 @@ msgstr "自動修正描述檔中的中介資料"
 
 #. TRANSLATORS: command description
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "設定 ICC 描述檔版本"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -99,7 +99,7 @@ msgstr "色彩管理"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "ICC 描述檔傾印程式"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -150,7 +150,7 @@ msgstr "Gamma 表"
 
 #. TRANSLATORS: if the profile is installed for all users
 msgid "System Wide"
-msgstr ""
+msgstr "系統全域"
 
 #. TRANSLATORS: profile filename
 msgid "Filename"
@@ -166,7 +166,7 @@ msgid "Metadata"
 msgstr "中介資料"
 
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -181,12 +181,12 @@ msgstr "已修改"
 
 #. TRANSLATORS: the device enabled state
 msgid "Enabled"
-msgstr ""
+msgstr "已啟用"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 msgid "Embedded"
-msgstr ""
+msgstr "已內嵌"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -212,7 +212,7 @@ msgstr "序號"
 #. * systemd these can be setup as three independant seats with
 #. * different sessions running on them
 msgid "Seat"
-msgstr ""
+msgstr "臺座"
 
 #. TRANSLATORS: the device identifier
 msgid "Device ID"
@@ -247,55 +247,55 @@ msgstr "周遭"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
-msgstr ""
+msgstr "校準"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD 通用"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 msgid "LED Generic"
-msgstr ""
+msgstr "LED 通用"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 msgid "Plasma"
-msgstr ""
+msgstr "電漿"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "廣色域 LCD CCFL"
 
 #. TRANSLATORS: this is the display technology
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "廣色域 LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD 白背光 LED"
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 msgid "State"
@@ -307,7 +307,7 @@ msgstr "序號"
 
 #. TRANSLATORS: sensor identifier
 msgid "Sensor ID"
-msgstr ""
+msgstr "感測器 ID"
 
 #. TRANSLATORS: the options for the sensor
 msgid "Options"
@@ -324,7 +324,7 @@ msgstr "已上鎖"
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 msgid "Capabilities"
-msgstr ""
+msgstr "支援功能"
 
 msgid "There are no supported sensors attached"
 msgstr "沒有接上支援的感測器"
@@ -335,18 +335,18 @@ msgstr "感測器"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "將裝置設定至校準位置，再按下 Enter。"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the surface position and press enter."
-msgstr ""
+msgstr "將裝置設定至表面位置，再按下 Enter。"
 
 msgid "Color"
 msgstr "色彩"
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "顯示客戶端與幕後程式版本"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -422,7 +422,7 @@ msgstr "刪除描述檔"
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "設定描述檔中的額外數性"
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
@@ -430,7 +430,7 @@ msgstr "設定裝置型號"
 
 #. TRANSLATORS: command description
 msgid "Enables or disables the device"
-msgstr ""
+msgstr "啟用或停用裝置"
 
 #. TRANSLATORS: command description
 msgid "Gets the default profile for a device"
@@ -461,32 +461,49 @@ msgid "No connection to colord:"
 msgstr "無連至 colord 的連線："
 
 msgid "Client version:"
-msgstr ""
+msgstr "客戶端版本："
 
 msgid "Daemon version:"
-msgstr ""
+msgstr "幕後程式版本："
 
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "顯示器的預設色域"
 
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr ""
+msgstr "顯示器的預設目標伽瑪值。常見的值為 1.8、2.2、2.4。"
 
 msgid "Default display target whitepoint"
-msgstr ""
+msgstr "預設顯示器目標白點"
 
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
+msgstr "預設顯示器校準用的目標白點，單位採科式溫標 (即度 K，Kelvin)。常見的值為 6500 表 D65，及 5000 表 D50。"
+
+msgid "Delay between sample intervals"
 msgstr ""
+
+msgid ""
+"This is the delay between setting the sample color and asking the measuring "
+"instrument to take a sample. It is required because both the graphics driver"
+" and the display itself introduce latency."
+msgstr ""
+
+msgid "Web service profile upload URI"
+msgstr "網頁服務描述檔上傳 URI"
+
+msgid ""
+"The URI of the web service that allows the calibration tools to upload a "
+"specific profile to the Internet."
+msgstr "讓校準工具可上傳指定描述檔至網際網路的網頁服務 URI。"
 
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "與 Adobe RGB (1998) 相容"
 
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "此描述檔未受已知著作權限制"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -496,7 +513,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr ""
+msgstr "此編輯用空間設計為 SMPTE-240M ，並包含 CMYK 色彩印表機可用的絕大多數色彩。這是相片編輯者與列印使用者的偏好選擇，因為能再現出所有的 SWOP 色彩。"
 
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
@@ -507,7 +524,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr ""
+msgstr "此遺蹟描述檔最初是由 Adobe 所建立，用於 Photoshop 與 Illustrator。它是根據原始的 Apple 13\" RGB 螢幕所製作，類似於 sRGB，不應用作顯示器的描述檔，或是用於新影像。"
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -517,7 +534,7 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "此編輯用空間可顯示出比 Adobe RGB 更飽和的色彩，適合用於常需高飽和色彩影像的廣告用途上。它雖類似於 DonRGB4，卻可顯示出 Fujichrome Velvia 有時可呈現的超飽和紅色。"
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 msgid ""
@@ -525,31 +542,31 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "此編輯用空間可顯示出比 Adobe RGB 更飽和的色彩。相較於 ProPhoto RGB，它更不易產生量化噪訊，卻仍可保留更多陰影細節。但對於大多數的情況來說，ProPhoto RGB 可能是更好的選擇。"
 
 msgid "Blue"
-msgstr ""
+msgstr "藍"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "此測試用描述檔會修改顯示卡查找表，藉此讓螢幕上的所有色彩看起來些微偏藍。這可讓使用者檢查校準是否已正確套用。"
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr ""
+msgstr "這是 RGB 編輯用空間，用於 Adobe Photoshop 5.0 與其後版本。它當初的設計是以輸出為中心，在 ColorMatch RGB 與 Adobe RGB 之間作妥協，偏好用於相片列印服務上。"
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "這是理論用描述檔，設計用於色彩實驗。您可能不想使用此描述檔作為編輯用空間或顯示用描述檔。"
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -558,10 +575,10 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr ""
+msgstr "此描述檔當初是由 Radius 設計給 PressView 螢幕使用。因其與 sRGB 無重大差異，請只將此描述檔用作顯示器描述檔，或用作編輯用空間。您應該只需要在檢視那些在 PressView 螢幕上所建立的影像時使用此描述檔。"
 
 msgid "Crayon Colors"
-msgstr ""
+msgstr "蠟筆色彩"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -570,14 +587,14 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "此命名的色彩描述檔包含所有常用的 Crayola 蠟筆顏色。它設計給將命名色彩內嵌至文件的測試之用。"
 
 #. TRANSLATORS: saturated means vivid bright colors
 msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "此編輯用空間可顯示出比 Adobe RGB 更飽和的色彩，適合用於常需高飽和色彩影像的廣告用途上。"
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 msgid ""
@@ -585,14 +602,14 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr ""
+msgstr "此描述檔是 ECI (European Color Initiative，歐洲色彩協會) 所建議的編輯用空間，適合專業影像編輯者使用，其設計目標是要覆蓋所有印刷業可列印出的色彩。這偶爾用於出版社與印刷廠之間的色彩交換。"
 
 #. TRANSLATORS: lightness is a technical word for brightness
 msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr ""
+msgstr "此描述檔是以亮度伽瑪曲線設計，代表螢幕必須以相同方式校準。此描述檔僅對進階使用者來說會有用處，不建議日常使用。"
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -600,20 +617,20 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr ""
+msgstr "此描述檔是設計給透明底片的掃描存檔之用。它適用於儲存來自負片的影像，雖然現代更常用 ProPhoto RGB 於存檔用途。"
 
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "FOGRA27L 塗料紙"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "此描述檔用於正版製作、1 或 2 類紙張 (塗料紙或霧面紙) 印刷、膠印等。此描述檔設定不應再用於生產用途，請改用 FOGRA39L。"
 
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "FOGRA28L 捲筒塗料紙"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -622,10 +639,10 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "描述檔用於正版製作、3 類紙張 (LWC，指「不是很白」) 印刷、膠版捲筒紙印刷等。此描述檔不應再用於生產用途，請改用 FOGRA45。"
 
 msgid "FOGRA29L Uncoated"
-msgstr ""
+msgstr "FOGRA47L 無塗料紙"
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -633,19 +650,19 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr ""
+msgstr "此描述檔用於正版製作、4 類紙張 (無塗料白紙) 印刷、膠印等。此描述檔不應再用於生產用途，請改用 FOGRA47。"
 
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr ""
+msgstr "FOGRA30L 無塗料黃紙"
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr ""
+msgstr "此描述檔用於正版製作、5 類紙張 (無塗料黃紙) 印刷、膠印等。"
 
 msgid "FOGRA39L Coated"
-msgstr ""
+msgstr "FOGRA47L 無塗料紙"
 
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
@@ -655,47 +672,47 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr ""
+msgstr "此描述檔用於 1 與 2 類紙張 (塗料紙或霧面紙) 印刷、膠印等。此描述檔與美國 GRACoL 2006 (TR 006) 無重大差異。"
 
 msgid "FOGRA40L SC Paper"
-msgstr ""
+msgstr "FOGRA40L SC 紙"
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr ""
+msgstr "此描述檔用於 SC (SuperCalendered，超級軋光紙) 紙張列印、捲筒紙印刷等。無有美規標準可與之對應。"
 
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L 輕量塗料紙"
 
 #. TRANSLATORS: ISO is a trademark
 msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr ""
+msgstr "此 ISO 12647-2:2004 遵循描述檔用於 60 l/cm 熱固型輪轉平版印刷之改進式輕量塗料紙 (LWC) 的列印。這可取代 FOGRA28L。"
 
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "FOGRA47L 無塗料紙"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr ""
+msgstr "此 ISO 12647-2 遵循描述檔用於 60 l/cm 膠印之 115 gsm 無塗料白紙 (4 類紙) 的列印。"
 
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "GRACoL TR006 塗料紙"
 
 #. TRANSLATORS: coated = smooth and expensive
 msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
-msgstr ""
+msgstr "此描述檔用於 U.S. 第 1 與第 2 級塗料紙列印、膠印、凸版印刷等。它是 FOGRA39 的美國對應標準。"
 
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 新聞紙"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -706,7 +723,7 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr ""
+msgstr "此描述檔用於新聞紙的印刷，是 ISO12647-3:2005 遵循描述檔，設計給呈現出 26% TVI (或稱網點擴大，dot gain) 的印刷用。這是 WAN-IFRA 所建議的冷固型新聞紙印刷標準，全世界通用。"
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -715,14 +732,14 @@ msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
-msgstr ""
+msgstr "此描述檔定義為 NTSC 視訊標準所使用的色彩範圍。它是棄用的標準，已由 SMTE-C 取代。您應只使用此描述檔於存檔視訊之解碼用途。"
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr ""
+msgstr "此描述檔定義為 PAL 與 SECAM 視訊標準所使用的色彩範圍，很類似 sRGB。您應只使用此描述檔於視訊的編碼、解碼用途。"
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 msgid ""
@@ -730,23 +747,23 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr ""
+msgstr "最初由 Eastman Kodak 設計，且稱之為 ROMM RGB。此描述檔可顯示非常大範圍的色彩，許多攝影師將它用於 RAW 影像的算繪、編輯、封存用途。除非您正使用每通道有 16 位元精準度的裝置，否則編輯影像時可能會看見色帶產生。"
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "這是北美與日本使用的工作室錄製標準。您應只使用此描述檔於視訊編碼、解碼用途。"
 
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 新聞紙"
 
 #. TRANSLATORS: CGATS is a trademark
 #, no-c-format
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr ""
+msgstr "這是根據 ANSI CGATS/SNAP TR 002-2007 所建立的描述檔，用於美國冷固型膠印之新聞紙印刷。TVI (或稱網點擴大，dot gain) 為 26%。"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -757,40 +774,40 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr ""
+msgstr "此通用描述檔由 HP 與 Microsoft 共同設計，因常作為網際網路上無標籤 RGB 色彩 (影像無指定色彩描述檔) 的預設描述檔，以及 HDTV 上的使用而留存至今。大多數尚未校準過的顯示器皆可顯示 sRGB 中可使用的色彩，然而此種描述檔通常是印刷時的最後選擇。"
 
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "紅綠交換"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "此測試用描述檔會交換紅色與綠色通道，是檢驗描述檔是否已正確套用的有用視覺法。若此描述檔套用兩次，則影像外觀無變化。"
 
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "SWOP TR003 塗料紙"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr ""
+msgstr "此描述檔用於 U.S. 第 3 級塗料紙、膠印、凹版印刷。可用於高品質雜誌的白紙列印。"
 
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "SWOP TR005 塗料紙"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr ""
+msgstr "此描述檔用於 U.S. 第 5 級銅版紙、膠印、凹版印刷。可用於標準雜誌的黃紙列印。"
 
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "廣色域 RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 msgid ""
@@ -799,10 +816,10 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr ""
+msgstr "此編輯用空間由 Adobe Systems 設計於捕捉比 Adobe RGB 更多樣的色彩。此描述檔用來列印至底片紀錄器，且可定義許多電腦螢幕無法顯示的色彩。除非您正使用每通道 16 位元精準度的裝置，否則您可能在編輯影像時看見色帶產生。"
 
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 色彩"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -810,7 +827,7 @@ msgstr ""
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr ""
+msgstr "此命名的色彩描述檔包含所有 X11 定義的色彩，將來源色假定為 sRGB。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices

@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Serge Vylekzhanin <vylekzhanin@mail.ru>, 2013.
-# Yuri Kozlov <yuray@komyakino.ru>, 2012.
-# Александр Прокудин <alexandre.prokoudine@gmail.com>, 2011.
+# vylekzhanin <vylekzhanin@mail.ru>, 2013
+# Yuri Kozlov <yuray@komyakino.ru>, 2012
+# prokoudine <alexandre.prokoudine@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-16 09:08+0100\n"
-"PO-Revision-Date: 2013-04-16 08:09+0000\n"
+"POT-Creation-Date: 2013-05-01 09:30+0100\n"
+"PO-Revision-Date: 2013-05-01 08:30+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -412,7 +412,7 @@ msgstr "Добавить профиль к устройству"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
-msgstr "Сделать профиль используемым устройством по умолчанию"
+msgstr "Сделать используемый по умолчанию профиль для устройства"
 
 #. TRANSLATORS: command description
 msgid "Deletes a device"
@@ -483,6 +483,23 @@ msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
 msgstr "Стандартная целевая точка белого в Кельвинах для калибровки дисплея, где 0 означает родное значение для дисплея. Распространённые значения: 6500 для D65 и 5000 для D50."
+
+msgid "Delay between sample intervals"
+msgstr ""
+
+msgid ""
+"This is the delay between setting the sample color and asking the measuring "
+"instrument to take a sample. It is required because both the graphics driver"
+" and the display itself introduce latency."
+msgstr ""
+
+msgid "Web service profile upload URI"
+msgstr "Адрес интернет-службы для выгрузки профиля"
+
+msgid ""
+"The URI of the web service that allows the calibration tools to upload a "
+"specific profile to the Internet."
+msgstr "Адрес интернет-службы, используя который, инструменты калибровки могут выгрузить определенный профиль в Интернет."
 
 msgid "Compatible with Adobe RGB (1998)"
 msgstr "Совместимый с Adobe RGB (1998)"
@@ -612,7 +629,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr "Этот профиль используется для создания печатных форм методом позитивного копирования, печати на бумаге 1-го и 2-го типов (мелованная или матовая), с листовой подачей. Данный профиль не следует более использовать в производстве, вместо него используйте FOGRA39L."
+msgstr "Этот профиль используется для создания печатных форм методом позитивного копирования, печати на бумаге 1-го и 2-го типов (мелованная или матовая), с листовой подачей. Данный профиль более не следует использовать в производстве, вместо него используйте FOGRA39L."
 
 msgid "FOGRA28L Web Coated"
 msgstr "FOGRA28L для рулонной мелованной бумаги"
@@ -624,7 +641,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr "Этот профиль используется для создания печатных форм методом позитивного копирования, печати на бумаге 3-го типа (легкомелованная, LWC), с рулонной подачей. Данный профиль не следует более использовать в производстве, вместо него используйте FOGRA45."
+msgstr "Этот профиль используется для создания печатных форм методом позитивного копирования, печати на бумаге 3-го типа (легкомелованная, LWC), с рулонной подачей. Данный профиль более не следует использовать в производстве, вместо него используйте FOGRA45."
 
 msgid "FOGRA29L Uncoated"
 msgstr "FOGRA29L для немелованной бумаги"
@@ -635,7 +652,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr "Этот профиль используется для создания печатных форм методом позитивного копирования, печати на бумаге 4-го типа (немелованная \"белая\"), с листовой подачей. Данный профиль не следует более использовать в производстве, вместо него используйте FOGRA47."
+msgstr "Этот профиль используется для создания печатных форм методом позитивного копирования, печати на бумаге 4-го типа (немелованная \"белая\"), с листовой подачей. Данный профиль более не следует использовать в производстве, вместо него используйте FOGRA47."
 
 msgid "FOGRA30L Uncoated Yellowish"
 msgstr "FOGRA30L для немелованной \"жёлтой\" бумаги"
@@ -759,7 +776,7 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr "Этот профиль общего назначения был разработан компаниями Hewlett-Packard и Microsoft, и стал типичным в Интернете в качестве профиля по умолчанию для изображений в пространстве RGB без дополнительных меток (untagged RGB) и для использования в видео высокого качества HDTV. Большинство некалиброванных дисплеев способны отображать большую часть цветов, доступных в sRGB, хотя этот профиль иногда даёт не очень хорошие результаты при печати."
+msgstr "Этот профиль общего назначения был разработан компаниями Hewlett-Packard и Microsoft и стал типичным в Интернете в качестве стандартного профиля для изображений в пространстве RGB без дополнительных меток (untagged RGB) и для использования в телевидении высокого качества HDTV. Большинство некалиброванных дисплеев способны отображать большую часть цветов, доступных в sRGB, хотя этот профиль иногда даёт не очень хорошие результаты при печати."
 
 msgid "Swapped Red and Green"
 msgstr "Инверсия красного и зелёного"
