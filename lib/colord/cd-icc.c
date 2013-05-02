@@ -1125,6 +1125,38 @@ out:
 }
 
 /**
+ * cd_icc_save_file_mkdir_parents:
+ **/
+static gboolean
+cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
+{
+	gboolean ret = FALSE;
+	GFile *parent_dir = NULL;
+
+	/* get parent directory */
+	parent_dir = g_file_get_parent (file);
+	if (parent_dir == NULL) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_CREATE,
+				     "could not get parent dir");
+		goto out;
+	}
+
+	/* ensure desination does not already exist */
+	ret = g_file_query_exists (parent_dir, NULL);
+	if (ret)
+		goto out;
+	ret = g_file_make_directory_with_parents (parent_dir, NULL, error);
+	if (!ret)
+		goto out;
+out:
+	if (parent_dir != NULL)
+		g_object_unref (parent_dir);
+	return ret;
+}
+
+/**
  * cd_icc_save_file:
  * @icc: a #CdIcc instance.
  * @file: a #GFile
@@ -1317,6 +1349,11 @@ cd_icc_save_file (CdIcc *icc,
 				     "failed to dump ICC file to memory");
 		goto out;
 	}
+
+	/* ensure parent directories exist */
+	ret = cd_icc_save_file_mkdir_parents (file, error);
+	if (!ret)
+		goto out;
 
 	/* actually write file */
 	ret = g_file_replace_contents (file,
