@@ -882,6 +882,31 @@ out:
 }
 
 /**
+ * cd_main_get_display_fallback_id:
+ **/
+static gchar *
+cd_main_get_display_fallback_id (GVariant *dict)
+{
+	const gchar *prop_key;
+	const gchar *prop_value;
+	gchar *device_id = NULL;
+	GVariantIter *iter;
+
+	iter = g_variant_iter_new (dict);
+	while (g_variant_iter_next (iter, "{&s&s}",
+				    &prop_key, &prop_value)) {
+		if (g_strcmp0 (prop_key, CD_DEVICE_METADATA_XRANDR_NAME) != 0)
+			continue;
+		if (prop_value == NULL || prop_value[0] == '\0')
+			continue;
+		device_id = g_strdup_printf ("xrandr-%s", prop_value);
+		break;
+	}
+	g_variant_iter_free (iter);
+	return device_id;
+}
+
+/**
  * cd_main_get_cmdline_for_pid:
  **/
 static gchar *
@@ -940,6 +965,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	const gchar *device_id = NULL;
 	const gchar *scope_tmp = NULL;
 	gchar *cmdline = NULL;
+	gchar *device_id_fallback = NULL;
 	GError *error = NULL;
 	GPtrArray *array = NULL;
 	GVariantIter *iter = NULL;
@@ -1272,6 +1298,22 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							       "device type %s not recognised",
 							       prop_value);
 			goto out;
+		}
+
+		/* are we using the XRANDR_name property rather than the
+		 * sent device-id? */
+		if (cd_config_get_boolean (priv->config, "AlwaysUseXrandrName") &&
+		    device_kind == CD_DEVICE_KIND_DISPLAY) {
+			device_id_fallback = cd_main_get_display_fallback_id (dict);
+			if (device_id_fallback == NULL) {
+				g_dbus_method_invocation_return_error (invocation,
+								       CD_CLIENT_ERROR,
+								       CD_CLIENT_ERROR_INPUT_INVALID,
+								       "AlwaysUseXrandrName used and %s unset",
+								       CD_DEVICE_METADATA_XRANDR_NAME);
+				goto out;
+			}
+			device_id = device_id_fallback;
 		}
 
 		/* check it does not already exist */
@@ -1624,6 +1666,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	g_critical ("failed to process method %s", method_name);
 out:
 	g_free (cmdline);
+	g_free (device_id_fallback);
 	if (iter != NULL)
 		g_variant_iter_free (iter);
 	if (dict != NULL)
