@@ -131,6 +131,11 @@ AX_CHECK_COMPILE_FLAG([-fPIE],
 AC_SUBST(PIE_CFLAGS)
 AC_SUBST(PIE_LDFLAGS)
 
+# check for full RELRO (relocation read-only) support
+AX_CHECK_LINK_FLAG([-Wl,-z,relro,-z,now],
+		   [RELRO_LDFLAGS="-Wl,-z,relro,-z,now"])
+AC_SUBST([RELRO_LDFLAGS])
+
 dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------

@@ -109,11 +109,6 @@ This may be useful for CMYK soft-proofing or for extra device support.
 %setup -q
 
 %build
-# we can't use _hardened_build here, see
-# https://bugzilla.redhat.com/show_bug.cgi?id=892837
-export CFLAGS='-fPIC -fPIE -DPIE %optflags'
-export LDFLAGS='-pie -Wl,-z,now -Wl,-z,relro -Wl,-z,bind_now'
-
 # Set ~2 GiB limit so that colprof is forced to work in chunks when
 # generating the print profile rather than trying to allocate a 3.1 GiB
 # chunk of RAM to put the entire B-to-A tables in.

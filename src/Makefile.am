@@ -110,7 +110,8 @@ colord_LDADD =						\
 	$(GLIB_LIBS)
 
 colord_LDFLAGS =					\
-	$(PIE_LDFLAGS)
+	$(PIE_LDFLAGS)					\
+	$(RELRO_LDFLAGS)
 
 colord_CFLAGS =						\
 	$(WARNINGFLAGS_C)
