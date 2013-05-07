@@ -40,6 +40,9 @@ BuildRequires: vala-tools
 BuildRequires: libgusb-devel
 BuildRequires: gtk-doc
 BuildRequires: color-filesystem
+%if !0%{?rhel}
+BuildRequires: bash-completion
+%endif
 %if 0%{?build_print_profiles}
 BuildRequires: argyllcms
 %endif
@@ -181,7 +184,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
 %{_datadir}/man/man1/*.1.gz
 %{_datadir}/colord
+%if !0%{?rhel}
 %{_datadir}/bash-completion/completions/colormgr
+%endif
 %config %{_sysconfdir}/colord.conf
 /usr/lib/udev/rules.d/*.rules
 %{_libdir}/colord-sensors
