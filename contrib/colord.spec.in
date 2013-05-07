@@ -12,9 +12,9 @@
 # logic that these are probably not doing press proofing or editing
 # in different CMYK spaces
 %ifarch %{ix86} x86_64
-%define build_print_profiles %{?enable_print_profiles}
-%else
-%define build_print_profiles 0
+ %if !0%{?rhel}
+  %define build_print_profiles %{?enable_print_profiles}
+ %endif
 %endif
 
 Summary:   Color daemon
