@@ -1,6 +1,7 @@
 if HAVE_SANE
 
-INCLUDES =						\
+AM_CPPFLAGS =						\
+	$(PIE_CFLAGS)					\
 	$(GLIB_CFLAGS)					\
 	$(GUDEV_CFLAGS)					\
 	$(SANE_CFLAGS)					\
@@ -32,6 +33,9 @@ colord_sane_LDADD =					\
 	$(SANE_LIBS)					\
 	$(GLIB_LIBS)					\
 	$(DBUS_LIBS)
+
+colord_sane_LDFLAGS =					\
+	$(PIE_LDFLAGS)
 
 colord_sane_CFLAGS =					\
 	$(WARNINGFLAGS_C)

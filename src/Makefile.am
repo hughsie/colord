@@ -10,6 +10,7 @@ dist_introspection_DATA = 				\
 	org.freedesktop.ColorManager.Profile.xml
 
 AM_CPPFLAGS =						\
+	$(PIE_CFLAGS)					\
 	$(GLIB_CFLAGS)					\
 	$(POLKIT_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
@@ -107,6 +108,9 @@ colord_LDADD =						\
 	$(LIBSYSTEMD_LOGIN_LIBS)			\
 	$(COLORD_PRIVATE_LIBS)				\
 	$(GLIB_LIBS)
+
+colord_LDFLAGS =					\
+	$(PIE_LDFLAGS)
 
 colord_CFLAGS =						\
 	$(WARNINGFLAGS_C)

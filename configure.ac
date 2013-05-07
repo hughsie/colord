@@ -124,6 +124,13 @@ AC_SUBST(LIBM)
 
 GLIB_GSETTINGS
 
+# check for PIE (position independent executable) support
+AX_CHECK_COMPILE_FLAG([-fPIE],
+		      [AX_CHECK_LINK_FLAG([-fPIE -pie],
+					  [PIE_CFLAGS="-fPIE" PIE_LDFLAGS="-pie"])])
+AC_SUBST(PIE_CFLAGS)
+AC_SUBST(PIE_LDFLAGS)
+
 dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------

@@ -3,6 +3,7 @@ dist_introspection_DATA = 				\
 	org.freedesktop.ColorHelper.xml
 
 AM_CPPFLAGS =						\
+	$(PIE_CFLAGS)					\
 	-I$(top_srcdir)/lib				\
 	$(COLORD_GTK_CFLAGS)				\
 	$(GLIB_CFLAGS)					\
@@ -45,6 +46,9 @@ colord_session_LDADD =					\
 	$(LCMS_LIBS)					\
 	$(GLIB_LIBS)					\
 	-lm
+
+colord_session_LDFLAGS =				\
+	$(PIE_LDFLAGS)
 
 colord_session_CFLAGS =					\
 	$(WARNINGFLAGS_C)

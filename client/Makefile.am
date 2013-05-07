@@ -1,4 +1,5 @@
 AM_CPPFLAGS =						\
+	$(PIE_CFLAGS)					\
 	$(GLIB_CFLAGS)					\
 	$(GTK_CFLAGS)					\
 	-I$(top_srcdir)					\
@@ -34,6 +35,9 @@ cd_find_broken_LDADD =					\
 	$(COLORD_LIBS)					\
 	$(GLIB_LIBS)
 
+cd_find_broken_LDFLAGS =				\
+	$(PIE_LDFLAGS)
+
 cd_find_broken_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
@@ -43,6 +47,9 @@ colormgr_SOURCES =					\
 colormgr_LDADD =					\
 	$(COLORD_LIBS)					\
 	$(GLIB_LIBS)
+
+colormgr_LDFLAGS =					\
+	$(PIE_LDFLAGS)
 
 colormgr_CFLAGS =					\
 	$(WARNINGFLAGS_C)
@@ -59,6 +66,9 @@ cd_fix_profile_LDADD =					\
 cd_fix_profile_CFLAGS =					\
 	$(WARNINGFLAGS_C)
 
+cd_fix_profile_LDFLAGS =				\
+	$(PIE_LDFLAGS)
+
 cd_iccdump_SOURCES =					\
 	cd-iccdump.c
 
@@ -67,6 +77,9 @@ cd_iccdump_LDADD =					\
 	$(LCMS_LIBS)					\
 	$(COLORD_LIBS)					\
 	-lm
+
+cd_iccdump_LDFLAGS =					\
+	$(PIE_LDFLAGS)
 
 cd_iccdump_CFLAGS =					\
 	$(WARNINGFLAGS_C)
@@ -79,6 +92,9 @@ cd_create_profile_LDADD =				\
 	$(LCMS_LIBS)					\
 	$(COLORD_LIBS)					\
 	-lm
+
+cd_create_profile_LDFLAGS =				\
+	$(PIE_LDFLAGS)
 
 cd_create_profile_CFLAGS =				\
 	$(WARNINGFLAGS_C)
