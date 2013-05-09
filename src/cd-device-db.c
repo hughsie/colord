@@ -307,8 +307,8 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 	GPtrArray *array_tmp = NULL;
 	gchar *value = NULL;
 
-	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
-	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
+	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
 
 	g_debug ("CdDeviceDb: get property %s for %s", property, device_id);
 	statement = sqlite3_mprintf ("SELECT value FROM properties_v2 WHERE "
@@ -364,8 +364,8 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 	GPtrArray *array = NULL;
 	GPtrArray *array_tmp = NULL;
 
-	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
-	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
+	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
 
 	/* get all the devices */
 	g_debug ("CdDeviceDb: get devices");
@@ -408,8 +408,8 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 	GPtrArray *array = NULL;
 	GPtrArray *array_tmp = NULL;
 
-	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
-	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
+	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
 
 	/* get all the devices */
 	g_debug ("CdDeviceDb: get properties for device %s", device_id);

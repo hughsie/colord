@@ -450,7 +450,7 @@ ch_client_get_default (GError **error)
 	GUsbDevice *device = NULL;
 	GUsbDeviceList *list;
 
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	/* try to find the ColorHug device */
 	usb_ctx = g_usb_context_new (NULL);

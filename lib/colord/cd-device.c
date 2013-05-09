@@ -1622,13 +1622,13 @@ cd_device_get_profile_for_qualifiers_finish (CdDevice *device,
 {
 	GSimpleAsyncResult *simple;
 
-	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	simple = G_SIMPLE_ASYNC_RESULT (res);
 	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
+		return NULL;
 
 	return g_object_ref (g_simple_async_result_get_op_res_gpointer (simple));
 }

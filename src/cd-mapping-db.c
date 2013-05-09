@@ -371,8 +371,8 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 	GPtrArray *array = NULL;
 	GPtrArray *array_tmp = NULL;
 
-	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), NULL);
+	g_return_val_if_fail (mdb->priv->db != NULL, NULL);
 
 	g_debug ("CdMappingDb: get profiles for %s", device_id);
 	statement = sqlite3_mprintf ("SELECT profile FROM mappings_v2 WHERE "
@@ -421,8 +421,8 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 	GPtrArray *array = NULL;
 	GPtrArray *array_tmp = NULL;
 
-	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), NULL);
+	g_return_val_if_fail (mdb->priv->db != NULL, NULL);
 
 	g_debug ("CdMappingDb: get devices for %s", profile_id);
 	statement = sqlite3_mprintf ("SELECT device FROM mappings_v2 WHERE "

@@ -2590,7 +2590,7 @@ cd_icc_get_vcgt (CdIcc *icc, guint size, GError **error)
 	guint i;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
-	g_return_val_if_fail (icc->priv->lcms_profile != NULL, FALSE);
+	g_return_val_if_fail (icc->priv->lcms_profile != NULL, NULL);
 
 	/* get tone curves from icc */
 	vcgt = cmsReadTag (icc->priv->lcms_profile, cmsSigVcgtType);
