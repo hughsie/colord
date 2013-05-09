@@ -48,17 +48,22 @@ gboolean	 dtp94_device_send_data		(GUsbDevice	*device,
 						 guint8		*reply,
 						 gsize		 reply_len,
 						 gsize		*reply_read,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 dtp94_device_send_cmd		(GUsbDevice	*device,
 						 const gchar	*command,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 CdColorXYZ	*dtp94_device_take_sample	(GUsbDevice	*device,
 						 CdSensorCap	 cap,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gchar		*dtp94_device_get_serial	(GUsbDevice	*device,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 dtp94_device_setup		(GUsbDevice	*device,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

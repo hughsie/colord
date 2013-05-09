@@ -84,12 +84,14 @@ HueyCtx		*huey_ctx_new			(void);
 
 CdColorXYZ	*huey_ctx_take_sample		(HueyCtx	*ctx,
 						 CdSensorCap	 cap,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 GUsbDevice	*huey_ctx_get_device		(HueyCtx	*ctx);
 void		 huey_ctx_set_device		(HueyCtx	*ctx,
 						 GUsbDevice	*device);
 gboolean	 huey_ctx_setup			(HueyCtx	*ctx,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 const CdMat3x3	*huey_ctx_get_calibration_lcd	(HueyCtx	*ctx);
 const CdMat3x3	*huey_ctx_get_calibration_crt	(HueyCtx	*ctx);
 gfloat		 huey_ctx_get_calibration_value	(HueyCtx	*ctx);

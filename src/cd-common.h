@@ -40,16 +40,20 @@ GQuark		 cd_client_error_quark		(void);
 gboolean	 cd_main_sender_authenticated	(GDBusConnection *connection,
 						 const gchar	*sender,
 						 const gchar	*action_id,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 guint		 cd_main_get_sender_uid		(GDBusConnection *connection,
 						 const gchar	*sender,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 guint		 cd_main_get_sender_pid		(GDBusConnection *connection,
 						 const gchar	*sender,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gchar		*cd_main_ensure_dbus_path	(const gchar	*object_path);
 gboolean	 cd_main_mkdir_with_parents	(const gchar	*filename,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 #endif /* __CD_COMMON_H__ */
 

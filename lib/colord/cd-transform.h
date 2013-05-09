@@ -107,7 +107,8 @@ gboolean	 cd_transform_process			(CdTransform	*transform,
 							 guint		 height,
 							 guint		 rowstride,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

@@ -48,43 +48,55 @@ gboolean	 huey_device_send_data		(GUsbDevice	*device,
 						 guchar		*reply,
 						 gsize		 reply_len,
 						 gsize		*reply_read,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 huey_device_set_leds		(GUsbDevice	*device,
 						 guint8		 value,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gchar		*huey_device_get_serial_number	(GUsbDevice	*device,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gchar		*huey_device_get_unlock_string	(GUsbDevice	*device,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 huey_device_unlock		(GUsbDevice	*device,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gdouble		 huey_device_get_ambient	(GUsbDevice	*device,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 huey_device_read_register_byte (GUsbDevice	*device,
 						 guint8		 addr,
 						 guint8		 *value,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 huey_device_read_register_string (GUsbDevice	*device,
 						 guint8		 addr,
 						 gchar		*value,
 						 gsize		 len,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 huey_device_read_register_word (GUsbDevice	*device,
 						 guint8		 addr,
 						 guint32	*value,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 huey_device_read_register_float (GUsbDevice	*device,
 						 guint8		 addr,
 						 gfloat		*value,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 huey_device_read_register_vector (GUsbDevice	*device,
 						 guint8		 addr,
 						 CdVec3		*value,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 huey_device_read_register_matrix (GUsbDevice	*device,
 						 guint8		 addr,
 						 CdMat3x3	*value,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

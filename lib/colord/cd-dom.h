@@ -71,10 +71,12 @@ gchar		*cd_dom_to_string			(CdDom		*dom);
 gboolean	 cd_dom_parse_xml_data			(CdDom		*dom,
 							 const gchar	*data,
 							 gssize		 data_len,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 const GNode	*cd_dom_get_node			(CdDom		*dom,
 							 const GNode	*root,
-							 const gchar	*path);
+							 const gchar	*path)
+							 G_GNUC_WARN_UNUSED_RESULT;
 const gchar	*cd_dom_get_node_name			(const GNode	*node);
 const gchar	*cd_dom_get_node_data			(const GNode	*node);
 gint		 cd_dom_get_node_data_as_int		(const GNode	*node);

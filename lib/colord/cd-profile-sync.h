@@ -32,15 +32,18 @@ G_BEGIN_DECLS
 
 gboolean	 cd_profile_connect_sync		(CdProfile	*profile,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_profile_set_property_sync		(CdProfile	*profile,
 							 const gchar	*key,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_profile_install_system_wide_sync	(CdProfile	*profile,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

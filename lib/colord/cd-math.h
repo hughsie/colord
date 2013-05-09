@@ -49,7 +49,8 @@ void		 cd_vec3_scalar_multiply	(const CdVec3		*src,
 void		 cd_vec3_copy			(const CdVec3		*src,
 						 CdVec3			*dest);
 gdouble		 cd_vec3_squared_error		(const CdVec3		*src1,
-						 const CdVec3		*src2);
+						 const CdVec3		*src2)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gchar		*cd_vec3_to_string		(const CdVec3		*src);
 gdouble		*cd_vec3_get_data		(const CdVec3		*src);
 void		 cd_vec3_init			(CdVec3			*dest,
@@ -71,7 +72,8 @@ void		 cd_mat33_matrix_multiply	(const CdMat3x3		*mat_src1,
 						 CdMat3x3		*mat_dest);
 gboolean	 cd_mat33_reciprocal		(const CdMat3x3		*src,
 						 CdMat3x3		*dest);
-gdouble		 cd_mat33_determinant		(const CdMat3x3		*src);
+gdouble		 cd_mat33_determinant		(const CdMat3x3		*src)
+						 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_mat33_normalize		(const CdMat3x3		*src,
 						 CdMat3x3		*dest);
 void		 cd_mat33_copy			(const CdMat3x3		*src,

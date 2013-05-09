@@ -34,21 +34,26 @@ G_BEGIN_DECLS
 
 gboolean	 cd_sensor_connect_sync			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_sensor_lock_sync			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_sensor_unlock_sync			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_sensor_set_options_sync		(CdSensor	*sensor,
 							 GHashTable	*values,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdColorXYZ	*cd_sensor_get_sample_sync		(CdSensor	*sensor,
 							 CdSensorCap	 cap,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

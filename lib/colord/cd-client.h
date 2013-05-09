@@ -97,7 +97,8 @@ void		 cd_client_connect			(CdClient	*client,
 							 gpointer	 user_data);
 gboolean	 cd_client_connect_finish		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_create_device			(CdClient	*client,
 							 const gchar	*id,
 							 CdObjectScope	 scope,
@@ -107,7 +108,8 @@ void		cd_client_create_device			(CdClient	*client,
 							 gpointer	 user_data);
 CdDevice	*cd_client_create_device_finish		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_create_profile		(CdClient	*client,
 							 const gchar	*id,
 							 CdObjectScope	 scope,
@@ -117,7 +119,8 @@ void		cd_client_create_profile		(CdClient	*client,
 							 gpointer	 user_data);
 CdProfile	*cd_client_create_profile_finish	(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_import_profile		(CdClient	*client,
 							 GFile		*file,
 							 GCancellable	*cancellable,
@@ -125,7 +128,8 @@ void		cd_client_import_profile		(CdClient	*client,
 							 gpointer	 user_data);
 CdProfile	*cd_client_import_profile_finish	(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_client_delete_device		(CdClient	*client,
 							 CdDevice	*device,
 							 GCancellable	*cancellable,
@@ -133,7 +137,8 @@ void		 cd_client_delete_device		(CdClient	*client,
 							 gpointer	 user_data);
 gboolean	 cd_client_delete_device_finish		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_client_delete_profile		(CdClient	*client,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
@@ -141,7 +146,8 @@ void		 cd_client_delete_profile		(CdClient	*client,
 							 gpointer	 user_data);
 gboolean	 cd_client_delete_profile_finish	(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_find_device			(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
@@ -149,7 +155,8 @@ void		cd_client_find_device			(CdClient	*client,
 							 gpointer	 user_data);
 CdDevice	*cd_client_find_device_finish 		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_find_device_by_property	(CdClient	*client,
 							 const gchar	*key,
 							 const gchar	*value,
@@ -158,7 +165,8 @@ void		cd_client_find_device_by_property	(CdClient	*client,
 							 gpointer	 user_data);
 CdDevice	*cd_client_find_device_by_property_finish (CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_find_profile			(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
@@ -166,7 +174,8 @@ void		cd_client_find_profile			(CdClient	*client,
 							 gpointer	 user_data);
 CdProfile	*cd_client_find_profile_finish 		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 void		cd_client_find_profile_by_filename	(CdClient	*client,
 							 const gchar	*filename,
@@ -175,7 +184,8 @@ void		cd_client_find_profile_by_filename	(CdClient	*client,
 							 gpointer	 user_data);
 CdProfile	*cd_client_find_profile_by_filename_finish (CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_get_standard_space		(CdClient	*client,
 							 CdStandardSpace standard_space,
 							 GCancellable	*cancellable,
@@ -183,14 +193,16 @@ void		cd_client_get_standard_space		(CdClient	*client,
 							 gpointer	 user_data);
 CdProfile	*cd_client_get_standard_space_finish	(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_client_get_devices			(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 GPtrArray	*cd_client_get_devices_finish		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_client_get_devices_by_kind		(CdClient	*client,
 							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,
@@ -198,21 +210,24 @@ void		 cd_client_get_devices_by_kind		(CdClient	*client,
 							 gpointer	 user_data);
 GPtrArray	*cd_client_get_devices_by_kind_finish	(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_client_get_profiles			(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 GPtrArray	*cd_client_get_profiles_finish		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_client_get_sensors			(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 GPtrArray	*cd_client_get_sensors_finish		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_find_profile_by_property	(CdClient	*client,
 							 const gchar	*key,
 							 const gchar	*value,
@@ -221,7 +236,8 @@ void		cd_client_find_profile_by_property	(CdClient	*client,
 							 gpointer	 user_data);
 CdProfile	*cd_client_find_profile_by_property_finish (CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_find_sensor			(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
@@ -229,7 +245,8 @@ void		cd_client_find_sensor			(CdClient	*client,
 							 gpointer	 user_data);
 CdSensor	*cd_client_find_sensor_finish 		(CdClient	*client,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 /* getters */
 gboolean	 cd_client_get_connected		(CdClient	*client);

@@ -54,10 +54,12 @@ CdInhibit	*cd_inhibit_new			(void);
 
 gboolean	 cd_inhibit_add			(CdInhibit	*inhibit,
 						 const gchar	*sender,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_inhibit_remove		(CdInhibit	*inhibit,
 						 const gchar	*sender,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_inhibit_valid		(CdInhibit	*inhibit);
 gchar		**cd_inhibit_get_bus_names	(CdInhibit	*inhibit);
 

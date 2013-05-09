@@ -114,11 +114,13 @@ void		 ch_device_queue_process_async	(ChDeviceQueue	*device_queue,
 						 gpointer	 user_data);
 gboolean	 ch_device_queue_process_finish	(ChDeviceQueue	*device_queue,
 						 GAsyncResult	*res,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 ch_device_queue_process	(ChDeviceQueue	*device_queue,
 						 ChDeviceQueueProcessFlags process_flags,
 						 GCancellable	*cancellable,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 /* command submitting functions */
 void		 ch_device_queue_get_color_select	(ChDeviceQueue	*device_queue,
@@ -322,7 +324,8 @@ gboolean	 ch_device_queue_set_calibration_ccmx	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 guint16	 calibration_index,
 							 CdIt8		*ccmx,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 ch_device_queue_write_firmware		(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 const guint8	*data,

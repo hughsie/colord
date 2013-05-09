@@ -36,74 +36,91 @@ G_BEGIN_DECLS
 
 gboolean	 cd_client_connect_sync			(CdClient	*client,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_client_delete_profile_sync		(CdClient	*client,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_client_delete_device_sync		(CdClient	*client,
 							 CdDevice	*device,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdProfile	*cd_client_find_profile_sync		(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdProfile	*cd_client_find_profile_by_filename_sync (CdClient	*client,
 							 const gchar	*filename,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdProfile	*cd_client_create_profile_sync		(CdClient	*client,
 							 const gchar	*id,
 							 CdObjectScope	 scope,
 							 GHashTable	*properties,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdProfile	*cd_client_import_profile_sync		(CdClient	*client,
 							 GFile		*file,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdDevice	*cd_client_create_device_sync		(CdClient	*client,
 							 const gchar	*id,
 							 CdObjectScope	 scope,
 							 GHashTable	*properties,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_client_get_devices_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_client_get_profiles_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_client_get_sensors_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdDevice	*cd_client_find_device_sync		(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdDevice	*cd_client_find_device_by_property_sync	(CdClient	*client,
 							 const gchar	*key,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdProfile	*cd_client_get_standard_space_sync	(CdClient	*client,
 							 CdStandardSpace standard_space,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_client_get_devices_by_kind_sync	(CdClient	*client,
 							 CdDeviceKind	 kind,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdProfile	*cd_client_find_profile_by_property_sync(CdClient	*client,
 							 const gchar	*key,
 							 const gchar	*value,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdSensor	*cd_client_find_sensor_sync		(CdClient	*client,
 							 const gchar	*id,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

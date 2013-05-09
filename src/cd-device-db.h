@@ -51,29 +51,37 @@ CdDeviceDb	*cd_device_db_new		(void);
 
 gboolean	 cd_device_db_load		(CdDeviceDb	*ddb,
 						 const gchar	*filename,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_device_db_empty		(CdDeviceDb	*ddb,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_device_db_add		(CdDeviceDb	*ddb,
 						 const gchar	*device_id,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_device_db_set_property	(CdDeviceDb	*ddb,
 						 const gchar	*device_id,
 						 const gchar	*property,
 						 const gchar	*value,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gchar		*cd_device_db_get_property	(CdDeviceDb	*ddb,
 						 const gchar	*device_id,
 						 const gchar	*property,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_device_db_remove		(CdDeviceDb	*ddb,
 						 const gchar	*device_id,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_device_db_get_devices	(CdDeviceDb	*ddb,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_device_db_get_properties	(CdDeviceDb	*ddb,
 						 const gchar	*device_id,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

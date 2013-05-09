@@ -101,17 +101,21 @@ CdIt8		*cd_it8_new_with_kind		(CdIt8Kind	 kind);
 gboolean	 cd_it8_load_from_data		(CdIt8		*it8,
 						 const gchar	*data,
 						 gsize		 size,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_it8_load_from_file		(CdIt8		*it8,
 						 GFile		*file,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_it8_save_to_file		(CdIt8		*it8,
 						 GFile		*file,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_it8_save_to_data		(CdIt8		*it8,
 						 gchar		**data,
 						 gsize		*size,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 /* setters */
 void		 cd_it8_set_kind		(CdIt8		*it8,

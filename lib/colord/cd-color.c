@@ -980,8 +980,11 @@ cd_color_rgb_array_interpolate (const GPtrArray *array, guint new_length)
 		}
 
 		/* do interpolation of array */
-		for (j = 0; j < 3; j++)
-			cd_interp_prepare (interp[j], NULL);
+		for (j = 0; j < 3; j++) {
+			ret = cd_interp_prepare (interp[j], NULL);
+			if (!ret)
+				break;
+		}
 		for (i = 0; i < new_length; i++) {
 			tmp = (gdouble) i / (gdouble) (new_length - 1);
 			rgb = g_ptr_array_index (result, i);

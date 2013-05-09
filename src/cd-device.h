@@ -81,18 +81,22 @@ gboolean	 cd_device_add_profile			(CdDevice	*device,
 							 CdDeviceRelation relation,
 							 const gchar	*profile_object_path,
 							 guint64	 timestamp,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_device_remove_profile		(CdDevice	*device,
 							 const gchar	*profile_object_path,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_device_make_default			(CdDevice	*device,
 							 const gchar	*profile_object_path,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 const gchar	*cd_device_get_object_path		(CdDevice	*device);
 gboolean	 cd_device_register_object		(CdDevice	*device,
 							 GDBusConnection *connection,
 							 GDBusInterfaceInfo *info,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_watch_sender			(CdDevice	*device,
 							 const gchar	*sender);
 gboolean	 cd_device_set_property_internal	(CdDevice	*device,

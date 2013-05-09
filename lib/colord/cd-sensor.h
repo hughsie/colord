@@ -79,21 +79,24 @@ void		 cd_sensor_connect			(CdSensor	*sensor,
 							 gpointer	 user_data);
 gboolean	 cd_sensor_connect_finish		(CdSensor	*sensor,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void	 	 cd_sensor_lock				(CdSensor	*sensor,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 gboolean 	 cd_sensor_lock_finish			(CdSensor	*sensor,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_sensor_unlock			(CdSensor	*sensor,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 gboolean	 cd_sensor_unlock_finish		(CdSensor	*sensor,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_sensor_set_options			(CdSensor	*sensor,
 							 GHashTable	*values,
 							 GCancellable	*cancellable,
@@ -101,7 +104,8 @@ void		 cd_sensor_set_options			(CdSensor	*sensor,
 							 gpointer	 user_data);
 gboolean	 cd_sensor_set_options_finish		(CdSensor	*sensor,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_sensor_get_sample			(CdSensor	*sensor,
 							 CdSensorCap	 cap,
 							 GCancellable	*cancellable,
@@ -109,7 +113,8 @@ void		 cd_sensor_get_sample			(CdSensor	*sensor,
 							 gpointer	 user_data);
 CdColorXYZ	*cd_sensor_get_sample_finish		(CdSensor	*sensor,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 /* getters */
 const gchar	*cd_sensor_get_object_path		(CdSensor	*sensor);
@@ -139,7 +144,8 @@ void		 cd_sensor_set_object_path		(CdSensor	*sensor,
 							 const gchar	*object_path);
 gboolean	 cd_sensor_equal			(CdSensor	*sensor1,
 							 CdSensor	*sensor2);
-gchar		*cd_sensor_to_string			(CdSensor	*sensor);
+gchar		*cd_sensor_to_string			(CdSensor	*sensor)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

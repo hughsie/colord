@@ -30,7 +30,8 @@
 
 G_BEGIN_DECLS
 
-gchar		*cd_quirk_vendor_name		(const gchar	*vendor);
+gchar		*cd_quirk_vendor_name		(const gchar	*vendor)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

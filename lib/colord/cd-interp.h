@@ -52,10 +52,12 @@ typedef struct
 	GObjectClass		 parent_class;
 	/*< private >*/
 	gboolean		 (*prepare)		(CdInterp	*interp,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 	gdouble			 (*eval)		(CdInterp	*interp,
 							 gdouble	 value,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 	/* Padding for future expansion */
 	void (*_cd_interp_reserved1) (void);
 	void (*_cd_interp_reserved2) (void);
@@ -101,10 +103,12 @@ void		 cd_interp_insert		(CdInterp	*interp,
 						 gdouble	 x,
 						 gdouble	 y);
 gboolean	 cd_interp_prepare		(CdInterp	*interp,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gdouble		 cd_interp_eval			(CdInterp	*interp,
 						 gdouble	 value,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 const gchar	*cd_interp_kind_to_string	(CdInterpKind	 kind);
 

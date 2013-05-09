@@ -35,7 +35,8 @@ G_BEGIN_DECLS
 gboolean	 ch_inhx32_to_bin		(const gchar	*in_buffer,
 						 guint8		**out_buffer,
 						 gsize		*out_size,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

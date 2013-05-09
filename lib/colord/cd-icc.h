@@ -138,26 +138,32 @@ gboolean	 cd_icc_load_data			(CdIcc		*icc,
 							 const guint8	*data,
 							 gsize		 data_len,
 							 CdIccLoadFlags	 flags,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_icc_load_file			(CdIcc		*icc,
 							 GFile		*file,
 							 CdIccLoadFlags	 flags,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_icc_load_fd				(CdIcc		*icc,
 							 gint		 fd,
 							 CdIccLoadFlags	 flags,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_icc_load_handle			(CdIcc		*icc,
 							 gpointer	 handle,
 							 CdIccLoadFlags	 flags,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_icc_save_file			(CdIcc		*icc,
 							 GFile		*file,
 							 CdIccSaveFlags	 flags,
 							 GCancellable	*cancellable,
-							 GError		**error);
-gchar		*cd_icc_to_string			(CdIcc		*icc);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
+gchar		*cd_icc_to_string			(CdIcc		*icc)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gpointer	 cd_icc_get_handle			(CdIcc		*icc);
 guint32		 cd_icc_get_size			(CdIcc		*icc);
 const gchar	*cd_icc_get_filename			(CdIcc		*icc);
@@ -219,23 +225,28 @@ const CdColorXYZ *cd_icc_get_green			(CdIcc		*icc);
 const CdColorXYZ *cd_icc_get_blue			(CdIcc		*icc);
 const CdColorXYZ *cd_icc_get_white			(CdIcc		*icc);
 guint		 cd_icc_get_temperature			(CdIcc		*icc);
-GArray		*cd_icc_get_warnings			(CdIcc		*icc);
+GArray		*cd_icc_get_warnings			(CdIcc		*icc)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_icc_create_from_edid		(CdIcc		*icc,
 							 gdouble	 gamma_value,
 							 const CdColorYxy *red,
 							 const CdColorYxy *green,
 							 const CdColorYxy *blue,
 							 const CdColorYxy *white,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_icc_get_vcgt			(CdIcc		*icc,
 							 guint		 size,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_icc_set_vcgt			(CdIcc		*icc,
 							 GPtrArray	*vcgt,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_icc_get_response			(CdIcc		*icc,
 							 guint		 size,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

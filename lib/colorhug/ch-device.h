@@ -37,7 +37,8 @@ G_BEGIN_DECLS
 
 GQuark		 ch_device_error_quark		(void);
 gboolean	 ch_device_open			(GUsbDevice	*device,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 ch_device_is_colorhug		(GUsbDevice	*device);
 ChDeviceMode	 ch_device_get_mode		(GUsbDevice	*device);
 void		 ch_device_write_command_async	(GUsbDevice	*device,
@@ -51,7 +52,8 @@ void		 ch_device_write_command_async	(GUsbDevice	*device,
 						 gpointer	 user_data);
 gboolean	 ch_device_write_command_finish	(GUsbDevice	*device,
 						 GAsyncResult	*res,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 ch_device_write_command	(GUsbDevice	*device,
 						 guint8		 cmd,
 						 const guint8	*buffer_in,
@@ -59,7 +61,8 @@ gboolean	 ch_device_write_command	(GUsbDevice	*device,
 						 guint8		*buffer_out,
 						 gsize		 buffer_out_len,
 						 GCancellable	*cancellable,
-						 GError		**error);
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

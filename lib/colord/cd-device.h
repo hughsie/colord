@@ -79,7 +79,8 @@ void		 cd_device_connect			(CdDevice	*device,
 							 gpointer	 user_data);
 gboolean	 cd_device_connect_finish		(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_set_property			(CdDevice	*device,
 							 const gchar	*key,
 							 const gchar	*value,
@@ -88,7 +89,8 @@ void		 cd_device_set_property			(CdDevice	*device,
 							 gpointer	 user_data);
 gboolean	 cd_device_set_property_finish		(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_add_profile			(CdDevice	*device,
 							 CdDeviceRelation relation,
 							 CdProfile	*profile,
@@ -97,7 +99,8 @@ void		 cd_device_add_profile			(CdDevice	*device,
 							 gpointer	 user_data);
 gboolean	 cd_device_add_profile_finish		(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_remove_profile		(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
@@ -105,7 +108,8 @@ void		 cd_device_remove_profile		(CdDevice	*device,
 							 gpointer	 user_data);
 gboolean	 cd_device_remove_profile_finish	(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_make_profile_default		(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
@@ -113,14 +117,16 @@ void		 cd_device_make_profile_default		(CdDevice	*device,
 							 gpointer	 user_data);
 gboolean	 cd_device_make_profile_default_finish	(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_profiling_inhibit		(CdDevice	*device,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 gboolean	 cd_device_profiling_inhibit_finish	(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_set_enabled			(CdDevice	*device,
 							 gboolean	 enabled,
 							 GCancellable	*cancellable,
@@ -128,14 +134,16 @@ void		 cd_device_set_enabled			(CdDevice	*device,
 							 gpointer	 user_data);
 gboolean	 cd_device_set_enabled_finish		(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_profiling_uninhibit		(CdDevice	*device,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 gboolean	 cd_device_profiling_uninhibit_finish	(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_get_profile_for_qualifiers	(CdDevice	*device,
 							 const gchar	**qualifiers,
 							 GCancellable	*cancellable,
@@ -143,7 +151,8 @@ void		 cd_device_get_profile_for_qualifiers	(CdDevice	*device,
 							 gpointer	 user_data);
 CdProfile	*cd_device_get_profile_for_qualifiers_finish (CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_get_profile_relation		(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,
@@ -151,7 +160,8 @@ void		 cd_device_get_profile_relation		(CdDevice	*device,
 							 gpointer	 user_data);
 CdDeviceRelation cd_device_get_profile_relation_finish	(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 /* getters */
 const gchar	*cd_device_get_id			(CdDevice	*device);

@@ -79,7 +79,8 @@ void		 cd_profile_connect			(CdProfile	*profile,
 							 gpointer	 user_data);
 gboolean	 cd_profile_connect_finish		(CdProfile	*profile,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_profile_set_property		(CdProfile	*profile,
 							 const gchar	*key,
 							 const gchar	*value,
@@ -88,14 +89,16 @@ void		 cd_profile_set_property		(CdProfile	*profile,
 							 gpointer	 user_data);
 gboolean	 cd_profile_set_property_finish		(CdProfile	*profile,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_profile_install_system_wide		(CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 gboolean	 cd_profile_install_system_wide_finish	(CdProfile	*profile,
 							 GAsyncResult	*res,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 /* getters */
 const gchar	*cd_profile_get_id			(CdProfile	*profile);
@@ -113,7 +116,8 @@ gint64		 cd_profile_get_created			(CdProfile	*profile);
 gint64		 cd_profile_get_age			(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);
 gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
-GHashTable	*cd_profile_get_metadata		(CdProfile	*profile);
+GHashTable	*cd_profile_get_metadata		(CdProfile	*profile)
+							 G_GNUC_WARN_UNUSED_RESULT;
 const gchar	*cd_profile_get_metadata_item		(CdProfile	*profile,
 							 const gchar	*key);
 
@@ -128,7 +132,8 @@ gboolean	 cd_profile_has_access			(CdProfile	*profile);
 CdIcc		*cd_profile_load_icc			(CdProfile	*profile,
 							 CdIccLoadFlags	 flags,
 							 GCancellable	*cancellable,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

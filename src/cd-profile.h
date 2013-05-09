@@ -72,14 +72,17 @@ void		 cd_profile_set_is_system_wide		(CdProfile	*profile,
 gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
 gboolean	 cd_profile_set_filename		(CdProfile	*profile,
 							 const gchar	*filename,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_profile_set_fd			(CdProfile	*profile,
 							 gint		 fd,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_profile_register_object		(CdProfile	*profile,
 							 GDBusConnection *connection,
 							 GDBusInterfaceInfo *info,
-							 GError		**error);
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 const gchar	*cd_profile_get_qualifier		(CdProfile	*profile);
 void		 cd_profile_set_qualifier		(CdProfile	*profile,
 							 const gchar	*qualifier);
