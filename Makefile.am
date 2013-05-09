@@ -82,6 +82,17 @@ MAINTAINERCLEANFILES =					\
 GITIGNOREFILES =					\
 	.tx
 
+clang:
+	$(MAKE) clean;					\
+	rm -rf clang;					\
+	scan-build --use-analyzer=/usr/bin/clang	\
+		-o clang-report				\
+		./autogen.sh				\
+		--enable-introspection=no		\
+		--disable-print-profiles;		\
+	scan-build --use-analyzer=/usr/bin/clang	\
+		-o clang-report make
+
 coverity:
 	$(MAKE);					\
 	cd src; $(MAKE) clean; cd -;			\
