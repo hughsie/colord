@@ -2062,8 +2062,6 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	g_type_init ();
-
 	/* create helper object */
 	priv = g_new0 (CdUtilPrivate, 1);
 

@@ -746,8 +746,6 @@ main (int argc, char *argv[])
 	textdomain (GETTEXT_PACKAGE);
 	cmsSetLogErrorHandler (cd_util_lcms_error_cb);
 
-	g_type_init ();
-
 	/* create helper object */
 	priv = g_new0 (CdUtilPrivate, 1);
 	priv->client = cd_client_new ();

@@ -180,8 +180,6 @@ main (int argc, char *argv[])
 
 	setlocale (LC_ALL, "");
 
-	g_type_init ();
-
 	/* create CSV headers */
 	priv = g_new0 (CdFindBrokenPriv, 1);
 	priv->csv_all = g_string_new ("filename,vendor,model,serial,data_source,version,cmf_binary,cmf_version\n");

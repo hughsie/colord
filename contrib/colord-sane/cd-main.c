@@ -373,9 +373,6 @@ main (int argc, char *argv[])
 
 	/* We need to init DBus' threading support as libSANE uses raw DBus */
 	dbus_threads_init_default ();
-#if !GLIB_CHECK_VERSION(2,36,0)
-	g_type_init ();
-#endif
 
 	/* create new objects */
 	priv = g_new0 (CdMainPrivate, 1);
