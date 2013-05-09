@@ -957,8 +957,9 @@ cd_client_import_profile_find_filename_cb (GObject *source_object,
 		cd_client_import_free_helper (helper);
 		goto out;
 	}
-	if (error->domain != CD_CLIENT_ERROR ||
-	    error->code != CD_CLIENT_ERROR_NOT_FOUND) {
+	if (!g_error_matches (error,
+			      CD_CLIENT_ERROR,
+			      CD_CLIENT_ERROR_NOT_FOUND)) {
 		cd_client_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (helper->res,
 						      error);
