@@ -28,6 +28,8 @@
 
 #include "config.h"
 
+#include <string.h>
+
 #include "cd-buffer.h"
 
 /**
@@ -35,14 +37,15 @@
  * @buffer: the writable data buffer
  * @value: the value to write
  *
- * Writes a big endian value into a data buffer.
+ * Writes a native endian value into a big endian data buffer.
  * NOTE: No validation is done on the buffer to ensure it's big enough.
  **/
 void
 cd_buffer_write_uint16_be (guint8 *buffer, guint16 value)
 {
-	buffer[0] = (value >> 8) & 0xff;
-	buffer[1] = (value >> 0) & 0xff;
+	guint16 tmp;
+	tmp = GUINT16_TO_BE (value);
+	memcpy (buffer, &tmp, sizeof(tmp));
 }
 
 /**
@@ -50,21 +53,22 @@ cd_buffer_write_uint16_be (guint8 *buffer, guint16 value)
  * @buffer: the writable data buffer
  * @value: the value to write
  *
- * Writes a little endian value into a data buffer.
+ * Writes a native endian value into a little endian data buffer.
  * NOTE: No validation is done on the buffer to ensure it's big enough.
  **/
 void
 cd_buffer_write_uint16_le (guint8 *buffer, guint16 value)
 {
-	buffer[0] = (value >> 0) & 0xff;
-	buffer[1] = (value >> 8) & 0xff;
+	guint16 tmp;
+	tmp = GUINT16_TO_LE (value);
+	memcpy (buffer, &tmp, sizeof(tmp));
 }
 
 /**
  * cd_buffer_read_uint16_be:
  * @buffer: the writable data buffer
  *
- * Reads a big endian value from a data buffer.
+ * Reads a native endian value from a big endian data buffer.
  * NOTE: No validation is done on the buffer to ensure it's valid.
  *
  * Return value: the value to read.
@@ -72,14 +76,16 @@ cd_buffer_write_uint16_le (guint8 *buffer, guint16 value)
 guint16
 cd_buffer_read_uint16_be (const guint8 *buffer)
 {
-	return GUINT16_FROM_BE (*(guint16*)buffer);
+	guint16 tmp;
+	memcpy (&tmp, buffer, sizeof(tmp));
+	return GUINT16_FROM_BE (tmp);
 }
 
 /**
  * cd_buffer_read_uint16_le:
  * @buffer: the writable data buffer
  *
- * Reads a big endian value from a data buffer.
+ * Reads a native endian value from a big endian data buffer.
  * NOTE: No validation is done on the buffer to ensure it's valid.
  *
  * Return value: the value to read.
@@ -87,7 +93,9 @@ cd_buffer_read_uint16_be (const guint8 *buffer)
 guint16
 cd_buffer_read_uint16_le (const guint8 *buffer)
 {
-	return GUINT16_FROM_LE (*(guint16*)buffer);
+	guint16 tmp;
+	memcpy (&tmp, buffer, sizeof(tmp));
+	return GUINT16_FROM_LE (tmp);
 }
 
 /**
@@ -95,16 +103,15 @@ cd_buffer_read_uint16_le (const guint8 *buffer)
  * @buffer: the writable data buffer
  * @value: the value to write
  *
- * Writes a big endian value into a data buffer.
+ * Writes a native endian value into a big endian data buffer.
  * NOTE: No validation is done on the buffer to ensure it's big enough.
  **/
 void
 cd_buffer_write_uint32_be (guint8 *buffer, guint32 value)
 {
-	buffer[0] = (value >> 24) & 0xff;
-	buffer[1] = (value >> 16) & 0xff;
-	buffer[2] = (value >> 8) & 0xff;
-	buffer[3] = (value >> 0) & 0xff;
+	guint32 tmp;
+	tmp = GUINT32_TO_BE (value);
+	memcpy (buffer, &tmp, sizeof(tmp));
 }
 
 /**
@@ -112,23 +119,22 @@ cd_buffer_write_uint32_be (guint8 *buffer, guint32 value)
  * @buffer: the writable data buffer
  * @value: the value to write
  *
- * Writes a little endian value into a data buffer.
+ * Writes a native endian value into a little endian data buffer.
  * NOTE: No validation is done on the buffer to ensure it's big enough.
  **/
 void
 cd_buffer_write_uint32_le (guint8 *buffer, guint32 value)
 {
-	buffer[0] = (value >> 0) & 0xff;
-	buffer[1] = (value >> 8) & 0xff;
-	buffer[2] = (value >> 16) & 0xff;
-	buffer[3] = (value >> 24) & 0xff;
+	guint32 tmp;
+	tmp = GUINT32_TO_LE (value);
+	memcpy (buffer, &tmp, sizeof(tmp));
 }
 
 /**
  * cd_buffer_read_uint32_be:
  * @buffer: the writable data buffer
  *
- * Reads a big endian value from a data buffer.
+ * Reads a native endian value from a big endian data buffer.
  * NOTE: No validation is done on the buffer to ensure it's valid.
  *
  * Return value: the value to read.
@@ -136,14 +142,16 @@ cd_buffer_write_uint32_le (guint8 *buffer, guint32 value)
 guint32
 cd_buffer_read_uint32_be (const guint8 *buffer)
 {
-	return GUINT32_FROM_BE (*(guint32*)buffer);
+	guint32 tmp;
+	memcpy (&tmp, buffer, sizeof(tmp));
+	return GUINT32_FROM_BE (tmp);
 }
 
 /**
  * cd_buffer_read_uint32_le:
  * @buffer: the writable data buffer
  *
- * Reads a big endian value from a data buffer.
+ * Reads a native endian value from a big endian data buffer.
  * NOTE: No validation is done on the buffer to ensure it's valid.
  *
  * Return value: the value to read.
@@ -151,7 +159,9 @@ cd_buffer_read_uint32_be (const guint8 *buffer)
 guint32
 cd_buffer_read_uint32_le (const guint8 *buffer)
 {
-	return GUINT32_FROM_LE (*(guint32*)buffer);
+	guint32 tmp;
+	memcpy (&tmp, buffer, sizeof(tmp));
+	return GUINT32_FROM_LE (tmp);
 }
 
 /**
