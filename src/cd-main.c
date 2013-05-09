@@ -509,7 +509,6 @@ cd_main_device_add (CdMainPrivate *priv,
 		    GError **error)
 {
 	gboolean ret = TRUE;
-	GError *error_local = NULL;
 	CdObjectScope scope;
 
 	/* create an object */
@@ -523,7 +522,7 @@ cd_main_device_add (CdMainPrivate *priv,
 		/* add to the device database */
 		ret = cd_device_db_add (priv->device_db,
 					cd_device_get_id (device),
-					&error_local);
+					error);
 		if (!ret)
 			goto out;
 	}
