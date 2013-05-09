@@ -195,7 +195,7 @@ cd_interp_prepare (CdInterp *interp, GError **error)
 	}
 
 	/* call if support */
-	if (klass->prepare != NULL) {
+	if (klass != NULL && klass->prepare != NULL) {
 		ret = klass->prepare (interp, error);
 		if (!ret)
 			goto out;
@@ -256,7 +256,7 @@ cd_interp_eval (CdInterp *interp, gdouble value, GError **error)
 	}
 
 	/* no support */
-	if (klass->eval == NULL) {
+	if (klass == NULL || klass->eval == NULL) {
 		g_set_error_literal (error,
 				     CD_INTERP_ERROR,
 				     CD_INTERP_ERROR_FAILED,
