@@ -15,6 +15,7 @@
 <h2>Table Of Contents</h2>
 <ul>
 <li><a href="#spelling">Can I type colord with leading upper case 'C'?</a></li>
+<li><a href="#versions">What do the version numbers mean?</a></li>
 <li><a href="#gcm">How does this work with gnome-color-manager?</a></li>
 <li><a href="#XRandR13">Are XRandR 1.2 devices still supported?</a></li>
 <li><a href="#imageloading">Does colord or GNOME Color Manager convert my image?</a></li>
@@ -38,6 +39,45 @@
 <p>
 No.
 </p>
+
+<hr/>
+<h3><a name="versions">What do the version numbers mean</a></h3>
+<p>
+Version numbers are of the form <b>${major}</b>.<b>${minor}</b>.<b>${micro}</b>.
+</p>
+<center>
+<table cellpadding="5px">
+<tr><th>Git Branch</th><th>Version Numbers</th><th>Maintained Status</th></tr>
+<tr><td><code>colord-0-1</code></td><td><code>0.1.*</code></td><td><code>stable</code>, soon to be <code>obsolete</code></td></tr>
+<tr><td><code>colord-1-0</code></td><td><code>1.0.*</code></td><td><code>stable</code>, getting backported fixes</td></tr>
+<tr><td><code>master</code></td><td><code>1.1.*</code></td><td><code>unstable</code>, getting fixes and new features</td></tr>
+</table>
+</center>
+<p>
+Branches with the status <code>stable</code> are suitable for distributions like SLED
+and RHEL and are 100% ABI and API stable. Translatable source strings will not be
+added or modified and dependancy versions will not be updated.
+Tarball releases from this branch should be considered safe to push to users as
+normal updates.
+</p>
+<p>
+Branches with the status <code>unstable</code> are suitable for distributions like Fedora
+or jhbuild and are potentially ABI and API unstable and will contain new
+features, refactoring or new translatable strings where required.
+Tarball releases from this branch should be QA'd before pushing to users
+as test updates.
+</p>
+<p>
+Branches with the status <code>obsolete</code> do not get backported fixes,
+although may get security fixes backported if it is practical to do so.
+</p>
+<p>
+Every 6 months (roughly aligned to the GNOME release schedule) we will branch
+a new minor version from master, so the new stable version is 1.(n+1).0
+and the new unstable version is 1.(n+2).0.
+This means that even minor versions are stable, odd are unstable.
+</p>
+<p>
 
 <hr/>
 <h3><a name="gcm">How does this work with gnome-color-manager?</a></h3>
