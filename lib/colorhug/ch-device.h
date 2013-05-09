@@ -31,6 +31,8 @@
 
 #include "ch-common.h"
 
+G_BEGIN_DECLS
+
 #define CH_DEVICE_ERROR		(ch_device_error_quark ())
 
 GQuark		 ch_device_error_quark		(void);
@@ -58,5 +60,7 @@ gboolean	 ch_device_write_command	(GUsbDevice	*device,
 						 gsize		 buffer_out_len,
 						 GCancellable	*cancellable,
 						 GError		**error);
+
+G_END_DECLS
 
 #endif

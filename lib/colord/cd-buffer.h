@@ -28,6 +28,8 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
+
 typedef enum {
 	CD_BUFFER_KIND_REQUEST,
 	CD_BUFFER_KIND_RESPONSE,
@@ -49,6 +51,8 @@ void		 cd_buffer_write_uint32_be	(guint8		*buffer,
 						 guint32	 value);
 void		 cd_buffer_write_uint32_le	(guint8		*buffer,
 						 guint32	 value);
+
+G_END_DECLS
 
 #endif /* __CD_BUFFER_H__ */
 

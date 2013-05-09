@@ -29,6 +29,8 @@
 #include <glib.h>
 #include <gusb.h>
 
+G_BEGIN_DECLS
+
 /* device constants */
 #define	CH_USB_VID				0x273f
 #define	CH_USB_PID_BOOTLOADER			0x1000
@@ -1021,5 +1023,7 @@ const gchar	*ch_multiplier_to_string	(ChFreqScale	 multiplier);
 const gchar	*ch_color_select_to_string	(ChColorSelect	 color_select);
 const gchar	*ch_measure_mode_to_string	(ChMeasureMode	 measure_mode);
 const gchar	*ch_device_mode_to_string	(ChDeviceMode	 device_mode);
+
+G_END_DECLS
 
 #endif

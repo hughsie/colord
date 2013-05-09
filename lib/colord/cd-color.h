@@ -28,6 +28,8 @@
 
 #include <glib-object.h>
 
+G_BEGIN_DECLS
+
 typedef struct {
 	guint8	 R;
 	guint8	 G;
@@ -143,6 +145,8 @@ GPtrArray	*cd_color_rgb_array_new			(void);
 gboolean	 cd_color_rgb_array_is_monotonic	(const GPtrArray	*array);
 GPtrArray	*cd_color_rgb_array_interpolate		(const GPtrArray	*array,
 							 guint			 new_length);
+
+G_END_DECLS
 
 #endif /* __CD_COLOR_H__ */
 
