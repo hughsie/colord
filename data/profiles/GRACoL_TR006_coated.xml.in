@@ -9,7 +9,8 @@
  </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
- <data_source>tr006</data_source>
+ <data_source>standard</data_source>
+ <standard_space>tr006</standard_space>
  <stle>0.0</stle>
  <stpo>0.3</stpo>
  <enpo>0.94</enpo>

@@ -13,7 +13,8 @@
  </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
- <data_source>fogra28l</data_source>
+ <data_source>standard</data_source>
+ <standard_space>fogra28l</standard_space>
  <stle>0.0</stle>
  <stpo>0.3</stpo>
  <enpo>0.94</enpo>

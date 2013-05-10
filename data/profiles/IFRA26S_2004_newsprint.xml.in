@@ -13,7 +13,8 @@
  </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
- <data_source>ifra26</data_source>
+ <data_source>standard</data_source>
+ <standard_space>ifra26</standard_space>
  <input_viewing_conditions>pp</input_viewing_conditions>
  <output_viewing_conditions>pp</output_viewing_conditions>
  <tlimit>230</tlimit>

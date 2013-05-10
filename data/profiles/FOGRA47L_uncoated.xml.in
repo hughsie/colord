@@ -9,7 +9,8 @@
  </_model>
  <manufacturer>ArgyllCMS</manufacturer>
  <license>CC0</license>
- <data_source>fogra47l</data_source>
+ <data_source>standard</data_source>
+ <standard_space>fogra47l</standard_space>
  <tlimit>300</tlimit>
  <klimit>98</klimit>
  <data_ti3>CTI3
