@@ -50,9 +50,9 @@ static void	cd_transform_finalize		(GObject		*object);
  **/
 struct _CdTransformPrivate
 {
-	CdIcc			*input;
-	CdIcc			*output;
-	CdIcc			*abstract;
+	CdIcc			*input_icc;
+	CdIcc			*output_icc;
+	CdIcc			*abstract_icc;
 	CdPixelFormat		 input_pixel_format;
 	CdPixelFormat		 output_pixel_format;
 	CdRenderingIntent	 rendering_intent;
@@ -69,9 +69,9 @@ enum {
 	PROP_RENDERING_INTENT,
 	PROP_INPUT_PIXEL_FORMAT,
 	PROP_OUTPUT_PIXEL_FORMAT,
-	PROP_INPUT,
-	PROP_OUTPUT,
-	PROP_ABSTRACT,
+	PROP_INPUT_ICC,
+	PROP_OUTPUT_ICC,
+	PROP_ABSTRACT_ICC,
 	PROP_LAST
 };
 
@@ -103,121 +103,121 @@ cd_transform_invalidate (CdTransform *transform)
 }
 
 /**
- * cd_transform_set_input:
+ * cd_transform_set_input_icc:
  * @transform: a #CdTransform instance.
  * @icc: a #CdIcc instance or %NULL.
  *
  * Sets the input profile to use for the transform.
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 void
-cd_transform_set_input (CdTransform *transform, CdIcc *icc)
+cd_transform_set_input_icc (CdTransform *transform, CdIcc *icc)
 {
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
 
-	if (transform->priv->input != NULL)
-		g_clear_object (&transform->priv->input);
+	if (transform->priv->input_icc != NULL)
+		g_clear_object (&transform->priv->input_icc);
 	if (icc != NULL)
-		transform->priv->input = g_object_ref (icc);
+		transform->priv->input_icc = g_object_ref (icc);
 	cd_transform_invalidate (transform);
 }
 
 /**
- * cd_transform_get_input:
+ * cd_transform_get_input_icc:
  * @transform: a #CdTransform instance.
  *
  * Gets the input profile to use for the transform.
  *
  * Return value: (transfer none): The input profile
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 CdIcc *
-cd_transform_get_input (CdTransform *transform)
+cd_transform_get_input_icc (CdTransform *transform)
 {
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), NULL);
-	return transform->priv->input;
+	return transform->priv->input_icc;
 }
 
 /**
- * cd_transform_set_output:
+ * cd_transform_set_output_icc:
  * @transform: a #CdTransform instance.
  * @icc: a #CdIcc instance or %NULL.
  *
  * Sets the output profile to use for the transform.
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 void
-cd_transform_set_output (CdTransform *transform, CdIcc *icc)
+cd_transform_set_output_icc (CdTransform *transform, CdIcc *icc)
 {
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
 
-	if (transform->priv->output != NULL)
-		g_clear_object (&transform->priv->output);
+	if (transform->priv->output_icc != NULL)
+		g_clear_object (&transform->priv->output_icc);
 	if (icc != NULL)
-		transform->priv->output = g_object_ref (icc);
+		transform->priv->output_icc = g_object_ref (icc);
 	cd_transform_invalidate (transform);
 }
 
 /**
- * cd_transform_get_output:
+ * cd_transform_get_output_icc:
  * @transform: a #CdTransform instance.
  *
  * Gets the input profile to use for the transform.
  *
  * Return value: (transfer none): The output profile
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 CdIcc *
-cd_transform_get_output (CdTransform *transform)
+cd_transform_get_output_icc (CdTransform *transform)
 {
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), NULL);
-	return transform->priv->output;
+	return transform->priv->output_icc;
 }
 
 /**
- * cd_transform_set_abstract:
+ * cd_transform_set_abstract_icc:
  * @transform: a #CdTransform instance.
  * @icc: a #CdIcc instance or %NULL.
  *
  * Sets the abstract profile to use for the transform.
  * This is typically only needed for soft-proofing.
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 void
-cd_transform_set_abstract (CdTransform *transform, CdIcc *icc)
+cd_transform_set_abstract_icc (CdTransform *transform, CdIcc *icc)
 {
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
 
-	if (transform->priv->abstract != NULL)
-		g_clear_object (&transform->priv->abstract);
+	if (transform->priv->abstract_icc != NULL)
+		g_clear_object (&transform->priv->abstract_icc);
 	if (icc != NULL)
-		transform->priv->abstract = g_object_ref (icc);
+		transform->priv->abstract_icc = g_object_ref (icc);
 	cd_transform_invalidate (transform);
 }
 
 /**
- * cd_transform_get_abstract:
+ * cd_transform_get_abstract_icc:
  * @transform: a #CdTransform instance.
  *
  * Gets the abstract profile to use for the transform.
  *
  * Return value: (transfer none): The abstract profile
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 CdIcc *
-cd_transform_get_abstract (CdTransform *transform)
+cd_transform_get_abstract_icc (CdTransform *transform)
 {
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), NULL);
-	return transform->priv->abstract;
+	return transform->priv->abstract_icc;
 }
 
 /**
@@ -399,8 +399,8 @@ cd_transform_setup (CdTransform *transform, GError **error)
 	g_assert (lcms_intent != -1);
 
 	/* get input profile */
-	if (priv->input != NULL) {
-		if (cd_icc_get_colorspace (priv->input) != CD_COLORSPACE_RGB) {
+	if (priv->input_icc != NULL) {
+		if (cd_icc_get_colorspace (priv->input_icc) != CD_COLORSPACE_RGB) {
 			ret = FALSE;
 			g_set_error_literal (error,
 					     CD_TRANSFORM_ERROR,
@@ -409,16 +409,16 @@ cd_transform_setup (CdTransform *transform, GError **error)
 			goto out;
 		}
 		g_debug ("using input profile of %s",
-			 cd_icc_get_filename (priv->input));
-		profile_in = cd_icc_get_handle (priv->input);
+			 cd_icc_get_filename (priv->input_icc));
+		profile_in = cd_icc_get_handle (priv->input_icc);
 	} else {
 		g_debug ("no input profile, assume sRGB");
 		profile_in = priv->srgb;
 	}
 
 	/* get output profile */
-	if (priv->output != NULL) {
-		if (cd_icc_get_colorspace (priv->output) != CD_COLORSPACE_RGB) {
+	if (priv->output_icc != NULL) {
+		if (cd_icc_get_colorspace (priv->output_icc) != CD_COLORSPACE_RGB) {
 			ret = FALSE;
 			g_set_error_literal (error,
 					     CD_TRANSFORM_ERROR,
@@ -427,8 +427,8 @@ cd_transform_setup (CdTransform *transform, GError **error)
 			goto out;
 		}
 		g_debug ("using output profile of %s",
-			 cd_icc_get_filename (priv->output));
-		profile_out = cd_icc_get_handle (priv->output);
+			 cd_icc_get_filename (priv->output_icc));
+		profile_out = cd_icc_get_handle (priv->output_icc);
 	} else {
 		g_debug ("no output profile, assume sRGB");
 		profile_out = priv->srgb;
@@ -438,10 +438,10 @@ cd_transform_setup (CdTransform *transform, GError **error)
 	lcms_flags &= cmsFLAGS_BLACKPOINTCOMPENSATION;
 
 	/* get abstract profile */
-	if (priv->abstract != NULL) {
+	if (priv->abstract_icc != NULL) {
 		cmsHPROFILE profiles[3];
 
-		if (cd_icc_get_colorspace (priv->abstract) != CD_COLORSPACE_LAB) {
+		if (cd_icc_get_colorspace (priv->abstract_icc) != CD_COLORSPACE_LAB) {
 			ret = FALSE;
 			g_set_error_literal (error,
 					     CD_TRANSFORM_ERROR,
@@ -452,7 +452,7 @@ cd_transform_setup (CdTransform *transform, GError **error)
 
 		/* generate a devicelink */
 		profiles[0] = profile_in;
-		profiles[1] = cd_icc_get_handle (priv->abstract);
+		profiles[1] = cd_icc_get_handle (priv->abstract_icc);
 		profiles[2] = profile_out;
 		priv->lcms_transform = cmsCreateMultiprofileTransform (profiles,
 								       3,
@@ -574,14 +574,14 @@ cd_transform_get_property (GObject *object, guint prop_id, GValue *value, GParam
 	CdTransformPrivate *priv = transform->priv;
 
 	switch (prop_id) {
-	case PROP_INPUT:
-		g_value_set_object (value, priv->input);
+	case PROP_INPUT_ICC:
+		g_value_set_object (value, priv->input_icc);
 		break;
-	case PROP_OUTPUT:
-		g_value_set_object (value, priv->output);
+	case PROP_OUTPUT_ICC:
+		g_value_set_object (value, priv->output_icc);
 		break;
-	case PROP_ABSTRACT:
-		g_value_set_object (value, priv->abstract);
+	case PROP_ABSTRACT_ICC:
+		g_value_set_object (value, priv->abstract_icc);
 		break;
 	case PROP_RENDERING_INTENT:
 		g_value_set_uint (value, priv->rendering_intent);
@@ -621,14 +621,14 @@ cd_transform_set_property (GObject *object, guint prop_id, const GValue *value, 
 	case PROP_OUTPUT_PIXEL_FORMAT:
 		cd_transform_set_output_pixel_format (transform, g_value_get_uint (value));
 		break;
-	case PROP_INPUT:
-		cd_transform_set_input (transform, g_value_get_object (value));
+	case PROP_INPUT_ICC:
+		cd_transform_set_input_icc (transform, g_value_get_object (value));
 		break;
-	case PROP_OUTPUT:
-		cd_transform_set_output (transform, g_value_get_object (value));
+	case PROP_OUTPUT_ICC:
+		cd_transform_set_output_icc (transform, g_value_get_object (value));
 		break;
-	case PROP_ABSTRACT:
-		cd_transform_set_abstract (transform, g_value_get_object (value));
+	case PROP_ABSTRACT_ICC:
+		cd_transform_set_abstract_icc (transform, g_value_get_object (value));
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -682,28 +682,28 @@ cd_transform_class_init (CdTransformClass *klass)
 	g_object_class_install_property (object_class, PROP_OUTPUT_PIXEL_FORMAT, pspec);
 
 	/**
-	 * CdTransform: input:
+	 * CdTransform: input-icc:
 	 */
-	pspec = g_param_spec_object ("input", NULL, NULL,
+	pspec = g_param_spec_object ("input-icc", NULL, NULL,
 				     CD_TYPE_ICC,
 				     G_PARAM_READWRITE);
-	g_object_class_install_property (object_class, PROP_INPUT, pspec);
+	g_object_class_install_property (object_class, PROP_INPUT_ICC, pspec);
 
 	/**
-	 * CdTransform: output:
+	 * CdTransform: output-icc:
 	 */
-	pspec = g_param_spec_object ("output", NULL, NULL,
+	pspec = g_param_spec_object ("output-icc", NULL, NULL,
 				     CD_TYPE_ICC,
 				     G_PARAM_READWRITE);
-	g_object_class_install_property (object_class, PROP_OUTPUT, pspec);
+	g_object_class_install_property (object_class, PROP_OUTPUT_ICC, pspec);
 
 	/**
-	 * CdTransform: abstract:
+	 * CdTransform: abstract-icc:
 	 */
-	pspec = g_param_spec_object ("abstract", NULL, NULL,
+	pspec = g_param_spec_object ("abstract-icc", NULL, NULL,
 				     CD_TYPE_ICC,
 				     G_PARAM_READWRITE);
-	g_object_class_install_property (object_class, PROP_ABSTRACT, pspec);
+	g_object_class_install_property (object_class, PROP_ABSTRACT_ICC, pspec);
 
 	g_type_class_add_private (klass, sizeof (CdTransformPrivate));
 }
@@ -731,12 +731,12 @@ cd_transform_finalize (GObject *object)
 	CdTransformPrivate *priv = transform->priv;
 
 	cmsCloseProfile (transform->priv->srgb);
-	if (priv->input != NULL)
-		g_object_unref (priv->input);
-	if (priv->output != NULL)
-		g_object_unref (priv->output);
-	if (priv->abstract != NULL)
-		g_object_unref (priv->abstract);
+	if (priv->input_icc != NULL)
+		g_object_unref (priv->input_icc);
+	if (priv->output_icc != NULL)
+		g_object_unref (priv->output_icc);
+	if (priv->abstract_icc != NULL)
+		g_object_unref (priv->abstract_icc);
 	if (priv->lcms_transform != NULL)
 		cmsDeleteTransform (priv->lcms_transform);
 

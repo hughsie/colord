@@ -85,23 +85,23 @@ GType		 cd_transform_get_type			(void);
 GQuark		 cd_transform_error_quark		(void);
 CdTransform	*cd_transform_new			(void);
 
-void		 cd_transform_set_input			(CdTransform	*transform,
+void		 cd_transform_set_input_icc		(CdTransform	*transform,
 							 CdIcc		*icc);
 void		 cd_transform_set_input_pixel_format	(CdTransform	*transform,
 							 CdPixelFormat	 pixel_format);
-CdIcc		*cd_transform_get_input			(CdTransform	*transform);
+CdIcc		*cd_transform_get_input_icc		(CdTransform	*transform);
 CdPixelFormat	 cd_transform_get_input_pixel_format	(CdTransform	*transform);
 
-void		 cd_transform_set_output		(CdTransform	*transform,
+void		 cd_transform_set_output_icc		(CdTransform	*transform,
 							 CdIcc		*icc);
 void		 cd_transform_set_output_pixel_format	(CdTransform	*transform,
 							 CdPixelFormat	 pixel_format);
-CdIcc		*cd_transform_get_output		(CdTransform	*transform);
+CdIcc		*cd_transform_get_output_icc		(CdTransform	*transform);
 CdPixelFormat	 cd_transform_get_output_pixel_format	(CdTransform	*transform);
 
-void		 cd_transform_set_abstract		(CdTransform	*transform,
+void		 cd_transform_set_abstract_icc		(CdTransform	*transform,
 							 CdIcc		*icc);
-CdIcc		*cd_transform_get_abstract		(CdTransform	*transform);
+CdIcc		*cd_transform_get_abstract_icc		(CdTransform	*transform);
 void		 cd_transform_set_rendering_intent	(CdTransform	*transform,
 							 CdRenderingIntent rendering_intent);
 CdRenderingIntent cd_transform_get_rendering_intent	(CdTransform	*transform);

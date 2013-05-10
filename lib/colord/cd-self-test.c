@@ -3671,8 +3671,8 @@ colord_transform_func (void)
 	g_assert_cmpint (cd_transform_get_output_pixel_format (transform), ==, CD_PIXEL_FORMAT_RGB24);
 
 	/* setup profiles */
-	cd_transform_set_input (transform, NULL);
-	cd_transform_set_abstract (transform, NULL);
+	cd_transform_set_input_icc (transform, NULL);
+	cd_transform_set_abstract_icc (transform, NULL);
 
 	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
 	file = g_file_new_for_path (filename);
@@ -3684,7 +3684,7 @@ colord_transform_func (void)
 				&error);
 	g_assert_no_error (error);
 	g_assert (ret);
-	cd_transform_set_output (transform, icc);
+	cd_transform_set_output_icc (transform, icc);
 	g_free (filename);
 	g_object_unref (file);
 	g_object_unref (icc);
