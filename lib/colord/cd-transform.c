@@ -255,16 +255,16 @@ cd_transform_get_format (CdTransform *transform)
 }
 
 /**
- * cd_transform_set_intent:
+ * cd_transform_set_rendering_intent:
  * @transform: a #CdTransform instance.
  * @rendering_intent: the rendering intent, e.g. %CD_RENDERING_INTENT_PERCEPTUAL
  *
  * Sets the rendering intent to use for the transform.
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 void
-cd_transform_set_intent (CdTransform *transform, CdRenderingIntent rendering_intent)
+cd_transform_set_rendering_intent (CdTransform *transform, CdRenderingIntent rendering_intent)
 {
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (rendering_intent != CD_RENDERING_INTENT_UNKNOWN);
@@ -274,17 +274,17 @@ cd_transform_set_intent (CdTransform *transform, CdRenderingIntent rendering_int
 }
 
 /**
- * cd_transform_get_intent:
+ * cd_transform_get_rendering_intent:
  * @transform: a #CdTransform instance.
  *
  * Gets the rendering intent to use for the transform.
  *
  * Return value: The rendering intent, e.g. %CD_RENDERING_INTENT_PERCEPTUAL
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 CdRenderingIntent
-cd_transform_get_intent (CdTransform *transform)
+cd_transform_get_rendering_intent (CdTransform *transform)
 {
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), CD_RENDERING_INTENT_UNKNOWN);
 	return transform->priv->rendering_intent;
@@ -568,7 +568,7 @@ cd_transform_set_property (GObject *object, guint prop_id, const GValue *value, 
 	CdTransform *transform = CD_TRANSFORM (object);
 	switch (prop_id) {
 	case PROP_RENDERING_INTENT:
-		cd_transform_set_intent (transform, g_value_get_uint (value));
+		cd_transform_set_rendering_intent (transform, g_value_get_uint (value));
 		break;
 	case PROP_BPC:
 		cd_transform_set_bpc (transform, g_value_get_boolean (value));

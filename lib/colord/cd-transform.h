@@ -97,9 +97,9 @@ CdIcc		*cd_transform_get_abstract		(CdTransform	*transform);
 void		 cd_transform_set_format		(CdTransform	*transform,
 							 CdPixelFormat	 pixel_format);
 CdPixelFormat	 cd_transform_get_format		(CdTransform	*transform);
-void		 cd_transform_set_intent		(CdTransform	*transform,
+void		 cd_transform_set_rendering_intent	(CdTransform	*transform,
 							 CdRenderingIntent rendering_intent);
-CdRenderingIntent cd_transform_get_intent		(CdTransform	*transform);
+CdRenderingIntent cd_transform_get_rendering_intent	(CdTransform	*transform);
 void		 cd_transform_set_bpc			(CdTransform	*transform,
 							 gboolean	 bpc);
 gboolean	 cd_transform_get_bpc			(CdTransform	*transform);

@@ -3663,8 +3663,8 @@ colord_transform_func (void)
 
 	/* setup transform with 8 bit RGB */
 	transform = cd_transform_new ();
-	cd_transform_set_intent (transform, CD_RENDERING_INTENT_PERCEPTUAL);
-	g_assert_cmpint (cd_transform_get_intent (transform), ==, CD_RENDERING_INTENT_PERCEPTUAL);
+	cd_transform_set_rendering_intent (transform, CD_RENDERING_INTENT_PERCEPTUAL);
+	g_assert_cmpint (cd_transform_get_rendering_intent (transform), ==, CD_RENDERING_INTENT_PERCEPTUAL);
 	cd_transform_set_format (transform, CD_PIXEL_FORMAT_RGB24);
 	g_assert_cmpint (cd_transform_get_format (transform), ==, CD_PIXEL_FORMAT_RGB24);
 
