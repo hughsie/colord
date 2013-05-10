@@ -2005,13 +2005,16 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 	if (!ret)
 		goto out;
 	profile = cd_device_get_profile_for_qualifiers_sync (device,
-							     (const gchar **) values,
+							     (const gchar **) &values[1],
 							     NULL,
 							     error);
 	if (profile == NULL) {
 		ret = FALSE;
 		goto out;
 	}
+	ret = cd_profile_connect_sync (profile, NULL, error);
+	if (!ret)
+		goto out;
 	cd_util_show_profile (profile);
 out:
 	if (device != NULL)
