@@ -3250,6 +3250,7 @@ colord_interp_linear_func (void)
 	CdInterp *interp;
 	GArray *array_tmp;
 	gboolean ret;
+	gdouble tmp;
 	gdouble x;
 	gdouble y;
 	GError *error = NULL;
@@ -3274,14 +3275,16 @@ colord_interp_linear_func (void)
 	/* check X */
 	array_tmp = cd_interp_get_x (interp);
 	g_assert_cmpint (array_tmp->len, ==, 5);
-	g_assert_cmpfloat (*((gdouble *) array_tmp->data), <, 0.01);
-	g_assert_cmpfloat (*((gdouble *) array_tmp->data), >, -0.01);
+	tmp = g_array_index (array_tmp, gdouble, 0);
+	g_assert_cmpfloat (tmp, <, 0.01);
+	g_assert_cmpfloat (tmp, >, -0.01);
 
 	/* check Y */
 	array_tmp = cd_interp_get_y (interp);
 	g_assert_cmpint (array_tmp->len, ==, 5);
-	g_assert_cmpfloat (*((gdouble *) array_tmp->data), <, 0.11);
-	g_assert_cmpfloat (*((gdouble *) array_tmp->data), >, 0.09);
+	tmp = g_array_index (array_tmp, gdouble, 0);
+	g_assert_cmpfloat (tmp, <, 0.11);
+	g_assert_cmpfloat (tmp, >, 0.09);
 
 	/* check preparing */
 	ret = cd_interp_prepare (interp, &error);
