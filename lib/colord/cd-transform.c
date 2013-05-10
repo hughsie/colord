@@ -27,8 +27,7 @@
  * spaces to other simple RGB spaces using one, two or three ICC profiles.
  *
  * This object is not supposed to re-implement LCMS, and if you need anything more
- * complicated than simple RGB buffers (for instance, floating point, CMYK, BPC,
- * etc.) then you are better off using lcms2 directly.
+ * complicated then you are better off using lcms2 directly.
  */
 
 #include "config.h"
