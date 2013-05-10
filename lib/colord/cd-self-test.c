@@ -3665,8 +3665,10 @@ colord_transform_func (void)
 	transform = cd_transform_new ();
 	cd_transform_set_rendering_intent (transform, CD_RENDERING_INTENT_PERCEPTUAL);
 	g_assert_cmpint (cd_transform_get_rendering_intent (transform), ==, CD_RENDERING_INTENT_PERCEPTUAL);
-	cd_transform_set_format (transform, CD_PIXEL_FORMAT_RGB24);
-	g_assert_cmpint (cd_transform_get_format (transform), ==, CD_PIXEL_FORMAT_RGB24);
+	cd_transform_set_input_pixel_format (transform, CD_PIXEL_FORMAT_RGB24);
+	g_assert_cmpint (cd_transform_get_input_pixel_format (transform), ==, CD_PIXEL_FORMAT_RGB24);
+	cd_transform_set_output_pixel_format (transform, CD_PIXEL_FORMAT_RGB24);
+	g_assert_cmpint (cd_transform_get_output_pixel_format (transform), ==, CD_PIXEL_FORMAT_RGB24);
 
 	/* setup profiles */
 	cd_transform_set_input (transform, NULL);

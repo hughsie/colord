@@ -53,7 +53,8 @@ struct _CdTransformPrivate
 	CdIcc			*input;
 	CdIcc			*output;
 	CdIcc			*abstract;
-	CdPixelFormat		 pixel_format;
+	CdPixelFormat		 input_pixel_format;
+	CdPixelFormat		 output_pixel_format;
 	CdRenderingIntent	 rendering_intent;
 	cmsHPROFILE		 srgb;
 	cmsHTRANSFORM		 lcms_transform;
@@ -66,7 +67,8 @@ enum {
 	PROP_0,
 	PROP_BPC,
 	PROP_RENDERING_INTENT,
-	PROP_PIXEL_FORMAT,
+	PROP_INPUT_PIXEL_FORMAT,
+	PROP_OUTPUT_PIXEL_FORMAT,
 	PROP_INPUT,
 	PROP_OUTPUT,
 	PROP_ABSTRACT,
@@ -219,39 +221,75 @@ cd_transform_get_abstract (CdTransform *transform)
 }
 
 /**
- * cd_transform_set_format:
+ * cd_transform_set_input_pixel_format:
  * @transform: a #CdTransform instance.
  * @pixel_format: The pixel format, e.g. %CD_PIXEL_FORMAT_RGBA_8
  *
  * Sets the pixel format to use for the transform.
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 void
-cd_transform_set_format (CdTransform *transform, CdPixelFormat pixel_format)
+cd_transform_set_input_pixel_format (CdTransform *transform, CdPixelFormat pixel_format)
 {
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (pixel_format != CD_PIXEL_FORMAT_UNKNOWN);
 
-	transform->priv->pixel_format = pixel_format;
+	transform->priv->input_pixel_format = pixel_format;
 	cd_transform_invalidate (transform);
 }
 
 /**
- * cd_transform_get_format:
+ * cd_transform_get_input_pixel_format:
  * @transform: a #CdTransform instance.
  *
  * Gets the pixel format to use for the transform.
  *
  * Return value: the pixel format, e.g. %CD_PIXEL_FORMAT_RGBA_8
  *
- * Since: 0.1.34
+ * Since: 1.0.0
  **/
 CdPixelFormat
-cd_transform_get_format (CdTransform *transform)
+cd_transform_get_input_pixel_format (CdTransform *transform)
 {
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), CD_PIXEL_FORMAT_UNKNOWN);
-	return transform->priv->pixel_format;
+	return transform->priv->input_pixel_format;
+}
+
+/**
+ * cd_transform_set_output_pixel_format:
+ * @transform: a #CdTransform instance.
+ * @pixel_format: The pixel format, e.g. %CD_PIXEL_FORMAT_RGBA_8
+ *
+ * Sets the pixel format to use for the transform.
+ *
+ * Since: 1.0.0
+ **/
+void
+cd_transform_set_output_pixel_format (CdTransform *transform, CdPixelFormat pixel_format)
+{
+	g_return_if_fail (CD_IS_TRANSFORM (transform));
+	g_return_if_fail (pixel_format != CD_PIXEL_FORMAT_UNKNOWN);
+
+	transform->priv->output_pixel_format = pixel_format;
+	cd_transform_invalidate (transform);
+}
+
+/**
+ * cd_transform_get_output_pixel_format:
+ * @transform: a #CdTransform instance.
+ *
+ * Gets the pixel format to use for the transform.
+ *
+ * Return value: the pixel format, e.g. %CD_PIXEL_FORMAT_RGBA_8
+ *
+ * Since: 1.0.0
+ **/
+CdPixelFormat
+cd_transform_get_output_pixel_format (CdTransform *transform)
+{
+	g_return_val_if_fail (CD_IS_TRANSFORM (transform), CD_PIXEL_FORMAT_UNKNOWN);
+	return transform->priv->output_pixel_format;
 }
 
 /**
@@ -418,17 +456,17 @@ cd_transform_setup (CdTransform *transform, GError **error)
 		profiles[2] = profile_out;
 		priv->lcms_transform = cmsCreateMultiprofileTransform (profiles,
 								       3,
-								       priv->pixel_format,
-								       priv->pixel_format,
+								       priv->input_pixel_format,
+								       priv->output_pixel_format,
 								       lcms_intent,
 								       lcms_flags);
 
 	} else {
 		/* create basic transform */
 		priv->lcms_transform = cmsCreateTransform (profile_in,
-							   priv->pixel_format,
+							   priv->input_pixel_format,
 							   profile_out,
-							   priv->pixel_format,
+							   priv->output_pixel_format,
 							   lcms_intent,
 							   lcms_flags);
 	}
@@ -497,7 +535,8 @@ cd_transform_process (CdTransform *transform,
 				     "rendering intent not set");
 		goto out;
 	}
-	if (priv->pixel_format == CD_PIXEL_FORMAT_UNKNOWN) {
+	if (priv->input_pixel_format == CD_PIXEL_FORMAT_UNKNOWN ||
+	    priv->output_pixel_format == CD_PIXEL_FORMAT_UNKNOWN) {
 		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_TRANSFORM_ERROR,
@@ -550,8 +589,11 @@ cd_transform_get_property (GObject *object, guint prop_id, GValue *value, GParam
 	case PROP_BPC:
 		g_value_set_boolean (value, priv->bpc);
 		break;
-	case PROP_PIXEL_FORMAT:
-		g_value_set_uint (value, priv->pixel_format);
+	case PROP_INPUT_PIXEL_FORMAT:
+		g_value_set_uint (value, priv->input_pixel_format);
+		break;
+	case PROP_OUTPUT_PIXEL_FORMAT:
+		g_value_set_uint (value, priv->output_pixel_format);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -573,8 +615,11 @@ cd_transform_set_property (GObject *object, guint prop_id, const GValue *value, 
 	case PROP_BPC:
 		cd_transform_set_bpc (transform, g_value_get_boolean (value));
 		break;
-	case PROP_PIXEL_FORMAT:
-		cd_transform_set_format (transform, g_value_get_uint (value));
+	case PROP_INPUT_PIXEL_FORMAT:
+		cd_transform_set_input_pixel_format (transform, g_value_get_uint (value));
+		break;
+	case PROP_OUTPUT_PIXEL_FORMAT:
+		cd_transform_set_output_pixel_format (transform, g_value_get_uint (value));
 		break;
 	case PROP_INPUT:
 		cd_transform_set_input (transform, g_value_get_object (value));
@@ -621,12 +666,20 @@ cd_transform_class_init (CdTransformClass *klass)
 	g_object_class_install_property (object_class, PROP_BPC, pspec);
 
 	/**
-	 * CdTransform: pixel-format:
+	 * CdTransform: input-pixel-format:
 	 */
-	pspec = g_param_spec_uint ("pixel-format", NULL, NULL,
+	pspec = g_param_spec_uint ("input-pixel-format", NULL, NULL,
 				   0, G_MAXUINT, 0,
 				   G_PARAM_READWRITE);
-	g_object_class_install_property (object_class, PROP_PIXEL_FORMAT, pspec);
+	g_object_class_install_property (object_class, PROP_INPUT_PIXEL_FORMAT, pspec);
+
+	/**
+	 * CdTransform: output-pixel-format:
+	 */
+	pspec = g_param_spec_uint ("output-pixel-format", NULL, NULL,
+				   0, G_MAXUINT, 0,
+				   G_PARAM_READWRITE);
+	g_object_class_install_property (object_class, PROP_OUTPUT_PIXEL_FORMAT, pspec);
 
 	/**
 	 * CdTransform: input:
@@ -663,7 +716,8 @@ cd_transform_init (CdTransform *transform)
 {
 	transform->priv = CD_TRANSFORM_GET_PRIVATE (transform);
 	transform->priv->rendering_intent = CD_RENDERING_INTENT_UNKNOWN;
-	transform->priv->pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
+	transform->priv->input_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
+	transform->priv->output_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
 	transform->priv->srgb = cmsCreate_sRGBProfile ();
 }
 
