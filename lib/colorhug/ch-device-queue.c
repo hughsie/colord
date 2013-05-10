@@ -712,7 +712,7 @@ ch_device_queue_buffer_uint16_from_le_cb (guint8 *output_buffer,
 					  GError **error)
 {
 	gboolean ret = TRUE;
-	guint16 *tmp = (guint16 *) output_buffer;
+	guint16 tmp;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (guint16)) {
@@ -722,7 +722,8 @@ ch_device_queue_buffer_uint16_from_le_cb (guint8 *output_buffer,
 			     sizeof (guint16), output_buffer_size);
 		goto out;
 	}
-	*tmp = GUINT16_FROM_LE (*tmp);
+	tmp = cd_buffer_read_uint16_le (output_buffer);
+	memcpy (output_buffer, &tmp, sizeof (tmp));
 out:
 	return ret;
 }
@@ -737,7 +738,7 @@ ch_device_queue_buffer_uint32_from_le_cb (guint8 *output_buffer,
 					  GError **error)
 {
 	gboolean ret = TRUE;
-	guint32 *tmp = (guint32 *) output_buffer;
+	guint32 tmp;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (guint32)) {
@@ -747,7 +748,8 @@ ch_device_queue_buffer_uint32_from_le_cb (guint8 *output_buffer,
 			     sizeof (guint32), output_buffer_size);
 		goto out;
 	}
-	*tmp = GUINT32_FROM_LE (*tmp);
+	tmp = cd_buffer_read_uint32_le (output_buffer);
+	memcpy (output_buffer, &tmp, sizeof (tmp));
 out:
 	return ret;
 }
@@ -898,7 +900,6 @@ ch_device_queue_buffer_to_firmware_ver_cb (guint8 *output_buffer,
 {
 	ChDeviceQueueGetFirmwareVerHelper *helper = (void *) user_data;
 	gboolean ret = TRUE;
-	guint16 *tmp = (guint16 *) output_buffer;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (guint16) * 3) {
@@ -909,9 +910,9 @@ ch_device_queue_buffer_to_firmware_ver_cb (guint8 *output_buffer,
 		goto out;
 	}
 
-	*helper->major = GUINT16_FROM_LE (tmp[0]);
-	*helper->minor = GUINT16_FROM_LE (tmp[1]);
-	*helper->micro = GUINT16_FROM_LE (tmp[2]);
+	*helper->major = cd_buffer_read_uint16_le (output_buffer + 0);
+	*helper->minor = cd_buffer_read_uint16_le (output_buffer + 2);
+	*helper->micro = cd_buffer_read_uint16_le (output_buffer + 4);
 out:
 	return ret;
 }
@@ -983,6 +984,7 @@ ch_device_queue_buffer_to_get_calibration_cb (guint8 *output_buffer,
 					      GError **error)
 {
 	ChDeviceQueueGetCalibrationHelper *helper = (void *) user_data;
+	ChPackedFloat pf_tmp;
 	gboolean ret = TRUE;
 	gdouble *calibration_tmp;
 	guint i;
@@ -1000,8 +1002,8 @@ ch_device_queue_buffer_to_get_calibration_cb (guint8 *output_buffer,
 	if (helper->calibration != NULL) {
 		calibration_tmp = cd_mat33_get_data (helper->calibration);
 		for (i = 0; i < 9; i++) {
-			ch_packed_float_to_double ((ChPackedFloat *) &output_buffer[i*4],
-						   &calibration_tmp[i]);
+			memcpy (&pf_tmp, &output_buffer[i*4], sizeof (pf_tmp));
+			ch_packed_float_to_double (&pf_tmp, &calibration_tmp[i]);
 		}
 	}
 
@@ -1092,6 +1094,7 @@ ch_device_queue_set_calibration (ChDeviceQueue *device_queue,
 				 guint8 types,
 				 const gchar *description)
 {
+	ChPackedFloat pf_tmp;
 	gdouble *calibration_tmp;
 	guint8 buffer[9*4 + 2 + 1 + CH_CALIBRATION_DESCRIPTION_LEN];
 	guint i;
@@ -1108,8 +1111,8 @@ ch_device_queue_set_calibration (ChDeviceQueue *device_queue,
 	/* convert from float to signed value */
 	for (i = 0; i < 9; i++) {
 		calibration_tmp = cd_mat33_get_data (calibration);
-		ch_double_to_packed_float (calibration_tmp[i],
-					   (ChPackedFloat *) &buffer[i*4 + 2]);
+		ch_double_to_packed_float (calibration_tmp[i], &pf_tmp);
+		memcpy (&buffer[i*4 + 2], &pf_tmp, sizeof (pf_tmp));
 	}
 
 	/* write types */
@@ -1359,9 +1362,9 @@ ch_device_queue_buffer_to_double_cb (guint8 *output_buffer,
 				     gpointer user_data,
 				     GError **error)
 {
-	ChPackedFloat *buffer = (ChPackedFloat *) output_buffer;
+	ChPackedFloat pf_tmp;
 	gboolean ret = TRUE;
-	gdouble *value = (gdouble *) user_data;
+	gdouble tmp;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (ChPackedFloat)) {
@@ -1373,7 +1376,9 @@ ch_device_queue_buffer_to_double_cb (guint8 *output_buffer,
 	}
 
 	/* convert back into floating point */
-	ch_packed_float_to_double (buffer, value);
+	memcpy (&pf_tmp, output_buffer, sizeof (ChPackedFloat));
+	ch_packed_float_to_double (&pf_tmp, &tmp);
+	memcpy (user_data, &tmp, sizeof (tmp));
 out:
 	return ret;
 }
@@ -2036,7 +2041,7 @@ ch_device_queue_buffer_dark_offsets_cb (guint8 *output_buffer,
 {
 	CdColorRGB *value = (CdColorRGB *) user_data;
 	gboolean ret = TRUE;
-	guint16 *buffer = (guint16 *) output_buffer;
+	guint16 tmp;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (guint16) * 3) {
@@ -2048,9 +2053,12 @@ ch_device_queue_buffer_dark_offsets_cb (guint8 *output_buffer,
 	}
 
 	/* convert back into floating point */
-	value->R = (gdouble) buffer[0] / (gdouble) 0xffff;
-	value->G = (gdouble) buffer[1] / (gdouble) 0xffff;
-	value->B = (gdouble) buffer[2] / (gdouble) 0xffff;
+	tmp = cd_buffer_read_uint16_le (output_buffer + 0);
+	value->R = (gdouble) tmp / (gdouble) 0xffff;
+	tmp = cd_buffer_read_uint16_le (output_buffer + 2);
+	value->G = (gdouble) tmp / (gdouble) 0xffff;
+	tmp = cd_buffer_read_uint16_le (output_buffer + 4);
+	value->B = (gdouble) tmp / (gdouble) 0xffff;
 out:
 	return ret;
 }
@@ -2195,7 +2203,7 @@ ch_device_queue_buffer_triple_rgb_cb (guint8 *output_buffer,
 				      GError **error)
 {
 	CdColorRGB *value = (CdColorRGB *) user_data;
-	ChPackedFloat *buffer = (ChPackedFloat *) output_buffer;
+	ChPackedFloat tmp;
 	gboolean ret = TRUE;
 
 	/* check buffer size */
@@ -2208,9 +2216,12 @@ ch_device_queue_buffer_triple_rgb_cb (guint8 *output_buffer,
 	}
 
 	/* convert back into floating point */
-	ch_packed_float_to_double (&buffer[0], &value->R);
-	ch_packed_float_to_double (&buffer[1], &value->G);
-	ch_packed_float_to_double (&buffer[2], &value->B);
+	memcpy (&tmp, output_buffer + 0, sizeof (ChPackedFloat));
+	ch_packed_float_to_double (&tmp, &value->R);
+	memcpy (&tmp, output_buffer + 4, sizeof (ChPackedFloat));
+	ch_packed_float_to_double (&tmp, &value->G);
+	memcpy (&tmp, output_buffer + 8, sizeof (ChPackedFloat));
+	ch_packed_float_to_double (&tmp, &value->B);
 out:
 	return ret;
 }
@@ -2288,7 +2299,7 @@ ch_device_queue_buffer_triple_xyz_cb (guint8 *output_buffer,
 				      GError **error)
 {
 	CdColorXYZ *value = (CdColorXYZ *) user_data;
-	ChPackedFloat *buffer = (ChPackedFloat *) output_buffer;
+	ChPackedFloat tmp;
 	gboolean ret = TRUE;
 
 	/* check buffer size */
@@ -2301,9 +2312,12 @@ ch_device_queue_buffer_triple_xyz_cb (guint8 *output_buffer,
 	}
 
 	/* convert back into floating point */
-	ch_packed_float_to_double (&buffer[0], &value->X);
-	ch_packed_float_to_double (&buffer[1], &value->Y);
-	ch_packed_float_to_double (&buffer[2], &value->Z);
+	memcpy (&tmp, output_buffer + 0, sizeof (ChPackedFloat));
+	ch_packed_float_to_double (&tmp, &value->X);
+	memcpy (&tmp, output_buffer + 4, sizeof (ChPackedFloat));
+	ch_packed_float_to_double (&tmp, &value->Y);
+	memcpy (&tmp, output_buffer + 8, sizeof (ChPackedFloat));
+	ch_packed_float_to_double (&tmp, &value->Z);
 out:
 	return ret;
 }
