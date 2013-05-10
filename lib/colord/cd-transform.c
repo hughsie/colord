@@ -58,12 +58,14 @@ struct _CdTransformPrivate
 	CdRenderingIntent	 rendering_intent;
 	cmsHPROFILE		 srgb;
 	cmsHTRANSFORM		 lcms_transform;
+	gboolean		 bpc;
 };
 
 G_DEFINE_TYPE (CdTransform, cd_transform, G_TYPE_OBJECT)
 
 enum {
 	PROP_0,
+	PROP_BPC,
 	PROP_RENDERING_INTENT,
 	PROP_PIXEL_FORMAT,
 	PROP_INPUT,
@@ -289,6 +291,41 @@ cd_transform_get_intent (CdTransform *transform)
 	return transform->priv->rendering_intent;
 }
 
+/**
+ * cd_transform_set_bpc:
+ * @transform: a #CdTransform instance.
+ * @bpc: black point compensation
+ *
+ * Sets if black point compensation should be used for the transform.
+ *
+ * Since: 1.0.0
+ **/
+void
+cd_transform_set_bpc (CdTransform *transform, gboolean bpc)
+{
+	g_return_if_fail (CD_IS_TRANSFORM (transform));
+
+	transform->priv->bpc = bpc;
+	cd_transform_invalidate (transform);
+}
+
+/**
+ * cd_transform_get_bpc:
+ * @transform: a #CdTransform instance.
+ *
+ * Gets the rendering bpc to use for the transform.
+ *
+ * Return value: If black point compensation should be used for the transform.
+ *
+ * Since: 1.0.0
+ **/
+gboolean
+cd_transform_get_bpc (CdTransform *transform)
+{
+	g_return_val_if_fail (CD_IS_TRANSFORM (transform), FALSE);
+	return transform->priv->bpc;
+}
+
 /* map lcms intent to colord type */
 const struct {
 	gint					lcms;
@@ -310,6 +347,7 @@ cd_transform_setup (CdTransform *transform, GError **error)
 	CdTransformPrivate *priv = transform->priv;
 	cmsHPROFILE profile_in;
 	cmsHPROFILE profile_out;
+	cmsUInt32Number lcms_flags = 0;
 	gboolean ret = TRUE;
 	gint lcms_intent = -1;
 	guint i;
@@ -359,6 +397,9 @@ cd_transform_setup (CdTransform *transform, GError **error)
 		profile_out = priv->srgb;
 	}
 
+	/* get flags */
+	lcms_flags &= cmsFLAGS_BLACKPOINTCOMPENSATION;
+
 	/* get abstract profile */
 	if (priv->abstract != NULL) {
 		cmsHPROFILE profiles[3];
@@ -381,7 +422,7 @@ cd_transform_setup (CdTransform *transform, GError **error)
 								       priv->pixel_format,
 								       priv->pixel_format,
 								       lcms_intent,
-								       0);
+								       lcms_flags);
 
 	} else {
 		/* create basic transform */
@@ -390,7 +431,7 @@ cd_transform_setup (CdTransform *transform, GError **error)
 							   profile_out,
 							   priv->pixel_format,
 							   lcms_intent,
-							   0);
+							   lcms_flags);
 	}
 
 	/* failed? */
@@ -507,6 +548,9 @@ cd_transform_get_property (GObject *object, guint prop_id, GValue *value, GParam
 	case PROP_RENDERING_INTENT:
 		g_value_set_uint (value, priv->rendering_intent);
 		break;
+	case PROP_BPC:
+		g_value_set_boolean (value, priv->bpc);
+		break;
 	case PROP_PIXEL_FORMAT:
 		g_value_set_uint (value, priv->pixel_format);
 		break;
@@ -526,6 +570,9 @@ cd_transform_set_property (GObject *object, guint prop_id, const GValue *value, 
 	switch (prop_id) {
 	case PROP_RENDERING_INTENT:
 		cd_transform_set_intent (transform, g_value_get_uint (value));
+		break;
+	case PROP_BPC:
+		cd_transform_set_bpc (transform, g_value_get_boolean (value));
 		break;
 	case PROP_PIXEL_FORMAT:
 		cd_transform_set_format (transform, g_value_get_uint (value));
@@ -565,6 +612,14 @@ cd_transform_class_init (CdTransformClass *klass)
 				   0, G_MAXUINT, 0,
 				   G_PARAM_READWRITE);
 	g_object_class_install_property (object_class, PROP_RENDERING_INTENT, pspec);
+
+	/**
+	 * CdTransform: bpc:
+	 */
+	pspec = g_param_spec_boolean ("bpc", NULL, NULL,
+				      FALSE,
+				      G_PARAM_READWRITE);
+	g_object_class_install_property (object_class, PROP_BPC, pspec);
 
 	/**
 	 * CdTransform: pixel-format:

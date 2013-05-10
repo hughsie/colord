@@ -100,6 +100,9 @@ CdPixelFormat	 cd_transform_get_format		(CdTransform	*transform);
 void		 cd_transform_set_intent		(CdTransform	*transform,
 							 CdRenderingIntent rendering_intent);
 CdRenderingIntent cd_transform_get_intent		(CdTransform	*transform);
+void		 cd_transform_set_bpc			(CdTransform	*transform,
+							 gboolean	 bpc);
+gboolean	 cd_transform_get_bpc			(CdTransform	*transform);
 gboolean	 cd_transform_process			(CdTransform	*transform,
 							 gpointer	 data_in,
 							 gpointer	 data_out,
