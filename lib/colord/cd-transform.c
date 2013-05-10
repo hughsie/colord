@@ -400,14 +400,6 @@ cd_transform_setup (CdTransform *transform, GError **error)
 
 	/* get input profile */
 	if (priv->input_icc != NULL) {
-		if (cd_icc_get_colorspace (priv->input_icc) != CD_COLORSPACE_RGB) {
-			ret = FALSE;
-			g_set_error_literal (error,
-					     CD_TRANSFORM_ERROR,
-					     CD_TRANSFORM_ERROR_INVALID_COLORSPACE,
-					     "input colorspace has to be RGB");
-			goto out;
-		}
 		g_debug ("using input profile of %s",
 			 cd_icc_get_filename (priv->input_icc));
 		profile_in = cd_icc_get_handle (priv->input_icc);
@@ -418,14 +410,6 @@ cd_transform_setup (CdTransform *transform, GError **error)
 
 	/* get output profile */
 	if (priv->output_icc != NULL) {
-		if (cd_icc_get_colorspace (priv->output_icc) != CD_COLORSPACE_RGB) {
-			ret = FALSE;
-			g_set_error_literal (error,
-					     CD_TRANSFORM_ERROR,
-					     CD_TRANSFORM_ERROR_INVALID_COLORSPACE,
-					     "output colorspace has to be RGB");
-			goto out;
-		}
 		g_debug ("using output profile of %s",
 			 cd_icc_get_filename (priv->output_icc));
 		profile_out = cd_icc_get_handle (priv->output_icc);
