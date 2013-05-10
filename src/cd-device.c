@@ -1143,7 +1143,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	guint i = 0;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
-	gchar *tmp;
+	gchar *strv_debug = NULL;
 	CdDeviceRelation relation = CD_DEVICE_RELATION_UNKNOWN;
 
 	/* return '' */
@@ -1307,10 +1307,9 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		g_variant_get (parameters, "(^a&s)", &regexes);
 
 		/* show all the qualifiers */
-		tmp = g_strjoinv (",", regexes);
+		strv_debug = g_strjoinv (",", regexes);
 		g_debug ("CdDevice %s:GetProfileForQualifiers(%s)",
-			 sender, tmp);
-		g_free (tmp);
+			 sender, strv_debug);
 
 		/* are we profiling? */
 		ret = cd_inhibit_valid (priv->inhibit);
@@ -1320,7 +1319,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 							       CD_DEVICE_ERROR,
 							       CD_DEVICE_ERROR_PROFILING,
 							       "profiling, so ignoring '%s'",
-							       property_name);
+							       strv_debug);
 			goto out;
 		}
 
@@ -1344,7 +1343,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 							       CD_DEVICE_ERROR,
 							       CD_DEVICE_ERROR_NOTHING_MATCHED,
 							       "nothing matched expression '%s'",
-							       property_name);
+							       strv_debug);
 			goto out;
 		}
 
@@ -1539,6 +1538,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	/* we suck */
 	g_critical ("failed to process device method %s", method_name);
 out:
+	g_free (strv_debug);
 	return;
 }
 
