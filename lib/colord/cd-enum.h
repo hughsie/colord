@@ -98,15 +98,13 @@ typedef enum {
  * CdPixelFormat:
  *
  * The pixel format of an image.
+ * NOTE: these values are the same as the lcms2 AOTTTTTUYFPXSEEECCCCBBB type.
  **/
-typedef enum {
-	CD_PIXEL_FORMAT_UNKNOWN,
-	CD_PIXEL_FORMAT_RGB_8,
-	CD_PIXEL_FORMAT_RGB_16,
-	CD_PIXEL_FORMAT_RGBA_8,
-	CD_PIXEL_FORMAT_RGBA_16,
-	CD_PIXEL_FORMAT_LAST
-} CdPixelFormat;
+typedef guint32 CdPixelFormat;
+
+#define	CD_PIXEL_FORMAT_UNKNOWN		0x00000000
+#define	CD_PIXEL_FORMAT_ARGB32		0x00044099
+#define	CD_PIXEL_FORMAT_RGB24		0x00040019
 
 /**
  * CdColorspace:

@@ -106,10 +106,8 @@ static const CdEnumMatch enum_rendering_intent[] = {
 
 static const CdEnumMatch enum_pixel_format[] = {
 	{CD_PIXEL_FORMAT_UNKNOWN,			"unknown"},	/* fall though value */
-	{CD_PIXEL_FORMAT_RGB_8,				"rgb-8"},
-	{CD_PIXEL_FORMAT_RGB_16,			"rgb-16"},
-	{CD_PIXEL_FORMAT_RGBA_8,			"rgba-8"},
-	{CD_PIXEL_FORMAT_RGBA_16,			"rgba-16"},
+	{CD_PIXEL_FORMAT_ARGB32,			"argb32"},
+	{CD_PIXEL_FORMAT_RGB24,				"rgb24"},
 	{0, NULL}
 };
 

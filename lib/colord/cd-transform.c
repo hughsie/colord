@@ -289,18 +289,6 @@ cd_transform_get_intent (CdTransform *transform)
 	return transform->priv->rendering_intent;
 }
 
-/* map lcms profile class to colord type */
-const struct {
-	guint32				lcms;
-	CdPixelFormat			colord;
-} map_pixel_format[] = {
-	{ TYPE_RGB_8,			CD_PIXEL_FORMAT_RGB_8 },
-	{ TYPE_RGBA_8,			CD_PIXEL_FORMAT_RGBA_8 },
-	{ TYPE_RGB_16,			CD_PIXEL_FORMAT_RGB_16 },
-	{ TYPE_RGBA_16,			CD_PIXEL_FORMAT_RGBA_16 },
-	{ 0,				CD_PIXEL_FORMAT_LAST }
-};
-
 /* map lcms intent to colord type */
 const struct {
 	gint					lcms;
@@ -324,7 +312,6 @@ cd_transform_setup (CdTransform *transform, GError **error)
 	cmsHPROFILE profile_out;
 	gboolean ret = TRUE;
 	gint lcms_intent = -1;
-	guint32 lcms_format = 0;
 	guint i;
 
 	/* find native rendering intent */
@@ -335,15 +322,6 @@ cd_transform_setup (CdTransform *transform, GError **error)
 		}
 	}
 	g_assert (lcms_intent != -1);
-
-	/* find native pixel format */
-	for (i = 0; map_pixel_format[i].colord != CD_PIXEL_FORMAT_LAST; i++) {
-		if (map_pixel_format[i].colord == priv->pixel_format) {
-			lcms_format = map_pixel_format[i].lcms;
-			break;
-		}
-	}
-	g_assert (lcms_format > 0);
 
 	/* get input profile */
 	if (priv->input != NULL) {
@@ -400,17 +378,17 @@ cd_transform_setup (CdTransform *transform, GError **error)
 		profiles[2] = profile_out;
 		priv->lcms_transform = cmsCreateMultiprofileTransform (profiles,
 								       3,
-								       lcms_format,
-								       lcms_format,
+								       priv->pixel_format,
+								       priv->pixel_format,
 								       lcms_intent,
 								       0);
 
 	} else {
 		/* create basic transform */
 		priv->lcms_transform = cmsCreateTransform (profile_in,
-							   lcms_format,
+							   priv->pixel_format,
 							   profile_out,
-							   lcms_format,
+							   priv->pixel_format,
 							   lcms_intent,
 							   0);
 	}
