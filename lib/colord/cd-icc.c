@@ -176,6 +176,7 @@ cd_icc_to_string (CdIcc *icc)
 	cmsTagSignature sig_link;
 	cmsTagTypeSignature tag_type;
 	gboolean ret;
+	gchar *tag_wrfix;
 	gchar tag_str[5] = "    ";
 	GDateTime *created;
 	GString *str;
@@ -308,7 +309,23 @@ cd_icc_to_string (CdIcc *icc)
 			continue;
 		}
 
-		tag_size = cmsReadRawTag (priv->lcms_profile, sig, &tmp, 4);
+		/* get the tag type
+		 *
+		 * LCMS2 has an interesting bug where calling:
+		 *  cmsReadRawTag(hProfile, sig, buffer, sizeof(buffer))
+		 * actually writes the wrole tag to buffer, which overflows if
+		 * tag_size > buffer. To work around this allocate a hugely
+		 * wasteful buffer of the whole tag size just to get the first
+		 * four bytes.
+		 *
+		 * But hey, at least we don't crash anymore...
+		 */
+		tag_size = cmsReadRawTag (priv->lcms_profile, sig, NULL, 0);
+		tag_wrfix = g_new0 (guint8, tag_size);
+		tag_size = cmsReadRawTag (priv->lcms_profile, sig, tag_wrfix, 4);
+		memcpy (&tmp, tag_wrfix, 4);
+		g_free (tag_wrfix);
+
 		cd_icc_uint32_to_str (tmp, tag_str);
 		tag_type = GUINT32_FROM_BE (tmp);
 		g_string_append_printf (str, "  type\t'%s' [0x%x]\n", tag_str, tag_type);
