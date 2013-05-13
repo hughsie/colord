@@ -28,7 +28,6 @@
 
 #include <glib.h>
 #include <lcms2.h>
-#include <locale.h>
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
@@ -338,15 +337,15 @@ cd_icc_to_string (CdIcc *icc)
 		case cmsSigMultiLocalizedUnicodeType:
 		{
 			cmsMLU *mlu;
-			gchar text_buffer[128];
+			gchar *text_buffer;
 			guint32 text_size;
 #ifdef HAVE_LCMS_MLU_TRANSLATIONS_COUNT
 			gchar country_code[3] = "\0\0\0";
 			gchar language_code[3] = "\0\0\0";
-			gsize rc;
+			GError *error = NULL;
 			guint32 j;
 			guint32 mlu_size;
-			wchar_t wtext[128];
+			gunichar *wtext;
 #endif
 
 			g_string_append_printf (str, "Text:\n");
@@ -369,17 +368,23 @@ cd_icc_to_string (CdIcc *icc)
 				text_size = cmsMLUgetWide (mlu,
 							   language_code,
 							   country_code,
-							   wtext,
-							   sizeof (wtext));
+							   NULL, 0);
 				if (text_size == 0)
 					continue;
-				rc = wcstombs (text_buffer,
-					       wtext,
-					       sizeof (text_buffer));
-				if (rc == (gsize) -1) {
-					g_string_append_printf (str, "  %s_%s:\tInvalid!\n",
+				wtext = g_malloc (text_size);
+				cmsMLUgetWide (mlu,
+					       language_code,
+					       country_code,
+					       (wchar_t *) wtext,
+					       text_size);
+				text_buffer = g_ucs4_to_utf8 ((gunichar *) wtext, -1,
+							      NULL, NULL, &error);
+				if (text_buffer == NULL) {
+					g_string_append_printf (str, "  %s_%s:\tInvalid: '%s'\n",
 								language_code[0] != '\0' ? language_code : "en",
-								country_code[0] != '\0' ? country_code : "US");
+								country_code[0] != '\0' ? country_code : "US",
+								error->message);
+					g_clear_error (&error);
 					continue;
 				}
 				g_string_append_printf (str, "  %s_%s:\t%s [%i bytes]\n",
@@ -387,6 +392,8 @@ cd_icc_to_string (CdIcc *icc)
 							country_code[0] != '\0' ? country_code : "**",
 							text_buffer,
 							text_size);
+				g_free (text_buffer);
+				g_free (wtext);
 			}
 #else
 			text_size = cmsMLUgetASCII (mlu,
@@ -428,8 +435,8 @@ cd_icc_to_string (CdIcc *icc)
 		{
 			cmsHANDLE dict;
 			const cmsDICTentry *entry;
-			gchar ascii_name[1024];
-			gchar ascii_value[1024];
+			gchar *ascii_name;
+			gchar *ascii_value;
 
 			g_string_append_printf (str, "Dictionary:\n");
 			dict = cmsReadTag (priv->lcms_profile, sig);
@@ -438,10 +445,15 @@ cd_icc_to_string (CdIcc *icc)
 			     entry = cmsDictNextEntry (entry)) {
 
 				/* convert from wchar_t to UTF-8 */
-				wcstombs (ascii_name, entry->Name, sizeof (ascii_name));
-				wcstombs (ascii_value, entry->Value, sizeof (ascii_value));
+				ascii_name = g_ucs4_to_utf8 ((gunichar *) entry->Name, -1,
+							     NULL, NULL, NULL);
+				ascii_value = g_ucs4_to_utf8 ((gunichar *) entry->Value, -1,
+							      NULL, NULL, NULL);
 				g_string_append_printf (str, "  %s\t->\t%s\n",
-							ascii_name, ascii_value);
+							ascii_name != NULL ? ascii_name : "Invalid UCS4",
+							ascii_value != NULL ? ascii_value : "Invalid UCS4");
+				g_free (ascii_name);
+				g_free (ascii_value);
 			}
 			break;
 		}
@@ -773,20 +785,22 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 		dict = cmsReadTag (priv->lcms_profile, cmsSigMetaTag);
 		if (dict != NULL) {
 			const cmsDICTentry *entry;
-			gchar ascii_name[1024];
-			gchar ascii_value[1024];
+			gchar *ascii_name;
+			gchar *ascii_value;
 			for (entry = cmsDictGetEntryList (dict);
 			     entry != NULL;
 			     entry = cmsDictNextEntry (entry)) {
-				wcstombs (ascii_name,
-					  entry->Name,
-					  sizeof (ascii_name));
-				wcstombs (ascii_value,
-					  entry->Value,
-					  sizeof (ascii_value));
-				g_hash_table_insert (priv->metadata,
-						     g_strdup (ascii_name),
-						     g_strdup (ascii_value));
+				ascii_name = g_ucs4_to_utf8 ((gunichar *) entry->Name, -1,
+							     NULL, NULL, NULL);
+				ascii_value = g_ucs4_to_utf8 ((gunichar *) entry->Value, -1,
+							      NULL, NULL, NULL);
+				if (ascii_name != NULL && ascii_value != NULL) {
+					g_hash_table_insert (priv->metadata,
+							     g_strdup (ascii_name),
+							     g_strdup (ascii_value));
+				}
+				g_free (ascii_name);
+				g_free (ascii_value);
 			}
 		}
 	}
@@ -886,35 +900,6 @@ out:
 }
 
 /**
- * utf8_to_wchar_t:
- **/
-static wchar_t *
-utf8_to_wchar_t (const char *src)
-{
-	const gchar *orig_locale;
-	gssize len;
-	gssize converted;
-	wchar_t *buf = NULL;
-
-	/* switch the locale to a known UTF-8 LC_CTYPE */
-	orig_locale = setlocale (LC_CTYPE, NULL);
-	setlocale (LC_CTYPE, "en_US.UTF-8");
-	len = mbstowcs (NULL, src, 0);
-	if (len < 0) {
-		g_warning ("Invalid UTF-8 in string %s", src);
-		goto out;
-	}
-	len += 1;
-	buf = g_malloc (sizeof (wchar_t) * len);
-	converted = mbstowcs (buf, src, len - 1);
-	g_assert (converted != -1);
-	buf[converted] = '\0';
-out:
-	setlocale (LC_CTYPE, orig_locale);
-	return buf;
-}
-
-/**
  * cd_util_write_dict_entry:
  **/
 static gboolean
@@ -924,28 +909,19 @@ cd_util_write_dict_entry (cmsHANDLE dict,
 			  GError **error)
 {
 	gboolean ret = FALSE;
-	wchar_t *mb_key = NULL;
-	wchar_t *mb_value = NULL;
+	gunichar *mb_key = NULL;
+	gunichar *mb_value = NULL;
 
-	mb_key = utf8_to_wchar_t (key);
-	if (mb_key == NULL) {
-		g_set_error (error,
-			     CD_ICC_ERROR,
-			     CD_ICC_ERROR_FAILED_TO_SAVE,
-			     "Failed to write invalid ASCII key: '%s'",
-			     key);
+	mb_key = g_utf8_to_ucs4 (key, -1, NULL, NULL, error);
+	if (mb_key == NULL)
 		goto out;
-	}
-	mb_value = utf8_to_wchar_t (value);
-	if (mb_value == NULL) {
-		g_set_error (error,
-			     CD_ICC_ERROR,
-			     CD_ICC_ERROR_FAILED_TO_SAVE,
-			     "Failed to write invalid ASCII value: '%s'",
-			     value);
+	mb_value = g_utf8_to_ucs4 (value, -1, NULL, NULL, error);
+	if (mb_value == NULL)
 		goto out;
-	}
-	ret = cmsDictAddEntry (dict, mb_key, mb_value, NULL, NULL);
+	ret = cmsDictAddEntry (dict,
+			       (const wchar_t *) mb_key,
+			       (const wchar_t *) mb_value,
+			       NULL, NULL);
 	if (!ret) {
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
@@ -962,7 +938,7 @@ out:
 typedef struct {
 	gchar		*language_code;	/* will always be xx\0 */
 	gchar		*country_code;	/* will always be xx\0 */
-	wchar_t		*wtext;
+	gunichar	*wtext;
 } CdMluObject;
 
 /**
@@ -982,17 +958,19 @@ cd_util_mlu_object_free (gpointer data)
  * cd_util_mlu_object_parse:
  **/
 static CdMluObject *
-cd_util_mlu_object_parse (const gchar *locale, const gchar *utf8_text)
+cd_util_mlu_object_parse (const gchar *locale,
+			  const gchar *utf8_text,
+			  GError **error)
 {
 	CdMluObject *obj = NULL;
 	gchar *key = NULL;
 	gchar **split = NULL;
 	guint type;
-	wchar_t *wtext;
+	gunichar *wtext;
 
 	/* untranslated version */
 	if (locale == NULL || locale[0] == '\0') {
-		wtext = utf8_to_wchar_t (utf8_text);
+		wtext = g_utf8_to_ucs4 (utf8_text, -1, NULL, NULL, error);
 		if (wtext == NULL)
 			goto out;
 		obj = g_new0 (CdMluObject, 1);
@@ -1014,7 +992,7 @@ cd_util_mlu_object_parse (const gchar *locale, const gchar *utf8_text)
 		goto out;
 
 	/* convert to wchars */
-	wtext = utf8_to_wchar_t (utf8_text);
+	wtext = g_utf8_to_ucs4 (utf8_text, -1, NULL, NULL, error);
 	if (wtext == NULL)
 		goto out;
 
@@ -1113,6 +1091,7 @@ cd_util_write_tag_localized (CdIcc *icc,
 	const gchar *locale;
 	const gchar *value;
 	gboolean ret = TRUE;
+	GError *error_local = NULL;
 	GList *keys;
 	GList *l;
 	GPtrArray *array;
@@ -1124,10 +1103,11 @@ cd_util_write_tag_localized (CdIcc *icc,
 	for (l = keys; l != NULL; l = l->next) {
 		locale = l->data;
 		value = g_hash_table_lookup (hash, locale);
-		obj = cd_util_mlu_object_parse (locale, value);
+		obj = cd_util_mlu_object_parse (locale, value, &error_local);
 		if (obj == NULL) {
-			g_warning ("failed to parse localized text: %s[%s]",
-				   value, locale);
+			g_warning ("failed to parse localized text %s[%s]: %s",
+				   value, locale, error_local->message);
+			g_clear_error (&error_local);
 			continue;
 		}
 		g_ptr_array_add (array, obj);
@@ -1151,12 +1131,16 @@ cd_util_write_tag_localized (CdIcc *icc,
 			/* the default translation is encoded as en_US rather
 			 * than NoLanguage_NoCountry as the latter means
 			 * 'the first entry' when reading */
-			ret = cmsMLUsetWide (mlu, "en", "US", obj->wtext);
+			ret = cmsMLUsetWide (mlu, "en", "US",
+					     (const wchar_t *) obj->wtext);
 		} else {
+			/* casting to wchar_t is okay as gunichar is 4 bytes
+			 * on Linux and OS-X, and colord is never going to
+			 * be compiled for Windows */
 			ret = cmsMLUsetWide (mlu,
 					     obj->language_code != NULL ? obj->language_code : cmsNoLanguage,
 					     obj->country_code != NULL ? obj->country_code : cmsNoCountry,
-					     obj->wtext);
+					     (const wchar_t *) obj->wtext);
 		}
 		if (!ret) {
 			g_set_error_literal (error,
@@ -2041,10 +2025,9 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	gchar *locale_key = NULL;
 	gchar *text_buffer = NULL;
 	gchar *tmp;
-	gsize rc;
 	guint32 text_size;
 	guint i;
-	wchar_t *wtext = NULL;
+	gunichar *wtext = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
@@ -2114,30 +2097,19 @@ cd_icc_get_mluc_data (CdIcc *icc,
 		goto out;
 
 	/* load wide chars */
-	wtext = g_new (wchar_t, text_size);
+	wtext = g_new (gunichar, text_size);
 	text_size = cmsMLUgetWide (mlu,
 				   language_code,
 				   country_code,
-				   wtext,
+				   (wchar_t *) wtext,
 				   text_size);
 	if (text_size == 0)
 		goto out;
 
-	/* get required size for UTF-8 */
-	rc = wcstombs (NULL, wtext, 0);
-	if (rc == (gsize) -1) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_NO_DATA,
-				     "invalid UTF-8");
+	/* insert UTF-8 value into locale cache */
+	text_buffer = g_ucs4_to_utf8 (wtext, -1, NULL, NULL, error);
+	if (text_buffer == NULL)
 		goto out;
-	}
-
-	/* load UTF-8 */
-	text_buffer = g_new0 (gchar, rc + 1);
-	wcstombs (text_buffer, wtext, rc);
-
-	/* insert into locale cache */
 	tmp = g_strdup (text_buffer);
 	g_hash_table_insert (priv->mluc_data[mluc],
 			     g_strdup (locale_key),
