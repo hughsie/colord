@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>Rec709</name>
+ <description>Rec. 709</description>
+ <_copyright>This profile is free of known copyright restrictions</_copyright>
+ <!--
+  TRANSLATORS: ITU-R is a standards body
+ -->
+ <_model>
+  ITU-R recommendation BT.709 is a high-definition television standard that was
+  first approved in 1990.
+  The Rec. 709 profile uses the same range of colors as sRGB although the
+  luminance curve is different.
+ </_model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>rec709</standard_space>
+ <gamma>Rec709</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6400</x>
+   <y>0.3300</y>
+   <Y>0.212656</Y>
+  </red>
+  <green>
+   <x>0.3000</x>
+   <y>0.6000</y>
+   <Y>0.715158</Y>
+  </green>
+  <blue>
+   <x>0.1500</x>
+   <y>0.0600</y>
+   <Y>0.072186</Y>
+  </blue>
+ </primaries>
+</profile>
