@@ -321,7 +321,7 @@ cd_icc_to_string (CdIcc *icc)
 		 * But hey, at least we don't crash anymore...
 		 */
 		tag_size = cmsReadRawTag (priv->lcms_profile, sig, NULL, 0);
-		tag_wrfix = g_new0 (guint8, tag_size);
+		tag_wrfix = g_new0 (gchar, tag_size);
 		tag_size = cmsReadRawTag (priv->lcms_profile, sig, tag_wrfix, 4);
 		memcpy (&tmp, tag_wrfix, 4);
 		g_free (tag_wrfix);
