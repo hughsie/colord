@@ -956,7 +956,6 @@ colord_device_id_mapping_pd_func (void)
 					    &error);
 	g_assert_no_error (error);
 	g_assert (ret);
-	g_object_unref (device);
 
 	g_hash_table_unref (profile_props);
 	g_object_unref (profile);
@@ -1055,7 +1054,6 @@ colord_device_id_mapping_dp_func (void)
 					    &error);
 	g_assert_no_error (error);
 	g_assert (ret);
-	g_object_unref (device);
 
 	/* delete profile */
 	ret = cd_client_delete_profile_sync (client,
