@@ -419,7 +419,8 @@ cd_transform_setup (CdTransform *transform, GError **error)
 	}
 
 	/* get flags */
-	lcms_flags &= cmsFLAGS_BLACKPOINTCOMPENSATION;
+	if (priv->bpc)
+		lcms_flags |= cmsFLAGS_BLACKPOINTCOMPENSATION;
 
 	/* get abstract profile */
 	if (priv->abstract_icc != NULL) {
