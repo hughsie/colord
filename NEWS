@@ -1,3 +1,30 @@
+Version 1.0.0
+~~~~~~~~~~~~~
+Released: 2013-05-13
+
+New Features:
+ - Add a config option for monitors with identical EDID values (Richard Hughes)
+ - Add API to control the use of BPC in CdTransform (Richard Hughes)
+ - Add a simple BGRA32 pixel format (Richard Hughes)
+ - Add a simple CMYK32 pixel format (Richard Hughes)
+ - Add a simple colord.conf manpage (Richard Hughes)
+ - Allow a different input and output format in CdTransform (Richard Hughes)
+ - Show all the translations when dumping an ICC profile (Richard Hughes)
+
+Bugfixes:
+ - Add some missing G_BEGIN_DECLS/G_END_DECLS in header files (Richard Hughes)
+ - Always return an error if cd_main_device_add() failed (Richard Hughes)
+ - Build all installed binaries with PIE (Richard Hughes)
+ - Build the colord binary with full RELRO (Richard Hughes)
+ - Do not show a warning when using 'colormgr device-get-profile-for-qualifier' (Richard Hughes)
+ - Ensure the parent directories exist when calling cd_icc_save_file (Richard Hughes)
+ - Fix crash in cd-iccdump by working around an lcms2 bug (Richard Hughes)
+ - Fix using the ColorHug color sensor on ARM hardware (Richard Hughes)
+ - Fix using the Huey color sensor on ARM hardware (Richard Hughes)
+ - Set the STANDARD_space metadata for the print profiles (Richard Hughes)
+ - Use G_GNUC_WARN_UNUSED_RESULT in public and private headers (Richard Hughes)
+ - Use the same pixel format names as Cairo and the same in-memory value as lcms2 (Richard Hughes)
+
 Version 0.1.34
 ~~~~~~~~~~~~~~
 Released: 2013-05-01
