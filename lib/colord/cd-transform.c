@@ -59,6 +59,7 @@ struct _CdTransformPrivate
 	cmsHPROFILE		 srgb;
 	cmsHTRANSFORM		 lcms_transform;
 	gboolean		 bpc;
+	guint			 max_threads;
 };
 
 G_DEFINE_TYPE (CdTransform, cd_transform, G_TYPE_OBJECT)
@@ -363,6 +364,39 @@ cd_transform_get_bpc (CdTransform *transform)
 	return transform->priv->bpc;
 }
 
+/**
+ * cd_transform_set_max_threads:
+ * @transform: a #CdTransform instance.
+ * @max_threads: number of threads, or 0 for the number of cores on the CPU
+ *
+ * Sets the maximum number of threads to be used for the transform.
+ *
+ * Since: 1.1.1
+ **/
+void
+cd_transform_set_max_threads (CdTransform *transform, guint max_threads)
+{
+	g_return_if_fail (CD_IS_TRANSFORM (transform));
+	transform->priv->max_threads = max_threads;
+}
+
+/**
+ * cd_transform_get_max_threads:
+ * @transform: a #CdTransform instance.
+ *
+ * Gets the maximum number of threads to be used for the transform.
+ *
+ * Return value: number of threads
+ *
+ * Since: 1.1.1
+ **/
+guint
+cd_transform_get_max_threads (CdTransform *transform)
+{
+	g_return_val_if_fail (CD_IS_TRANSFORM (transform), FALSE);
+	return transform->priv->max_threads;
+}
+
 /* map lcms intent to colord type */
 const struct {
 	gint					lcms;
@@ -469,6 +503,70 @@ out:
 	return ret;
 }
 
+typedef struct {
+	guint8	*p_in;
+	guint8	*p_out;
+	guint	 width;
+	guint	 rowstride;
+	guint	 rows_to_process;
+} CdTransformJob;
+
+/**
+ * cd_transform_process_func:
+ **/
+static void
+cd_transform_process_func (gpointer data, gpointer user_data)
+{
+	CdTransformJob *job = (CdTransformJob *) data;
+	CdTransform *transform = CD_TRANSFORM (user_data);
+	guint i;
+
+	for (i = 0; i < job->rows_to_process; i++) {
+		cmsDoTransformStride (transform->priv->lcms_transform,
+				      job->p_in,
+				      job->p_out,
+				      job->width,
+				      job->rowstride);
+		job->p_in += job->rowstride;
+		job->p_out += job->rowstride;
+	}
+	g_slice_free (CdTransformJob, job);
+}
+
+/**
+ * cd_transform_set_max_threads_default:
+ **/
+static gboolean
+cd_transform_set_max_threads_default (CdTransform *transform, GError **error)
+{
+	gchar *data = NULL;
+	gboolean ret;
+	gchar *tmp;
+
+	/* use "cpu cores" to work out best number of threads */
+	ret = g_file_get_contents ("/proc/cpuinfo", &data, NULL, error);
+	if (!ret)
+		goto out;
+	tmp = g_strstr_len (data, -1, "cpu cores\t: ");
+	if (tmp == NULL) {
+		/* some processors do not provide this info */
+		transform->priv->max_threads = 1;
+		goto out;
+	}
+	transform->priv->max_threads = g_ascii_strtoull (tmp + 12, NULL, 10);
+	if (transform->priv->max_threads == 0) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_TRANSFORM_ERROR,
+				     CD_TRANSFORM_ERROR_LAST,
+				     "Failed to parse number of cores");
+		goto out;
+	}
+out:
+	g_free (data);
+	return ret;
+}
+
 /**
  * cd_transform_process:
  * @transform: a #CdTransform instance.
@@ -498,11 +596,14 @@ cd_transform_process (CdTransform *transform,
 		      GCancellable *cancellable,
 		      GError **error)
 {
+	CdTransformJob *job;
 	CdTransformPrivate *priv = transform->priv;
 	gboolean ret = TRUE;
-	guint i;
+	GThreadPool *pool = NULL;
 	guint8 *p_in;
 	guint8 *p_out;
+	guint i;
+	guint rows_to_process;
 
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), FALSE);
 	g_return_val_if_fail (data_in != NULL, FALSE);
@@ -530,6 +631,13 @@ cd_transform_process (CdTransform *transform,
 		goto out;
 	}
 
+	/* get the best number of threads */
+	if (transform->priv->max_threads == 0) {
+		ret = cd_transform_set_max_threads_default (transform, error);
+		if (!ret)
+			goto out;
+	}
+
 	/* setup the transform if required */
 	if (priv->lcms_transform == NULL) {
 		ret = cd_transform_setup (transform, error);
@@ -537,15 +645,54 @@ cd_transform_process (CdTransform *transform,
 			goto out;
 	}
 
+	/* non-threaded conversion */
+	if (transform->priv->max_threads == 1) {
+		p_in = data_in;
+		p_out = data_out;
+		for (i = 0; i < height; i++) {
+			cmsDoTransformStride (priv->lcms_transform,
+					      p_in,
+					      p_out,
+					      width,
+					      rowstride);
+			p_in += rowstride;
+			p_out += rowstride;
+		}
+		goto out;
+	}
+
+	/* create a threadpool for each line of the image */
+	pool = g_thread_pool_new (cd_transform_process_func,
+				  transform,
+				  transform->priv->max_threads,
+				  TRUE,
+				  error);
+	if (pool == NULL)
+		goto out;
+
 	/* do conversion */
 	p_in = data_in;
 	p_out = data_out;
-	for (i = 0; i < height; i++) {
-		cmsDoTransform (priv->lcms_transform, p_in, p_out, width);
-		p_in += rowstride;
-		p_out += rowstride;
+	rows_to_process = height / transform->priv->max_threads;
+	for (i = 0; i < height; i += rows_to_process) {
+		job = g_slice_new (CdTransformJob);
+		job->p_in = p_in;
+		job->p_out = p_out;
+		job->width = width;
+		job->rowstride = rowstride;
+		if (i + rows_to_process > height)
+			job->rows_to_process = height - i;
+		else
+			job->rows_to_process = rows_to_process;
+		ret = g_thread_pool_push (pool, job, error);
+		if (!ret)
+			goto out;
+		p_in += rowstride * rows_to_process;
+		p_out += rowstride * rows_to_process;
 	}
 out:
+	if (pool != NULL)
+		g_thread_pool_free (pool, FALSE, TRUE);
 	return ret;
 }
 
@@ -704,6 +851,7 @@ cd_transform_init (CdTransform *transform)
 	transform->priv->input_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
 	transform->priv->output_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
 	transform->priv->srgb = cmsCreate_sRGBProfile ();
+	transform->priv->max_threads = 1;
 }
 
 /**

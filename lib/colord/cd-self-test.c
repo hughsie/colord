@@ -3657,14 +3657,23 @@ colord_icc_localized_func (void)
 static void
 colord_transform_func (void)
 {
+	CdIcc *icc;
 	CdTransform *transform;
+	const guint height = 1080;
+	const guint repeats = 10;
+	const guint max_threads = 8;
+	const guint width = 1920;
 	gboolean ret;
+	gchar *filename;
 	GError *error = NULL;
+	GFile *file;
+	GTimer *timer;
 	guint8 data_in[3] = { 127, 32, 64 };
 	guint8 data_out[3];
-	CdIcc *icc;
-	gchar *filename;
-	GFile *file;
+	guint8 *img_data_in;
+	guint8 *img_data_out;
+	guint8 *img_data_check;
+	guint i, j;
 
 	/* setup transform with 8 bit RGB */
 	transform = cd_transform_new ();
@@ -3707,6 +3716,61 @@ colord_transform_func (void)
 	g_assert_cmpint (data_out[0], ==, 144);
 	g_assert_cmpint (data_out[1], ==, 0);
 	g_assert_cmpint (data_out[2], ==, 69);
+
+	/* get a known-correct unthreaded result */
+	img_data_in = g_new (guint8, height * width * 3);
+	img_data_out = g_new (guint8, height * width * 3);
+	img_data_check = g_new (guint8, height * width * 3);
+	for (i = 0; i < height * width * 3; i++)
+		img_data_in[i] = i % 0xff;
+	cd_transform_set_max_threads (transform, 1);
+	ret = cd_transform_process (transform,
+				    img_data_in,
+				    img_data_check,
+				    height,
+				    width,
+				    width,
+				    NULL,
+				    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get a good default */
+	cd_transform_set_max_threads (transform, 0);
+	ret = cd_transform_process (transform,
+				    img_data_in,
+				    img_data_out,
+				    height,
+				    width,
+				    width,
+				    NULL,
+				    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert_cmpint (cd_transform_get_max_threads (transform), >=, 1);
+
+	/* run lots of data through the profile */
+	timer = g_timer_new ();
+	for (i = 1; i < max_threads; i++) {
+		cd_transform_set_max_threads (transform, i);
+		g_timer_reset (timer);
+		for (j = 0; j < repeats; j++) {
+			ret = cd_transform_process (transform,
+						    img_data_in,
+						    img_data_out,
+						    height,
+						    width,
+						    width,
+						    NULL,
+						    &error);
+			g_assert_no_error (error);
+			g_assert (ret);
+		}
+		g_assert_cmpint (memcmp (img_data_out, img_data_check, height * width * 3), ==, 0);
+		g_print ("%i threads = %.2fms\n", i,
+			 g_timer_elapsed (timer, NULL) * 1000 / repeats);
+	}
+	g_timer_destroy (timer);
 
 	g_object_unref (transform);
 }

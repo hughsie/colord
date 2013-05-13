@@ -108,6 +108,9 @@ CdRenderingIntent cd_transform_get_rendering_intent	(CdTransform	*transform);
 void		 cd_transform_set_bpc			(CdTransform	*transform,
 							 gboolean	 bpc);
 gboolean	 cd_transform_get_bpc			(CdTransform	*transform);
+void		 cd_transform_set_max_threads		(CdTransform	*transform,
+							 guint		 max_threads);
+guint		 cd_transform_get_max_threads		(CdTransform	*transform);
 gboolean	 cd_transform_process			(CdTransform	*transform,
 							 gpointer	 data_in,
 							 gpointer	 data_out,
