@@ -16,7 +16,7 @@
 <ul>
 <li><a href="#spelling">Can I type colord with leading upper case 'C'?</a></li>
 <li><a href="#versions">What do the version numbers mean?</a></li>
-<li><a href="#gcm">How does this work with gnome-color-manager?</a></li>
+<li><a href="#gcm">How does colord interface with the session?</a></li>
 <li><a href="#XRandR13">Are XRandR 1.2 devices still supported?</a></li>
 <li><a href="#imageloading">Does colord or GNOME Color Manager convert my image?</a></li>
 <li><a href="#whydbnotxml">Why are the mappings stored in a database, not readable XML files?</a></li>
@@ -27,11 +27,12 @@
 <li><a href="#qualifiers">What is a qualifier used for?</a></li>
 <li><a href="#daemon">How do system daemons add devices and profiles?</a></li>
 <li><a href="#cups">How would a system daemon like CUPS use colord?</a></li>
-<li><a href="#translation">How do I translate gnome-color-manager?</a></li>
+<li><a href="#translation">How do I translate colord?</a></li>
 <li><a href="#corporate-sponsor">Is there an organization sponsoring development of colord?</a></li>
-<li><a href="#oyranos">Why did you start a new project instead of working on Oyranos?</a></li>
-<li><a href="#why-root">Why does the daemon run as root?</a></li>
+<li><a href="#oyranos">What's the difference between colord and Oyranos?</a></li>
+<li><a href="#why-root">Does the daemon run as root?</a></li>
 <li><a href="#application-support">What desktop applications support color management?</a></li>
+<li><a href="#help">>How can I help??</a></li>
 </ul>
 
 <hr/>
@@ -80,11 +81,11 @@ This means that even minor versions are stable, odd are unstable.
 <p>
 
 <hr/>
-<h3><a name="gcm">How does this work with gnome-color-manager?</a></h3>
+<h3><a name="gcm">How does colord interface with the session?</a></h3>
 <p>
-At start-up GCM has to create profiles, devices and otherwise act as the
-helper agent for colord in that user session.
-GNOME Color Manager basically has to do the following 6 things:
+At start-up either gnome-settings-daemon or colord-kde has to create profiles
+and devices and otherwise act as the helper agent for colord in the user session.
+The session client has to do the following 6 things:
 </p>
 <ul>
 <li>
@@ -137,7 +138,7 @@ You need to use a pixel conversion library, for instance
 If you have a registry that more than one program is changing, you
 <b>need</b> locking.
 Locking with plain files is neither fun nor reliable.
-From a raw performance point of view, it's two order of magnitudes
+From a raw performance point of view, it's two orders of magnitude
 faster to mmap a single 20k sqlite .db file than it is to read 200
 small XML files from the file system.
 </p>
@@ -207,14 +208,6 @@ CMS, and in this way CMS is often used as a general term for both a
 CMM and a CMF.
 </p>
 
-<!--
-<hr/>
-<h3><a name="xxxxxxxxxxxxxxxxxxxxxxxxxxx">ccccccccccccccccccccccccccccccc</a></h3>
-<p>
-ccccccccccccccccccccccccccccccccccccccccccccccccccccc.
-</p>
--->
-
 <hr/>
 <h3><a name="sensors">What is a native sensor?</a></h3>
 <p>
@@ -224,9 +217,14 @@ photospectrometer that colord knows how to interface with.
 <p>
 Many sensor makes and models are recognised, and are available to be used
 by programs such as <a href="http://www.argyllcms.com/">ArgyllCMS</a>.
-Only the <a href="http://www.pantone.co.uk/pages/products/product.aspx?pid=562">Pantone Huey</a>
-device is available for use in colord by default, as colord contains a
-native driver for this device.
+The following sensors have native drivers and do not need to spawn ArgyllCMS to
+take readings:
+</p>
+<ul>
+<li><a href="http://www.pantone.co.uk/pages/products/product.aspx?pid=562">Pantone Huey</a></li>
+<li><a href="http://www.hughski.com/">Hughski ColorHug</a></li>
+<li><a href="http://www.xrite.com/product_overview.aspx?Action=support&ID=730">XRite DTP94</a></li>
+</ul>
 </p>
 <p>
 A native driver allows colord to lock the device, read a sample from the
@@ -234,12 +232,6 @@ sensors (or from the ambient light sensor) and unlock the device.
 A native device allows client programs to get samples from the device
 trivially using either raw D-Bus or libcolord without relying on external
 programs.
-</p>
-<p>
-The author is also working on a Pantone ColorMunki native driver and
-other hardware can supported if it is sent to the developer, or if
-specifications can be obtained.
-Email me if you can help.
 </p>
 
 <hr/>
@@ -361,10 +353,10 @@ Like this:
 </pre>
 
 <hr/>
-<h3><a name="translation">How do I translate gnome-color-manager?</a></h3>
+<h3><a name="translation">How do I translate colord?</a></h3>
 <p>
-See the <a href="http://l10n.gnome.org/teams">GNOME Translation Team</a>
-web pages for how to contribute to GNOME localisation.
+See the <a href="https://www.transifex.com/projects/p/colord/">colord Transifex</a>
+pages for how to contribute to localisation.
 </p>
 
 <hr/>
@@ -376,13 +368,17 @@ work on random open source projects. Thanks!
 </p>
 
 <hr/>
-<h3><a name="oyranos">Why did you start a new project instead of working on Oyranos?</a></h3>
+<h3><a name="oyranos">What's the difference between colord and Oyranos?</a></h3>
 <p>
 On the surface, <a href="http://www.oyranos.org/">Oyranos</a> and colord
 look like similar projects.
-Oyranos has existed for over 8 years, whilst colord has been designed
-and developed for just over a year.
-So why start something from scratch rather than just work on Oyranos?
+Oyranos has existed for over 8 years, whilst colord has been developed for
+just over 2 years.
+</p>
+<p>
+I'm not going to be able to write an unbiased comparison against colord and
+Oyranos (as the author of the former) but I've supplied the table below which
+hopefully helps.
 </p>
 <table class="noteinformation">
  <tr><th></th><th>Oyranos</th><th>colord</th></tr>
@@ -435,16 +431,16 @@ So why start something from scratch rather than just work on Oyranos?
  <tr>
   <td>Full screen color management</td>
   <td><a href="http://www.compiz.org/">Compiz</a>, using X atoms as IPC</td>
-  <td>No, but planned for <a href="http://wayland.freedesktop.org/">Wayland</a></td>
+  <td><a href="http://wayland.freedesktop.org/">Wayland</a> with subsurfaces used as opt-out areas (WIP)</td>
  </tr>
- <tr><td>Project age</td><td>8 years</td><td>1 year</td></tr>
+ <tr><td>Project age</td><td>8 years</td><td>2 years</td></tr>
  <tr>
   <td>Required by</td>
   <td valign="top">
    <ul>
     <li><a href="http://www.oyranos.org/wiki/index.php?title=ICC_Examin">icc_examin</a></li>
     <li><a href="http://www.oyranos.org/kolormanager/">Kolor Manager</a></li>
-    <li><a href="http://www.cinepaint.org/">CinePaint</a></li>
+    <li><a href="http://www.cinepaint.org/">CinePaint</a> (<a href="http://www.ohloh.net/p/cinepaint">obsolete</a>)</li>
    </ul>
   </td>
   <td>
@@ -488,7 +484,7 @@ So why start something from scratch rather than just work on Oyranos?
 </p>
 
 <hr/>
-<h3><a name="why-root">Why does the daemon run as root?</a></h3>
+<h3><a name="why-root">Does the daemon run as root?</a></h3>
 <p>
 Since version 0.1.12 (released August 2011) colord runs as the
 <i>colord</i> user, not <i>root</i> &#151; if you're still running this or
@@ -523,6 +519,16 @@ Applications can query colord directly, or can use the per-session
 <tr><td><a href="http://inkscape.org/">Inkscape</a></td><td>No</td><td>Yes</td><td></td></tr>
 <tr><td><a href="http://entangle-photo.org/">Entangle</a></td><td>No</td><td>Yes</td><td></td></tr>
 </table>
+
+<hr/>
+<h3><a name="help">How can I help?</a></h3>
+<p>
+Anyone interested in colord development is invited to join the
+channel <code>#gnome-color-manager</code> on <code>freenode</code>.
+We are a friendly bunch, and can answer questions on D-Bus interfaces,
+general lcms questions or anything else colord related.
+</p>
+
 <p>Back to the <a href="index.html">main page</a></p>
 
 <p class="footer">
