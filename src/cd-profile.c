@@ -931,6 +931,7 @@ cd_profile_set_from_profile (CdProfile *profile,
 	lcms_profile = cd_icc_get_handle (icc);
 	ret = cmsGetHeaderCreationDateTime (lcms_profile, &created);
 	if (ret) {
+		created.tm_isdst = -1;
 		priv->created = mktime (&created);
 	} else {
 		g_warning ("failed to get created time");

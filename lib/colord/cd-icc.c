@@ -1971,13 +1971,15 @@ cd_icc_get_created (CdIcc *icc)
 	if (!ret)
 		goto out;
 
+	created_tm.tm_isdst = -1;
+
 	/* convert to UNIX time */
 	created_t = mktime (&created_tm);
 	if (created_t == (time_t) -1)
 		goto out;
 
 	/* instantiate object */
-	created = g_date_time_new_from_unix_utc (created_t);
+	created = g_date_time_new_from_unix_local (created_t);
 out:
 	return created;
 }
