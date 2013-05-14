@@ -238,8 +238,8 @@ cd_interp_eval (CdInterp *interp, gdouble value, GError **error)
 		goto out;
 
 	/* only one point */
-	x = (gdouble *) cd_interp_get_x (interp)->data;
-	y = (gdouble *) cd_interp_get_y (interp)->data;
+	x = &g_array_index (priv->x, gdouble, 0);
+	y = &g_array_index (priv->y, gdouble, 0);
 	if (priv->size == 1) {
 		result = y[0];
 		goto out;

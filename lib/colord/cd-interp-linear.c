@@ -50,8 +50,8 @@ cd_interp_linear_eval (CdInterp *interp, gdouble value, GError **error)
 	gint size;
 
 	/* find first point to interpolate from */
-	x = (gdouble *) cd_interp_get_x (interp)->data;
-	y = (gdouble *) cd_interp_get_y (interp)->data;
+	x = &g_array_index (cd_interp_get_x (interp), gdouble, 0);
+	y = &g_array_index (cd_interp_get_y (interp), gdouble, 0);
 	size = cd_interp_get_y (interp)->len;
 	for (p = 0; p < size - 2; p++) {
 		if (x[p+1] >= value)

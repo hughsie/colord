@@ -88,8 +88,8 @@ cd_interp_akima_prepare (CdInterp *interp, GError **error)
 	g_array_append_val (array_y, tmp);
 	g_array_append_val (array_y, tmp);
 
-	x = (gdouble *) array_x->data;
-	y = (gdouble *) array_y->data;
+	x = &g_array_index (array_x, gdouble, 0);
+	y = &g_array_index (array_y, gdouble, 0);
 	n = cd_interp_get_size (interp) + 4;
 
 	/* calculate Akima coefficients of the spline */
@@ -173,8 +173,8 @@ cd_interp_akima_eval (CdInterp *interp, gdouble value, GError **error)
 	gint p = 2;
 
 	/* find first point to interpolate from */
-	x = (gdouble *) cd_interp_get_x (interp)->data;
-	y = (gdouble *) cd_interp_get_y (interp)->data;
+	x = &g_array_index (cd_interp_get_x (interp), gdouble, 0);
+	y = &g_array_index (cd_interp_get_y (interp), gdouble, 0);
 	while (value >= x[p]) p++;
 
 	/* evaluate polynomials */
