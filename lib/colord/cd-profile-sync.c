@@ -35,7 +35,6 @@
 #include <gio/gio.h>
 
 #include "cd-profile.h"
-#include "cd-deprecated.h"
 #include "cd-profile-sync.h"
 
 /* tiny helper to help us do the async operation */
@@ -199,60 +198,4 @@ cd_profile_install_system_wide_sync (CdProfile *profile,
 	g_main_loop_unref (helper.loop);
 
 	return helper.ret;
-}
-
-/**********************************************************************/
-
-/**
- * cd_profile_set_filename_sync:
- * @profile: a #CdProfile instance.
- * @value: The filename.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the profile model.
- *
- * WARNING: This function is synchronous, and may block.
- * Do not use it in GUI applications.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.0
- **/
-gboolean
-cd_profile_set_filename_sync (CdProfile *profile,
-			      const gchar *value,
-			      GCancellable *cancellable,
-			      GError **error)
-{
-	return cd_profile_set_property_sync (profile,
-					     CD_PROFILE_PROPERTY_FILENAME,
-					     value,
-					     cancellable, error);
-}
-
-/**
- * cd_profile_set_qualifier_sync:
- * @profile: a #CdProfile instance.
- * @value: The qualifier.
- * @cancellable: a #GCancellable or %NULL
- * @error: a #GError, or %NULL.
- *
- * Sets the profile model.
- *
- * WARNING: This function is synchronous, and may block.
- * Do not use it in GUI applications.
- *
- * Return value: #TRUE for success, else #FALSE and @error is used
- *
- * Since: 0.1.0
- **/
-gboolean
-cd_profile_set_qualifier_sync (CdProfile *profile,
-			       const gchar *value,
-			       GCancellable *cancellable,
-			       GError **error)
-{
-	return cd_profile_set_property_sync (profile, CD_PROFILE_PROPERTY_QUALIFIER, value,
-					     cancellable, error);
 }

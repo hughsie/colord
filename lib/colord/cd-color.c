@@ -262,11 +262,7 @@ cd_color_swatch_get_type (void)
 CdColorXYZ *
 cd_color_xyz_new (void)
 {
-#ifdef CD_USE_ALLOC_GSLICE
 	return g_slice_new0 (CdColorXYZ);
-#else
-	return g_new0 (CdColorXYZ, 1);
-#endif
 }
 
 /**
@@ -281,11 +277,7 @@ cd_color_xyz_new (void)
 CdColorRGB *
 cd_color_rgb_new (void)
 {
-#ifdef CD_USE_ALLOC_GSLICE
 	return g_slice_new0 (CdColorRGB);
-#else
-	return g_new0 (CdColorRGB, 1);
-#endif
 }
 
 /**
@@ -315,11 +307,7 @@ cd_color_lab_new (void)
 CdColorYxy *
 cd_color_yxy_new (void)
 {
-#ifdef CD_USE_ALLOC_GSLICE
 	return g_slice_new0 (CdColorYxy);
-#else
-	return g_new0 (CdColorYxy, 1);
-#endif
 }
 
 /**
@@ -348,11 +336,7 @@ cd_color_swatch_new (void)
 void
 cd_color_xyz_free (CdColorXYZ *src)
 {
-#ifdef CD_USE_ALLOC_GSLICE
 	g_slice_free (CdColorXYZ, src);
-#else
-	g_free (src);
-#endif
 }
 
 /**
@@ -366,11 +350,7 @@ cd_color_xyz_free (CdColorXYZ *src)
 void
 cd_color_rgb_free (CdColorRGB *src)
 {
-#ifdef CD_USE_ALLOC_GSLICE
 	g_slice_free (CdColorRGB, src);
-#else
-	g_free (src);
-#endif
 }
 
 /**
@@ -398,11 +378,7 @@ cd_color_lab_free (CdColorLab *src)
 void
 cd_color_yxy_free (CdColorYxy *src)
 {
-#ifdef CD_USE_ALLOC_GSLICE
 	g_slice_free (CdColorYxy, src);
-#else
-	g_free (src);
-#endif
 }
 
 /**

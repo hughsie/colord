@@ -30,7 +30,6 @@ libcolordbase_include_HEADERS =					\
 	cd-client.h						\
 	cd-client-sync.h					\
 	cd-color.h						\
-	cd-deprecated.h						\
 	cd-device.h						\
 	cd-device-sync.h					\
 	cd-dom.h						\
@@ -79,7 +78,6 @@ libcolordprivate_la_CFLAGS =					\
 libcolord_la_SOURCES =						\
 	cd-client.c						\
 	cd-client-sync.c					\
-	cd-deprecated.c						\
 	cd-device.c						\
 	cd-device-sync.c					\
 	cd-profile.c						\
