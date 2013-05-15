@@ -1059,17 +1059,14 @@ cd_profile_set_filename (CdProfile *profile,
 			 priv->object_path);
 		goto out;
 	} else if (!priv->is_system_wide) {
-#ifndef HAVE_FD_FALLBACK
 		/* we're not allowing the dameon to open the file */
 		ret = FALSE;
 		g_set_error (error,
 			     CD_PROFILE_ERROR,
 			     CD_PROFILE_ERROR_INTERNAL,
-			     "Failed to open %s as client did not send FD and "
-			     "daemon is not compiled with --enable-fd-fallback",
+			     "cannot open %s by name if not system-wide",
 			     filename);
 		goto out;
-#endif
 	}
 
 	/* find out if we have a GResource copy */

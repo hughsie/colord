@@ -300,13 +300,6 @@ if test x$has_sane = xyes; then
 	AC_DEFINE(HAVE_SANE,1,[Use SANE support for detecting scanners])
 fi
 
-dnl **** Daemon is allowed to do FD fallback  ****
-AC_ARG_ENABLE(fd_fallback, AS_HELP_STRING([--enable-fd-fallback],[Enable file descriptor fallback]),
-	      enable_fd_fallback=$enableval, enable_fd_fallback=yes)
-if test x$enable_fd_fallback != xno; then
-	AC_DEFINE(HAVE_FD_FALLBACK,1,[Use FD fallback])
-fi
-
 dnl **** Daemon is allowed to do search external volumes for profiles ****
 AC_ARG_ENABLE(volume_search, AS_HELP_STRING([--enable-volume-search],[Enable profile volume search]),
 	      enable_volume_search=$enableval, enable_volume_search=yes)

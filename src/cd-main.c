@@ -1521,8 +1521,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	}
 
 	/* return 'o' */
-	if (g_strcmp0 (method_name, "CreateProfile") == 0 ||
-	    g_strcmp0 (method_name, "CreateProfileWithFd") == 0) {
+	if (g_strcmp0 (method_name, "CreateProfileWithFd") == 0) {
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (connection,
@@ -1536,23 +1535,14 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			goto out;
 		}
 
-		if (g_strcmp0 (g_variant_get_type_string (parameters),
-			       "(ssha{ss})") == 0) {
-			g_variant_get (parameters, "(&s&sha{ss})",
-				       &device_id,
-				       &scope_tmp,
-				       &fd_handle,
-				       &iter);
-			g_debug ("CdMain: %s:CreateProfileWithFd(%s,%i)",
-				 g_dbus_method_invocation_get_sender (invocation),
-				 device_id, fd_handle);
-		} else {
-			g_variant_get (parameters, "(&s&sa{ss})",
-				       &device_id,
-				       &scope_tmp,
-				       &iter);
-			g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
-		}
+		g_variant_get (parameters, "(&s&sha{ss})",
+			       &device_id,
+			       &scope_tmp,
+			       &fd_handle,
+			       &iter);
+		g_debug ("CdMain: %s:CreateProfileWithFd(%s,%i)",
+			 g_dbus_method_invocation_get_sender (invocation),
+			 device_id, fd_handle);
 
 		/* check ID is valid */
 		if (g_strcmp0 (device_id, "") == 0) {
@@ -1601,27 +1591,33 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		/* get any file descriptor in the message */
 		message = g_dbus_method_invocation_get_message (invocation);
 		fd_list = g_dbus_message_get_unix_fd_list (message);
-		if (fd_list != NULL && g_unix_fd_list_get_length (fd_list) == 1) {
-			fd = g_unix_fd_list_get (fd_list, fd_handle, &error);
-			if (fd < 0) {
-				g_warning ("CdMain: failed to get fd from message: %s",
-					   error->message);
-				g_dbus_method_invocation_return_gerror (invocation,
-									error);
-				g_error_free (error);
-				goto out;
-			}
+		if (fd_list == NULL ||
+		    g_unix_fd_list_get_length (fd_list) != 1) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_INPUT_INVALID,
+							       "fdlist non-valid");
+			goto out;
+		}
+		fd = g_unix_fd_list_get (fd_list, fd_handle, &error);
+		if (fd < 0) {
+			g_warning ("CdMain: failed to get fd from message: %s",
+				   error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
+		}
 
-			/* read from a fd, avoiding open() */
-			ret = cd_profile_set_fd (profile, fd, &error);
-			if (!ret) {
-				g_warning ("CdMain: failed to profile from fd: %s",
-					   error->message);
-				g_dbus_method_invocation_return_gerror (invocation,
-									error);
-				g_error_free (error);
-				goto out;
-			}
+		/* read from a fd, avoiding open() */
+		ret = cd_profile_set_fd (profile, fd, &error);
+		if (!ret) {
+			g_warning ("CdMain: failed to profile from fd: %s",
+				   error->message);
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
 		}
 
 		/* set the properties */
