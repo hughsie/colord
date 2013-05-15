@@ -467,10 +467,8 @@ cd_icc_to_string (CdIcc *icc)
 				continue;
 			}
 			g_string_append_printf (str, "  channels\t = %i\n", 3);
-#ifdef HAVE_LCMS_GET_TABLE_ENTRIES
 			g_string_append_printf (str, "  entries\t = %i\n",
 						cmsGetToneCurveEstimatedTableEntries (vcgt[0]));
-#endif
 			break;
 		}
 		case cmsSigNamedColor2Type:

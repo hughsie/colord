@@ -148,14 +148,10 @@ if test x$enable_gusb != xno; then
 fi
 AM_CONDITIONAL(HAVE_GUSB, test x$enable_gusb = xyes)
 
-PKG_CHECK_MODULES(LCMS, lcms2 >= 2.2)
+PKG_CHECK_MODULES(LCMS, lcms2 >= 2.4)
 AC_CHECK_LIB(lcms2, cmsGetHeaderCreator, have_lcms_creator=yes)
 if test x$have_lcms_creator != x; then
 	AC_DEFINE(HAVE_LCMS_GET_HEADER_CREATOR,1,[cmsGetHeaderCreator is available])
-fi
-AC_CHECK_LIB(lcms2, cmsGetToneCurveEstimatedTableEntries, have_lcms_table_entries=yes)
-if test x$have_lcms_table_entries != x; then
-	AC_DEFINE(HAVE_LCMS_GET_TABLE_ENTRIES,1,[cmsGetToneCurveEstimatedTableEntries is available])
 fi
 AC_CHECK_LIB(lcms2, cmsMLUtranslationsCount, have_lcms_mlu_translations_count=yes)
 if test x$have_lcms_mlu_translations_count != x; then
