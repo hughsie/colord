@@ -399,12 +399,18 @@ cd_icc_to_string (CdIcc *icc)
 			text_size = cmsMLUgetASCII (mlu,
 						    cmsNoLanguage,
 						    cmsNoCountry,
+						    NULL, 0);
+			text_buffer = g_new0 (gchar, text_size + 1);
+			text_size = cmsMLUgetASCII (mlu,
+						    cmsNoLanguage,
+						    cmsNoCountry,
 						    text_buffer,
-						    sizeof (text_buffer));
+						    text_size);
 			if (text_size > 0) {
 				g_string_append_printf (str, "  en_US:\t%s [%i bytes]\n",
 							text_buffer, text_size);
 			}
+			g_free (text_buffer);
 #endif
 			break;
 		}
