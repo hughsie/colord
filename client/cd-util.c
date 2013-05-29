@@ -1405,31 +1405,32 @@ cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[1])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[1]);
-		goto out;
-	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
-	profile = cd_profile_new_with_object_path (values[1]);
+
+	/* find the profile */
+	if (g_variant_is_object_path (values[1])) {
+		profile = cd_profile_new_with_object_path (values[1]);
+	} else {
+		profile = cd_client_find_profile_sync (priv->client, values[1],
+						       NULL, error);
+		if (profile == NULL) {
+			ret = FALSE;
+			goto out;
+		}
+	}
 	ret = cd_device_add_profile_sync (device,
 					  CD_DEVICE_RELATION_HARD,
 					  profile,
@@ -1465,31 +1466,32 @@ cd_util_device_make_profile_default (CdUtilPrivate *priv, gchar **values, GError
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[1])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[1]);
-		goto out;
-	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
-	profile = cd_profile_new_with_object_path (values[1]);
+
+	/* find the profile */
+	if (g_variant_is_object_path (values[1])) {
+		profile = cd_profile_new_with_object_path (values[1]);
+	} else {
+		profile = cd_client_find_profile_sync (priv->client, values[1],
+						       NULL, error);
+		if (profile == NULL) {
+			ret = FALSE;
+			goto out;
+		}
+	}
 	ret = cd_device_make_profile_default_sync (device, profile,
 						   NULL, error);
 	if (!ret)
@@ -1521,17 +1523,17 @@ cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_client_delete_device_sync (priv->client, device,
 					    NULL, error);
 	if (!ret)
@@ -1561,17 +1563,15 @@ cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the profile */
+	if (g_variant_is_object_path (values[0])) {
+		profile = cd_profile_new_with_object_path (values[0]);
+	} else {
+		profile = cd_client_find_profile_sync (priv->client, values[0],
+						       NULL, error);
+		if (profile == NULL)
+			goto out;
 	}
-
-	profile = cd_profile_new_with_object_path (values[0]);
 	ret = cd_client_delete_profile_sync (priv->client, profile,
 					     NULL, error);
 	if (!ret)
@@ -1601,17 +1601,15 @@ cd_util_profile_set_property (CdUtilPrivate *priv, gchar **values, GError **erro
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the profile */
+	if (g_variant_is_object_path (values[0])) {
+		profile = cd_profile_new_with_object_path (values[0]);
+	} else {
+		profile = cd_client_find_profile_sync (priv->client, values[0],
+						       NULL, error);
+		if (profile == NULL)
+			goto out;
 	}
-
-	profile = cd_profile_new_with_object_path (values[0]);
 	ret = cd_profile_connect_sync (profile, NULL, error);
 	if (!ret)
 		goto out;
@@ -1647,17 +1645,17 @@ cd_util_device_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
@@ -1689,17 +1687,17 @@ cd_util_device_set_enabled (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
@@ -1737,17 +1735,17 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
@@ -1791,17 +1789,17 @@ cd_util_device_set_vendor (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
@@ -1834,17 +1832,17 @@ cd_util_device_set_serial (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
@@ -1877,17 +1875,17 @@ cd_util_device_set_kind (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
@@ -1922,16 +1920,6 @@ cd_util_device_inhibit (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
-	}
-
 	/* check timeout is valid */
 	timeout = atoi (values[1]);
 	if (timeout < 0) {
@@ -1943,7 +1931,17 @@ cd_util_device_inhibit (CdUtilPrivate *priv, gchar **values, GError **error)
 		goto out;
 	}
 
-	device = cd_device_new_with_object_path (values[0]);
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
+	}
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
@@ -1990,17 +1988,17 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 		goto out;
 	}
 
-	/* check is valid object path */
-	if (!g_variant_is_object_path (values[0])) {
-		ret = FALSE;
-		g_set_error (error,
-			     1, 0,
-			     "Not a valid object path: %s",
-			     values[0]);
-		goto out;
+	/* find the device */
+	if (g_variant_is_object_path (values[0])) {
+		device = cd_device_new_with_object_path (values[0]);
+	} else {
+		device = cd_client_find_device_sync (priv->client, values[0],
+						     NULL, error);
+		if (device == NULL) {
+			ret = FALSE;
+			goto out;
+		}
 	}
-
-	device = cd_device_new_with_object_path (values[0]);
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
