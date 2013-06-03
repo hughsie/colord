@@ -702,6 +702,7 @@ cd_main_calib_process (CdMainPrivate *priv,
 	gdouble temp;
 	GPtrArray *gamma_data = NULL;
 	GPtrArray *vcgt_smoothed = NULL;
+	GString *error_str = NULL;
 	guint i;
 	guint precision_steps = 0;
 
@@ -864,10 +865,19 @@ cd_main_calib_process (CdMainPrivate *priv,
 	vcgt_smoothed = cd_color_rgb_array_interpolate (gamma_data, 256);
 	if (vcgt_smoothed == NULL) {
 		ret = FALSE;
+		error_str = g_string_new ("Gamma correction table was non-monotonic: ");
+		for (i = 0; i < gamma_data->len; i++) {
+			rgb_tmp = g_ptr_array_index (gamma_data, i);
+			g_string_append_printf (error_str, "%f,%f,%f ",
+						rgb_tmp->R,
+						rgb_tmp->G,
+						rgb_tmp->B);
+		}
+		g_string_truncate (error_str, error_str->len - 1);
 		g_set_error_literal (error,
 				     CD_SESSION_ERROR,
 				     CD_SESSION_ERROR_FAILED_TO_GENERATE_PROFILE,
-				     "Gamma correction table was non-monotonic");
+				     error_str->str);
 		goto out;
 	}
 
@@ -882,6 +892,8 @@ cd_main_calib_process (CdMainPrivate *priv,
 	if (!ret)
 		goto out;
 out:
+	if (error_str != NULL)
+		g_string_free (error_str, TRUE);
 	if (gamma_data != NULL)
 		g_ptr_array_unref (gamma_data);
 	if (vcgt_smoothed != NULL)
