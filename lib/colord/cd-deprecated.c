@@ -205,4 +205,92 @@ cd_color_convert_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
 	cd_color_xyz_to_yxy (src, dest);
 }
 
+/**
+ * cd_transform_set_intent:
+ *
+ * Deprecated: 1.0.0: Use cd_transform_set_rendering_intent.
+ **/
+void
+cd_transform_set_intent (CdTransform *transform, CdRenderingIntent rendering_intent)
+{
+	cd_transform_set_rendering_intent (transform, rendering_intent);
+}
+
+/**
+ * cd_transform_get_intent:
+ *
+ * Deprecated: 1.0.0: Use cd_transform_get_rendering_intent.
+ **/
+CdRenderingIntent
+cd_transform_get_intent (CdTransform *transform)
+{
+	return cd_transform_get_rendering_intent (transform);
+}
+
+/**
+ * cd_transform_set_input:
+ *
+ * Deprecated: 1.0.0: Use cd_transform_set_input_icc.
+ **/
+void
+cd_transform_set_input (CdTransform *transform, CdIcc *icc)
+{
+	cd_transform_set_input_icc (transform, icc);
+}
+
+/**
+ * cd_transform_get_input:
+ *
+ * Deprecated: 1.0.0: Use cd_transform_get_input_icc.
+ **/
+CdIcc *
+cd_transform_get_input (CdTransform *transform)
+{
+	return cd_transform_get_input_icc (transform);
+}
+
+/**
+ * cd_transform_set_output:
+ *
+ * Deprecated: 1.0.0: Use cd_transform_set_output_icc.
+ **/
+void
+cd_transform_set_output (CdTransform *transform, CdIcc *icc)
+{
+	cd_transform_set_output_icc (transform, icc);
+}
+
+/**
+ * cd_transform_get_output:
+ *
+ * Deprecated: 1.0.0: Use cd_transform_get_output_icc.
+ **/
+CdIcc *
+cd_transform_get_output (CdTransform *transform)
+{
+	return cd_transform_get_output_icc (transform);
+}
+
+/**
+ * cd_transform_set_abstract:
+ *
+ * Deprecated: 1.0.0: Use cd_transform_set_abstract_icc.
+ **/
+void
+cd_transform_set_abstract (CdTransform *transform, CdIcc *icc)
+{
+	cd_transform_set_abstract_icc (transform, icc);
+}
+
+/**
+ * cd_transform_get_abstract:
+ *
+ * Deprecated: 1.0.0: Use cd_transform_get_abstract_icc.
+ **/
+CdIcc *
+cd_transform_get_abstract (CdTransform *transform)
+{
+	return cd_transform_get_abstract_icc (transform);
+}
+
 #endif /* CD_DISABLE_DEPRECATED */

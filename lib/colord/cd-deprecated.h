@@ -29,6 +29,7 @@
 #include <glib-object.h>
 #include <colord/cd-color.h>
 #include <colord/cd-profile.h>
+#include <colord/cd-transform.h>
 
 G_BEGIN_DECLS
 
@@ -95,6 +96,29 @@ gboolean	 cd_profile_set_qualifier_sync		(CdProfile	*profile,
 							 GCancellable	*cancellable,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+
+/* add these just in case because of crazy Debian policy */
+G_DEPRECATED_FOR(cd_transform_set_rendering_intent)
+void		 cd_transform_set_intent		(CdTransform	*transform,
+							 CdRenderingIntent rendering_intent);
+G_DEPRECATED_FOR(cd_transform_get_rendering_intent)
+CdRenderingIntent cd_transform_get_intent		(CdTransform	*transform);
+G_DEPRECATED_FOR(cd_transform_set_input_icc)
+void		 cd_transform_set_input			(CdTransform	*transform,
+							 CdIcc		*icc);
+G_DEPRECATED_FOR(cd_transform_get_input_icc)
+CdIcc		*cd_transform_get_input			(CdTransform	*transform);
+
+G_DEPRECATED_FOR(cd_transform_set_output_icc)
+void		 cd_transform_set_output		(CdTransform	*transform,
+							 CdIcc		*icc);
+G_DEPRECATED_FOR(cd_transform_get_output_icc)
+CdIcc		*cd_transform_get_output		(CdTransform	*transform);
+G_DEPRECATED_FOR(cd_transform_set_abstract_icc)
+void		 cd_transform_set_abstract		(CdTransform	*transform,
+							 CdIcc		*icc);
+G_DEPRECATED_FOR(cd_transform_get_abstract_icc)
+CdIcc		*cd_transform_get_abstract		(CdTransform	*transform);
 
 #endif /* CD_DISABLE_DEPRECATED */
 
