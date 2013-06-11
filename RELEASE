@@ -11,17 +11,6 @@ Released: 2013-xx-xx
 New Features:
 Bugfixes:
 
-Write release date to doc/website/download.html
-
-Update translations:
-
-cd po
-make colord.pot
-INTLTOOL_EXTRACT="/usr/bin/intltool-extract" XGETTEXT="/usr/bin/xgettext --no-location" srcdir=. /usr/bin/intltool-update --gettext-package colord --pot
-tx push --source
-tx pull --all
-git add *.po
-
 2. Commit changes to git:
 
 # MAKE SURE THESE ARE CORRECT

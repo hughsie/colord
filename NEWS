@@ -1,3 +1,13 @@
+Version 1.0.1
+~~~~~~~~~~~~~
+Released: 2013-06-11
+
+Bugfixes:
+ - Add 0.1.34 to 1.0.0 deprecated methods to preserve ABI (Richard Hughes)
+ - Do not unconditionally enable BPC on the color transform (Richard Hughes)
+ - Fix profile created time for non-UTC timezones (Christopher James Halse Rogers)
+ - Record the gamma table in the session helper error message (Richard Hughes)
+
 Version 1.0.0
 ~~~~~~~~~~~~~
 Released: 2013-05-13
