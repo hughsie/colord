@@ -1074,7 +1074,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_CLIENT_ERROR,
 							       CD_CLIENT_ERROR_NOT_FOUND,
-							       "device id '%s' does not exists",
+							       "device id '%s' does not exist",
 							       device_id);
 			goto out;
 		}
