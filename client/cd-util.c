@@ -2150,17 +2150,17 @@ main (int argc, char *argv[])
 	cd_util_add (priv->cmd_array,
 		     "find-device",
 		     /* TRANSLATORS: command description */
-		     _("Find a device"),
+		     _("Find a device from the device ID"),
 		     cd_util_find_device);
 	cd_util_add (priv->cmd_array,
 		     "find-device-by-property",
 		     /* TRANSLATORS: command description */
-		     _("Find a device that has a specific property"),
+		     _("Find a device with a given property value"),
 		     cd_util_find_device_by_property);
 	cd_util_add (priv->cmd_array,
 		     "find-profile",
 		     /* TRANSLATORS: command description */
-		     _("Find a profile"),
+		     _("Find a profile from the profile ID"),
 		     cd_util_find_profile);
 	cd_util_add (priv->cmd_array,
 		     "find-profile-by-filename",
@@ -2180,7 +2180,7 @@ main (int argc, char *argv[])
 	cd_util_add (priv->cmd_array,
 		     "device-add-profile",
 		     /* TRANSLATORS: command description */
-		     _("Add a profile to a device"),
+		     _("Add a profile to a device that already exists"),
 		     cd_util_device_add_profile);
 	cd_util_add (priv->cmd_array,
 		     "device-make-profile-default",
