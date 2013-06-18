@@ -44,6 +44,7 @@ __colormgr_commandlist="
     get-sensor-reading
     get-sensors
     get-standard-space
+    import-profile
     profile-set-property
     sensor-lock
     sensor-set-options

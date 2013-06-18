@@ -2023,6 +2023,48 @@ out:
 }
 
 /**
+ * cd_util_import_profile:
+ **/
+static gboolean
+cd_util_import_profile (CdUtilPrivate *priv,
+			gchar **values,
+			GError **error)
+{
+	CdProfile *profile = NULL;
+	gboolean ret = TRUE;
+	GFile *file = NULL;
+
+	if (g_strv_length (values) < 1) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     1, 0,
+				     "Not enough arguments, expected: file");
+		goto out;
+	}
+
+	/* import the profile */
+	file = g_file_new_for_path (values[0]);
+	profile = cd_client_import_profile_sync (priv->client,
+						 file,
+						 NULL,
+						 error);
+	if (profile == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	ret = cd_profile_connect_sync (profile, NULL, error);
+	if (!ret)
+		goto out;
+	cd_util_show_profile (profile);
+out:
+	if (file != NULL)
+		g_object_unref (file);
+	if (profile != NULL)
+		g_object_unref (profile);
+	return ret;
+}
+
+/**
  * cd_util_ignore_cb:
  **/
 static void
@@ -2200,6 +2242,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Returns all the profiles that match a qualifier"),
 		     cd_util_device_get_profile_for_qualifiers);
+	cd_util_add (priv->cmd_array,
+		     "import-profile",
+		     /* TRANSLATORS: command description */
+		     _("Returns all the profiles that match a qualifier"),
+		     cd_util_import_profile);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,
