@@ -1,6 +1,6 @@
 <!doctype refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY date        "<date>20 December,2008</date>">
+  <!ENTITY date        "<date>18 June,2013</date>">
   <!ENTITY package     "colormgr">
   <!ENTITY gnu         "<acronym>GNU</acronym>">
   <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
@@ -16,7 +16,7 @@
       <surname>Hughes</surname>
     </author>
     <copyright>
-      <year>2010</year>
+      <year>2010-2013</year>
       <holder>Richard Hughes</holder>
     </copyright>
     &date;
@@ -33,6 +33,7 @@
     <cmdsynopsis>
       <command>&package;</command>
       <arg><option>--verbose</option></arg>
+      <arg><option>--version</option></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
@@ -72,46 +73,46 @@
       <varlistentry>
         <term>
           <option>create-device</option>
-	  <parameter>device_id</parameter>
-	  <parameter>scope</parameter>
+          <parameter>device_id</parameter>
+          <parameter>scope</parameter>
         </term>
         <listitem>
-          <para>Creates a color managed device</para>
+          <para>Create a device</para>
         </listitem>
       </varlistentry>
       <varlistentry>
         <term>
           <option>create-profile</option>
-	  <parameter>profile_id</parameter>
-	  <parameter>scope</parameter>
+          <parameter>profile_id</parameter>
+          <parameter>scope</parameter>
         </term>
         <listitem>
-          <para>Create a color profile</para>
+          <para>Create a profile</para>
         </listitem>
       </varlistentry>
       <varlistentry>
         <term>
           <option>delete-device</option>
-	  <parameter>device_path</parameter>
+          <parameter>device</parameter>
         </term>
         <listitem>
-          <para>Deletes a color managed device</para>
+          <para>Deletes a device</para>
         </listitem>
       </varlistentry>
       <varlistentry>
         <term>
           <option>delete-profile</option>
-	  <parameter>profile_path</parameter>
+          <parameter>profile</parameter>
         </term>
         <listitem>
-          <para>Deletes a color profile</para>
+          <para>Deletes a profile</para>
         </listitem>
       </varlistentry>
       <varlistentry>
         <term>
           <option>device-add-profile</option>
-	  <parameter>device_path</parameter>
-	  <parameter>profile_path</parameter>
+          <parameter>device</parameter>
+          <parameter>profile</parameter>
         </term>
         <listitem>
           <para>Add a profile to a device that already exists</para>
@@ -120,37 +121,55 @@
       <varlistentry>
         <term>
           <option>device-get-default-profile</option>
-	  <parameter>device_path</parameter>
+          <parameter>device</parameter>
         </term>
         <listitem>
-          <para>Gets the default color profile for a device</para>
+          <para>Gets the default profile for a device</para>
         </listitem>
       </varlistentry>
       <varlistentry>
         <term>
           <option>device-get-profile-for-qualifier</option>
-	  <parameter>device_path</parameter>
-	  <parameter>qualifier</parameter>
+          <parameter>device</parameter>
+          <parameter>qualifier</parameter>
         </term>
         <listitem>
-          <para>Returns all the profiles that match a given qualifier</para>
+          <para>Returns all the profiles that match a qualifier</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-inhibit</option>
+          <parameter>device</parameter>
+          <parameter>timeout</parameter>
+        </term>
+        <listitem>
+          <para>Inhibits colour profiles for this device</para>
         </listitem>
       </varlistentry>
       <varlistentry>
         <term>
           <option>device-make-profile-default</option>
-	  <parameter>device_path</parameter>
-	  <parameter>profile_path</parameter>
+          <parameter>device</parameter>
+          <parameter>profile</parameter>
         </term>
         <listitem>
-          <para>Makes a profile default for a specific device</para>
+          <para>Makes a profile default for a device</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>device-set-enabled</option>
+        </term>
+        <listitem>
+          <para>Enables or disables the device</para>
         </listitem>
       </varlistentry>
       <varlistentry>
         <term>
           <option>device-set-kind</option>
-	  <parameter>device_path</parameter>
-	  <parameter>kind</parameter>
+          <parameter>device</parameter>
+          <parameter>kind</parameter>
         </term>
         <listitem>
           <para>Sets the device kind</para>
@@ -159,8 +178,8 @@
       <varlistentry>
         <term>
           <option>device-set-model</option>
-	  <parameter>device_path</parameter>
-	  <parameter>model</parameter>
+          <parameter>device</parameter>
+          <parameter>model</parameter>
         </term>
         <listitem>
           <para>Sets the device model</para>
@@ -169,8 +188,8 @@
       <varlistentry>
         <term>
           <option>device-set-serial</option>
-	  <parameter>device_path</parameter>
-	  <parameter>serial</parameter>
+          <parameter>device</parameter>
+          <parameter>serial</parameter>
         </term>
         <listitem>
           <para>Sets the device serial</para>
@@ -179,8 +198,8 @@
       <varlistentry>
         <term>
           <option>device-set-vendor</option>
-	  <parameter>device_path</parameter>
-	  <parameter>vendor</parameter>
+          <parameter>device</parameter>
+          <parameter>vendor</parameter>
         </term>
         <listitem>
           <para>Sets the device vendor</para>
@@ -189,7 +208,7 @@
       <varlistentry>
         <term>
           <option>find-device</option>
-	  <parameter>device_id</parameter>
+          <parameter>device_id</parameter>
         </term>
         <listitem>
           <para>Find a device from the device ID</para>
@@ -198,8 +217,8 @@
       <varlistentry>
         <term>
           <option>find-device-by-property</option>
-	  <parameter>key</parameter>
-	  <parameter>value</parameter>
+          <parameter>key</parameter>
+          <parameter>value</parameter>
         </term>
         <listitem>
           <para>Find a device with a given property value</para>
@@ -208,7 +227,7 @@
       <varlistentry>
         <term>
           <option>find-profile</option>
-	  <parameter>profile_id</parameter>
+          <parameter>profile_id</parameter>
         </term>
         <listitem>
           <para>Find a profile from the profile ID</para>
@@ -217,10 +236,10 @@
       <varlistentry>
         <term>
           <option>find-profile-by-filename</option>
-	  <parameter>filename</parameter>
+          <parameter>filename</parameter>
         </term>
         <listitem>
-          <para>Find a profile from the filename</para>
+          <para>Find a profile by filename</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -234,7 +253,7 @@
       <varlistentry>
         <term>
           <option>get-devices-by-kind</option>
-	  <parameter>kind</parameter>
+          <parameter>kind</parameter>
         </term>
         <listitem>
           <para>Gets all the color managed devices of a specific kind</para>
@@ -250,22 +269,28 @@
       </varlistentry>
       <varlistentry>
         <term>
-          <option>profile-set-filename</option>
-	  <parameter>profile_path</parameter>
-	  <parameter>filename</parameter>
+          <option>get-sensor-reading</option>
+          <parameter>display_type</parameter>
         </term>
         <listitem>
-          <para>Sets the profile filename</para>
+          <para>Gets a reading from a sensor</para>
         </listitem>
       </varlistentry>
       <varlistentry>
         <term>
-          <option>profile-set-qualifier</option>
-	  <parameter>profile_path</parameter>
-	  <parameter>qualifier</parameter>
+          <option>get-sensors</option>
         </term>
         <listitem>
-          <para>Sets the profile qualifier</para>
+          <para>Gets all the available colour sensors</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>get-standard-space</option>
+          <parameter>standard_space</parameter>
+        </term>
+        <listitem>
+          <para>Get a standard colourspace</para>
         </listitem>
       </varlistentry>
       <varlistentry>
@@ -278,6 +303,35 @@
             Copies an .icc file into the correct per-user directory and shows
             information about the imported profile.
           </para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>profile-set-property</option>
+          <parameter>profile</parameter>
+          <parameter>name</parameter>
+          <parameter>value</parameter>
+        </term>
+        <listitem>
+          <para>Sets extra properties on the profile</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>sensor-lock</option>
+        </term>
+        <listitem>
+          <para>Locks the colour sensor</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>
+          <option>sensor-set-options</option>
+          <parameter>name</parameter>
+          <parameter>value</parameter>
+        </term>
+        <listitem>
+          <para>Sets one or more sensor options</para>
         </listitem>
       </varlistentry>
     </variablelist>
