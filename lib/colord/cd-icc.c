@@ -437,6 +437,54 @@ cd_icc_to_string (CdIcc *icc)
 			}
 			break;
 		}
+		case cmsSigViewingConditionsType:
+		{
+			cmsICCViewingConditions *v;
+			v = cmsReadTag(priv->lcms_profile, sig);
+			if (v == NULL) {
+				g_warning ("cannot read view tag");
+				continue;
+			}
+			g_string_append_printf (str, "ViewingCondition:\n");
+			g_string_append (str, "  Illuminant Type: ");
+			switch (v->IlluminantType) {
+			case cmsILLUMINANT_TYPE_D50:
+				g_string_append (str, "D50\n");
+				break;
+			case cmsILLUMINANT_TYPE_D65:
+				g_string_append (str, "D65\n");
+				break;
+			case cmsILLUMINANT_TYPE_D93:
+				g_string_append (str, "D93\n");
+				break;
+			case cmsILLUMINANT_TYPE_F2:
+				g_string_append (str, "F2\n");
+				break;
+			case cmsILLUMINANT_TYPE_D55:
+				g_string_append (str, "D55\n");
+				break;
+			case cmsILLUMINANT_TYPE_A:
+				g_string_append (str, "A\n");
+				break;
+			case cmsILLUMINANT_TYPE_E:
+				g_string_append (str, "E\n");
+				break;
+			case cmsILLUMINANT_TYPE_F8:
+				g_string_append (str, "F8\n");
+				break;
+			default:
+				g_string_append (str, "Unknown\n");
+			}
+			g_string_append_printf (str, "  Illuminant: X:%f Y:%f Z:%f\n",
+						v->IlluminantXYZ.X,
+						v->IlluminantXYZ.Y,
+						v->IlluminantXYZ.Z);
+			g_string_append_printf (str, "  Surround: X:%f Y:%f Z:%f\n",
+						v->SurroundXYZ.X,
+						v->SurroundXYZ.Y,
+						v->SurroundXYZ.Z);
+			break;
+		}
 		case cmsSigDictType:
 		{
 			cmsHANDLE dict;
