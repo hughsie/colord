@@ -110,6 +110,17 @@ cd_edid_install_profile (unsigned char *edid,
 	/* import profile */
 	file = g_file_new_for_path (profile_fn);
 	profile = cd_client_import_profile_sync (client, file, NULL, &error);
+	if (profile == NULL &&
+	    g_error_matches (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_ALREADY_EXISTS)) {
+		g_clear_error (&error);
+		profile = cd_client_find_profile_by_property_sync (client,
+								   CD_PROFILE_PROPERTY_FILENAME,
+								   profile_fn,
+								   NULL,
+								   &error);
+	}
 	if (profile == NULL) {
 		rc = CD_EDID_ERROR_NO_PROFILE;
 		g_warning ("Could not import profile %s: %s",
