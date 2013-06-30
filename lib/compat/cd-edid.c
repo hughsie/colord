@@ -61,7 +61,7 @@ cd_edid_install_profile (unsigned char *edid,
 	gboolean ret;
 	gchar *md5 = NULL;
 	GError *error = NULL;
-	GFile *file;
+	GFile *file = NULL;
 
 	g_return_val_if_fail (profile_fn != NULL, CD_EDID_ERROR_RESOURCE);
 
@@ -148,6 +148,8 @@ cd_edid_install_profile (unsigned char *edid,
 		}
 	}
 out:
+	if (file != NULL)
+		g_object_unref (file);
 	if (client != NULL)
 		g_object_unref (client);
 	if (device != NULL)
