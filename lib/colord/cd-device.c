@@ -512,7 +512,7 @@ out:
  *
  * Returns the device metadata.
  *
- * Return value: (transfer full) (element-type utf8 utf8): a
+ * Return value: (transfer container) (element-type utf8 utf8): a
  *               #GHashTable.
  *
  * Since: 0.1.5

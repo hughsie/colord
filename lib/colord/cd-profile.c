@@ -425,7 +425,7 @@ cd_profile_get_is_system_wide (CdProfile *profile)
  *
  * Returns the profile metadata.
  *
- * Return value: (transfer full) (element-type utf8 utf8): a
+ * Return value: (transfer container) (element-type utf8 utf8): a
  *               #GHashTable.
  *
  * Since: 0.1.2
