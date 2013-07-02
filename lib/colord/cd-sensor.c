@@ -1221,7 +1221,7 @@ cd_sensor_get_connected (CdSensor *sensor)
  *
  * Gets any sensor options.
  *
- * Return value: (transfer full) (element-type utf8 GVariant): A
+ * Return value: (transfer container) (element-type utf8 GVariant): A
  *               refcounted #GHashTable of (string, GVariant).
  *
  * Since: 0.1.20
@@ -1257,7 +1257,7 @@ cd_sensor_get_option (CdSensor *sensor, const gchar *key)
  *
  * Returns the sensor metadata.
  *
- * Return value: (transfer full) (element-type utf8 utf8): a
+ * Return value: (transfer container) (element-type utf8 utf8): a
  *               #GHashTable.
  *
  * Since: 0.1.28
