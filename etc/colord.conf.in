@@ -1,15 +1,2 @@
 [colord]
 
-# If we should always use the XRandR name as the DeviceId
-#
-# If the user has two or more outputs attached with identical EDID data then
-# the client tools cannot tell them apart. By setting this value the 'xrandr-'
-# style device-id is always used and the monitors will show up as seporate
-# instances.
-#
-# This does of course mean that the calibration is referenced to the xrandr
-# output name, rather than the monitor itself. This means that if the monitor
-# cables are swapped then the wrong profile would be used.
-#
-# default=false
-AlwaysUseXrandrName=false

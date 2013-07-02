@@ -66,6 +66,7 @@ typedef struct {
 	GPtrArray		*plugins;
 	GMainLoop		*loop;
 	gboolean		 create_dummy_sensor;
+	gboolean		 always_use_xrandr_name;
 } CdMainPrivate;
 
 /**
@@ -1302,14 +1303,14 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 
 		/* are we using the XRANDR_name property rather than the
 		 * sent device-id? */
-		if (cd_config_get_boolean (priv->config, "AlwaysUseXrandrName") &&
+		if (priv->always_use_xrandr_name &&
 		    device_kind == CD_DEVICE_KIND_DISPLAY) {
 			device_id_fallback = cd_main_get_display_fallback_id (dict);
 			if (device_id_fallback == NULL) {
 				g_dbus_method_invocation_return_error (invocation,
 								       CD_CLIENT_ERROR,
 								       CD_CLIENT_ERROR_INPUT_INVALID,
-								       "AlwaysUseXrandrName used and %s unset",
+								       "AlwaysUseXrandrName mode enabled and %s unset",
 								       CD_DEVICE_METADATA_XRANDR_NAME);
 				goto out;
 			}
@@ -2335,6 +2336,105 @@ out:
 }
 
 /**
+ * cd_main_check_duplicate_edids_for_output:
+ **/
+static gchar *
+cd_main_check_duplicate_edids_for_output (const gchar *output_name)
+{
+	gboolean ret;
+	gchar *checksum = NULL;
+	gchar *edid_data = NULL;
+	gchar *edid_fn = NULL;
+	gchar *enabled_data = NULL;
+	gchar *enabled_fn = NULL;
+	GError *error = NULL;
+	gsize len = 0;
+
+	/* check output is actually an output */
+	enabled_fn = g_build_filename ("/sys/class/drm",
+				       output_name,
+				       "enabled",
+				       NULL);
+	ret = g_file_test (enabled_fn, G_FILE_TEST_EXISTS);
+	if (!ret)
+		goto out;
+
+	/* check output is enabled */
+	ret = g_file_get_contents (enabled_fn, &enabled_data, NULL, &error);
+	if (!ret) {
+		g_warning ("failed to get enabled data: %s", error->message);
+		g_error_free (error);
+		goto out;
+	}
+	g_strdelimit (enabled_data, "\n", '\0');
+	if (g_strcmp0 (enabled_data, "enabled") != 0)
+		goto out;
+
+	/* get EDID data */
+	edid_fn = g_build_filename ("/sys/class/drm",
+				    output_name,
+				    "edid",
+				    NULL);
+	ret = g_file_get_contents (edid_fn, &edid_data, &len, &error);
+	if (!ret) {
+		g_warning ("failed to get edid data: %s", error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* simple MD5 checksum */
+	checksum = g_compute_checksum_for_data (G_CHECKSUM_MD5,
+						(const guchar *) edid_data,
+						len);
+out:
+	g_free (enabled_fn);
+	g_free (enabled_data);
+	g_free (edid_fn);
+	g_free (edid_data);
+	return checksum;
+}
+
+/**
+ * cd_main_check_duplicate_edids:
+ **/
+static gboolean
+cd_main_check_duplicate_edids (void)
+{
+	const gchar *fn;
+	const gchar *old_output;
+	gboolean use_xrandr_mode = FALSE;
+	gchar *checksum;
+	GDir *dir;
+	GHashTable *hash = NULL;
+
+	dir = g_dir_open ("/sys/class/drm", 0, NULL);
+	if (dir == NULL)
+		goto out;
+
+	/* read all the outputs in /sys/class/drm and search for duplicates */
+	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	while (!use_xrandr_mode && (fn = g_dir_read_name (dir)) != NULL) {
+		checksum = cd_main_check_duplicate_edids_for_output (fn);
+		if (checksum == NULL)
+			continue;
+		g_debug ("display %s has EDID %s", fn, checksum);
+		old_output = g_hash_table_lookup (hash, checksum);
+		if (old_output != NULL) {
+			g_debug ("output %s and %s have duplicate EDID",
+				 old_output, fn);
+			use_xrandr_mode = TRUE;
+		}
+		g_hash_table_insert (hash, checksum, g_strdup (fn));
+	}
+out:
+	if (dir != NULL)
+		g_dir_close (dir);
+	if (hash != NULL)
+		g_hash_table_unref (hash);
+	return use_xrandr_mode;
+}
+
+/**
  * main:
  **/
 int
@@ -2477,6 +2577,16 @@ main (int argc, char *argv[])
 		g_idle_add (cd_main_timed_exit_cb, priv->loop);
 	else if (timed_exit)
 		g_timeout_add_seconds (5, cd_main_timed_exit_cb, priv->loop);
+
+	/* If the user has two or more outputs attached with identical EDID data
+	 * then the client tools cannot tell them apart. By setting this value
+	 * the 'xrandr-' style device-id is always used and the monitors will
+	 * show up as seporate instances.
+	 * This does of course mean that the calibration is referenced to the
+	 * xrandr output name, rather than the monitor itself. This means that
+	 * if the monitor cables are swapped then the wrong profile would be
+	 * used. */
+	priv->always_use_xrandr_name = cd_main_check_duplicate_edids ();
 
 	/* load plugins */
 	priv->plugins = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_main_plugin_free);
