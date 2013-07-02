@@ -45,7 +45,11 @@ cd_plugin_get_description (void)
 gboolean
 cd_plugin_config_enabled (CdConfig *config)
 {
-	return !cd_config_get_boolean (config, "UseSANE");
+#ifdef HAVE_SANE
+	return FALSE;
+#else
+	return TRUE;
+#endif
 }
 
 /**

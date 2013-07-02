@@ -1,16 +1,5 @@
 [colord]
 
-# If we should use SANE to add scanner and camera devices.
-#
-# If SANE support is installed then this will allow colord to manage
-# all scanners that SANE can detect, including remote scanners.
-#
-# If this is disabled then colord will only detect locally connected
-# scanners.
-#
-# default=false
-UseSANE=false
-
 # If we should always use the XRandR name as the DeviceId
 #
 # If the user has two or more outputs attached with identical EDID data then
