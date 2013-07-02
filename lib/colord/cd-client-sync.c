@@ -502,7 +502,7 @@ cd_client_get_devices_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: (transfer full) (element-type CdDevice): an array of
+ * Return value: (transfer container) (element-type CdDevice): an array of
  *		 #CdDevice objects.
  *
  * Since: 0.1.0
@@ -555,7 +555,7 @@ cd_client_get_profiles_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: (transfer full) (element-type CdProfile): an array of
+ * Return value: (transfer container) (element-type CdProfile): an array of
  *		 #CdProfile objects.
  *
  * Since: 0.1.0
@@ -608,7 +608,7 @@ cd_client_get_sensors_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: (transfer full) (element-type CdSensor): an array of
+ * Return value: (transfer container) (element-type CdSensor): an array of
  *		 #CdSensor objects.
  *
  * Since: 0.1.0
@@ -824,7 +824,7 @@ cd_client_get_devices_by_kind_finish_sync (CdClient *client,
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.
  *
- * Return value: (transfer full) (element-type CdDevice): an array of
+ * Return value: (transfer container) (element-type CdDevice): an array of
  *		 #CdDevice objects.
  *
  * Since: 0.1.0
