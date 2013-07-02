@@ -306,12 +306,9 @@ fi
 dnl **** Daemon is allowed to do search external volumes for profiles ****
 AC_ARG_ENABLE(volume_search, AS_HELP_STRING([--enable-volume-search],[Enable profile volume search]),
 	      enable_volume_search=$enableval, enable_volume_search=yes)
-tmp="false"
 if test x$enable_volume_search != xno; then
-	tmp="true"
+	AC_DEFINE(ENABLE_VOLUME_SEARCH,1,[enable volume search])
 fi
-AC_DEFINE_UNQUOTED(ENABLE_VOLUME_SEARCH, "$tmp", [enable volume search])
-AC_SUBST(ENABLE_VOLUME_SEARCH, "$tmp")
 
 # custom daemon user
 AC_ARG_WITH(

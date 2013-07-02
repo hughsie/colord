@@ -1,10 +1,5 @@
 [colord]
 
-# This controls whether we search external volumes for color profiles.
-#
-# default=@enablevolumesearch@
-SearchVolumes=@enablevolumesearch@
-
 # If we should use SANE to add scanner and camera devices.
 #
 # If SANE support is installed then this will allow colord to manage
