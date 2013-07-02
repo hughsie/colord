@@ -33,7 +33,6 @@
 #endif
 
 #include "cd-common.h"
-#include "cd-config.h"
 #include "cd-debug.h"
 #include "cd-device-array.h"
 #include "cd-device-db.h"
@@ -60,7 +59,6 @@ typedef struct {
 #ifdef HAVE_GUDEV
 	CdSensorClient		*sensor_client;
 #endif
-	CdConfig		*config;
 	GPtrArray		*sensors;
 	GHashTable		*standard_spaces;
 	GPtrArray		*plugins;
@@ -2212,7 +2210,7 @@ cd_main_load_plugin (CdMainPrivate *priv,
 		     const gchar *filename,
 		     GError **error)
 {
-	CdPluginConfigEnabledFunc plugin_config_enabled = NULL;
+	CdPluginEnabledFunc plugin_enabled = NULL;
 	CdPluginGetDescFunc plugin_desc = NULL;
 	CdPlugin *plugin;
 	gboolean ret = FALSE;
@@ -2244,10 +2242,10 @@ cd_main_load_plugin (CdMainPrivate *priv,
 
 	/* give the module the option to opt-out */
 	ret = g_module_symbol (module,
-			       "cd_plugin_config_enabled",
-			       (gpointer *) &plugin_config_enabled);
+			       "cd_plugin_enabled",
+			       (gpointer *) &plugin_enabled);
 	if (ret) {
-		if (!plugin_config_enabled (priv->config)) {
+		if (!plugin_enabled ()) {
 			ret = FALSE;
 			g_set_error_literal (error,
 					     CD_CLIENT_ERROR,
@@ -2481,9 +2479,6 @@ main (int argc, char *argv[])
 	g_option_context_parse (context, &argc, &argv, NULL);
 	g_option_context_free (context);
 
-	/* get from config */
-	priv->config = cd_config_new ();
-
 	/* create new objects */
 	priv->loop = g_main_loop_new (NULL, FALSE);
 	priv->devices_array = cd_device_array_new ();
@@ -2617,8 +2612,6 @@ out:
 	if (priv->sensor_client != NULL)
 		g_object_unref (priv->sensor_client);
 #endif
-	if (priv->config != NULL)
-		g_object_unref (priv->config);
 	if (priv->profile_store != NULL)
 		g_object_unref (priv->profile_store);
 	if (priv->mapping_db != NULL)

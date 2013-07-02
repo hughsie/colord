@@ -64,8 +64,6 @@ libexec_PROGRAMS =					\
 colord_SOURCES =					\
 	cd-common.c					\
 	cd-common.h					\
-	cd-config.c					\
-	cd-config.h					\
 	cd-debug.c					\
 	cd-debug.h					\
 	cd-resources.c					\

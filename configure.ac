@@ -375,7 +375,6 @@ dnl - Makefiles, etc.
 dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES([
 Makefile
-etc/Makefile
 contrib/Makefile
 contrib/session-helper/Makefile
 contrib/colord-sane/Makefile

@@ -42,7 +42,7 @@ cd_plugin_get_description (void)
  * cd_plugin_config_enabled:
  */
 gboolean
-cd_plugin_config_enabled (CdConfig *config)
+cd_plugin_config_enabled (void)
 {
 #ifdef HAVE_SANE
 	return TRUE;
