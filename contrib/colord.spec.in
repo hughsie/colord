@@ -170,7 +170,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %systemd_postun colord.service
 
 %files -f %{name}.lang
-%doc README AUTHORS NEWS COPYING
+%doc README.md AUTHORS NEWS COPYING
 %{_libexecdir}/colord
 %attr(755,colord,colord) %dir %{_localstatedir}/lib/colord
 %attr(755,colord,colord) %dir %{_localstatedir}/lib/colord/icc
