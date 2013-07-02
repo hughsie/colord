@@ -29,6 +29,10 @@
 #include <stdio.h>
 #include <colord/colord.h>
 
+#define CD_ERROR			1
+#define CD_ERROR_INVALID_ARGUMENTS	0
+#define CD_ERROR_NO_SUCH_CMD		1
+
 typedef struct {
 	CdClient		*client;
 	GOptionContext		*context;
@@ -41,6 +45,7 @@ typedef gboolean (*CdUtilPrivateCb)	(CdUtilPrivate	*util,
 
 typedef struct {
 	gchar		*name;
+	gchar		*arguments;
 	gchar		*description;
 	CdUtilPrivateCb	 callback;
 } CdUtilItem;
@@ -586,6 +591,7 @@ static void
 cd_util_item_free (CdUtilItem *item)
 {
 	g_free (item->name);
+	g_free (item->arguments);
 	g_free (item->description);
 	g_free (item);
 }
@@ -603,11 +609,19 @@ cd_sort_command_name_cb (CdUtilItem **item1, CdUtilItem **item2)
  * cd_util_add:
  **/
 static void
-cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUtilPrivateCb callback)
+cd_util_add (GPtrArray *array,
+	     const gchar *name,
+	     const gchar *arguments,
+	     const gchar *description,
+	     CdUtilPrivateCb callback)
 {
 	gchar **names;
 	guint i;
 	CdUtilItem *item;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (description != NULL);
+	g_return_if_fail (callback != NULL);
 
 	/* add each one */
 	names = g_strsplit (name, ",", -1);
@@ -621,6 +635,7 @@ cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUt
 			item->description = g_strdup_printf (_("Alias to %s"),
 							     names[0]);
 		}
+		item->arguments = g_strdup (arguments);
 		item->callback = callback;
 		g_ptr_array_add (array, item);
 	}
@@ -636,21 +651,9 @@ cd_util_get_descriptions (GPtrArray *array)
 	guint i;
 	guint j;
 	guint len;
-	guint max_len = 0;
+	const guint max_len = 35;
 	CdUtilItem *item;
 	GString *string;
-
-	/* get maximum command length */
-	for (i = 0; i < array->len; i++) {
-		item = g_ptr_array_index (array, i);
-		len = strlen (item->name);
-		if (len > max_len)
-			max_len = len;
-	}
-
-	/* ensure we're spaced by at least this */
-	if (max_len < 19)
-		max_len = 19;
 
 	/* print each command */
 	string = g_string_new ("");
@@ -658,11 +661,24 @@ cd_util_get_descriptions (GPtrArray *array)
 		item = g_ptr_array_index (array, i);
 		g_string_append (string, "  ");
 		g_string_append (string, item->name);
-		len = strlen (item->name);
-		for (j=len; j<max_len+3; j++)
-			g_string_append_c (string, ' ');
-		g_string_append (string, item->description);
-		g_string_append_c (string, '\n');
+		len = strlen (item->name) + 2;
+		if (item->arguments != NULL) {
+			g_string_append (string, " ");
+			g_string_append (string, item->arguments);
+			len += strlen (item->arguments) + 1;
+		}
+		if (len < max_len) {
+			for (j = len; j < max_len + 1; j++)
+				g_string_append_c (string, ' ');
+			g_string_append (string, item->description);
+			g_string_append_c (string, '\n');
+		} else {
+			g_string_append_c (string, '\n');
+			for (j = 0; j < max_len + 1; j++)
+				g_string_append_c (string, ' ');
+			g_string_append (string, item->description);
+			g_string_append_c (string, '\n');
+		}
 	}
 
 	/* remove trailing newline */
@@ -699,9 +715,11 @@ cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError *
 				_("Command not found, valid commands are:"));
 	for (i = 0; i < priv->cmd_array->len; i++) {
 		item = g_ptr_array_index (priv->cmd_array, i);
-		g_string_append_printf (string, " * %s\n", item->name);
+		g_string_append_printf (string, " * %s %s\n",
+					item->name,
+					item->arguments ? item->arguments : "");
 	}
-	g_set_error_literal (error, 1, 0, string->str);
+	g_set_error_literal (error, CD_ERROR, CD_ERROR_NO_SUCH_CMD, string->str);
 	g_string_free (string, TRUE);
 out:
 	return ret;
@@ -753,7 +771,8 @@ cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device kind "
 				     "e.g. 'printer'");
@@ -762,9 +781,9 @@ cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error
 
 	/* execute sync method */
 	array = cd_client_get_devices_by_kind_sync (priv->client,
-			cd_device_kind_from_string (values[0]),
-			NULL,
-			error);
+						    cd_device_kind_from_string (values[0]),
+						    NULL,
+						    error);
 	if (array == NULL) {
 		ret = FALSE;
 		goto out;
@@ -836,7 +855,7 @@ cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (array->len == 0) {
 		ret = FALSE;
 		/* TRANSLATORS: the user does not have a colorimeter attached */
-		g_set_error_literal (error, 1, 0,
+		g_set_error_literal (error, CD_ERROR, CD_ERROR_INVALID_ARGUMENTS,
 				     _("There are no supported sensors attached"));
 		goto out;
 	}
@@ -876,7 +895,7 @@ cd_util_sensor_lock (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (array->len == 0) {
 		ret = FALSE;
 		/* TRANSLATORS: the user does not have a colorimeter attached */
-		g_set_error_literal (error, 1, 0,
+		g_set_error_literal (error, CD_ERROR, CD_ERROR_INVALID_ARGUMENTS,
 				     _("There are no supported sensors attached"));
 		goto out;
 	}
@@ -924,7 +943,8 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device type "
 				     "e.g. 'lcd'");
@@ -940,7 +960,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (array->len == 0) {
 		ret = FALSE;
 		/* TRANSLATORS: the user does not have a colorimeter attached */
-		g_set_error_literal (error, 1, 0,
+		g_set_error_literal (error, CD_ERROR, CD_ERROR_INVALID_ARGUMENTS,
 				     _("There are no supported sensors attached"));
 		goto out;
 	}
@@ -1034,7 +1054,8 @@ cd_util_sensor_set_options (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected key value "
 				     "e.g. 'remote-profile-hash' 'deadbeef'");
@@ -1050,7 +1071,7 @@ cd_util_sensor_set_options (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (array->len == 0) {
 		ret = FALSE;
 		/* TRANSLATORS: the user does not have a colorimeter attached */
-		g_set_error_literal (error, 1, 0,
+		g_set_error_literal (error, CD_ERROR, CD_ERROR_INVALID_ARGUMENTS,
 				     _("There are no supported sensors attached"));
 		goto out;
 	}
@@ -1125,7 +1146,8 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 3) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device id, scope, kind "
 				     "e.g. 'epson-stylus-800 disk display'");
@@ -1173,7 +1195,8 @@ cd_util_find_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device id "
 				     "e.g. 'epson-stylus-800'");
@@ -1209,7 +1232,8 @@ cd_util_find_device_by_property (CdUtilPrivate *priv, gchar **values, GError **e
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected key value "
 				     "e.g. 'XRANDR_name' 'lvds'");
@@ -1248,7 +1272,8 @@ cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected profile id "
 				     "e.g. 'epson-rgb'");
@@ -1284,7 +1309,8 @@ cd_util_find_profile_by_filename (CdUtilPrivate *priv, gchar **values, GError **
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected profile filename");
 		goto out;
@@ -1320,7 +1346,8 @@ cd_util_get_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected standard space "
 				     "e.g. 'adobe-rgb'");
@@ -1359,7 +1386,8 @@ cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected profile id, scope "
 				     "e.g. 'epson-rgb disk'");
@@ -1398,7 +1426,8 @@ cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path, profile path "
 				     "e.g. '/org/device/foo /org/profile/bar'");
@@ -1459,7 +1488,8 @@ cd_util_device_make_profile_default (CdUtilPrivate *priv, gchar **values, GError
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path, profile path "
 				     "e.g. '/org/device/foo /org/profile/bar'");
@@ -1516,7 +1546,8 @@ cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path "
 				     "e.g. '/org/devices/foo'");
@@ -1556,7 +1587,8 @@ cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected profile path "
 				     "e.g. '/org/profiles/bar'");
@@ -1594,7 +1626,8 @@ cd_util_profile_set_property (CdUtilPrivate *priv, gchar **values, GError **erro
 	if (g_strv_length (values) < 3) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected profile path key value "
 				     "e.g. '/org/profile/foo qualifier RGB.Matte.300dpi'");
@@ -1638,7 +1671,8 @@ cd_util_device_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path, model "
 				     "e.g. '/org/devices/bar \"Stylus 800\"'");
@@ -1681,7 +1715,8 @@ cd_util_device_set_enabled (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path, True|False");
 		goto out;
@@ -1728,7 +1763,8 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path "
 				     "e.g. '/org/devices/bar'");
@@ -1753,7 +1789,7 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 	if (profile == NULL) {
 		ret = FALSE;
 		g_set_error (error,
-			     1, 0,
+			     CD_ERROR, CD_ERROR_INVALID_ARGUMENTS,
 			     "There is no assigned profile for %s",
 			     values[0]);
 		goto out;
@@ -1782,7 +1818,8 @@ cd_util_device_set_vendor (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path, vendor "
 				     "e.g. '/org/devices/bar Epson'");
@@ -1825,7 +1862,8 @@ cd_util_device_set_serial (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path, serial "
 				     "e.g. '/org/devices/bar 00001234'");
@@ -1868,7 +1906,8 @@ cd_util_device_set_kind (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path, kind "
 				     "e.g. '/org/devices/bar printer'");
@@ -1913,7 +1952,8 @@ cd_util_device_inhibit (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path timeout (use 0 for 'never') "
 				     "e.g. '/org/devices/epson-800' 60");
@@ -1925,7 +1965,7 @@ cd_util_device_inhibit (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (timeout < 0) {
 		ret = FALSE;
 		g_set_error (error,
-			     1, 0,
+			     CD_ERROR, CD_ERROR_INVALID_ARGUMENTS,
 			     "Not a valid timeout: %s",
 			     values[1]);
 		goto out;
@@ -1981,7 +2021,8 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 	if (g_strv_length (values) < 2) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, "
 				     "expected device path, qualifier "
 				     "e.g. '/org/devices/bar *.*.300dpi'");
@@ -2037,7 +2078,8 @@ cd_util_import_profile (CdUtilPrivate *priv,
 	if (g_strv_length (values) < 1) {
 		ret = FALSE;
 		g_set_error_literal (error,
-				     1, 0,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
 				     "Not enough arguments, expected: file");
 		goto out;
 	}
@@ -2109,143 +2151,171 @@ main (int argc, char *argv[])
 	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_util_item_free);
 	cd_util_add (priv->cmd_array,
 		     "get-devices",
+		     NULL,
 		     /* TRANSLATORS: command description */
 		     _("Gets all the color managed devices"),
 		     cd_util_get_devices);
 	cd_util_add (priv->cmd_array,
 		     "get-devices-by-kind",
+		     "[KIND]",
 		     /* TRANSLATORS: command description */
 		     _("Gets all the color managed devices of a specific kind"),
 		     cd_util_get_devices_by_kind);
 	cd_util_add (priv->cmd_array,
 		     "get-profiles",
+		     NULL,
 		     /* TRANSLATORS: command description */
 		     _("Gets all the available color profiles"),
 		     cd_util_get_profiles);
 	cd_util_add (priv->cmd_array,
 		     "get-sensors",
+		     NULL,
 		     /* TRANSLATORS: command description */
 		     _("Gets all the available color sensors"),
 		     cd_util_get_sensors);
 	cd_util_add (priv->cmd_array,
 		     "get-sensor-reading",
+		     "[KIND]",
 		     /* TRANSLATORS: command description */
 		     _("Gets a reading from a sensor"),
 		     cd_util_get_sensor_reading);
 	cd_util_add (priv->cmd_array,
 		     "sensor-lock",
+		     NULL,
 		     /* TRANSLATORS: command description */
 		     _("Locks the color sensor"),
 		     cd_util_sensor_lock);
 	cd_util_add (priv->cmd_array,
 		     "sensor-set-options",
+		     "[KEY] [VALUE]",
 		     /* TRANSLATORS: command description */
 		     _("Sets one or more sensor options"),
 		     cd_util_sensor_set_options);
 	cd_util_add (priv->cmd_array,
 		     "create-device",
+		     "[ID] [SCOPE] [KIND]",
 		     /* TRANSLATORS: command description */
 		     _("Create a device"),
 		     cd_util_create_device);
 	cd_util_add (priv->cmd_array,
 		     "find-device",
+		     "[ID]",
 		     /* TRANSLATORS: command description */
 		     _("Find a device from the device ID"),
 		     cd_util_find_device);
 	cd_util_add (priv->cmd_array,
 		     "find-device-by-property",
+		     "[KEY] [VALUE]",
 		     /* TRANSLATORS: command description */
 		     _("Find a device with a given property value"),
 		     cd_util_find_device_by_property);
 	cd_util_add (priv->cmd_array,
 		     "find-profile",
+		     "[ID]",
 		     /* TRANSLATORS: command description */
 		     _("Find a profile from the profile ID"),
 		     cd_util_find_profile);
 	cd_util_add (priv->cmd_array,
 		     "find-profile-by-filename",
+		     "[FILENAME]",
 		     /* TRANSLATORS: command description */
 		     _("Find a profile by filename"),
 		     cd_util_find_profile_by_filename);
 	cd_util_add (priv->cmd_array,
 		     "get-standard-space",
+		     "[TYPE]",
 		     /* TRANSLATORS: command description */
 		     _("Get a standard colorspace"),
 		     cd_util_get_standard_space);
 	cd_util_add (priv->cmd_array,
 		     "create-profile",
+		     "[ID] [SCOPE]",
 		     /* TRANSLATORS: command description */
 		     _("Create a profile"),
 		     cd_util_create_profile);
 	cd_util_add (priv->cmd_array,
 		     "device-add-profile",
+		     "[ID|PATH] [ID|PATH]",
 		     /* TRANSLATORS: command description */
 		     _("Add a profile to a device that already exists"),
 		     cd_util_device_add_profile);
 	cd_util_add (priv->cmd_array,
 		     "device-make-profile-default",
+		     "[ID|PATH] [ID|PATH]",
 		     /* TRANSLATORS: command description */
 		     _("Makes a profile default for a device"),
 		     cd_util_device_make_profile_default);
 	cd_util_add (priv->cmd_array,
 		     "delete-device",
+		     "[ID|PATH]",
 		     /* TRANSLATORS: command description */
 		     _("Deletes a device"),
 		     cd_util_delete_device);
 	cd_util_add (priv->cmd_array,
 		     "delete-profile",
+		     "[ID|PATH]",
 		     /* TRANSLATORS: command description */
 		     _("Deletes a profile"),
 		     cd_util_delete_profile);
 	cd_util_add (priv->cmd_array,
 		     "profile-set-property",
+		     "[ID|PATH] [KEY] [VALUE]",
 		     /* TRANSLATORS: command description */
 		     _("Sets extra properties on the profile"),
 		     cd_util_profile_set_property);
 	cd_util_add (priv->cmd_array,
 		     "device-set-model",
+		     "[ID|PATH] [MODEL]",
 		     /* TRANSLATORS: command description */
 		     _("Sets the device model"),
 		     cd_util_device_set_model);
 	cd_util_add (priv->cmd_array,
 		     "device-set-enabled",
+		     "[ID|PATH] [TRUE|FALSE]",
 		     /* TRANSLATORS: command description */
 		     _("Enables or disables the device"),
 		     cd_util_device_set_enabled);
 	cd_util_add (priv->cmd_array,
 		     "device-get-default-profile",
+		     "[ID|PATH]",
 		     /* TRANSLATORS: command description */
 		     _("Gets the default profile for a device"),
 		     cd_util_device_get_default_profile);
 	cd_util_add (priv->cmd_array,
 		     "device-set-vendor",
+		     "[ID|PATH] [VENDOR]",
 		     /* TRANSLATORS: command description */
 		     _("Sets the device vendor"),
 		     cd_util_device_set_vendor);
 	cd_util_add (priv->cmd_array,
 		     "device-set-serial",
+		     "[ID|PATH] [SERIAL]",
 		     /* TRANSLATORS: command description */
 		     _("Sets the device serial"),
 		     cd_util_device_set_serial);
 	cd_util_add (priv->cmd_array,
 		     "device-set-kind",
+		     "[ID|PATH] [KIND]",
 		     /* TRANSLATORS: command description */
 		     _("Sets the device kind"),
 		     cd_util_device_set_kind);
 	cd_util_add (priv->cmd_array,
 		     "device-inhibit",
+		     "[ID|PATH] [TIMEOUT|0]",
 		     /* TRANSLATORS: command description */
 		     _("Inhibits color profiles for this device"),
 		     cd_util_device_inhibit);
 	cd_util_add (priv->cmd_array,
 		     "device-get-profile-for-qualifier",
+		     "[ID|PATH] [QUALIFIER]",
 		     /* TRANSLATORS: command description */
 		     _("Returns all the profiles that match a qualifier"),
 		     cd_util_device_get_profile_for_qualifiers);
 	cd_util_add (priv->cmd_array,
 		     "import-profile",
+		     "[FILENAME]",
 		     /* TRANSLATORS: command description */
-		     _("Returns all the profiles that match a qualifier"),
+		     _("Import a profile and install it for the user"),
 		     cd_util_import_profile);
 
 	/* sort by command name */
@@ -2301,7 +2371,14 @@ main (int argc, char *argv[])
 	/* run the specified command */
 	ret = cd_util_run (priv, argv[1], (gchar**) &argv[2], &error);
 	if (!ret) {
-		g_print ("%s\n", error->message);
+		if (g_error_matches (error, CD_ERROR, CD_ERROR_NO_SUCH_CMD)) {
+			gchar *tmp;
+			tmp = g_option_context_get_help (priv->context, TRUE, NULL);
+			g_print ("%s", tmp);
+			g_free (tmp);
+		} else {
+			g_print ("%s\n", error->message);
+		}
 		g_error_free (error);
 		goto out;
 	}
