@@ -65,6 +65,7 @@ typedef struct {
 	GHashTable		*standard_spaces;
 	GPtrArray		*plugins;
 	GMainLoop		*loop;
+	gboolean		 create_dummy_sensor;
 } CdMainPrivate;
 
 /**
@@ -2031,8 +2032,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_COLDPLUG);
 
 	/* add dummy sensor */
-	ret = cd_config_get_boolean (priv->config, "CreateDummySensor");
-	if (ret) {
+	if (priv->create_dummy_sensor) {
 		sensor = cd_sensor_new ();
 		cd_sensor_set_kind (sensor, CD_SENSOR_KIND_DUMMY);
 		ret = cd_sensor_load (sensor, &error);
@@ -2342,6 +2342,7 @@ main (int argc, char *argv[])
 {
 	CdMainPrivate *priv;
 	gboolean immediate_exit = FALSE;
+	gboolean create_dummy_sensor = FALSE;
 	gboolean ret;
 	gboolean timed_exit = FALSE;
 	GError *error = NULL;
@@ -2355,6 +2356,9 @@ main (int argc, char *argv[])
 		{ "immediate-exit", '\0', 0, G_OPTION_ARG_NONE, &immediate_exit,
 		  /* TRANSLATORS: exit straight away, used for automatic profiling */
 		  _("Exit after the engine has loaded"), NULL },
+		{ "create-dummy-sensor", '\0', 0, G_OPTION_ARG_NONE, &create_dummy_sensor,
+		  /* TRANSLATORS: exit straight away, used for automatic profiling */
+		  _("Create a dummy sensor for testing"), NULL },
 		{ NULL}
 	};
 
@@ -2366,6 +2370,7 @@ main (int argc, char *argv[])
 	textdomain (GETTEXT_PACKAGE);
 
 	priv = g_new0 (CdMainPrivate, 1);
+	priv->create_dummy_sensor = create_dummy_sensor;
 
 	/* TRANSLATORS: program name */
 	g_set_application_name (_("Color Management"));

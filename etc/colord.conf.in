@@ -5,11 +5,6 @@
 # default=@enablevolumesearch@
 SearchVolumes=@enablevolumesearch@
 
-# If we should create a dummy sensor for testing
-#
-# default=false
-CreateDummySensor=false
-
 # If we should use SANE to add scanner and camera devices.
 #
 # If SANE support is installed then this will allow colord to manage
