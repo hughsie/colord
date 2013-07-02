@@ -1926,81 +1926,6 @@ out:
 }
 
 /**
- * cd_main_setup_standard_space:
- **/
-static void
-cd_main_setup_standard_space (CdMainPrivate *priv,
-			      const gchar *space,
-			      const gchar *search)
-{
-	CdProfile *profile = NULL;
-
-	/* depending on the prefix, find the profile */
-	if (g_str_has_prefix (search, "icc_")) {
-		profile = cd_profile_array_get_by_id_owner (priv->profiles_array,
-							    search,
-							    0);
-	} else if (g_str_has_prefix (search, "/")) {
-		profile = cd_profile_array_get_by_filename (priv->profiles_array,
-							    search);
-	} else  {
-		g_warning ("unknown prefix for override search: %s",
-			   search);
-		goto out;
-	}
-	if (profile == NULL) {
-		g_warning ("failed to find profile %s for override",
-			   search);
-		goto out;
-	}
-
-	/* add override */
-	g_debug ("CdMain: adding profile override %s=%s",
-		 space, search);
-	g_hash_table_insert (priv->standard_spaces,
-			     g_strdup (space),
-			     g_object_ref (profile));
-out:
-	if (profile != NULL)
-		g_object_unref (profile);
-}
-
-/**
- * cd_main_setup_standard_spaces:
- **/
-static void
-cd_main_setup_standard_spaces (CdMainPrivate *priv)
-{
-	gchar **spaces;
-	gchar **split;
-	guint i;
-
-	/* get overrides */
-	spaces = cd_config_get_strv (priv->config, "StandardSpaces");
-	if (spaces == NULL) {
-		g_debug ("no standard space overrides");
-		goto out;
-	}
-
-	/* parse them */
-	for (i = 0; spaces[i] != NULL; i++) {
-		split = g_strsplit (spaces[i], ":", 2);
-		if (g_strv_length (split) == 2) {
-			cd_main_setup_standard_space (priv,
-						      split[0],
-						      split[1]);
-		} else {
-			g_warning ("invalid spaces override '%s', "
-				   "expected name:value",
-				   spaces[i]);
-		}
-		g_strfreev (split);
-	}
-out:
-	g_strfreev (spaces);
-}
-
-/**
  * cd_main_plugin_phase:
  **/
 static void
@@ -2119,9 +2044,6 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 			cd_main_add_sensor (priv, sensor);
 		}
 	}
-
-	/* now we've got the profiles, setup the overrides */
-	cd_main_setup_standard_spaces (priv);
 out:
 	if (array_devices != NULL)
 		g_ptr_array_unref (array_devices);

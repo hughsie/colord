@@ -34,11 +34,3 @@ UseSANE=false
 #
 # default=false
 AlwaysUseXrandrName=false
-
-# Known profiles are specific colorspaces that applications may request,
-# e.g. 'adobe-rgb' or 'srgb'.
-# This key sets up any manual overrides that are not automatically added
-# using the profile dictionary metadata.
-#
-# default=
-StandardSpaces=
