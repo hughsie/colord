@@ -800,32 +800,6 @@ out:
 }
 
 /**
- * cd_profile_get_fake_md5:
- *
- * this is a complete hack to work around the lack of DICT
- * support, and to give gnome-color-manager something to key on
- **/
-static gchar *
-cd_profile_get_fake_md5 (const gchar *filename)
-{
-	gchar *basename;
-	gchar *md5 = NULL;
-
-	basename = g_path_get_basename (filename);
-	if (!g_str_has_prefix (basename, "edid-"))
-		goto out;
-	if (strlen (basename) != 41)
-		goto out;
-
-	/* parse edid-f467c2e85a0abdef9415d5028e240631.icc */
-	basename[37] = '\0';
-	md5 = g_strdup (&basename[5]);
-out:
-	g_free (basename);
-	return md5;
-}
-
-/**
  * cd_profile_fixup_title:
  **/
 static gchar *
@@ -1027,7 +1001,6 @@ cd_profile_set_filename (CdProfile *profile,
 	GFile *file = NULL;
 	GBytes *gdata = NULL;
 	gchar *data = NULL;
-	gchar *fake_md5 = NULL;
 	gsize len;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
@@ -1035,22 +1008,6 @@ cd_profile_set_filename (CdProfile *profile,
 	/* save filename */
 	g_free (priv->filename);
 	priv->filename = g_strdup (filename);
-
-	/* if we didn't get the metadata from the DICT tag then
-	 * guess it from the filename.
-	 * we can delete this hack when lcms2 >= 2.2 is a hard dep */
-	tmp = g_hash_table_lookup (priv->metadata, CD_PROFILE_METADATA_EDID_MD5);
-	if (tmp == NULL) {
-		fake_md5 = cd_profile_get_fake_md5 (priv->filename);
-		if (fake_md5 != NULL) {
-			g_hash_table_insert (priv->metadata,
-					     g_strdup (CD_PROFILE_METADATA_EDID_MD5),
-					     g_strdup (fake_md5));
-			cd_profile_dbus_emit_property_changed (profile,
-							       CD_PROFILE_PROPERTY_METADATA,
-							       cd_profile_get_metadata_as_variant (profile));
-		}
-	}
 
 	/* check we're not already set using the fd */
 	if (priv->kind != CD_PROFILE_KIND_UNKNOWN) {
@@ -1141,7 +1098,6 @@ cd_profile_set_filename (CdProfile *profile,
 	cd_profile_emit_parsed_property_changed (profile);
 out:
 	g_free (data);
-	g_free (fake_md5);
 	if (gdata != NULL)
 		g_bytes_unref (gdata);
 	if (icc != NULL)
