@@ -703,6 +703,7 @@ colord_profile_file_func (void)
 	CdProfile *profile;
 	CdProfile *profile_tmp;
 	gboolean ret;
+	gchar *basename;
 	gchar *filename;
 	gchar *profile_id;
 	GError *error = NULL;
@@ -760,6 +761,16 @@ colord_profile_file_func (void)
 	g_assert_cmpstr (cd_profile_get_id (profile), ==, profile_id);
 	g_assert_cmpstr (cd_profile_get_format (profile), ==, "ColorSpace..");
 
+	/* check we can find profile based on basename */
+	basename = g_path_get_basename (filename);
+	profile_tmp = cd_client_find_profile_by_filename_sync (client,
+							       basename,
+							       NULL,
+							       &error);
+	g_assert_no_error (error);
+	g_assert (profile_tmp != NULL);
+	g_object_unref (profile_tmp);
+
 	/* check we can find profile based on filename */
 	profile_tmp = cd_client_find_profile_by_filename_sync (client,
 							       filename,
@@ -802,6 +813,7 @@ colord_profile_file_func (void)
 	g_assert (ret);
 
 	g_free (profile_id);
+	g_free (basename);
 	g_free (filename);
 	g_hash_table_unref (profile_props);
 	g_object_unref (profile);

@@ -107,6 +107,34 @@ out:
 /**
  * cd_profile_array_get_by_filename:
  **/
+static CdProfile *
+cd_profile_array_get_by_basename (CdProfileArray *profile_array,
+				  const gchar *filename)
+{
+	CdProfileArrayPrivate *priv = profile_array->priv;
+	CdProfile *profile = NULL;
+	CdProfile *profile_tmp;
+	const gchar *tmp;
+	gchar *basename;
+	guint i;
+
+	/* find profile */
+	for (i = 0; i < priv->array->len && profile == NULL; i++) {
+		profile_tmp = g_ptr_array_index (priv->array, i);
+		tmp = cd_profile_get_filename (profile_tmp);
+		if (tmp == NULL)
+			continue;
+		basename = g_path_get_basename (tmp);
+		if (g_strcmp0 (basename, filename) == 0)
+			profile = g_object_ref (profile_tmp);
+		g_free (basename);
+	}
+	return profile;
+}
+
+/**
+ * cd_profile_array_get_by_filename:
+ **/
 CdProfile *
 cd_profile_array_get_by_filename (CdProfileArray *profile_array,
 				  const gchar *filename)
@@ -115,6 +143,14 @@ cd_profile_array_get_by_filename (CdProfileArray *profile_array,
 	CdProfile *profile = NULL;
 	CdProfile *profile_tmp;
 	guint i;
+
+	g_return_val_if_fail (filename != NULL, NULL);
+
+	/* support getting the file without the path */
+	if (filename[0] != '/') {
+		profile = cd_profile_array_get_by_basename (profile_array, filename);
+		goto out;
+	}
 
 	/* find profile */
 	for (i = 0; i < priv->array->len; i++) {
@@ -125,6 +161,7 @@ cd_profile_array_get_by_filename (CdProfileArray *profile_array,
 			break;
 		}
 	}
+out:
 	return profile;
 }
 
