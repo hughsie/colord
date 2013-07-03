@@ -13,6 +13,7 @@ AM_CPPFLAGS = \
 	-DCD_COMPILATION					\
 	-DG_LOG_DOMAIN=\"libcolord\"				\
 	-DTESTDATADIR=\""$(top_srcdir)/data/tests"\"		\
+	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"
 
 lib_LTLIBRARIES =						\
@@ -36,6 +37,7 @@ libcolordbase_include_HEADERS =					\
 	cd-dom.h						\
 	cd-enum.h						\
 	cd-icc.h						\
+	cd-icc-store.h						\
 	cd-interp-akima.h					\
 	cd-interp-linear.h					\
 	cd-interp.h						\
@@ -56,6 +58,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-dom.c						\
 	cd-enum.c						\
 	cd-icc.c						\
+	cd-icc-store.c						\
 	cd-interp-akima.c					\
 	cd-interp-linear.c					\
 	cd-interp.c						\
