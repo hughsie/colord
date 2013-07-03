@@ -42,6 +42,7 @@
 #include "cd-device-sync.h"
 #include "cd-dom.h"
 #include "cd-icc.h"
+#include "cd-icc-store.h"
 #include "cd-interp-akima.h"
 #include "cd-interp-linear.h"
 #include "cd-interp.h"
@@ -3787,6 +3788,146 @@ colord_transform_func (void)
 	g_object_unref (transform);
 }
 
+#include <glib/gstdio.h>
+
+static void
+_copy_files (const gchar *src, const gchar *dest)
+{
+	gboolean ret;
+	gchar *data;
+	GError *error = NULL;
+	gsize len;
+
+	ret = g_file_get_contents (src, &data, &len, &error);
+	g_assert (ret);
+	g_assert_no_error (error);
+	ret = g_file_set_contents (dest, data, len, &error);
+	g_assert (ret);
+	g_assert_no_error (error);
+	g_free (data);
+}
+
+static void
+colord_icc_store_added_cb (CdIccStore *store, CdIcc *icc, guint *cnt)
+{
+	g_debug ("Got ::added(%s)", cd_icc_get_checksum (icc));
+	(*cnt)++;
+	_g_test_loop_quit ();
+}
+
+static void
+colord_icc_store_removed_cb (CdIccStore *store, CdIcc *icc, guint *cnt)
+{
+	g_debug ("Got ::removed(%s)", cd_icc_get_checksum (icc));
+	(*cnt)++;
+	_g_test_loop_quit ();
+}
+
+static void
+colord_icc_store_func (void)
+{
+	CdIccStore *store;
+	gboolean ret;
+	gchar *file1;
+	gchar *file2;
+	gchar *filename;
+	gchar *newroot;
+	gchar *root;
+	GError *error = NULL;
+	GPtrArray *array;
+	guint added = 0;
+	guint removed = 0;
+
+	store = cd_icc_store_new ();
+	g_signal_connect (store, "added",
+			  G_CALLBACK (colord_icc_store_added_cb),
+			  &added);
+	g_signal_connect (store, "removed",
+			  G_CALLBACK (colord_icc_store_removed_cb),
+			  &removed);
+	cd_icc_store_set_load_flags (store, CD_ICC_LOAD_FLAGS_NONE);
+
+	filename = _g_test_realpath (TESTDATADIR "/ibm-t61.icc");
+
+	/* create test directory */
+	root = g_strdup_printf ("/tmp/colord-%c%c%c%c",
+				g_random_int_range ('a', 'z'),
+				g_random_int_range ('a', 'z'),
+				g_random_int_range ('a', 'z'),
+				g_random_int_range ('a', 'z'));
+	g_mkdir (root, 0777);
+
+	file1 = g_build_filename (root, "already-exists.icc", NULL);
+	_copy_files (filename, file1);
+
+	g_assert_cmpint (added, ==, 0);
+	g_assert_cmpint (removed, ==, 0);
+
+	/* this is done sync */
+	ret = cd_icc_store_search_location (store, root,
+					    CD_ICC_STORE_WATCH_FLAGS_CREATE_LOCATION,
+					    NULL, &error);
+	g_assert (ret);
+	g_assert_no_error (error);
+
+	g_assert_cmpint (added, ==, 1);
+	g_assert_cmpint (removed, ==, 0);
+
+	/* create /tmp/colord-foo/new-root/new-icc.icc which should cause a
+	 * new directory notifier to be added and the new file to be
+	 * discovered */
+	newroot = g_build_filename (root, "new-root", NULL);
+	g_mkdir (newroot, 0777);
+	file2 = g_build_filename (newroot, "new-icc.icc", NULL);
+	_copy_files (filename, file2);
+
+	/* wait for file notifier */
+	_g_test_loop_run_with_timeout (5000);
+	_g_test_loop_quit ();
+
+	g_assert_cmpint (added, ==, 2);
+	g_assert_cmpint (removed, ==, 0);
+
+	/* check store size */
+	array = cd_icc_store_get_array (store);
+	g_assert_cmpint (array->len, ==, 2);
+	g_ptr_array_unref (array);
+
+	g_unlink (file2);
+
+	/* wait for file notifier */
+	_g_test_loop_run_with_timeout (5000);
+	_g_test_loop_quit ();
+
+	g_assert_cmpint (added, ==, 2);
+	g_assert_cmpint (removed, ==, 1);
+
+	/* remove already-exists.icc */
+	g_unlink (file1);
+
+	/* wait for file notifier */
+	_g_test_loop_run_with_timeout (5000);
+	_g_test_loop_quit ();
+
+	g_assert_cmpint (added, ==, 2);
+	g_assert_cmpint (removed, ==, 2);
+
+	g_remove (newroot);
+	g_remove (root);
+
+	/* check store size */
+	array = cd_icc_store_get_array (store);
+	g_assert_cmpint (array->len, ==, 0);
+	g_ptr_array_unref (array);
+
+	g_free (file1);
+	g_free (file2);
+	g_free (filename);
+	g_free (newroot);
+	g_free (root);
+	g_object_unref (store);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -3801,6 +3942,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
 	g_test_add_func ("/colord/icc{edid}", colord_icc_edid_func);
 	g_test_add_func ("/colord/icc{save}", colord_icc_save_func);
+	g_test_add_func ("/colord/icc-store", colord_icc_store_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/dom", colord_dom_func);
