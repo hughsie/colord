@@ -266,7 +266,8 @@
       <doc:doc>
         <doc:description>
           <doc:para>
-            Gets a profile path for the profile filename.
+            Gets a profile path for the profile filename, either a fully-qualified
+            filename with path or just the basename of the profile.
           </doc:para>
         </doc:description>
       </doc:doc>
