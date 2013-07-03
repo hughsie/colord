@@ -31,6 +31,7 @@
 
 #include "config.h"
 
+#include <string.h>
 #include <glib.h>
 #include <gio/gio.h>
 
@@ -81,6 +82,7 @@ cd_device_connect_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -136,6 +138,7 @@ cd_device_set_property_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -191,6 +194,7 @@ cd_device_add_profile_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -244,6 +248,7 @@ cd_device_remove_profile_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -297,6 +302,7 @@ cd_device_get_profile_for_qualifiers_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -350,6 +356,7 @@ cd_device_make_profile_default_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -402,6 +409,7 @@ cd_device_profiling_inhibit_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -454,6 +462,7 @@ cd_device_profiling_uninhibit_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -507,6 +516,7 @@ cd_device_get_profile_relation_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -560,6 +570,7 @@ cd_device_set_enabled_sync (CdDevice *device,
 	CdDeviceHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdDeviceHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
