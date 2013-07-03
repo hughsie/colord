@@ -171,6 +171,8 @@ gchar		*cd_icc_to_string			(CdIcc		*icc)
 gpointer	 cd_icc_get_handle			(CdIcc		*icc);
 guint32		 cd_icc_get_size			(CdIcc		*icc);
 const gchar	*cd_icc_get_filename			(CdIcc		*icc);
+void		 cd_icc_set_filename			(CdIcc		*icc,
+							 const gchar	*filename);
 gdouble		 cd_icc_get_version			(CdIcc		*icc);
 void		 cd_icc_set_version			(CdIcc		*icc,
 							 gdouble	 version);

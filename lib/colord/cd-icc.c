@@ -1516,6 +1516,23 @@ out:
 }
 
 /**
+ * cd_icc_set_filename:
+ * @icc: a #CdIcc instance.
+ * @filename: a filename, or %NULL
+ *
+ * Sets the filename, which may be required if the ICC profile has been loaded
+ * using cd_icc_load_fd() from a disk cache.
+ *
+ * Since: 1.1.1
+ **/
+void
+cd_icc_set_filename (CdIcc *icc, const gchar *filename)
+{
+	g_free (icc->priv->filename);
+	icc->priv->filename = g_strdup (filename);
+}
+
+/**
  * cd_icc_load_file:
  * @icc: a #CdIcc instance.
  * @file: a #GFile
