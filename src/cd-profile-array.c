@@ -141,6 +141,12 @@ cd_profile_array_get_by_property (CdProfileArray *profile_array,
 	CdProfile *profile_tmp;
 	guint i;
 
+	/* special case */
+	if (g_strcmp0 (key, CD_PROFILE_PROPERTY_FILENAME) == 0) {
+		profile = cd_profile_array_get_by_filename (profile_array, value);
+		goto out;
+	}
+
 	/* find profile */
 	for (i = 0; i < priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
@@ -150,6 +156,7 @@ cd_profile_array_get_by_property (CdProfileArray *profile_array,
 			break;
 		}
 	}
+out:
 	return profile;
 }
 
