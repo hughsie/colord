@@ -1253,24 +1253,20 @@ out:
 }
 
 /**
- * cd_icc_save_file:
+ * cd_icc_save_data:
  * @icc: a #CdIcc instance.
- * @file: a #GFile
  * @flags: a set of #CdIccSaveFlags
- * @cancellable: A #GCancellable or %NULL
  * @error: A #GError or %NULL
  *
- * Saves an ICC profile to a local or remote file.
+ * Saves an ICC profile to an allocated memory location.
  *
- * Return vale: %TRUE for success.
+ * Return vale: A #GBytes structure, or %NULL for error
  *
- * Since: 0.1.32
+ * Since: 1.0.2
  **/
-gboolean
-cd_icc_save_file (CdIcc *icc,
-		  GFile *file,
+GBytes *
+cd_icc_save_data (CdIcc *icc,
 		  CdIccSaveFlags flags,
-		  GCancellable *cancellable,
 		  GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
@@ -1279,14 +1275,13 @@ cd_icc_save_file (CdIcc *icc,
 	const gchar *key;
 	const gchar *value;
 	gboolean ret = FALSE;
-	gchar *data = NULL;
-	GError *error_local = NULL;
+	GBytes *data = NULL;
+	gchar *data_tmp = NULL;
 	GList *l;
 	GList *md_keys = NULL;
 	guint i;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
-	g_return_val_if_fail (G_IS_FILE (file), FALSE);
 
 	/* convert profile kind */
 	for (i = 0; map_profile_kind[i].colord != CD_PROFILE_KIND_LAST; i++) {
@@ -1435,14 +1430,59 @@ cd_icc_save_file (CdIcc *icc,
 	}
 
 	/* allocate and get profile data */
-	data = g_new0 (gchar, length);
+	data_tmp = g_new0 (gchar, length);
 	ret = cmsSaveProfileToMem (priv->lcms_profile,
-				   data, &length);
+				   data_tmp, &length);
 	if (!ret) {
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_SAVE,
 				     "failed to dump ICC file to memory");
+		goto out;
+	}
+
+	/* success */
+	data = g_bytes_new (data_tmp, length);
+out:
+	g_list_free (md_keys);
+	if (dict != NULL)
+		cmsDictFree (dict);
+	g_free (data_tmp);
+	return data;
+}
+
+/**
+ * cd_icc_save_file:
+ * @icc: a #CdIcc instance.
+ * @file: a #GFile
+ * @flags: a set of #CdIccSaveFlags
+ * @cancellable: A #GCancellable or %NULL
+ * @error: A #GError or %NULL
+ *
+ * Saves an ICC profile to a local or remote file.
+ *
+ * Return vale: %TRUE for success.
+ *
+ * Since: 0.1.32
+ **/
+gboolean
+cd_icc_save_file (CdIcc *icc,
+		  GFile *file,
+		  CdIccSaveFlags flags,
+		  GCancellable *cancellable,
+		  GError **error)
+{
+	gboolean ret;
+	GBytes *data = NULL;
+	GError *error_local = NULL;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+	g_return_val_if_fail (G_IS_FILE (file), FALSE);
+
+	/* get data */
+	data = cd_icc_save_data (icc, flags, error);
+	if (data == NULL) {
+		ret = FALSE;
 		goto out;
 	}
 
@@ -1453,8 +1493,8 @@ cd_icc_save_file (CdIcc *icc,
 
 	/* actually write file */
 	ret = g_file_replace_contents (file,
-				       data,
-				       length,
+				       g_bytes_get_data (data, NULL),
+				       g_bytes_get_size (data),
 				       NULL,
 				       FALSE,
 				       G_FILE_CREATE_NONE,
@@ -1465,16 +1505,13 @@ cd_icc_save_file (CdIcc *icc,
 		g_set_error (error,
 			     CD_ICC_ERROR,
 			     CD_ICC_ERROR_FAILED_TO_SAVE,
-			     "failed to dump ICC file: %s",
+			     "failed to save ICC file: %s",
 			     error_local->message);
 		g_error_free (error_local);
 		goto out;
 	}
 out:
-	g_list_free (md_keys);
-	if (dict != NULL)
-		cmsDictFree (dict);
-	g_free (data);
+	g_bytes_unref (data);
 	return ret;
 }
 
