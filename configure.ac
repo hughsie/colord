@@ -303,13 +303,6 @@ if test x$has_sane = xyes; then
 	AC_DEFINE(HAVE_SANE,1,[Use SANE support for detecting scanners])
 fi
 
-dnl **** Daemon is allowed to do search external volumes for profiles ****
-AC_ARG_ENABLE(volume_search, AS_HELP_STRING([--enable-volume-search],[Enable profile volume search]),
-	      enable_volume_search=$enableval, enable_volume_search=yes)
-if test x$enable_volume_search != xno; then
-	AC_DEFINE(ENABLE_VOLUME_SEARCH,1,[enable volume search])
-fi
-
 # custom daemon user
 AC_ARG_WITH(
     [daemon_user],

@@ -2004,9 +2004,6 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	/* search locations specified in the config file */
 	flags = CD_PROFILE_STORE_SEARCH_SYSTEM |
 		CD_PROFILE_STORE_SEARCH_MACHINE;
-#ifdef ENABLE_VOLUME_SEARCH
-	flags |= CD_PROFILE_STORE_SEARCH_VOLUMES;
-#endif
 	cd_profile_store_search (priv->profile_store, flags);
 
 	/* add disk devices */

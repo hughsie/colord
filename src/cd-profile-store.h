@@ -55,7 +55,6 @@ struct _CdProfileStoreClass
 typedef enum {
 	CD_PROFILE_STORE_SEARCH_NONE		= 0,
 	CD_PROFILE_STORE_SEARCH_SYSTEM		= 1,
-	CD_PROFILE_STORE_SEARCH_VOLUMES		= 2,
 	CD_PROFILE_STORE_SEARCH_MACHINE		= 4
 } CdProfileSearchFlags;
 
