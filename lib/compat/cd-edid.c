@@ -146,8 +146,30 @@ cd_edid_install_profile (unsigned char *edid,
 					  NULL,
 					  &error);
 	if (!ret) {
+		if (g_error_matches (error,
+				     CD_DEVICE_ERROR,
+				     CD_DEVICE_ERROR_PROFILE_ALREADY_ADDED)) {
+			/* ignore this */
+			g_clear_error (&error);
+		} else {
+			rc = CD_EDID_ERROR_SET_CONFIG;
+			g_printerr ("could not add profile %s to device %s: %s",
+				    cd_profile_get_id(profile),
+				    cd_device_get_id(device),
+				    error->message);
+			g_error_free (error);
+			goto out;
+		}
+	}
+
+	/* make default */
+	ret = cd_device_make_profile_default_sync (device,
+						   profile,
+						   NULL,
+						   &error);
+	if (!ret) {
 		rc = CD_EDID_ERROR_SET_CONFIG;
-		g_printerr ("could not add profile %s to device %s: %s",
+		g_printerr ("could not add default profile %s to device %s: %s",
 			    cd_profile_get_id(profile),
 			    cd_device_get_id(device),
 			    error->message);
