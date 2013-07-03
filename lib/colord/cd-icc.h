@@ -166,6 +166,11 @@ gboolean	 cd_icc_save_file			(CdIcc		*icc,
 							 GCancellable	*cancellable,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 cd_icc_save_default			(CdIcc		*icc,
+							 CdIccSaveFlags	 flags,
+							 GCancellable	*cancellable,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 gchar		*cd_icc_to_string			(CdIcc		*icc)
 							 G_GNUC_WARN_UNUSED_RESULT;
 gpointer	 cd_icc_get_handle			(CdIcc		*icc);

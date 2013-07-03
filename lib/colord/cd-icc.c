@@ -1516,6 +1516,47 @@ out:
 }
 
 /**
+ * cd_icc_save_default:
+ * @icc: a #CdIcc instance.
+ * @flags: a set of #CdIccSaveFlags
+ * @cancellable: A #GCancellable or %NULL
+ * @error: A #GError or %NULL
+ *
+ * Saves an ICC profile to the default per-user location.
+ *
+ * Return vale: %TRUE for success.
+ *
+ * Since: 1.1.1
+ **/
+gboolean
+cd_icc_save_default (CdIcc *icc,
+		     CdIccSaveFlags flags,
+		     GCancellable *cancellable,
+		     GError **error)
+{
+	const gchar *root = "edid"; /* TODO: only for cd_icc_create_from_edid() */
+	gboolean ret;
+	gchar *basename;
+	gchar *filename;
+	GFile *file;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+
+	/* build a per-user filename */
+	basename = g_strdup_printf ("%s-%s.icc", root, icc->priv->checksum);
+	filename = g_build_filename (g_get_user_data_dir (), "icc", NULL);
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_save_file (icc, file, flags, cancellable, error);
+	if (!ret)
+		goto out;
+out:
+	g_object_unref (file);
+	g_free (filename);
+	g_free (basename);
+	return ret;
+}
+
+/**
  * cd_icc_set_filename:
  * @icc: a #CdIcc instance.
  * @filename: a filename, or %NULL
