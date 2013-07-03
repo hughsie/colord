@@ -130,6 +130,15 @@ cd_edid_install_profile (unsigned char *edid,
 		goto out;
 	}
 
+	/* read profile properties */
+	ret = cd_profile_connect_sync (profile, NULL, &error);
+	if (!ret) {
+		rc = CD_EDID_ERROR_ACCESS_CONFIG;
+		g_warning ("profile disappeared: %s", error->message);
+		g_error_free (error);
+		goto out;
+	}
+
 	/* add profile to device */
 	ret = cd_device_add_profile_sync (device,
 					  CD_DEVICE_RELATION_HARD,
