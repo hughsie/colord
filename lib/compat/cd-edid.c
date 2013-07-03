@@ -76,7 +76,7 @@ cd_edid_install_profile (unsigned char *edid,
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("Failed to connect to colord: %s", error->message);
+		g_printerr ("Failed to connect to colord: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -92,8 +92,8 @@ cd_edid_install_profile (unsigned char *edid,
 							 &error);
 	if (device == NULL) {
 		rc = CD_EDID_ERROR_MONITOR_NOT_FOUND;
-		g_warning ("Failed to find device that matches %s: %s",
-			   md5, error->message);
+		g_printerr ("Failed to find device that matches %s: %s",
+			    md5, error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -102,7 +102,7 @@ cd_edid_install_profile (unsigned char *edid,
 	ret = cd_device_connect_sync (device, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("device disappeared: %s", error->message);
+		g_printerr ("device disappeared: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -123,9 +123,9 @@ cd_edid_install_profile (unsigned char *edid,
 	}
 	if (profile == NULL) {
 		rc = CD_EDID_ERROR_NO_PROFILE;
-		g_warning ("Could not import profile %s: %s",
-			   profile_fn,
-			   error->message);
+		g_printerr ("Could not import profile %s: %s",
+			    profile_fn,
+			    error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -134,7 +134,7 @@ cd_edid_install_profile (unsigned char *edid,
 	ret = cd_profile_connect_sync (profile, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("profile disappeared: %s", error->message);
+		g_printerr ("profile disappeared: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -147,10 +147,10 @@ cd_edid_install_profile (unsigned char *edid,
 					  &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_SET_CONFIG;
-		g_warning ("could not add profile %s to device %s: %s",
-			   cd_profile_get_id (profile),
-			   cd_device_get_id (device),
-			   error->message);
+		g_printerr ("could not add profile %s to device %s: %s",
+			    cd_profile_get_id(profile),
+			    cd_device_get_id(device),
+			    error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -160,9 +160,9 @@ cd_edid_install_profile (unsigned char *edid,
 		ret = cd_profile_install_system_wide_sync (profile, NULL, &error);
 		if (!ret) {
 			rc = CD_EDID_ERROR_PROFILE_COPY;
-			g_warning ("could not set profile %s systemwide: %s",
-				   cd_profile_get_id (profile),
-				   error->message);
+			g_printerr ("could not set profile %s systemwide: %s",
+				    cd_profile_get_id (profile),
+				    error->message);
 			g_error_free (error);
 			goto out;
 		}
@@ -219,7 +219,7 @@ cd_edid_remove_profile (unsigned char *edid,
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("Failed to connect to colord: %s", error->message);
+		g_printerr ("Failed to connect to colord: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -235,8 +235,8 @@ cd_edid_remove_profile (unsigned char *edid,
 							 &error);
 	if (device == NULL) {
 		rc = CD_EDID_ERROR_MONITOR_NOT_FOUND;
-		g_warning ("Failed to find device that matches %s: %s",
-			   md5, error->message);
+		g_printerr ("Failed to find device that matches %s: %s",
+			    md5, error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -245,7 +245,7 @@ cd_edid_remove_profile (unsigned char *edid,
 	ret = cd_device_connect_sync (device, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("device disappeared: %s", error->message);
+		g_printerr ("device disappeared: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -258,9 +258,9 @@ cd_edid_remove_profile (unsigned char *edid,
 							   &error);
 	if (profile == NULL) {
 		rc = CD_EDID_ERROR_NO_PROFILE;
-		g_warning ("Could not find profile %s: %s",
-			   profile_fn,
-			   error->message);
+		g_printerr ("Could not find profile %s: %s",
+			    profile_fn,
+			    error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -269,7 +269,7 @@ cd_edid_remove_profile (unsigned char *edid,
 	ret = cd_profile_connect_sync (profile, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("profile disappeared: %s", error->message);
+		g_printerr ("profile disappeared: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -281,10 +281,10 @@ cd_edid_remove_profile (unsigned char *edid,
 					     &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_SET_CONFIG;
-		g_warning ("could not remove profile %s from device %s: %s",
-			   cd_profile_get_id (profile),
-			   cd_device_get_id (device),
-			   error->message);
+		g_printerr ("could not remove profile %s from device %s: %s",
+			    cd_profile_get_id (profile),
+			    cd_device_get_id (device),
+			    error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -338,7 +338,7 @@ cd_edid_get_profile (unsigned char *edid,
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("Failed to connect to colord: %s", error->message);
+		g_printerr ("Failed to connect to colord: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -354,8 +354,8 @@ cd_edid_get_profile (unsigned char *edid,
 							 &error);
 	if (device == NULL) {
 		rc = CD_EDID_ERROR_MONITOR_NOT_FOUND;
-		g_warning ("Failed to find device that matches %s: %s",
-			   md5, error->message);
+		g_printerr ("Failed to find device that matches %s: %s",
+			    md5, error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -364,7 +364,7 @@ cd_edid_get_profile (unsigned char *edid,
 	ret = cd_device_connect_sync (device, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("device disappeared: %s", error->message);
+		g_printerr ("device disappeared: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -373,9 +373,9 @@ cd_edid_get_profile (unsigned char *edid,
 	profile = cd_device_get_default_profile (device);
 	if (profile == NULL) {
 		rc = CD_EDID_ERROR_NO_PROFILE;
-		g_warning ("No profile for %s: %s",
-			   cd_device_get_id (device),
-			   error->message);
+		g_printerr ("No profile for %s: %s",
+			    cd_device_get_id (device),
+			    error->message);
 		g_error_free (error);
 		goto out;
 	}
@@ -384,7 +384,7 @@ cd_edid_get_profile (unsigned char *edid,
 	ret = cd_profile_connect_sync (profile, NULL, &error);
 	if (!ret) {
 		rc = CD_EDID_ERROR_ACCESS_CONFIG;
-		g_warning ("profile disappeared: %s", error->message);
+		g_printerr ("profile disappeared: %s", error->message);
 		g_error_free (error);
 		goto out;
 	}
