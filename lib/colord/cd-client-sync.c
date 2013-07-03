@@ -31,6 +31,7 @@
 
 #include "config.h"
 
+#include <string.h>
 #include <glib.h>
 #include <gio/gio.h>
 
@@ -82,6 +83,7 @@ cd_client_connect_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -132,6 +134,7 @@ cd_client_delete_profile_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -182,6 +185,7 @@ cd_client_delete_device_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -234,6 +238,7 @@ cd_client_find_profile_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 	helper.profile = NULL;
@@ -288,6 +293,7 @@ cd_client_find_profile_by_filename_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 	helper.profile = NULL;
@@ -347,6 +353,7 @@ cd_client_create_profile_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 	helper.profile = NULL;
@@ -461,6 +468,7 @@ cd_client_create_device_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 	helper.device = NULL;
@@ -515,6 +523,7 @@ cd_client_get_devices_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 	helper.array = NULL;
@@ -568,6 +577,7 @@ cd_client_get_profiles_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 	helper.array = NULL;
@@ -621,6 +631,7 @@ cd_client_get_sensors_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 	helper.array = NULL;
@@ -675,6 +686,7 @@ cd_client_find_device_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -730,6 +742,7 @@ cd_client_find_device_by_property_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -783,6 +796,7 @@ cd_client_get_standard_space_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 	helper.profile = NULL;
@@ -838,6 +852,7 @@ cd_client_get_devices_by_kind_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -893,6 +908,7 @@ cd_client_find_profile_by_property_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -946,6 +962,7 @@ cd_client_find_sensor_sync (CdClient *client,
 	CdClientHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 

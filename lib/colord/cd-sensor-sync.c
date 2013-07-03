@@ -31,6 +31,7 @@
 
 #include "config.h"
 
+#include <string.h>
 #include <glib.h>
 #include <gio/gio.h>
 
@@ -79,6 +80,7 @@ cd_sensor_connect_sync (CdSensor *sensor,
 	CdSensorHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdSensorHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -130,6 +132,7 @@ cd_sensor_lock_sync (CdSensor *sensor,
 	CdSensorHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdSensorHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -181,6 +184,7 @@ cd_sensor_unlock_sync (CdSensor *sensor,
 	CdSensorHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdSensorHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -234,6 +238,7 @@ cd_sensor_set_options_sync (CdSensor *sensor,
 	CdSensorHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdSensorHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -287,6 +292,7 @@ cd_sensor_get_sample_sync (CdSensor *sensor,
 	CdSensorHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdSensorHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 

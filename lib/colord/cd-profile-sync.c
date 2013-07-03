@@ -31,6 +31,7 @@
 
 #include "config.h"
 
+#include <string.h>
 #include <glib.h>
 #include <gio/gio.h>
 
@@ -79,6 +80,7 @@ cd_profile_connect_sync (CdProfile *profile,
 	CdProfileHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdProfileHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -134,6 +136,7 @@ cd_profile_set_property_sync (CdProfile *profile,
 	CdProfileHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdProfileHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
@@ -185,6 +188,7 @@ cd_profile_install_system_wide_sync (CdProfile *profile,
 	CdProfileHelper helper;
 
 	/* create temp object */
+	memset (&helper, 0, sizeof (CdProfileHelper));
 	helper.loop = g_main_loop_new (NULL, FALSE);
 	helper.error = error;
 
