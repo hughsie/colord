@@ -84,8 +84,6 @@ colord_SOURCES =					\
 	cd-profile-array.h				\
 	cd-profile.c					\
 	cd-profile.h					\
-	cd-profile-store.c				\
-	cd-profile-store.h				\
 	cd-sensor.c					\
 	cd-sensor.h					\
 	cd-main.c

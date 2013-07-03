@@ -41,7 +41,7 @@
 #include "cd-plugin.h"
 #include "cd-profile-array.h"
 #include "cd-profile.h"
-#include "cd-profile-store.h"
+#include "cd-icc-store.h"
 #include "cd-resources.h"
 #include "cd-sensor-client.h"
 
@@ -53,7 +53,7 @@ typedef struct {
 	GDBusNodeInfo		*introspection_sensor;
 	CdDeviceArray		*devices_array;
 	CdProfileArray		*profiles_array;
-	CdProfileStore		*profile_store;
+	CdIccStore		*icc_store;
 	CdMappingDb		*mapping_db;
 	CdDeviceDb		*device_db;
 #ifdef HAVE_GUDEV
@@ -1623,18 +1623,9 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		/* set the properties */
 		while (g_variant_iter_next (iter, "{&s&s}",
 					    &prop_key, &prop_value)) {
-			ret = cd_profile_set_property_internal (profile,
-								prop_key,
-								prop_value,
-								&error);
-			if (!ret) {
-				g_warning ("CdMain: failed to set property on profile: %s",
-					   error->message);
-				g_dbus_method_invocation_return_gerror (invocation,
-									error);
-				g_error_free (error);
-				goto out;
-			}
+			cd_profile_set_property_internal (profile,
+							  prop_key,
+							  prop_value);
 		}
 
 		/* auto add profiles from the database and metadata */
@@ -1729,21 +1720,45 @@ cd_main_on_bus_acquired_cb (GDBusConnection *connection,
 }
 
 /**
- * cd_main_profile_store_added_cb:
+ * cd_main_icc_store_added_cb:
  **/
 static void
-cd_main_profile_store_added_cb (CdProfileStore *profile_store,
-				CdProfile *profile,
-				gpointer user_data)
+cd_main_icc_store_added_cb (CdIccStore *icc_store,
+			    CdIcc *icc,
+			    gpointer user_data)
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	gboolean ret;
-	gchar *profile_id;
+	gchar *profile_id = NULL;
 	GError *error = NULL;
+	CdProfile *profile;
+	const gchar *filename;
+	const gchar *checksum;
+
+	/* create profile */
+	profile = cd_profile_new ();
+	filename = cd_icc_get_filename (icc);
+	if (g_str_has_prefix (filename, "/usr/share/color") ||
+	    g_str_has_prefix (filename, "/var/lib/color"))
+		cd_profile_set_is_system_wide (profile, TRUE);
+
+	/* parse the profile name */
+	ret = cd_profile_set_icc (profile, icc, &error);
+	if (!ret) {
+		g_warning ("CdIccStore: failed to add profile '%s': %s",
+			   filename, error->message);
+		g_error_free (error);
+		goto out;
+	}
+
+	/* ensure profiles have the checksum metadata item */
+	checksum = cd_profile_get_checksum (profile);
+	cd_profile_set_property_internal (profile,
+					  CD_PROFILE_METADATA_FILE_CHECKSUM,
+					  checksum);
 
 	/* just add it to the bus with the title as the ID */
-	profile_id = g_strdup_printf ("icc-%s",
-				      cd_profile_get_checksum (profile));
+	profile_id = g_strdup_printf ("icc-%s", cd_icc_get_checksum (icc));
 	cd_profile_set_id (profile, profile_id);
 	ret = cd_main_add_profile (priv, profile, &error);
 	if (!ret) {
@@ -1762,18 +1777,28 @@ cd_main_profile_store_added_cb (CdProfileStore *profile_store,
 		goto out;
 	}
 out:
+	g_object_unref (profile);
 	g_free (profile_id);
 }
 
 /**
- * cd_main_profile_store_removed_cb:
+ * cd_main_icc_store_removed_cb:
  **/
 static void
-cd_main_profile_store_removed_cb (CdProfileStore *_profile_store,
-				  CdProfile *profile,
-				  gpointer user_data)
+cd_main_icc_store_removed_cb (CdIccStore *icc_store,
+			      CdIcc *icc,
+			      gpointer user_data)
 {
+	CdMainPrivate *priv = (CdMainPrivate *) user_data;
+	CdProfile *profile;
+
 	/* check the profile should be invalidated automatically */
+	profile = cd_profile_array_get_by_filename (priv->profiles_array,
+						    cd_icc_get_filename (icc));
+	if (profile == NULL)
+		return;
+	g_debug ("%s removed, so invalidating", cd_icc_get_filename (icc));
+	cd_profile_array_remove (priv->profiles_array, profile);
 }
 
 /**
@@ -1982,7 +2007,6 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 			     gpointer user_data)
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
-	CdProfileSearchFlags flags;
 	CdSensor *sensor = NULL;
 	const gchar *device_id;
 	gboolean ret;
@@ -1993,18 +2017,39 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	g_debug ("CdMain: acquired name: %s", name);
 
 	/* add system profiles */
-	priv->profile_store = cd_profile_store_new ();
-	g_signal_connect (priv->profile_store, "added",
-			  G_CALLBACK (cd_main_profile_store_added_cb),
+	priv->icc_store = cd_icc_store_new ();
+	cd_icc_store_set_load_flags (priv->icc_store, CD_ICC_LOAD_FLAGS_FALLBACK_MD5);
+	cd_icc_store_set_cache (priv->icc_store, cd_get_resource ());
+	g_signal_connect (priv->icc_store, "added",
+			  G_CALLBACK (cd_main_icc_store_added_cb),
 			  user_data);
-	g_signal_connect (priv->profile_store, "removed",
-			  G_CALLBACK (cd_main_profile_store_removed_cb),
+	g_signal_connect (priv->icc_store, "removed",
+			  G_CALLBACK (cd_main_icc_store_removed_cb),
 			  user_data);
 
-	/* search locations specified in the config file */
-	flags = CD_PROFILE_STORE_SEARCH_SYSTEM |
-		CD_PROFILE_STORE_SEARCH_MACHINE;
-	cd_profile_store_search (priv->profile_store, flags);
+	/* search locations for ICC profiles */
+	ret = cd_icc_store_search_kind (priv->icc_store,
+					CD_ICC_STORE_SEARCH_KIND_SYSTEM,
+					CD_ICC_STORE_SEARCH_FLAGS_NONE,
+					NULL,
+					&error);
+	if (!ret) {
+		g_warning ("CdMain: failed to search system directories: %s",
+			    error->message);
+		g_error_free (error);
+		goto out;
+	}
+	ret = cd_icc_store_search_kind (priv->icc_store,
+					CD_ICC_STORE_SEARCH_KIND_MACHINE,
+					CD_ICC_STORE_SEARCH_FLAGS_NONE,
+					NULL,
+					&error);
+	if (!ret) {
+		g_warning ("CdMain: failed to search machine directories: %s",
+			    error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* add disk devices */
 	array_devices = cd_device_db_get_devices (priv->device_db, &error);
@@ -2609,8 +2654,8 @@ out:
 	if (priv->sensor_client != NULL)
 		g_object_unref (priv->sensor_client);
 #endif
-	if (priv->profile_store != NULL)
-		g_object_unref (priv->profile_store);
+	if (priv->icc_store != NULL)
+		g_object_unref (priv->icc_store);
 	if (priv->mapping_db != NULL)
 		g_object_unref (priv->mapping_db);
 	if (priv->device_db != NULL)

@@ -67,11 +67,13 @@ guint		 cd_profile_get_owner			(CdProfile	*profile);
 void		 cd_profile_set_owner			(CdProfile	*profile,
 							 guint		 owner);
 const gchar	*cd_profile_get_filename		(CdProfile	*profile);
+void		 cd_profile_set_filename		(CdProfile	*profile,
+							 const gchar	*filename);
 void		 cd_profile_set_is_system_wide		(CdProfile	*profile,
 							 gboolean	 is_system_wide);
 gboolean	 cd_profile_get_is_system_wide		(CdProfile	*profile);
-gboolean	 cd_profile_set_filename		(CdProfile	*profile,
-							 const gchar	*filename,
+gboolean	 cd_profile_set_icc			(CdProfile	*profile,
+							 CdIcc		*icc,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_profile_set_fd			(CdProfile	*profile,
@@ -100,10 +102,9 @@ CdColorspace	 cd_profile_get_colorspace		(CdProfile	*profile);
 gboolean	 cd_profile_get_has_vcgt		(CdProfile	*profile);
 void		 cd_profile_watch_sender		(CdProfile	*profile,
 							 const gchar	*sender);
-gboolean	 cd_profile_set_property_internal	(CdProfile	*profile,
+void		 cd_profile_set_property_internal	(CdProfile	*profile,
 							 const gchar	*property,
-							 const gchar	*value,
-							 GError		**error);
+							 const gchar	*value);
 const gchar	**cd_profile_get_warnings		(CdProfile	*profile);
 
 G_END_DECLS
