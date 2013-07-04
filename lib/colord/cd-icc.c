@@ -1419,7 +1419,6 @@ cd_icc_save_data (CdIcc *icc,
 
 	/* sanity check to 16Mb */
 	if (length == 0 || length > 16 * 1024 * 1024) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_ICC_ERROR,
 			     CD_ICC_ERROR_FAILED_TO_SAVE,
