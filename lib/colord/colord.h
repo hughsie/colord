@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -48,6 +48,7 @@
 #include <colord/cd-dom.h>
 #include <colord/cd-enum.h>
 #include <colord/cd-icc.h>
+#include <colord/cd-icc-store.h>
 #include <colord/cd-interp-akima.h>
 #include <colord/cd-interp-linear.h>
 #include <colord/cd-interp.h>
