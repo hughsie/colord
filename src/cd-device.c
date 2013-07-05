@@ -119,16 +119,6 @@ cd_device_error_quark (void)
 	return quark;
 }
 
-#if !GLIB_CHECK_VERSION (2, 25, 0)
-static guint64
-g_get_real_time (void)
-{
-	struct timeval tm;
-	gettimeofday (&tm, NULL);
-	return tm.tv_sec;
-}
-#endif
-
 /**
  * cd_device_get_scope:
  **/
@@ -357,9 +347,7 @@ static void
 cd_device_reset_modified (CdDevice *device)
 {
 	g_debug ("CdDevice: set device Modified");
-#if !GLIB_CHECK_VERSION (2, 25, 0)
 	device->priv->modified = g_get_real_time ();
-#endif
 	device->priv->require_modified_signal = TRUE;
 }
 
