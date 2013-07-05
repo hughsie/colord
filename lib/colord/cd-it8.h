@@ -75,6 +75,7 @@ typedef struct
 typedef enum
 {
 	CD_IT8_ERROR_FAILED,
+	/*< private >*/
 	CD_IT8_ERROR_LAST
 } CdIt8Error;
 
@@ -89,6 +90,7 @@ typedef enum {
 	CD_IT8_KIND_TI3,
 	CD_IT8_KIND_CCMX,
 	CD_IT8_KIND_CAL,
+	/*< private >*/
 	CD_IT8_KIND_LAST
 } CdIt8Kind;
 

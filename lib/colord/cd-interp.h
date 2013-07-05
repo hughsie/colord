@@ -78,6 +78,7 @@ typedef struct
 typedef enum
 {
 	CD_INTERP_ERROR_FAILED,
+	/*< private >*/
 	CD_INTERP_ERROR_LAST
 } CdInterpError;
 
@@ -89,6 +90,7 @@ typedef enum
 typedef enum {
 	CD_INTERP_KIND_LINEAR,
 	CD_INTERP_KIND_AKIMA,
+	/*< private >*/
 	CD_INTERP_KIND_LAST
 } CdInterpKind;
 

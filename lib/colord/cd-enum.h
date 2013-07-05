@@ -89,11 +89,12 @@ typedef enum {
  * The rendering intent.
  **/
 typedef enum {
-	CD_RENDERING_INTENT_UNKNOWN,		/* Since: 0.1.5 */
-	CD_RENDERING_INTENT_PERCEPTUAL,		/* Since: 0.1.5 */
+	CD_RENDERING_INTENT_UNKNOWN,			/* Since: 0.1.5 */
+	CD_RENDERING_INTENT_PERCEPTUAL,			/* Since: 0.1.5 */
 	CD_RENDERING_INTENT_RELATIVE_COLORIMETRIC,	/* Since: 0.1.5 */
-	CD_RENDERING_INTENT_SATURATION,		/* Since: 0.1.5 */
+	CD_RENDERING_INTENT_SATURATION,			/* Since: 0.1.5 */
 	CD_RENDERING_INTENT_ABSOLUTE_COLORIMETRIC,	/* Since: 0.1.5 */
+	/*< private >*/
 	CD_RENDERING_INTENT_LAST
 } CdRenderingIntent;
 

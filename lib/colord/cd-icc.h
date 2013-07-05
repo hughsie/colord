@@ -73,6 +73,7 @@ typedef enum {
 	CD_ICC_ERROR_FAILED_TO_SAVE,
 	CD_ICC_ERROR_FAILED_TO_CREATE,
 	CD_ICC_ERROR_INVALID_COLORSPACE,
+	/*< private >*/
 	CD_ICC_ERROR_LAST
 } CdIccError;
 
@@ -114,6 +115,7 @@ typedef enum {
 	CD_ICC_LOAD_FLAGS_PRIMARIES	= (1 << 4),
 	/* new entries go here: */
 	CD_ICC_LOAD_FLAGS_ALL		= 0xff,
+	/*< private >*/
 	CD_ICC_LOAD_FLAGS_LAST
 } CdIccLoadFlags;
 
@@ -127,6 +129,7 @@ typedef enum {
  **/
 typedef enum {
 	CD_ICC_SAVE_FLAGS_NONE		= 0,
+	/*< private >*/
 	CD_ICC_SAVE_FLAGS_LAST
 } CdIccSaveFlags;
 
