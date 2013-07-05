@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -71,6 +71,8 @@ struct _CdClientPrivate
 {
 	GDBusProxy		*proxy;
 	gchar			*daemon_version;
+	gchar			*system_vendor;
+	gchar			*system_model;
 };
 
 enum {
@@ -91,6 +93,8 @@ enum {
 	PROP_0,
 	PROP_DAEMON_VERSION,
 	PROP_CONNECTED,
+	PROP_SYSTEM_VENDOR,
+	PROP_SYSTEM_MODEL,
 	PROP_LAST
 };
 
@@ -138,6 +142,42 @@ cd_client_get_daemon_version (CdClient *client)
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
 	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
 	return client->priv->daemon_version;
+}
+
+/**
+ * cd_client_get_system_vendor:
+ * @client: a #CdClient instance.
+ *
+ * Get system vendor.
+ *
+ * Return value: string containing the system vendor, e.g. "Lenovo"
+ *
+ * Since: 1.0.2
+ **/
+const gchar *
+cd_client_get_system_vendor (CdClient *client)
+{
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
+	return client->priv->system_vendor;
+}
+
+/**
+ * cd_client_get_system_model:
+ * @client: a #CdClient instance.
+ *
+ * Get system model.
+ *
+ * Return value: string containing the system model, e.g. "T61"
+ *
+ * Since: 1.0.2
+ **/
+const gchar *
+cd_client_get_system_model (CdClient *client)
+{
+	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
+	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
+	return client->priv->system_model;
 }
 
 /**
@@ -328,6 +368,8 @@ cd_client_connect_cb (GObject *source_object,
 {
 	GError *error = NULL;
 	GVariant *daemon_version = NULL;
+	GVariant *system_vendor = NULL;
+	GVariant *system_model = NULL;
 	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 	CdClient *client = CD_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
 
@@ -350,6 +392,16 @@ cd_client_connect_cb (GObject *source_object,
 	if (daemon_version != NULL)
 		client->priv->daemon_version = g_variant_dup_string (daemon_version, NULL);
 
+	/* get system info */
+	system_vendor = g_dbus_proxy_get_cached_property (client->priv->proxy,
+							  CD_CLIENT_PROPERTY_SYSTEM_VENDOR);
+	if (system_vendor != NULL)
+		client->priv->system_vendor = g_variant_dup_string (system_vendor, NULL);
+	system_model = g_dbus_proxy_get_cached_property (client->priv->proxy,
+							 CD_CLIENT_PROPERTY_SYSTEM_MODEL);
+	if (system_model != NULL)
+		client->priv->system_model = g_variant_dup_string (system_model, NULL);
+
 	/* get signals from DBus */
 	g_signal_connect (client->priv->proxy,
 			  "g-signal",
@@ -368,6 +420,10 @@ cd_client_connect_cb (GObject *source_object,
 out:
 	if (daemon_version != NULL)
 		g_variant_unref (daemon_version);
+	if (system_vendor != NULL)
+		g_variant_unref (system_vendor);
+	if (system_model != NULL)
+		g_variant_unref (system_model);
 	g_object_unref (res_source);
 }
 
@@ -2624,6 +2680,12 @@ cd_client_get_property (GObject *object,
 	case PROP_DAEMON_VERSION:
 		g_value_set_string (value, client->priv->daemon_version);
 		break;
+	case PROP_SYSTEM_VENDOR:
+		g_value_set_string (value, client->priv->system_vendor);
+		break;
+	case PROP_SYSTEM_MODEL:
+		g_value_set_string (value, client->priv->system_model);
+		break;
 	case PROP_CONNECTED:
 		g_value_set_boolean (value, client->priv->proxy != NULL);
 		break;
@@ -2655,6 +2717,34 @@ cd_client_class_init (CdClientClass *klass)
 					 PROP_DAEMON_VERSION,
 					 g_param_spec_string ("daemon-version",
 							      "Daemon version",
+							      NULL,
+							      NULL,
+							      G_PARAM_READABLE));
+	/**
+	 * CdClient:system-vendor:
+	 *
+	 * The system vendor.
+	 *
+	 * Since: 1.0.2
+	 */
+	g_object_class_install_property (object_class,
+					 PROP_SYSTEM_VENDOR,
+					 g_param_spec_string ("system-vendor",
+							      "System Vendor",
+							      NULL,
+							      NULL,
+							      G_PARAM_READABLE));
+	/**
+	 * CdClient:system-model:
+	 *
+	 * The system model.
+	 *
+	 * Since: 1.0.2
+	 */
+	g_object_class_install_property (object_class,
+					 PROP_SYSTEM_MODEL,
+					 g_param_spec_string ("system-model",
+							      "System model",
 							      NULL,
 							      NULL,
 							      G_PARAM_READABLE));
@@ -2853,6 +2943,8 @@ cd_client_finalize (GObject *object)
 	g_return_if_fail (CD_IS_CLIENT (object));
 
 	g_free (client->priv->daemon_version);
+	g_free (client->priv->system_vendor);
+	g_free (client->priv->system_model);
 	if (client->priv->proxy != NULL)
 		g_object_unref (client->priv->proxy);
 
