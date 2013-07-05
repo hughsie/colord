@@ -1038,7 +1038,6 @@ cd_profile_set_fd (CdProfile *profile,
 	}
 
 	/* create a mapped file */
-#if GLIB_CHECK_VERSION(2,31,0)
 	priv->mapped_file = g_mapped_file_new_from_fd (fd, FALSE, error);
 	if (priv->mapped_file == NULL) {
 		g_set_error (error,
@@ -1048,7 +1047,6 @@ cd_profile_set_fd (CdProfile *profile,
 			     fd);
 		goto out;
 	}
-#endif
 
 	/* set the virtual profile from the lcms profile */
 	ret = cd_profile_set_from_profile (profile, icc, error);
