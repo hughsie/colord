@@ -74,7 +74,7 @@ typedef struct
  */
 typedef enum
 {
-	CD_IT8_ERROR_FAILED,
+	CD_IT8_ERROR_FAILED,				/* Since: 0.1.20 */
 	/*< private >*/
 	CD_IT8_ERROR_LAST
 } CdIt8Error;
@@ -85,11 +85,11 @@ typedef enum
  * The kind of IT8 file.
  **/
 typedef enum {
-	CD_IT8_KIND_UNKNOWN,
-	CD_IT8_KIND_TI1,
-	CD_IT8_KIND_TI3,
-	CD_IT8_KIND_CCMX,
-	CD_IT8_KIND_CAL,
+	CD_IT8_KIND_UNKNOWN,				/* Since: 0.1.20 */
+	CD_IT8_KIND_TI1,				/* Since: 0.1.20 */
+	CD_IT8_KIND_TI3,				/* Since: 0.1.20 */
+	CD_IT8_KIND_CCMX,				/* Since: 0.1.20 */
+	CD_IT8_KIND_CAL,				/* Since: 0.1.26 */
 	/*< private >*/
 	CD_IT8_KIND_LAST
 } CdIt8Kind;

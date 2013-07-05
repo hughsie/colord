@@ -66,13 +66,13 @@ typedef struct
  * Since: 0.1.32
  **/
 typedef enum {
-	CD_ICC_ERROR_FAILED_TO_OPEN,
-	CD_ICC_ERROR_FAILED_TO_PARSE,
-	CD_ICC_ERROR_INVALID_LOCALE,
-	CD_ICC_ERROR_NO_DATA,
-	CD_ICC_ERROR_FAILED_TO_SAVE,
-	CD_ICC_ERROR_FAILED_TO_CREATE,
-	CD_ICC_ERROR_INVALID_COLORSPACE,
+	CD_ICC_ERROR_FAILED_TO_OPEN,			/* Since: 0.1.32 */
+	CD_ICC_ERROR_FAILED_TO_PARSE,			/* Since: 0.1.32 */
+	CD_ICC_ERROR_INVALID_LOCALE,			/* Since: 0.1.32 */
+	CD_ICC_ERROR_NO_DATA,				/* Since: 0.1.32 */
+	CD_ICC_ERROR_FAILED_TO_SAVE,			/* Since: 0.1.32 */
+	CD_ICC_ERROR_FAILED_TO_CREATE,			/* Since: 0.1.32 */
+	CD_ICC_ERROR_INVALID_COLORSPACE,		/* Since: 0.1.34 */
 	/*< private >*/
 	CD_ICC_ERROR_LAST
 } CdIccError;
@@ -107,14 +107,14 @@ typedef struct
  * Since: 0.1.32
  **/
 typedef enum {
-	CD_ICC_LOAD_FLAGS_NONE		= 0,
-	CD_ICC_LOAD_FLAGS_NAMED_COLORS	= (1 << 0),
-	CD_ICC_LOAD_FLAGS_TRANSLATIONS	= (1 << 1),
-	CD_ICC_LOAD_FLAGS_METADATA	= (1 << 2),
-	CD_ICC_LOAD_FLAGS_FALLBACK_MD5	= (1 << 3),
-	CD_ICC_LOAD_FLAGS_PRIMARIES	= (1 << 4),
+	CD_ICC_LOAD_FLAGS_NONE		= 0,		/* Since: 0.1.32 */
+	CD_ICC_LOAD_FLAGS_NAMED_COLORS	= (1 << 0),	/* Since: 0.1.32 */
+	CD_ICC_LOAD_FLAGS_TRANSLATIONS	= (1 << 1),	/* Since: 0.1.32 */
+	CD_ICC_LOAD_FLAGS_METADATA	= (1 << 2),	/* Since: 0.1.32 */
+	CD_ICC_LOAD_FLAGS_FALLBACK_MD5	= (1 << 3),	/* Since: 0.1.32 */
+	CD_ICC_LOAD_FLAGS_PRIMARIES	= (1 << 4),	/* Since: 0.1.32 */
 	/* new entries go here: */
-	CD_ICC_LOAD_FLAGS_ALL		= 0xff,
+	CD_ICC_LOAD_FLAGS_ALL		= 0xff,		/* Since: 0.1.32 */
 	/*< private >*/
 	CD_ICC_LOAD_FLAGS_LAST
 } CdIccLoadFlags;
@@ -128,7 +128,7 @@ typedef enum {
  * Since: 0.1.32
  **/
 typedef enum {
-	CD_ICC_SAVE_FLAGS_NONE		= 0,
+	CD_ICC_SAVE_FLAGS_NONE		= 0,		/* Since: 0.1.32 */
 	/*< private >*/
 	CD_ICC_SAVE_FLAGS_LAST
 } CdIccSaveFlags;
