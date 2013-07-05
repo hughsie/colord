@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -65,6 +65,8 @@ typedef struct {
 	GHashTable		*standard_spaces;
 	GPtrArray		*plugins;
 	GMainLoop		*loop;
+	gchar			*system_vendor;
+	gchar			*system_model;
 } CdMainPrivate;
 
 /**
@@ -1689,9 +1691,18 @@ cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 			     gpointer user_data)
 {
 	GVariant *retval = NULL;
+	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 
-	if (g_strcmp0 (property_name, "DaemonVersion") == 0) {
+	if (g_strcmp0 (property_name, CD_CLIENT_PROPERTY_DAEMON_VERSION) == 0) {
 		retval = g_variant_new_string (VERSION);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, CD_CLIENT_PROPERTY_SYSTEM_VENDOR) == 0) {
+		retval = g_variant_new_string (priv->system_vendor);
+		goto out;
+	}
+	if (g_strcmp0 (property_name, CD_CLIENT_PROPERTY_SYSTEM_MODEL) == 0) {
+		retval = g_variant_new_string (priv->system_model);
 		goto out;
 	}
 
@@ -2417,6 +2428,125 @@ out:
 }
 
 /**
+ * cd_main_dmi_get_from_filename:
+ **/
+static gchar *
+cd_main_dmi_get_from_filename (const gchar *filename)
+{
+	gboolean ret;
+	GError *error = NULL;
+	gchar *data = NULL;
+
+	/* get the contents */
+	ret = g_file_get_contents (filename, &data, NULL, &error);
+	if (!ret) {
+		if (!g_error_matches (error, G_FILE_ERROR, G_FILE_ERROR_NOENT))
+			g_warning ("failed to get contents of %s: %s",
+				   filename, error->message);
+		g_error_free (error);
+	}
+
+	/* process the random chars and trailing spaces */
+	if (data != NULL) {
+		g_strdelimit (data, "\t_", ' ');
+		g_strdelimit (data, "\n\r", '\0');
+		g_strchomp (data);
+	}
+
+	/* don't return an empty string */
+	if (data != NULL && data[0] == '\0') {
+		g_free (data);
+		data = NULL;
+	}
+
+	return data;
+}
+
+/**
+ * cd_main_dmi_get_from_filenames:
+ **/
+static gchar *
+cd_main_dmi_get_from_filenames (const gchar * const * filenames)
+{
+	guint i;
+	gchar *tmp = NULL;
+
+	/* try each one in preference order */
+	for (i = 0; filenames[i] != NULL; i++) {
+		tmp = cd_main_dmi_get_from_filename (filenames[i]);
+		if (tmp != NULL)
+			break;
+	}
+	return tmp;
+}
+
+/**
+ * cd_main_dmi_get_vendor:
+ **/
+static gchar *
+cd_main_dmi_get_vendor (void)
+{
+	const gchar *sysfs_vendor[] = {
+		"/sys/class/dmi/id/sys_vendor",
+		"/sys/class/dmi/id/chassis_vendor",
+		"/sys/class/dmi/id/board_vendor",
+		NULL};
+	gchar *tmp;
+	gchar *vendor;
+
+	/* get vendor name */
+	tmp = cd_main_dmi_get_from_filenames (sysfs_vendor);
+	if (tmp == NULL) {
+		vendor = g_strdup("Unknown");
+		goto out;
+	}
+	vendor = cd_quirk_vendor_name (tmp);
+out:
+	g_free (tmp);
+	return vendor;
+}
+/**
+ * cd_main_dmi_get_model:
+ **/
+static gchar *
+cd_main_dmi_get_model (void)
+{
+	const gchar *sysfs_model[] = {
+		"/sys/class/dmi/id/product_name",
+		"/sys/class/dmi/id/board_name",
+		NULL};
+	gchar *model;
+	gchar *tmp;
+
+	/* thinkpad puts the common name in the version field, urgh */
+	tmp = cd_main_dmi_get_from_filename ("/sys/class/dmi/id/product_version");
+	if (tmp != NULL && g_strstr_len (tmp, -1, "ThinkPad") != NULL) {
+		model = g_strdup (tmp);
+		goto out;
+	}
+
+	/* get where the model should be */
+	model = cd_main_dmi_get_from_filenames (sysfs_model);
+	if (model == NULL) {
+		model = g_strdup("Unknown");
+		goto out;
+	}
+out:
+	g_free (tmp);
+	return model;
+}
+
+/**
+ * cd_main_dmi_setup:
+ **/
+static void
+cd_main_dmi_setup (CdMainPrivate *priv)
+{
+	priv->system_vendor = cd_main_dmi_get_vendor ();
+	priv->system_model = cd_main_dmi_get_model ();
+}
+
+/**
  * main:
  **/
 int
@@ -2561,6 +2691,11 @@ main (int argc, char *argv[])
 	cd_main_load_plugins (priv);
 	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_INIT);
 
+	/* get system DMI info */
+	cd_main_dmi_setup (priv);
+	g_debug ("System vendor: '%s', System model: '%s'",
+		 priv->system_vendor, priv->system_model);
+
 	/* wait */
 	syslog (LOG_INFO, "Daemon ready for requests");
 	g_main_loop_run (priv->loop);
@@ -2607,6 +2742,8 @@ out:
 		g_dbus_node_info_unref (priv->introspection_profile);
 	if (priv->introspection_sensor != NULL)
 		g_dbus_node_info_unref (priv->introspection_sensor);
+	g_free (priv->system_vendor);
+	g_free (priv->system_model);
 	g_free (priv);
 	return retval;
 }

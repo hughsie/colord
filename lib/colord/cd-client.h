@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -252,6 +252,8 @@ CdSensor	*cd_client_find_sensor_finish 		(CdClient	*client,
 gboolean	 cd_client_get_connected		(CdClient	*client);
 gboolean	 cd_client_get_has_server		(CdClient	*client);
 const gchar	*cd_client_get_daemon_version		(CdClient	*client);
+const gchar	*cd_client_get_system_vendor		(CdClient	*client);
+const gchar	*cd_client_get_system_model		(CdClient	*client);
 
 G_END_DECLS
 

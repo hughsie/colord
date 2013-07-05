@@ -394,7 +394,9 @@ typedef enum {
 } CdClientError;
 
 /* defined in org.freedesktop.ColorManager.xml */
-#define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"
+#define CD_CLIENT_PROPERTY_DAEMON_VERSION	"DaemonVersion"		/* Since: 0.1.0 */
+#define CD_CLIENT_PROPERTY_SYSTEM_VENDOR	"SystemVendor"		/* Since: 1.0.2 */
+#define CD_CLIENT_PROPERTY_SYSTEM_MODEL		"SystemModel"		/* Since: 1.0.2 */
 
 /* defined in metadata-spec.txt */
 #define CD_PROFILE_METADATA_STANDARD_SPACE	"STANDARD_space"

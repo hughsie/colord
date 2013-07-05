@@ -2252,6 +2252,10 @@ main (int argc, char *argv[])
 			 PACKAGE_VERSION);
 		g_print ("%s\t%s\n", _("Daemon version:"),
 			 cd_client_get_daemon_version (priv->client));
+		g_print ("%s\t%s\n", _("System vendor:"),
+			 cd_client_get_system_vendor (priv->client));
+		g_print ("%s\t%s\n", _("System model:"),
+			 cd_client_get_system_model (priv->client));
 		goto out;
 	}
 

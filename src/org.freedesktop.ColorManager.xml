@@ -23,6 +23,28 @@
     </property>
 
     <!--***********************************************************-->
+    <property name='SystemVendor' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The system vendor.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
+    <property name='SystemModel' type='s' access='read'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            The system model.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+    </property>
+
+    <!--***********************************************************-->
     <method name='GetDevices'>
       <doc:doc>
         <doc:description>
