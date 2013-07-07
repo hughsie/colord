@@ -2535,9 +2535,64 @@ cd_main_dmi_get_from_filenames (const gchar * const * filenames)
 		if (tmp != NULL)
 			break;
 	}
-	if (tmp == NULL)
-		tmp = g_strdup("Unknown");
 	return tmp;
+}
+
+
+/**
+ * cd_main_dmi_get_vendor:
+ **/
+static gchar *
+cd_main_dmi_get_vendor (void)
+{
+	const gchar *sysfs_vendor[] = {
+		"/sys/class/dmi/id/sys_vendor",
+		"/sys/class/dmi/id/chassis_vendor",
+		"/sys/class/dmi/id/board_vendor",
+		NULL};
+	gchar *tmp;
+	gchar *vendor;
+
+	/* get vendor name */
+	tmp = cd_main_dmi_get_from_filenames (sysfs_vendor);
+	if (tmp == NULL) {
+		vendor = g_strdup("Unknown");
+		goto out;
+	}
+	vendor = cd_quirk_vendor_name (tmp);
+out:
+	g_free (tmp);
+	return vendor;
+}
+/**
+ * cd_main_dmi_get_model:
+ **/
+static gchar *
+cd_main_dmi_get_model (void)
+{
+	const gchar *sysfs_model[] = {
+		"/sys/class/dmi/id/product_name",
+		"/sys/class/dmi/id/board_name",
+		NULL};
+	gchar *model;
+	gchar *tmp;
+
+	/* thinkpad puts the common name in the version field, urgh */
+	tmp = cd_main_dmi_get_from_filename ("/sys/class/dmi/id/product_version");
+	if (tmp != NULL && g_strstr_len (tmp, -1, "ThinkPad") != NULL) {
+		model = g_strdup (tmp);
+		goto out;
+	}
+
+	/* get where the model should be */
+	model = cd_main_dmi_get_from_filenames (sysfs_model);
+	if (model == NULL) {
+		model = g_strdup("Unknown");
+		goto out;
+	}
+out:
+	g_free (tmp);
+	return model;
 }
 
 /**
@@ -2546,28 +2601,8 @@ cd_main_dmi_get_from_filenames (const gchar * const * filenames)
 static void
 cd_main_dmi_setup (CdMainPrivate *priv)
 {
-	gchar *tmp;
-#if defined(__linux__)
-	const gchar *sysfs_model[] = {
-		"/sys/class/dmi/id/product_name",
-		"/sys/class/dmi/id/board_name",
-		NULL};
-	const gchar *sysfs_vendor[] = {
-		"/sys/class/dmi/id/sys_vendor",
-		"/sys/class/dmi/id/chassis_vendor",
-		"/sys/class/dmi/id/board_vendor",
-		NULL};
-#else
-#warning Add dmi support for your OS!
-	const gchar *sysfs_model[] = { NULL };
-	const gchar *sysfs_vendor[] = { NULL };
-#endif
-
-	/* get all the possible data now */
-	tmp = cd_main_dmi_get_from_filenames (sysfs_vendor);
-	priv->system_vendor = cd_quirk_vendor_name (tmp);
-	priv->system_model = cd_main_dmi_get_from_filenames (sysfs_model);
-	g_free (tmp);
+	priv->system_vendor = cd_main_dmi_get_vendor ();
+	priv->system_model = cd_main_dmi_get_model ();
 }
 
 /**
