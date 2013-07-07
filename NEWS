@@ -1,3 +1,19 @@
+Version 1.0.2
+~~~~~~~~~~~~~
+Released: 2013-07-07
+
+New Features:
+ - Add cd_icc_save_data() so that we can easily set _ICC_PROFILE (Richard Hughes)
+ - Add CdIccStore to monitor directories of ICC profiles (Richard Hughes)
+ - Add SystemVendor and SystemModel properties to the main interface (Richard Hughes)
+
+Bugfixes:
+ - Allow to specify a non-qualified path when using FindProfileByFilename (Richard Hughes)
+ - Allow using the key 'Filename' when using FindProfileByProperty (Richard Hughes)
+ - Always return the error if any sync method failed (Richard Hughes)
+ - Fix GObject introspection when getting lists (Richard Hughes)
+ - Fix GObject introspection when getting metadata (Richard Hughes)
+
 Version 1.0.1
 ~~~~~~~~~~~~~
 Released: 2013-06-11
