@@ -1,0 +1,5 @@
+[Test]
+Description=colord private tests
+Exec=env INSTALLED_TESTS=1 @libexecdir@/installed-tests/colord/cd-test-private
+Type=session
+Output=TAP

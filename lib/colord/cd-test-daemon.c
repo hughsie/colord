@@ -462,7 +462,7 @@ colord_profile_file_func (void)
 
 	/* check profile filename */
 	g_assert (g_str_has_suffix (cd_profile_get_filename (profile),
-				    "data/tests/ibm-t61.icc"));
+				    "ibm-t61.icc"));
 
 	/* check profile title set from ICC profile */
 	g_assert_cmpstr (cd_profile_get_title (profile), ==, "Huey, LENOVO - 6464Y1H - 15\" (2009-12-23)");

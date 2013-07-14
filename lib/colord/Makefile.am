@@ -13,6 +13,7 @@ AM_CPPFLAGS = \
 	-DCD_COMPILATION					\
 	-DG_LOG_DOMAIN=\"libcolord\"				\
 	-DTESTDATADIR=\""$(top_srcdir)/data/tests"\"		\
+	-DLIBEXECDIR=\""$(libexecdir)"\"			\
 	-DCD_SYSTEM_PROFILES_DIR="\"$(CD_SYSTEM_PROFILES_DIR)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"
 
@@ -135,9 +136,25 @@ cd_test_private_LDADD =						\
 
 cd_test_private_CFLAGS = $(WARNINGFLAGS_C)
 
+if BUILDOPT_INSTALL_TESTS
+insttestdir = $(libexecdir)/installed-tests/$(PACKAGE)
+insttest_PROGRAMS = $(TESTS)
+testmetadir = $(datadir)/installed-tests/$(PACKAGE)
+testmeta_in_files =						\
+	colord-daemon.test.in					\
+	colord-private.test.in
+testmeta_DATA = $(testmeta_in_files:.test.in=.test)
+colord-daemon.test: colord-daemon.test.in Makefile
+	@sed -e "s|\@libexecdir\@|$(libexecdir)|g" $< > $@
+colord-private.test: colord-private.test.in Makefile
+	@sed -e "s|\@libexecdir\@|$(libexecdir)|g" $< > $@
+endif
+
 EXTRA_DIST =							\
 	cd-version.h.in						\
-	colord.pc.in
+	colord-daemon.test.in					\
+	colord.pc.in						\
+	colord-private.test.in
 
 MAINTAINERCLEANFILES =						\
 	$(noinst_LIBRARIES)
@@ -169,7 +186,7 @@ gir_DATA = $(INTROSPECTION_GIRS)
 typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
-CLEANFILES += $(gir_DATA) $(typelib_DATA) *.log *.trs
+CLEANFILES += $(gir_DATA) $(typelib_DATA) *.log *.trs *.test
 
 if HAVE_VAPIGEN
 colord.vapi: Colord-1.0.gir

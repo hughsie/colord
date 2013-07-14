@@ -1,0 +1,5 @@
+[Test]
+Description=colord daemon tests
+Exec=env INSTALLED_TESTS=1 @libexecdir@/installed-tests/colord/cd-test-daemon
+Type=session
+Output=TAP

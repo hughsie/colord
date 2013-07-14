@@ -38,6 +38,16 @@ cd_test_get_filename (const gchar *filename)
 	gchar *tmp;
 	gchar *path;
 	char full_tmp[PATH_MAX];
+
+	/* running in the installed system */
+	if (g_getenv ("INSTALLED_TESTS") != NULL) {
+		full = g_build_filename (LIBEXECDIR,
+					 "installed-tests",
+					 PACKAGE_NAME,
+					 filename,
+					 NULL);
+		goto out;
+	}
 	path = g_build_filename (TESTDATADIR, filename, NULL);
 	tmp = realpath (path, full_tmp);
 	if (tmp == NULL)

@@ -360,6 +360,12 @@ if test x$enable_print_profiles != xno; then
 	AC_DEFINE_UNQUOTED([TOOL_COLPROF], ["$COLPROF"], [Full path of colprof binary])
 fi
 
+AC_ARG_ENABLE(installed_tests,
+	      AS_HELP_STRING([--enable-installed-tests],
+			     [Install test programs (default: no)]),,
+			     [enable_installed_tests=no])
+AM_CONDITIONAL(BUILDOPT_INSTALL_TESTS, test x$enable_installed_tests = xyes)
+
 # per-machine directory
 AC_SUBST(CD_SYSTEM_PROFILES_DIR, "\$(localstatedir)/lib/colord/icc")
 
@@ -425,6 +431,7 @@ echo "
         GUdev support:             ${enable_gudev}
         GUsb support:              ${enable_gusb}
         Extra print profiles:      ${enable_print_profiles}
+        Install tests:             ${enable_installed_tests}
         Building libcolordcompat:  ${build_libcolordcompat}
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
