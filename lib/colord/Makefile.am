@@ -107,19 +107,33 @@ TESTS_ENVIRONMENT =						\
 	--leak-check=full					\
 	--show-possibly-lost=no
 
-check_PROGRAMS =						\
-	cd-self-test
+TESTS =								\
+	cd-test-daemon						\
+	cd-test-private
 
-cd_self_test_SOURCES =						\
-	cd-self-test.c
+check_PROGRAMS = $(TESTS)
 
-cd_self_test_LDADD =						\
+cd_test_daemon_SOURCES =					\
+	cd-test-shared.h					\
+	cd-test-shared.c					\
+	cd-test-daemon.c
+
+cd_test_daemon_LDADD =						\
 	$(GLIB_LIBS)						\
 	$(lib_LTLIBRARIES)
 
-cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
+cd_test_daemon_CFLAGS = $(WARNINGFLAGS_C)
 
-TESTS = cd-self-test
+cd_test_private_SOURCES =					\
+	cd-test-shared.h					\
+	cd-test-shared.c					\
+	cd-test-private.c
+
+cd_test_private_LDADD =						\
+	$(GLIB_LIBS)						\
+	$(lib_LTLIBRARIES)
+
+cd_test_private_CFLAGS = $(WARNINGFLAGS_C)
 
 EXTRA_DIST =							\
 	cd-version.h.in						\
@@ -155,7 +169,7 @@ gir_DATA = $(INTROSPECTION_GIRS)
 typelibdir = $(libdir)/girepository-1.0
 typelib_DATA = $(INTROSPECTION_GIRS:.gir=.typelib)
 
-CLEANFILES += $(gir_DATA) $(typelib_DATA)
+CLEANFILES += $(gir_DATA) $(typelib_DATA) *.log *.trs
 
 if HAVE_VAPIGEN
 colord.vapi: Colord-1.0.gir
