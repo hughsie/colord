@@ -484,8 +484,8 @@ colord_profile_file_func (void)
 }
 
 /*
- * Create profile with metadata MAPPING_device_id of xrandr-default
- * Create device with id xrandr-default
+ * Create profile with metadata MAPPING_device_id
+ * Create device with id matching the profile MD
  * Check device has soft mapping of profile
  */
 static void
@@ -646,8 +646,8 @@ colord_device_id_mapping_pd_func (void)
 }
 
 /*
- * Create device with id xrandr-default
- * Create profile with metadata MAPPING_device_id of xrandr-default
+ * Create device with known id
+ * Create profile with metadata MAPPING_device_id of the same ID
  * Check device has soft mapping of profile
  */
 static void
@@ -658,6 +658,7 @@ colord_device_id_mapping_dp_func (void)
 	CdProfile *profile;
 	CdProfile *profile_on_device;
 	gboolean ret;
+	gchar *device_id;
 	GError *error = NULL;
 	GHashTable *device_props;
 	GHashTable *profile_props;
@@ -676,13 +677,14 @@ colord_device_id_mapping_dp_func (void)
 	g_assert (ret);
 
 	/* create a device */
+	device_id = colord_get_random_device_id ();
 	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					      g_free, g_free);
 	g_hash_table_insert (device_props,
 			     g_strdup (CD_DEVICE_PROPERTY_KIND),
 			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
 	device = cd_client_create_device_sync (client,
-					       "xrandr-default",
+					       device_id,
 					       CD_OBJECT_SCOPE_TEMP,
 					       device_props,
 					       NULL,
@@ -702,7 +704,7 @@ colord_device_id_mapping_dp_func (void)
 					       g_free, g_free);
 	g_hash_table_insert (profile_props,
 			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
-			     g_strdup ("xrandr-default"));
+			     g_strdup (device_id));
 	profile = cd_client_create_profile_sync (client,
 						 "profile_md_test2_id",
 						 CD_OBJECT_SCOPE_TEMP,
@@ -744,6 +746,7 @@ colord_device_id_mapping_dp_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	g_free (device_id);
 	g_hash_table_unref (profile_props);
 	g_object_unref (profile);
 	g_object_unref (profile_on_device);
