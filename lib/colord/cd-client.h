@@ -121,6 +121,16 @@ CdProfile	*cd_client_create_profile_finish	(CdClient	*client,
 							 GAsyncResult	*res,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+void		 cd_client_create_profile_for_icc	(CdClient	*client,
+							 CdIcc		*icc,
+							 CdObjectScope	 scope,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdProfile	*cd_client_create_profile_for_icc_finish (CdClient	*client,
+							 GAsyncResult	*res,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 void		cd_client_import_profile		(CdClient	*client,
 							 GFile		*file,
 							 GCancellable	*cancellable,

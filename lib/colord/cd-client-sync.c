@@ -374,6 +374,64 @@ cd_client_create_profile_sync (CdClient *client,
 /**********************************************************************/
 
 static void
+cd_client_create_profile_for_icc_finish_sync (CdClient *client,
+					      GAsyncResult *res,
+					      CdClientHelper *helper)
+{
+	helper->profile = cd_client_create_profile_for_icc_finish (client,
+								   res,
+								   helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_client_create_profile_for_icc_sync:
+ * @client: a #CdClient instance.
+ * @icc: A #CdIcc
+ * @scope: the scope of the profile
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Creates a color profile from a #CdIcc object.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: (transfer full): A #CdProfile object, or %NULL for error
+ *
+ * Since: 1.1.1
+ **/
+CdProfile *
+cd_client_create_profile_for_icc_sync (CdClient *client,
+				       CdIcc *icc,
+				       CdObjectScope scope,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	CdClientHelper helper;
+
+	/* create temp object */
+	memset (&helper, 0, sizeof (CdClientHelper));
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+	helper.profile = NULL;
+
+	/* run async method */
+	cd_client_create_profile_for_icc (client, icc, scope,
+					  cancellable,
+					  (GAsyncReadyCallback) cd_client_create_profile_for_icc_finish_sync,
+					  &helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.profile;
+}
+
+/**********************************************************************/
+
+static void
 cd_client_import_profile_finish_sync (CdClient *client,
 				      GAsyncResult *res,
 				      CdClientHelper *helper)

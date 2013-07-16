@@ -65,6 +65,12 @@ CdProfile	*cd_client_create_profile_sync		(CdClient	*client,
 							 GCancellable	*cancellable,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+CdProfile	*cd_client_create_profile_for_icc_sync	(CdClient	*client,
+							 CdIcc		*icc,
+							 CdObjectScope	 scope,
+							 GCancellable	*cancellable,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 CdProfile	*cd_client_import_profile_sync		(CdClient	*client,
 							 GFile		*file,
 							 GCancellable	*cancellable,

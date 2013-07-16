@@ -843,6 +843,81 @@ out:
 }
 
 /**********************************************************************/
+/**
+ * cd_client_create_profile_for_icc:
+ * @client: a #CdClient instance.
+ * @icc: #CdIcc object
+ * @scope: the scope of the profile
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Creates a color profile for an #CdIcc Object.
+ *
+ * Since: 1.1.1
+ **/
+void
+cd_client_create_profile_for_icc (CdClient *client,
+				  CdIcc *icc,
+				  CdObjectScope scope,
+				  GCancellable *cancellable,
+				  GAsyncReadyCallback callback,
+				  gpointer user_data)
+{
+	const gchar *checksum;
+	const gchar *filename;
+	gchar *profile_id = NULL;
+	GHashTable *profile_props = NULL;
+
+	g_return_if_fail (CD_IS_CLIENT (client));
+	g_return_if_fail (CD_IS_ICC (icc));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+	/* generate ID */
+	checksum = cd_icc_get_checksum (icc);
+	filename = cd_icc_get_filename (icc);
+	profile_id = g_strdup_printf ("icc-%s", checksum);
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       NULL, NULL);
+	g_hash_table_insert (profile_props,
+			     (gpointer) CD_PROFILE_PROPERTY_FILENAME,
+			     (gpointer) filename);
+	g_hash_table_insert (profile_props,
+			     (gpointer) CD_PROFILE_METADATA_FILE_CHECKSUM,
+			     (gpointer) checksum);
+	cd_client_create_profile (client,
+				  profile_id,
+				  scope,
+				  profile_props,
+				  NULL,
+				  callback,
+				  user_data);
+	g_free (profile_id);
+	g_hash_table_unref (profile_props);
+}
+
+
+/**
+ * cd_client_create_profile_for_icc_finish:
+ * @client: a #CdClient instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: (transfer full): a #CdProfile or %NULL
+ *
+ * Since: 1.1.1
+ **/
+CdProfile *
+cd_client_create_profile_for_icc_finish (CdClient *client,
+					 GAsyncResult *res,
+					 GError **error)
+{
+	return cd_client_create_profile_finish (client, res, error);
+}
+
+/**********************************************************************/
 
 /**
  * cd_client_import_get_profile_destination:
