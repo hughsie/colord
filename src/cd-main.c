@@ -966,6 +966,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	const gchar *device_id = NULL;
 	const gchar *scope_tmp = NULL;
 	gchar *cmdline = NULL;
+	gchar *filename = NULL;
 	gchar *device_id_fallback = NULL;
 	GError *error = NULL;
 	GPtrArray *array = NULL;
@@ -1523,7 +1524,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	}
 
 	/* return 'o' */
-	if (g_strcmp0 (method_name, "CreateProfileWithFd") == 0) {
+	if (g_strcmp0 (method_name, "CreateProfile") == 0 ||
+	    g_strcmp0 (method_name, "CreateProfileWithFd") == 0) {
 
 		/* require auth */
 		ret = cd_main_sender_authenticated (connection,
@@ -1537,14 +1539,23 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			goto out;
 		}
 
-		g_variant_get (parameters, "(&s&sha{ss})",
-			       &device_id,
-			       &scope_tmp,
-			       &fd_handle,
-			       &iter);
-		g_debug ("CdMain: %s:CreateProfileWithFd(%s,%i)",
-			 g_dbus_method_invocation_get_sender (invocation),
-			 device_id, fd_handle);
+		if (g_strcmp0 (g_variant_get_type_string (parameters),
+			       "(ssha{ss})") == 0) {
+			g_variant_get (parameters, "(&s&sha{ss})",
+				       &device_id,
+				       &scope_tmp,
+				       &fd_handle,
+				       &iter);
+			g_debug ("CdMain: %s:CreateProfileWithFd(%s,%i)",
+				 g_dbus_method_invocation_get_sender (invocation),
+				 device_id, fd_handle);
+		} else {
+			g_variant_get (parameters, "(&s&sa{ss})",
+				       &device_id,
+				       &scope_tmp,
+				       &iter);
+			g_debug ("CdMain: %s:CreateProfile(%s)", sender, device_id);
+		}
 
 		/* check ID is valid */
 		if (g_strcmp0 (device_id, "") == 0) {
@@ -1590,6 +1601,16 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			goto out;
 		}
 
+		/* set the properties */
+		while (g_variant_iter_next (iter, "{&s&s}",
+					    &prop_key, &prop_value)) {
+			if (g_strcmp0 (prop_key, CD_PROFILE_PROPERTY_FILENAME) == 0)
+				filename = g_strdup (prop_value);
+			cd_profile_set_property_internal (profile,
+							  prop_key,
+							  prop_value);
+		}
+
 		/* get any file descriptor in the message */
 		message = g_dbus_method_invocation_get_message (invocation);
 		fd_list = g_dbus_message_get_unix_fd_list (message);
@@ -1605,7 +1626,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			}
 
 			/* read from a fd, avoiding open() */
-			ret = cd_profile_set_fd (profile, fd, &error);
+			ret = cd_profile_load_from_fd (profile, fd, &error);
 			if (!ret) {
 				g_warning ("CdMain: failed to profile from fd: %s",
 					   error->message);
@@ -1614,14 +1635,19 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 				g_error_free (error);
 				goto out;
 			}
-		}
 
-		/* set the properties */
-		while (g_variant_iter_next (iter, "{&s&s}",
-					    &prop_key, &prop_value)) {
-			cd_profile_set_property_internal (profile,
-							  prop_key,
-							  prop_value);
+		/* clients like CUPS do not use FD passing */
+		} else if (filename != NULL) {
+			ret = cd_profile_load_from_filename (profile,
+							     filename,
+							     &error);
+			if (!ret) {
+				g_warning ("CdMain: failed to profile from filename: %s",
+					   error->message);
+				g_dbus_method_invocation_return_gerror (invocation, error);
+				g_error_free (error);
+				goto out;
+			}
 		}
 
 		/* auto add profiles from the database and metadata */
@@ -1649,6 +1675,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 out:
 	g_free (cmdline);
 	g_free (device_id_fallback);
+	g_free (filename);
 	if (iter != NULL)
 		g_variant_iter_free (iter);
 	if (dict != NULL)
@@ -1748,7 +1775,7 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 		cd_profile_set_is_system_wide (profile, TRUE);
 
 	/* parse the profile name */
-	ret = cd_profile_set_icc (profile, icc, &error);
+	ret = cd_profile_load_from_icc (profile, icc, &error);
 	if (!ret) {
 		g_warning ("CdIccStore: failed to add profile '%s': %s",
 			   filename, error->message);

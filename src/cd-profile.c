@@ -33,7 +33,9 @@
 #include "cd-profile.h"
 #include "cd-resources.h"
 
-static void     cd_profile_finalize	(GObject     *object);
+static void	cd_profile_finalize	(GObject	*object);
+static void	cd_profile_set_filename	(CdProfile	*profile,
+					 const gchar	*filename);
 
 #define CD_PROFILE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_PROFILE, CdProfilePrivate))
 
@@ -974,10 +976,10 @@ cd_profile_emit_parsed_property_changed (CdProfile *profile)
 }
 
 /**
- * cd_profile_set_icc:
+ * cd_profile_load_from_icc:
  **/
 gboolean
-cd_profile_set_icc (CdProfile *profile, CdIcc *icc, GError **error)
+cd_profile_load_from_icc (CdProfile *profile, CdIcc *icc, GError **error)
 {
 	gboolean ret = FALSE;
 
@@ -998,12 +1000,12 @@ out:
 }
 
 /**
- * cd_profile_set_fd:
+ * cd_profile_load_from_fd:
  **/
 gboolean
-cd_profile_set_fd (CdProfile *profile,
-		   gint fd,
-		   GError **error)
+cd_profile_load_from_fd (CdProfile *profile,
+			 gint fd,
+			 GError **error)
 {
 	CdIcc *icc = NULL;
 	GError *error_local = NULL;
@@ -1062,6 +1064,75 @@ out:
 }
 
 /**
+ * cd_profile_load_from_filename:
+ **/
+gboolean
+cd_profile_load_from_filename (CdProfile *profile,
+			 const gchar *filename,
+			 GError **error)
+{
+	CdIcc *icc = NULL;
+	GError *error_local = NULL;
+	CdProfilePrivate *priv = profile->priv;
+	gboolean ret = FALSE;
+	GFile *file = NULL;
+
+	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
+
+	/* check we're not already set */
+	if (priv->kind != CD_PROFILE_KIND_UNKNOWN) {
+		g_set_error (error,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_INTERNAL,
+			     "profile '%s' already set",
+			     priv->object_path);
+		goto out;
+	}
+
+	/* open fd and parse the file */
+	icc = cd_icc_new ();
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_METADATA,
+				NULL,
+				&error_local);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_PROFILE_ERROR,
+				     CD_PROFILE_ERROR_FAILED_TO_READ,
+				     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+
+	/* create a mapped file */
+	priv->mapped_file = g_mapped_file_new (filename, FALSE, error);
+	if (priv->mapped_file == NULL) {
+		g_set_error (error,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_READ,
+			     "failed to create mapped file from filname %s",
+			     filename);
+		goto out;
+	}
+
+	/* set the virtual profile from the lcms profile */
+	ret = cd_profile_set_from_profile (profile, icc, error);
+	if (!ret)
+		goto out;
+
+	/* emit all the things that could have changed */
+	cd_profile_emit_parsed_property_changed (profile);
+out:
+	if (icc != NULL)
+		g_object_unref (icc);
+	if (file != NULL)
+		g_object_unref (file);
+	return ret;
+}
+
+/**
  * cd_profile_get_qualifier:
  **/
 const gchar *
@@ -1096,7 +1167,7 @@ cd_profile_set_format (CdProfile *profile, const gchar *format)
 /**
  * cd_profile_set_filename:
  **/
-void
+static void
 cd_profile_set_filename (CdProfile *profile, const gchar *filename)
 {
 	g_return_if_fail (CD_IS_PROFILE (profile));
