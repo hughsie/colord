@@ -36,6 +36,7 @@ typedef struct {
 	CdClient		*client;
 	CdIcc			*icc;
 	gchar			*locale;
+	gboolean		 rewrite_file;
 } CdUtilPrivate;
 
 typedef gboolean (*CdUtilPrivateCb)	(CdUtilPrivate	*util,
@@ -640,10 +641,10 @@ out:
 }
 
 /**
- * cd_util_generate_vcgt:
+ * cd_util_extract_vcgt:
  **/
 static gboolean
-cd_util_generate_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
+cd_util_extract_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	cmsFloat32Number in;
 	cmsHPROFILE lcms_profile;
@@ -690,6 +691,7 @@ cd_util_generate_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 
 	/* success */
+	priv->rewrite_file = FALSE;
 	ret = TRUE;
 out:
 	return ret;
@@ -748,6 +750,7 @@ main (int argc, char *argv[])
 
 	/* create helper object */
 	priv = g_new0 (CdUtilPrivate, 1);
+	priv->rewrite_file = TRUE;
 	priv->client = cd_client_new ();
 
 	/* add commands */
@@ -756,7 +759,7 @@ main (int argc, char *argv[])
 		     "extract-vcgt",
 		     /* TRANSLATORS: command description */
 		     _("Generate the VCGT calibration of a given size"),
-		     cd_util_generate_vcgt);
+		     cd_util_extract_vcgt);
 	cd_util_add (priv->cmd_array,
 		     "md-clear",
 		     /* TRANSLATORS: command description */
@@ -870,15 +873,17 @@ main (int argc, char *argv[])
 	}
 
 	/* save file */
-	ret = cd_icc_save_file (priv->icc,
-				file,
-				CD_ICC_SAVE_FLAGS_NONE,
-				NULL,
-				&error);
-	if (!ret) {
-		g_print ("%s\n", error->message);
-		g_error_free (error);
-		goto out;
+	if (priv->rewrite_file) {
+		ret = cd_icc_save_file (priv->icc,
+					file,
+					CD_ICC_SAVE_FLAGS_NONE,
+					NULL,
+					&error);
+		if (!ret) {
+			g_print ("%s\n", error->message);
+			g_error_free (error);
+			goto out;
+		}
 	}
 
 	/* success */
