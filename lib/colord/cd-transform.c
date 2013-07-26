@@ -470,6 +470,17 @@ out:
 }
 
 /**
+ * cd_transform_lcms2_error_cb:
+ **/
+static void
+cd_transform_lcms2_error_cb (cmsContext context_id,
+			     cmsUInt32Number code,
+			     const gchar *text)
+{
+	g_warning ("lcms2(transform): Failed with error: %s [%i]", text, code);
+}
+
+/**
  * cd_transform_process:
  * @transform: a #CdTransform instance.
  * @data_in: the data buffer to convert
@@ -510,6 +521,9 @@ cd_transform_process (CdTransform *transform,
 	g_return_val_if_fail (width != 0, FALSE);
 	g_return_val_if_fail (height != 0, FALSE);
 	g_return_val_if_fail (rowstride != 0, FALSE);
+
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_transform_lcms2_error_cb);
 
 	/* check stuff that should have been set */
 	if (priv->rendering_intent == CD_RENDERING_INTENT_UNKNOWN) {

@@ -217,14 +217,14 @@ cd_it8_get_kind (CdIt8 *it8)
 }
 
 /**
- * cd_it8_lcms_error_cb:
+ * cd_it8_lcms2_error_cb:
  **/
 static void
-cd_it8_lcms_error_cb (cmsContext ContextID,
-		      cmsUInt32Number error_code,
-		      const char *text)
+cd_it8_lcms2_error_cb (cmsContext context_id,
+		       cmsUInt32Number code,
+		       const gchar *text)
 {
-	g_warning ("LCMS: %s", text);
+	g_warning ("lcms2(it8): Failed with error: %s [%i]", text, code);
 }
 
 /**
@@ -581,6 +581,9 @@ cd_it8_load_from_data (CdIt8 *it8,
 	g_return_val_if_fail (data != NULL, FALSE);
 	g_return_val_if_fail (size > 0, FALSE);
 
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_it8_lcms2_error_cb);
+
 	/* clear old data */
 	g_ptr_array_set_size (it8->priv->array_rgb, 0);
 	g_ptr_array_set_size (it8->priv->array_xyz, 0);
@@ -588,7 +591,6 @@ cd_it8_load_from_data (CdIt8 *it8,
 	cd_mat33_clear (&it8->priv->matrix);
 
 	/* load the it8 data */
-	cmsSetLogErrorHandler (cd_it8_lcms_error_cb);
 	it8_lcms = cmsIT8LoadFromMem (NULL, (void *) data, size);
 	if (it8_lcms == NULL) {
 		ret = FALSE;
@@ -930,6 +932,9 @@ cd_it8_save_to_data (CdIt8 *it8,
 	guint i;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
+
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_it8_lcms2_error_cb);
 
 	/* set common data */
 	it8_lcms = cmsIT8Alloc (NULL);
