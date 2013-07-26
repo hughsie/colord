@@ -157,6 +157,17 @@ cd_icc_uint32_to_str (guint32 id, gchar *str)
 }
 
 /**
+ * cd_icc_lcms2_error_cb:
+ **/
+static void
+cd_icc_lcms2_error_cb (cmsContext context_id,
+		       cmsUInt32Number code,
+		       const gchar *text)
+{
+	g_warning ("lcms2(profile): Failed with error: %s [%i]", text, code);
+}
+
+/**
  * cd_icc_to_string:
  * @icc: a #CdIcc instance.
  *
@@ -186,6 +197,9 @@ cd_icc_to_string (CdIcc *icc)
 	guint8 profile_id[4];
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
 
 	/* print header */
 	str = g_string_new ("icc:\nHeader:\n");
@@ -811,6 +825,9 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 	gboolean ret = TRUE;
 	guint i;
 
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
+
 	/* get version */
 	priv->version = cmsGetProfileVersion (priv->lcms_profile);
 
@@ -1282,6 +1299,9 @@ cd_icc_save_data (CdIcc *icc,
 	guint i;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
 
 	/* convert profile kind */
 	for (i = 0; map_profile_kind[i].colord != CD_PROFILE_KIND_LAST; i++) {
@@ -2177,6 +2197,9 @@ cd_icc_get_mluc_data (CdIcc *icc,
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
+
 	/* does cache entry exist already? */
 	locale_key = cd_icc_get_locale_key (locale);
 	value = g_hash_table_lookup (priv->mluc_data[mluc], locale_key);
@@ -2692,6 +2715,9 @@ cd_icc_create_from_edid (CdIcc *icc,
 	cmsToneCurve *transfer_curve[3] = { NULL, NULL, NULL };
 	gboolean ret = FALSE;
 
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
+
 	/* not loaded */
 	if (priv->lcms_profile != NULL) {
 		g_set_error_literal (error,
@@ -2772,6 +2798,9 @@ cd_icc_get_vcgt (CdIcc *icc, guint size, GError **error)
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 	g_return_val_if_fail (icc->priv->lcms_profile != NULL, NULL);
 
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
+
 	/* get tone curves from icc */
 	vcgt = cmsReadTag (icc->priv->lcms_profile, cmsSigVcgtType);
 	if (vcgt == NULL || vcgt[0] == NULL) {
@@ -2825,6 +2854,9 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 	gfloat divamount;
 	GPtrArray *array = NULL;
 	guint i;
+
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
 
 	/* run through the icc */
 	colorspace = cd_icc_get_colorspace (icc);
@@ -2926,6 +2958,9 @@ cd_icc_set_vcgt (CdIcc *icc, GPtrArray *vcgt, GError **error)
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (icc->priv->lcms_profile != NULL, FALSE);
+
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
 
 	/* unwrap data */
 	red = g_new0 (guint16, vcgt->len);
@@ -3304,6 +3339,9 @@ cd_icc_get_warnings (CdIcc *icc)
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 	g_return_val_if_fail (icc->priv->lcms_profile != NULL, NULL);
+
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
 
 	flags = g_array_new (FALSE, FALSE, sizeof (CdProfileWarning));
 
