@@ -1092,16 +1092,14 @@ out:
 static gboolean
 cd_util_write_tag_ascii (CdIcc *icc,
 			 cmsTagSignature sig,
-			 GHashTable *hash,
+			 const gchar *value,
 			 GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
 	cmsMLU *mlu = NULL;
-	const gchar *value;
 	gboolean ret = TRUE;
 
-	/* get default value */
-	value = g_hash_table_lookup (hash, "");
+	/* nothing set */
 	if (value == NULL) {
 		cmsWriteTag (priv->lcms_profile, sig, NULL);
 		goto out;
@@ -1132,6 +1130,21 @@ out:
 	if (mlu != NULL)
 		cmsMLUfree (mlu);
 	return ret;
+}
+
+/**
+ * cd_util_write_tag_ascii_default:
+ **/
+static gboolean
+cd_util_write_tag_ascii_default (CdIcc *icc,
+				 cmsTagSignature sig,
+				 GHashTable *hash,
+				 GError **error)
+{
+	const gchar *value;
+	/* get default value */
+	value = g_hash_table_lookup (hash, "");
+	return cd_util_write_tag_ascii (icc, sig, value, error);
 }
 
 /**
@@ -1356,10 +1369,10 @@ cd_icc_save_data (CdIcc *icc,
 		/* v2 profiles cannot have a mluc type for cmsSigProfileDescriptionTag
 		 * so use the non-standard Apple extension cmsSigProfileDescriptionTagML
 		 * and only write a en_US version for the description */
-		ret = cd_util_write_tag_ascii (icc,
-					       cmsSigProfileDescriptionTag,
-					       priv->mluc_data[CD_MLUC_DESCRIPTION],
-					       error);
+		ret = cd_util_write_tag_ascii_default (icc,
+						       cmsSigProfileDescriptionTag,
+						       priv->mluc_data[CD_MLUC_DESCRIPTION],
+						       error);
 		if (!ret)
 			goto out;
 #ifdef HAVE_LCMS_GET_HEADER_CREATOR
@@ -1370,22 +1383,22 @@ cd_icc_save_data (CdIcc *icc,
 		if (!ret)
 			goto out;
 #endif
-		ret = cd_util_write_tag_ascii (icc,
-					       cmsSigCopyrightTag,
-					       priv->mluc_data[CD_MLUC_COPYRIGHT],
-					       error);
+		ret = cd_util_write_tag_ascii_default (icc,
+						       cmsSigCopyrightTag,
+						       priv->mluc_data[CD_MLUC_COPYRIGHT],
+						       error);
 		if (!ret)
 			goto out;
-		ret = cd_util_write_tag_ascii (icc,
-					       cmsSigDeviceMfgDescTag,
-					       priv->mluc_data[CD_MLUC_MANUFACTURER],
-					       error);
+		ret = cd_util_write_tag_ascii_default (icc,
+						       cmsSigDeviceMfgDescTag,
+						       priv->mluc_data[CD_MLUC_MANUFACTURER],
+						       error);
 		if (!ret)
 			goto out;
-		ret = cd_util_write_tag_ascii (icc,
-						   cmsSigDeviceModelDescTag,
-						   priv->mluc_data[CD_MLUC_MODEL],
-						   error);
+		ret = cd_util_write_tag_ascii_default (icc,
+						       cmsSigDeviceModelDescTag,
+						       priv->mluc_data[CD_MLUC_MODEL],
+						       error);
 		if (!ret)
 			goto out;
 	} else {
