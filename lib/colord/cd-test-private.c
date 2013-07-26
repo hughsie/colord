@@ -953,6 +953,40 @@ colord_icc_edid_func (void)
 }
 
 static void
+colord_icc_characterization_func (void)
+{
+	CdIcc *icc;
+	const gchar *str;
+	gchar *md5;
+	gboolean ret;
+	gchar *filename;
+	GError *error = NULL;
+	GFile *file;
+
+	/* load source file */
+	icc = cd_icc_new ();
+	filename = cd_test_get_filename ("ibm-t61.icc");
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_CHARACTERIZATION,
+				NULL,
+				&error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_free (filename);
+
+	/* check original values */
+	str = cd_icc_get_characterization_data (icc);
+	md5 = g_compute_checksum_for_string (G_CHECKSUM_MD5, str, -1);
+	g_assert_cmpstr (md5, ==, "79376a43578c5b1f7d428a62da916dab");
+	g_free (md5);
+
+	g_object_unref (icc);
+}
+
+static void
 colord_icc_save_func (void)
 {
 	CdIcc *icc;
@@ -986,6 +1020,7 @@ colord_icc_save_func (void)
 	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	cd_icc_add_metadata (icc, "SelfTest", "true");
 	cd_icc_remove_metadata (icc, "EDID_md5");
+	cd_icc_set_characterization_data (icc, "[TI3]");
 	cd_icc_set_description (icc, "fr.UTF-8", "Couleurs crayon");
 
 	/* Save to /tmp and reparse new file */
@@ -1001,7 +1036,8 @@ colord_icc_save_func (void)
 	icc = cd_icc_new ();
 	ret = cd_icc_load_file (icc,
 				file,
-				CD_ICC_LOAD_FLAGS_METADATA,
+				CD_ICC_LOAD_FLAGS_METADATA |
+				CD_ICC_LOAD_FLAGS_CHARACTERIZATION,
 				NULL,
 				&error);
 	g_assert_no_error (error);
@@ -1017,6 +1053,8 @@ colord_icc_save_func (void)
 	str = cd_icc_get_description (icc, "fr.UTF-8", &error);
 	g_assert_no_error (error);
 	g_assert_cmpstr (str, ==, "Couleurs crayon");
+	str = cd_icc_get_characterization_data (icc);
+	g_assert_cmpstr (str, ==, "[TI3]");
 
 	g_object_unref (icc);
 }
@@ -1394,6 +1432,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
 	g_test_add_func ("/colord/icc{edid}", colord_icc_edid_func);
+	g_test_add_func ("/colord/icc{characterization}", colord_icc_characterization_func);
 	g_test_add_func ("/colord/icc{save}", colord_icc_save_func);
 	g_test_add_func ("/colord/icc-store", colord_icc_store_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);

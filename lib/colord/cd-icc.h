@@ -101,6 +101,7 @@ typedef struct
  * @CD_ICC_LOAD_FLAGS_FALLBACK_MD5:	Calculate the profile MD5 if a profile
  * 					ID was not supplied in the profile.
  * @CD_ICC_LOAD_FLAGS_PRIMARIES:	Parse the primaries in the profile.
+ * @CD_ICC_LOAD_FLAGS_CHARACTERIZATION:	Load the characterization data from the profile
  *
  * Flags used when loading an ICC profile.
  *
@@ -113,6 +114,7 @@ typedef enum {
 	CD_ICC_LOAD_FLAGS_METADATA	= (1 << 2),	/* Since: 0.1.32 */
 	CD_ICC_LOAD_FLAGS_FALLBACK_MD5	= (1 << 3),	/* Since: 0.1.32 */
 	CD_ICC_LOAD_FLAGS_PRIMARIES	= (1 << 4),	/* Since: 0.1.32 */
+	CD_ICC_LOAD_FLAGS_CHARACTERIZATION = (1 << 5),	/* Since: 1.1.1 */
 	/* new entries go here: */
 	CD_ICC_LOAD_FLAGS_ALL		= 0xff,		/* Since: 0.1.32 */
 	/*< private >*/
@@ -205,6 +207,9 @@ const gchar	*cd_icc_get_checksum			(CdIcc		*icc);
 const gchar	*cd_icc_get_description			(CdIcc		*icc,
 							 const gchar	*locale,
 							 GError		**error);
+const gchar	*cd_icc_get_characterization_data	(CdIcc		*icc);
+void		 cd_icc_set_characterization_data	(CdIcc		*icc,
+							 const gchar	*data);
 const gchar	*cd_icc_get_copyright			(CdIcc		*icc,
 							 const gchar	*locale,
 							 GError		**error);

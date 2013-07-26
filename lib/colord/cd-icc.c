@@ -66,6 +66,7 @@ struct _CdIccPrivate
 	gboolean		 can_delete;
 	gchar			*checksum;
 	gchar			*filename;
+	gchar			*characterization_data;
 	gdouble			 version;
 	GHashTable		*mluc_data[CD_MLUC_LAST]; /* key is 'en_GB' or '' for default */
 	GHashTable		*metadata;
@@ -745,6 +746,37 @@ out:
 }
 
 /**
+ * cd_icc_load_characterization_data:
+ **/
+static gboolean
+cd_icc_load_characterization_data (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsMLU *mlu;
+	gboolean ret = TRUE;
+	guint32 text_size;
+
+	/* this can only be non-localized text */
+	mlu = cmsReadTag (priv->lcms_profile, cmsSigCharTargetTag);
+	if (mlu == NULL) {
+		priv->characterization_data = NULL;
+		goto out;
+	}
+	text_size = cmsMLUgetASCII (mlu,
+				    cmsNoLanguage,
+				    cmsNoCountry,
+				    NULL, 0);
+	priv->characterization_data = g_new0 (gchar, text_size + 1);
+	cmsMLUgetASCII (mlu,
+			cmsNoLanguage,
+			cmsNoCountry,
+			priv->characterization_data,
+			text_size);
+out:
+	return ret;
+}
+
+/**
  * cd_icc_load_primaries:
  **/
 static gboolean
@@ -894,6 +926,13 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 	if ((flags & CD_ICC_LOAD_FLAGS_PRIMARIES) > 0 &&
 	    priv->colorspace == CD_COLORSPACE_RGB) {
 		ret = cd_icc_load_primaries (icc, error);
+		if (!ret)
+			goto out;
+	}
+
+	/* read characterization data if the client cares */
+	if ((flags & CD_ICC_LOAD_FLAGS_CHARACTERIZATION) > 0) {
+		ret = cd_icc_load_characterization_data (icc, error);
 		if (!ret)
 			goto out;
 	}
@@ -1364,6 +1403,18 @@ cd_icc_save_data (CdIcc *icc,
 		cmsWriteTag (priv->lcms_profile, cmsSigMetaTag, NULL);
 	}
 
+	/* save characterization data */
+	if (priv->characterization_data != NULL) {
+		ret = cd_util_write_tag_ascii (icc,
+					       cmsSigCharTargetTag,
+					       priv->characterization_data,
+					       error);
+		if (!ret)
+			goto out;
+	} else {
+		cmsWriteTag (priv->lcms_profile, cmsSigCharTargetTag, NULL);
+	}
+
 	/* save translations */
 	if (priv->version < 4.0) {
 		/* v2 profiles cannot have a mluc type for cmsSigProfileDescriptionTag
@@ -1481,6 +1532,42 @@ out:
 		cmsDictFree (dict);
 	g_free (data_tmp);
 	return data;
+}
+
+/**
+ * cd_icc_get_characterization_data:
+ * @icc: a #CdIcc instance.
+ *
+ * Gets any characterization data used to build the profile.
+ * This function will only return results if the profile was loaded with the
+ * %CD_ICC_LOAD_FLAGS_CHARACTERIZATION flag.
+ *
+ * Return value: TI3 string data
+ *
+ * Since: 1.1.1
+ **/
+const gchar *
+cd_icc_get_characterization_data (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return icc->priv->characterization_data;
+}
+
+/**
+ * cd_icc_set_characterization_data:
+ * @icc: a #CdIcc instance.
+ * @data: TI3 string data, or %NULL
+ *
+ * Sets the characterization data used to build the profile.
+ *
+ * Since: 1.1.1
+ **/
+void
+cd_icc_set_characterization_data (CdIcc *icc, const gchar *data)
+{
+	g_return_if_fail (CD_IS_ICC (icc));
+	g_free (icc->priv->characterization_data);
+	icc->priv->characterization_data = g_strdup (data);
 }
 
 /**
@@ -3639,6 +3726,7 @@ cd_icc_finalize (GObject *object)
 
 	g_free (priv->filename);
 	g_free (priv->checksum);
+	g_free (priv->characterization_data);
 	g_ptr_array_unref (priv->named_colors);
 	g_hash_table_destroy (priv->metadata);
 	for (i = 0; i < CD_MLUC_LAST; i++)
