@@ -978,7 +978,7 @@ cd_icc_load_data (CdIcc *icc,
 	}
 
 	/* load icc into lcms */
-	priv->lcms_profile = cmsOpenProfileFromMem (data, data_len);
+	priv->lcms_profile = cmsOpenProfileFromMemTHR (icc, data, data_len);
 	if (priv->lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error_literal (error,
@@ -1145,7 +1145,7 @@ cd_util_write_tag_ascii (CdIcc *icc,
 	}
 
 	/* set value */
-	mlu = cmsMLUalloc (NULL, 1);
+	mlu = cmsMLUalloc (icc, 1);
 	ret = cmsMLUsetASCII (mlu, "en", "US", value);
 	if (!ret) {
 		g_set_error_literal (error,
@@ -1244,7 +1244,7 @@ cd_util_write_tag_localized (CdIcc *icc,
 	g_ptr_array_sort (array, cd_util_sort_mlu_array_cb);
 
 	/* create MLU object to hold all the translations */
-	mlu = cmsMLUalloc (NULL, array->len);
+	mlu = cmsMLUalloc (icc, array->len);
 	for (i = 0; i < array->len; i++) {
 		obj = g_ptr_array_index (array, i);
 		if (obj->language_code == NULL &&
@@ -1379,7 +1379,7 @@ cd_icc_save_data (CdIcc *icc,
 
 	/* save metadata */
 	if (g_hash_table_size (priv->metadata) != 0) {
-		dict = cmsDictAlloc (NULL);
+		dict = cmsDictAlloc (icc);
 		md_keys = g_hash_table_get_keys (priv->metadata);
 		if (md_keys != NULL) {
 			for (l = md_keys; l != NULL; l = l->next) {
@@ -1807,7 +1807,7 @@ cd_icc_load_fd (CdIcc *icc,
 	}
 
 	/* parse the ICC file */
-	priv->lcms_profile = cmsOpenProfileFromStream (stream, "r");
+	priv->lcms_profile = cmsOpenProfileFromStreamTHR (icc, stream, "r");
 	if (priv->lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error_literal (error,
@@ -1856,6 +1856,10 @@ cd_icc_get_handle (CdIcc *icc)
  * when the @icc object is finalized. Treat the profile like it's been adopted
  * by this module.
  *
+ * To handle the internal error callback, you should use the thread-safe
+ * creation function, e.g. cmsCreateNULLProfileTHR(). The context_id should be
+ * set as the value as the @icc parameter.
+ *
  * Additionally, this function cannot be called more than once, and also can't
  * be called if cd_icc_load_file() has previously been used on the @icc object.
  *
@@ -1868,11 +1872,24 @@ cd_icc_load_handle (CdIcc *icc,
 		    GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
+	cmsContext context;
 	gboolean ret;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (handle != NULL, FALSE);
 	g_return_val_if_fail (priv->lcms_profile == NULL, FALSE);
+
+	/* check the THR version has been correctly set up */
+	context = cmsGetProfileContextID (handle);
+	if (!CD_IS_ICC (context)) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_CREATE,
+				     "lcms2 threadsafe version (THR) not used, "
+				     "or CdIcc not set");
+		goto out;
+	}
 
 	/* load profile */
 	priv->lcms_profile = handle;
@@ -2845,9 +2862,10 @@ cd_icc_create_from_edid (CdIcc *icc,
 	transfer_curve[2] = transfer_curve[0];
 
 	/* create our generated ICC */
-	priv->lcms_profile = cmsCreateRGBProfile (&white_point,
-						  &chroma,
-						  transfer_curve);
+	priv->lcms_profile = cmsCreateRGBProfileTHR (icc,
+						     &white_point,
+						     &chroma,
+						     transfer_curve);
 	if (priv->lcms_profile == NULL) {
 		g_set_error (error,
 			     CD_ICC_ERROR,

@@ -317,7 +317,7 @@ cd_util_create_named_color (CdUtilPrivate *priv,
 	const GNode *tmp;
 	gboolean ret = TRUE;
 
-	priv->lcms_profile = cmsCreateNULLProfile ();
+	priv->lcms_profile = cmsCreateNULLProfileTHR (priv->icc);
 	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
@@ -408,7 +408,7 @@ cd_util_create_x11_gamma (CdUtilPrivate *priv,
 	points[2] = rgb.B;
 
 	/* create a bog-standard sRGB profile */
-	priv->lcms_profile = cmsCreate_sRGBProfile ();
+	priv->lcms_profile = cmsCreate_sRGBProfileTHR (priv->icc);
 	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
@@ -651,9 +651,10 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	primaries.Blue.Y = yxy.Y;
 
 	/* create profile */
-	priv->lcms_profile = cmsCreateRGBProfile (&white,
-						  &primaries,
-						  transfer);
+	priv->lcms_profile = cmsCreateRGBProfileTHR (priv->icc,
+						     &white,
+						     &primaries,
+						     transfer);
 	ret = TRUE;
 out:
 	cmsFreeToneCurve (transfer[0]);
@@ -679,7 +680,7 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 	guint temp;
 
 	/* create a bog-standard sRGB profile */
-	priv->lcms_profile = cmsCreate_sRGBProfile ();
+	priv->lcms_profile = cmsCreate_sRGBProfileTHR (priv->icc);
 	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
