@@ -36,7 +36,7 @@ cd_test_get_filename (const gchar *filename)
 {
 	gchar *full = NULL;
 	gchar *tmp;
-	gchar *path;
+	gchar *path = NULL;
 	char full_tmp[PATH_MAX];
 
 	/* running in the installed system */
@@ -54,6 +54,7 @@ cd_test_get_filename (const gchar *filename)
 		goto out;
 	full = g_strdup (full_tmp);
 out:
+	g_free (path);
 	return full;
 }
 
