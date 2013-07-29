@@ -77,6 +77,7 @@ struct _CdIccPrivate
 	CdColorXYZ		 red;
 	CdColorXYZ		 green;
 	CdColorXYZ		 blue;
+	GError			*error_lcms;
 };
 
 G_DEFINE_TYPE (CdIcc, cd_icc, G_TYPE_OBJECT)
@@ -163,9 +164,52 @@ cd_icc_uint32_to_str (guint32 id, gchar *str)
 static void
 cd_icc_lcms2_error_cb (cmsContext context_id,
 		       cmsUInt32Number code,
-		       const gchar *text)
+		       const gchar *message)
 {
-	g_warning ("lcms2(profile): Failed with error: %s [%i]", text, code);
+	CdIcc *icc = CD_ICC (context_id);
+	CdIccPrivate *priv = icc->priv;
+	gint error_code;
+
+	/* there's already one error pending */
+	if (priv->error_lcms != NULL) {
+		g_prefix_error (&priv->error_lcms,
+				"%s & ", message);
+		return;
+	}
+
+	/* convert the first cmsERROR in into a CdIccError */
+	switch (code) {
+	case cmsERROR_CORRUPTION_DETECTED:
+		error_code = CD_ICC_ERROR_CORRUPTION_DETECTED;
+		break;
+	case cmsERROR_FILE:
+	case cmsERROR_READ:
+	case cmsERROR_SEEK:
+		error_code = CD_ICC_ERROR_FAILED_TO_OPEN;
+		break;
+	case cmsERROR_WRITE:
+		error_code = CD_ICC_ERROR_FAILED_TO_SAVE;
+		break;
+	case cmsERROR_COLORSPACE_CHECK:
+		error_code = CD_ICC_ERROR_INVALID_COLORSPACE;
+		break;
+	case cmsERROR_BAD_SIGNATURE:
+		error_code = CD_ICC_ERROR_FAILED_TO_PARSE;
+		break;
+	case cmsERROR_ALREADY_DEFINED:
+	case cmsERROR_INTERNAL:
+	case cmsERROR_NOT_SUITABLE:
+	case cmsERROR_NULL:
+	case cmsERROR_RANGE:
+	case cmsERROR_UNDEFINED:
+	case cmsERROR_UNKNOWN_EXTENSION:
+		error_code = CD_ICC_ERROR_INTERNAL;
+		break;
+	default:
+		g_warning ("LCMS2 erorr code not recognised; please report");
+		error_code = CD_ICC_ERROR_INTERNAL;
+	}
+	g_set_error_literal (&priv->error_lcms, CD_ICC_ERROR, error_code, message);
 }
 
 /**
@@ -3751,6 +3795,8 @@ cd_icc_finalize (GObject *object)
 		g_hash_table_destroy (priv->mluc_data[i]);
 	if (priv->lcms_profile != NULL)
 		cmsCloseProfile (priv->lcms_profile);
+	if (priv->error_lcms != NULL)
+		g_error_free (priv->error_lcms);
 
 	G_OBJECT_CLASS (cd_icc_parent_class)->finalize (object);
 }

@@ -60,10 +60,10 @@ typedef struct
  * @CD_ICC_ERROR_FAILED_TO_SAVE:	Failed to save file
  * @CD_ICC_ERROR_FAILED_TO_CREATE:	Failed to create file
  * @CD_ICC_ERROR_INVALID_COLORSPACE:	Invalid colorspace
+ * @CD_ICC_ERROR_CORRUPTION_DETECTED:	Corruption has been detected
+ * @CD_ICC_ERROR_INTERNAL:		Something inside LCMS broke
  *
  * The ICC error code.
- *
- * Since: 0.1.32
  **/
 typedef enum {
 	CD_ICC_ERROR_FAILED_TO_OPEN,			/* Since: 0.1.32 */
@@ -73,6 +73,8 @@ typedef enum {
 	CD_ICC_ERROR_FAILED_TO_SAVE,			/* Since: 0.1.32 */
 	CD_ICC_ERROR_FAILED_TO_CREATE,			/* Since: 0.1.32 */
 	CD_ICC_ERROR_INVALID_COLORSPACE,		/* Since: 0.1.34 */
+	CD_ICC_ERROR_CORRUPTION_DETECTED,		/* Since: 1.1.1 */
+	CD_ICC_ERROR_INTERNAL,				/* Since: 1.1.1 */
 	/*< private >*/
 	CD_ICC_ERROR_LAST
 } CdIccError;
