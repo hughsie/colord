@@ -1549,6 +1549,59 @@ out:
 }
 
 /**
+ * cd_icc_:
+ **/
+static GBytes *
+cd_icc_serialize_profile (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	gboolean ret;
+	GBytes *data = NULL;
+	gchar *data_tmp = NULL;
+	cmsUInt32Number length = 0;
+
+	/* get size of profile */
+	ret = cmsSaveProfileToMem (priv->lcms_profile,
+				   NULL, &length);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file");
+		goto out;
+	}
+
+	/* sanity check to 16Mb */
+	if (length == 0 || length > 16 * 1024 * 1024) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "failed to save ICC file, requested %u "
+			     "bytes and limit is 16Mb",
+			     length);
+		goto out;
+	}
+
+	/* allocate and get profile data */
+	data_tmp = g_new0 (gchar, length);
+	ret = cmsSaveProfileToMem (priv->lcms_profile,
+				   data_tmp, &length);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file to memory");
+		goto out;
+	}
+
+	/* success */
+	data = g_bytes_new (data_tmp, length);
+out:
+	g_free (data_tmp);
+	return data;
+}
+
+/**
  * cd_icc_save_data:
  * @icc: a #CdIcc instance.
  * @flags: a set of #CdIccSaveFlags
@@ -1567,12 +1620,10 @@ cd_icc_save_data (CdIcc *icc,
 {
 	CdIccPrivate *priv = icc->priv;
 	cmsHANDLE dict = NULL;
-	cmsUInt32Number length = 0;
 	const gchar *key;
 	const gchar *value;
 	gboolean ret = FALSE;
 	GBytes *data = NULL;
-	gchar *data_tmp = NULL;
 	GList *l;
 	GList *md_keys = NULL;
 	guint i;
@@ -1716,47 +1767,16 @@ cd_icc_save_data (CdIcc *icc,
 		goto out;
 	}
 
-	/* get size of profile */
-	ret = cmsSaveProfileToMem (priv->lcms_profile,
-				   NULL, &length);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "failed to dump ICC file");
+	/* get raw byte stream */
+	data = cd_icc_serialize_profile (icc, error);
+	if (data == NULL) {
+		ret = FALSE;
 		goto out;
 	}
-
-	/* sanity check to 16Mb */
-	if (length == 0 || length > 16 * 1024 * 1024) {
-		g_set_error (error,
-			     CD_ICC_ERROR,
-			     CD_ICC_ERROR_FAILED_TO_SAVE,
-			     "failed to save ICC file, requested %u "
-			     "bytes and limit is 16Mb",
-			     length);
-		goto out;
-	}
-
-	/* allocate and get profile data */
-	data_tmp = g_new0 (gchar, length);
-	ret = cmsSaveProfileToMem (priv->lcms_profile,
-				   data_tmp, &length);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "failed to dump ICC file to memory");
-		goto out;
-	}
-
-	/* success */
-	data = g_bytes_new (data_tmp, length);
 out:
 	g_list_free (md_keys);
 	if (dict != NULL)
 		cmsDictFree (dict);
-	g_free (data_tmp);
 	return data;
 }
 
