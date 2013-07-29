@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <lcms2.h>
 #include <string.h>
 #include <stdlib.h>
@@ -1558,6 +1559,7 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 	gboolean ret;
 	GBytes *data = NULL;
 	gchar *data_tmp = NULL;
+#if 0
 	cmsUInt32Number length = 0;
 
 	/* get size of profile */
@@ -1593,6 +1595,31 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 				     "failed to dump ICC file to memory");
 		goto out;
 	}
+#else
+	const gchar *temp_file = "/tmp/profile.icc";
+	gsize length;
+
+	/* LCMS2 doesn't serialize some tags properly when using the function
+	 * cmsSaveProfileToMem() twice, so until that's fixed we have to use a
+	 * temporary file */
+	ret = cmsSaveProfileToFile (priv->lcms_profile, temp_file);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file to temp file");
+		goto out;
+	}
+	ret = g_file_get_contents (temp_file, &data_tmp, &length, NULL);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to load temp file");
+		goto out;
+	}
+	g_unlink (temp_file);
+#endif
 
 	/* success */
 	data = g_bytes_new (data_tmp, length);
