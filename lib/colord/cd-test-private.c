@@ -1015,7 +1015,7 @@ colord_icc_save_func (void)
 	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_RGB);
 
 	/* modify some details about the profile */
-	cd_icc_set_version (icc, 4.09);
+	cd_icc_set_version (icc, 2.09);
 	cd_icc_set_colorspace (icc, CD_COLORSPACE_XYZ);
 	cd_icc_set_kind (icc, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	cd_icc_add_metadata (icc, "SelfTest", "true");
@@ -1045,7 +1045,7 @@ colord_icc_save_func (void)
 	g_object_unref (file);
 
 	/* verify changed values */
-	g_assert_cmpfloat (cd_icc_get_version (icc), ==, 4.09);
+	g_assert_cmpfloat (cd_icc_get_version (icc), ==, 2.09);
 	g_assert_cmpint (cd_icc_get_kind (icc), ==, CD_PROFILE_KIND_OUTPUT_DEVICE);
 	g_assert_cmpint (cd_icc_get_colorspace (icc), ==, CD_COLORSPACE_XYZ);
 	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "SelfTest"), ==, "true");
