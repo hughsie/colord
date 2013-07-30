@@ -4,14 +4,15 @@
 # 
 # Translators:
 # Jiri Grönroos <jiri.gronroos@iki.fi>, 2012
+# Larso <larso@gmx.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 09:30+0100\n"
-"PO-Revision-Date: 2013-05-01 08:30+0000\n"
+"POT-Creation-Date: 2013-07-30 13:00+0100\n"
+"PO-Revision-Date: 2013-07-30 12:00+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/colord/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -118,7 +119,7 @@ msgstr ""
 #. TRANSLATORS: the device format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
 msgid "Format"
-msgstr ""
+msgstr "Muoto"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
@@ -127,7 +128,7 @@ msgstr ""
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 msgid "Qualifier"
-msgstr ""
+msgstr "Määre"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
@@ -154,7 +155,7 @@ msgstr ""
 
 #. TRANSLATORS: profile filename
 msgid "Filename"
-msgstr ""
+msgstr "Tiedostonimi"
 
 #. TRANSLATORS: profile identifier
 msgid "Profile ID"
@@ -191,19 +192,19 @@ msgstr ""
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 msgid "Model"
-msgstr ""
+msgstr "Malli"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 msgid "Vendor"
-msgstr ""
+msgstr "Valmistaja"
 
 msgid "Inhibitors"
 msgstr ""
 
 #. TRANSLATORS: the device serial number
 msgid "Serial"
-msgstr ""
+msgstr "Sarjanumero"
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
@@ -216,7 +217,7 @@ msgstr ""
 
 #. TRANSLATORS: the device identifier
 msgid "Device ID"
-msgstr ""
+msgstr "Laitteen tunniste"
 
 #. TRANSLATORS: the profile for the device
 msgid "Profile"
@@ -381,16 +382,16 @@ msgid "Create a device"
 msgstr "Luo laite"
 
 #. TRANSLATORS: command description
-msgid "Find a device"
-msgstr "Etsi laite"
-
-#. TRANSLATORS: command description
-msgid "Find a device that has a specific property"
+msgid "Find a device from the device ID"
 msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a profile"
-msgstr "Etsi profiili"
+msgid "Find a device with a given property value"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Find a profile from the profile ID"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -405,8 +406,8 @@ msgid "Create a profile"
 msgstr "Luo profiili"
 
 #. TRANSLATORS: command description
-msgid "Add a profile to a device"
-msgstr "Lisää profiili laitteeseen"
+msgid "Add a profile to a device that already exists"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -456,6 +457,10 @@ msgstr ""
 msgid "Returns all the profiles that match a qualifier"
 msgstr ""
 
+#. TRANSLATORS: command description
+msgid "Import a profile and install it for the user"
+msgstr ""
+
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr "Ei yhteyttä colord-palveluun:"
@@ -464,6 +469,12 @@ msgid "Client version:"
 msgstr ""
 
 msgid "Daemon version:"
+msgstr ""
+
+msgid "System vendor:"
+msgstr ""
+
+msgid "System model:"
 msgstr ""
 
 msgid "Default gamma for the display"
@@ -749,6 +760,14 @@ msgid ""
 "bits per channel precision, you may see color banding when editing images."
 msgstr ""
 
+#. TRANSLATORS: ITU-R is a standards body
+#. 
+msgid ""
+"ITU-R recommendation BT.709 is a high-definition television standard that "
+"was first approved in 1990. The Rec. 709 profile uses the same range of "
+"colors as sRGB although the luminance curve is different."
+msgstr ""
+
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
@@ -933,6 +952,10 @@ msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
+msgstr ""
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+msgid "Create a dummy sensor for testing"
 msgstr ""
 
 msgid "Color Management D-Bus Service"

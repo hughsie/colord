@@ -9,10 +9,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 09:30+0100\n"
-"PO-Revision-Date: 2013-05-01 08:30+0000\n"
+"POT-Creation-Date: 2013-07-30 13:00+0100\n"
+"PO-Revision-Date: 2013-07-30 12:00+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/colord/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -382,16 +382,16 @@ msgid "Create a device"
 msgstr "Create a device"
 
 #. TRANSLATORS: command description
-msgid "Find a device"
-msgstr "Find a device"
+msgid "Find a device from the device ID"
+msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a device that has a specific property"
-msgstr "Find a device that has a specific property"
+msgid "Find a device with a given property value"
+msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a profile"
-msgstr "Find a profile"
+msgid "Find a profile from the profile ID"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -406,8 +406,8 @@ msgid "Create a profile"
 msgstr "Create a profile"
 
 #. TRANSLATORS: command description
-msgid "Add a profile to a device"
-msgstr "Add a profile to a device"
+msgid "Add a profile to a device that already exists"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -457,6 +457,10 @@ msgstr "Inhibits colour profiles for this device"
 msgid "Returns all the profiles that match a qualifier"
 msgstr "Returns all the profiles that match a qualifier"
 
+#. TRANSLATORS: command description
+msgid "Import a profile and install it for the user"
+msgstr ""
+
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr "No connection to colord:"
@@ -466,6 +470,12 @@ msgstr "Client version:"
 
 msgid "Daemon version:"
 msgstr "Daemon version:"
+
+msgid "System vendor:"
+msgstr ""
+
+msgid "System model:"
+msgstr ""
 
 msgid "Default gamma for the display"
 msgstr "Default gamma for the display"
@@ -484,21 +494,21 @@ msgid ""
 msgstr "The default target whitepoint in Kelvin for display calibration, with 0 meaning display native. Common values are 6500 for D65 and 5000 for D50."
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Delay between sample intervals"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "This is the delay between setting the sample colour and asking the measuring instrument to take a sample. It is required because both the graphics driver and the display itself introduce latency."
 
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "Web service profile upload URI"
 
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr ""
+msgstr "The URI of the web service that allows the calibration tools to upload a specific profile to the Internet."
 
 msgid "Compatible with Adobe RGB (1998)"
 msgstr "Compatible with Adobe RGB (1998)"
@@ -750,6 +760,14 @@ msgid ""
 "bits per channel precision, you may see color banding when editing images."
 msgstr "Originally designed by Eastman Kodak and called ROMM RGB, this profile can display a very large range of colours and is used by many photographers for rendering, editing and archiving RAW images. Unless you are working with 16 bits per channel precision, you may see colour banding when editing images."
 
+#. TRANSLATORS: ITU-R is a standards body
+#. 
+msgid ""
+"ITU-R recommendation BT.709 is a high-definition television standard that "
+"was first approved in 1990. The Rec. 709 profile uses the same range of "
+"colors as sRGB although the luminance curve is different."
+msgstr ""
+
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
@@ -935,6 +953,10 @@ msgstr "Exit after a small delay"
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
 msgstr "Exit after the engine has loaded"
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+msgid "Create a dummy sensor for testing"
+msgstr ""
 
 msgid "Color Management D-Bus Service"
 msgstr "Colour Management D-Bus Service"

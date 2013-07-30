@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Adolfo Jayme <fitoschido@gmail.com>, 2013
+# Adolfo Jayme Barrientos <fitoschido@ubuntu.com>, 2013
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2012-2013
 # Fernando Gonzalez Blanco <fgonz@fedoraproject.org>, 2009
 # Javier Alejandro Castro <javier.alejandro.castro@gmail.com>, 2008
@@ -14,10 +14,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 09:30+0100\n"
-"PO-Revision-Date: 2013-05-01 08:30+0000\n"
+"POT-Creation-Date: 2013-07-30 13:00+0100\n"
+"PO-Revision-Date: 2013-07-30 12:00+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Spanish (http://www.transifex.com/projects/p/colord/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -387,16 +387,16 @@ msgid "Create a device"
 msgstr "Crear un dispositivo"
 
 #. TRANSLATORS: command description
-msgid "Find a device"
-msgstr "Buscar un dispositivo"
+msgid "Find a device from the device ID"
+msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a device that has a specific property"
-msgstr "Buscar un dispositivo que tiene una propiedad específica"
+msgid "Find a device with a given property value"
+msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a profile"
-msgstr "Buscar un perfil"
+msgid "Find a profile from the profile ID"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -411,8 +411,8 @@ msgid "Create a profile"
 msgstr "Crear un perfil"
 
 #. TRANSLATORS: command description
-msgid "Add a profile to a device"
-msgstr "Añadir un perfil a un dispositivo"
+msgid "Add a profile to a device that already exists"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -462,6 +462,10 @@ msgstr "Inhibidores de perfiles de color para este dispositivo"
 msgid "Returns all the profiles that match a qualifier"
 msgstr "Devuelve todos los perfiles que coinciden con un cualificador"
 
+#. TRANSLATORS: command description
+msgid "Import a profile and install it for the user"
+msgstr ""
+
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr "No hay conexión con colord:"
@@ -471,6 +475,12 @@ msgstr "Versión del cliente:"
 
 msgid "Daemon version:"
 msgstr "Versión del servicio:"
+
+msgid "System vendor:"
+msgstr ""
+
+msgid "System model:"
+msgstr ""
 
 msgid "Default gamma for the display"
 msgstr "Gamma predeterminado de la pantalla"
@@ -755,6 +765,14 @@ msgid ""
 "bits per channel precision, you may see color banding when editing images."
 msgstr ""
 
+#. TRANSLATORS: ITU-R is a standards body
+#. 
+msgid ""
+"ITU-R recommendation BT.709 is a high-definition television standard that "
+"was first approved in 1990. The Rec. 709 profile uses the same range of "
+"colors as sRGB although the luminance curve is different."
+msgstr ""
+
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
@@ -940,6 +958,10 @@ msgstr "Salir después de una pequeña pausa"
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
 msgstr "Salir después que sea cargado el motor"
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+msgid "Create a dummy sensor for testing"
+msgstr ""
 
 msgid "Color Management D-Bus Service"
 msgstr "Servicio de D-Bus de gestión de color"

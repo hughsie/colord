@@ -10,10 +10,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 09:30+0100\n"
-"PO-Revision-Date: 2013-05-01 08:30+0000\n"
+"POT-Creation-Date: 2013-07-30 13:00+0100\n"
+"PO-Revision-Date: 2013-07-30 12:00+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/colord/language/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -383,16 +383,16 @@ msgid "Create a device"
 msgstr "Создать устройство"
 
 #. TRANSLATORS: command description
-msgid "Find a device"
-msgstr "Найти устройство"
+msgid "Find a device from the device ID"
+msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a device that has a specific property"
-msgstr "Найти устройство, которое имеет определённое свойство"
+msgid "Find a device with a given property value"
+msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a profile"
-msgstr "Найти профиль"
+msgid "Find a profile from the profile ID"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -407,8 +407,8 @@ msgid "Create a profile"
 msgstr "Создать профиль"
 
 #. TRANSLATORS: command description
-msgid "Add a profile to a device"
-msgstr "Добавить профиль к устройству"
+msgid "Add a profile to a device that already exists"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -458,6 +458,10 @@ msgstr "Заблокировать цветовые профили для это
 msgid "Returns all the profiles that match a qualifier"
 msgstr "Перечислить все профили, совпадающие с определением"
 
+#. TRANSLATORS: command description
+msgid "Import a profile and install it for the user"
+msgstr ""
+
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr "Нет соединения с colord:"
@@ -467,6 +471,12 @@ msgstr "Версия клиента:"
 
 msgid "Daemon version:"
 msgstr "Версия фоновой службы:"
+
+msgid "System vendor:"
+msgstr ""
+
+msgid "System model:"
+msgstr ""
 
 msgid "Default gamma for the display"
 msgstr "Стандартная гамма для дисплея"
@@ -485,13 +495,13 @@ msgid ""
 msgstr "Стандартная целевая точка белого в Кельвинах для калибровки дисплея, где 0 означает родное значение для дисплея. Распространённые значения: 6500 для D65 и 5000 для D50."
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Задержка между опросами образцов"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "Это задержка между установкой цвета образца и опросом измерительного инструмента для проведения замера данного образца. Это необходимо из-за того, что и графический драйвер, и сам дисплей превносят некоторую задержку."
 
 msgid "Web service profile upload URI"
 msgstr "Адрес интернет-службы для выгрузки профиля"
@@ -499,7 +509,7 @@ msgstr "Адрес интернет-службы для выгрузки про�
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr "Адрес интернет-службы, используя который, инструменты калибровки могут выгрузить определенный профиль в Интернет."
+msgstr "Адрес интернет-службы, по которому инструменты калибровки могут выгрузить определенный профиль в Интернет."
 
 msgid "Compatible with Adobe RGB (1998)"
 msgstr "Совместимый с Adobe RGB (1998)"
@@ -751,6 +761,14 @@ msgid ""
 "bits per channel precision, you may see color banding when editing images."
 msgstr "Первоначально разработанный компанией Eastman Kodak и названный ROMM RGB, этот профиль может отображать очень большой диапазон цветов и используется многими фотографами для визуализации, редактирования и архивирования цифровых RAW-негативов. Если вы не работаете с разрядностью 16 бит на цветовой канал, вы можете увидеть цветные полосы при редактировании изображений."
 
+#. TRANSLATORS: ITU-R is a standards body
+#. 
+msgid ""
+"ITU-R recommendation BT.709 is a high-definition television standard that "
+"was first approved in 1990. The Rec. 709 profile uses the same range of "
+"colors as sRGB although the luminance curve is different."
+msgstr ""
+
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
@@ -936,6 +954,10 @@ msgstr "Выйти после небольшой паузы"
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
 msgstr "Выйти после загрузки инструмента"
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+msgid "Create a dummy sensor for testing"
+msgstr ""
 
 msgid "Color Management D-Bus Service"
 msgstr "Служба D-Bus для управления цветом"

@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 09:30+0100\n"
-"PO-Revision-Date: 2013-05-01 08:30+0000\n"
+"POT-Creation-Date: 2013-07-30 13:00+0100\n"
+"PO-Revision-Date: 2013-07-30 12:00+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Basque (http://www.transifex.com/projects/p/colord/language/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -380,16 +380,16 @@ msgid "Create a device"
 msgstr "Sortu gailua"
 
 #. TRANSLATORS: command description
-msgid "Find a device"
-msgstr "Bilatu gailua"
-
-#. TRANSLATORS: command description
-msgid "Find a device that has a specific property"
+msgid "Find a device from the device ID"
 msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a profile"
-msgstr "Bilatu profila"
+msgid "Find a device with a given property value"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Find a profile from the profile ID"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -404,8 +404,8 @@ msgid "Create a profile"
 msgstr "Sortu profila"
 
 #. TRANSLATORS: command description
-msgid "Add a profile to a device"
-msgstr "Gehitu profila gailuari"
+msgid "Add a profile to a device that already exists"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -455,6 +455,10 @@ msgstr ""
 msgid "Returns all the profiles that match a qualifier"
 msgstr ""
 
+#. TRANSLATORS: command description
+msgid "Import a profile and install it for the user"
+msgstr ""
+
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr ""
@@ -463,6 +467,12 @@ msgid "Client version:"
 msgstr ""
 
 msgid "Daemon version:"
+msgstr ""
+
+msgid "System vendor:"
+msgstr ""
+
+msgid "System model:"
 msgstr ""
 
 msgid "Default gamma for the display"
@@ -748,6 +758,14 @@ msgid ""
 "bits per channel precision, you may see color banding when editing images."
 msgstr ""
 
+#. TRANSLATORS: ITU-R is a standards body
+#. 
+msgid ""
+"ITU-R recommendation BT.709 is a high-definition television standard that "
+"was first approved in 1990. The Rec. 709 profile uses the same range of "
+"colors as sRGB although the luminance curve is different."
+msgstr ""
+
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
@@ -933,6 +951,10 @@ msgstr "Irten atzerapen txiki baten ondoren"
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
 msgstr "Irten motorra kargatu ondoren"
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+msgid "Create a dummy sensor for testing"
+msgstr ""
 
 msgid "Color Management D-Bus Service"
 msgstr ""

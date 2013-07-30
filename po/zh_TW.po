@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 09:30+0100\n"
-"PO-Revision-Date: 2013-05-01 08:30+0000\n"
+"POT-Creation-Date: 2013-07-30 13:00+0100\n"
+"PO-Revision-Date: 2013-07-30 12:00+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/colord/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -381,16 +381,16 @@ msgid "Create a device"
 msgstr "建立裝置"
 
 #. TRANSLATORS: command description
-msgid "Find a device"
-msgstr "尋找裝置"
+msgid "Find a device from the device ID"
+msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a device that has a specific property"
-msgstr "尋找含指定屬性的裝置"
+msgid "Find a device with a given property value"
+msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Find a profile"
-msgstr "尋找描述檔"
+msgid "Find a profile from the profile ID"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -405,8 +405,8 @@ msgid "Create a profile"
 msgstr "建立描述檔"
 
 #. TRANSLATORS: command description
-msgid "Add a profile to a device"
-msgstr "將描述檔加入至裝置"
+msgid "Add a profile to a device that already exists"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -456,6 +456,10 @@ msgstr "抑制此裝置的色彩描述檔"
 msgid "Returns all the profiles that match a qualifier"
 msgstr "回傳符合修飾子的描述檔"
 
+#. TRANSLATORS: command description
+msgid "Import a profile and install it for the user"
+msgstr ""
+
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr "無連至 colord 的連線："
@@ -465,6 +469,12 @@ msgstr "客戶端版本："
 
 msgid "Daemon version:"
 msgstr "幕後程式版本："
+
+msgid "System vendor:"
+msgstr ""
+
+msgid "System model:"
+msgstr ""
 
 msgid "Default gamma for the display"
 msgstr "顯示器的預設色域"
@@ -749,6 +759,14 @@ msgid ""
 "bits per channel precision, you may see color banding when editing images."
 msgstr "最初由 Eastman Kodak 設計，且稱之為 ROMM RGB。此描述檔可顯示非常大範圍的色彩，許多攝影師將它用於 RAW 影像的算繪、編輯、封存用途。除非您正使用每通道有 16 位元精準度的裝置，否則編輯影像時可能會看見色帶產生。"
 
+#. TRANSLATORS: ITU-R is a standards body
+#. 
+msgid ""
+"ITU-R recommendation BT.709 is a high-definition television standard that "
+"was first approved in 1990. The Rec. 709 profile uses the same range of "
+"colors as sRGB although the luminance curve is different."
+msgstr ""
+
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
@@ -934,6 +952,10 @@ msgstr "在一小段延遲後離開"
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
 msgstr "在引擎載入後離開"
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+msgid "Create a dummy sensor for testing"
+msgstr ""
 
 msgid "Color Management D-Bus Service"
 msgstr "色彩管理 D-Bus 服務"
