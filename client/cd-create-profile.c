@@ -267,7 +267,7 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 		goto out;
 
 	/* open /tmp/$basename.icc as hProfile */
-	priv->lcms_profile = cmsOpenProfileFromMem (data, len);
+	priv->lcms_profile = cmsOpenProfileFromMemTHR (priv->icc, data, len);
 	if (priv->lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error (error, 1, 0,
