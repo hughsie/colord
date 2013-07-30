@@ -1550,17 +1550,126 @@ out:
 }
 
 /**
- * cd_icc_:
+ * cd_icc_check_error_cb:
+ **/
+static void
+cd_icc_check_error_cb (cmsContext context_id,
+		       cmsUInt32Number code,
+		       const char *message)
+{
+	gboolean *ret = (gboolean *) context_id;
+	*ret = FALSE;
+}
+
+/**
+ * cd_icc_check_lcms2_MemoryWrite:
+ *
+ * - Create a sRGB profile with some metadata
+ * - Serialize it to a memory blob
+ * - Load the resulting memory blob
+ *
+ * If there are any errors thrown, we're being compiled against a LCMS2 with
+ * the bad MemoryWrite() implementation.
+ **/
+static gboolean
+cd_icc_check_lcms2_MemoryWrite (void)
+{
+	cmsHANDLE dict;
+	cmsHPROFILE p;
+	cmsUInt32Number size;
+	gboolean ret = TRUE;
+	gchar *data;
+
+	/* setup temporary log handler */
+	cmsSetLogErrorHandler (cd_icc_check_error_cb);
+
+	/* create test data */
+	p = cmsCreate_sRGBProfileTHR (&ret);
+	dict = cmsDictAlloc (NULL);
+	cmsDictAddEntry (dict, L"1", L"2", NULL, NULL);
+	cmsWriteTag (p, cmsSigMetaTag, dict);
+	cmsSaveProfileToMem (p, NULL, &size);
+	data = g_malloc (size);
+	cmsSaveProfileToMem (p, data, &size);
+	cmsCloseProfile (p);
+	cmsDictFree (dict);
+
+	/* open file */
+	p = cmsOpenProfileFromMemTHR (&ret, data, size);
+	dict = cmsReadTag (p, cmsSigMetaTag);
+	g_assert (dict != (gpointer) 0x01); /* appease GCC */
+	cmsCloseProfile (p);
+	g_free (data);
+	return ret;
+}
+
+/**
+ * cd_icc_serialize_profile_fallback:
  **/
 static GBytes *
-cd_icc_serialize_profile (CdIcc *icc, GError **error)
+cd_icc_serialize_profile_fallback (CdIcc *icc, GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
 	gboolean ret;
 	GBytes *data = NULL;
 	gchar *data_tmp = NULL;
-#if 0
+	gchar *temp_file = NULL;
+	GError *error_local = NULL;
+	gint fd;
+	gsize length = 0;
+
+	/* get unique temp file */
+	fd = g_file_open_tmp ("colord-XXXXXX.icc", &temp_file, &error_local);
+	if (fd < 0) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "failed to open temp file: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+
+	/* dump to a file, avoiding the problematic call to MemoryWrite() */
+	ret = cmsSaveProfileToFile (priv->lcms_profile, temp_file);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file to temp file");
+		goto out;
+	}
+	ret = g_file_get_contents (temp_file, &data_tmp, &length, NULL);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to load temp file");
+		goto out;
+	}
+	/* success */
+	data = g_bytes_new (data_tmp, length);
+out:
+	if (fd >= 0)
+		close (fd);
+	if (temp_file != NULL)
+		g_unlink (temp_file);
+	g_free (temp_file);
+	g_free (data_tmp);
+	return data;
+}
+
+/**
+ * cd_icc_serialize_profile:
+ **/
+static GBytes *
+cd_icc_serialize_profile (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
 	cmsUInt32Number length = 0;
+	gboolean ret;
+	GBytes *data = NULL;
+	gchar *data_tmp = NULL;
 
 	/* get size of profile */
 	ret = cmsSaveProfileToMem (priv->lcms_profile,
@@ -1595,31 +1704,6 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 				     "failed to dump ICC file to memory");
 		goto out;
 	}
-#else
-	const gchar *temp_file = "/tmp/profile.icc";
-	gsize length;
-
-	/* LCMS2 doesn't serialize some tags properly when using the function
-	 * cmsSaveProfileToMem() twice, so until that's fixed we have to use a
-	 * temporary file */
-	ret = cmsSaveProfileToFile (priv->lcms_profile, temp_file);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "failed to dump ICC file to temp file");
-		goto out;
-	}
-	ret = g_file_get_contents (temp_file, &data_tmp, &length, NULL);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "failed to load temp file");
-		goto out;
-	}
-	g_unlink (temp_file);
-#endif
 
 	/* success */
 	data = g_bytes_new (data_tmp, length);
@@ -1794,8 +1878,17 @@ cd_icc_save_data (CdIcc *icc,
 		goto out;
 	}
 
-	/* get raw byte stream */
-	data = cd_icc_serialize_profile (icc, error);
+	/* LCMS2 doesn't serialize some tags properly when using the function
+	 * cmsSaveProfileToMem() twice, so until lcms 2.6 is released we have to
+	 * use a fallback version which uses a temporary file.
+	 * See https://github.com/mm2/Little-CMS/commit/1d2643cb8153c48dcfdee3d5cda43a38f7e719e2
+	 * for the fix. */
+	if (cd_icc_check_lcms2_MemoryWrite ()) {
+		data = cd_icc_serialize_profile (icc, error);
+	} else {
+		g_debug ("Using file serialization due to bad MemoryWrite.");
+		data = cd_icc_serialize_profile_fallback (icc, error);
+	}
 	if (data == NULL) {
 		ret = FALSE;
 		goto out;
