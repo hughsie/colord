@@ -1024,7 +1024,7 @@ cd_icc_load_metadata_item (CdIcc *icc,
 {
 	gboolean ret = TRUE;
 	gchar *ascii_name;
-	gchar *ascii_value;
+	gchar *ascii_value = NULL;
 	GError *error_local = NULL;
 
 	/* parse name */
@@ -1888,10 +1888,6 @@ cd_icc_save_data (CdIcc *icc,
 	} else {
 		g_debug ("Using file serialization due to bad MemoryWrite.");
 		data = cd_icc_serialize_profile_fallback (icc, error);
-	}
-	if (data == NULL) {
-		ret = FALSE;
-		goto out;
 	}
 out:
 	g_list_free (md_keys);
