@@ -550,7 +550,7 @@ cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 			ret = FALSE;
 			goto out;
 		}
-		coverage_tmp = g_strdup_printf ("%f", coverage);
+		coverage_tmp = g_strdup_printf ("%.2f", coverage);
 		cd_icc_add_metadata (priv->icc,
 				     "GAMUT_coverage(srgb)",
 				     coverage_tmp);
