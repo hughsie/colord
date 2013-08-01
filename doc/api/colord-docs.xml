@@ -82,6 +82,7 @@
     <xi:include href="xml/cd-dom.xml"/>
     <xi:include href="xml/cd-icc.xml"/>
     <xi:include href="xml/cd-icc-store.xml"/>
+    <xi:include href="xml/cd-icc-utils.xml"/>
     <xi:include href="xml/cd-transform.xml"/>
     <xi:include href="xml/cd-interp-akima.xml"/>
     <xi:include href="xml/cd-interp-linear.xml"/>

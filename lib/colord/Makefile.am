@@ -38,6 +38,7 @@ libcolordbase_include_HEADERS =					\
 	cd-enum.h						\
 	cd-icc.h						\
 	cd-icc-store.h						\
+	cd-icc-utils.h						\
 	cd-interp-akima.h					\
 	cd-interp-linear.h					\
 	cd-interp.h						\
@@ -59,6 +60,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-enum.c						\
 	cd-icc.c						\
 	cd-icc-store.c						\
+	cd-icc-utils.c						\
 	cd-interp-akima.c					\
 	cd-interp-linear.c					\
 	cd-interp.c						\

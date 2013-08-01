@@ -31,6 +31,7 @@
 #include "cd-dom.h"
 #include "cd-icc.h"
 #include "cd-icc-store.h"
+#include "cd-icc-utils.h"
 #include "cd-interp-akima.h"
 #include "cd-interp.h"
 #include "cd-interp-linear.h"
@@ -1419,6 +1420,39 @@ colord_icc_store_func (void)
 	g_object_unref (store);
 }
 
+static void
+colord_icc_util_func (void)
+{
+	CdIcc *icc_measured;
+	CdIcc *icc_reference;
+	gboolean ret;
+	gdouble coverage = 0;
+	GError *error = NULL;
+
+	icc_reference = cd_icc_new ();
+	ret = cd_icc_create_default (icc_reference, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	icc_measured = cd_icc_new ();
+	ret = cd_icc_create_default (icc_measured, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get coverage of one vs. the other */
+	ret = cd_icc_utils_get_coverage (icc_reference,
+					 icc_measured,
+					 &coverage,
+					 &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert_cmpfloat (coverage, >, 0.99);
+	g_assert_cmpfloat (coverage, <, 1.01);
+
+	g_object_unref (icc_reference);
+	g_object_unref (icc_measured);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1430,6 +1464,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);
+	g_test_add_func ("/colord/icc{util}", colord_icc_util_func);
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
 	g_test_add_func ("/colord/icc{edid}", colord_icc_edid_func);
 	g_test_add_func ("/colord/icc{characterization}", colord_icc_characterization_func);
