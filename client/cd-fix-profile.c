@@ -323,26 +323,6 @@ out:
 	return filename;
 }
 
-typedef struct {
-	guint			 idx;
-	cmsFloat32Number	*data;
-} CdUtilGamutCdeckHelper;
-
-/**
- * cd_util_get_coverage_sample_cb:
- **/
-static cmsInt32Number
-cd_util_get_coverage_sample_cb (const cmsFloat32Number in[],
-				cmsFloat32Number out[],
-				void *user_data)
-{
-	CdUtilGamutCdeckHelper *helper = (CdUtilGamutCdeckHelper *) user_data;
-	helper->data[helper->idx++] = in[0];
-	helper->data[helper->idx++] = in[1];
-	helper->data[helper->idx++] = in[2];
-	return 1;
-}
-
 /**
  * cd_util_get_coverage:
  * @profile: A valid #CdUtil
@@ -358,83 +338,37 @@ cd_util_get_coverage (cmsHPROFILE profile_proof,
 		      const gchar *filename_in,
 		      GError **error)
 {
-	const guint cube_size = 33;
-	cmsFloat32Number *data = NULL;
-	cmsHPROFILE profile_in = NULL;
-	cmsHPROFILE profile_null = NULL;
-	cmsHTRANSFORM transform = NULL;
-	cmsUInt16Number *alarm_codes = NULL;
-	cmsUInt32Number dimensions[] = { cube_size, cube_size, cube_size };
-	CdUtilGamutCdeckHelper helper;
-	gboolean ret;
 	gdouble coverage = -1.0;
-	guint cnt = 0;
-	guint data_len = cube_size * cube_size * cube_size;
-	guint i;
+	gboolean ret;
+	GFile *file = NULL;
+	CdIcc *icc = NULL;
+	CdIcc *icc_ref;
 
-	/* load profiles into lcms */
-	profile_null = cmsCreateNULLProfile ();
-	profile_in = cmsOpenProfileFromFile (filename_in, "r");
-	if (profile_in == NULL) {
-		g_set_error (error, 1, 0, "Failed to open %s", filename_in);
+	/* load proofing profile */
+	icc_ref = cd_icc_new ();
+	ret = cd_icc_load_handle (icc_ref, profile_proof,
+				  CD_ICC_LOAD_FLAGS_NONE, error);
+	if (!ret)
 		goto out;
-	}
 
-	/* create a proofing transform with gamut check */
-	transform = cmsCreateProofingTransform (profile_in,
-						TYPE_RGB_FLT,
-						profile_null,
-						TYPE_GRAY_FLT,
-						profile_proof,
-						INTENT_ABSOLUTE_COLORIMETRIC,
-						INTENT_ABSOLUTE_COLORIMETRIC,
-						cmsFLAGS_GAMUTCHECK |
-						cmsFLAGS_SOFTPROOFING);
-	if (transform == NULL) {
-		g_set_error (error, 1, 0,
-			     "Failed to setup transform for %s",
-			     filename_in);
+	/* load target profile */
+	icc = cd_icc_new ();
+	file = g_file_new_for_path (filename_in);
+	ret = cd_icc_load_file (icc, file, CD_ICC_LOAD_FLAGS_NONE, NULL, error);
+	if (!ret)
 		goto out;
-	}
 
-	/* set gamut alarm to 0xffff */
-	alarm_codes = g_new0 (cmsUInt16Number, cmsMAXCHANNELS);
-	alarm_codes[0] = 0xffff;
-	cmsSetAlarmCodes (alarm_codes);
-
-	/* slice profile in regular intevals */
-	data = g_new0 (cmsFloat32Number, data_len * 3);
-	helper.data = data;
-	helper.idx = 0;
-	ret = cmsSliceSpaceFloat (3, dimensions,
-				  cd_util_get_coverage_sample_cb,
-				  &helper);
-	if (!ret) {
-		g_set_error_literal (error, 1, 0, "Failed to slice data");
+	/* get coverage */
+	ret = cd_icc_utils_get_coverage (icc, icc_ref, &coverage, error);
+	if (!ret)
 		goto out;
-	}
-
-	/* transform each one of those nodes across the proofing transform */
-	cmsDoTransform (transform, helper.data, helper.data, data_len);
-
-	/* count the nodes that gives you zero and divide by total number */
-	for (i = 0; i < data_len; i++) {
-		if (helper.data[i] == 0.0)
-			cnt++;
-	}
-
-	/* success */
-	coverage = (gdouble) cnt / (gdouble) data_len;
-	g_assert (coverage >= 0.0);
 out:
-	g_free (data);
-	if (transform != NULL)
-		cmsDeleteTransform (transform);
-	if (profile_null != NULL)
-		cmsCloseProfile (profile_null);
-	if (profile_in != NULL)
-		cmsCloseProfile (profile_in);
-	return coverage;
+	if (file != NULL)
+		g_object_unref (file);
+	if (icc != NULL)
+		g_object_unref (icc);
+	g_object_unref (icc_ref);
+	return ret;
 }
 
 /**
