@@ -740,6 +740,44 @@ out:
 }
 
 /**
+ * cd_util_icc_set_metadata_coverage:
+ **/
+static gboolean
+cd_util_icc_set_metadata_coverage (CdIcc *icc, GError **error)
+{
+	CdIcc *icc_srgb = NULL;
+	const gchar *tmp;
+	gboolean ret = TRUE;
+	gchar *coverage_tmp = NULL;
+	gdouble coverage = 0.0f;
+
+	/* is sRGB? */
+	tmp = cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_STANDARD_SPACE);
+	if (g_strcmp0 (tmp, "srgb") == 0)
+		goto out;
+
+	/* calculate coverage (quite expensive to calculate, hence metadata) */
+	icc_srgb = cd_icc_new ();
+	ret = cd_icc_create_default (icc_srgb, error);
+	if (!ret)
+		goto out;
+	ret = cd_icc_utils_get_coverage (icc_srgb, icc, &coverage, error);
+	if (!ret)
+		goto out;
+	if (coverage > 0.0) {
+		coverage_tmp = g_strdup_printf ("%.2f", coverage);
+		cd_icc_add_metadata (icc,
+				     "GAMUT_coverage(srgb)",
+				     coverage_tmp);
+	}
+out:
+	g_free (coverage_tmp);
+	if (icc_srgb != NULL)
+		g_object_unref (icc_srgb);
+	return ret;
+}
+
+/**
  * cd_util_create_from_xml:
  **/
 static gboolean
@@ -821,6 +859,9 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 		cd_icc_add_metadata (priv->icc,
 				     CD_PROFILE_METADATA_STANDARD_SPACE,
 				     cd_dom_get_node_data (tmp));
+		ret = cd_util_icc_set_metadata_coverage (priv->icc, error);
+		if (!ret)
+			goto out;
 	}
 	tmp = cd_dom_get_node (dom, profile, "data_source");
 	if (tmp != NULL) {
