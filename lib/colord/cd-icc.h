@@ -256,6 +256,9 @@ gboolean	 cd_icc_create_from_edid		(CdIcc		*icc,
 							 const CdColorYxy *white,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 cd_icc_create_default			(CdIcc		*icc,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 GPtrArray	*cd_icc_get_vcgt			(CdIcc		*icc,
 							 guint		 size,
 							 GError		**error)

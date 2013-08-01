@@ -3177,6 +3177,58 @@ cd_icc_get_white (CdIcc *icc)
 }
 
 /**
+ * cd_icc_create_default:
+ * @icc: A valid #CdIcc
+ * @error: A #GError, or %NULL
+ *
+ * Creates a default sRGB ICC profile.
+ *
+ * Return value: %TRUE for success
+ *
+ * Since: 1.1.2
+ **/
+gboolean
+cd_icc_create_default (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	gboolean ret = TRUE;
+
+	/* setup error handler */
+	cmsSetLogErrorHandler (cd_icc_lcms2_error_cb);
+
+	/* not loaded */
+	if (priv->lcms_profile != NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_CREATE,
+				     "already loaded or generated");
+		goto out;
+	}
+
+	/* create our generated ICC */
+	priv->lcms_profile = cmsCreate_sRGBProfileTHR (icc);
+	if (priv->lcms_profile == NULL) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_CREATE,
+			     "failed to create sRGB profile");
+		goto out;
+	}
+
+	/* set any extra profile metadata */
+	cd_icc_add_metadata (icc,
+			     CD_PROFILE_METADATA_DATA_SOURCE,
+			     CD_PROFILE_METADATA_DATA_SOURCE_STANDARD);
+	cd_icc_add_metadata (icc,
+			     CD_PROFILE_METADATA_STANDARD_SPACE,
+			     cd_standard_space_to_string (CD_STANDARD_SPACE_SRGB));
+out:
+	return ret;
+}
+
+/**
  * cd_icc_create_from_edid:
  * @icc: A valid #CdIcc
  * @gamma_value: approximate device gamma
