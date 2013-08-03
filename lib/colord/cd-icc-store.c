@@ -552,7 +552,7 @@ void
 cd_icc_store_set_load_flags (CdIccStore *store, CdIccLoadFlags load_flags)
 {
 	g_return_if_fail (CD_IS_ICC_STORE (store));
-	store->priv->load_flags = load_flags;
+	store->priv->load_flags = load_flags | CD_ICC_LOAD_FLAGS_FALLBACK_MD5;
 }
 
 /**
@@ -772,6 +772,7 @@ static void
 cd_icc_store_init (CdIccStore *store)
 {
 	store->priv = CD_ICC_STORE_GET_PRIVATE (store);
+	store->priv->load_flags = CD_ICC_LOAD_FLAGS_FALLBACK_MD5;
 	store->priv->icc_array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	store->priv->directory_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_icc_store_helper_free);
 }
