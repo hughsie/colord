@@ -86,8 +86,8 @@ ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1002", ENV{COLORD_SENSOR_KIND}="colo
 
 # color calibration device
 ENV{COLORD_SENSOR_KIND}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"
-ENV{COLORD_SENSOR_KIND}=="*?", ENV{ID_MODEL}=="", IMPORT{program}="usb_id --export %p"
-ENV{COLORD_SENSOR_KIND}=="*?", ENV{ID_MODEL_FROM_DATABASE}=="", IMPORT{program}="usb-db %p"
+ENV{COLORD_SENSOR_KIND}=="*?", ENV{ID_MODEL}=="", IMPORT{builtin}="usb_id"
+ENV{COLORD_SENSOR_KIND}=="*?", ENV{ID_MODEL_FROM_DATABASE}=="", IMPORT{builtin}="hwdb --subsystem=usb"
 
 # Allow the daemon to access the color devices
 ENV{COLORD_SENSOR_KIND}=="*?", GROUP="@daemon_user@"
