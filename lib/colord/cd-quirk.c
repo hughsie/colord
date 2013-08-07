@@ -94,6 +94,7 @@ cd_quirk_vendor_name (const gchar *vendor)
 		{ "samsung", "Samsung" },
 		{ "SAMSUNG", "Samsung" },
 		{ "Sanyo Electric Co.,Ltd.", "Sanyo" },
+		{ "Sonix Technology Co.", "Sonix" },
 		{ "System manufacturer", "Unknown" },
 		{ "To Be Filled By O.E.M.", "Unknown" },
 		{ "Toshiba America Info Systems Inc", "Toshiba" },
