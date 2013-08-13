@@ -54,21 +54,13 @@ cd_icc_utils_get_coverage_sample_cb (const cmsFloat32Number in[],
 }
 
 /**
- * cd_icc_utils_get_coverage:
- * @icc: The profile to test
- * @icc_reference: The reference profile, e.g. sRGB
- * @coverage: The coverage of @icc on @icc_reference
- * @error: A #GError, or %NULL
- *
- * Gets the gamut coverage of two profiles.
- *
- * Return value: TRUE for success
+ * cd_icc_utils_get_coverage_calc:
  **/
-gboolean
-cd_icc_utils_get_coverage (CdIcc *icc,
-			   CdIcc *icc_reference,
-			   gdouble *coverage,
-			   GError **error)
+static gboolean
+cd_icc_utils_get_coverage_calc (CdIcc *icc,
+				CdIcc *icc_reference,
+				gdouble *coverage,
+				GError **error)
 {
 	const guint cube_size = 33;
 	cmsFloat32Number *data = NULL;
@@ -140,5 +132,52 @@ out:
 	g_free (data);
 	if (transform != NULL)
 		cmsDeleteTransform (transform);
+	return ret;
+}
+
+/**
+ * cd_icc_utils_get_coverage:
+ * @icc: The profile to test
+ * @icc_reference: The reference profile, e.g. sRGB
+ * @coverage: The coverage of @icc on @icc_reference
+ * @error: A #GError, or %NULL
+ *
+ * Gets the gamut coverage of two profiles where 0.5 would mean the gamut is
+ * half the size, and 2.0 would indicate the gamut is twice the size.
+ *
+ * Return value: TRUE for success
+ **/
+gboolean
+cd_icc_utils_get_coverage (CdIcc *icc,
+			   CdIcc *icc_reference,
+			   gdouble *coverage,
+			   GError **error)
+{
+	gboolean ret;
+	gdouble coverage_tmp;
+
+	/* first see if icc has a smaller gamut volume to the reference */
+	ret = cd_icc_utils_get_coverage_calc (icc,
+					      icc_reference,
+					      &coverage_tmp,
+					      error);
+	if (!ret)
+		goto out;
+
+	/* now try the other way around */
+	if (coverage_tmp >= 1.0f) {
+		ret = cd_icc_utils_get_coverage_calc (icc_reference,
+						      icc,
+						      &coverage_tmp,
+						      error);
+		if (!ret)
+			goto out;
+		coverage_tmp = 1 / coverage_tmp;
+	}
+
+	/* success */
+	if (coverage != NULL)
+		*coverage = coverage_tmp;
+out:
 	return ret;
 }
