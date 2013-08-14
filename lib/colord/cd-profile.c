@@ -1527,7 +1527,6 @@ static void
 cd_profile_finalize (GObject *object)
 {
 	CdProfile *profile;
-	guint ret;
 
 	g_return_if_fail (CD_IS_PROFILE (object));
 
@@ -1542,14 +1541,12 @@ cd_profile_finalize (GObject *object)
 	g_free (profile->priv->title);
 	g_strfreev (profile->priv->warnings);
 	if (profile->priv->proxy != NULL) {
-		ret = g_signal_handlers_disconnect_by_func (profile->priv->proxy,
-							    G_CALLBACK (cd_profile_dbus_signal_cb),
-							    profile);
-		g_assert (ret > 0);
-		ret = g_signal_handlers_disconnect_by_func (profile->priv->proxy,
-							    G_CALLBACK (cd_profile_dbus_properties_changed_cb),
-							    profile);
-		g_assert (ret > 0);
+		g_signal_handlers_disconnect_by_func (profile->priv->proxy,
+						      G_CALLBACK (cd_profile_dbus_signal_cb),
+						      profile);
+		g_signal_handlers_disconnect_by_func (profile->priv->proxy,
+						      G_CALLBACK (cd_profile_dbus_properties_changed_cb),
+						      profile);
 		g_object_unref (profile->priv->proxy);
 	}
 
