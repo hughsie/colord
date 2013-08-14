@@ -33,7 +33,7 @@
 #include <colord.h>
 #include <string.h>
 
-#include "cd-edid.h"
+#include "cd-compat-edid.h"
 
 /**
  * cd_edid_install_profile:

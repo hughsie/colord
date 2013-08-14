@@ -19,8 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifndef __CD_EDID_H
-#define __CD_EDID_H
+#ifndef __CD_COMPAT_EDID_H
+#define __CD_COMPAT_EDID_H
 
 #include <glib.h>
 
@@ -50,7 +50,6 @@ typedef enum {
 	CD_EDID_ERROR_MONITOR_NOT_FOUND,
 	CD_EDID_ERROR_UNUSED4,
 	CD_EDID_ERROR_UNUSED5,
-	CD_EDID_ERROR_LAST,
 } CdEdidError;
 
 /**
@@ -81,4 +80,4 @@ CdEdidError	 cd_edid_get_profile		(unsigned char	*edid,
 
 G_END_DECLS
 
-#endif /* __CD_EDID_H */
+#endif /* __CD_COMPAT_EDID_H */

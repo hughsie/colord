@@ -16,11 +16,11 @@ lib_LTLIBRARIES =						\
 
 libcolordcompat_includedir = $(includedir)/colord-1/colord
 libcolordcompat_include_HEADERS =				\
-	cd-edid.h
+	cd-compat-edid.h
 
 libcolordcompat_la_SOURCES =					\
-	cd-edid.c						\
-	cd-edid.h
+	cd-compat-edid.c					\
+	cd-compat-edid.h
 
 libcolordcompat_la_LIBADD =					\
 	$(GLIB_LIBS)						\
