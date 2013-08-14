@@ -188,10 +188,6 @@
             If the enabled state is changed then this is reflected for
             all users and persistent across reboots.
           </doc:para>
-          <doc:para>
-            If a device is not enabled then no profiles can be added or
-            removed and the default cannot be changed.
-          </doc:para>
         </doc:description>
       </doc:doc>
     </property>
