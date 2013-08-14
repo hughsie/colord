@@ -3229,6 +3229,68 @@ out:
 }
 
 /**
+ * cd_icc_create_from_edid_data:
+ * @icc: A valid #CdIcc
+ * @edid: EDID data
+ * @error: A #GError, or %NULL
+ *
+ * Creates an ICC profile from EDID data.
+ *
+ * Return value: %TRUE for success
+ *
+ * Since: 1.1.2
+ **/
+gboolean
+cd_icc_create_from_edid_data (CdIcc *icc, CdEdid *edid, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	const gchar *data;
+	gboolean ret = FALSE;
+
+	/* not loaded */
+	if (priv->lcms_profile != NULL) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_CREATE,
+				     "already loaded or generated");
+		goto out;
+	}
+
+	/* create from parsed object */
+	ret = cd_icc_create_from_edid (icc,
+				       cd_edid_get_gamma (edid),
+				       cd_edid_get_red (edid),
+				       cd_edid_get_green (edid),
+				       cd_edid_get_blue (edid),
+				       cd_edid_get_white (edid),
+				       error);
+	if (!ret)
+		goto out;
+
+	/* set copyright */
+	cd_icc_set_copyright (icc, NULL,
+			      /* deliberately not translated */
+			      "This profile is free of known copyright restrictions.");
+
+	/* set 'ICC meta Tag for Monitor Profiles' data */
+	cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_MD5, cd_edid_get_checksum (edid));
+	data = cd_edid_get_monitor_name (edid);
+	if (data != NULL)
+		cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_MODEL, data);
+	data = cd_edid_get_serial_number (edid);
+	if (data != NULL)
+		cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_SERIAL, data);
+	data = cd_edid_get_pnp_id (edid);
+	if (data != NULL)
+		cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_MNFT, data);
+	data = cd_edid_get_vendor_name (edid);
+	if (data != NULL)
+		cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_VENDOR, data);
+out:
+	return ret;
+}
+
+/**
  * cd_icc_create_from_edid:
  * @icc: A valid #CdIcc
  * @gamma_value: approximate device gamma

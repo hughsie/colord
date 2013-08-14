@@ -29,6 +29,7 @@
 #include "cd-buffer.h"
 #include "cd-color.h"
 #include "cd-dom.h"
+#include "cd-edid.h"
 #include "cd-icc.h"
 #include "cd-icc-store.h"
 #include "cd-icc-utils.h"
@@ -1453,6 +1454,73 @@ colord_icc_util_func (void)
 	g_object_unref (icc_measured);
 }
 
+static void
+colord_edid_func (void)
+{
+	CdEdid *edid;
+	gboolean ret;
+	GBytes *data_edid;
+	gchar *data;
+	gchar *filename;
+	GError *error = NULL;
+	gsize length = 0;
+
+	edid = cd_edid_new ();
+	g_assert (edid != NULL);
+
+	/* LG 21" LCD panel */
+	filename = cd_test_get_filename ("LG-L225W-External.bin");
+	g_assert (filename != NULL);
+	ret = g_file_get_contents (filename, &data, &length, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	data_edid = g_bytes_new (data, length);
+	ret = cd_edid_parse (edid, data_edid, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_free (filename);
+	g_bytes_unref (data_edid);
+
+	g_assert_cmpstr (cd_edid_get_monitor_name (edid), ==, "L225W");
+	g_assert_cmpstr (cd_edid_get_vendor_name (edid), ==, "Goldstar");
+	g_assert_cmpstr (cd_edid_get_serial_number (edid), ==, "34398");
+	g_assert_cmpstr (cd_edid_get_eisa_id (edid), ==, NULL);
+	g_assert_cmpstr (cd_edid_get_checksum (edid), ==, "0bb44865bb29984a4bae620656c31368");
+	g_assert_cmpstr (cd_edid_get_pnp_id (edid), ==, "GSM");
+	g_assert_cmpint (cd_edid_get_height (edid), ==, 30);
+	g_assert_cmpint (cd_edid_get_width (edid), ==, 47);
+	g_assert_cmpfloat (cd_edid_get_gamma (edid), >=, 2.2f - 0.01);
+	g_assert_cmpfloat (cd_edid_get_gamma (edid), <, 2.2f + 0.01);
+	g_free (data);
+
+	/* Lenovo T61 internal Panel */
+	filename = cd_test_get_filename ("Lenovo-T61-Internal.bin");
+	g_assert (filename != NULL);
+	ret = g_file_get_contents (filename, &data, &length, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	data_edid = g_bytes_new (data, length);
+	ret = cd_edid_parse (edid, data_edid, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_free (filename);
+	g_bytes_unref (data_edid);
+
+	g_assert_cmpstr (cd_edid_get_monitor_name (edid), ==, NULL);
+	g_assert_cmpstr (cd_edid_get_vendor_name (edid), ==, "IBM");
+	g_assert_cmpstr (cd_edid_get_serial_number (edid), ==, NULL);
+	g_assert_cmpstr (cd_edid_get_eisa_id (edid), ==, "LTN154P2-L05");
+	g_assert_cmpstr (cd_edid_get_checksum (edid), ==, "e1865128c7cd5e5ed49ecfc8102f6f9c");
+	g_assert_cmpstr (cd_edid_get_pnp_id (edid), ==, "IBM");
+	g_assert_cmpint (cd_edid_get_height (edid), ==, 21);
+	g_assert_cmpint (cd_edid_get_width (edid), ==, 33);
+	g_assert_cmpfloat (cd_edid_get_gamma (edid), >=, 2.2f - 0.01);
+	g_assert_cmpfloat (cd_edid_get_gamma (edid), <, 2.2f + 0.01);
+	g_free (data);
+
+	g_object_unref (edid);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1462,6 +1530,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/edid", colord_edid_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/icc{util}", colord_icc_util_func);

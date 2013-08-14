@@ -8,6 +8,7 @@ endif
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)						\
 	$(LCMS_CFLAGS)						\
+	$(UDEV_CFLAGS)						\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/lib					\
 	-DCD_COMPILATION					\
@@ -35,6 +36,7 @@ libcolordbase_include_HEADERS =					\
 	cd-device.h						\
 	cd-device-sync.h					\
 	cd-dom.h						\
+	cd-edid.h						\
 	cd-enum.h						\
 	cd-icc.h						\
 	cd-icc-store.h						\
@@ -57,6 +59,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-buffer.c						\
 	cd-color.c						\
 	cd-dom.c						\
+	cd-edid.c						\
 	cd-enum.c						\
 	cd-icc.c						\
 	cd-icc-store.c						\
@@ -71,6 +74,7 @@ libcolordprivate_la_SOURCES =					\
 	cd-transform.c
 libcolordprivate_la_LIBADD =					\
 	$(LIBM)							\
+	$(UDEV_LIBS)						\
 	$(LCMS_LIBS)						\
 	$(GLIB_LIBS)
 libcolordprivate_la_LDFLAGS =					\
@@ -91,6 +95,7 @@ libcolord_la_SOURCES =						\
 	cd-sensor.c						\
 	cd-sensor-sync.c
 libcolord_la_LIBADD =						\
+	$(UDEV_LIBS)						\
 	$(GLIB_LIBS)						\
 	libcolordprivate.la
 libcolord_la_LDFLAGS =						\
@@ -134,6 +139,7 @@ cd_test_private_SOURCES =					\
 
 cd_test_private_LDADD =						\
 	$(GLIB_LIBS)						\
+	$(UDEV_LIBS)						\
 	$(lib_LTLIBRARIES)
 
 cd_test_private_CFLAGS = $(WARNINGFLAGS_C)

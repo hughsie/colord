@@ -31,6 +31,7 @@
 
 #include "cd-color.h"
 #include "cd-enum.h"
+#include "cd-edid.h"
 
 G_BEGIN_DECLS
 
@@ -254,6 +255,10 @@ gboolean	 cd_icc_create_from_edid		(CdIcc		*icc,
 							 const CdColorYxy *green,
 							 const CdColorYxy *blue,
 							 const CdColorYxy *white,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 cd_icc_create_from_edid_data		(CdIcc		*icc,
+							 CdEdid		*edid,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_icc_create_default			(CdIcc		*icc,

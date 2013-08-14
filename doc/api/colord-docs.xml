@@ -80,6 +80,7 @@
     </partintro>
     <xi:include href="xml/cd-color.xml"/>
     <xi:include href="xml/cd-dom.xml"/>
+    <xi:include href="xml/cd-edid.xml"/>
     <xi:include href="xml/cd-icc.xml"/>
     <xi:include href="xml/cd-icc-store.xml"/>
     <xi:include href="xml/cd-icc-utils.xml"/>

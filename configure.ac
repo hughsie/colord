@@ -149,6 +149,7 @@ fi
 AM_CONDITIONAL(HAVE_GUSB, test x$enable_gusb = xyes)
 
 PKG_CHECK_MODULES(LCMS, lcms2 >= 2.4)
+PKG_CHECK_MODULES(UDEV, libudev)
 AC_CHECK_LIB(lcms2, cmsGetHeaderCreator, have_lcms_creator=yes)
 if test x$have_lcms_creator != x; then
 	AC_DEFINE(HAVE_LCMS_GET_HEADER_CREATOR,1,[cmsGetHeaderCreator is available])
