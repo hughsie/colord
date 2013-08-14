@@ -593,15 +593,6 @@ cd_device_remove_profile (CdDevice *device,
 	gboolean ret = FALSE;
 	guint i;
 
-	/* device is disabled */
-	if (priv->enabled == FALSE) {
-		g_set_error_literal (error,
-				     CD_DEVICE_ERROR,
-				     CD_DEVICE_ERROR_NOT_ENABLED,
-				     "device is disabled");
-		goto out;
-	}
-
 	/* check the profile exists on this device */
 	for (i = 0; i < priv->profiles->len; i++) {
 		item = g_ptr_array_index (priv->profiles, i);
@@ -711,16 +702,6 @@ cd_device_add_profile (CdDevice *device,
 	gboolean create_item = TRUE;
 	gboolean ret = TRUE;
 	guint i;
-
-	/* device is disabled */
-	if (priv->enabled == FALSE) {
-		ret = FALSE;
-		g_set_error_literal (error,
-				     CD_DEVICE_ERROR,
-				     CD_DEVICE_ERROR_NOT_ENABLED,
-				     "device is disabled");
-		goto out;
-	}
 
 	/* is it available */
 	profile = cd_profile_array_get_by_object_path (priv->profile_array,
@@ -1007,15 +988,6 @@ cd_device_make_default (CdDevice *device,
 	guint i;
 	gboolean ret = FALSE;
 	CdDevicePrivate *priv = device->priv;
-
-	/* device is disabled */
-	if (priv->enabled == FALSE) {
-		g_set_error_literal (error,
-				     CD_DEVICE_ERROR,
-				     CD_DEVICE_ERROR_NOT_ENABLED,
-				     "device is disabled");
-		goto out;
-	}
 
 	/* find profile */
 	profile = cd_device_find_profile_by_object_path (priv->profiles,
