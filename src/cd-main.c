@@ -305,7 +305,7 @@ cd_main_auto_add_from_md (CdMainPrivate *priv,
 	tmp = cd_profile_get_metadata_item (profile, CD_PROFILE_METADATA_DATA_SOURCE);
 	if (g_strcmp0 (tmp, CD_PROFILE_METADATA_DATA_SOURCE_EDID) == 0) {
 		warnings = cd_profile_get_warnings (profile);
-		if (g_strv_length ((gchar **) warnings) > 0) {
+		if (warnings != NULL && g_strv_length ((gchar **) warnings) > 0) {
 			g_debug ("CdMain: NOT MD add %s to %s as profile has warnings",
 				 profile_id, device_id);
 			goto out;
