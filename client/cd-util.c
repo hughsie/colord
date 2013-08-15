@@ -726,6 +726,121 @@ out:
 }
 
 /**
+ * cd_util_dump:
+ **/
+static gboolean
+cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdDevice *device;
+	CdProfile *profile;
+	const gchar *argv[] = { "sqlite3", "/var/lib/colord/mapping.db", ".dump", NULL };
+	gboolean ret = TRUE;
+	gchar *mapping_db = NULL;
+	gchar *tmp;
+	GDateTime *dt;
+	GError *error_local = NULL;
+	GPtrArray *devices = NULL;
+	GPtrArray *profiles = NULL;
+	GString *str;
+	guint i;
+
+	/* header */
+	str = g_string_new ("");
+	dt = g_date_time_new_now_local ();
+	tmp = g_date_time_format (dt, "%F %T");
+	g_string_append_printf (str, "date-time\t%s\n", tmp);
+	g_free (tmp);
+
+	/* dump versions and system info */
+	g_string_append_printf (str, "client-version\t%s\n", PACKAGE_VERSION);
+	g_string_append_printf (str, "daemon-version\t%s\n",
+				cd_client_get_daemon_version (priv->client));
+	g_string_append_printf (str, "system-vendor\t%s\n",
+				cd_client_get_system_vendor (priv->client));
+	g_string_append_printf (str, "system-model\t%s\n",
+				cd_client_get_system_model (priv->client));
+
+	/* get profiles */
+	profiles = cd_client_get_profiles_sync (priv->client, NULL, error);
+	if (profiles == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	g_string_append_printf (str, "no-profile\t%i\n", profiles->len);
+	for (i = 0; i < profiles->len; i++) {
+		profile = g_ptr_array_index (profiles, i);
+		ret = cd_profile_connect_sync (profile, NULL, &error_local);
+		if (!ret) {
+			g_string_append_printf (str, "profile-%02i\t%s\tERROR: %s\n",
+						i,
+						cd_profile_get_object_path (profile),
+						error_local->message);
+			g_clear_error (&error_local);
+		}
+		g_string_append_printf (str, "profile-%02i\t%s\t%s\n",
+					i,
+					cd_profile_get_id (profile),
+					cd_profile_get_filename (profile));
+	}
+
+	/* get devices */
+	devices = cd_client_get_devices_sync (priv->client, NULL, error);
+	if (devices == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+	g_string_append_printf (str, "no-devices\t%i\n", devices->len);
+	for (i = 0; i < devices->len; i++) {
+		device = g_ptr_array_index (devices, i);
+		ret = cd_device_connect_sync (device, NULL, &error_local);
+		if (!ret) {
+			g_string_append_printf (str, "device-%02i\t%s\tERROR: %s\n",
+						i,
+						cd_device_get_object_path (device),
+						error_local->message);
+			g_clear_error (&error_local);
+		}
+		profile = cd_device_get_default_profile (device);
+		if (profile != NULL) {
+			ret = cd_profile_connect_sync (profile, NULL, error);
+			if (!ret)
+				goto out;
+		}
+		g_string_append_printf (str, "device-%02i\t%s\t%s\n",
+					i,
+					profile != NULL ?
+					 cd_profile_get_id (profile) :
+					 "                                    ",
+					cd_device_get_id (device));
+	}
+
+	/* get hard mapping data */
+	ret = g_spawn_sync (NULL, (gchar **) argv, NULL,
+			    G_SPAWN_SEARCH_PATH, NULL, NULL,
+			    &mapping_db, NULL, NULL, error);
+	g_string_append_printf (str, "mapping-db:\n%s\n", mapping_db);
+
+	/* save file */
+	g_string_truncate (str, str->len - 1);
+	tmp = g_date_time_format (dt, "colord-%s.txt");
+	ret = g_file_set_contents (tmp, str->str, -1, error);
+	if (!ret)
+		goto out;
+	g_print ("%s", str->str);
+	g_print ("--- Output file also saved to '%s' ---\n", tmp);
+	g_free (tmp);
+out:
+	g_date_time_unref (dt);
+	g_free (mapping_db);
+	g_string_free (str, FALSE);
+	if (devices != NULL)
+		g_ptr_array_unref (devices);
+	if (profiles != NULL)
+		g_ptr_array_unref (profiles);
+	return ret;
+}
+
+/**
  * cd_util_get_devices:
  **/
 static gboolean
@@ -2149,6 +2264,12 @@ main (int argc, char *argv[])
 
 	/* add commands */
 	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_util_item_free);
+	cd_util_add (priv->cmd_array,
+		     "dump",
+		     NULL,
+		     /* TRANSLATORS: command description */
+		     _("Dump all debug data to a file"),
+		     cd_util_dump);
 	cd_util_add (priv->cmd_array,
 		     "get-devices",
 		     NULL,
