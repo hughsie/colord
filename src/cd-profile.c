@@ -228,6 +228,9 @@ cd_profile_set_metadata (CdProfile *profile,
 			 const gchar *property,
 			 const gchar *value)
 {
+	/* i1Profiler sets this */
+	if (g_strcmp0 (property, "CreatorApp") == 0)
+		property = CD_PROFILE_METADATA_CMF_PRODUCT;
 	g_hash_table_insert (profile->priv->metadata,
 			     g_strdup (property),
 			     g_strdup (value));
