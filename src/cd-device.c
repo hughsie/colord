@@ -807,16 +807,17 @@ cd_device_set_property_to_db (CdDevice *device,
 static GVariant *
 cd_device_get_metadata_as_variant (CdDevice *device)
 {
-	GList *list, *l;
+	GList *l;
+	GList *list = NULL;
 	GVariantBuilder builder;
+	GVariant *value;
 
-	/* we always must have at least one bit of metadata */
+	/* do not try to build an empty array */
 	if (g_hash_table_size (device->priv->metadata) == 0) {
-		g_debug ("no metadata, so faking something");
-		g_hash_table_insert (device->priv->metadata,
-				     g_strdup ("CMS"),
-				     g_strdup ("colord"));
+		value = g_variant_new_array (G_VARIANT_TYPE ("{ss}"), NULL, 0);
+		goto out;
 	}
+
 	/* add all the keys in the dictionary to the variant builder */
 	list = g_hash_table_get_keys (device->priv->metadata);
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
@@ -827,8 +828,10 @@ cd_device_get_metadata_as_variant (CdDevice *device)
 				       g_hash_table_lookup (device->priv->metadata,
 							    l->data));
 	}
+	value = g_variant_builder_end (&builder);
+out:
 	g_list_free (list);
-	return g_variant_builder_end (&builder);
+	return value;
 }
 
 /**
