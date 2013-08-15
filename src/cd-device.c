@@ -1538,8 +1538,6 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	gchar **bus_names = NULL;
 	GVariant *retval = NULL;
 
-	g_debug ("CdDevice %s:GetProperty '%s'",
-		 sender, property_name);
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_CREATED) == 0) {
 		retval = g_variant_new_uint64 (priv->created);
 		goto out;
