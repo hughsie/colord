@@ -646,6 +646,140 @@ colord_device_id_mapping_pd_func (void)
 }
 
 /*
+ * 1. Add soft profile with MAPPING_device_id=foo, DATA_source=calib
+ * 2. Add soft profile with MAPPING_device_id=foo, DATA_source=edid
+ *
+ * We should prefer the calibration profile over the EDID profile every time
+ */
+static void
+colord_device_id_mapping_edid_func (void)
+{
+	CdClient *client;
+	CdDevice *device;
+	CdProfile *profile_calib;
+	CdProfile *profile_edid;
+	CdProfile *profile_on_device;
+	gboolean ret;
+	gchar *device_id;
+	GError *error = NULL;
+	GHashTable *device_props;
+	GHashTable *profile_props;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
+	/* connect to daemon */
+	client = cd_client_new ();
+	g_assert (client != NULL);
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create a device */
+	device_id = colord_get_random_device_id ();
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
+	device = cd_client_create_device_sync (client,
+					       device_id,
+					       CD_OBJECT_SCOPE_TEMP,
+					       device_props,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* connect to device */
+	ret = cd_device_connect_sync (device,
+				      NULL,
+				      &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* create calibration profile that matches device */
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (profile_props,
+			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
+			     g_strdup (device_id));
+	g_hash_table_insert (profile_props,
+			     g_strdup (CD_PROFILE_METADATA_DATA_SOURCE),
+			     g_strdup (CD_PROFILE_METADATA_DATA_SOURCE_CALIB));
+	profile_calib = cd_client_create_profile_sync (client,
+						       "profile_calib",
+						       CD_OBJECT_SCOPE_TEMP,
+						       profile_props,
+						       NULL,
+						       &error);
+	g_hash_table_unref (profile_props);
+	g_assert_no_error (error);
+	g_assert (profile_calib != NULL);
+
+	/* create EDID profile that matches device */
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (profile_props,
+			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
+			     g_strdup (device_id));
+	g_hash_table_insert (profile_props,
+			     g_strdup (CD_PROFILE_METADATA_DATA_SOURCE),
+			     g_strdup (CD_PROFILE_METADATA_DATA_SOURCE_EDID));
+	profile_edid = cd_client_create_profile_sync (client,
+						      "profile_edid",
+						      CD_OBJECT_SCOPE_TEMP,
+						      profile_props,
+						      NULL,
+						      &error);
+	g_hash_table_unref (profile_props);
+	g_assert_no_error (error);
+	g_assert (profile_edid != NULL);
+
+	/* connect */
+	ret = cd_profile_connect_sync (profile_calib, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* ensure it's the *calibration* profile not the *edid* profile */
+	profile_on_device = cd_device_get_default_profile (device);
+	g_assert_cmpstr (cd_profile_get_object_path (profile_on_device), ==,
+			 cd_profile_get_object_path (profile_calib));
+	g_object_unref (profile_on_device);
+
+	/* delete device */
+	ret = cd_client_delete_device_sync (client,
+					    device,
+					    NULL,
+					    &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* delete profiles */
+	ret = cd_client_delete_profile_sync (client,
+					     profile_calib,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	ret = cd_client_delete_profile_sync (client,
+					     profile_edid,
+					     NULL,
+					     &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_free (device_id);
+	g_object_unref (profile_calib);
+	g_object_unref (profile_edid);
+	g_object_unref (device);
+	g_object_unref (client);
+}
+
+/*
  * Create device with known id
  * Create profile with metadata MAPPING_device_id of the same ID
  * Check device has soft mapping of profile
@@ -2571,6 +2705,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/profile{file}", colord_profile_file_func);
 	g_test_add_func ("/colord/profile{device-id-mapping, p->d}", colord_device_id_mapping_pd_func);
 	g_test_add_func ("/colord/profile{device-id-mapping, d->p}", colord_device_id_mapping_dp_func);
+	g_test_add_func ("/colord/profile{device-id-mapping, edid}", colord_device_id_mapping_edid_func);
 	g_test_add_func ("/colord/profile{ordering}", colord_profile_ordering_func);
 	g_test_add_func ("/colord/profile{duplicate}", colord_profile_duplicate_func);
 	g_test_add_func ("/colord/device{mapping}", colord_device_mapping_func);
