@@ -1041,8 +1041,6 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	CdSensorPrivate *priv = sensor->priv;
 	GVariant *retval = NULL;
 
-	g_debug ("CdSensor %s:GetProperty '%s'",
-		 sender, property_name);
 	if (g_strcmp0 (property_name, CD_SENSOR_PROPERTY_ID) == 0) {
 		retval = g_variant_new_string (priv->id);
 		goto out;
