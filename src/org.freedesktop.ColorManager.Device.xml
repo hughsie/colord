@@ -358,7 +358,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The profile ID that has already been added to the device.
+              The profile path that has already been added to the device.
             </doc:para>
           </doc:summary>
         </doc:doc>
@@ -378,7 +378,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              The profile ID that has already been added to the device.
+              The profile path that has already been added to the device.
             </doc:para>
           </doc:summary>
         </doc:doc>

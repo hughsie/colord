@@ -57,7 +57,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              An array of device IDs, e.g. <doc:tt>['/org/freedesktop/ColorManager/device/xrandr_ibm_france_ltn154p2_l05']</doc:tt>.
+              An array of device paths, e.g. <doc:tt>['/org/freedesktop/ColorManager/device/xrandr_ibm_france_ltn154p2_l05']</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>
@@ -87,7 +87,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              An array of device IDs, e.g. <doc:tt>['/org/freedesktop/ColorManager/device/xrandr_ibm_france_ltn154p2_l05']</doc:tt>.
+              An array of device paths, e.g. <doc:tt>['/org/freedesktop/ColorManager/device/xrandr_ibm_france_ltn154p2_l05']</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>
@@ -342,7 +342,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              An array of profile IDs, e.g. <doc:tt>['/org/freedesktop/ColorManager/profile/adobe_rgb']</doc:tt>.
+              An array of profile paths, e.g. <doc:tt>['/org/freedesktop/ColorManager/profile/adobe_rgb']</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>
@@ -362,7 +362,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              An array of sensor IDs, e.g. <doc:tt>['/org/freedesktop/ColorManager/sensor/colormunki']</doc:tt>.
+              An array of sensor paths, e.g. <doc:tt>['/org/freedesktop/ColorManager/sensor/colormunki']</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>
@@ -392,7 +392,7 @@
         <doc:doc>
           <doc:summary>
             <doc:para>
-              An array of device IDs, e.g. <doc:tt>['/org/freedesktop/ColorManager/device/xrandr_ibm_france_ltn154p2_l05']</doc:tt>.
+              An array of device paths, e.g. <doc:tt>['/org/freedesktop/ColorManager/device/xrandr_ibm_france_ltn154p2_l05']</doc:tt>.
             </doc:para>
           </doc:summary>
         </doc:doc>
