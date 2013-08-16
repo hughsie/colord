@@ -27,7 +27,7 @@
       <doc:doc>
         <doc:description>
           <doc:para>
-            The system vendor.
+              The system vendor, e.g. <doc:tt>Lenovo</doc:tt>.
           </doc:para>
         </doc:description>
       </doc:doc>
@@ -38,7 +38,7 @@
       <doc:doc>
         <doc:description>
           <doc:para>
-            The system model.
+              The system model, e.g. <doc:tt>T61</doc:tt>.
           </doc:para>
         </doc:description>
       </doc:doc>
