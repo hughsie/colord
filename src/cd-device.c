@@ -555,18 +555,38 @@ cd_device_get_profiles_as_variant (CdDevice *device)
 	const gchar *tmp;
 	CdDeviceProfileItem *item;
 
-	/* copy the object paths, hard then soft */
+	/* Object paths are assembled in this order:
+	 *
+	 *  1. Hard mapped profiles from the database
+	 *  2. Soft mapped profiles of DATA_source != EDID
+	 *  2. Soft mapped profiles of DATA_source == EDID
+	 */
 	profiles = g_new0 (GVariant *, device->priv->profiles->len + 1);
 	for (i = 0; i < device->priv->profiles->len; i++) {
 		item = g_ptr_array_index (device->priv->profiles, i);
-		if (item->relation == CD_DEVICE_RELATION_SOFT)
+		if (item->relation != CD_DEVICE_RELATION_HARD)
 			continue;
 		tmp = cd_profile_get_object_path (item->profile);
 		profiles[idx++] = g_variant_new_object_path (tmp);
 	}
 	for (i = 0; i < device->priv->profiles->len; i++) {
 		item = g_ptr_array_index (device->priv->profiles, i);
-		if (item->relation == CD_DEVICE_RELATION_HARD)
+		if (item->relation != CD_DEVICE_RELATION_SOFT)
+			continue;
+		tmp = cd_profile_get_metadata_item (item->profile,
+						    CD_PROFILE_METADATA_DATA_SOURCE);
+		if (g_strcmp0 (tmp, CD_PROFILE_METADATA_DATA_SOURCE_EDID) == 0)
+			continue;
+		tmp = cd_profile_get_object_path (item->profile);
+		profiles[idx++] = g_variant_new_object_path (tmp);
+	}
+	for (i = 0; i < device->priv->profiles->len; i++) {
+		item = g_ptr_array_index (device->priv->profiles, i);
+		if (item->relation != CD_DEVICE_RELATION_SOFT)
+			continue;
+		tmp = cd_profile_get_metadata_item (item->profile,
+						    CD_PROFILE_METADATA_DATA_SOURCE);
+		if (g_strcmp0 (tmp, CD_PROFILE_METADATA_DATA_SOURCE_EDID) != 0)
 			continue;
 		tmp = cd_profile_get_object_path (item->profile);
 		profiles[idx++] = g_variant_new_object_path (tmp);
