@@ -9,7 +9,7 @@ m4_define([cd_version],
 
 AC_INIT([colord],[cd_version],[http://www.freedesktop.org/software/colord/])
 AC_CONFIG_SRCDIR(src)
-AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar])
+AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar foreign])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_LIBTOOL

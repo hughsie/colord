@@ -45,7 +45,6 @@ EXTRA_DIST =						\
 	COPYING						\
 	MAINTAINERS					\
 	AUTHORS						\
-	INSTALL						\
 	README						\
 	NEWS						\
 	autogen.sh					\
