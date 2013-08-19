@@ -1,3 +1,17 @@
+Version 1.0.3
+~~~~~~~~~~~~~
+Released: 2013-08-19
+
+Bugfixes:
+ - Allow profiles to be added or removed when the device is not enabled (Richard Hughes)
+ - Always return soft-add calibration profiles before soft-add EDID profiles (Richard Hughes)
+ - Do not mix up device paths and device IDs in the documentation (Conley Moorhous)
+ - Fix warning when any test profile has an EDID source and no ICC file (Richard Hughes)
+ - libcolord: Always calculate the fallback checksum when using CdIccStore (Richard Hughes)
+ - libcolord: Do not assert on finalize if connecting to the profile failed (Richard Hughes)
+ - libcolord: Register a log handler when using lcms2 (Richard Hughes)
+ - Use %ghost in the example spec file to avoid removing databases on upgrades (Richard Hughes)
+
 Version 1.0.2
 ~~~~~~~~~~~~~
 Released: 2013-07-07
