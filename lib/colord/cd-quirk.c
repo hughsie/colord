@@ -73,7 +73,6 @@ cd_quirk_vendor_name (const gchar *vendor)
 		{ "Gigabyte Technology Co., Ltd.", "Gigabyte" },
 		{ "Goldstar Company Ltd", "Goldstar" },
 		{ "Hewlett-Packard", "Hewlett Packard" },
-		{ "Hewlett-Packard", "Hewlett Packard" },
 		{ "Hitachi America Ltd", "Hitachi" },
 		{ "HP", "Hewlett Packard" },
 		{ "HWP", "Hewlett Packard" },
