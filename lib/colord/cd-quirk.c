@@ -71,7 +71,7 @@ cd_quirk_vendor_name (const gchar *vendor)
 		{ "Fujitsu Siemens Computers GmbH", "Fujitsu Siemens" },
 		{ "Funai Electric Co., Ltd.", "Funai" },
 		{ "Gigabyte Technology Co., Ltd.", "Gigabyte" },
-		{ "Goldstar Company Ltd", "Goldstar" },
+		{ "Goldstar Company Ltd", "LG" },
 		{ "Hewlett-Packard", "Hewlett Packard" },
 		{ "Hitachi America Ltd", "Hitachi" },
 		{ "HP", "Hewlett Packard" },
