@@ -79,7 +79,7 @@ cd_quirk_vendor_name (const gchar *vendor)
 		{ "IBM France", "IBM" },
 		{ "Lenovo Group Limited", "Lenovo" },
 		{ "LENOVO", "Lenovo" },
-		{ "Liyama North America", "Liyama" },
+		{ "Iiyama North America", "Iiyama" },
 		{ "MARANTZ JAPAN, INC.", "Marantz" },
 		{ "Mitsubishi Electric Corporation", "Mitsubishi" },
 		{ "Nexgen Mediatech Inc.,", "Nexgen Mediatech" },
