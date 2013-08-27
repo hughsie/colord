@@ -2661,9 +2661,6 @@ main (int argc, char *argv[])
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
-	priv = g_new0 (CdMainPrivate, 1);
-	priv->create_dummy_sensor = create_dummy_sensor;
-
 	/* TRANSLATORS: program name */
 	g_set_application_name (_("Color Management"));
 	context = g_option_context_new (NULL);
@@ -2674,6 +2671,8 @@ main (int argc, char *argv[])
 	g_option_context_free (context);
 
 	/* create new objects */
+	priv = g_new0 (CdMainPrivate, 1);
+	priv->create_dummy_sensor = create_dummy_sensor;
 	priv->loop = g_main_loop_new (NULL, FALSE);
 	priv->devices_array = cd_device_array_new ();
 	priv->profiles_array = cd_profile_array_new ();
