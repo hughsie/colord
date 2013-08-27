@@ -2632,7 +2632,7 @@ cd_main_dmi_setup (CdMainPrivate *priv)
 int
 main (int argc, char *argv[])
 {
-	CdMainPrivate *priv;
+	CdMainPrivate *priv = NULL;
 	gboolean immediate_exit = FALSE;
 	gboolean create_dummy_sensor = FALSE;
 	gboolean ret;
@@ -2667,8 +2667,13 @@ main (int argc, char *argv[])
 	g_option_context_add_main_entries (context, options, NULL);
 	g_option_context_add_group (context, cd_debug_get_option_group ());
 	g_option_context_set_summary (context, _("Color Management D-Bus Service"));
-	g_option_context_parse (context, &argc, &argv, NULL);
-	g_option_context_free (context);
+	ret = g_option_context_parse (context, &argc, &argv, &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to parse command line arguments: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
 
 	/* create new objects */
 	priv = g_new0 (CdMainPrivate, 1);
@@ -2797,42 +2802,45 @@ main (int argc, char *argv[])
 	/* success */
 	retval = 0;
 out:
+	g_option_context_free (context);
 	if (owner_id > 0)
 		g_bus_unown_name (owner_id);
-	if (priv->loop != NULL)
-		g_main_loop_unref (priv->loop);
-	if (priv->sensors != NULL)
-		g_ptr_array_unref (priv->sensors);
-	if (priv->plugins != NULL)
-		g_ptr_array_unref (priv->plugins);
-	g_hash_table_destroy (priv->standard_spaces);
+	if (priv != NULL) {
+		if (priv->loop != NULL)
+			g_main_loop_unref (priv->loop);
+		if (priv->sensors != NULL)
+			g_ptr_array_unref (priv->sensors);
+		if (priv->plugins != NULL)
+			g_ptr_array_unref (priv->plugins);
+		g_hash_table_destroy (priv->standard_spaces);
 #ifdef HAVE_GUDEV
-	if (priv->sensor_client != NULL)
-		g_object_unref (priv->sensor_client);
+		if (priv->sensor_client != NULL)
+			g_object_unref (priv->sensor_client);
 #endif
-	if (priv->icc_store != NULL)
-		g_object_unref (priv->icc_store);
-	if (priv->mapping_db != NULL)
-		g_object_unref (priv->mapping_db);
-	if (priv->device_db != NULL)
-		g_object_unref (priv->device_db);
-	if (priv->devices_array != NULL)
-		g_object_unref (priv->devices_array);
-	if (priv->profiles_array != NULL)
-		g_object_unref (priv->profiles_array);
-	if (priv->connection != NULL)
-		g_object_unref (priv->connection);
-	if (priv->introspection_daemon != NULL)
-		g_dbus_node_info_unref (priv->introspection_daemon);
-	if (priv->introspection_device != NULL)
-		g_dbus_node_info_unref (priv->introspection_device);
-	if (priv->introspection_profile != NULL)
-		g_dbus_node_info_unref (priv->introspection_profile);
-	if (priv->introspection_sensor != NULL)
-		g_dbus_node_info_unref (priv->introspection_sensor);
-	g_free (priv->system_vendor);
-	g_free (priv->system_model);
-	g_free (priv);
+		if (priv->icc_store != NULL)
+			g_object_unref (priv->icc_store);
+		if (priv->mapping_db != NULL)
+			g_object_unref (priv->mapping_db);
+		if (priv->device_db != NULL)
+			g_object_unref (priv->device_db);
+		if (priv->devices_array != NULL)
+			g_object_unref (priv->devices_array);
+		if (priv->profiles_array != NULL)
+			g_object_unref (priv->profiles_array);
+		if (priv->connection != NULL)
+			g_object_unref (priv->connection);
+		if (priv->introspection_daemon != NULL)
+			g_dbus_node_info_unref (priv->introspection_daemon);
+		if (priv->introspection_device != NULL)
+			g_dbus_node_info_unref (priv->introspection_device);
+		if (priv->introspection_profile != NULL)
+			g_dbus_node_info_unref (priv->introspection_profile);
+		if (priv->introspection_sensor != NULL)
+			g_dbus_node_info_unref (priv->introspection_sensor);
+		g_free (priv->system_vendor);
+		g_free (priv->system_model);
+		g_free (priv);
+	}
 	return retval;
 }
 
