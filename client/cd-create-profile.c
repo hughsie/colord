@@ -592,7 +592,8 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 		white.x = 0.33333;
 		white.y = 0.33333;
 	} else if (g_strcmp0 (data, "D50") == 0) {
-		cmsWhitePointFromTemp (&white, 5003);
+		white.x = 0.345703;
+		white.y = 0.358539;
 	} else if (g_strcmp0 (data, "D65") == 0) {
 		cmsWhitePointFromTemp (&white, 6504);
 	} else {
