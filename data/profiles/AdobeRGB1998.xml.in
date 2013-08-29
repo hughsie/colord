@@ -16,7 +16,8 @@
  <license>CC0</license>
  <data_source>standard</data_source>
  <standard_space>adobe-rgb</standard_space>
- <gamma>2.2</gamma>
+ <!-- according to http://www.adobe.com/digitalimag/pdfs/AdobeRGB1998.pdf -->
+ <gamma>2.19921875</gamma>
  <whitepoint>D65</whitepoint>
  <primaries>
   <red>
