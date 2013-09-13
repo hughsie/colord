@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/colord/language/gl/)\n"
 "MIME-Version: 1.0\n"
@@ -348,6 +348,10 @@ msgstr "Cor"
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Dump all debug data to a file"
 msgstr ""
 
 #. TRANSLATORS: command description

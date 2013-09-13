@@ -3,8 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Necdet Yücel <necdetyucel@gmail.com>, 2012
-# Onuralp SEZER <thunderbirdtr@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
@@ -12,12 +10,12 @@ msgstr ""
 "POT-Creation-Date: 2013-09-13 15:56+0100\n"
 "PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Turkish (http://www.transifex.com/projects/p/colord/language/tr/)\n"
+"Language-Team: Danish (Denmark) (http://www.transifex.com/projects/p/colord/language/da_DK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: tr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: da_DK\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: command line option
 msgid "Profile to create"
@@ -40,7 +38,7 @@ msgid "Alias to %s"
 msgstr ""
 
 msgid "Command not found, valid commands are:"
-msgstr "Geçersiz komut, geçerli komutlar şunlardır:"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show extra debugging information"
@@ -96,7 +94,7 @@ msgstr ""
 
 #. TRANSLATORS: program name
 msgid "Color Management"
-msgstr "Renk Yönetimi"
+msgstr ""
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
@@ -155,16 +153,16 @@ msgstr ""
 
 #. TRANSLATORS: profile filename
 msgid "Filename"
-msgstr "Dosya adı"
+msgstr ""
 
 #. TRANSLATORS: profile identifier
 msgid "Profile ID"
-msgstr "Profil ID"
+msgstr ""
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 msgid "Metadata"
-msgstr "MetaVeri"
+msgstr ""
 
 msgid "Warning"
 msgstr ""
@@ -173,7 +171,7 @@ msgstr ""
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 msgid "Created"
-msgstr "Yaratıldı"
+msgstr ""
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
@@ -192,19 +190,19 @@ msgstr ""
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 msgid "Model"
-msgstr "Model"
+msgstr ""
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 msgid "Vendor"
-msgstr "Üretici"
+msgstr ""
 
 msgid "Inhibitors"
 msgstr ""
 
 #. TRANSLATORS: the device serial number
 msgid "Serial"
-msgstr "Seri"
+msgstr ""
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
@@ -217,29 +215,29 @@ msgstr ""
 
 #. TRANSLATORS: the device identifier
 msgid "Device ID"
-msgstr "Aygıt ID"
+msgstr ""
 
 #. TRANSLATORS: the profile for the device
 msgid "Profile"
-msgstr "Profil"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
 msgid "CRT"
-msgstr "CRT"
+msgstr ""
 
 #. TRANSLATORS: this is a desktop printer
 msgid "Printer"
-msgstr "Yazıcı"
+msgstr ""
 
 #. TRANSLATORS: a beamer used for presentations
 msgid "Projector"
-msgstr "Projektör"
+msgstr ""
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
 msgid "Spot"
-msgstr "Spot"
+msgstr ""
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
@@ -300,11 +298,11 @@ msgstr ""
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 msgid "State"
-msgstr "Durum"
+msgstr ""
 
 #. TRANSLATORS: sensor serial
 msgid "Serial number"
-msgstr "Seri Numarası"
+msgstr ""
 
 #. TRANSLATORS: sensor identifier
 msgid "Sensor ID"
@@ -320,7 +318,7 @@ msgstr ""
 
 #. TRANSLATORS: if the sensor is locked
 msgid "Locked"
-msgstr "Kilitli"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
@@ -383,7 +381,7 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a device"
-msgstr "Aygıt oluştur"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
@@ -407,7 +405,7 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a profile"
-msgstr "Profil oluştur"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
@@ -419,11 +417,11 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Deletes a device"
-msgstr "Aygıtı siler"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Deletes a profile"
-msgstr "Profili siler"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"

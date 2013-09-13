@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/colord/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -351,6 +351,10 @@ msgid "Show client and daemon versions"
 msgstr "Показать версии клиента и фоновой службы"
 
 #. TRANSLATORS: command description
+msgid "Dump all debug data to a file"
+msgstr ""
+
+#. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
 msgstr "Получить все цветоуправляемые устройства"
 
@@ -384,15 +388,15 @@ msgstr "Создать устройство"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Найти устройство по его идентификатору"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Найти устройство с заданным значением свойства"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Найти профиль по его идентификатору"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -408,7 +412,7 @@ msgstr "Создать профиль"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Добавить профиль устройству, которое уже существует"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -460,7 +464,7 @@ msgstr "Перечислить все профили, совпадающие с 
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Импортировать профиль и установить его для пользователя"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -473,10 +477,10 @@ msgid "Daemon version:"
 msgstr "Версия фоновой службы:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Производитель системы:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Модель системы:"
 
 msgid "Default gamma for the display"
 msgstr "Стандартная гамма для дисплея"
@@ -767,7 +771,7 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "Рекомендация BT.709 от ITU-R - это стандарт телевидения высокой чёткости HDTV, который был впервые утверждён в 1990 году. Профиль Rec. 709 использует тот же самый диапазон цветов, что и sRGB, но имеет иную кривую светимости."
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
@@ -794,7 +798,7 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr "Этот профиль общего назначения был разработан компаниями Hewlett-Packard и Microsoft и стал типичным в Интернете в качестве стандартного профиля для изображений в пространстве RGB без дополнительных меток (untagged RGB) и для использования в телевидении высокого качества HDTV. Большинство некалиброванных дисплеев способны отображать большую часть цветов, доступных в sRGB, хотя этот профиль иногда даёт не очень хорошие результаты при печати."
+msgstr "Этот профиль общего назначения был разработан компаниями Hewlett-Packard и Microsoft и стал типичным в Интернете в качестве стандартного профиля для изображений в пространстве RGB без дополнительных меток (untagged RGB) и для использования в телевидении высокой чёткости HDTV. Большинство некалиброванных дисплеев способны отображать большую часть цветов, доступных в sRGB, хотя этот профиль иногда даёт не очень хорошие результаты при печати."
 
 msgid "Swapped Red and Green"
 msgstr "Инверсия красного и зелёного"
@@ -957,7 +961,7 @@ msgstr "Выйти после загрузки инструмента"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Создать фиктивный датчик для тестирования"
 
 msgid "Color Management D-Bus Service"
 msgstr "Служба D-Bus для управления цветом"

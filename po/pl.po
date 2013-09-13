@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/colord/language/pl/)\n"
 "MIME-Version: 1.0\n"
@@ -350,6 +350,10 @@ msgid "Show client and daemon versions"
 msgstr "Wyświetla wersje klienta i usługi"
 
 #. TRANSLATORS: command description
+msgid "Dump all debug data to a file"
+msgstr ""
+
+#. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
 msgstr "Uzyskuje wszystkie urządzenia z zarządzanymi kolorami"
 
@@ -383,15 +387,15 @@ msgstr "Tworzy urządzenie"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Wyszukuje urządzenie według jego identyfikatora"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Wyszukuje urządzenie o podanej wartości własności"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Wyszukuje profil według jego identyfikatora"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -407,7 +411,7 @@ msgstr "Tworzy profil"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Dodaje profil do już istniejącego urządzenia"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -459,7 +463,7 @@ msgstr "Zwraca wszystkie profile pasujące do kwalifikatora"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Importuje profil i instaluje go dla użytkownika"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -472,10 +476,10 @@ msgid "Daemon version:"
 msgstr "Wersja usługi:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Producent systemu:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Model systemu:"
 
 msgid "Default gamma for the display"
 msgstr "Domyślna gamma dla ekranu"
@@ -956,7 +960,7 @@ msgstr "Kończy działanie po wczytaniu mechanizmu"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Tworzy atrapę czujnika do testowania"
 
 msgid "Color Management D-Bus Service"
 msgstr "Usługa D-Bus zarządzania kolorami"

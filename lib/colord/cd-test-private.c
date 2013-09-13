@@ -1482,7 +1482,7 @@ colord_edid_func (void)
 	g_bytes_unref (data_edid);
 
 	g_assert_cmpstr (cd_edid_get_monitor_name (edid), ==, "L225W");
-	g_assert_cmpstr (cd_edid_get_vendor_name (edid), ==, "Goldstar");
+	g_assert_cmpstr (cd_edid_get_vendor_name (edid), ==, "LG");
 	g_assert_cmpstr (cd_edid_get_serial_number (edid), ==, "34398");
 	g_assert_cmpstr (cd_edid_get_eisa_id (edid), ==, NULL);
 	g_assert_cmpstr (cd_edid_get_checksum (edid), ==, "0bb44865bb29984a4bae620656c31368");

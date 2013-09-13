@@ -3,8 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Necdet Yücel <necdetyucel@gmail.com>, 2012
-# Onuralp SEZER <thunderbirdtr@gmail.com>, 2013
+# Bruno Queiros <bqueiros@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
@@ -12,12 +11,12 @@ msgstr ""
 "POT-Creation-Date: 2013-09-13 15:56+0100\n"
 "PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Turkish (http://www.transifex.com/projects/p/colord/language/tr/)\n"
+"Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/colord/language/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: tr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_PT\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: command line option
 msgid "Profile to create"
@@ -40,7 +39,7 @@ msgid "Alias to %s"
 msgstr ""
 
 msgid "Command not found, valid commands are:"
-msgstr "Geçersiz komut, geçerli komutlar şunlardır:"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show extra debugging information"
@@ -96,7 +95,7 @@ msgstr ""
 
 #. TRANSLATORS: program name
 msgid "Color Management"
-msgstr "Renk Yönetimi"
+msgstr "Gestão de Cor"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
@@ -112,7 +111,7 @@ msgstr ""
 
 #. TRANSLATORS: the internal DBus path
 msgid "Object Path"
-msgstr ""
+msgstr "Caminho do Objecto"
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -128,7 +127,7 @@ msgstr ""
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 msgid "Qualifier"
-msgstr ""
+msgstr "Qualificador"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
@@ -139,7 +138,7 @@ msgstr ""
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 msgid "Colorspace"
-msgstr ""
+msgstr "Espaço de cores"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 msgid "Scope"
@@ -155,25 +154,25 @@ msgstr ""
 
 #. TRANSLATORS: profile filename
 msgid "Filename"
-msgstr "Dosya adı"
+msgstr "Nome do ficheiro"
 
 #. TRANSLATORS: profile identifier
 msgid "Profile ID"
-msgstr "Profil ID"
+msgstr "ID do Perfil"
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 msgid "Metadata"
-msgstr "MetaVeri"
+msgstr ""
 
 msgid "Warning"
-msgstr ""
+msgstr "Aviso"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 msgid "Created"
-msgstr "Yaratıldı"
+msgstr "Criado"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
@@ -187,24 +186,24 @@ msgstr ""
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 msgid "Embedded"
-msgstr ""
+msgstr "Embutido"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 msgid "Model"
-msgstr "Model"
+msgstr "Modelo"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 msgid "Vendor"
-msgstr "Üretici"
+msgstr ""
 
 msgid "Inhibitors"
 msgstr ""
 
 #. TRANSLATORS: the device serial number
 msgid "Serial"
-msgstr "Seri"
+msgstr ""
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
@@ -213,33 +212,33 @@ msgstr "Seri"
 #. * systemd these can be setup as three independant seats with
 #. * different sessions running on them
 msgid "Seat"
-msgstr ""
+msgstr "Posição"
 
 #. TRANSLATORS: the device identifier
 msgid "Device ID"
-msgstr "Aygıt ID"
+msgstr ""
 
 #. TRANSLATORS: the profile for the device
 msgid "Profile"
-msgstr "Profil"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
 msgid "CRT"
-msgstr "CRT"
+msgstr ""
 
 #. TRANSLATORS: this is a desktop printer
 msgid "Printer"
-msgstr "Yazıcı"
+msgstr ""
 
 #. TRANSLATORS: a beamer used for presentations
 msgid "Projector"
-msgstr "Projektör"
+msgstr ""
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
 msgid "Spot"
-msgstr "Spot"
+msgstr ""
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
@@ -296,15 +295,15 @@ msgstr ""
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
-msgstr ""
+msgstr "Desconhecido"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 msgid "State"
-msgstr "Durum"
+msgstr ""
 
 #. TRANSLATORS: sensor serial
 msgid "Serial number"
-msgstr "Seri Numarası"
+msgstr ""
 
 #. TRANSLATORS: sensor identifier
 msgid "Sensor ID"
@@ -312,7 +311,7 @@ msgstr ""
 
 #. TRANSLATORS: the options for the sensor
 msgid "Options"
-msgstr ""
+msgstr "Opções"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 msgid "Native"
@@ -320,7 +319,7 @@ msgstr ""
 
 #. TRANSLATORS: if the sensor is locked
 msgid "Locked"
-msgstr "Kilitli"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
@@ -332,18 +331,18 @@ msgstr ""
 
 #. TRANSLATORS: this is the sensor title
 msgid "Sensor"
-msgstr ""
+msgstr "Sensor"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "Configurar o dispositivo para posição de calibragem e pressione enter."
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the surface position and press enter."
-msgstr ""
+msgstr "Configurar o dispositivo para a posição de superfície e pressione enter."
 
 msgid "Color"
-msgstr ""
+msgstr "Cor"
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
@@ -383,7 +382,7 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a device"
-msgstr "Aygıt oluştur"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
@@ -407,7 +406,7 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a profile"
-msgstr "Profil oluştur"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
@@ -419,11 +418,11 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Deletes a device"
-msgstr "Aygıtı siler"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Deletes a profile"
-msgstr "Profili siler"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
@@ -560,7 +559,7 @@ msgid ""
 msgstr ""
 
 msgid "Blue"
-msgstr ""
+msgstr "Azul"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
@@ -856,19 +855,19 @@ msgstr ""
 #. - Normal users should not have to authenticate to add devices
 #. 
 msgid "Create a color managed device"
-msgstr ""
+msgstr "Criar um dispositivo gerido por cores"
 
 msgid "Authentication is required to create a color managed device"
-msgstr ""
+msgstr "É necessária autenticação para criar um dispositivo gerido pela cor"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #. 
 msgid "Create a color profile"
-msgstr ""
+msgstr "Criar um perfil de cor"
 
 msgid "Authentication is required to create a color profile"
-msgstr ""
+msgstr "É necessária autenticação para criar um perfil de cor"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
@@ -877,7 +876,7 @@ msgid "Remove a color managed device"
 msgstr ""
 
 msgid "Authentication is required to remove a color managed device"
-msgstr ""
+msgstr "É necessária autenticação para remover um dispositivo gerido por cores"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -886,25 +885,25 @@ msgid "Remove a color profile"
 msgstr ""
 
 msgid "Authentication is required to remove a color profile"
-msgstr ""
+msgstr "É necessária autenticação para remover um perfil de cores"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #. 
 msgid "Modify color settings for a device"
-msgstr ""
+msgstr "Modificar as definições de cor de um dispositivo"
 
 msgid "Authentication is required to modify the color settings for a device"
-msgstr ""
+msgstr "É necessária autenticação para modificar as definições de cor para um dispositivo"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #. 
 msgid "Modify a color profile"
-msgstr ""
+msgstr "Modificar um perfil de cor"
 
 msgid "Authentication is required to modify a color profile"
-msgstr ""
+msgstr "É necessária autenticação para modificar um perfil de cor"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system

@@ -5,14 +5,15 @@
 # Translators:
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2012
 # kelemeng <kelemeng@gnome.hu>, 2012
+# Peter Borsa <peter.borsa@gmail.com>, 2013
 # vylekzhanin <vylekzhanin@mail.ru>, 2013
 # Zoltan Hoppár <hopparz@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/colord/language/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -102,7 +103,7 @@ msgstr "Színkezelés"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "ICC-profil dump program"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -272,13 +273,13 @@ msgstr "Plazma"
 #. * where LCD stands for 'Liquid Crystal Display'
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
@@ -294,7 +295,7 @@ msgstr ""
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD Fehér LED"
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
@@ -350,6 +351,10 @@ msgstr "Szín"
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
 msgstr "Jelenítse meg a kliens és a daemon verzióját is"
+
+#. TRANSLATORS: command description
+msgid "Dump all debug data to a file"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -409,7 +414,7 @@ msgstr "Profil létrehozása"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Profil hozzáadása létező eszközhöz"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -461,7 +466,7 @@ msgstr "Visszaadja a minősítőnek megfelelő összes profilt"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Profil importálása és telepítése a felhasználó számára"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -513,7 +518,7 @@ msgid ""
 msgstr ""
 
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Kompatibilis az Adobe RGB (1998)-cal"
 
 msgid "This profile is free of known copyright restrictions"
 msgstr ""
@@ -558,7 +563,7 @@ msgid ""
 msgstr ""
 
 msgid "Blue"
-msgstr ""
+msgstr "Kék"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
@@ -798,7 +803,7 @@ msgid ""
 msgstr ""
 
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Felcserélt piros és zöld"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 msgid ""
@@ -840,7 +845,7 @@ msgid ""
 msgstr ""
 
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 Színek"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -958,7 +963,7 @@ msgstr "Kilépés az alrendszer betöltése után"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Próba szenzor létrehozása teszteléshez"
 
 msgid "Color Management D-Bus Service"
 msgstr "Színkezelési D-Bus szolgáltatás"

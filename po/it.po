@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/colord/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -352,6 +352,10 @@ msgid "Show client and daemon versions"
 msgstr "Mostra la versione del client e del demone"
 
 #. TRANSLATORS: command description
+msgid "Dump all debug data to a file"
+msgstr ""
+
+#. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
 msgstr "Ottiene tutti i dispositivi con gestione colore"
 
@@ -385,15 +389,15 @@ msgstr "Crea un dispositivo"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Trova un dispositivo tramite il suo ID"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Trova un dispositivo tramite il valore di una sua proprietà"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Trova un profilo tramite il suo ID"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -409,7 +413,7 @@ msgstr "Crea un profilo"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Aggiunge un profilo a un dispositivo che esiste già"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -461,7 +465,7 @@ msgstr "Restituisce tutti i profili che corrispondono a un qualificatore"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Importa un profile e lo installa per l'utente"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -474,10 +478,10 @@ msgid "Daemon version:"
 msgstr "Versione demone:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Vendor del sistema:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Modello del sistema:"
 
 msgid "Default gamma for the display"
 msgstr "Gamma predefinita per lo schermo"
@@ -768,7 +772,7 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "BT.709 di ITU-R è uno standard televisino ad alta definizione approvato nel 1990. Il profilo Rec. 709 utilizza la stessa gamma di colori di sRGB anche se la curva della luminanza è diversa."
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
@@ -958,7 +962,7 @@ msgstr "Esce dopo il caricamento del motore"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Crea un sensore per eseguire test"
 
 msgid "Color Management D-Bus Service"
 msgstr "Servizio D-Bus gestione colore"

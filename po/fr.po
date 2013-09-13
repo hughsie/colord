@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Étienne BERSAC <bersace03@free.fr>, 2013
 # frizer23 <jourliiaenne@voila.fr>, 2013
 # roumano <roumano@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/colord/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -112,7 +113,7 @@ msgstr "Propriétaire"
 
 #. TRANSLATORS: the internal DBus path
 msgid "Object Path"
-msgstr ""
+msgstr "Chemin d'objet"
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -128,7 +129,7 @@ msgstr "Titre"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 msgid "Qualifier"
-msgstr ""
+msgstr "Identifiant"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
@@ -159,7 +160,7 @@ msgstr "Nom du fichier"
 
 #. TRANSLATORS: profile identifier
 msgid "Profile ID"
-msgstr ""
+msgstr "ID de profil"
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
@@ -197,14 +198,14 @@ msgstr "Modèle"
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 msgid "Vendor"
-msgstr ""
+msgstr "Vendeur"
 
 msgid "Inhibitors"
 msgstr ""
 
 #. TRANSLATORS: the device serial number
 msgid "Serial"
-msgstr ""
+msgstr "Numéro de série"
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
@@ -217,7 +218,7 @@ msgstr ""
 
 #. TRANSLATORS: the device identifier
 msgid "Device ID"
-msgstr ""
+msgstr "ID de périphérique"
 
 #. TRANSLATORS: the profile for the device
 msgid "Profile"
@@ -350,16 +351,20 @@ msgid "Show client and daemon versions"
 msgstr "Montrer les versions du client et du démon"
 
 #. TRANSLATORS: command description
-msgid "Gets all the color managed devices"
+msgid "Dump all debug data to a file"
 msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Gets all the color managed devices"
+msgstr "Récupère tous les périphérique avec gestion de couleurs"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices of a specific kind"
-msgstr ""
+msgstr "Récupère tous les périphérique avec gestion de couleurs, d'un certain type"
 
 #. TRANSLATORS: command description
 msgid "Gets all the available color profiles"
-msgstr ""
+msgstr "Récupérer tous les profils de couleurs disponible"
 
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
@@ -411,7 +416,7 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
-msgstr ""
+msgstr "Créer un profil par défaut pour un périphérique"
 
 #. TRANSLATORS: command description
 msgid "Deletes a device"
@@ -427,7 +432,7 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
-msgstr ""
+msgstr "Définir le modèle du périphérique"
 
 #. TRANSLATORS: command description
 msgid "Enables or disables the device"
@@ -435,19 +440,19 @@ msgstr "Active ou désactive l’appareil"
 
 #. TRANSLATORS: command description
 msgid "Gets the default profile for a device"
-msgstr ""
+msgstr "Récupérer le profil par défaut d'un périphérique"
 
 #. TRANSLATORS: command description
 msgid "Sets the device vendor"
-msgstr ""
+msgstr "Définir le vendeur du périphérique"
 
 #. TRANSLATORS: command description
 msgid "Sets the device serial"
-msgstr ""
+msgstr "Définir le numéro de série du périphérique"
 
 #. TRANSLATORS: command description
 msgid "Sets the device kind"
-msgstr ""
+msgstr "Définir le type du périphérique"
 
 #. TRANSLATORS: command description
 msgid "Inhibits color profiles for this device"
@@ -852,10 +857,10 @@ msgstr ""
 #. - Normal users should not have to authenticate to add devices
 #. 
 msgid "Create a color managed device"
-msgstr ""
+msgstr "Créer un périphérique avec gestion de couleurs"
 
 msgid "Authentication is required to create a color managed device"
-msgstr ""
+msgstr "Il est nécessaire de s'authentifier pour créer un périphérique avec gestion de couleurs"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
@@ -870,10 +875,10 @@ msgstr "Il est nécessaire de s’authentifier pour créer un profil de couleur"
 #. - Normal users should not have to authenticate to delete devices
 #. 
 msgid "Remove a color managed device"
-msgstr ""
+msgstr "Supprimer un périphérique avec gestion de couleurs"
 
 msgid "Authentication is required to remove a color managed device"
-msgstr ""
+msgstr "Il est nécessaire de s'authentifier pour supprimer un périphérique"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -959,4 +964,4 @@ msgid "Create a dummy sensor for testing"
 msgstr ""
 
 msgid "Color Management D-Bus Service"
-msgstr ""
+msgstr "Service D-Bus de gestion de couleurs"

@@ -5,13 +5,14 @@
 # Translators:
 # Richard Hughes <richard@hughsie.com>, 2011,2013
 # vylekzhanin <vylekzhanin@mail.ru>, 2013
+# vylekzhanin <vylekzhanin@mail.ru>, 2013
 # Yuri Chornoivan <yurchor@ukr.net>, 2009-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/colord/language/uk/)\n"
 "MIME-Version: 1.0\n"
@@ -351,6 +352,10 @@ msgid "Show client and daemon versions"
 msgstr "Вивести дані щодо версій клієнтської частини і фонової служби"
 
 #. TRANSLATORS: command description
+msgid "Dump all debug data to a file"
+msgstr ""
+
+#. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
 msgstr "Отримати список всіх пристроїв з керуванням кольорами"
 
@@ -384,15 +389,15 @@ msgstr "Створити пристрій"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Знайти пристрій за його ідентифікатором"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Знайти пристрій за вказаним значенням властивості"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Знайти пристрій за ідентифікатором профілю"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -408,7 +413,7 @@ msgstr "Створити профіль"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Додати профіль на наявний пристрій"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -460,7 +465,7 @@ msgstr "Повертає всі профілі, які відповідають 
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Імпортувати профіль і встановити його для користувача"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -473,10 +478,10 @@ msgid "Daemon version:"
 msgstr "Версія фонової служби:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Виробник системи:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Модель системи:"
 
 msgid "Default gamma for the display"
 msgstr "Типова гама для дисплея"
@@ -767,7 +772,7 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "ITU-R рекомендує використання BT.709 для телевізійних зображень високої роздільності. Вперше затверджено у 1990 році. Профілем Rec. 709 використовується той самий діапазон кольорів, що і у sRGB, хоча крива світності є іншою."
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
@@ -957,7 +962,7 @@ msgstr "Завершити роботу після завантаження ру
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Створити фіктивний датчик для тестування"
 
 msgid "Color Management D-Bus Service"
 msgstr "Служба D-Bus для керування кольорами"

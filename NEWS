@@ -1,3 +1,32 @@
+Version 1.1.2
+~~~~~~~~~~~~~
+Released: 2013-09-13
+
+New Features:
+ - Add a 'dump' colormgr command to aid debugging (Richard Hughes)
+ - libcolord: Add ability to create a CdIcc object from an EDID blob (Richard Hughes)
+ - libcolord: Add cd_icc_create_default() to use the default sRGB profile (Richard Hughes)
+ - libcolord: Export cd_icc_utils_get_coverage() for comparing two profiles (Richard Hughes)
+ - Set 'GAMUT_coverage(srgb)' when generating standard space profiles (Richard Hughes)
+
+Bugfixes:
+ - Allow profiles to be added or removed when the device is not enabled (Richard Hughes)
+ - Always return soft-add calibration profiles before soft-add EDID profiles (Richard Hughes)
+ - Do not add fake metadata to avoid creating an empty dictionary (Richard Hughes)
+ - Do not mix up device paths and device IDs in the documentation (Conley Moorhous)
+ - Fix an error when building the print profiles (Richard Hughes)
+ - Fix creation of the dummy sensor device (Richard Hughes)
+ - Fix the AdobeRGB and WideGamutRGB gamma values (Richard Hughes)
+ - Fix transposed bits for EDID red y (Florian Höch)
+ - Fix up various vendor quirks (Florian Höch)
+ - Fix warning when any test profile has an EDID source and no ICC file (Richard Hughes)
+ - libcolord: Always calculate the fallback checksum when using CdIccStore (Richard Hughes)
+ - libcolord: Do not assert on finalize if connecting to the profile failed (Richard Hughes)
+ - Migrate from usb_id and usb_db to udev builtins usb_id and hwdb (Dmitrijs Ledkovs)
+ - Show a warning for incorrect or extra command line arguments (Richard Hughes)
+ - Use %ghost in the example spec file to avoid removing databases on upgrades (Richard Hughes)
+ - Use the exact D50 whitepoint values (Richard Hughes)
+
 Version 1.1.1
 ~~~~~~~~~~~~~
 Released: 2013-07-30

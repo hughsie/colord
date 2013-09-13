@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/colord/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr "Mostrar información adicional de depurado"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "La configuración regional que usar al configurar texto traducido"
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
@@ -275,13 +275,13 @@ msgstr "Plasma"
 #. * where LCD stands for 'Liquid Crystal Display'
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
@@ -297,7 +297,7 @@ msgstr ""
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD LED blanco"
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
@@ -355,6 +355,10 @@ msgid "Show client and daemon versions"
 msgstr "Mostrar versiones del cliente y el servicio"
 
 #. TRANSLATORS: command description
+msgid "Dump all debug data to a file"
+msgstr ""
+
+#. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
 msgstr "Obtiene todos los dispositivos de color gestionados"
 
@@ -388,15 +392,15 @@ msgstr "Crear un dispositivo"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Buscar un dispositivo por su ID"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Buscar un dispositivo usando una propiedad dada"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Buscar un perfil usando su ID"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -412,7 +416,7 @@ msgstr "Crear un perfil"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Añadir un perfil a un dispositivo existente"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -428,7 +432,7 @@ msgstr "Elimina un perfil"
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "Configura propiedades adicionales en el perfil"
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
@@ -464,7 +468,7 @@ msgstr "Devuelve todos los perfiles que coinciden con un cualificador"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Importar un perfil e instalarlo para el usuario"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -477,10 +481,10 @@ msgid "Daemon version:"
 msgstr "Versión del servicio:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Fabricante del sistema:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Modelo del sistema:"
 
 msgid "Default gamma for the display"
 msgstr "Gamma predeterminado de la pantalla"
@@ -499,7 +503,7 @@ msgid ""
 msgstr "El punto blanco predeterminado del dispositivo en Kelvin para calibrado de la pantalla, donde 0 significa en nativo de la pantalla. Los valores habituales son 6500 para D65 y 5000 para D50."
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Retardo entre intervalos"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
@@ -519,7 +523,7 @@ msgid "Compatible with Adobe RGB (1998)"
 msgstr ""
 
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Este perfil está libre de restricciones de copyright conocidas"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -561,7 +565,7 @@ msgid ""
 msgstr ""
 
 msgid "Blue"
-msgstr ""
+msgstr "Azul"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
@@ -961,7 +965,7 @@ msgstr "Salir después que sea cargado el motor"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Crear un sensor falso para pruebas"
 
 msgid "Color Management D-Bus Service"
 msgstr "Servicio de D-Bus de gestión de color"

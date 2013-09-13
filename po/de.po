@@ -7,13 +7,14 @@
 # Christian <Christian.Kirbach@googlemail.com>, 2012
 # Christian Kirbach <christian.kirbach@gmail.com>, 2013
 # Christoph Brill <egore911@googlemail.com>, 2013
+# jwildeboer <jan.wildeboer@gmx.de>, 2013
 # Matthias Vogelgesang <matthias.vogelgesang@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-30 13:00+0100\n"
-"PO-Revision-Date: 2013-07-30 12:00+0000\n"
+"POT-Creation-Date: 2013-09-13 15:56+0100\n"
+"PO-Revision-Date: 2013-09-13 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/colord/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -51,7 +52,7 @@ msgstr "Zusätzliche Informationen zur Fehlerdiagnose anzeigen"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "Die beim Festlegen von übersetztem Text zu verwendende Sprachumgebung"
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
@@ -353,6 +354,10 @@ msgid "Show client and daemon versions"
 msgstr "Zeige Client- und Daemonversionen an"
 
 #. TRANSLATORS: command description
+msgid "Dump all debug data to a file"
+msgstr ""
+
+#. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
 msgstr "Ermittelt alle farbverwalteten Geräte"
 
@@ -386,15 +391,15 @@ msgstr "Ein Gerät erstellen"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Ein Gerrät anhand der Geräte-Kennung finden"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Ein Gerät anhand einer bestimmten Eigenschaft finden"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Ein Profil anhand der Profil-Kennung finden"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -410,7 +415,7 @@ msgstr "Ein Profil erstellen"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Ein Profil einem Gerät hinzufügen, das bereits vorhanden ist"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -462,7 +467,7 @@ msgstr "Alle Profile zurückgeben, die auf einem Bezeichner passen"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Ein Profil importieren und für den Benutzer installieren"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -475,10 +480,10 @@ msgid "Daemon version:"
 msgstr "Daemonversion:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Systemhersteller:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Systemmodell:"
 
 msgid "Default gamma for the display"
 msgstr "Standardgammawert für das Display"
@@ -497,21 +502,21 @@ msgid ""
 msgstr "Der Standardzielweißpunkt in Kelvin für die Bildschirmkalibration, wobei 0 der Gerätestandard bedeutet. Typische Werte sind 6500 für D65 und 5000 für D50."
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Verzögerung zwischen Stichprobe-Intervallen"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "Dies ist die Verzögerung zwischen dem Festlegen der Stichprobenfarbe und Beauftragung des Messinstruments eine Stichprobe zu nehmen. Es ist notwendig, weil sowohl der Grafiktreiber als auch die Anzeige selbst die Verzögerung hervorrufen."
 
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "Adresse des Internet-Dienstes zum Hochladen des Profils"
 
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr ""
+msgstr "Die Adresse des Internet-Dienstes, der es den Kalibrierungswerkzeugen ermöglicht, ein bestimmtes Profil  ins Internet hochzuladen."
 
 msgid "Compatible with Adobe RGB (1998)"
 msgstr "Kompatibel mit Adobe RGB (1998)"
@@ -641,7 +646,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "Dieses Profil wird für die Herstellung von positiven Bildtafeln mit Druck auf die Papiertypen 1 und 2 (beschichtet oder matt), mit Bogenoffset verwendet. Dieses Profil sollte nicht mehr in der Produktion verwendet werden. Nutzen Sie stattdessen FOGRA39L."
 
 msgid "FOGRA28L Web Coated"
 msgstr "FOGRA28L Web Beschichtet"
@@ -653,7 +658,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "Dieses Profil ist für Positivplatten im Offsetdruck auf Papier des Typs 3 (LWC). Dieses Profil wurde durch FOGRA45 ersetzt und solltre nicht mehr in der Produktion eingesetzt werden."
 
 msgid "FOGRA29L Uncoated"
 msgstr "FOGRA29L Unbeschichtet"
@@ -664,7 +669,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr ""
+msgstr "Dieses Profil wird für die Herstellung von positiven Bildtafeln mit Druck auf den Papiertyp 4 (unbeschichtetes weiß), mit Bogenoffset verwendet. Dieses Profil sollte nicht mehr in der Produktion verwendet werden. Nutzen Sie stattdessen FOGRA47."
 
 msgid "FOGRA30L Uncoated Yellowish"
 msgstr "FOGRA30L Unbeschichtet Gelblich"
@@ -673,7 +678,7 @@ msgstr "FOGRA30L Unbeschichtet Gelblich"
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr ""
+msgstr "Dieses Profil wird für die Herstellung von positiven Bildtafeln mit Druck auf den Papiertyp 5 (unbeschichtetes gelblich), mit Bogenoffset verwendet."
 
 msgid "FOGRA39L Coated"
 msgstr "FOGRA39L Beschichtet"
@@ -686,7 +691,7 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr ""
+msgstr "Dieses Profil wird für den Druck auf die Papiertypen 1 und 2 (beschichtet oder matt), mit Bogenoffset verwendet. Dieses Profil ist nicht wesentlich verschieden von U.S. GRACoL 2006 (TR 006)."
 
 msgid "FOGRA40L SC Paper"
 msgstr "FOGRA40L SC Papier"
@@ -698,7 +703,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L beschichtetes Leichtgewicht"
 
 #. TRANSLATORS: ISO is a trademark
 msgid ""
@@ -769,7 +774,7 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "ITU-R empfiehlt BT.709 als HD-Fensehstandard, der in 1990 verabschiedet wurde. Das Profil Rec. 709 verwendet den gleichen Farbbereich wie sRGB obwohl die Leuchtkraftkurve verschieden ist."
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
@@ -959,7 +964,7 @@ msgstr "Nach dem Laden der Engine beenden"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Einen Dummy-Sensor zum Testen erstellen"
 
 msgid "Color Management D-Bus Service"
 msgstr "D-Bus-Dienst der Farbverwaltung"
