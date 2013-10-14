@@ -103,6 +103,9 @@ cd_icc_store_find_by_filename (CdIccStore *store, const gchar *filename)
 	guint i;
 	GPtrArray *array = store->priv->icc_array;
 
+	g_return_val_if_fail (CD_IS_ICC_STORE (store), NULL);
+	g_return_val_if_fail (filename != NULL, NULL);
+
 	for (i = 0; i < array->len; i++) {
 		tmp = g_ptr_array_index (array, i);
 		if (g_strcmp0 (filename, cd_icc_get_filename (tmp)) == 0)
@@ -127,6 +130,9 @@ cd_icc_store_find_by_checksum (CdIccStore *store, const gchar *checksum)
 	CdIcc *tmp;
 	guint i;
 	GPtrArray *array = store->priv->icc_array;
+
+	g_return_val_if_fail (CD_IS_ICC_STORE (store), NULL);
+	g_return_val_if_fail (checksum != NULL, NULL);
 
 	for (i = 0; i < array->len; i++) {
 		tmp = g_ptr_array_index (array, i);
@@ -633,6 +639,9 @@ cd_icc_store_search_kind (CdIccStore *store,
 	GPtrArray *locations;
 	guint i;
 
+	g_return_val_if_fail (CD_IS_ICC_STORE (store), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
 	/* get the locations for each kind */
 	locations = g_ptr_array_new_with_free_func (g_free);
 	switch (search_kind) {
@@ -698,6 +707,7 @@ cd_icc_store_search_location (CdIccStore *store,
 
 	g_return_val_if_fail (CD_IS_ICC_STORE (store), FALSE);
 	g_return_val_if_fail (location != NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* does folder exist? */
 	file = g_file_new_for_path (location);
