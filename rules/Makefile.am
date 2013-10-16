@@ -3,7 +3,7 @@ udevrules_DATA =						\
 	95-cd-devices.rules
 
 EXTRA_DIST =							\
-	$(udevrules_DATA)
+	95-cd-devices.rules
 
 MAINTAINERCLEANFILES =						\
 	69-cd-sensors.rules
