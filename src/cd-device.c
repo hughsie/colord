@@ -927,6 +927,24 @@ cd_device_set_property_internal (CdDevice *device,
 	gboolean is_metadata = FALSE;
 	CdDevicePrivate *priv = device->priv;
 
+	/* sanity check the length of the key and value */
+	if (strlen (property) > CD_DBUS_METADATA_KEY_LEN_MAX) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_INPUT_INVALID,
+				     "metadata key length invalid");
+		goto out;
+	}
+	if (value != NULL && strlen (value) > CD_DBUS_METADATA_VALUE_LEN_MAX) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_INPUT_INVALID,
+				     "metadata value length invalid");
+		goto out;
+	}
+
 	g_debug ("CdDevice: Attempting to set %s to %s on %s",
 		 property, value, device->priv->id);
 	if (g_strcmp0 (property, CD_DEVICE_PROPERTY_MODEL) == 0) {
@@ -977,6 +995,7 @@ cd_device_set_property_internal (CdDevice *device,
 						      property,
 						      cd_device_get_nullable_for_string (value));
 	}
+out:
 	return ret;
 }
 

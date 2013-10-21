@@ -539,6 +539,24 @@ cd_profile_set_property_internal (CdProfile *profile,
 	gboolean ret = TRUE;
 	CdProfilePrivate *priv = profile->priv;
 
+	/* sanity check the length of the key and value */
+	if (strlen (property) > CD_DBUS_METADATA_KEY_LEN_MAX) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_INPUT_INVALID,
+				     "metadata key length invalid");
+		goto out;
+	}
+	if (value != NULL && strlen (value) > CD_DBUS_METADATA_VALUE_LEN_MAX) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_INPUT_INVALID,
+				     "metadata value length invalid");
+		goto out;
+	}
+
 	if (g_strcmp0 (property, CD_PROFILE_PROPERTY_FILENAME) == 0) {
 		ret = cd_profile_set_filename (profile,
 					       value,
