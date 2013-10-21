@@ -532,12 +532,33 @@ cd_profile_get_nullable_for_string (const gchar *value)
 /**
  * cd_profile_set_property_internal:
  **/
-void
+gboolean
 cd_profile_set_property_internal (CdProfile *profile,
 				  const gchar *property,
-				  const gchar *value)
+				  const gchar *value,
+				  GError **error)
 {
+	gboolean ret = TRUE;
+
 	CdProfilePrivate *priv = profile->priv;
+
+	/* sanity check the length of the key and value */
+	if (strlen (property) > CD_DBUS_METADATA_KEY_LEN_MAX) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_INPUT_INVALID,
+				     "metadata key length invalid");
+		goto out;
+	}
+	if (value != NULL && strlen (value) > CD_DBUS_METADATA_VALUE_LEN_MAX) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_INPUT_INVALID,
+				     "metadata value length invalid");
+		goto out;
+	}
 
 	if (g_strcmp0 (property, CD_PROFILE_PROPERTY_FILENAME) == 0) {
 		cd_profile_set_filename (profile, value);
@@ -565,11 +586,13 @@ cd_profile_set_property_internal (CdProfile *profile,
 		cd_profile_dbus_emit_property_changed (profile,
 						       CD_PROFILE_PROPERTY_METADATA,
 						       cd_profile_get_metadata_as_variant (profile));
-		return;
+		goto out;
 	}
 
 	/* emit global signal */
 	cd_profile_dbus_emit_profile_changed (profile);
+out:
+	return ret;
 }
 
 /**
@@ -619,9 +642,16 @@ cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 							       property_name);
 			goto out;
 		}
-		cd_profile_set_property_internal (profile,
-						  property_name,
-						  property_value);
+		ret = cd_profile_set_property_internal (profile,
+							property_name,
+							property_value,
+							&error);
+		if (!ret) {
+			g_dbus_method_invocation_return_gerror (invocation,
+								error);
+			g_error_free (error);
+			goto out;
+		}
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
 	}

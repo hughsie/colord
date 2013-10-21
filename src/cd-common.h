@@ -34,6 +34,10 @@
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
 #define COLORD_DBUS_INTERFACE_SENSOR	"org.freedesktop.ColorManager.Sensor"
 
+#define CD_DBUS_METADATA_KEY_LEN_MAX	256	/* chars */
+#define CD_DBUS_METADATA_VALUE_LEN_MAX	4096	/* chars */
+
+
 #define CD_CLIENT_ERROR			cd_client_error_quark()
 
 GQuark		 cd_client_error_quark		(void);

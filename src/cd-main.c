@@ -1606,9 +1606,15 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 					    &prop_key, &prop_value)) {
 			if (g_strcmp0 (prop_key, CD_PROFILE_PROPERTY_FILENAME) == 0)
 				filename = g_strdup (prop_value);
-			cd_profile_set_property_internal (profile,
-							  prop_key,
-							  prop_value);
+			ret = cd_profile_set_property_internal (profile,
+								prop_key,
+								prop_value,
+								&error);
+			if (!ret) {
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				goto out;
+			}
 		}
 
 		/* get any file descriptor in the message */
@@ -1787,7 +1793,8 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 	checksum = cd_profile_get_checksum (profile);
 	cd_profile_set_property_internal (profile,
 					  CD_PROFILE_METADATA_FILE_CHECKSUM,
-					  checksum);
+					  checksum,
+					  NULL);
 
 	/* just add it to the bus with the title as the ID */
 	profile_id = g_strdup_printf ("icc-%s", cd_icc_get_checksum (icc));
