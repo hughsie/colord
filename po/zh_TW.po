@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Cheng-Chia Tseng <pswo10680@gmail.com>, 2011-2012
+# Cheng-Chia Tseng <pswo10680@gmail.com>, 2011-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-13 15:56+0100\n"
-"PO-Revision-Date: 2013-09-13 14:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2013-10-30 10:14+0000\n"
+"PO-Revision-Date: 2013-09-13 15:50+0000\n"
+"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/colord/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -350,7 +350,7 @@ msgstr "顯示客戶端與幕後程式版本"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "將所有除錯資料傾印至檔案中"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -386,15 +386,15 @@ msgstr "建立裝置"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "根據裝置 ID 尋找裝置"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "根據給定的屬性值尋找裝置"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "根據描述檔 ID 尋找描述檔"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -410,7 +410,7 @@ msgstr "建立描述檔"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "為已存在的裝置添加描述檔"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -462,7 +462,7 @@ msgstr "回傳符合修飾子的描述檔"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "匯入描述檔並為使用者安裝"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -475,10 +475,10 @@ msgid "Daemon version:"
 msgstr "幕後程式版本："
 
 msgid "System vendor:"
-msgstr ""
+msgstr "系統廠商："
 
 msgid "System model:"
-msgstr ""
+msgstr "系統型號："
 
 msgid "Default gamma for the display"
 msgstr "顯示器的預設色域"
@@ -497,13 +497,13 @@ msgid ""
 msgstr "預設顯示器校準用的目標白點，單位採科式溫標 (即度 K，Kelvin)。常見的值為 6500 表 D65，及 5000 表 D50。"
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "在取樣間隔之間的延遲時間"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "此延遲等候期是在設定取樣色彩與提請量測儀器取樣兩者之間的間隔時間。之所以需要這段延遲等候時間，主要因為顯示卡驅動程式與顯示器本身皆會延遲一些時間。"
 
 msgid "Web service profile upload URI"
 msgstr "網頁服務描述檔上傳 URI"
@@ -769,7 +769,7 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "ITU-R 推薦的 BT.709 是高傳真電視標準，最早於 1990 年批准。Rec. 709 描述檔與 sRGB 一樣使用相同的色彩範圍，不過輝度曲線不同。"
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
@@ -959,7 +959,7 @@ msgstr "在引擎載入後離開"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "建立測試用途的偽感測器"
 
 msgid "Color Management D-Bus Service"
 msgstr "色彩管理 D-Bus 服務"
