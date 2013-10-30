@@ -1,3 +1,15 @@
+Version 1.0.4
+~~~~~~~~~~~~~
+Released: 2013-10-30
+
+Bugfixes:
+ - Add documentation examples for system vendor/model (Conley Moorhous)
+ - Fix the AdobeRGB and WideGamutRGB gamma values (Richard Hughes)
+ - Fix typo in the quirk database where Liyama should be Iiyama (Florian Höch)
+ - Remove duplicated Hewlett Packard entry in the quirk database (Florian Höch)
+ - Restrict the length of key and values when setting metadata (Richard Hughes)
+ - Use the exact D50 whitepoint values (Richard Hughes)
+
 Version 1.0.3
 ~~~~~~~~~~~~~
 Released: 2013-08-19
