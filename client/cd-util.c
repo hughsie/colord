@@ -818,6 +818,8 @@ cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 	ret = g_spawn_sync (NULL, (gchar **) argv, NULL,
 			    G_SPAWN_SEARCH_PATH, NULL, NULL,
 			    &mapping_db, NULL, NULL, error);
+	if (!ret)
+		goto out;
 	g_string_append_printf (str, "mapping-db:\n%s\n", mapping_db);
 
 	/* save file */
