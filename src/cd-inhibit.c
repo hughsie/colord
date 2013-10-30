@@ -144,8 +144,12 @@ cd_inhibit_remove (CdInhibit *inhibit, const gchar *sender, GError **error)
  
 	/* remove */
 	ret = g_ptr_array_remove (inhibit->priv->array, item);
-	if (!ret)
+	if (!ret) {
+		g_set_error (error, 1, 0,
+			     "cannot remove inhibit item for %s",
+			     sender);
 		goto out;
+	}
 
 	/* emit signal */
 	g_debug ("CdInhibit: emit changed");
