@@ -791,12 +791,19 @@ out:
 		g_object_unref (device);
 }
 
+typedef enum {
+	CD_LOGGING_FLAG_NONE		= 0,
+	CD_LOGGING_FLAG_SYSLOG		= 1,
+	CD_LOGGING_FLAG_LAST
+} CdLoggingFlags;
+
 /**
  * cd_main_profile_register_on_bus:
  **/
 static gboolean
 cd_main_profile_register_on_bus (CdMainPrivate *priv,
 				 CdProfile *profile,
+				 CdLoggingFlags logging,
 				 GError **error)
 {
 	gboolean ret;
@@ -812,8 +819,10 @@ cd_main_profile_register_on_bus (CdMainPrivate *priv,
 	/* emit signal */
 	g_debug ("CdMain: Emitting ProfileAdded(%s)",
 		 cd_profile_get_object_path (profile));
-	syslog (LOG_INFO, "Profile added: %s",
-		cd_profile_get_id (profile));
+	if ((logging & CD_LOGGING_FLAG_SYSLOG) > 0) {
+		syslog (LOG_INFO, "Profile added: %s",
+			cd_profile_get_id (profile));
+	}
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       COLORD_DBUS_PATH,
@@ -1661,7 +1670,10 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		cd_main_profile_auto_add_from_md (priv, profile);
 
 		/* register on bus */
-		ret = cd_main_profile_register_on_bus (priv, profile, &error);
+		ret = cd_main_profile_register_on_bus (priv,
+						       profile,
+						       CD_LOGGING_FLAG_SYSLOG,
+						       &error);
 		if (!ret) {
 			g_dbus_method_invocation_return_gerror (invocation,
 								error);
@@ -1808,7 +1820,10 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 	}
 
 	/* register on bus */
-	ret = cd_main_profile_register_on_bus (priv, profile, &error);
+	ret = cd_main_profile_register_on_bus (priv,
+					       profile,
+					       CD_LOGGING_FLAG_NONE,
+					       &error);
 	if (!ret) {
 		g_warning ("CdMain: failed to emit ProfileAdded: %s",
 			   error->message);
