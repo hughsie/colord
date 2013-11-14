@@ -857,8 +857,8 @@ cd_icc_calc_whitepoint (CdIcc *icc, GError **error)
 
 	/* do Lab to RGB transform to get primaries */
 	profiles[0] = priv->lcms_profile;
-	profiles[1] = cmsCreateXYZProfile ();
-	transform = cmsCreateExtendedTransform (NULL,
+	profiles[1] = cmsCreateXYZProfileTHR (icc);
+	transform = cmsCreateExtendedTransform (icc,
 						2,
 						profiles,
 						bpc,
@@ -976,10 +976,11 @@ cd_icc_load_primaries (CdIcc *icc, GError **error)
 	}
 
 	/* get the illuminants by running it through the profile */
-	xyz_profile = cmsCreateXYZProfile ();
-	transform = cmsCreateTransform (priv->lcms_profile, TYPE_RGB_DBL,
-					xyz_profile, TYPE_XYZ_DBL,
-					INTENT_PERCEPTUAL, 0);
+	xyz_profile = cmsCreateXYZProfileTHR (icc);
+	transform = cmsCreateTransformTHR (icc,
+					   priv->lcms_profile, TYPE_RGB_DBL,
+					   xyz_profile, TYPE_XYZ_DBL,
+					   INTENT_PERCEPTUAL, 0);
 	if (transform == NULL) {
 		ret = FALSE;
 		g_set_error_literal (error,
@@ -2215,7 +2216,7 @@ cd_icc_get_handle (CdIcc *icc)
  * @error: A #GError or %NULL
  *
  * Set the internal cmsHPROFILE instance. This may be required if you create
- * the profile using cmsCreateRGBProfile() and then want to use the
+ * the profile using cmsCreateRGBProfileTHR() and then want to use the
  * functionality in #CdIcc.
  *
  * Do not call cmsCloseProfile() on @handle in the caller, this will be done
@@ -3506,10 +3507,11 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 
 	/* create a transform from icc to sRGB */
 	values_out = g_new0 (gdouble, size * 3 * component_width);
-	srgb_profile = cmsCreate_sRGBProfile ();
-	transform = cmsCreateTransform (icc->priv->lcms_profile, TYPE_RGB_DBL,
-					srgb_profile, TYPE_RGB_DBL,
-					INTENT_PERCEPTUAL, 0);
+	srgb_profile = cmsCreate_sRGBProfileTHR (icc);
+	transform = cmsCreateTransformTHR (icc,
+					   icc->priv->lcms_profile, TYPE_RGB_DBL,
+					   srgb_profile, TYPE_RGB_DBL,
+					   INTENT_PERCEPTUAL, 0);
 	if (transform == NULL) {
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
@@ -3640,7 +3642,7 @@ out:
  * cd_icc_check_vcgt:
  **/
 static CdProfileWarning
-cd_icc_check_vcgt (cmsHPROFILE profile)
+cd_icc_check_vcgt (CdIcc *icc)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsFloat32Number in;
@@ -3651,7 +3653,7 @@ cd_icc_check_vcgt (cmsHPROFILE profile)
 	guint i;
 
 	/* does profile have monotonic VCGT */
-	vcgt = cmsReadTag (profile, cmsSigVcgtTag);
+	vcgt = cmsReadTag (icc->priv->lcms_profile, cmsSigVcgtTag);
 	if (vcgt == NULL)
 		goto out;
 	for (i = 0; i < size; i++) {
@@ -3681,7 +3683,7 @@ out:
  * cd_profile_check_scum_dot:
  **/
 static CdProfileWarning
-cd_profile_check_scum_dot (cmsHPROFILE profile)
+cd_profile_check_scum_dot (CdIcc *icc)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIELab white;
@@ -3690,11 +3692,12 @@ cd_profile_check_scum_dot (cmsHPROFILE profile)
 	guint8 rgb[3] = { 0, 0, 0 };
 
 	/* do Lab to RGB transform of 100,0,0 */
-	profile_lab = cmsCreateLab2Profile (cmsD50_xyY ());
-	transform = cmsCreateTransform (profile_lab, TYPE_Lab_DBL,
-					profile, TYPE_RGB_8,
-					INTENT_RELATIVE_COLORIMETRIC,
-					cmsFLAGS_NOOPTIMIZE);
+	profile_lab = cmsCreateLab2ProfileTHR (icc, cmsD50_xyY ());
+	transform = cmsCreateTransformTHR (icc,
+					   profile_lab, TYPE_Lab_DBL,
+					   icc->priv->lcms_profile, TYPE_RGB_8,
+					   INTENT_RELATIVE_COLORIMETRIC,
+					   cmsFLAGS_NOOPTIMIZE);
 	if (transform == NULL) {
 		g_warning ("failed to setup Lab -> RGB transform");
 		goto out;
@@ -3719,7 +3722,7 @@ out:
  * cd_icc_check_primaries:
  **/
 static CdProfileWarning
-cd_icc_check_primaries (cmsHPROFILE profile)
+cd_icc_check_primaries (CdIcc *icc)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIEXYZ *tmp;
@@ -3739,7 +3742,7 @@ cd_icc_check_primaries (cmsHPROFILE profile)
 	 */
 
 	/* check red */
-	tmp = cmsReadTag (profile, cmsSigRedColorantTag);
+	tmp = cmsReadTag (icc->priv->lcms_profile, cmsSigRedColorantTag);
 	if (tmp == NULL)
 		goto out;
 	if (tmp->X > 0.85f || tmp->Y < 0.15f || tmp->Z < -0.01) {
@@ -3748,7 +3751,7 @@ cd_icc_check_primaries (cmsHPROFILE profile)
 	}
 
 	/* check green */
-	tmp = cmsReadTag (profile, cmsSigGreenColorantTag);
+	tmp = cmsReadTag (icc->priv->lcms_profile, cmsSigGreenColorantTag);
 	if (tmp == NULL)
 		goto out;
 	if (tmp->X < 0.10f || tmp->Y > 0.85f || tmp->Z < -0.01f) {
@@ -3757,7 +3760,7 @@ cd_icc_check_primaries (cmsHPROFILE profile)
 	}
 
 	/* check blue */
-	tmp = cmsReadTag (profile, cmsSigBlueColorantTag);
+	tmp = cmsReadTag (icc->priv->lcms_profile, cmsSigBlueColorantTag);
 	if (tmp == NULL)
 		goto out;
 	if (tmp->X < 0.10f || tmp->Y < 0.01f || tmp->Z > 0.87f) {
@@ -3772,7 +3775,7 @@ out:
  * cd_icc_check_gray_axis:
  **/
 static CdProfileWarning
-cd_icc_check_gray_axis (cmsHPROFILE profile)
+cd_icc_check_gray_axis (CdIcc *icc)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIELab gray[16];
@@ -3785,15 +3788,16 @@ cd_icc_check_gray_axis (cmsHPROFILE profile)
 	guint i;
 
 	/* only do this for display profiles */
-	if (cmsGetDeviceClass (profile) != cmsSigDisplayClass)
+	if (cmsGetDeviceClass (icc->priv->lcms_profile) != cmsSigDisplayClass)
 		goto out;
 
 	/* do Lab to RGB transform of 100,0,0 */
-	profile_lab = cmsCreateLab2Profile (cmsD50_xyY ());
-	transform = cmsCreateTransform (profile, TYPE_RGB_8,
-					profile_lab, TYPE_Lab_DBL,
-					INTENT_RELATIVE_COLORIMETRIC,
-					cmsFLAGS_NOOPTIMIZE);
+	profile_lab = cmsCreateLab2ProfileTHR (icc, cmsD50_xyY ());
+	transform = cmsCreateTransformTHR (icc,
+					   icc->priv->lcms_profile, TYPE_RGB_8,
+					   profile_lab, TYPE_Lab_DBL,
+					   INTENT_RELATIVE_COLORIMETRIC,
+					   cmsFLAGS_NOOPTIMIZE);
 	if (transform == NULL) {
 		g_warning ("failed to setup RGB -> Lab transform");
 		goto out;
@@ -3837,7 +3841,7 @@ out:
  * cd_icc_check_d50_whitepoint:
  **/
 static CdProfileWarning
-cd_icc_check_d50_whitepoint (cmsHPROFILE profile)
+cd_icc_check_d50_whitepoint (CdIcc *icc)
 {
 	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIExyY tmp;
@@ -3853,11 +3857,12 @@ cd_icc_check_d50_whitepoint (cmsHPROFILE profile)
 	guint i;
 
 	/* do Lab to RGB transform to get primaries */
-	profile_lab = cmsCreateXYZProfile ();
-	transform = cmsCreateTransform (profile, TYPE_RGB_8,
-					profile_lab, TYPE_XYZ_DBL,
-					INTENT_RELATIVE_COLORIMETRIC,
-					cmsFLAGS_NOOPTIMIZE);
+	profile_lab = cmsCreateXYZProfileTHR (icc);
+	transform = cmsCreateTransformTHR (icc,
+					   icc->priv->lcms_profile, TYPE_RGB_8,
+					   profile_lab, TYPE_XYZ_DBL,
+					   INTENT_RELATIVE_COLORIMETRIC,
+					   cmsFLAGS_NOOPTIMIZE);
 	if (transform == NULL) {
 		g_warning ("failed to setup RGB -> XYZ transform");
 		goto out;
@@ -3900,7 +3905,7 @@ cd_icc_check_d50_whitepoint (cmsHPROFILE profile)
 	}
 
 	/* only do the rest for display profiles */
-	if (cmsGetDeviceClass (profile) != cmsSigDisplayClass)
+	if (cmsGetDeviceClass (icc->priv->lcms_profile) != cmsSigDisplayClass)
 		goto out;
 
 	/* check white is D50 */
@@ -3987,28 +3992,28 @@ cd_icc_get_warnings (CdIcc *icc)
 		g_array_append_val (flags, warning);
 
 	/* does profile have monotonic VCGT */
-	warning = cd_icc_check_vcgt (icc->priv->lcms_profile);
+	warning = cd_icc_check_vcgt (icc);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 
 	/* if Lab 100,0,0 does not map to RGB 255,255,255 for relative
 	 * colorimetric then white it will not work on printers */
-	warning = cd_profile_check_scum_dot (icc->priv->lcms_profile);
+	warning = cd_profile_check_scum_dot (icc);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 
 	/* gray should give low a/b and should be monotonic */
-	warning = cd_icc_check_gray_axis (icc->priv->lcms_profile);
+	warning = cd_icc_check_gray_axis (icc);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 
 	/* tristimulus values cannot be negative */
-	warning = cd_icc_check_primaries (icc->priv->lcms_profile);
+	warning = cd_icc_check_primaries (icc);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 
 	/* check whitepoint works out to D50 */
-	warning = cd_icc_check_d50_whitepoint (icc->priv->lcms_profile);
+	warning = cd_icc_check_d50_whitepoint (icc);
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 out:

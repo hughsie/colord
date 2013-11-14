@@ -473,21 +473,23 @@ cd_transform_setup (CdTransform *transform, GError **error)
 		profiles[0] = profile_in;
 		profiles[1] = cd_icc_get_handle (priv->abstract_icc);
 		profiles[2] = profile_out;
-		priv->lcms_transform = cmsCreateMultiprofileTransform (profiles,
-								       3,
-								       priv->input_pixel_format,
-								       priv->output_pixel_format,
-								       lcms_intent,
-								       lcms_flags);
+		priv->lcms_transform = cmsCreateMultiprofileTransformTHR (transform,
+									  profiles,
+									  3,
+									  priv->input_pixel_format,
+									  priv->output_pixel_format,
+									  lcms_intent,
+									  lcms_flags);
 
 	} else {
 		/* create basic transform */
-		priv->lcms_transform = cmsCreateTransform (profile_in,
-							   priv->input_pixel_format,
-							   profile_out,
-							   priv->output_pixel_format,
-							   lcms_intent,
-							   lcms_flags);
+		priv->lcms_transform = cmsCreateTransformTHR (transform,
+							      profile_in,
+							      priv->input_pixel_format,
+							      profile_out,
+							      priv->output_pixel_format,
+							      lcms_intent,
+							      lcms_flags);
 	}
 
 	/* failed? */
@@ -865,7 +867,7 @@ cd_transform_init (CdTransform *transform)
 	transform->priv->rendering_intent = CD_RENDERING_INTENT_UNKNOWN;
 	transform->priv->input_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
 	transform->priv->output_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
-	transform->priv->srgb = cmsCreate_sRGBProfile ();
+	transform->priv->srgb = cmsCreate_sRGBProfileTHR (transform);
 	transform->priv->max_threads = 1;
 }
 

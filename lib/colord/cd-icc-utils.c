@@ -75,16 +75,17 @@ cd_icc_utils_get_coverage_calc (CdIcc *icc,
 	guint i;
 
 	/* create a proofing transform with gamut check */
-	profile_null = cmsCreateNULLProfile ();
-	transform = cmsCreateProofingTransform (cd_icc_get_handle (icc),
-						TYPE_RGB_FLT,
-						profile_null,
-						TYPE_GRAY_FLT,
-						cd_icc_get_handle (icc_reference),
-						INTENT_ABSOLUTE_COLORIMETRIC,
-						INTENT_ABSOLUTE_COLORIMETRIC,
-						cmsFLAGS_GAMUTCHECK |
-						cmsFLAGS_SOFTPROOFING);
+	profile_null = cmsCreateNULLProfileTHR (icc);
+	transform = cmsCreateProofingTransformTHR (icc,
+						   cd_icc_get_handle (icc),
+						   TYPE_RGB_FLT,
+						   profile_null,
+						   TYPE_GRAY_FLT,
+						   cd_icc_get_handle (icc_reference),
+						   INTENT_ABSOLUTE_COLORIMETRIC,
+						   INTENT_ABSOLUTE_COLORIMETRIC,
+						   cmsFLAGS_GAMUTCHECK |
+						   cmsFLAGS_SOFTPROOFING);
 	if (transform == NULL) {
 		ret = FALSE;
 		g_set_error (error,
