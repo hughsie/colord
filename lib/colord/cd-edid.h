@@ -66,7 +66,7 @@ struct _CdEdidClass
 };
 
 /**
- * CdIccError:
+ * CdEdidError:
  * @CD_EDID_ERROR_FAILED_TO_PARSE:	The EDID file could not be found
  *
  * The CdEdid error code.
