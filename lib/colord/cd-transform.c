@@ -705,6 +705,7 @@ cd_transform_process (CdTransform *transform,
 		p_out += rowstride * rows_to_process;
 	}
 out:
+	cmsSetLogErrorHandler (NULL);
 	if (pool != NULL)
 		g_thread_pool_free (pool, FALSE, TRUE);
 	return ret;

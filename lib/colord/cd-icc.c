@@ -768,6 +768,7 @@ cd_icc_to_string (CdIcc *icc)
 	if (str->len > 0)
 		g_string_truncate (str, str->len - 1);
 
+	cmsSetLogErrorHandler (NULL);
 	return g_string_free (str, FALSE);
 }
 
@@ -1179,6 +1180,7 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 			goto out;
 	}
 out:
+	cmsSetLogErrorHandler (NULL);
 	return ret;
 }
 
@@ -1600,6 +1602,7 @@ cd_icc_check_lcms2_MemoryWrite (void)
 	g_assert (dict != (gpointer) 0x01); /* appease GCC */
 	cmsCloseProfile (p);
 	g_free (data);
+	cmsSetLogErrorHandler (NULL);
 	return ret;
 }
 
@@ -1890,6 +1893,7 @@ cd_icc_save_data (CdIcc *icc,
 		data = cd_icc_serialize_profile_fallback (icc, error);
 	}
 out:
+	cmsSetLogErrorHandler (NULL);
 	g_list_free (md_keys);
 	if (dict != NULL)
 		cmsDictFree (dict);
@@ -2777,6 +2781,7 @@ cd_icc_get_mluc_data (CdIcc *icc,
 			     tmp);
 	value = tmp;
 out:
+	cmsSetLogErrorHandler (NULL);
 	g_free (locale_key);
 	g_free (text_buffer);
 	g_free (wtext);
@@ -3225,6 +3230,7 @@ cd_icc_create_default (CdIcc *icc, GError **error)
 			     CD_PROFILE_METADATA_STANDARD_SPACE,
 			     cd_standard_space_to_string (CD_STANDARD_SPACE_SRGB));
 out:
+	cmsSetLogErrorHandler (NULL);
 	return ret;
 }
 
@@ -3376,6 +3382,7 @@ cd_icc_create_from_edid (CdIcc *icc,
 	/* success */
 	ret = TRUE;
 out:
+	cmsSetLogErrorHandler (NULL);
 	if (transfer_curve[0] != NULL)
 		cmsFreeToneCurve (transfer_curve[0]);
 	return ret;
@@ -3430,8 +3437,8 @@ cd_icc_get_vcgt (CdIcc *icc, guint size, GError **error)
 		g_ptr_array_add (array, tmp);
 	}
 out:
+	cmsSetLogErrorHandler (NULL);
 	return array;
-
 }
 
 /**
@@ -3531,6 +3538,7 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 		g_ptr_array_add (array, data);
 	}
 out:
+	cmsSetLogErrorHandler (NULL);
 	g_free (values_in);
 	g_free (values_out);
 	if (transform != NULL)
@@ -3599,6 +3607,7 @@ cd_icc_set_vcgt (CdIcc *icc, GPtrArray *vcgt, GError **error)
 		goto out;
 	}
 out:
+	cmsSetLogErrorHandler (NULL);
 	for (i = 0; i < 3; i++)
 		cmsFreeToneCurve (curve[i]);
 	g_free (red);
@@ -4003,6 +4012,7 @@ cd_icc_get_warnings (CdIcc *icc)
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 out:
+	cmsSetLogErrorHandler (NULL);
 	return flags;
 }
 
