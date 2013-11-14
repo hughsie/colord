@@ -88,11 +88,12 @@ cd_icc_store_helper_free (CdIccStoreDirHelper *helper)
 
 /**
  * cd_icc_store_find_by_filename:
+ * @store: a #CdIccStore instance.
  * @filename: a fully qualified filename
  *
  * Finds a ICC object in the store by filename.
  *
- * Return value: (transfer full) (element-type CdIcc): an ICC profile object or %NULL
+ * Return value: (transfer full): an ICC profile object or %NULL
  *
  * Since: 1.0.2
  **/
@@ -116,11 +117,12 @@ cd_icc_store_find_by_filename (CdIccStore *store, const gchar *filename)
 
 /**
  * cd_icc_store_find_by_checksum:
+ * @store: a #CdIccStore instance.
  * @checksum: a checksum value
  *
  * Finds a ICC object in the store by checksum.
  *
- * Return value: (transfer full) (element-type CdIcc): an ICC profile object or %NULL
+ * Return value: (transfer full): an ICC profile object or %NULL
  *
  * Since: 1.0.2
  **/
