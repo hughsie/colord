@@ -1,3 +1,12 @@
+Version 1.1.4
+~~~~~~~~~~~~~
+Released: 2013-11-19
+
+Bugfixes:
+ - Only syslog() profile additions when they're added via DBus (Colin Walters)
+ - Reset the LCMS log handlers to default after use (Richard Hughes)
+ - Use the threadsafe versions of the LCMS functions (Richard Hughes)
+
 Version 1.1.3
 ~~~~~~~~~~~~~
 Released: 2013-10-30
