@@ -989,6 +989,32 @@ colord_icc_characterization_func (void)
 }
 
 static void
+colord_icc_empty_func (void)
+{
+	CdIcc *icc;
+	GError *error = NULL;
+	GFile *file;
+	gboolean ret;
+	gchar *filename;
+
+	/* load source file */
+	icc = cd_icc_new ();
+	filename = cd_test_get_filename ("empty.icc");
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				&error);
+	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_FAILED_TO_PARSE);
+	g_assert (!ret);
+	g_error_free (error);
+	g_free (filename);
+	g_object_unref (file);
+	g_object_unref (icc);
+}
+
+static void
 colord_icc_save_func (void)
 {
 	CdIcc *icc;
@@ -1538,6 +1564,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc{edid}", colord_icc_edid_func);
 	g_test_add_func ("/colord/icc{characterization}", colord_icc_characterization_func);
 	g_test_add_func ("/colord/icc{save}", colord_icc_save_func);
+	g_test_add_func ("/colord/icc{empty}", colord_icc_empty_func);
 	g_test_add_func ("/colord/icc-store", colord_icc_store_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);

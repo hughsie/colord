@@ -1209,7 +1209,6 @@ cd_icc_load_data (CdIcc *icc,
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
-	g_return_val_if_fail (data_len != 0, FALSE);
 	g_return_val_if_fail (priv->lcms_profile == NULL, FALSE);
 
 	/* ensure we have the header */

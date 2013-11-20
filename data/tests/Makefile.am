@@ -3,6 +3,7 @@ test_files =						\
 	Lenovo-T61-Internal.bin				\
 	calibration.ccmx				\
 	crayons.icc					\
+	empty.icc					\
 	ibm-t61.icc					\
 	measured.ti3					\
 	normalised.ti3					\
