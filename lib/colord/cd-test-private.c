@@ -24,7 +24,10 @@
 #include <math.h>
 #include <locale.h>
 #include <string.h>
+#include <fcntl.h>
+
 #include <glib.h>
+#include <glib/gstdio.h>
 
 #include "cd-buffer.h"
 #include "cd-color.h"
@@ -1015,6 +1018,36 @@ colord_icc_empty_func (void)
 }
 
 static void
+colord_icc_corrupt_dict_func (void)
+{
+	CdIcc *icc;
+	GError *error = NULL;
+	gboolean ret;
+	gchar *filename;
+	int fd;
+
+	/* load source file */
+	icc = cd_icc_new ();
+	filename = cd_test_get_filename ("corrupt-dict.icc");
+	fd = g_open (filename, O_RDONLY, 0);
+	ret = cd_icc_load_fd (icc,
+			      fd,
+			      CD_ICC_LOAD_FLAGS_METADATA,
+			      &error);
+	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_CORRUPTION_DETECTED);
+	g_assert (!ret);
+	g_clear_error (&error);
+
+	/* close fd */
+	ret = g_close (fd, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_free (filename);
+	g_object_unref (icc);
+}
+
+static void
 colord_icc_save_func (void)
 {
 	CdIcc *icc;
@@ -1565,6 +1598,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc{characterization}", colord_icc_characterization_func);
 	g_test_add_func ("/colord/icc{save}", colord_icc_save_func);
 	g_test_add_func ("/colord/icc{empty}", colord_icc_empty_func);
+	g_test_add_func ("/colord/icc{corrupt-dict}", colord_icc_corrupt_dict_func);
 	g_test_add_func ("/colord/icc-store", colord_icc_store_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);

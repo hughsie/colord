@@ -2,6 +2,7 @@ test_files =						\
 	LG-L225W-External.bin				\
 	Lenovo-T61-Internal.bin				\
 	calibration.ccmx				\
+	corrupt-dict.icc				\
 	crayons.icc					\
 	empty.icc					\
 	ibm-t61.icc					\
