@@ -108,13 +108,16 @@ static void
 cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 {
 	CdDevice *device = NULL;
-	const gchar *kind = "webcam";
 	const gchar *seat;
-	gboolean embedded;
 	gboolean ret;
 	gchar *id = NULL;
 	gchar *model = NULL;
 	gchar *vendor = NULL;
+
+	/* is a proper camera and not a webcam */
+	ret = g_udev_device_has_property (udev_device, "ID_GPHOTO2");
+	if (!ret)
+		goto out;
 
 	/* is a scanner? */
 	ret = g_udev_device_has_property (udev_device, "COLORD_DEVICE");
@@ -135,11 +138,6 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 		g_strchomp (vendor);
 	}
 
-	/* is a proper camera and not a webcam */
-	ret = g_udev_device_has_property (udev_device, "ID_GPHOTO2");
-	if (ret)
-		kind = "camera";
-
 	/* generate ID */
 	id = cd_plugin_get_camera_id_for_udev_device (udev_device);
 
@@ -148,15 +146,12 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 	if (seat == NULL)
 		seat = "seat0";
 
-	/* find if the device is embedded */
-	embedded = cd_plugin_is_device_embedded (udev_device);
-
 	/* create new device */
 	device = cd_device_new ();
 	cd_device_set_id (device, id);
 	cd_device_set_property_internal (device,
 					 CD_DEVICE_PROPERTY_KIND,
-					 kind,
+					 cd_device_kind_to_string (CD_DEVICE_KIND_CAMERA),
 					 FALSE,
 					 NULL);
 	if (model != NULL) {
@@ -188,7 +183,7 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 					 seat,
 					 FALSE,
 					 NULL);
-	if (embedded) {
+	if (cd_plugin_is_device_embedded (udev_device)) {
 		cd_device_set_property_internal (device,
 						 CD_DEVICE_PROPERTY_EMBEDDED,
 						 NULL,
