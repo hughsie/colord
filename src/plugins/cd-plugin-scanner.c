@@ -82,6 +82,7 @@ static void
 cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 {
 	CdDevice *device = NULL;
+	const gchar *devclass;
 	const gchar *seat;
 	gboolean ret;
 	gchar *id = NULL;
@@ -91,6 +92,11 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 	/* is a scanner? */
 	ret = g_udev_device_has_property (udev_device, "libsane_matched");
 	if (!ret)
+		goto out;
+
+	/* skip hubs */
+	devclass = g_udev_device_get_sysfs_attr (udev_device, "bDeviceClass");
+	if (devclass == NULL || g_strcmp0 (devclass, "09") == 0)
 		goto out;
 
 	/* replace underscores with spaces */
