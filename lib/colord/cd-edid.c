@@ -457,6 +457,13 @@ cd_edid_parse_string (const guint8 *data)
 		}
 	}
 
+	/* not valid UTF-8 */
+	if (!g_utf8_validate (text, -1, NULL)) {
+		g_free (text);
+		text = NULL;
+		goto out;
+	}
+
 	/* if the string is junk, ignore the string */
 	if (replaced > 4) {
 		g_free (text);
