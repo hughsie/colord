@@ -3281,7 +3281,9 @@ cd_icc_create_from_edid_data (CdIcc *icc, CdEdid *edid, GError **error)
 			      "This profile is free of known copyright restrictions.");
 
 	/* set 'ICC meta Tag for Monitor Profiles' data */
-	cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_MD5, cd_edid_get_checksum (edid));
+	data = cd_edid_get_checksum (edid);
+	if (data != NULL)
+		cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_MD5, data);
 	data = cd_edid_get_monitor_name (edid);
 	if (data != NULL)
 		cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_MODEL, data);
