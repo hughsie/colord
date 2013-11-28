@@ -2900,7 +2900,7 @@ cd_icc_get_model (CdIcc *icc, const gchar *locale, GError **error)
  * cd_icc_set_description:
  * @icc: A valid #CdIcc
  * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
- * @value: New string value
+ * @value: (allow-none): New UTF-8 string value
  *
  * Sets the profile description for a specific locale.
  *
@@ -2910,6 +2910,7 @@ void
 cd_icc_set_description (CdIcc *icc, const gchar *locale, const gchar *value)
 {
 	CdIccPrivate *priv = icc->priv;
+	g_return_if_fail (value == NULL || g_utf8_validate (value, -1, NULL));
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_DESCRIPTION],
 			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
@@ -2948,7 +2949,7 @@ cd_icc_set_description_items (CdIcc *icc, GHashTable *values)
  * cd_icc_set_copyright:
  * @icc: A valid #CdIcc
  * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
- * @value: New string value
+ * @value: (allow-none): New UTF-8 string value
  *
  * Sets the profile _copyright for a specific locale.
  *
@@ -2958,6 +2959,7 @@ void
 cd_icc_set_copyright (CdIcc *icc, const gchar *locale, const gchar *value)
 {
 	CdIccPrivate *priv = icc->priv;
+	g_return_if_fail (value == NULL || g_utf8_validate (value, -1, NULL));
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_COPYRIGHT],
 			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
@@ -2996,7 +2998,7 @@ cd_icc_set_copyright_items (CdIcc *icc, GHashTable *values)
  * cd_icc_set_manufacturer:
  * @icc: A valid #CdIcc
  * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
- * @value: New string value
+ * @value: (allow-none): New UTF-8 string value
  *
  * Sets the profile manufacturer for a specific locale.
  *
@@ -3006,6 +3008,7 @@ void
 cd_icc_set_manufacturer (CdIcc *icc, const gchar *locale, const gchar *value)
 {
 	CdIccPrivate *priv = icc->priv;
+	g_return_if_fail (value == NULL || g_utf8_validate (value, -1, NULL));
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_MANUFACTURER],
 			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
@@ -3044,7 +3047,7 @@ cd_icc_set_manufacturer_items (CdIcc *icc, GHashTable *values)
  * cd_icc_set_model:
  * @icc: A valid #CdIcc
  * @locale: A locale, e.g. "en_GB.UTF-8" or %NULL for the profile default
- * @value: New string value
+ * @value: (allow-none): New UTF-8 string value
  *
  * Sets the profile model for a specific locale.
  *
@@ -3054,6 +3057,7 @@ void
 cd_icc_set_model (CdIcc *icc, const gchar *locale, const gchar *value)
 {
 	CdIccPrivate *priv = icc->priv;
+	g_return_if_fail (value == NULL || g_utf8_validate (value, -1, NULL));
 	g_hash_table_insert (priv->mluc_data[CD_MLUC_MODEL],
 			     cd_icc_get_locale_key (locale),
 			     g_strdup (value));
