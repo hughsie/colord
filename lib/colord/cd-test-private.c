@@ -804,6 +804,62 @@ colord_buffer_func (void)
 	g_assert_cmpint (cd_buffer_read_uint16_le (buffer), ==, 8192);
 }
 
+/* 1. create a valid profile with metadata and model and save it
+ * 2. open profile, delete meta and dscm tags, and resave
+ * 3. open profile and verify meta and dscm information is not present */
+static void
+colord_icc_clear_func (void)
+{
+	CdIcc *icc;
+	GError *error = NULL;
+	gboolean ret;
+	GBytes *payload;
+	const gchar *tmp;
+
+	/* create a new file with an empty metadata store */
+	icc = cd_icc_new ();
+	ret = cd_icc_create_default (icc, &error);
+	cd_icc_set_model (icc, NULL, "baz");
+	g_assert_no_error (error);
+	g_assert (ret);
+	payload = cd_icc_save_data (icc, CD_ICC_SAVE_FLAGS_NONE, &error);
+	g_assert_no_error (error);
+	g_assert (payload != NULL);
+	g_object_unref (icc);
+
+	/* load payload, delete all meta and dscm tags, and resave */
+	icc = cd_icc_new ();
+	ret = cd_icc_load_data (icc,
+				g_bytes_get_data (payload, NULL),
+				g_bytes_get_size (payload),
+				CD_ICC_LOAD_FLAGS_METADATA,
+				&error);
+	cd_icc_remove_metadata (icc, "DATA_source");
+	cd_icc_remove_metadata (icc, "STANDARD_space");
+	cd_icc_set_model (icc, NULL, NULL);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_bytes_unref (payload);
+	payload = cd_icc_save_data (icc, CD_ICC_SAVE_FLAGS_NONE, &error);
+	g_assert_no_error (error);
+	g_assert (payload != NULL);
+	g_object_unref (icc);
+
+	/* ensure values not set */
+	icc = cd_icc_new ();
+	ret = cd_icc_load_data (icc,
+				g_bytes_get_data (payload, NULL),
+				g_bytes_get_size (payload),
+				CD_ICC_LOAD_FLAGS_METADATA,
+				&error);
+	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "DATA_source"), ==, NULL);
+	tmp = cd_icc_get_model (icc, NULL, &error);
+	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_NO_DATA);
+	g_assert (tmp == NULL);
+
+	g_object_unref (icc);
+}
+
 static void
 colord_icc_func (void)
 {
@@ -1599,6 +1655,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc{save}", colord_icc_save_func);
 	g_test_add_func ("/colord/icc{empty}", colord_icc_empty_func);
 	g_test_add_func ("/colord/icc{corrupt-dict}", colord_icc_corrupt_dict_func);
+	g_test_add_func ("/colord/icc{clear}", colord_icc_clear_func);
 	g_test_add_func ("/colord/icc-store", colord_icc_store_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);

@@ -1460,6 +1460,8 @@ cd_util_write_tag_localized (CdIcc *icc,
 	for (l = keys; l != NULL; l = l->next) {
 		locale = l->data;
 		value = g_hash_table_lookup (hash, locale);
+		if (value == NULL)
+			continue;
 		obj = cd_util_mlu_object_parse (locale, value, &error_local);
 		if (obj == NULL) {
 			g_warning ("failed to parse localized text %s[%s]: %s",
