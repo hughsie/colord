@@ -2442,7 +2442,7 @@ cd_icc_get_metadata_item (CdIcc *icc, const gchar *key)
  * cd_icc_add_metadata:
  * @icc: A valid #CdIcc
  * @key: the metadata key
- * @value: the metadata value
+ * @value: the UTF-8 metadata value
  *
  * Sets an item of data to the profile metadata, overwriting it if
  * it already exists.
@@ -2454,7 +2454,9 @@ cd_icc_add_metadata (CdIcc *icc, const gchar *key, const gchar *value)
 {
 	g_return_if_fail (CD_IS_ICC (icc));
 	g_return_if_fail (key != NULL);
+	g_return_if_fail (g_utf8_validate (key, -1, NULL));
 	g_return_if_fail (value != NULL);
+	g_return_if_fail (g_utf8_validate (value, -1, NULL));
 	g_hash_table_insert (icc->priv->metadata,
 			     g_strdup (key),
 			     g_strdup (value));
