@@ -3379,6 +3379,11 @@ cd_icc_create_from_edid (CdIcc *icc,
 		goto out;
 	}
 
+	/* copy any important parts out of the lcms-generated profile */
+	ret = cd_icc_load (icc, CD_ICC_LOAD_FLAGS_NONE, error);
+	if (!ret)
+		goto out;
+
 	/* set header options */
 	cmsSetHeaderRenderingIntent (priv->lcms_profile, INTENT_PERCEPTUAL);
 	cmsSetDeviceClass (priv->lcms_profile, cmsSigDisplayClass);

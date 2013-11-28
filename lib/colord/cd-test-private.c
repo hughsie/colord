@@ -1010,6 +1010,8 @@ colord_icc_edid_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 
+	g_assert_cmpfloat (cd_icc_get_version (icc), >, 3.99);
+
 	g_object_unref (icc);
 }
 
