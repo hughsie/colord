@@ -1159,7 +1159,7 @@ cd_profile_equal (CdProfile *profile1, CdProfile *profile2)
  *
  * Return value: (transfer full): A new #CdIcc object, or %NULL for error
  *
- * Since: 0.1.8
+ * Since: 0.1.32
  **/
 CdIcc *
 cd_profile_load_icc (CdProfile *profile,
