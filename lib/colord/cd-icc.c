@@ -27,6 +27,7 @@
 #include "config.h"
 
 #include <glib.h>
+#include <glib/gstdio.h>
 #include <lcms2.h>
 #include <locale.h>
 #include <string.h>
@@ -1239,6 +1240,170 @@ out:
 }
 
 /**
+ * cd_icc_check_error_cb:
+ **/
+static void
+cd_icc_check_error_cb (cmsContext context_id,
+		       cmsUInt32Number code,
+		       const char *message)
+{
+	gboolean *ret = (gboolean *) context_id;
+	*ret = FALSE;
+}
+
+/**
+ * cd_icc_check_lcms2_MemoryWrite:
+ *
+ * - Create a sRGB profile with some metadata
+ * - Serialize it to a memory blob
+ * - Load the resulting memory blob
+ *
+ * If there are any errors thrown, we're being compiled against a LCMS2 with
+ * the bad MemoryWrite() implementation.
+ **/
+static gboolean
+cd_icc_check_lcms2_MemoryWrite (void)
+{
+	cmsHANDLE dict;
+	cmsHPROFILE p;
+	cmsUInt32Number size;
+	gboolean ret = TRUE;
+	gchar *data;
+
+	/* setup temporary log handler */
+	cmsSetLogErrorHandler (cd_icc_check_error_cb);
+
+	/* create test data */
+	p = cmsCreate_sRGBProfileTHR (&ret);
+	dict = cmsDictAlloc (NULL);
+	cmsDictAddEntry (dict, L"1", L"2", NULL, NULL);
+	cmsWriteTag (p, cmsSigMetaTag, dict);
+	cmsSaveProfileToMem (p, NULL, &size);
+	data = g_malloc (size);
+	cmsSaveProfileToMem (p, data, &size);
+	cmsCloseProfile (p);
+	cmsDictFree (dict);
+
+	/* open file */
+	p = cmsOpenProfileFromMemTHR (&ret, data, size);
+	dict = cmsReadTag (p, cmsSigMetaTag);
+	g_assert (dict != (gpointer) 0x01); /* appease GCC */
+	cmsCloseProfile (p);
+	g_free (data);
+	cmsSetLogErrorHandler (NULL);
+	return ret;
+}
+
+/**
+ * cd_icc_serialize_profile_fallback:
+ **/
+static GBytes *
+cd_icc_serialize_profile_fallback (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	gboolean ret;
+	GBytes *data = NULL;
+	gchar *data_tmp = NULL;
+	gchar *temp_file = NULL;
+	GError *error_local = NULL;
+	gint fd;
+	gsize length = 0;
+
+	/* get unique temp file */
+	fd = g_file_open_tmp ("colord-XXXXXX.icc", &temp_file, &error_local);
+	if (fd < 0) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "failed to open temp file: %s",
+			     error_local->message);
+		g_error_free (error_local);
+		goto out;
+	}
+
+	/* dump to a file, avoiding the problematic call to MemoryWrite() */
+	ret = cmsSaveProfileToFile (priv->lcms_profile, temp_file);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file to temp file");
+		goto out;
+	}
+	ret = g_file_get_contents (temp_file, &data_tmp, &length, NULL);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to load temp file");
+		goto out;
+	}
+	/* success */
+	data = g_bytes_new (data_tmp, length);
+out:
+	if (fd >= 0)
+		close (fd);
+	if (temp_file != NULL)
+		g_unlink (temp_file);
+	g_free (temp_file);
+	g_free (data_tmp);
+	return data;
+}
+
+/**
+ * cd_icc_serialize_profile:
+ **/
+static GBytes *
+cd_icc_serialize_profile (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsUInt32Number length = 0;
+	gboolean ret;
+	GBytes *data = NULL;
+	gchar *data_tmp = NULL;
+
+	/* get size of profile */
+	ret = cmsSaveProfileToMem (priv->lcms_profile,
+				   NULL, &length);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file");
+		goto out;
+	}
+
+	/* sanity check to 16Mb */
+	if (length == 0 || length > 16 * 1024 * 1024) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "failed to save ICC file, requested %u "
+			     "bytes and limit is 16Mb",
+			     length);
+		goto out;
+	}
+
+	/* allocate and get profile data */
+	data_tmp = g_new0 (gchar, length);
+	ret = cmsSaveProfileToMem (priv->lcms_profile,
+				   data_tmp, &length);
+	if (!ret) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to dump ICC file to memory");
+		goto out;
+	}
+
+	/* success */
+	data = g_bytes_new (data_tmp, length);
+out:
+	g_free (data_tmp);
+	return data;
+}
+
+/**
  * cd_icc_save_data:
  * @icc: a #CdIcc instance.
  * @flags: a set of #CdIccSaveFlags
@@ -1257,12 +1422,10 @@ cd_icc_save_data (CdIcc *icc,
 {
 	CdIccPrivate *priv = icc->priv;
 	cmsHANDLE dict = NULL;
-	cmsUInt32Number length = 0;
 	const gchar *key;
 	const gchar *value;
 	gboolean ret = FALSE;
 	GBytes *data = NULL;
-	gchar *data_tmp = NULL;
 	GList *l;
 	GList *md_keys = NULL;
 	guint i;
@@ -1395,48 +1558,21 @@ cd_icc_save_data (CdIcc *icc,
 		goto out;
 	}
 
-	/* get size of profile */
-	ret = cmsSaveProfileToMem (priv->lcms_profile,
-				   NULL, &length);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "failed to dump ICC file");
-		goto out;
+	/* LCMS2 doesn't serialize some tags properly when using the function
+	 * cmsSaveProfileToMem() twice, so until lcms 2.6 is released we have to
+	 * use a fallback version which uses a temporary file.
+	 * See https://github.com/mm2/Little-CMS/commit/1d2643cb8153c48dcfdee3d5cda43a38f7e719e2
+	 * for the fix. */
+	if (cd_icc_check_lcms2_MemoryWrite ()) {
+		data = cd_icc_serialize_profile (icc, error);
+	} else {
+		g_debug ("Using file serialization due to bad MemoryWrite.");
+		data = cd_icc_serialize_profile_fallback (icc, error);
 	}
-
-	/* sanity check to 16Mb */
-	if (length == 0 || length > 16 * 1024 * 1024) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_ICC_ERROR,
-			     CD_ICC_ERROR_FAILED_TO_SAVE,
-			     "failed to save ICC file, requested %u "
-			     "bytes and limit is 16Mb",
-			     length);
-		goto out;
-	}
-
-	/* allocate and get profile data */
-	data_tmp = g_new0 (gchar, length);
-	ret = cmsSaveProfileToMem (priv->lcms_profile,
-				   data_tmp, &length);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "failed to dump ICC file to memory");
-		goto out;
-	}
-
-	/* success */
-	data = g_bytes_new (data_tmp, length);
 out:
 	g_list_free (md_keys);
 	if (dict != NULL)
 		cmsDictFree (dict);
-	g_free (data_tmp);
 	return data;
 }
 
