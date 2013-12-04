@@ -1,3 +1,16 @@
+Version 1.0.5
+~~~~~~~~~~~~~
+Released: 2013-12-04
+
+Bugfixes:
+ - Detect at runtime if the lcms2 function MemoryWrite is faulty (Richard Hughes)
+ - Do not write an invalid dict or mluc data when the resaving (Richard Hughes)
+ - Don't crash with an empty ICC file (Marti Raudsepp)
+ - Don't create legacy locations when loading stores (Matthias Clasen)
+ - Ensure the version is set when using cd_icc_create_from_edid() (Richard Hughes)
+ - Never add USB hubs as scanner devices even if tagged by libsane (Richard Hughes)
+ - Never create color managed webcam devices (Richard Hughes)
+
 Version 1.0.4
 ~~~~~~~~~~~~~
 Released: 2013-10-30
