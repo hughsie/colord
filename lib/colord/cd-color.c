@@ -1004,6 +1004,16 @@ cd_color_get_blackbody_rgb (guint temp, CdColorRGB *result)
 	gdouble alpha;
 	gint temp_index;
 
+	/* check lower bound */
+	if (temp < 1000) {
+		temp = 1000;
+	}
+
+	/* check upper bound */
+	if (temp > 10000) {
+		temp = 10000;
+	}
+
 	/* bilinear interpolate the blackbody data */
 	alpha = (temp % 100) / 100.0;
 	temp_index = (temp - 1000) / 100;
