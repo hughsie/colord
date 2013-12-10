@@ -892,6 +892,8 @@ cd_color_rgb_array_is_monotonic (const GPtrArray *array)
 	CdColorRGB *rgb;
 	guint i;
 
+	g_return_val_if_fail (array != NULL, FALSE);
+
 	/* check if monotonic */
 	cd_color_rgb_set (&last_rgb, 0.0, 0.0, 0.0);
 	for (i = 0; i < array->len; i++) {
@@ -946,6 +948,9 @@ cd_color_rgb_array_interpolate (const GPtrArray *array, guint new_length)
 	guint i;
 	guint j;
 	guint m;
+
+	g_return_val_if_fail (array != NULL, NULL);
+	g_return_val_if_fail (new_length > 0, NULL);
 
 	/* check if monotonic */
 	ret = cd_color_rgb_array_is_monotonic (array);
