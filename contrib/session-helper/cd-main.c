@@ -1975,6 +1975,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		}
 
 		/* actually start the process now */
+		priv->status = CD_SESSION_STATUS_IDLE;
 		g_idle_add (cd_main_start_calibration_cb, priv);
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		goto out;
