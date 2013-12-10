@@ -25,6 +25,7 @@
 #include <locale.h>
 #include <string.h>
 #include <fcntl.h>
+#include <math.h>
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -685,6 +686,48 @@ colord_color_interpolate_func (void)
 
 	g_ptr_array_unref (result);
 	g_ptr_array_unref (array);
+}
+
+static void
+colord_color_blackbody_func (void)
+{
+	CdColorRGB rgb;
+	gboolean ret;
+
+	/* D65 */
+	ret = cd_color_get_blackbody_rgb (6500, &rgb);
+	g_assert (ret);
+	g_assert_cmpfloat (fabs (rgb.R - 1.0000f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.G - 1.0000f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.B - 1.0000f), <, 0.01);
+
+	/* 1000K */
+	ret = cd_color_get_blackbody_rgb (1000, &rgb);
+	g_assert (ret);
+	g_assert_cmpfloat (fabs (rgb.R - 1.0000f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.G - 0.0425f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.B - 0.0000f), <, 0.01);
+
+	/* 10000K */
+	ret = cd_color_get_blackbody_rgb (10000, &rgb);
+	g_assert (ret);
+	g_assert_cmpfloat (fabs (rgb.R - 0.5944f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.G - 0.7414f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.B - 1.0000f), <, 0.01);
+
+	/* 90K */
+	ret = cd_color_get_blackbody_rgb (90, &rgb);
+	g_assert (!ret);
+	g_assert_cmpfloat (fabs (rgb.R - 1.0000f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.G - 0.0425f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.B - 0.0000f), <, 0.01);
+
+	/* 100000K */
+	ret = cd_color_get_blackbody_rgb (100000, &rgb);
+	g_assert (!ret);
+	g_assert_cmpfloat (fabs (rgb.R - 0.5944f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.G - 0.7414f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.B - 1.0000f), <, 0.01);
 }
 
 static void
@@ -1668,6 +1711,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/interp{akima}", colord_interp_akima_func);
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/color{interpolate}", colord_color_interpolate_func);
+	g_test_add_func ("/colord/color{blackbody}", colord_color_blackbody_func);
 	g_test_add_func ("/colord/math", cd_test_math_func);
 	g_test_add_func ("/colord/it8{raw}", colord_it8_raw_func);
 	g_test_add_func ("/colord/it8{locale}", colord_it8_locale_func);

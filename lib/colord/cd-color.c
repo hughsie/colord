@@ -994,23 +994,29 @@ out:
  * @temp: the temperature in Kelvin
  * @result: the destination color
  *
- * Get the blackbody color for a specific temperature.
+ * Get the blackbody color for a specific temperature. If the temperature
+ * range is outside 1000K to 10000K then the result is clipped.
+ *
+ * Return value: TRUE if @temp was in range and the result accurate
  *
  * Since: 0.1.26
  **/
-void
+gboolean
 cd_color_get_blackbody_rgb (guint temp, CdColorRGB *result)
 {
+	gboolean ret = TRUE;
 	gdouble alpha;
 	gint temp_index;
 
 	/* check lower bound */
 	if (temp < 1000) {
+		ret = FALSE;
 		temp = 1000;
 	}
 
 	/* check upper bound */
 	if (temp > 10000) {
+		ret = FALSE;
 		temp = 10000;
 	}
 
@@ -1018,7 +1024,8 @@ cd_color_get_blackbody_rgb (guint temp, CdColorRGB *result)
 	alpha = (temp % 100) / 100.0;
 	temp_index = (temp - 1000) / 100;
 	cd_color_rgb_interpolate (&blackbody_data[temp_index],
-				       &blackbody_data[temp_index + 1],
-				       alpha,
-				       result);
+				  &blackbody_data[temp_index + 1],
+				  alpha,
+				  result);
+	return ret;
 }

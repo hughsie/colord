@@ -134,7 +134,7 @@ void		 cd_color_yxy_to_xyz			(const CdColorYxy	*src,
 							 CdColorXYZ		*dest);
 void		 cd_color_xyz_to_yxy			(const CdColorXYZ	*src,
 							 CdColorYxy		*dest);
-void		 cd_color_get_blackbody_rgb		(guint			 temp,
+gboolean	 cd_color_get_blackbody_rgb		(guint			 temp,
 							 CdColorRGB		*result);
 void		 cd_color_rgb_interpolate		(const CdColorRGB	*p1,
 							 const CdColorRGB	*p2,
