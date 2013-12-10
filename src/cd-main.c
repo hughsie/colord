@@ -56,7 +56,7 @@ typedef struct {
 	CdIccStore		*icc_store;
 	CdMappingDb		*mapping_db;
 	CdDeviceDb		*device_db;
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 	CdSensorClient		*sensor_client;
 #endif
 	GPtrArray		*sensors;
@@ -2118,7 +2118,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 		cd_main_add_disk_device (priv, device_id);
 	}
 
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 	/* add sensor devices */
 	cd_sensor_client_coldplug (priv->sensor_client);
 #endif
@@ -2159,7 +2159,7 @@ cd_main_on_name_lost_cb (GDBusConnection *connection,
 	g_main_loop_quit (priv->loop);
 }
 
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 
 /**
  * cd_main_client_sensor_added_cb:
@@ -2708,7 +2708,7 @@ main (int argc, char *argv[])
 						 g_str_equal,
 						 g_free,
 						 (GDestroyNotify) g_object_unref);
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 	priv->sensor_client = cd_sensor_client_new ();
 	g_signal_connect (priv->sensor_client, "sensor-added",
 			  G_CALLBACK (cd_main_client_sensor_added_cb),
@@ -2835,7 +2835,7 @@ out:
 		if (priv->plugins != NULL)
 			g_ptr_array_unref (priv->plugins);
 		g_hash_table_destroy (priv->standard_spaces);
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 		if (priv->sensor_client != NULL)
 			g_object_unref (priv->sensor_client);
 #endif

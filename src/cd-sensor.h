@@ -28,7 +28,7 @@
 #include <gio/gio.h>
 #include <colord-private.h>
 
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 #include <gudev/gudev.h>
 #endif
 
@@ -84,7 +84,7 @@ gboolean	 cd_sensor_register_object	(CdSensor		*sensor,
 						 GDBusConnection	*connection,
 						 GDBusInterfaceInfo	*info,
 						 GError			**error);
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 gboolean	 cd_sensor_set_from_device	(CdSensor		*sensor,
 						 GUdevDevice		*device,
 						 GError			**error);

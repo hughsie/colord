@@ -149,7 +149,6 @@ fi
 AM_CONDITIONAL(HAVE_GUSB, test x$enable_gusb = xyes)
 
 PKG_CHECK_MODULES(LCMS, lcms2 >= 2.4)
-PKG_CHECK_MODULES(UDEV, libudev)
 AC_CHECK_LIB(lcms2, cmsGetHeaderCreator, have_lcms_creator=yes)
 if test x$have_lcms_creator != x; then
 	AC_DEFINE(HAVE_LCMS_GET_HEADER_CREATOR,1,[cmsGetHeaderCreator is available])
@@ -161,14 +160,15 @@ fi
 
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 
-dnl **** Check for GUDEV ****
-AC_ARG_ENABLE(gudev, AS_HELP_STRING([--enable-gudev],[Enable GUDEV support]),
-	      enable_gudev=$enableval, enable_gudev=yes)
-if test x$enable_gudev != xno; then
+dnl **** Check for UDEV ****
+AC_ARG_ENABLE(udev, AS_HELP_STRING([--enable-udev],[Enable GUDEV support]),
+	      enable_udev=$enableval, enable_udev=yes)
+if test x$enable_udev != xno; then
+	PKG_CHECK_MODULES(UDEV, libudev)
 	PKG_CHECK_MODULES(GUDEV, gudev-1.0)
-	AC_DEFINE(HAVE_GUDEV,1,[Use GUDEV support for hardware])
+	AC_DEFINE(HAVE_UDEV,1,[Use UDEV support])
 fi
-AM_CONDITIONAL(HAVE_GUDEV, test x$enable_gudev = xyes)
+AM_CONDITIONAL(HAVE_UDEV, test x$enable_udev = xyes)
 
 dnl **** Bash completion ****
 AC_ARG_ENABLE(bash_completion, AS_HELP_STRING([--enable-bash-completion],[Enable bash completion]),
@@ -284,12 +284,12 @@ if test x$enable_sane != xno; then
 		fi
 
 	fi
-	if test x$enable_gudev != xyes; then
+	if test x$enable_udev != xyes; then
 		has_sane=no
 		if test x$enable_sane = xyes; then
-			AC_MSG_ERROR([--enable-sane was specified and SANE requires gudev support, not found])
+			AC_MSG_ERROR([--enable-sane was specified and SANE requires udev support, not found])
 		fi
-		AC_MSG_WARN([gudev not found, SANE support will not be enabled])
+		AC_MSG_WARN([udev not found, SANE support will not be enabled])
 	fi
 	if test x$have_dbus != xyes; then
 		has_sane=no
@@ -429,7 +429,7 @@ echo "
         External volume searching: ${enable_volume_search}
         BASH completion support:   ${enable_bash_completion}
         SANE support:              ${has_sane}
-        GUdev support:             ${enable_gudev}
+        Udev support:              ${enable_udev}
         GUsb support:              ${enable_gusb}
         Extra print profiles:      ${enable_print_profiles}
         Install tests:             ${enable_installed_tests}

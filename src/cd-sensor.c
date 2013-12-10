@@ -89,7 +89,7 @@ struct _CdSensorPrivate
 	gchar				*serial;
 	gchar				*model;
 	gchar				*vendor;
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 	GUdevDevice			*device;
 #endif
 	gboolean			 native;
@@ -1156,7 +1156,7 @@ out:
 const gchar *
 cd_sensor_get_device_path (CdSensor *sensor)
 {
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 	return g_udev_device_get_sysfs_path (sensor->priv->device);
 #else
 	return NULL;
@@ -1228,7 +1228,7 @@ cd_sensor_add_cap (CdSensor *sensor, CdSensorCap cap)
 
 }
 
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 /**
  * cd_sensor_get_device:
  **/
@@ -1633,7 +1633,7 @@ cd_sensor_finalize (GObject *object)
 	g_object_unref (priv->usb_ctx);
 	g_object_unref (priv->device_list);
 #endif
-#ifdef HAVE_GUDEV
+#ifdef HAVE_UDEV
 	if (priv->device != NULL)
 		g_object_unref (priv->device);
 #endif
