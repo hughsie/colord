@@ -119,7 +119,7 @@ cd_edid_convert_pnp_id_to_string (const gchar *pnp_id)
 	if (udev == NULL)
 		goto out;
 	hwdb = udev_hwdb_new (udev);
-	if (udev == NULL)
+	if (hwdb == NULL)
 		goto out;
 
 	/* search the hash */
