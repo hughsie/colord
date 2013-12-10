@@ -674,11 +674,11 @@ cd_icc_store_search_kind (CdIccStore *store,
 						    search_flags,
 						    cancellable,
 						    error);
-                /* only create the first location */
-		search_flags &= ~CD_ICC_STORE_SEARCH_FLAGS_CREATE_LOCATION;
-
 		if (!ret)
 			goto out;
+
+		/* only create the first location */
+		search_flags &= ~CD_ICC_STORE_SEARCH_FLAGS_CREATE_LOCATION;
 	}
 out:
 	g_ptr_array_unref (locations);
