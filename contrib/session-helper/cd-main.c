@@ -1488,6 +1488,7 @@ cd_main_start_calibration (CdMainPrivate *priv,
 			cd_main_emit_interaction_required (priv,
 							   CD_SESSION_INTERACTION_MOVE_TO_CALIBRATION);
 			g_error_free (error_local);
+			ret = TRUE;
 		} else if (g_error_matches (error_local,
 					    CD_SENSOR_ERROR,
 					    CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE)) {
@@ -1495,6 +1496,7 @@ cd_main_start_calibration (CdMainPrivate *priv,
 			cd_main_emit_interaction_required (priv,
 							   CD_SESSION_INTERACTION_MOVE_TO_SURFACE);
 			g_error_free (error_local);
+			ret = TRUE;
 		} else {
 			g_propagate_error (error, error_local);
 			goto out;
@@ -1561,6 +1563,10 @@ cd_main_start_calibration_cb (gpointer user_data)
 		g_error_free (error);
 		goto out;
 	}
+
+	/* still waiting */
+	if (priv->status == CD_SESSION_STATUS_WAITING_FOR_INTERACTION)
+		goto out;
 
 	/* success */
 	cd_main_emit_finished (priv, CD_SESSION_ERROR_NONE, NULL);
