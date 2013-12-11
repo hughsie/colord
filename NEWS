@@ -1,3 +1,24 @@
+Version 1.1.5
+~~~~~~~~~~~~~
+Released: 2013-12-11
+
+New Features:
+ - Change the --enable-gudev parameter into --enable-udev (Richard Hughes)
+ - Fall back to parsing pnp.ids if udev is not available (Richard Hughes)
+
+Bugfixes:
+ - Don't crash with zero-sized ICC file (Marti Raudsepp)
+ - Never add USB hubs as scanner devices even if tagged (Richard Hughes)
+ - Never create color managed webcam devices (Richard Hughes)
+ - libcolord: Check that the vendor and model are valid UTF-8 (Richard Hughes)
+ - libcolord: Do not write invalid data when the resaving a profile (Richard Hughes)
+ - libcolord: Don't create legacy locations (Matthias Clasen)
+ - libcolord: Ensure the parsed EDID strings are valid UTF-8 (Richard Hughes)
+ - libcolord: Ensure the version is set when creating from the EDID (Richard Hughes)
+ - libcolord: Fix crash when using cd_color_get_blackbody_rgb() (Richard Hughes)
+ - libcolord: No critical warning if udev_hwdb_new() fails (Richard Hughes)
+ - session-helper: Do not crash when moving the sensor position (Richard Hughes)
+
 Version 1.1.4
 ~~~~~~~~~~~~~
 Released: 2013-11-19
