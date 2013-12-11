@@ -425,7 +425,6 @@ echo "
         gobject-introspection:     ${found_introspection}
         PolicyKit support:         ${enable_polkit}
         Reverse engineering tools: ${enable_reverse}
-        External volume searching: ${enable_volume_search}
         BASH completion support:   ${enable_bash_completion}
         SANE support:              ${has_sane}
         Udev support:              ${enable_udev}
