@@ -340,6 +340,7 @@ cd_icc_to_string (CdIcc *icc)
 			g_string_append_printf (str, "WARNING: Tag size impossible %i", tag_size);
 			continue;
 		}
+		g_string_append_printf (str, "  size\t%i\n", tag_size);
 		tag_wrfix = g_new0 (gchar, tag_size);
 		tag_size = cmsReadRawTag (priv->lcms_profile, sig, tag_wrfix, 4);
 		memcpy (&tmp, tag_wrfix, 4);
@@ -348,7 +349,6 @@ cd_icc_to_string (CdIcc *icc)
 		cd_icc_uint32_to_str (tmp, tag_str);
 		tag_type = GUINT32_FROM_BE (tmp);
 		g_string_append_printf (str, "  type\t'%s' [0x%x]\n", tag_str, tag_type);
-		g_string_append_printf (str, "  size\t%i\n", tag_size);
 
 		/* print tag details */
 		switch (tag_type) {
