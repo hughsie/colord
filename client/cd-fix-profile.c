@@ -441,6 +441,48 @@ out:
 }
 
 /**
+ * cd_util_export_tag_data:
+ **/
+static gboolean
+cd_util_export_tag_data (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	gboolean ret = TRUE;
+	GBytes *data = NULL;
+	gchar *out_fn = NULL;
+
+	/* check arguments */
+	if (g_strv_length (values) != 2) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "invalid input, expect 'filename' 'tag'");
+		goto out;
+	}
+
+	/* get data */
+	data = cd_icc_get_tag_data (priv->icc, values[1], error);
+	if (data == NULL) {
+		ret = FALSE;
+		goto out;
+	}
+
+	/* save to file */
+	out_fn = g_strdup_printf ("./%s.bin", values[1]);
+	ret = g_file_set_contents (out_fn,
+				   g_bytes_get_data (data, NULL),
+				   g_bytes_get_size (data),
+				   error);
+	if (!ret)
+		goto out;
+	g_print ("Wrote %s\n", out_fn);
+	priv->rewrite_file = FALSE;
+out:
+	if (data != NULL)
+		g_bytes_unref (data);
+	g_free (out_fn);
+	return ret;
+}
+
+/**
  * cd_util_set_fix_metadata:
  **/
 static gboolean
@@ -744,6 +786,11 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Set the ICC profile version"),
 		     cd_util_set_version);
+	cd_util_add (priv->cmd_array,
+		     "export-tag-data",
+		     /* TRANSLATORS: command description */
+		     _("Export the tag data"),
+		     cd_util_export_tag_data);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,

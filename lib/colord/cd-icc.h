@@ -276,6 +276,15 @@ GPtrArray	*cd_icc_get_response			(CdIcc		*icc,
 							 guint		 size,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+gchar		**cd_icc_get_tags			(CdIcc		*icc,
+							 GError		**error);
+GBytes		*cd_icc_get_tag_data			(CdIcc		*icc,
+							 const gchar	*tag,
+							 GError		**error);
+gboolean	 cd_icc_set_tag_data			(CdIcc		*icc,
+							 const gchar	*tag,
+							 GBytes		*data,
+							 GError		**error);
 
 G_END_DECLS
 

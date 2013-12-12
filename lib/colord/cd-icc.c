@@ -772,6 +772,142 @@ cd_icc_to_string (CdIcc *icc)
 	return g_string_free (str, FALSE);
 }
 
+/**
+ * cd_icc_get_tags:
+ * @icc: a #CdIcc instance.
+ * @error: A #GError or %NULL
+ *
+ * Returns the internal tag table. Most users do not need to do this.
+ *
+ * Return value: (transfer full): the tag tables as an array of strings
+ *
+ * Since: 1.1.6
+ **/
+gchar **
+cd_icc_get_tags (CdIcc *icc, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	GPtrArray *tags;
+	cmsTagSignature sig;
+	gchar *tmp;
+	guint32 i;
+	guint32 number_tags;
+
+	tags = g_ptr_array_new ();
+	number_tags = cmsGetTagCount (priv->lcms_profile);
+	for (i = 0; i < number_tags; i++) {
+		sig = cmsGetTagSignature (priv->lcms_profile, i);
+		tmp = g_new0 (gchar, 5);
+		cd_icc_uint32_to_str (GUINT32_FROM_BE (sig), tmp);
+		g_ptr_array_add (tags, tmp);
+	}
+	g_ptr_array_add (tags, NULL);
+	return (gchar **) g_ptr_array_free (tags, FALSE);
+}
+
+/**
+ * cd_icc_str_to_tag:
+ **/
+static cmsTagSignature
+cd_icc_str_to_tag (const gchar *tag)
+{
+	guint32 id;
+	if (strlen (tag) != 4)
+		return 0;
+	memcpy (&id, tag, 4);
+	return GUINT32_TO_BE (id);
+}
+
+/**
+ * cd_icc_get_tag_data:
+ * @icc: a #CdIcc instance.
+ * @tag: a 4 bytes tag description, e.g. "cprt" or "vcgt"
+ * @error: A #GError or %NULL
+ *
+ * Returns the raw data for the specific tag.
+ * Most users do not need to do this.
+ *
+ * Return value: (transfer full): the data for the tag
+ *
+ * Since: 1.1.6
+ **/
+GBytes *
+cd_icc_get_tag_data (CdIcc *icc, const gchar *tag, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsInt32Number tag_size;
+	cmsTagSignature sig;
+	gchar *tmp;
+
+	/* read tag */
+	sig = cd_icc_str_to_tag (tag);
+	if (sig == 0) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_PARSE,
+			     "Tag '%s' was not valid", tag);
+		return NULL;
+	}
+	tag_size = cmsReadRawTag (priv->lcms_profile, sig, NULL, 0);
+	if (tag_size == 0 || tag_size > 16 * 1024 * 1024) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_NO_DATA,
+			     "Tag size %i was not valid", tag_size);
+		return NULL;
+	}
+
+	/* return data */
+	tmp = g_new0 (gchar, tag_size);
+	cmsReadRawTag (priv->lcms_profile, sig, tmp, tag_size);
+	return g_bytes_new_with_free_func (tmp, tag_size, g_free, NULL);
+}
+
+/**
+ * cd_icc_set_tag_data:
+ * @icc: a #CdIcc instance.
+ * @tag: a 4 bytes tag description, e.g. "cprt" or "vcgt"
+ * @data: a variable sized data entry
+ * @error: A #GError or %NULL
+ *
+ * Sets the raw data for the specific tag.
+ * Most users do not need to do this.
+ *
+ * Since: 1.1.6
+ **/
+gboolean
+cd_icc_set_tag_data (CdIcc *icc, const gchar *tag, GBytes *data, GError **error)
+{
+	CdIccPrivate *priv = icc->priv;
+	cmsTagSignature sig;
+	gboolean ret;
+
+	/* work around an LCMS API quirk in that you can't do cmsWriteRawTag()
+	 * if the tag already exists. Use the undocumented usage of
+	 * cmsWriteTag() to delete the tag first */
+	sig = cd_icc_str_to_tag (tag);
+	if (sig == 0) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_PARSE,
+			     "Tag '%s' was not valid", tag);
+		return FALSE;
+	}
+	cmsWriteTag (priv->lcms_profile, sig, NULL);
+	ret = cmsWriteRawTag (priv->lcms_profile,
+			      sig,
+			      g_bytes_get_data (data, NULL),
+			      g_bytes_get_size (data));
+	if (!ret) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_ICC_ERROR_FAILED_TO_SAVE,
+			     "Failed to write %" G_GSIZE_FORMAT " bytes",
+			     g_bytes_get_size (data));
+	}
+	return ret;
+}
+
 /* map lcms profile class to colord type */
 const struct {
 	cmsProfileClassSignature	lcms;

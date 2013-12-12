@@ -1681,6 +1681,69 @@ colord_edid_func (void)
 	g_object_unref (edid);
 }
 
+static void
+colord_icc_tags_func (void)
+{
+	CdIcc *icc;
+	GError *error = NULL;
+	GFile *file;
+	gboolean ret;
+	gchar **tags;
+	gchar *filename;
+	GBytes *data;
+
+	/* open a localized profile */
+	icc = cd_icc_new ();
+	filename = cd_test_get_filename ("crayons.icc");
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_load_file (icc,
+				file,
+				CD_ICC_LOAD_FLAGS_NONE,
+				NULL,
+				&error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_free (filename);
+
+	/* check tag table */
+	tags = cd_icc_get_tags (icc, &error);
+	g_assert_no_error (error);
+	g_assert (tags != NULL);
+	g_assert_cmpint (g_strv_length (tags), ==, 11);
+	g_assert_cmpstr (tags[0], ==, "desc");
+	g_assert_cmpstr (tags[1], ==, "cprt");
+	g_strfreev (tags);
+
+	/* get raw tag data */
+	data = cd_icc_get_tag_data (icc, "xxxx", &error);
+	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_NO_DATA);
+	g_assert (data == NULL);
+	g_clear_error (&error);
+	data = cd_icc_get_tag_data (icc, "desc", &error);
+	g_assert_no_error (error);
+	g_assert (data != NULL);
+	g_assert_cmpint (g_bytes_get_size (data), ==, 98);
+	g_assert_cmpstr (g_bytes_get_data (data, NULL), ==, "mluc");
+	g_bytes_unref (data);
+
+	/* set raw tag data */
+	data = g_bytes_new_static ("hello", 6);
+	cd_icc_set_tag_data (icc, "desc", data, &error);
+	g_assert_no_error (error);
+	cd_icc_set_tag_data (icc, "xxxx", data, &error);
+	g_assert_no_error (error);
+
+	/* re-get raw tag data */
+	data = cd_icc_get_tag_data (icc, "desc", &error);
+	g_assert (data != NULL);
+	g_assert_cmpint (g_bytes_get_size (data), ==, 6);
+	g_assert_cmpstr (g_bytes_get_data (data, NULL), ==, "hello");
+	g_bytes_unref (data);
+
+	g_object_unref (icc);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1701,6 +1764,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc{empty}", colord_icc_empty_func);
 	g_test_add_func ("/colord/icc{corrupt-dict}", colord_icc_corrupt_dict_func);
 	g_test_add_func ("/colord/icc{clear}", colord_icc_clear_func);
+	g_test_add_func ("/colord/icc{tags}", colord_icc_tags_func);
 	g_test_add_func ("/colord/icc-store", colord_icc_store_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
