@@ -139,6 +139,7 @@ AC_SUBST([RELRO_LDFLAGS])
 dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
+COLORD_REQUIRES_PRIVATE="lcms2"
 PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.36.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gio-unix-2.0 gmodule-2.0)
 AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
 	      enable_gusb=$enableval, enable_gusb=yes)
@@ -166,6 +167,7 @@ AC_ARG_ENABLE(udev, AS_HELP_STRING([--enable-udev],[Enable GUDEV support]),
 if test x$enable_udev != xno; then
 	PKG_CHECK_MODULES(UDEV, libudev)
 	PKG_CHECK_MODULES(GUDEV, gudev-1.0)
+	COLORD_REQUIRES_PRIVATE+=", libudev"
 	AC_DEFINE(HAVE_UDEV,1,[Use UDEV support])
 fi
 AM_CONDITIONAL(HAVE_UDEV, test x$enable_udev = xyes)
@@ -369,6 +371,9 @@ AM_CONDITIONAL(BUILDOPT_INSTALL_TESTS, test x$enable_installed_tests = xyes)
 
 # per-machine directory
 AC_SUBST(CD_SYSTEM_PROFILES_DIR, "\$(localstatedir)/lib/colord/icc")
+
+# only include the colord.pc Requires.private of the libraries we actually use
+AC_SUBST(COLORD_REQUIRES_PRIVATE)
 
 dnl ---------------------------------------------------------------------------
 dnl - Makefiles, etc.
