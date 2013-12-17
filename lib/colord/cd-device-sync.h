@@ -70,8 +70,7 @@ gboolean	 cd_device_profiling_inhibit_sync	(CdDevice	*device,
 							 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 cd_device_profiling_uninhibit_sync	(CdDevice	*device,
 							 GCancellable	*cancellable,
-							 GError		**error)
-							 G_GNUC_WARN_UNUSED_RESULT;
+							 GError		**error);
 CdDeviceRelation cd_device_get_profile_relation_sync	(CdDevice	*device,
 							 CdProfile	*profile,
 							 GCancellable	*cancellable,

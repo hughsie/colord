@@ -142,8 +142,7 @@ void		 cd_device_profiling_uninhibit		(CdDevice	*device,
 							 gpointer	 user_data);
 gboolean	 cd_device_profiling_uninhibit_finish	(CdDevice	*device,
 							 GAsyncResult	*res,
-							 GError		**error)
-							 G_GNUC_WARN_UNUSED_RESULT;
+							 GError		**error);
 void		 cd_device_get_profile_for_qualifiers	(CdDevice	*device,
 							 const gchar	**qualifiers,
 							 GCancellable	*cancellable,
