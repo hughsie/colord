@@ -372,17 +372,13 @@ work on random open source projects. Thanks!
 <p>
 On the surface, <a href="http://www.oyranos.org/">Oyranos</a> and colord
 look like similar projects.
-Oyranos has existed for over 8 years, whilst colord has been developed for
-just over 2 years.
-</p>
-<p>
 I'm not going to be able to write an unbiased comparison against colord and
 Oyranos (as the author of the former) but I've supplied the table below which
 hopefully helps.
 </p>
 <table class="noteinformation">
  <tr><th></th><th>Oyranos</th><th>colord</th></tr>
- <tr><td>Portability</td><td>Windows, Linux, OSX</td><td>Linux <i>[1]</i></td></tr>
+ <tr><td>Portability</td><td>Windows, Linux, OSX</td><td>Linux, FreeBSD<i>[1]</i></td></tr>
  <tr>
   <td>Desktop support</td>
   <td>
@@ -390,8 +386,9 @@ hopefully helps.
    <a href="http://www.oyranos.org/kolormanager/">KDE</a>
   </td>
   <td>
-   <a href="http://www.gnome.org/">GNOME</a> and
+   <a href="http://www.gnome.org/">GNOME</a>,
    <a href="https://dantti.wordpress.com/2012/03/12/coloring-you-desktop-with-colord-kde/">KDE</a>
+   and <a href="https://github.com/agalakhov/xiccd">XFCE, LXDE, MATE</a>
   </td>
  </tr>
  <tr>
@@ -399,13 +396,13 @@ hopefully helps.
    <td>C</td>
    <td>
     C, <a href="http://www.freedesktop.org/wiki/Software/dbus">DBus</a> (native),
-    others via <a href="https://live.gnome.org/GObjectIntrospection">GObject Introspection</a>
+    all others via <a href="https://live.gnome.org/GObjectIntrospection">GObject Introspection</a>
    </td>
   </tr>
  <tr><td>Client library</td><td>Synchronous, and not MT-safe</td><td>Synchronous, asynchronous and MT safe</td></tr>
  <tr>
-   <td>Lines of code</td><td><a href="https://www.ohloh.net/p/oyranos">140k</a></td>
-   <td><a href="https://www.ohloh.net/p/colord">42k</a></td>
+   <td>Lines of code</td><td><a href="https://www.ohloh.net/p/oyranos">151k</a></td>
+   <td><a href="https://www.ohloh.net/p/colord">46k</a></td>
   </tr>
  <tr>
   <td>Memory allocation</td>
@@ -433,7 +430,7 @@ hopefully helps.
   <td><a href="http://www.compiz.org/">Compiz</a>, using X atoms as IPC</td>
   <td><a href="http://wayland.freedesktop.org/">Wayland</a> with subsurfaces used as opt-out areas (WIP)</td>
  </tr>
- <tr><td>Project age</td><td>8 years</td><td>2 years</td></tr>
+ <tr><td>Project age</td><td>9 years</td><td>3 years</td></tr>
  <tr>
   <td>Required by</td>
   <td valign="top">
@@ -451,6 +448,7 @@ hopefully helps.
     <li><a href="https://dantti.wordpress.com/2012/03/12/coloring-you-desktop-with-colord-kde/">colord-kde</a></li>
     <li><a href="http://www.gnome.org/">gnome-control-center</a></li>
     <li><a href="http://www.gnome.org/">gnome-settings-daemon</a></li>
+    <li><a href="https://github.com/agalakhov/xiccd">xiccd</a></li>
     <li><a href="https://mail.gnome.org/mailman/listinfo/gnome-color-manager-list">GNOME Color Manager</a></li>
     <li><a href="https://lwn.net/Articles/377063/">Simple Scan</a></li>
     <li><a href="http://www.hughski.com">colorhug-client</a></li>
