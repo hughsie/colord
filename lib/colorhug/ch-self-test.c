@@ -95,6 +95,9 @@ ch_test_device_queue_func (void)
 
 	/* try to find any ColorHug devices */
 	usb_ctx = g_usb_context_new (NULL);
+	if (usb_ctx == NULL)
+		return;
+
 	list = g_usb_device_list_new (usb_ctx);
 	g_usb_device_list_coldplug (list);
 	devices = g_usb_device_list_get_devices (list);
@@ -454,6 +457,13 @@ ch_client_get_default (GError **error)
 
 	/* try to find the ColorHug device */
 	usb_ctx = g_usb_context_new (NULL);
+	if (usb_ctx == NULL) {
+		g_set_error(error,
+			    G_USB_DEVICE_ERROR,
+			    G_USB_DEVICE_ERROR_NO_DEVICE,
+			    "No device found; USB initialisation failed");
+		return NULL;
+	}
 	list = g_usb_device_list_new (usb_ctx);
 	g_usb_device_list_coldplug (list);
 	device = g_usb_device_list_find_by_vid_pid (list,
