@@ -57,6 +57,7 @@
 #include <colord/cd-quirk.h>
 #include <colord/cd-sensor.h>
 #include <colord/cd-sensor-sync.h>
+#include <colord/cd-spectrum.h>
 #include <colord/cd-transform.h>
 #include <colord/cd-version.h>
 

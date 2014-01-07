@@ -9,6 +9,8 @@ test_files =						\
 	measured.ti3					\
 	normalised.ti3					\
 	raw.ti3						\
+	test.sp						\
+	test.ccss					\
 	reference.ti3
 
 if BUILDOPT_INSTALL_TESTS

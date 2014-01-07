@@ -43,10 +43,148 @@
 #include "cd-it8.h"
 #include "cd-it8-utils.h"
 #include "cd-math.h"
+#include "cd-spectrum.h"
 #include "cd-transform.h"
 #include "cd-version.h"
 
 #include "cd-test-shared.h"
+
+static void
+colord_spectrum_func (void)
+{
+	CdSpectrum *s;
+	gdouble val;
+
+	s = cd_spectrum_new ();
+	g_assert_cmpfloat (cd_spectrum_get_start (s), <, 0.0001f);
+	g_assert_cmpfloat (cd_spectrum_get_end (s), <, 0.0001f);
+	g_assert_cmpint (cd_spectrum_get_size (s), ==, 0);
+	g_assert_cmpstr (cd_spectrum_get_id (s), ==, NULL);
+
+	cd_spectrum_set_start (s, 100.f);
+	cd_spectrum_set_end (s, 200.f);
+	cd_spectrum_set_end (s, 300.f);
+	cd_spectrum_set_id (s, "dave");
+	cd_spectrum_add_value (s, 0.50f);
+	cd_spectrum_add_value (s, 0.75f);
+	cd_spectrum_add_value (s, 1.00f);
+
+	g_assert_cmpfloat (ABS (cd_spectrum_get_start (s) - 100.f), <, 0.0001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_end (s) - 300.f), <, 0.0001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 0) - 0.50f), <, 0.0001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 1) - 0.75f), <, 0.0001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_wavelength (s, 0) - 100.f), <, 0.0001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_wavelength (s, 1) - 200.f), <, 0.0001f);
+	g_assert_cmpint (cd_spectrum_get_size (s), ==, 3);
+	g_assert_cmpstr (cd_spectrum_get_id (s), ==, "dave");
+
+	/* test interpolation */
+	val = cd_spectrum_get_value_for_nm (s, 100.1f);
+	g_assert_cmpfloat (ABS (val - 0.50f), <, 0.001f);
+	val = cd_spectrum_get_value_for_nm (s, 199.9f);
+	g_assert_cmpfloat (ABS (val - 0.75f), <, 0.001f);
+	val = cd_spectrum_get_value_for_nm (s, 150.f);
+	g_assert_cmpfloat (ABS (val - 0.625f), <, 0.001f);
+
+	cd_spectrum_free (s);
+}
+
+static void
+colord_it8_spect_func (void)
+{
+	CdIt8 *it8;
+	CdSpectrum *spectrum;
+	GError *error = NULL;
+	GFile *file;
+	GPtrArray *spectral_data;
+	gboolean ret;
+	gchar *data;
+	gchar *filename;
+
+	/* load in file */
+	filename = cd_test_get_filename ("test.sp");
+	file = g_file_new_for_path (filename);
+	it8 = cd_it8_new ();
+	ret = cd_it8_load_from_file (it8, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_assert_cmpint (cd_it8_get_kind (it8), ==, CD_IT8_KIND_SPECT);
+
+	/* check data */
+	spectral_data = cd_it8_get_spectral_data (it8);
+	g_assert_cmpint (spectral_data->len, ==, 1);
+	spectrum = g_ptr_array_index (spectral_data, 0);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_start (spectrum) - 350.f), <, 0.001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_end (spectrum) - 740.f), <, 0.001f);
+	g_assert_cmpint (cd_spectrum_get_size (spectrum), ==, 2);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 0) - 0.01f), <, 0.01f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 1) - 1.00f), <, 0.01f);
+	g_ptr_array_unref (spectral_data);
+
+	/* save to file */
+	ret = cd_it8_save_to_data (it8, &data, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert (data != NULL);
+	g_free (data);
+
+	g_free (filename);
+	g_object_unref (it8);
+	g_object_unref (file);
+}
+
+static void
+colord_it8_ccss_func (void)
+{
+	CdIt8 *it8;
+	CdSpectrum *spectrum;
+	GError *error = NULL;
+	GFile *file;
+	GPtrArray *spectral_data;
+	gboolean ret;
+	gchar *data;
+	gchar *filename;
+
+	/* load in file */
+	filename = cd_test_get_filename ("test.ccss");
+	file = g_file_new_for_path (filename);
+	it8 = cd_it8_new ();
+	ret = cd_it8_load_from_file (it8, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	g_assert_cmpint (cd_it8_get_kind (it8), ==, CD_IT8_KIND_CCSS);
+	g_assert_cmpstr (cd_it8_get_originator (it8), ==, "cd-self-test");
+	g_assert_cmpstr (cd_it8_get_title (it8), ==, "test display model");
+	g_assert (!cd_it8_has_option (it8, "DISPLAY_TYPE_REFRESH"));
+
+	/* check data */
+	spectral_data = cd_it8_get_spectral_data (it8);
+	g_assert_cmpint (spectral_data->len, ==, 2);
+	spectrum = g_ptr_array_index (spectral_data, 0);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_start (spectrum) - 350.f), <, 0.001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_end (spectrum) - 740.f), <, 0.001f);
+	g_assert_cmpint (cd_spectrum_get_size (spectrum), ==, 118);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 0) - 0.01f), <, 0.01f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 117) - 1.00f), <, 0.01f);
+	spectrum = g_ptr_array_index (spectral_data, 1);
+	g_assert_cmpint (cd_spectrum_get_size (spectrum), ==, 118);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 0) - 0.99f), <, 0.01f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 117) - 0.00f), <, 0.01f);
+	g_ptr_array_unref (spectral_data);
+
+	/* save to file */
+	ret = cd_it8_save_to_data (it8, &data, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert (data != NULL);
+	g_free (data);
+
+	g_free (filename);
+	g_object_unref (it8);
+	g_object_unref (file);
+}
 
 static void
 colord_it8_raw_func (void)
@@ -1753,6 +1891,7 @@ main (int argc, char **argv)
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
 
 	/* tests go here */
+	g_test_add_func ("/colord/spectrum", colord_spectrum_func);
 	g_test_add_func ("/colord/edid", colord_edid_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);
@@ -1782,6 +1921,8 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);
 	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
 	g_test_add_func ("/colord/it8{ccmx-util", colord_it8_ccmx_util_func);
+	g_test_add_func ("/colord/it8{ccss}", colord_it8_ccss_func);
+	g_test_add_func ("/colord/it8{spect}", colord_it8_spect_func);
 
 	return g_test_run ();
 }

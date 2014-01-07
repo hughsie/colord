@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012-2014 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -90,6 +90,9 @@ typedef enum {
 	CD_IT8_KIND_TI3,				/* Since: 0.1.20 */
 	CD_IT8_KIND_CCMX,				/* Since: 0.1.20 */
 	CD_IT8_KIND_CAL,				/* Since: 0.1.26 */
+	CD_IT8_KIND_CCSS,				/* Since: 1.1.6 */
+	CD_IT8_KIND_SPECT,				/* Since: 1.1.6 */
+	CD_IT8_KIND_CMF,				/* Since: 1.1.6 */
 	/*< private >*/
 	CD_IT8_KIND_LAST
 } CdIt8Kind;
@@ -143,6 +146,8 @@ void		 cd_it8_add_option		(CdIt8		*it8,
 						 const gchar	*option);
 void		 cd_it8_set_matrix		(CdIt8		*it8,
 						 const CdMat3x3 *matrix);
+void		 cd_it8_set_spectral_data	(CdIt8		*it8,
+						 GPtrArray	*data);
 
 /* getters */
 const CdMat3x3	*cd_it8_get_matrix		(CdIt8		*it8);
@@ -159,6 +164,7 @@ gboolean	 cd_it8_get_data_item		(CdIt8		*it8,
 						 guint		 idx,
 						 CdColorRGB	*rgb,
 						 CdColorXYZ	*xyz);
+GPtrArray	*cd_it8_get_spectral_data	(CdIt8		*it8);
 gboolean	 cd_it8_has_option		(CdIt8		*it8,
 						 const gchar	*option);
 

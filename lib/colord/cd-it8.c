@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2012-2014 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -35,6 +35,7 @@
 
 #include "cd-it8.h"
 #include "cd-color.h"
+#include "cd-spectrum.h"
 
 static void	cd_it8_class_init	(CdIt8Class	*klass);
 static void	cd_it8_init		(CdIt8		*it8);
@@ -58,6 +59,7 @@ struct _CdIt8Private
 	gchar			*reference;
 	gchar			*originator;
 	gchar			*title;
+	GPtrArray		*array_spectra;
 	GPtrArray		*array_rgb;
 	GPtrArray		*array_xyz;
 	GPtrArray		*options;
@@ -525,6 +527,90 @@ out:
 }
 
 /**
+ * cd_it8_load_ccss:
+ **/
+static gboolean
+cd_it8_load_ccss (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+{
+	CdSpectrum *spectrum;
+	const gchar *tmp;
+	gboolean has_index;
+	gboolean ret = TRUE;
+	gchar *label;
+	gdouble spectral_end;
+	gdouble spectral_start;
+	guint i;
+	guint j;
+	guint number_of_fields;
+	guint number_of_sets;
+	guint spectral_bands;
+
+	/* get spectra endpoints */
+	spectral_start = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_START_NM");
+	spectral_end = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_END_NM");
+
+	/* get number of bands */
+	tmp = cmsIT8GetProperty (it8_lcms, "SPECTRAL_BANDS");
+	if (tmp == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "Invalid CCSS: SPECTRAL_BANDS required");
+		goto out;
+	}
+	spectral_bands = atoi (tmp);
+	if (spectral_bands < 2 || spectral_bands > 16384) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "Invalid CCSS data format: %s", tmp);
+		goto out;
+	}
+
+	/* ArgyllCMS seems to support an index in the CCSS file, and not in the
+	 * SPECT or CMF but like any good library support each mode */
+	number_of_fields = _cmsIT8GetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS");
+	if (spectral_bands == number_of_fields) {
+		has_index = FALSE;
+	} else if (spectral_bands + 1 == number_of_fields) {
+		has_index = TRUE;
+	} else {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "Invalid CCSS: bands = %i, fields = %i",
+			     spectral_bands, number_of_fields);
+		goto out;
+	}
+
+	/* read out the arrays of data */
+	number_of_sets = _cmsIT8GetPropertyDbl (it8_lcms, "NUMBER_OF_SETS");
+	for (j = 0; j < (guint) number_of_sets; j++) {
+		spectrum = cd_spectrum_sized_new (spectral_bands);
+		if (has_index) {
+			cd_spectrum_set_id (spectrum,
+					    cmsIT8GetDataRowCol(it8_lcms, j, 0));
+		} else {
+			label = g_strdup_printf ("%i", j + 1);
+			cd_spectrum_set_id (spectrum, label);
+			g_free (label);
+		}
+		for (i = has_index; i < number_of_fields; i++) {
+			cd_spectrum_add_value (spectrum,
+					      _cmsIT8GetDataRowColDbl(it8_lcms, j, i));
+		}
+		cd_spectrum_set_start (spectrum, spectral_start);
+		cd_spectrum_set_end (spectrum, spectral_end);
+		g_ptr_array_add (it8->priv->array_spectra, spectrum);
+	}
+out:
+	return ret;
+}
+
+/**
  * cd_it8_has_option:
  * @it8: a #CdIt8 instance.
  * @option: a option, e.g. "TYPE_CRT"
@@ -614,6 +700,12 @@ cd_it8_load_from_data (CdIt8 *it8,
 		cd_it8_set_kind (it8, CD_IT8_KIND_TI3);
 	} else if (g_str_has_prefix (tmp, "CCMX")) {
 		cd_it8_set_kind (it8, CD_IT8_KIND_CCMX);
+	} else if (g_str_has_prefix (tmp, "CCSS")) {
+		cd_it8_set_kind (it8, CD_IT8_KIND_CCSS);
+	} else if (g_str_has_prefix (tmp, "CMF")) {
+		cd_it8_set_kind (it8, CD_IT8_KIND_CMF);
+	} else if (g_str_has_prefix (tmp, "SPECT")) {
+		cd_it8_set_kind (it8, CD_IT8_KIND_SPECT);
 	} else if (g_str_has_prefix (tmp, "CAL")) {
 		cd_it8_set_kind (it8, CD_IT8_KIND_CAL);
 	} else {
@@ -623,19 +715,32 @@ cd_it8_load_from_data (CdIt8 *it8,
 	}
 
 	/* get ti1 and ti3 specific data */
-	if (it8->priv->kind == CD_IT8_KIND_TI1 ||
-	    it8->priv->kind == CD_IT8_KIND_CAL) {
+	switch (it8->priv->kind) {
+	case CD_IT8_KIND_TI1:
+	case CD_IT8_KIND_CAL:
 		ret = cd_it8_load_ti1_cal (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
-	} else if (it8->priv->kind == CD_IT8_KIND_TI3) {
+		break;
+	case CD_IT8_KIND_TI3:
 		ret = cd_it8_load_ti3 (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
-	} else if (it8->priv->kind == CD_IT8_KIND_CCMX) {
+		break;
+	case CD_IT8_KIND_CCMX:
 		ret = cd_it8_load_ccmx (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
+		break;
+	case CD_IT8_KIND_CCSS:
+	case CD_IT8_KIND_CMF:
+	case CD_IT8_KIND_SPECT:
+		ret = cd_it8_load_ccss (it8, it8_lcms, error);
+		if (!ret)
+			goto out;
+		break;
+	default:
+		break;
 	}
 
 	/* set common bits */
@@ -904,6 +1009,90 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 }
 
 /**
+ * cd_it8_save_to_file_ccss:
+ **/
+static gboolean
+cd_it8_save_to_file_ccss (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+{
+	CdSpectrum *spectrum;
+	gboolean has_index = FALSE;
+	gboolean ret = TRUE;
+	gchar *label;
+	guint i;
+	guint j;
+	guint number_of_sets;
+	guint spectral_bands;
+
+	switch (it8->priv->kind) {
+	case CD_IT8_KIND_CCSS:
+		cmsIT8SetSheetType (it8_lcms, "CCSS   ");
+		cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
+				      "Colorimeter Calibration Spectral Set");
+		break;
+	case CD_IT8_KIND_CMF:
+		cmsIT8SetSheetType (it8_lcms, "CMF    ");
+		cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
+				      "Color Match Function");
+		break;
+	case CD_IT8_KIND_SPECT:
+		cmsIT8SetSheetType (it8_lcms, "SPECT  ");
+		cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
+				      "Spectral Power");
+		break;
+	default:
+		break;
+	}
+
+	/* check data is valid */
+	number_of_sets = it8->priv->array_spectra->len;
+	if (number_of_sets == 0) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "Cannot write CCSS: spectral data required");
+		goto out;
+	}
+	if (number_of_sets > 1)
+		has_index = TRUE;
+
+	/* all the arrays have to have the same length */
+	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
+	spectral_bands = cd_spectrum_get_size (spectrum);
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
+	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands + has_index);
+
+	/* set DATA_FORMAT (using an ID if there are more than one spectra */
+	if (has_index)
+		cmsIT8SetDataFormat (it8_lcms, 0, "SAMPLE_ID");
+	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
+	for (i = 0; i < spectral_bands; i++) {
+		label = g_strdup_printf ("SPEC_%.0f",
+					 cd_spectrum_get_wavelength (spectrum, i));
+		cmsIT8SetDataFormat (it8_lcms, i + has_index, label);
+		g_free (label);
+	}
+
+	/* set DATA */
+	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", number_of_sets);
+	for (j = 0; j < number_of_sets; j++) {
+		spectrum = g_ptr_array_index (it8->priv->array_spectra, j);
+		if (has_index) {
+			cmsIT8SetDataRowCol (it8_lcms, j, 0,
+					     cd_spectrum_get_id (spectrum));
+		}
+		for (i = 0; i < spectral_bands; i++) {
+			_cmsIT8SetDataRowColDbl (it8_lcms, j, i + has_index,
+						 cd_spectrum_get_value (spectrum, i));
+		}
+	}
+out:
+	return ret;
+}
+
+/**
  * cd_it8_save_to_data:
  * @it8: a #CdIt8 instance.
  * @data: a pointer to returned data
@@ -960,19 +1149,32 @@ cd_it8_save_to_data (CdIt8 *it8,
 	}
 
 	/* set ti1 and ti3 specific data */
-	if (it8->priv->kind == CD_IT8_KIND_TI1 ||
-	    it8->priv->kind == CD_IT8_KIND_TI3) {
+	switch (it8->priv->kind) {
+	case CD_IT8_KIND_TI1:
+	case CD_IT8_KIND_TI3:
 		ret = cd_it8_save_to_file_ti1_ti3 (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
-	} else if (it8->priv->kind == CD_IT8_KIND_CAL) {
+		break;
+	case CD_IT8_KIND_CAL:
 		ret = cd_it8_save_to_file_cal (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
-	} else if (it8->priv->kind == CD_IT8_KIND_CCMX) {
+		break;
+	case CD_IT8_KIND_CCMX:
 		ret = cd_it8_save_to_file_ccmx (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
+		break;
+	case CD_IT8_KIND_CCSS:
+	case CD_IT8_KIND_CMF:
+	case CD_IT8_KIND_SPECT:
+		ret = cd_it8_save_to_file_ccss (it8, it8_lcms, error);
+		if (!ret)
+			goto out;
+		break;
+	default:
+		break;
 	}
 
 	/* save any options */
@@ -1271,6 +1473,40 @@ cd_it8_get_data_item (CdIt8 *it8, guint idx, CdColorRGB *rgb, CdColorXYZ *xyz)
 	return TRUE;
 }
 
+/**
+ * cd_it8_set_spectral_data:
+ * @it8: a #CdIt8 instance.
+ * @data: (transfer container) (element-type CdSpectrum): the spectral data
+ *
+ * Set the spectral data
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_it8_set_spectral_data (CdIt8 *it8, GPtrArray *data)
+{
+	g_return_if_fail (CD_IS_IT8 (it8));
+	g_ptr_array_unref (it8->priv->array_spectra);
+	it8->priv->array_spectra = g_ptr_array_ref (data);
+}
+
+/**
+ * cd_it8_get_spectral_data:
+ * @it8: a #CdIt8 instance.
+ *
+ * Gets the spectral data of IT8 file.
+ *
+ * Return value: (transfer container) (element-type CdSpectrum): spectral data
+ *
+ * Since: 1.1.6
+ **/
+GPtrArray *
+cd_it8_get_spectral_data (CdIt8 *it8)
+{
+	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
+	return g_ptr_array_ref (it8->priv->array_spectra);
+}
+
 /**********************************************************************/
 
 /*
@@ -1455,6 +1691,7 @@ cd_it8_init (CdIt8 *it8)
 	cd_mat33_clear (&it8->priv->matrix);
 	it8->priv->array_rgb = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
 	it8->priv->array_xyz = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_xyz_free);
+	it8->priv->array_spectra = g_ptr_array_new_with_free_func ((GDestroyNotify) g_array_unref);
 	it8->priv->options = g_ptr_array_new_with_free_func (g_free);
 	it8->priv->enable_created = TRUE;
 
@@ -1472,6 +1709,7 @@ cd_it8_finalize (GObject *object)
 
 	g_return_if_fail (CD_IS_IT8 (object));
 
+	g_ptr_array_unref (it8->priv->array_spectra);
 	g_ptr_array_unref (it8->priv->array_rgb);
 	g_ptr_array_unref (it8->priv->array_xyz);
 	g_ptr_array_unref (it8->priv->options);
