@@ -1,4 +1,5 @@
-SUBDIRS = 						\
+SUBDIRS =						\
+	csv2cmf						\
 	session-helper
 
 if HAVE_SANE

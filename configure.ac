@@ -383,6 +383,7 @@ Makefile
 contrib/Makefile
 contrib/session-helper/Makefile
 contrib/colord-sane/Makefile
+contrib/csv2cmf/Makefile
 examples/Makefile
 man/Makefile
 doc/Makefile
