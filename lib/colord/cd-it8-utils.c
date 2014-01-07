@@ -250,3 +250,84 @@ out:
 	g_free (tmp);
 	return ret;
 }
+
+/**
+ * cd_it8_utils_calculate_xyz_from_cmf:
+ * @cmf: The color match function
+ * @spectrum: The #CdSpectrum input data
+ * @value: The #CdColorXYZ result
+ * @error: A #GError, or %NULL
+ *
+ * This calculates the XYZ from a CMF and input spectrum.
+ *
+ * Return value: %TRUE if a XYZ value was set.
+ **/
+gboolean
+cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
+				     CdSpectrum *spectrum,
+				     CdColorXYZ *value,
+				     GError **error)
+{
+	CdSpectrum *tmp;
+	GPtrArray *spectra = NULL;
+	gboolean ret = TRUE;
+	gdouble nm;
+	gdouble val;
+	guint i;
+
+	g_return_val_if_fail (CD_IS_IT8 (cmf), FALSE);
+	g_return_val_if_fail (spectrum != NULL, FALSE);
+	g_return_val_if_fail (value != NULL, FALSE);
+
+	/* check this is a CMF */
+	if (cd_it8_get_kind (cmf) != CD_IT8_KIND_CMF) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "not a CMF IT8 object");
+		goto out;
+	}
+
+	/* check this has XYZ value */
+	spectra = cd_it8_get_spectral_data (cmf);
+	if (spectra->len != 3) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "CMF IT8 object has channel count %i",
+			     spectra->len);
+		goto out;
+	}
+
+	/* calculate the integrals */
+	cd_color_xyz_clear (value);
+	tmp = g_ptr_array_index (spectra, 0);
+	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
+		val = cd_spectrum_get_value (spectrum, i);
+		nm = cd_spectrum_get_wavelength (spectrum, i);
+		value->X += val * cd_spectrum_get_value_for_nm (tmp, nm);
+	}
+	tmp = g_ptr_array_index (spectra, 1);
+	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
+		val = cd_spectrum_get_value (spectrum, i);
+		nm = cd_spectrum_get_wavelength (spectrum, i);
+		value->Y += val * cd_spectrum_get_value_for_nm (tmp, nm);
+	}
+	tmp = g_ptr_array_index (spectra, 2);
+	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
+		val = cd_spectrum_get_value (spectrum, i);
+		nm = cd_spectrum_get_wavelength (spectrum, i);
+		value->Z += val * cd_spectrum_get_value_for_nm (tmp, nm);
+	}
+
+	/* normalize to Y==1 */
+	value->X /= value->Y;
+	value->Z /= value->Y;
+	value->Y = 1.f;
+out:
+	if (spectra != NULL)
+		g_ptr_array_unref (spectra);
+	return ret;
+}

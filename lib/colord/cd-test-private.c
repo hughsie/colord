@@ -50,6 +50,56 @@
 #include "cd-test-shared.h"
 
 static void
+colord_it8_spectra_util_func (void)
+{
+	CdColorXYZ value;
+	CdIt8 *cmf;
+	CdIt8 *spectra;
+	CdSpectrum *data;
+	GError *error = NULL;
+	GFile *file;
+	gboolean ret;
+	gchar *filename;
+
+	/* load a CMF */
+	cmf = cd_it8_new ();
+	filename = cd_test_get_filename ("example.cmf");
+	file = g_file_new_for_path (filename);
+	ret = cd_it8_load_from_file (cmf, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_free (filename);
+	g_assert_cmpint (cd_it8_get_kind (cmf), ==, CD_IT8_KIND_CMF);
+
+	/* load a spectra */
+	spectra = cd_it8_new ();
+	filename = cd_test_get_filename ("example.sp");
+	file = g_file_new_for_path (filename);
+	ret = cd_it8_load_from_file (spectra, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_free (filename);
+	g_assert_cmpint (cd_it8_get_kind (spectra), ==, CD_IT8_KIND_SPECT);
+
+	/* calculate the XYZ value */
+	data = g_ptr_array_index (cd_it8_get_spectral_data (spectra), 0);
+	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf, data, &value, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert_cmpfloat (value.X, >, 0.975163f - 0.01);
+	g_assert_cmpfloat (value.X, <, 0.975163f + 0.01);
+	g_assert_cmpfloat (value.Y, >, 1.f - 0.01);
+	g_assert_cmpfloat (value.Y, <, 1.f + 0.01);
+	g_assert_cmpfloat (value.Z, >, 0.813050f - 0.01);
+	g_assert_cmpfloat (value.Z, <, 0.813050f + 0.01);
+
+	g_object_unref (cmf);
+	g_object_unref (spectra);
+}
+
+static void
 colord_spectrum_func (void)
 {
 	CdSpectrum *s;
@@ -1920,7 +1970,8 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/it8{locale}", colord_it8_locale_func);
 	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);
 	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
-	g_test_add_func ("/colord/it8{ccmx-util", colord_it8_ccmx_util_func);
+	g_test_add_func ("/colord/it8{ccmx-util}", colord_it8_ccmx_util_func);
+	g_test_add_func ("/colord/it8{spectra-util}", colord_it8_spectra_util_func);
 	g_test_add_func ("/colord/it8{ccss}", colord_it8_ccss_func);
 	g_test_add_func ("/colord/it8{spect}", colord_it8_spect_func);
 

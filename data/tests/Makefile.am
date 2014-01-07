@@ -11,6 +11,8 @@ test_files =						\
 	raw.ti3						\
 	test.sp						\
 	test.ccss					\
+	example.cmf					\
+	example.sp					\
 	reference.ti3
 
 if BUILDOPT_INSTALL_TESTS

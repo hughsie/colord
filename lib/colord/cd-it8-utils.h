@@ -29,12 +29,18 @@
 #include <glib-object.h>
 
 #include "cd-it8.h"
+#include "cd-spectrum.h"
 
 G_BEGIN_DECLS
 
 gboolean	 cd_it8_utils_calculate_ccmx		(CdIt8		*it8_reference,
 							 CdIt8		*it8_measured,
 							 CdIt8		*it8_ccmx,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 cd_it8_utils_calculate_xyz_from_cmf	(CdIt8		*cmf,
+							 CdSpectrum	*spectrum,
+							 CdColorXYZ	*value,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
 
