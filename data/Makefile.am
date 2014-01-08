@@ -1,5 +1,6 @@
 
 SUBDIRS = 						\
+	cmf						\
 	profiles					\
 	figures						\
 	tests						\
