@@ -303,6 +303,12 @@ void		 ch_device_queue_read_sram		(ChDeviceQueue	*device_queue,
 void		 ch_device_queue_get_temperature	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 gdouble	*temperature);
+void		 ch_device_queue_set_dac_value		(ChDeviceQueue	*device_queue,
+							 GUsbDevice	*device,
+							 gdouble	 dac_value);
+void		 ch_device_queue_get_dac_value		(ChDeviceQueue	*device_queue,
+							 GUsbDevice	*device,
+							 gdouble	*dac_value);
 void		 ch_device_queue_get_adc_vref_pos	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 gdouble	*vref);

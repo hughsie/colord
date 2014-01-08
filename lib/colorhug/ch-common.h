@@ -859,6 +859,34 @@ G_BEGIN_DECLS
 #define	CH_CMD_GET_TEMPERATURE			0x3b
 
 /**
+ * CH_CMD_GET_DAC_VALUE:
+ *
+ * Get the DAC value. @scale is a packed float, where 1.0f is 3.3V
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][4:value]
+ *
+ * This command is only available in firmware mode.
+ *
+ * Since: 1.1.6
+ **/
+#define	CH_CMD_GET_DAC_VALUE			0x3c
+
+/**
+ * CH_CMD_SET_DAC_VALUE:
+ *
+ * Set the DAC value. @scale is a packed float, where 1.0f is 3.3V
+ *
+ * IN:  [1:cmd][4:value]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is only available in firmware mode.
+ *
+ * Since: 1.1.6
+ **/
+#define	CH_CMD_SET_DAC_VALUE			0x3d
+
+/**
  * CH_CMD_SELF_TEST:
  *
  * Tests the device by trying to get a non-zero reading from each

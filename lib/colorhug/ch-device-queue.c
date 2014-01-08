@@ -1494,6 +1494,78 @@ ch_device_queue_get_temperature (ChDeviceQueue *device_queue,
 }
 
 /**
+ * ch_device_queue_get_dac_value:
+ * @device_queue:	A #ChDeviceQueue
+ * @device:		A #GUsbDevice
+ * @dac_value:		value between 0.0 and 0.99
+ *
+ * Gets the DAC value.
+ *
+ * NOTE: This command is available on hardware version: 2
+ *
+ * Since: 1.1.6
+ **/
+void
+ch_device_queue_get_dac_value (ChDeviceQueue *device_queue,
+			       GUsbDevice *device,
+			       gdouble *dac_value)
+{
+	guint8 *buffer;
+
+	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
+	g_return_if_fail (G_USB_IS_DEVICE (device));
+	g_return_if_fail (dac_value != NULL);
+
+	*dac_value = 0.0f;
+	buffer = g_new0 (guint8, sizeof (ChPackedFloat));
+	ch_device_queue_add_internal (device_queue,
+				     device,
+				     CH_CMD_GET_DAC_VALUE,
+				     NULL,
+				     0,
+				     buffer,
+				     sizeof(ChPackedFloat),
+				     g_free,
+				     ch_device_queue_buffer_to_double_cb,
+				     dac_value,
+				     NULL);
+}
+
+/**
+ * ch_device_queue_set_dac_value:
+ * @device_queue:	A #ChDeviceQueue
+ * @device:		A #GUsbDevice
+ * @dac_value:		The DAC value
+ *
+ * Sets the post scale value.
+ *
+ * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 1.1.6
+ **/
+void
+ch_device_queue_set_dac_value (ChDeviceQueue *device_queue,
+				GUsbDevice *device,
+				gdouble dac_value)
+{
+	ChPackedFloat buffer;
+
+	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
+	g_return_if_fail (G_USB_IS_DEVICE (device));
+
+	/* convert from float to signed value */
+	ch_double_to_packed_float (dac_value, &buffer);
+
+	ch_device_queue_add (device_queue,
+			     device,
+			     CH_CMD_SET_DAC_VALUE,
+			     (guint8 *) &buffer,
+			     sizeof(buffer),
+			     NULL,
+			     0);
+}
+
+/**
  * ch_device_queue_get_adc_vref_pos:
  * @device_queue:	A #ChDeviceQueue
  * @device:		A #GUsbDevice
