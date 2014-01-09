@@ -56,6 +56,7 @@ main (int argc, char *argv[])
 	gchar **lines = NULL;
 	gchar **split;
 	gchar *data = NULL;
+	gchar *dot;
 	gchar *originator = NULL;
 	gchar *title = NULL;
 	guint i;
@@ -136,6 +137,9 @@ main (int argc, char *argv[])
 	originator = g_path_get_basename (argv[0]);
 	cd_it8_set_originator (cmf, originator);
 	title = g_path_get_basename (argv[1]);
+	dot = g_strrstr (title, ".csv");
+	if (dot != NULL)
+		*dot = '\0';
 	cd_it8_set_title (cmf, title);
 	cd_it8_set_spectral_data (cmf, spectra);
 
