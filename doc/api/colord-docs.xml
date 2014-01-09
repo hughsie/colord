@@ -91,6 +91,7 @@
     <xi:include href="xml/cd-it8-utils.xml"/>
     <xi:include href="xml/cd-it8.xml"/>
     <xi:include href="xml/cd-math.xml"/>
+    <xi:include href="xml/cd-spectrum.xml"/>
     <xi:include href="xml/cd-version.xml"/>
   </reference>
 

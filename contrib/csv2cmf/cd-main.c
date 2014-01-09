@@ -51,7 +51,6 @@ main (int argc, char *argv[])
 	GError *error = NULL;
 	GFile *file = NULL;
 	GPtrArray *array = NULL;
-	GPtrArray *spectra = NULL;
 	gboolean ret;
 	gchar **lines = NULL;
 	gchar **split;
@@ -130,10 +129,9 @@ main (int argc, char *argv[])
 	}
 
 	/* add spectra to the CMF file */
-	spectra = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_spectrum_free);
-	for (i = 0; i < 3; i++)
-		g_ptr_array_add (spectra, spectrum[i]);
 	cmf = cd_it8_new_with_kind (CD_IT8_KIND_CMF);
+	for (i = 0; i < 3; i++)
+		cd_it8_add_spectrum (cmf, spectrum[i]);
 	originator = g_path_get_basename (argv[0]);
 	cd_it8_set_originator (cmf, originator);
 	title = g_path_get_basename (argv[1]);
@@ -141,7 +139,6 @@ main (int argc, char *argv[])
 	if (dot != NULL)
 		*dot = '\0';
 	cd_it8_set_title (cmf, title);
-	cd_it8_set_spectral_data (cmf, spectra);
 
 	/* save */
 	file = g_file_new_for_path (argv[2]);
@@ -155,8 +152,6 @@ main (int argc, char *argv[])
 out:
 	if (array != NULL)
 		g_ptr_array_unref (array);
-	if (spectra != NULL)
-		g_ptr_array_unref (spectra);
 	if (cmf != NULL)
 		g_object_unref (cmf);
 	if (file != NULL)

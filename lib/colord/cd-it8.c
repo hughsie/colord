@@ -35,7 +35,6 @@
 
 #include "cd-it8.h"
 #include "cd-color.h"
-#include "cd-spectrum.h"
 
 static void	cd_it8_class_init	(CdIt8Class	*klass);
 static void	cd_it8_init		(CdIt8		*it8);
@@ -527,10 +526,10 @@ out:
 }
 
 /**
- * cd_it8_load_ccss:
+ * cd_it8_load_ccss_spect:
  **/
 static gboolean
-cd_it8_load_ccss (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdSpectrum *spectrum;
 	const gchar *tmp;
@@ -599,6 +598,88 @@ cd_it8_load_ccss (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			g_free (label);
 		}
 		for (i = has_index; i < number_of_fields; i++) {
+			cd_spectrum_add_value (spectrum,
+					      _cmsIT8GetDataRowColDbl(it8_lcms, j, i));
+		}
+		cd_spectrum_set_start (spectrum, spectral_start);
+		cd_spectrum_set_end (spectrum, spectral_end);
+		g_ptr_array_add (it8->priv->array_spectra, spectrum);
+	}
+out:
+	return ret;
+}
+
+/**
+ * cd_it8_load_cmf:
+ **/
+static gboolean
+cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+{
+	CdSpectrum *spectrum;
+	const gchar *tmp;
+	gboolean ret = TRUE;
+	gdouble spectral_end;
+	gdouble spectral_start;
+	guint i;
+	guint j;
+	guint number_of_fields;
+	guint number_of_sets;
+	guint spectral_bands;
+
+	/* get spectra endpoints */
+	spectral_start = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_START_NM");
+	spectral_end = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_END_NM");
+
+	/* get number of bands */
+	tmp = cmsIT8GetProperty (it8_lcms, "SPECTRAL_BANDS");
+	if (tmp == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "Invalid CMF: SPECTRAL_BANDS required");
+		goto out;
+	}
+	spectral_bands = atoi (tmp);
+	if (spectral_bands < 2 || spectral_bands > 16384) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "Invalid CMF data format: %s", tmp);
+		goto out;
+	}
+
+	/* CMF files are un-indexed and implicitly XYZ */
+	number_of_fields = _cmsIT8GetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS");
+	if (spectral_bands != number_of_fields) {
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "Invalid CMF: bands != fields (%i, %i)",
+			     spectral_bands, number_of_fields);
+		goto out;
+	}
+
+	/* read out the arrays of data */
+	number_of_sets = _cmsIT8GetPropertyDbl (it8_lcms, "NUMBER_OF_SETS");
+	if (number_of_sets != 3) {
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "Invalid CMF: sets != 3 (%i)",
+			     number_of_sets);
+		goto out;
+	}
+	for (j = 0; j < (guint) number_of_sets; j++) {
+		spectrum = cd_spectrum_sized_new (spectral_bands);
+		if (j == 0)
+			cd_spectrum_set_id (spectrum, "X");
+		else if (j == 1)
+			cd_spectrum_set_id (spectrum, "Y");
+		else
+			cd_spectrum_set_id (spectrum, "Z");
+		for (i = 0; i < number_of_fields; i++) {
 			cd_spectrum_add_value (spectrum,
 					      _cmsIT8GetDataRowColDbl(it8_lcms, j, i));
 		}
@@ -733,9 +814,13 @@ cd_it8_load_from_data (CdIt8 *it8,
 			goto out;
 		break;
 	case CD_IT8_KIND_CCSS:
-	case CD_IT8_KIND_CMF:
 	case CD_IT8_KIND_SPECT:
-		ret = cd_it8_load_ccss (it8, it8_lcms, error);
+		ret = cd_it8_load_ccss_spect (it8, it8_lcms, error);
+		if (!ret)
+			goto out;
+		break;
+	case CD_IT8_KIND_CMF:
+		ret = cd_it8_load_cmf (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
 		break;
@@ -1009,10 +1094,69 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 }
 
 /**
- * cd_it8_save_to_file_ccss:
+ * cd_it8_save_to_file_cmf:
  **/
 static gboolean
-cd_it8_save_to_file_ccss (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
+{
+	CdSpectrum *spectrum;
+	gboolean ret = TRUE;
+	gchar *label;
+	guint i;
+	guint j;
+	guint number_of_sets;
+	guint spectral_bands;
+
+	cmsIT8SetSheetType (it8_lcms, "CMF    ");
+	cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
+			      "Color Match Function");
+
+	/* check data is valid */
+	number_of_sets = it8->priv->array_spectra->len;
+	if (number_of_sets != 3) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "Cannot write CMF: XYZ data required");
+		goto out;
+	}
+
+	/* all the arrays have to have the same length */
+	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
+	spectral_bands = cd_spectrum_get_size (spectrum);
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
+	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands);
+
+	/* set DATA_FORMAT (using an ID if there are more than one spectra */
+	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
+	for (i = 0; i < spectral_bands; i++) {
+		label = g_strdup_printf ("SPEC_%.0f",
+					 cd_spectrum_get_wavelength (spectrum, i));
+		cmsIT8SetDataFormat (it8_lcms, i, label);
+		g_free (label);
+	}
+
+	/* set DATA */
+	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", number_of_sets);
+	for (j = 0; j < number_of_sets; j++) {
+		spectrum = g_ptr_array_index (it8->priv->array_spectra, j);
+		for (i = 0; i < spectral_bands; i++) {
+			_cmsIT8SetDataRowColDbl (it8_lcms, j, i,
+						 cd_spectrum_get_value (spectrum, i));
+		}
+	}
+out:
+	return ret;
+}
+
+/**
+ * cd_it8_save_to_file_ccss_sp:
+ **/
+static gboolean
+cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdSpectrum *spectrum;
 	gboolean has_index = FALSE;
@@ -1166,10 +1310,14 @@ cd_it8_save_to_data (CdIt8 *it8,
 		if (!ret)
 			goto out;
 		break;
-	case CD_IT8_KIND_CCSS:
 	case CD_IT8_KIND_CMF:
+		ret = cd_it8_save_to_file_cmf (it8, it8_lcms, error);
+		if (!ret)
+			goto out;
+		break;
+	case CD_IT8_KIND_CCSS:
 	case CD_IT8_KIND_SPECT:
-		ret = cd_it8_save_to_file_ccss (it8, it8_lcms, error);
+		ret = cd_it8_save_to_file_ccss_sp (it8, it8_lcms, error);
 		if (!ret)
 			goto out;
 		break;
@@ -1474,7 +1622,7 @@ cd_it8_get_data_item (CdIt8 *it8, guint idx, CdColorRGB *rgb, CdColorXYZ *xyz)
 }
 
 /**
- * cd_it8_set_spectral_data:
+ * cd_it8_set_spectrum_array:
  * @it8: a #CdIt8 instance.
  * @data: (transfer container) (element-type CdSpectrum): the spectral data
  *
@@ -1483,7 +1631,7 @@ cd_it8_get_data_item (CdIt8 *it8, guint idx, CdColorRGB *rgb, CdColorXYZ *xyz)
  * Since: 1.1.6
  **/
 void
-cd_it8_set_spectral_data (CdIt8 *it8, GPtrArray *data)
+cd_it8_set_spectrum_array (CdIt8 *it8, GPtrArray *data)
 {
 	g_return_if_fail (CD_IS_IT8 (it8));
 	g_ptr_array_unref (it8->priv->array_spectra);
@@ -1491,7 +1639,23 @@ cd_it8_set_spectral_data (CdIt8 *it8, GPtrArray *data)
 }
 
 /**
- * cd_it8_get_spectral_data:
+ * cd_it8_add_spectrum:
+ * @it8: a #CdIt8 instance.
+ * @spectrum: the spectral data
+ *
+ * Adds a spectrum to the spectral array.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_it8_add_spectrum (CdIt8 *it8, CdSpectrum *spectrum)
+{
+	g_return_if_fail (CD_IS_IT8 (it8));
+	g_ptr_array_add (it8->priv->array_spectra, cd_spectrum_dup (spectrum));
+}
+
+/**
+ * cd_it8_get_spectrum_array:
  * @it8: a #CdIt8 instance.
  *
  * Gets the spectral data of IT8 file.
@@ -1501,10 +1665,38 @@ cd_it8_set_spectral_data (CdIt8 *it8, GPtrArray *data)
  * Since: 1.1.6
  **/
 GPtrArray *
-cd_it8_get_spectral_data (CdIt8 *it8)
+cd_it8_get_spectrum_array (CdIt8 *it8)
 {
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
 	return g_ptr_array_ref (it8->priv->array_spectra);
+}
+
+/**
+ * cd_it8_get_spectrum_by_id:
+ * @it8: a #CdIt8 instance.
+ * @id: the spectrum ID value
+ *
+ * Gets a specific spectrum in an IT8 file.
+ *
+ * Return value: (transfer none): spectrum, or %NULL
+ *
+ * Since: 1.1.6
+ **/
+CdSpectrum *
+cd_it8_get_spectrum_by_id (CdIt8 *it8, const gchar *id)
+{
+	CdSpectrum *tmp;
+	guint i;
+
+	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
+	g_return_val_if_fail (id != NULL, NULL);
+
+	for (i = 0; i < it8->priv->array_spectra->len; i++) {
+		tmp = g_ptr_array_index (it8->priv->array_spectra, i);
+		if (g_strcmp0 (cd_spectrum_get_id (tmp), id) == 0)
+			return tmp;
+	}
+	return NULL;
 }
 
 /**********************************************************************/

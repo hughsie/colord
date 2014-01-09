@@ -269,7 +269,6 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 				     GError **error)
 {
 	CdSpectrum *tmp;
-	GPtrArray *spectra = NULL;
 	gboolean ret = TRUE;
 	gdouble nm;
 	gdouble val;
@@ -289,33 +288,45 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 		goto out;
 	}
 
-	/* check this has XYZ value */
-	spectra = cd_it8_get_spectral_data (cmf);
-	if (spectra->len != 3) {
-		ret = FALSE;
-		g_set_error (error,
-			     CD_IT8_ERROR,
-			     CD_IT8_ERROR_FAILED,
-			     "CMF IT8 object has channel count %i",
-			     spectra->len);
-		goto out;
-	}
-
 	/* calculate the integrals */
 	cd_color_xyz_clear (value);
-	tmp = g_ptr_array_index (spectra, 0);
+	tmp = cd_it8_get_spectrum_by_id (cmf, "X");
+	if (tmp == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "CMF IT8 object has no X channel");
+		goto out;
+	}
 	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
 		val = cd_spectrum_get_value (spectrum, i);
 		nm = cd_spectrum_get_wavelength (spectrum, i);
 		value->X += val * cd_spectrum_get_value_for_nm (tmp, nm);
 	}
-	tmp = g_ptr_array_index (spectra, 1);
+	tmp = cd_it8_get_spectrum_by_id (cmf, "Y");
+	if (tmp == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "CMF IT8 object has no Y channel");
+		goto out;
+	}
 	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
 		val = cd_spectrum_get_value (spectrum, i);
 		nm = cd_spectrum_get_wavelength (spectrum, i);
 		value->Y += val * cd_spectrum_get_value_for_nm (tmp, nm);
 	}
-	tmp = g_ptr_array_index (spectra, 2);
+	tmp = cd_it8_get_spectrum_by_id (cmf, "Z");
+	if (tmp == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "CMF IT8 object has no Z channel");
+		goto out;
+	}
 	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
 		val = cd_spectrum_get_value (spectrum, i);
 		nm = cd_spectrum_get_wavelength (spectrum, i);
@@ -327,7 +338,5 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 	value->Z /= value->Y;
 	value->Y = 1.f;
 out:
-	if (spectra != NULL)
-		g_ptr_array_unref (spectra);
 	return ret;
 }

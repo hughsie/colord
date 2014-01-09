@@ -31,6 +31,7 @@
 
 #include "cd-color.h"
 #include "cd-math.h"
+#include "cd-spectrum.h"
 
 G_BEGIN_DECLS
 
@@ -146,8 +147,10 @@ void		 cd_it8_add_option		(CdIt8		*it8,
 						 const gchar	*option);
 void		 cd_it8_set_matrix		(CdIt8		*it8,
 						 const CdMat3x3 *matrix);
-void		 cd_it8_set_spectral_data	(CdIt8		*it8,
+void		 cd_it8_set_spectrum_array	(CdIt8		*it8,
 						 GPtrArray	*data);
+void		 cd_it8_add_spectrum		(CdIt8		*it8,
+						 CdSpectrum	*spectrum);
 
 /* getters */
 const CdMat3x3	*cd_it8_get_matrix		(CdIt8		*it8);
@@ -164,7 +167,9 @@ gboolean	 cd_it8_get_data_item		(CdIt8		*it8,
 						 guint		 idx,
 						 CdColorRGB	*rgb,
 						 CdColorXYZ	*xyz);
-GPtrArray	*cd_it8_get_spectral_data	(CdIt8		*it8);
+GPtrArray	*cd_it8_get_spectrum_array	(CdIt8		*it8);
+CdSpectrum	*cd_it8_get_spectrum_by_id	(CdIt8		*it8,
+						 const gchar	*id);
 gboolean	 cd_it8_has_option		(CdIt8		*it8,
 						 const gchar	*option);
 

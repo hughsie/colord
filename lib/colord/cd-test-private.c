@@ -84,7 +84,7 @@ colord_it8_spectra_util_func (void)
 	g_assert_cmpint (cd_it8_get_kind (spectra), ==, CD_IT8_KIND_SPECT);
 
 	/* calculate the XYZ value */
-	data = g_ptr_array_index (cd_it8_get_spectral_data (spectra), 0);
+	data = g_ptr_array_index (cd_it8_get_spectrum_array (spectra), 0);
 	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf, data, &value, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -162,7 +162,7 @@ colord_it8_spect_func (void)
 	g_assert_cmpint (cd_it8_get_kind (it8), ==, CD_IT8_KIND_SPECT);
 
 	/* check data */
-	spectral_data = cd_it8_get_spectral_data (it8);
+	spectral_data = cd_it8_get_spectrum_array (it8);
 	g_assert_cmpint (spectral_data->len, ==, 1);
 	spectrum = g_ptr_array_index (spectral_data, 0);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_start (spectrum) - 350.f), <, 0.001f);
@@ -210,7 +210,7 @@ colord_it8_ccss_func (void)
 	g_assert (!cd_it8_has_option (it8, "DISPLAY_TYPE_REFRESH"));
 
 	/* check data */
-	spectral_data = cd_it8_get_spectral_data (it8);
+	spectral_data = cd_it8_get_spectrum_array (it8);
 	g_assert_cmpint (spectral_data->len, ==, 2);
 	spectrum = g_ptr_array_index (spectral_data, 0);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_start (spectrum) - 350.f), <, 0.001f);
@@ -218,7 +218,7 @@ colord_it8_ccss_func (void)
 	g_assert_cmpint (cd_spectrum_get_size (spectrum), ==, 118);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 0) - 0.01f), <, 0.01f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 117) - 1.00f), <, 0.01f);
-	spectrum = g_ptr_array_index (spectral_data, 1);
+	spectrum = cd_it8_get_spectrum_by_id (it8, "2");
 	g_assert_cmpint (cd_spectrum_get_size (spectrum), ==, 118);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 0) - 0.99f), <, 0.01f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 117) - 0.00f), <, 0.01f);
