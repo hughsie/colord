@@ -37,6 +37,7 @@
 
 /* this is private */
 struct _CdSpectrum {
+	guint			 reserved_size;
 	gchar			*id;
 	gdouble			 start;
 	gdouble			 end;
@@ -113,11 +114,18 @@ gdouble
 cd_spectrum_get_wavelength (const CdSpectrum *spectrum, guint idx)
 {
 	gdouble step;
+	guint number_points;
 
 	g_return_val_if_fail (spectrum != NULL, -1.0f);
-	g_return_val_if_fail (idx < spectrum->data->len, -1.0f);
 
-	step = (spectrum->end - spectrum->start) / (spectrum->data->len - 1);
+	/* if we used cd_spectrum_size_new() and there is no data we can infer
+	 * the wavelenth based on the declared initial size */
+	if (spectrum->reserved_size > 0)
+		number_points = spectrum->reserved_size;
+	else
+		number_points = spectrum->data->len;
+
+	step = (spectrum->end - spectrum->start) / (number_points - 1);
 	return spectrum->start + (step * (gdouble) idx);
 }
 
@@ -242,8 +250,51 @@ cd_spectrum_sized_new (guint reserved_size)
 {
 	CdSpectrum *spectrum;
 	spectrum = g_slice_new0 (CdSpectrum);
+	spectrum->reserved_size = reserved_size;
 	spectrum->data = g_array_sized_new (FALSE, FALSE, sizeof (gdouble), reserved_size);
 	return spectrum;
+}
+
+/**
+ * cd_spectrum_planckian_new:
+ * @temperature: the temperature in Kelvin
+ *
+ * Allocates a Planckian spectrum at a specific temperature.
+ *
+ * Return value: A newly allocated #CdSpectrum object
+ *
+ * Since: 1.1.6
+ **/
+CdSpectrum *
+cd_spectrum_planckian_new (gdouble temperature)
+{
+	CdSpectrum *s = NULL;
+	const gdouble c1 = 3.74183e-16;	/* 2pi * h * c^2 */
+	const gdouble c2 = 1.4388e-2;	/* h * c / k */
+	gdouble wl;
+	gdouble norm;
+	gdouble tmp;
+	guint i;
+
+	/* sanity check */
+	if (temperature < 1.0 || temperature > 1e6)
+		goto out;
+
+	/* create spectrum with 1nm resolution */
+	s = cd_spectrum_sized_new (531);
+	cd_spectrum_set_start (s, 300);
+	cd_spectrum_set_end (s, 830);
+
+	/* see http://www.create.uwe.ac.uk/ardtalks/Schanda_paper.pdf, page 42 */
+	wl = 560 * 1e-9;
+	norm = 0.01 * (c1 * pow (wl, -5.0)) / (exp (c2 / (wl * temperature)) - 1.0);
+	for (i = 0; i < s->reserved_size; i++) {
+		wl = cd_spectrum_get_wavelength (s, i) * 1e-9;
+		tmp = (c1 * pow (wl, -5.0)) / (exp (c2 / (wl * temperature)) - 1.0);
+		cd_spectrum_add_value (s, tmp / norm);
+	}
+out:
+	return s;
 }
 
 /**

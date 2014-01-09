@@ -100,6 +100,27 @@ colord_it8_spectra_util_func (void)
 }
 
 static void
+colord_spectrum_planckian_func (void)
+{
+	CdSpectrum *s;
+	guint i;
+
+	s = cd_spectrum_planckian_new (2940);
+
+	g_assert_cmpfloat (ABS (cd_spectrum_get_start (s) - 300.f), <, 0.0001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_end (s) - 830.f), <, 0.0001f);
+	g_assert_cmpint (cd_spectrum_get_size (s), ==, 531);
+
+	/* verify */
+	for (i = 0; i < cd_spectrum_get_size (s); i++) {
+		g_assert_cmpfloat (cd_spectrum_get_value (s, i), >, 1.f);
+		g_assert_cmpfloat (cd_spectrum_get_value (s, i), <, 241.f);
+	}
+
+	cd_spectrum_free (s);
+}
+
+static void
 colord_spectrum_func (void)
 {
 	CdSpectrum *s;
@@ -1942,6 +1963,7 @@ main (int argc, char **argv)
 
 	/* tests go here */
 	g_test_add_func ("/colord/spectrum", colord_spectrum_func);
+	g_test_add_func ("/colord/spectrum{planckian}", colord_spectrum_planckian_func);
 	g_test_add_func ("/colord/edid", colord_edid_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);

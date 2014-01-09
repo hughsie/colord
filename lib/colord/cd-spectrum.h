@@ -37,6 +37,7 @@ typedef struct _CdSpectrum	CdSpectrum;
 GType		 cd_spectrum_get_type		(void);
 CdSpectrum	*cd_spectrum_new		(void);
 CdSpectrum	*cd_spectrum_sized_new		(guint			 reserved_size);
+CdSpectrum	*cd_spectrum_planckian_new	(gdouble		 temperature);
 void		 cd_spectrum_free		(CdSpectrum		*spectrum);
 CdSpectrum	*cd_spectrum_dup		(const CdSpectrum	*spectrum);
 
