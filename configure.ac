@@ -392,6 +392,7 @@ doc/api/dbus/Makefile
 doc/api/version.xml
 data/Makefile
 data/cmf/Makefile
+data/illuminant/Makefile
 data/figures/Makefile
 data/profiles/Makefile
 data/ti1/Makefile

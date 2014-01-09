@@ -1,6 +1,7 @@
 
 SUBDIRS = 						\
 	cmf						\
+	illuminant					\
 	profiles					\
 	figures						\
 	tests						\
