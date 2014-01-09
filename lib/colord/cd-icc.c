@@ -979,14 +979,12 @@ cd_icc_calc_whitepoint (CdIcc *icc, GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
 	cmsBool bpc[2] = { FALSE, FALSE };
-	cmsCIExyY tmp;
 	cmsCIEXYZ whitepoint;
 	cmsFloat64Number adaption[2] = { 0, 0 };
 	cmsHPROFILE profiles[2];
 	cmsHTRANSFORM transform;
 	cmsUInt32Number intents[2] = { INTENT_ABSOLUTE_COLORIMETRIC,
 				       INTENT_ABSOLUTE_COLORIMETRIC };
-	gboolean got_temperature;
 	gboolean ret = TRUE;
 	gdouble temp_float;
 	guint8 data[3] = { 255, 255, 255 };
@@ -1021,9 +1019,8 @@ cd_icc_calc_whitepoint (CdIcc *icc, GError **error)
 			  whitepoint.Z);
 
 	/* get temperature rounded to nearest 100K */
-	cmsXYZ2xyY (&tmp, &whitepoint);
-	got_temperature = cmsTempFromWhitePoint (&temp_float, &tmp);
-	if (got_temperature)
+	temp_float = cd_color_xyz_to_cct (&priv->white);
+	if (temp_float > 0)
 		priv->temperature = (((guint) temp_float) / 100) * 100;
 out:
 	if (profiles[1] != NULL)

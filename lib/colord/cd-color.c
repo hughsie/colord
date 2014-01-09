@@ -30,6 +30,7 @@
 
 #include <math.h>
 #include <glib-object.h>
+#include <lcms2.h>
 
 #include "cd-color.h"
 #include "cd-interp.h"
@@ -700,6 +701,33 @@ cd_color_yxy_to_xyz (const CdColorYxy *src, CdColorXYZ *dest)
 	dest->X = (src->x * src->Y) / src->y;
 	dest->Y = src->Y;
 	dest->Z = (1.0f - src->x - src->y) * src->Y / src->y;
+}
+
+/**
+ * cd_color_xyz_to_cct:
+ * @src: the source color
+ *
+ * Gets the correlated color temperature for the XYZ value.
+ *
+ * Since: 1.1.6
+ **/
+gdouble
+cd_color_xyz_to_cct (const CdColorXYZ *src)
+{
+	cmsCIExyY tmp;
+	cmsCIEXYZ src_lcms;
+	gboolean ret;
+	gdouble value;
+
+	/* in case cmsFloat64Number != gdouble */
+	src_lcms.X = src->X;
+	src_lcms.Y = src->Y;
+	src_lcms.Z = src->Z;
+	cmsXYZ2xyY (&tmp, &src_lcms);
+	ret = cmsTempFromWhitePoint (&value, &tmp);
+	if (!ret)
+		return -1.f;
+	return value;
 }
 
 /**
