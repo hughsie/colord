@@ -4,6 +4,7 @@ SUBDIRS = 						\
 	illuminant					\
 	profiles					\
 	figures						\
+	ref						\
 	tests						\
 	ti1
 

@@ -395,6 +395,7 @@ data/cmf/Makefile
 data/illuminant/Makefile
 data/figures/Makefile
 data/profiles/Makefile
+data/ref/Makefile
 data/ti1/Makefile
 data/org.freedesktop.ColorManager.conf
 data/tests/Makefile
