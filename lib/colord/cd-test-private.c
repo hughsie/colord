@@ -360,9 +360,9 @@ colord_it8_locale_func (void)
 				   " XYZ_X	XYZ_Y	XYZ_Z\n"
 				   "END_DATA_FORMAT\n"
 				   "BEGIN_DATA\n"
-				   " 1.234	0	0\n"
-				   " 0	0	0\n"
-				   " 0	0	0\n"
+				   " 1.234	0.0	0.0\n"
+				   " 0.0	0.0	0.0\n"
+				   " 0.0	0.0	0.0\n"
 				   "END_DATA\n");
 	setlocale (LC_NUMERIC, orig_locale);
 

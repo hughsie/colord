@@ -32,6 +32,7 @@
 #include <glib.h>
 #include <lcms2.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "cd-it8.h"
 #include "cd-color.h"
@@ -124,6 +125,30 @@ _cmsIT8GetDataRowColDbl (cmsHANDLE it8_lcms, gint row, gint col)
 }
 
 /**
+ * _cmsIT8WriteFloat:
+ *
+ * We can't use g_ascii_dtostr() as this produces very inefficient
+ * strings for storage. Instead write the string with 13 decimal places
+ * and then manually remove trailing zeros more than one as ArgyllCMS
+ * doesn't support integers as floats (!)
+ **/
+static void
+_cmsIT8WriteFloat (gchar *buffer, gsize buffer_size, gdouble value)
+{
+	guint i;
+	memset (buffer, '\0', buffer_size);
+	g_ascii_formatd (buffer, buffer_size, "%.13f", value);
+	for (i = G_ASCII_DTOSTR_BUF_SIZE - 1; i > 2; i--) {
+		if (buffer[i] == '\0')
+			continue;
+		if (buffer[i] != '0')
+			break;
+		buffer[i] = '\0';
+	}
+}
+
+#if 0
+/**
  * _cmsIT8SetPropertyDbl:
  *
  * This sets a property ensuring the decimal point is '.' rather than what is
@@ -133,7 +158,19 @@ static void
 _cmsIT8SetPropertyDbl (cmsHANDLE it8_lcms, const gchar *key, gdouble value)
 {
 	gchar buffer[G_ASCII_DTOSTR_BUF_SIZE];
-	g_ascii_dtostr (buffer, G_ASCII_DTOSTR_BUF_SIZE, value);
+	_cmsIT8WriteFloat (buffer, G_ASCII_DTOSTR_BUF_SIZE, value);
+	cmsIT8SetPropertyUncooked (it8_lcms, key, buffer);
+}
+#endif
+
+/**
+ * _cmsIT8SetPropertyInt:
+ **/
+static void
+_cmsIT8SetPropertyInt (cmsHANDLE it8_lcms, const gchar *key, gint value)
+{
+	gchar buffer[G_ASCII_DTOSTR_BUF_SIZE];
+	g_ascii_formatd (buffer, G_ASCII_DTOSTR_BUF_SIZE, "%.0f", value);
 	cmsIT8SetPropertyUncooked (it8_lcms, key, buffer);
 }
 
@@ -147,7 +184,7 @@ static void
 _cmsIT8SetDataRowColDbl (cmsHANDLE it8_lcms, gint row, gint col, gdouble value)
 {
 	gchar buffer[G_ASCII_DTOSTR_BUF_SIZE];
-	g_ascii_dtostr (buffer, G_ASCII_DTOSTR_BUF_SIZE, value);
+	_cmsIT8WriteFloat (buffer, G_ASCII_DTOSTR_BUF_SIZE, value);
 	cmsIT8SetDataRowCol (it8_lcms, row, col, buffer);
 }
 
@@ -978,8 +1015,8 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	} else {
 		cmsIT8SetPropertyStr (it8_lcms, "NORMALIZED_TO_Y_100", "NO");
 	}
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", 7);
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", it8->priv->array_rgb->len);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", 7);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", it8->priv->array_rgb->len);
 	cmsIT8SetDataFormat (it8_lcms, 0, "SAMPLE_ID");
 	cmsIT8SetDataFormat (it8_lcms, 1, "RGB_R");
 	cmsIT8SetDataFormat (it8_lcms, 2, "RGB_G");
@@ -1035,8 +1072,8 @@ cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cmsIT8SetPropertyStr (it8_lcms, "TARGET_INSTRUMENT",
 				      it8->priv->instrument);
 	}
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", 4);
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", it8->priv->array_rgb->len);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", 4);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", it8->priv->array_rgb->len);
 	cmsIT8SetDataFormat (it8_lcms, 0, "RGB_I");
 	cmsIT8SetDataFormat (it8_lcms, 1, "RGB_R");
 	cmsIT8SetDataFormat (it8_lcms, 2, "RGB_G");
@@ -1067,8 +1104,8 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			      "Device Correction Matrix");
 
 	cmsIT8SetPropertyStr (it8_lcms, "COLOR_REP", "XYZ");
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", 3);
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", 3);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", 3);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", 3);
 	cmsIT8SetDataFormat (it8_lcms, 0, "XYZ_X");
 	cmsIT8SetDataFormat (it8_lcms, 1, "XYZ_Y");
 	cmsIT8SetDataFormat (it8_lcms, 2, "XYZ_Z");
@@ -1125,10 +1162,10 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* all the arrays have to have the same length */
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	spectral_bands = cd_spectrum_get_size (spectrum);
-	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
-	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
-	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands);
+	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
+	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
+	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands);
 
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
@@ -1140,7 +1177,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	}
 
 	/* set DATA */
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", number_of_sets);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", number_of_sets);
 	for (j = 0; j < number_of_sets; j++) {
 		spectrum = g_ptr_array_index (it8->priv->array_spectra, j);
 		for (i = 0; i < spectral_bands; i++) {
@@ -1203,10 +1240,10 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* all the arrays have to have the same length */
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	spectral_bands = cd_spectrum_get_size (spectrum);
-	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
-	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
-	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands + has_index);
+	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
+	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
+	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands + has_index);
 
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */
 	if (has_index)
@@ -1220,7 +1257,7 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	}
 
 	/* set DATA */
-	_cmsIT8SetPropertyDbl (it8_lcms, "NUMBER_OF_SETS", number_of_sets);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", number_of_sets);
 	for (j = 0; j < number_of_sets; j++) {
 		spectrum = g_ptr_array_index (it8->priv->array_spectra, j);
 		if (has_index) {
