@@ -31,13 +31,13 @@ ATTRS{idVendor}=="0765", ATTRS{idProduct}=="d092", ENV{COLORD_SENSOR_KIND}="unkn
 ATTRS{idVendor}=="0765", ATTRS{idProduct}=="d094", ENV{COLORD_SENSOR_KIND}="dtp94"
 
 # MonacoOPTIX (Same as i1 Display 1)
-ATTRS{idVendor}=="0670", ATTRS{idProduct}=="0001", ENV{COLORD_SENSOR_KIND}="i1-pro", ENV{COLORD_SENSOR_CAPS}="lcd crt"
+ATTRS{idVendor}=="0670", ATTRS{idProduct}=="0001", ENV{COLORD_SENSOR_KIND}="i1-display1", ENV{COLORD_SENSOR_CAPS}="lcd crt"
 
 # i1Display
-ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2003", ENV{COLORD_SENSOR_KIND}="i1-pro", ENV{COLORD_SENSOR_CAPS}="lcd crt"
+ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2003", ENV{COLORD_SENSOR_KIND}="i1-display2", ENV{COLORD_SENSOR_CAPS}="lcd crt"
 
 # i1Monitor
-ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2001", ENV{COLORD_SENSOR_KIND}="i1-pro", ENV{COLORD_SENSOR_CAPS}="lcd crt"
+ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2001", ENV{COLORD_SENSOR_KIND}="i1-monitor", ENV{COLORD_SENSOR_CAPS}="lcd crt"
 
 # i1Pro
 ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2000", ENV{COLORD_SENSOR_KIND}="i1-pro", ENV{COLORD_SENSOR_CAPS}="lcd crt projector printer ambient"
