@@ -1,3 +1,16 @@
+Version 1.0.6
+~~~~~~~~~~~~~
+Released: 2013-01-13
+
+Bugfixes:
+ - Fix the tag 'size' when viewing a profile in cd-iccdump (Richard Hughes)
+ - Use the corect sensor-kind values for GretagMacbeth sensors (Richard Hughes)
+ - libcolord: Do not use G_GNUC_WARN_UNUSED_RESULT when uninhibiting (Richard Hughes)
+ - libcolord: Fix crash when cd_color_get_blackbody_rgb() with insane values (Richard Hughes)
+ - libcolorhug: Handle failure to initialise GUsb in self-tests (Christopher James Halse Rogers)
+ - session-helper: Do not crash when moving the sensor position (Richard Hughes)
+ - session-helper: Set the status to idle when resuming (Richard Hughes)
+
 Version 1.0.5
 ~~~~~~~~~~~~~
 Released: 2013-12-04
