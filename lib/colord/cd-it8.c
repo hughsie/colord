@@ -436,9 +436,9 @@ cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	number_of_sets = _cmsIT8GetPropertyDbl (it8_lcms, "NUMBER_OF_SETS");
 	for (i = 0; i < number_of_sets; i++) {
 		rgb = cd_color_rgb_new ();
-		rgb->R = _cmsIT8GetDataRowColDbl(it8_lcms, i, 1);
-		rgb->G = _cmsIT8GetDataRowColDbl(it8_lcms, i, 2);
-		rgb->B = _cmsIT8GetDataRowColDbl(it8_lcms, i, 3);
+		rgb->R = _cmsIT8GetDataRowColDbl (it8_lcms, i, 1);
+		rgb->G = _cmsIT8GetDataRowColDbl (it8_lcms, i, 2);
+		rgb->B = _cmsIT8GetDataRowColDbl (it8_lcms, i, 3);
 
 		/* ti1 files don't have NORMALIZED_TO_Y_100 so guess on
 		 * the asumption the first patch isn't black */
@@ -501,9 +501,9 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	number_of_sets = _cmsIT8GetPropertyDbl (it8_lcms, "NUMBER_OF_SETS");
 	for (i = 0; i < number_of_sets; i++) {
 		rgb = cd_color_rgb_new ();
-		rgb->R = _cmsIT8GetDataRowColDbl(it8_lcms, i, 1);
-		rgb->G = _cmsIT8GetDataRowColDbl(it8_lcms, i, 2);
-		rgb->B = _cmsIT8GetDataRowColDbl(it8_lcms, i, 3);
+		rgb->R = _cmsIT8GetDataRowColDbl (it8_lcms, i, 1);
+		rgb->G = _cmsIT8GetDataRowColDbl (it8_lcms, i, 2);
+		rgb->B = _cmsIT8GetDataRowColDbl (it8_lcms, i, 3);
 		if (scaled_to_y100) {
 			rgb->R /= 100.0f;
 			rgb->G /= 100.0f;
@@ -511,9 +511,9 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		}
 		g_ptr_array_add (it8->priv->array_rgb, rgb);
 		xyz = cd_color_xyz_new ();
-		xyz->X = _cmsIT8GetDataRowColDbl(it8_lcms, i, 4);
-		xyz->Y = _cmsIT8GetDataRowColDbl(it8_lcms, i, 5);
-		xyz->Z = _cmsIT8GetDataRowColDbl(it8_lcms, i, 6);
+		xyz->X = _cmsIT8GetDataRowColDbl (it8_lcms, i, 4);
+		xyz->Y = _cmsIT8GetDataRowColDbl (it8_lcms, i, 5);
+		xyz->Z = _cmsIT8GetDataRowColDbl (it8_lcms, i, 6);
 		if (scaled_to_y100) {
 			xyz->X /= 100.0f;
 			xyz->Y /= 100.0f;
@@ -549,15 +549,15 @@ cd_it8_load_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	cd_it8_set_instrument (it8, cmsIT8GetProperty (it8_lcms, "INSTRUMENT"));
 
 	/* just load the matrix */
-	it8->priv->matrix.m00 = _cmsIT8GetDataRowColDbl(it8_lcms, 0, 0);
-	it8->priv->matrix.m01 = _cmsIT8GetDataRowColDbl(it8_lcms, 0, 1);
-	it8->priv->matrix.m02 = _cmsIT8GetDataRowColDbl(it8_lcms, 0, 2);
-	it8->priv->matrix.m10 = _cmsIT8GetDataRowColDbl(it8_lcms, 1, 0);
-	it8->priv->matrix.m11 = _cmsIT8GetDataRowColDbl(it8_lcms, 1, 1);
-	it8->priv->matrix.m12 = _cmsIT8GetDataRowColDbl(it8_lcms, 1, 2);
-	it8->priv->matrix.m20 = _cmsIT8GetDataRowColDbl(it8_lcms, 2, 0);
-	it8->priv->matrix.m21 = _cmsIT8GetDataRowColDbl(it8_lcms, 2, 1);
-	it8->priv->matrix.m22 = _cmsIT8GetDataRowColDbl(it8_lcms, 2, 2);
+	it8->priv->matrix.m00 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 0);
+	it8->priv->matrix.m01 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 1);
+	it8->priv->matrix.m02 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 2);
+	it8->priv->matrix.m10 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 0);
+	it8->priv->matrix.m11 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 1);
+	it8->priv->matrix.m12 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 2);
+	it8->priv->matrix.m20 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 0);
+	it8->priv->matrix.m21 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 1);
+	it8->priv->matrix.m22 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 2);
 out:
 	return ret;
 }
@@ -636,7 +636,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		}
 		for (i = has_index; i < number_of_fields; i++) {
 			cd_spectrum_add_value (spectrum,
-					      _cmsIT8GetDataRowColDbl(it8_lcms, j, i));
+					      _cmsIT8GetDataRowColDbl (it8_lcms, j, i));
 		}
 		cd_spectrum_set_start (spectrum, spectral_start);
 		cd_spectrum_set_end (spectrum, spectral_end);
@@ -718,7 +718,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			cd_spectrum_set_id (spectrum, "Z");
 		for (i = 0; i < number_of_fields; i++) {
 			cd_spectrum_add_value (spectrum,
-					      _cmsIT8GetDataRowColDbl(it8_lcms, j, i));
+					      _cmsIT8GetDataRowColDbl (it8_lcms, j, i));
 		}
 		cd_spectrum_set_start (spectrum, spectral_start);
 		cd_spectrum_set_end (spectrum, spectral_end);
