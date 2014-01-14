@@ -108,6 +108,7 @@ colord_spectrum_planckian_func (void)
 
 	s = cd_spectrum_planckian_new (2940);
 
+	g_assert_cmpstr (cd_spectrum_get_id (s), ==, "Planckian@2940K");
 	g_assert_cmpfloat (ABS (cd_spectrum_get_start (s) - 300.f), <, 0.0001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_end (s) - 830.f), <, 0.0001f);
 	g_assert_cmpint (cd_spectrum_get_size (s), ==, 531);

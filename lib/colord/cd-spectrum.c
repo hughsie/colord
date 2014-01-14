@@ -282,6 +282,7 @@ cd_spectrum_planckian_new (gdouble temperature)
 
 	/* create spectrum with 1nm resolution */
 	s = cd_spectrum_sized_new (531);
+	s->id = g_strdup_printf ("Planckian@%.0fK", temperature);
 	cd_spectrum_set_start (s, 300);
 	cd_spectrum_set_end (s, 830);
 
