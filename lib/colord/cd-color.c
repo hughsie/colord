@@ -748,6 +748,50 @@ cd_color_xyz_to_cct (const CdColorXYZ *src)
 }
 
 /**
+ * cd_color_uvw_get_chroma_difference:
+ * @p1: color
+ * @p2: color
+ *
+ * Gets the chromaticity distance in the CIE 1960 UCS.
+ *
+ * Return value: The Euclidean distance
+ *
+ * Since: 1.1.6
+ **/
+gdouble
+cd_color_uvw_get_chroma_difference (const CdColorUVW *p1, const CdColorUVW *p2)
+{
+	return sqrt (pow ((p1->U - p2->U), 2) + pow ((p1->V - p2->V), 2));
+}
+
+/**
+ * cd_color_uvw_set_planckian_locus:
+ * @dest: destination color
+ * @temp: temperature in Kelvin
+ *
+ * Sets the CIEUVW color from a Planckian locus of specific temperature.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_color_uvw_set_planckian_locus (CdColorUVW *dest, gdouble temp)
+{
+	dest->W = 1.0;
+	dest->U = (0.860117757 +
+		   (1.54118254 * temp * 1e-4) +
+		   (1.28641212 * pow (temp, 2) * 1e-7)) /
+		  (1.0 +
+		   (8.42420235 * temp * 1e-4) +
+		   (7.08145163 * pow (temp, 2) * 1e-7));
+	dest->V = (0.317398726 +
+		   (4.22806245 * temp * 1e-5) +
+		   (4.20481691 * pow (temp, 2) * 1e-8)) /
+		  (1.0 -
+		   (2.89741816 * temp * 1e-5) +
+		   (1.61456053 * pow (temp, 2) * 1e-7));
+}
+
+/**
  * cd_color_xyz_to_yxy:
  * @src: the source color
  * @dest: the destination color
@@ -774,6 +818,41 @@ cd_color_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
 	dest->Y = src->Y;
 	dest->x = src->X / sum;
 	dest->y = src->Y / sum;
+}
+
+/**
+ * cd_color_xyz_to_uvw:
+ * @src: the source color
+ * @dest: the destination color
+ *
+ * Convert from one color format to another.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_color_xyz_to_uvw (const CdColorXYZ *src, CdColorUVW *dest)
+{
+	CdColorYxy tmp;
+	cd_color_xyz_to_yxy (src, &tmp);
+	cd_color_yxy_to_uvw (&tmp, dest);
+}
+
+/**
+ * cd_color_yxy_to_uvw:
+ * @src: the source color
+ * @dest: the destination color
+ *
+ * Convert from one color format to another.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_color_yxy_to_uvw (const CdColorYxy *src, CdColorUVW *dest)
+{
+	gdouble sum = (-2 * src->x) + (12 * src->y) + (3 * src->Y);
+	dest->U = (4 * src->x) / sum;
+	dest->V = (6 * src->y) / sum;
+	dest->W = src->Y;
 }
 
 /* source: http://www.vendian.org/mncharity/dir3/blackbody/

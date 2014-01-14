@@ -831,6 +831,7 @@ colord_dom_localized_func (void)
 static void
 colord_color_func (void)
 {
+	CdColorUVW uvw;
 	CdColorXYZ *xyz;
 	CdColorXYZ xyz_src;
 	CdColorYxy yxy;
@@ -848,6 +849,12 @@ colord_color_func (void)
 
 	g_assert_cmpfloat (fabs (yxy.x - 0.142857143f), <, 0.001f);
 	g_assert_cmpfloat (fabs (yxy.y - 0.285714286f), <, 0.001f);
+
+	/* Planckian locus */
+	cd_color_uvw_set_planckian_locus (&uvw, 4000);
+	g_assert_cmpfloat (ABS (uvw.U - 0.225), <, 0.01);
+	g_assert_cmpfloat (ABS (uvw.V - 0.334), <, 0.01);
+	g_assert_cmpfloat (ABS (uvw.W - 1.000), <, 0.01);
 
 	/* normalizing */
 	cd_color_xyz_set (&xyz_src, 100, 50, 25);

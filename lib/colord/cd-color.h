@@ -60,6 +60,12 @@ typedef struct {
 	gdouble	 B;
 } CdColorRGB;
 
+typedef struct {
+	gdouble	 U;
+	gdouble	 V;
+	gdouble	 W;
+} CdColorUVW;
+
 typedef struct _CdColorSwatch	CdColorSwatch;
 
 #define	CD_TYPE_COLOR_RGB	(cd_color_rgb_get_type ())
@@ -134,6 +140,14 @@ void		 cd_color_yxy_to_xyz			(const CdColorYxy	*src,
 							 CdColorXYZ		*dest);
 void		 cd_color_xyz_to_yxy			(const CdColorXYZ	*src,
 							 CdColorYxy		*dest);
+void		 cd_color_xyz_to_uvw			(const CdColorXYZ	*src,
+							 CdColorUVW		*dest);
+void		 cd_color_yxy_to_uvw			(const CdColorYxy	*src,
+							 CdColorUVW		*dest);
+void		 cd_color_uvw_set_planckian_locus	(CdColorUVW		*dest,
+							 gdouble		 temp);
+gdouble		 cd_color_uvw_get_chroma_difference	(const CdColorUVW	*p1,
+							 const CdColorUVW	*p2);
 gboolean	 cd_color_get_blackbody_rgb		(guint			 temp,
 							 CdColorRGB		*result);
 void		 cd_color_rgb_interpolate		(const CdColorRGB	*p1,
