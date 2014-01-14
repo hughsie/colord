@@ -332,11 +332,6 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 		nm = cd_spectrum_get_wavelength (spectrum, i);
 		value->Z += val * cd_spectrum_get_value_for_nm (tmp, nm);
 	}
-
-	/* normalize to Y==1 */
-	value->X /= value->Y;
-	value->Z /= value->Y;
-	value->Y = 1.f;
 out:
 	return ret;
 }

@@ -88,6 +88,7 @@ colord_it8_spectra_util_func (void)
 	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf, data, &value, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+	cd_color_xyz_normalize (&value, 1.0, &value);
 	g_assert_cmpfloat (value.X, >, 0.975163f - 0.01);
 	g_assert_cmpfloat (value.X, <, 0.975163f + 0.01);
 	g_assert_cmpfloat (value.Y, >, 1.f - 0.01);
@@ -824,6 +825,7 @@ static void
 colord_color_func (void)
 {
 	CdColorXYZ *xyz;
+	CdColorXYZ xyz_src;
 	CdColorYxy yxy;
 
 	xyz = cd_color_xyz_new ();
@@ -839,6 +841,13 @@ colord_color_func (void)
 
 	g_assert_cmpfloat (fabs (yxy.x - 0.142857143f), <, 0.001f);
 	g_assert_cmpfloat (fabs (yxy.y - 0.285714286f), <, 0.001f);
+
+	/* normalizing */
+	cd_color_xyz_set (&xyz_src, 100, 50, 25);
+	cd_color_xyz_normalize (&xyz_src, 1.0, xyz);
+	g_assert_cmpfloat (ABS (xyz->X - 2.0), <, 0.01);
+	g_assert_cmpfloat (ABS (xyz->Y - 1.0), <, 0.01);
+	g_assert_cmpfloat (ABS (xyz->Z - 0.5), <, 0.01);
 
 	cd_color_xyz_free (xyz);
 }

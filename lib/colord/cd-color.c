@@ -704,6 +704,23 @@ cd_color_yxy_to_xyz (const CdColorYxy *src, CdColorXYZ *dest)
 }
 
 /**
+ * cd_color_xyz_normalize:
+ * @src: the source color
+ * @dest: the destination color
+ *
+ * Normalizes @src to y=1.0
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_color_xyz_normalize (const CdColorXYZ *src, gdouble max, CdColorXYZ *dest)
+{
+	dest->X = max * src->X / src->Y;
+	dest->Z = max * src->Z / src->Y;
+	dest->Y = max;
+}
+
+/**
  * cd_color_xyz_to_cct:
  * @src: the source color
  *

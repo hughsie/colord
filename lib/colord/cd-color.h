@@ -141,6 +141,9 @@ void		 cd_color_rgb_interpolate		(const CdColorRGB	*p1,
 							 gdouble		 index,
 							 CdColorRGB		*result);
 gdouble		 cd_color_xyz_to_cct			(const CdColorXYZ	*src);
+void		 cd_color_xyz_normalize			(const CdColorXYZ	*src,
+							 gdouble		 max,
+							 CdColorXYZ		*dest);
 
 GPtrArray	*cd_color_rgb_array_new			(void);
 gboolean	 cd_color_rgb_array_is_monotonic	(const GPtrArray	*array);
