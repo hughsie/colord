@@ -767,9 +767,7 @@ cd_color_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
 	/* prevent division by zero */
 	sum = src->X + src->Y + src->Z;
 	if (fabs (sum) < 1e-6) {
-		dest->Y = 0.0f;
-		dest->x = 0.0f;
-		dest->y = 0.0f;
+		cd_color_yxy_set (dest, 0.f, 0.f, 0.f);
 		return;
 	}
 
