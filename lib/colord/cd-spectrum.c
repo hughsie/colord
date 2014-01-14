@@ -440,3 +440,32 @@ cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 out:
 	return val;
 }
+
+/**
+ * cd_spectrum_multiply:
+ * @s1: a #CdSpectrum instance, possibly an illuminant.
+ * @s2: a #CdSpectrum instance, possibly an absorption spectrum.
+ * @resolution: the step size in nm
+ *
+ * Multiplies two spectra together.
+ *
+ * Return value: a #CdSpectrum instance
+ *
+ * Since: 1.1.6
+ **/
+CdSpectrum *
+cd_spectrum_multiply (CdSpectrum *s1, CdSpectrum *s2, gdouble resolution)
+{
+	CdSpectrum *s;
+	gdouble i;
+
+	s = cd_spectrum_new ();
+	s->id = g_strdup_printf ("%s✕%s", s1->id, s2->id);
+	s->start = MAX (s1->start, s2->start);
+	s->end = MIN (s1->end, s2->end);
+	for (i = s->start; i <= s->end; i += resolution) {
+		cd_spectrum_add_value (s, cd_spectrum_get_value_for_nm (s1, i) *
+					  cd_spectrum_get_value_for_nm (s2, i));
+	}
+	return s;
+}

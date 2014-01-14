@@ -63,6 +63,9 @@ void		 cd_spectrum_set_end		(CdSpectrum		*spectrum,
 						 gdouble		 end);
 void		 cd_spectrum_add_value		(CdSpectrum		*spectrum,
 						 gdouble		 data);
+CdSpectrum	*cd_spectrum_multiply		(CdSpectrum		*s1,
+						 CdSpectrum		*s2,
+						 gdouble		 resolution);
 
 G_END_DECLS
 
