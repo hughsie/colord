@@ -76,6 +76,8 @@ typedef struct
 typedef enum
 {
 	CD_IT8_ERROR_FAILED,				/* Since: 0.1.20 */
+	CD_IT8_ERROR_INVALID_FORMAT,			/* Since: 1.1.6 */
+	CD_IT8_ERROR_UNKNOWN_KIND,			/* Since: 1.1.6 */
 	/*< private >*/
 	CD_IT8_ERROR_LAST
 } CdIt8Error;
