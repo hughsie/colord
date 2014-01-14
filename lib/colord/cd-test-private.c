@@ -158,6 +158,12 @@ colord_spectrum_func (void)
 	val = cd_spectrum_get_value_for_nm (s, 150.f);
 	g_assert_cmpfloat (ABS (val - 0.625f), <, 0.001f);
 
+	/* test out of bounds */
+	val = cd_spectrum_get_value_for_nm (s, 50);
+	g_assert_cmpfloat (ABS (val), <, 0.001f);
+	val = cd_spectrum_get_value_for_nm (s, 350);
+	g_assert_cmpfloat (ABS (val), <, 0.001f);
+
 	cd_spectrum_free (s);
 }
 

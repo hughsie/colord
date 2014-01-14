@@ -416,6 +416,14 @@ cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 	gdouble val = -1.0;
 	guint i;
 
+	g_return_val_if_fail (spectrum != NULL, -1.f);
+
+	/* out of bounds */
+	if (wavelength < spectrum->start)
+		return 0;
+	if (wavelength > spectrum->end)
+		return 0;
+
 	/* add all the data points */
 	interp = cd_interp_linear_new ();
 	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
