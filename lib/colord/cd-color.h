@@ -141,6 +141,7 @@ void		 cd_color_yxy_to_xyz			(const CdColorYxy	*src,
 void		 cd_color_xyz_to_yxy			(const CdColorXYZ	*src,
 							 CdColorYxy		*dest);
 void		 cd_color_xyz_to_uvw			(const CdColorXYZ	*src,
+							 const CdColorXYZ	*whitepoint,
 							 CdColorUVW		*dest);
 void		 cd_color_yxy_to_uvw			(const CdColorYxy	*src,
 							 CdColorUVW		*dest);

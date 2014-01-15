@@ -820,9 +820,25 @@ cd_color_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
 	dest->y = src->Y / sum;
 }
 
+typedef struct {
+	gdouble	 Y;
+	gdouble	 u;
+	gdouble	 v;
+} CdColorYuv;
+
+static void
+cd_color_xyz_to_yuv (const CdColorXYZ *src, CdColorYuv *dest)
+{
+	gdouble sum = src->X + 15 * src->Y + 3 * src->Z;
+	dest->Y = src->Y;
+	dest->u = 4 * src->X / sum;
+	dest->v = 6 * src->Y / sum;
+}
+
 /**
  * cd_color_xyz_to_uvw:
  * @src: the source color
+ * @whitepoint: the whitepoint
  * @dest: the destination color
  *
  * Convert from one color format to another.
@@ -830,11 +846,19 @@ cd_color_xyz_to_yxy (const CdColorXYZ *src, CdColorYxy *dest)
  * Since: 1.1.6
  **/
 void
-cd_color_xyz_to_uvw (const CdColorXYZ *src, CdColorUVW *dest)
+cd_color_xyz_to_uvw (const CdColorXYZ *src,
+		     const CdColorXYZ *whitepoint,
+		     CdColorUVW *dest)
 {
-	CdColorYxy tmp;
-	cd_color_xyz_to_yxy (src, &tmp);
-	cd_color_yxy_to_uvw (&tmp, dest);
+	CdColorYuv wp;
+	CdColorYuv tmp;
+
+	cd_color_xyz_to_yuv (whitepoint, &wp);
+	cd_color_xyz_to_yuv (src, &tmp);
+
+	dest->W = 25 * pow (src->Y * 100.f / wp.Y, 1.f/3.f) - 17.f;
+	dest->U = 13 * dest->W * (tmp.u - wp.u);
+	dest->V = 13 * dest->W * (tmp.v - wp.v);
 }
 
 /**
