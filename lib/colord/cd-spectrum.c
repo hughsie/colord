@@ -41,6 +41,7 @@ struct _CdSpectrum {
 	gchar			*id;
 	gdouble			 start;
 	gdouble			 end;
+	gdouble			 norm;
 	GArray			*data;
 };
 
@@ -59,6 +60,7 @@ cd_spectrum_dup (const CdSpectrum *spectrum)
 	dest->id = g_strdup (spectrum->id);
 	dest->start = spectrum->start;
 	dest->end = spectrum->end;
+	dest->norm = spectrum->norm;
 	dest->data = g_array_ref (spectrum->data);
 	return dest;
 }
@@ -96,7 +98,7 @@ cd_spectrum_get_value (const CdSpectrum *spectrum, guint idx)
 {
 	g_return_val_if_fail (spectrum != NULL, -1.0f);
 	g_return_val_if_fail (idx < spectrum->data->len, -1.0f);
-	return g_array_index (spectrum->data, gdouble, idx);
+	return g_array_index (spectrum->data, gdouble, idx) * spectrum->norm;
 }
 
 /**
@@ -151,6 +153,7 @@ cd_spectrum_get_size (const CdSpectrum *spectrum)
  * @spectrum: a #CdSpectrum instance.
  *
  * Gets the spectral data.
+ * NOTE: This is not normalized
  *
  * Return value: (transfer none) (element-type gdouble): spectral data
  *
@@ -198,6 +201,24 @@ cd_spectrum_get_end (const CdSpectrum *spectrum)
 }
 
 /**
+ * cd_spectrum_get_norm:
+ * @spectrum: a #CdSpectrum instance.
+ *
+ * Gets the normalization value of the spectral data.
+ * NOTE: This affects every value in the spectrum.
+ *
+ * Return value: the value
+ *
+ * Since: 1.1.6
+ **/
+gdouble
+cd_spectrum_get_norm (const CdSpectrum *spectrum)
+{
+	g_return_val_if_fail (spectrum != NULL, 0.0f);
+	return spectrum->norm;
+}
+
+/**
  * cd_spectrum_get_type:
  *
  * Gets a specific type.
@@ -231,6 +252,7 @@ cd_spectrum_new (void)
 {
 	CdSpectrum *spectrum;
 	spectrum = g_slice_new0 (CdSpectrum);
+	spectrum->norm = 1.f;
 	spectrum->data = g_array_new (FALSE, FALSE, sizeof (gdouble));
 	return spectrum;
 }
@@ -250,6 +272,7 @@ cd_spectrum_sized_new (guint reserved_size)
 {
 	CdSpectrum *spectrum;
 	spectrum = g_slice_new0 (CdSpectrum);
+	spectrum->norm = 1.f;
 	spectrum->reserved_size = reserved_size;
 	spectrum->data = g_array_sized_new (FALSE, FALSE, sizeof (gdouble), reserved_size);
 	return spectrum;
@@ -399,6 +422,23 @@ cd_spectrum_set_end (CdSpectrum *spectrum, gdouble end)
 }
 
 /**
+ * cd_spectrum_set_norm:
+ * @spectrum: a #CdSpectrum instance.
+ * @norm: the end value of the spectral data
+ *
+ * Set the normalization value of the spectrum.
+ * NOTE: This affects every value in the spectrum.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_spectrum_set_norm (CdSpectrum *spectrum, gdouble norm)
+{
+	g_return_if_fail (spectrum != NULL);
+	spectrum->norm = norm;
+}
+
+/**
  * cd_spectrum_get_value_for_nm:
  * @spectrum: a #CdSpectrum instance.
  * @wavelength: the wavelength in nm
@@ -440,6 +480,24 @@ cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 	val = cd_interp_eval (interp, wavelength, NULL);
 out:
 	return val;
+}
+
+/**
+ * cd_spectrum_normalize:
+ * @spectrum: a #CdSpectrum instance
+ * @wavelength: the wavelength in nm
+ * @value: the value to normalize to
+ *
+ * Normalizes a spectrum to a specific value at a specific wavelength.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_spectrum_normalize (CdSpectrum *spectrum, gdouble wavelength, gdouble value)
+{
+	gdouble tmp;
+	tmp = cd_spectrum_get_value_for_nm (spectrum, wavelength);
+	spectrum->norm *= value / tmp;
 }
 
 /**

@@ -96,7 +96,6 @@ cd_it8_error_quark (void)
 	return quark;
 }
 
-#if 0
 /**
  * _cmsIT8GetPropertyDbl:
  *
@@ -112,7 +111,6 @@ _cmsIT8GetPropertyDbl (cmsHANDLE it8_lcms, const gchar *key)
 		return -1;
 	return g_ascii_strtod (value, NULL);
 }
-#endif
 
 /**
  * _cmsIT8GetPropertyInt:
@@ -162,17 +160,18 @@ _cmsIT8WriteFloat (gchar *buffer, gsize buffer_size, gdouble value)
 {
 	guint i;
 	memset (buffer, '\0', buffer_size);
-	g_ascii_formatd (buffer, buffer_size, "%.13f", value);
+	g_ascii_formatd (buffer, buffer_size, "%.12f", value);
 	for (i = G_ASCII_DTOSTR_BUF_SIZE - 1; i > 2; i--) {
 		if (buffer[i] == '\0')
 			continue;
 		if (buffer[i] != '0')
 			break;
+		if (buffer[i-1] == '.')
+			break;
 		buffer[i] = '\0';
 	}
 }
 
-#if 0
 /**
  * _cmsIT8SetPropertyDbl:
  *
@@ -186,7 +185,6 @@ _cmsIT8SetPropertyDbl (cmsHANDLE it8_lcms, const gchar *key, gdouble value)
 	_cmsIT8WriteFloat (buffer, G_ASCII_DTOSTR_BUF_SIZE, value);
 	cmsIT8SetPropertyUncooked (it8_lcms, key, buffer);
 }
-#endif
 
 /**
  * _cmsIT8SetPropertyInt:
@@ -629,6 +627,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	gboolean ret = TRUE;
 	gchar *label;
 	gdouble spectral_end;
+	gdouble spectral_norm;
 	gdouble spectral_start;
 	guint i;
 	guint j;
@@ -674,6 +673,11 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			     "Invalid CCSS spectral size: %i", spectral_bands);
 		goto out;
 	}
+
+	/* get spectral norm */
+	spectral_norm = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_NORM");
+	if (spectral_norm < 0.f)
+		spectral_norm = 1.f;
 
 	/* ArgyllCMS seems to support an index in the CCSS file, and not in the
 	 * SPECT or CMF but like any good library support each mode */
@@ -726,6 +730,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		}
 		cd_spectrum_set_start (spectrum, spectral_start);
 		cd_spectrum_set_end (spectrum, spectral_end);
+		cd_spectrum_set_norm (spectrum, spectral_norm);
 		g_ptr_array_add (it8->priv->array_spectra, spectrum);
 	}
 out:
@@ -741,6 +746,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	CdSpectrum *spectrum;
 	gboolean ret = TRUE;
 	gdouble spectral_end;
+	gdouble spectral_norm;
 	gdouble spectral_start;
 	guint i;
 	guint j;
@@ -787,6 +793,11 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		goto out;
 	}
 
+	/* get spectral norm */
+	spectral_norm = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_NORM");
+	if (spectral_norm < 0.f)
+		spectral_norm = 1.f;
+
 	/* CMF files are un-indexed and implicitly XYZ */
 	number_of_fields = _cmsIT8GetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS");
 	if (number_of_fields == 0) {
@@ -830,6 +841,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		}
 		cd_spectrum_set_start (spectrum, spectral_start);
 		cd_spectrum_set_end (spectrum, spectral_end);
+		cd_spectrum_set_norm (spectrum, spectral_norm);
 		g_ptr_array_add (it8->priv->array_spectra, spectrum);
 	}
 out:
@@ -1277,6 +1289,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_NORM", cd_spectrum_get_norm (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands);
 
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */
@@ -1355,6 +1368,7 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_NORM", cd_spectrum_get_norm (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands + has_index);
 
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */

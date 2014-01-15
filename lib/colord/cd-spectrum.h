@@ -40,11 +40,15 @@ CdSpectrum	*cd_spectrum_sized_new		(guint			 reserved_size);
 CdSpectrum	*cd_spectrum_planckian_new	(gdouble		 temperature);
 void		 cd_spectrum_free		(CdSpectrum		*spectrum);
 CdSpectrum	*cd_spectrum_dup		(const CdSpectrum	*spectrum);
+void		 cd_spectrum_normalize		(CdSpectrum		*spectrum,
+						 gdouble		 wavelength,
+						 gdouble		 value);
 
 const gchar	*cd_spectrum_get_id		(const CdSpectrum	*spectrum);
 GArray		*cd_spectrum_get_data		(const CdSpectrum	*spectrum);
 gdouble		 cd_spectrum_get_start		(const CdSpectrum	*spectrum);
 gdouble		 cd_spectrum_get_end		(const CdSpectrum	*spectrum);
+gdouble		 cd_spectrum_get_norm		(const CdSpectrum	*spectrum);
 guint		 cd_spectrum_get_size		(const CdSpectrum	*spectrum);
 gdouble		 cd_spectrum_get_value		(const CdSpectrum	*spectrum,
 						 guint			 idx);
@@ -61,6 +65,8 @@ void		 cd_spectrum_set_start		(CdSpectrum		*spectrum,
 						 gdouble		 start);
 void		 cd_spectrum_set_end		(CdSpectrum		*spectrum,
 						 gdouble		 end);
+void		 cd_spectrum_set_norm		(CdSpectrum		*spectrum,
+						 gdouble		 norm);
 void		 cd_spectrum_add_value		(CdSpectrum		*spectrum,
 						 gdouble		 data);
 CdSpectrum	*cd_spectrum_multiply		(CdSpectrum		*s1,

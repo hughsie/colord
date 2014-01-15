@@ -124,8 +124,10 @@ main (int argc, char *argv[])
 		goto out;
 	}
 
-	for (i = 0; i < 3; i++)
+	for (i = 0; i < 3; i++) {
 		spectrum[i] = cd_spectrum_sized_new (array->len);
+		cd_spectrum_set_norm (spectrum[i], 100.f);
+	}
 
 	/* set ID */
 	if (kind == CD_IT8_KIND_CMF) {
