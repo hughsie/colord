@@ -20,6 +20,7 @@ COLORD_LIBS =						\
 	$(top_builddir)/lib/colord/libcolord.la
 
 noinst_PROGRAMS =					\
+	cd-it8						\
 	cd-find-broken
 
 bin_PROGRAMS =						\
@@ -82,6 +83,21 @@ cd_iccdump_LDFLAGS =					\
 	$(PIE_LDFLAGS)
 
 cd_iccdump_CFLAGS =					\
+	$(WARNINGFLAGS_C)
+
+cd_it8_SOURCES =					\
+	cd-it8.c
+
+cd_it8_LDADD =						\
+	$(GLIB_LIBS)					\
+	$(LCMS_LIBS)					\
+	$(COLORD_LIBS)					\
+	-lm
+
+cd_it8_LDFLAGS =					\
+	$(PIE_LDFLAGS)
+
+cd_it8_CFLAGS =						\
 	$(WARNINGFLAGS_C)
 
 cd_create_profile_SOURCES =				\
