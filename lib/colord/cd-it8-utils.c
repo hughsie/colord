@@ -254,28 +254,36 @@ out:
 /**
  * cd_it8_utils_calculate_xyz_from_cmf:
  * @cmf: The color match function
+ * @illuminant: The illuminant (you can use cd_spectrum_new() for type E)
  * @spectrum: The #CdSpectrum input data
  * @value: The #CdColorXYZ result
+ * @resolution: The resolution in nm, typically 1.0
  * @error: A #GError, or %NULL
  *
- * This calculates the XYZ from a CMF and input spectrum.
+ * This calculates the XYZ from a CMF, illuminant and input spectrum.
  *
  * Return value: %TRUE if a XYZ value was set.
  **/
 gboolean
 cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
+				     CdSpectrum *illuminant,
 				     CdSpectrum *spectrum,
 				     CdColorXYZ *value,
+				     gdouble resolution,
 				     GError **error)
 {
-	CdSpectrum *tmp;
+	CdSpectrum *observer[3];
 	gboolean ret = TRUE;
-	gdouble nm;
-	gdouble val;
-	guint i;
+	gdouble end;
+	gdouble i_val;
+	gdouble o_val;
+	gdouble s_val;
+	gdouble scale = 0.f;
+	gdouble start;
+	gdouble wl;
 
 	g_return_val_if_fail (CD_IS_IT8 (cmf), FALSE);
-	g_return_val_if_fail (spectrum != NULL, FALSE);
+	g_return_val_if_fail (illuminant != NULL, FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
 
 	/* check this is a CMF */
@@ -287,51 +295,38 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 				     "not a CMF IT8 object");
 		goto out;
 	}
+	observer[0] = cd_it8_get_spectrum_by_id (cmf, "X");
+	observer[1] = cd_it8_get_spectrum_by_id (cmf, "Y");
+	observer[2] = cd_it8_get_spectrum_by_id (cmf, "Z");
+	if (observer[0] == NULL || observer[1] == NULL || observer[2] == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "CMF IT8 object has no X,Y,Y channel");
+		goto out;
+	}
 
 	/* calculate the integrals */
+	start = cd_spectrum_get_start (observer[0]);
+	end = cd_spectrum_get_end (observer[0]);
 	cd_color_xyz_clear (value);
-	tmp = cd_it8_get_spectrum_by_id (cmf, "X");
-	if (tmp == NULL) {
-		ret = FALSE;
-		g_set_error_literal (error,
-				     CD_IT8_ERROR,
-				     CD_IT8_ERROR_FAILED,
-				     "CMF IT8 object has no X channel");
-		goto out;
+	for (wl = start; wl <= end; wl += resolution) {
+		i_val = cd_spectrum_get_value_for_nm (illuminant, wl);
+		s_val = cd_spectrum_get_value_for_nm (spectrum, wl);
+		o_val = cd_spectrum_get_value_for_nm (observer[0], wl);
+		value->X += i_val * o_val * s_val;
+		o_val = cd_spectrum_get_value_for_nm (observer[1], wl);
+		scale += i_val * o_val;
+		value->Y += i_val * o_val * s_val;
+		o_val = cd_spectrum_get_value_for_nm (observer[2], wl);
+		value->Z += i_val * o_val * s_val;
 	}
-	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
-		val = cd_spectrum_get_value (spectrum, i);
-		nm = cd_spectrum_get_wavelength (spectrum, i);
-		value->X += val * cd_spectrum_get_value_for_nm (tmp, nm);
-	}
-	tmp = cd_it8_get_spectrum_by_id (cmf, "Y");
-	if (tmp == NULL) {
-		ret = FALSE;
-		g_set_error_literal (error,
-				     CD_IT8_ERROR,
-				     CD_IT8_ERROR_FAILED,
-				     "CMF IT8 object has no Y channel");
-		goto out;
-	}
-	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
-		val = cd_spectrum_get_value (spectrum, i);
-		nm = cd_spectrum_get_wavelength (spectrum, i);
-		value->Y += val * cd_spectrum_get_value_for_nm (tmp, nm);
-	}
-	tmp = cd_it8_get_spectrum_by_id (cmf, "Z");
-	if (tmp == NULL) {
-		ret = FALSE;
-		g_set_error_literal (error,
-				     CD_IT8_ERROR,
-				     CD_IT8_ERROR_FAILED,
-				     "CMF IT8 object has no Z channel");
-		goto out;
-	}
-	for (i = 0; i < cd_spectrum_get_size (spectrum); i++) {
-		val = cd_spectrum_get_value (spectrum, i);
-		nm = cd_spectrum_get_wavelength (spectrum, i);
-		value->Z += val * cd_spectrum_get_value_for_nm (tmp, nm);
-	}
+
+	/* scale by Y */
+	value->X /= scale;
+	value->Y /= scale;
+	value->Z /= scale;
 out:
 	return ret;
 }

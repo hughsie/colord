@@ -50,12 +50,69 @@
 #include "cd-test-shared.h"
 
 static void
+colord_it8_cri_util_func (void)
+{
+	CdIt8 *cmf;
+	CdIt8 *tcs;
+	CdIt8 *test;
+	CdSpectrum *f4;
+	GError *error = NULL;
+	GFile *file;
+	gboolean ret;
+	gdouble value = 0.f;
+
+	/* load a CMF */
+	cmf = cd_it8_new ();
+	file = g_file_new_for_path ("../../data/cmf/CIE1931-2deg-XYZ.cmf");
+	ret = cd_it8_load_from_file (cmf, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_assert_cmpint (cd_it8_get_kind (cmf), ==, CD_IT8_KIND_CMF);
+
+	/* load the TCS */
+	tcs = cd_it8_new ();
+	file = g_file_new_for_path ("../../data/ref/CIE-TCS.sp");
+	ret = cd_it8_load_from_file (tcs, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_assert_cmpint (cd_it8_get_kind (tcs), ==, CD_IT8_KIND_SPECT);
+
+	/* load the test spectra */
+	test = cd_it8_new ();
+	file = g_file_new_for_path ("../../data/illuminant/CIE-F4.sp");
+	ret = cd_it8_load_from_file (test, file, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_object_unref (file);
+	g_assert_cmpint (cd_it8_get_kind (test), ==, CD_IT8_KIND_SPECT);
+
+	/* calculate the CRI */
+	f4 = cd_it8_get_spectrum_by_id (test, "1");
+	g_assert (f4 != NULL);
+	ret = cd_it8_utils_calculate_cri_from_cmf (cmf, tcs, f4, &value, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* check the CRI */
+	g_assert_cmpfloat (value, <, 52);
+	g_assert_cmpfloat (value, >, 50);
+
+	g_object_unref (test);
+	g_object_unref (cmf);
+	g_object_unref (tcs);
+
+}
+
+static void
 colord_it8_spectra_util_func (void)
 {
 	CdColorXYZ value;
 	CdIt8 *cmf;
 	CdIt8 *spectra;
 	CdSpectrum *data;
+	CdSpectrum *unity;
 	GError *error = NULL;
 	GFile *file;
 	gboolean ret;
@@ -85,7 +142,8 @@ colord_it8_spectra_util_func (void)
 
 	/* calculate the XYZ value */
 	data = g_ptr_array_index (cd_it8_get_spectrum_array (spectra), 0);
-	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf, data, &value, &error);
+	unity = cd_spectrum_new ();
+	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf, unity, data, &value, 1.f, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 	cd_color_xyz_normalize (&value, 1.0, &value);
@@ -96,6 +154,7 @@ colord_it8_spectra_util_func (void)
 	g_assert_cmpfloat (value.Z, >, 0.813050f - 0.01);
 	g_assert_cmpfloat (value.Z, <, 0.813050f + 0.01);
 
+	cd_spectrum_free (unity);
 	g_object_unref (cmf);
 	g_object_unref (spectra);
 }
