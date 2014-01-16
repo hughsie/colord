@@ -45,6 +45,13 @@ gboolean	 cd_it8_utils_calculate_xyz_from_cmf	(CdIt8		*cmf,
 							 gdouble	 resolution,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 cd_it8_utils_calculate_cri_from_cmf	(CdIt8		*cmf,
+							 CdIt8		*tcs,
+							 CdSpectrum	*illuminant,
+							 gdouble	*value,
+							 gdouble	 resolution,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

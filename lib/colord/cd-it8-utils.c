@@ -330,3 +330,137 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 out:
 	return ret;
 }
+
+/**
+ * cd_it8_utils_calculate_cri_from_cmf:
+ * @cmf: The color match function
+ * @tcs: The CIE TCS test patches
+ * @illuminant: The illuminant
+ * @value: The CRI result
+ * @resolution: The resolution in nm, typically 1.0
+ * @error: A #GError, or %NULL
+ *
+ * This calculates the CRI for a specific illuminant.
+ *
+ * Return value: %TRUE if a XYZ value was set.
+ **/
+gboolean
+cd_it8_utils_calculate_cri_from_cmf (CdIt8 *cmf,
+				     CdIt8 *tcs,
+				     CdSpectrum *illuminant,
+				     gdouble *value,
+				     gdouble resolution,
+				     GError **error)
+{
+	CdColorUVW d1;
+	CdColorUVW d2;
+	CdColorUVW reference_uvw[8];
+	CdColorUVW unknown_uvw[8];
+	CdColorXYZ illuminant_xyz;
+	CdColorXYZ reference_illuminant_xyz;
+	CdColorXYZ sample_xyz;
+	CdColorYxy yxy;
+	CdSpectrum *reference_illuminant = NULL;
+	CdSpectrum *sample;
+	CdSpectrum *unity;
+	GPtrArray *samples;
+	gboolean ret;
+	gdouble cct;
+	gdouble ri_sum = 0.f;
+	gdouble val;
+	guint i;
+
+	/* get the illuminant CCT */
+	unity = cd_spectrum_new ();
+	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf,
+						   unity,
+						   illuminant,
+						   &illuminant_xyz,
+						   resolution,
+						   error);
+	if (!ret)
+		goto out;
+	cct = cd_color_xyz_to_cct (&illuminant_xyz);
+	cd_color_xyz_normalize (&illuminant_xyz, 1.0, &illuminant_xyz);
+
+	/* get the reference illuminant */
+	if (cct < 5000) {
+		reference_illuminant = cd_spectrum_planckian_new (cct);
+	} else {
+		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "need to use CIE standard illuminant D");
+		goto out;
+	}
+	cd_spectrum_normalize (reference_illuminant, 560, 1.0);
+	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf,
+						   unity,
+						   reference_illuminant,
+						   &reference_illuminant_xyz,
+						   resolution,
+						   error);
+	if (!ret)
+		goto out;
+
+	/* check the source is white enough */
+	cd_color_uvw_set_planckian_locus (&d1, cct);
+	cd_color_xyz_to_yxy (&illuminant_xyz, &yxy);
+	cd_color_yxy_to_uvw (&yxy, &d2);
+	val = cd_color_uvw_get_chroma_difference (&d1, &d2);
+	if (val > 5.4e-3) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "result not meaningful, DC=%f", val);
+		goto out;
+	}
+
+	/* get the XYZ for each color sample under the reference illuminant */
+	samples = cd_it8_get_spectrum_array (tcs);
+	for (i = 0; i < 8; i++) {
+		sample = g_ptr_array_index (samples, i);
+		ret = cd_it8_utils_calculate_xyz_from_cmf (cmf,
+							   reference_illuminant,
+							   sample,
+							   &sample_xyz,
+							   1.f,
+							   error);
+		if (!ret)
+			goto out;
+		cd_color_xyz_to_uvw (&sample_xyz,
+				     &illuminant_xyz,
+				     &reference_uvw[i]);
+	}
+
+	/* get the XYZ for each color sample under the unknown illuminant */
+	samples = cd_it8_get_spectrum_array (tcs);
+	for (i = 0; i < 8; i++) {
+		sample = g_ptr_array_index (samples, i);
+		ret = cd_it8_utils_calculate_xyz_from_cmf (cmf,
+							   illuminant,
+							   sample,
+							   &sample_xyz,
+							   resolution,
+							   error);
+		if (!ret)
+			goto out;
+		cd_color_xyz_to_uvw (&sample_xyz,
+				     &illuminant_xyz,
+				     &unknown_uvw[i]);
+	}
+
+	/* add up all the Ri's and take the average to get the CRI */
+	for (i = 0; i < 8; i++) {
+		val = cd_color_uvw_get_chroma_difference (&reference_uvw[i],
+							  &unknown_uvw[i]);
+		ri_sum += 100 - (4.6 * val);
+	}
+	*value = ri_sum / 8;
+out:
+	if (reference_illuminant != NULL)
+		cd_spectrum_free (reference_illuminant);
+	return ret;
+}
