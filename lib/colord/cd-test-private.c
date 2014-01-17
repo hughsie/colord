@@ -91,7 +91,7 @@ colord_it8_cri_util_func (void)
 	/* calculate the CRI */
 	f4 = cd_it8_get_spectrum_by_id (test, "1");
 	g_assert (f4 != NULL);
-	ret = cd_it8_utils_calculate_cri_from_cmf (cmf, tcs, f4, &value, &error);
+	ret = cd_it8_utils_calculate_cri_from_cmf (cmf, tcs, f4, &value, 1.0f, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -2082,6 +2082,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
 	g_test_add_func ("/colord/it8{ccmx-util}", colord_it8_ccmx_util_func);
 	g_test_add_func ("/colord/it8{spectra-util}", colord_it8_spectra_util_func);
+if(0)	g_test_add_func ("/colord/it8{cri-util}", colord_it8_cri_util_func);
 	g_test_add_func ("/colord/it8{ccss}", colord_it8_ccss_func);
 	g_test_add_func ("/colord/it8{spect}", colord_it8_spect_func);
 
