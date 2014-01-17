@@ -35,8 +35,8 @@ G_BEGIN_DECLS
 #define	CH_USB_VID				0x273f
 #define	CH_USB_PID_BOOTLOADER			0x1000
 #define	CH_USB_PID_FIRMWARE			0x1001
-#define	CH_USB_PID_FIRMWARE_SPECTRO		0x1002
-#define	CH_USB_PID_BOOTLOADER_SPECTRO		0x1003
+#define	CH_USB_PID_FIRMWARE_PLUS		0x1002
+#define	CH_USB_PID_BOOTLOADER_PLUS		0x1003
 #define	CH_USB_CONFIG				0x0001
 #define	CH_USB_INTERFACE			0x0000
 #define	CH_USB_HID_EP				0x0001
@@ -686,7 +686,7 @@ G_BEGIN_DECLS
  * The hardware versions are as follows:
  * 0x00		= Pre-production hardware
  * 0x01		= ColorHug
- * 0x02		= ColorHug Spectro
+ * 0x02		= ColorHug+
  * 0x03-0x0f	= Reserved for future use
  *
  * IN:  [1:cmd]
@@ -1011,8 +1011,8 @@ typedef enum {
 	CH_DEVICE_MODE_LEGACY,
 	CH_DEVICE_MODE_BOOTLOADER,
 	CH_DEVICE_MODE_FIRMWARE,
-	CH_DEVICE_MODE_BOOTLOADER_SPECTRO,
-	CH_DEVICE_MODE_FIRMWARE_SPECTRO,
+	CH_DEVICE_MODE_BOOTLOADER_PLUS,
+	CH_DEVICE_MODE_FIRMWARE_PLUS,
 	CH_DEVICE_MODE_LAST
 } ChDeviceMode;
 

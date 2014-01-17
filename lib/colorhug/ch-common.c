@@ -381,14 +381,14 @@ ch_device_mode_to_string (ChDeviceMode device_mode)
 	case CH_DEVICE_MODE_BOOTLOADER:
 		str = "bootloader";
 		break;
-	case CH_DEVICE_MODE_BOOTLOADER_SPECTRO:
-		str = "bootloader-spectro";
+	case CH_DEVICE_MODE_BOOTLOADER_PLUS:
+		str = "bootloader-plus";
 		break;
 	case CH_DEVICE_MODE_FIRMWARE:
 		str = "firmware";
 		break;
-	case CH_DEVICE_MODE_FIRMWARE_SPECTRO:
-		str = "firmware-spectro";
+	case CH_DEVICE_MODE_FIRMWARE_PLUS:
+		str = "firmware-plus";
 		break;
 	default:
 		str = "unknown";
