@@ -355,7 +355,7 @@ G_BEGIN_DECLS
  *
  * Take a raw reading.
  *
- * IN:  [1:cmd][1:sensor-kind]
+ * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:count]
  *
  * This command is only available in firmware mode.
@@ -372,7 +372,7 @@ G_BEGIN_DECLS
  *
  * This command is useful if you want to do an ambient reading.
  *
- * IN:  [1:cmd][1:sensor-kind]
+ * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
  * This command is only available in firmware mode.
@@ -395,7 +395,7 @@ G_BEGIN_DECLS
  * spectral hardware is used if it is available. The CIE 1931 luminosity
  * function data is used by default.
  *
- * IN:  [1:cmd][2:calibration-index][1:sensor-kind]
+ * IN:  [1:cmd][2:calibration-index]
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
  * This command is only available in firmware mode.
@@ -989,14 +989,6 @@ typedef enum {
 	CH_MEASURE_MODE_FREQUENCY,
 	CH_MEASURE_MODE_DURATION
 } ChMeasureMode;
-
-/* the sensor to use */
-typedef enum {
-	CH_SENSOR_KIND_MAIN,
-	CH_SENSOR_KIND_AMBIENT,
-	CH_SENSOR_KIND_CCD,
-	CH_SENSOR_KIND_LAST
-} ChSensorKind;
 
 /* any problems with the PCB */
 typedef enum {
