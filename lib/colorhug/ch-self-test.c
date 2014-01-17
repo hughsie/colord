@@ -117,7 +117,7 @@ ch_test_device_queue_func (void)
 		if (g_usb_device_get_vid (device) != CH_USB_VID)
 			continue;
 		if (g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE &&
-		    g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE_SPECTRO)
+		    g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE_PLUS)
 			continue;
 
 		valid_devices++;
@@ -473,7 +473,7 @@ ch_client_get_default (GError **error)
 	if (device == NULL) {
 		device = g_usb_device_list_find_by_vid_pid (list,
 							    CH_USB_VID,
-							    CH_USB_PID_FIRMWARE_SPECTRO,
+							    CH_USB_PID_FIRMWARE_PLUS,
 							    error);
 	}
 	if (device == NULL)
@@ -608,7 +608,7 @@ ch_test_state_func (void)
 	g_assert_cmpint (integral_time, ==, 100);
 
 	/* verify sram access time */
-	if (ch_device_get_mode (device) == CH_DEVICE_MODE_FIRMWARE_SPECTRO) {
+	if (ch_device_get_mode (device) == CH_DEVICE_MODE_FIRMWARE_PLUS) {
 		guint8 data[3500*2];
 		for (i = 0; i < sizeof(data); i++)
 			data[i] = i;
