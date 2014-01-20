@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2014 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -108,6 +108,23 @@ cd_color_yxy_dup (const CdColorYxy *src)
 	dest->Y = src->Y;
 	dest->x = src->x;
 	dest->y = src->y;
+	return dest;
+}
+
+/**
+ * cd_color_uvw_dup:
+ *
+ * Since: 1.1.6
+ **/
+CdColorUVW *
+cd_color_uvw_dup (const CdColorUVW *src)
+{
+	CdColorUVW *dest;
+	g_return_val_if_fail (src != NULL, NULL);
+	dest = cd_color_uvw_new ();
+	dest->U = src->U;
+	dest->V = src->V;
+	dest->W = src->W;
 	return dest;
 }
 
@@ -232,6 +249,26 @@ cd_color_yxy_get_type (void)
 }
 
 /**
+ * cd_color_uvw_get_type:
+ *
+ * Gets a specific type.
+ *
+ * Return value: a #GType
+ *
+ * Since: 1.1.6
+ **/
+GType
+cd_color_uvw_get_type (void)
+{
+	static GType type_id = 0;
+	if (!type_id)
+		type_id = g_boxed_type_register_static ("CdColorUVW",
+							(GBoxedCopyFunc) cd_color_uvw_dup,
+							(GBoxedFreeFunc) cd_color_uvw_free);
+	return type_id;
+}
+
+/**
  * cd_color_swatch_get_type:
  *
  * Gets a specific type.
@@ -312,6 +349,21 @@ cd_color_yxy_new (void)
 }
 
 /**
+ * cd_color_uvw_new:
+ *
+ * Allocates a color value.
+ *
+ * Return value: A newly allocated #CdColorUVW object
+ *
+ * Since: 1.1.6
+ **/
+CdColorUVW *
+cd_color_uvw_new (void)
+{
+	return g_slice_new0 (CdColorUVW);
+}
+
+/**
  * cd_color_swatch_new:
  *
  * Allocates a color value.
@@ -380,6 +432,20 @@ void
 cd_color_yxy_free (CdColorYxy *src)
 {
 	g_slice_free (CdColorYxy, src);
+}
+
+/**
+ * cd_color_uvw_free:
+ * @src: the color object
+ *
+ * Deallocates a color value.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_color_uvw_free (CdColorUVW *src)
+{
+	g_slice_free (CdColorUVW, src);
 }
 
 /**
@@ -500,6 +566,27 @@ cd_color_yxy_set (CdColorYxy *dest, gdouble Y, gdouble x, gdouble y)
 }
 
 /**
+ * cd_color_uvw_set:
+ * @dest: the destination color
+ * @U: component value
+ * @V: component value
+ * @W: component value
+ *
+ * Initialises a color value.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_color_uvw_set (CdColorUVW *dest, gdouble U, gdouble V, gdouble W)
+{
+	g_return_if_fail (dest != NULL);
+
+	dest->U = U;
+	dest->V = V;
+	dest->W = W;
+}
+
+/**
  * cd_color_swatch_set_name:
  * @dest: the destination swatch
  * @name: component name
@@ -572,6 +659,26 @@ cd_color_yxy_copy (const CdColorYxy *src, CdColorYxy *dest)
 	dest->Y = src->Y;
 	dest->x = src->x;
 	dest->y = src->y;
+}
+
+/**
+ * cd_color_uvw_copy:
+ * @src: the source color
+ * @dest: the destination color
+ *
+ * Deep copies a color value.
+ *
+ * Since: 1.1.6
+ **/
+void
+cd_color_uvw_copy (const CdColorUVW *src, CdColorUVW *dest)
+{
+	g_return_if_fail (src != NULL);
+	g_return_if_fail (dest != NULL);
+
+	dest->U = src->U;
+	dest->V = src->V;
+	dest->W = src->W;
 }
 
 /**
