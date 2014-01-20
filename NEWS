@@ -1,3 +1,14 @@
+Version 1.1.6
+~~~~~~~~~~~~~
+Released: 2013-01-20
+
+Bugfixes:
+ - Fix the tag 'size' when viewing a profile in cd-iccdump (Richard Hughes)
+ - Only include libudev in Requires.private on Linux (Richard Hughes)
+ - Use the corect sensor-kind values for GretagMacbeth sensors (Richard Hughes)
+ - libcolord: Do not use G_GNUC_WARN_UNUSED_RESULT when uninhibiting (Richard Hughes)
+ - libcolorhug: Handle failure to initialise GUsb in self-tests (Christopher James Halse Rogers)
+
 Version 1.1.5
 ~~~~~~~~~~~~~
 Released: 2013-12-11
