@@ -316,7 +316,7 @@ cd_color_yxy_new (void)
  *
  * Allocates a color value.
  *
- * Return value: A newly allocated #CdColorYxy object
+ * Return value: A newly allocated #CdColorSwatch object
  *
  * Since: 0.1.32
  **/
