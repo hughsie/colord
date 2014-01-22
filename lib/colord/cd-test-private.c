@@ -895,6 +895,8 @@ colord_icc_clear_func (void)
 				g_bytes_get_size (payload),
 				CD_ICC_LOAD_FLAGS_METADATA,
 				&error);
+	g_assert_no_error (error);
+	g_assert (ret);
 	g_assert_cmpstr (cd_icc_get_metadata_item (icc, "DATA_source"), ==, NULL);
 	tmp = cd_icc_get_model (icc, NULL, &error);
 	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_NO_DATA);
