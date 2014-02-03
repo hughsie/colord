@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2014 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -37,6 +37,8 @@ typedef struct {
 	CdClient		*client;
 	GOptionContext		*context;
 	GPtrArray		*cmd_array;
+	gboolean		 value_only;
+	gchar			**filters;
 } CdUtilPrivate;
 
 typedef gboolean (*CdUtilPrivateCb)	(CdUtilPrivate	*util,
@@ -51,14 +53,49 @@ typedef struct {
 } CdUtilItem;
 
 /**
+ * cd_util_filter_attribute:
+ **/
+static gboolean
+cd_util_filter_attribute (gchar **filters, const gchar *id)
+{
+	guint i;
+	if (filters == NULL)
+		return TRUE;
+	for (i = 0; filters[i] != NULL; i++) {
+		if (g_strcmp0 (filters[i], id) == 0)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+/**
  * cd_util_print_field:
  **/
 static void
-cd_util_print_field (const gchar *title, const gchar *message)
+cd_util_print_field (const gchar *title,
+		     const gchar *filter_id,
+		     CdUtilPrivate *priv,
+		     const gchar *message)
 {
 	const guint padding = 15;
 	guint i;
 	guint len = 0;
+
+	/* filter this id */
+	if (!cd_util_filter_attribute (priv->filters, filter_id))
+		return;
+
+	/* bare value */
+	if (priv->value_only) {
+		g_print ("%s\n", message);
+		return;
+	}
+
+	/* untranslated header and value */
+	if (priv->filters != NULL) {
+		g_print ("%s:%s\n", filter_id, message);
+		return;
+	}
 
 	/* nothing useful to print */
 	if (message == NULL || message[0] == '\0')
@@ -77,7 +114,10 @@ cd_util_print_field (const gchar *title, const gchar *message)
  * cd_util_print_field_time:
  **/
 static void
-cd_util_print_field_time (const gchar *title, gint64 usecs)
+cd_util_print_field_time (const gchar *title,
+			  const gchar *filter_id,
+			  CdUtilPrivate *priv,
+			  gint64 usecs)
 {
 	gchar *str;
 	GDateTime *datetime;
@@ -85,7 +125,7 @@ cd_util_print_field_time (const gchar *title, gint64 usecs)
 	datetime = g_date_time_new_from_unix_utc (usecs / G_USEC_PER_SEC);
 	/* TRANSLATORS: this is the profile creation date strftime format */
 	str = g_date_time_format (datetime, _("%B %e %Y, %I:%M:%S %p"));
-	cd_util_print_field (title, str);
+	cd_util_print_field (title, filter_id, priv, str);
 	g_date_time_unref (datetime);
 	g_free (str);
 }
@@ -94,20 +134,19 @@ cd_util_print_field_time (const gchar *title, gint64 usecs)
  * cd_util_show_owner:
  **/
 static void
-cd_util_show_owner (guint uid)
+cd_util_show_owner (CdUtilPrivate *priv, guint uid)
 {
 	struct passwd *pw;
 	pw = getpwuid (uid);
 	/* TRANSLATORS: profile owner */
-	cd_util_print_field (_("Owner"),
-			     pw->pw_name);
+	cd_util_print_field (_("Owner"), "owner", priv, pw->pw_name);
 }
 
 /**
  * cd_util_show_profile:
  **/
 static void
-cd_util_show_profile (CdProfile *profile)
+cd_util_show_profile (CdUtilPrivate *priv, CdProfile *profile)
 {
 	CdColorspace colorspace;
 	CdObjectScope scope;
@@ -122,58 +161,68 @@ cd_util_show_profile (CdProfile *profile)
 
 	/* TRANSLATORS: the internal DBus path */
 	cd_util_print_field (_("Object Path"),
+			     "object-path", priv,
 			     cd_profile_get_object_path (profile));
-	cd_util_show_owner (cd_profile_get_owner (profile));
+	cd_util_show_owner (priv, cd_profile_get_owner (profile));
 	tmp = cd_profile_get_format (profile);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the profile format, e.g.
 		 * ColorModel.OutputMode.OutputResolution */
-		cd_util_print_field (_("Format"), tmp);
+		cd_util_print_field (_("Format"),
+				     "format", priv,
+				     tmp);
 	}
 	tmp = cd_profile_get_title (profile);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the profile title, e.g.
 		 * "ColorMunki, HP Deskjet d1300 Series" */
-		cd_util_print_field (_("Title"), tmp);
+		cd_util_print_field (_("Title"), "title", priv, tmp);
 	}
 	tmp = cd_profile_get_qualifier (profile);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi */
-		cd_util_print_field (_("Qualifier"), tmp);
+		cd_util_print_field (_("Qualifier"), "qualifier", priv, tmp);
 	}
 	kind = cd_profile_get_kind (profile);
 	if (kind != CD_PROFILE_KIND_UNKNOWN) {
 		/* TRANSLATORS: the profile type, e.g. 'output' */
 		cd_util_print_field (_("Type"),
-			 cd_profile_kind_to_string (kind));
+				     "type", priv,
+				     cd_profile_kind_to_string (kind));
 	}
 	colorspace = cd_profile_get_colorspace (profile);
 	if (colorspace != CD_COLORSPACE_UNKNOWN) {
 		/* TRANSLATORS: the profile colorspace, e.g. 'rgb' */
 		cd_util_print_field (_("Colorspace"),
-			 cd_colorspace_to_string (colorspace));
+				     "colorspace", priv,
+				     cd_colorspace_to_string (colorspace));
 	}
 	scope = cd_profile_get_scope (profile);
 	if (scope != CD_OBJECT_SCOPE_UNKNOWN) {
 		/* TRANSLATORS: the object scope, e.g. temp, disk, etc */
 		cd_util_print_field (_("Scope"),
-			 cd_object_scope_to_string (scope));
+				     "scope", priv,
+				     cd_object_scope_to_string (scope));
 	}
 
 	/* TRANSLATORS: if the profile has a Video Card Gamma Table lookup */
 	cd_util_print_field (_("Gamma Table"),
+			     "gamma-table", priv,
 			     cd_profile_get_has_vcgt (profile) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the profile is installed for all users */
 	cd_util_print_field (_("System Wide"),
+			     "system-wide", priv,
 			     cd_profile_get_is_system_wide (profile) ? "Yes" : "No");
 
 	/* TRANSLATORS: profile filename */
 	cd_util_print_field (_("Filename"),
+			     "filename", priv,
 			     cd_profile_get_filename (profile));
 
 	/* TRANSLATORS: profile identifier */
 	cd_util_print_field (_("Profile ID"),
+			     "profile-id", priv,
 			     cd_profile_get_id (profile));
 
 	/* list all the items of metadata */
@@ -187,7 +236,7 @@ cd_util_show_profile (CdProfile *profile)
 		str_tmp = g_strdup_printf ("%s=%s",
 					   (const gchar *) l->data, tmp);
 		/* TRANSLATORS: the metadata for the device */
-		cd_util_print_field (_("Metadata"), str_tmp);
+		cd_util_print_field (_("Metadata"), "metadata", priv, str_tmp);
 		g_free (str_tmp);
 	}
 
@@ -195,7 +244,7 @@ cd_util_show_profile (CdProfile *profile)
 	warnings = cd_profile_get_warnings (profile);
 	size = g_strv_length (warnings);
 	for (i = 0; i < size; i++)
-		cd_util_print_field (_("Warning"), warnings[i]);
+		cd_util_print_field (_("Warning"), "warnings", priv, warnings[i]);
 
 	g_list_free (list);
 	g_hash_table_unref (metadata);
@@ -205,7 +254,7 @@ cd_util_show_profile (CdProfile *profile)
  * cd_util_show_device:
  **/
 static void
-cd_util_show_device (CdDevice *device)
+cd_util_show_device (CdUtilPrivate *priv, CdDevice *device)
 {
 	CdObjectScope scope;
 	CdProfile *profile_tmp;
@@ -220,48 +269,57 @@ cd_util_show_device (CdDevice *device)
 
 	/* TRANSLATORS: the internal DBus path */
 	cd_util_print_field (_("Object Path"),
+			     "object-path", priv,
 			     cd_device_get_object_path (device));
-	cd_util_show_owner (cd_device_get_owner (device));
+	cd_util_show_owner (priv, cd_device_get_owner (device));
 
 	/* TRANSLATORS: this is the time the device was registered
 	 * with colord, and probably is the same as the system startup
 	 * unless the device has been explicitly saved in the database */
 	cd_util_print_field_time (_("Created"),
+				  "created", priv,
 				  cd_device_get_created (device));
 
 	/* TRANSLATORS: this is the time of the last calibration or when
 	 * the manufacturer-provided profile was assigned by the user */
 	cd_util_print_field_time (_("Modified"),
+				  "modified", priv,
 				  cd_device_get_modified (device));
 
 	/* TRANSLATORS: the device type, e.g. "printer" */
 	cd_util_print_field (_("Type"),
+			    "type", priv,
 			     cd_device_kind_to_string (cd_device_get_kind (device)));
 
 	/* TRANSLATORS: the device enabled state */
 	cd_util_print_field (_("Enabled"),
+			     "enabled", priv,
 			     cd_device_get_enabled (device) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the device is embedded into the computer and
 	 * cannot be removed */
 	cd_util_print_field (_("Embedded"),
+			     "embedded", priv,
 			     cd_device_get_embedded (device) ? "Yes" : "No");
 
 	/* TRANSLATORS: the device model */
 	cd_util_print_field (_("Model"),
+			     "model", priv,
 			     cd_device_get_model (device));
 
 	/* TRANSLATORS: the device vendor */
 	cd_util_print_field (_("Vendor"),
+			     "vendor", priv,
 			     cd_device_get_vendor (device));
 
 	/* TRANSLATORS: the device inhibitors */
 	str_tmp = g_strjoinv (", ", (gchar **) cd_device_get_profiling_inhibitors (device));
-	cd_util_print_field (_("Inhibitors"), str_tmp);
+	cd_util_print_field (_("Inhibitors"), "inhibitors", priv, str_tmp);
 	g_free (str_tmp);
 
 	/* TRANSLATORS: the device serial number */
 	cd_util_print_field (_("Serial"),
+			     "serial", priv,
 			     cd_device_get_serial (device));
 
 	/* TRANSLATORS: the device seat identifier, where a seat is
@@ -271,28 +329,32 @@ cd_util_show_device (CdDevice *device)
 	 * systemd these can be setup as three independant seats with
 	 * different sessions running on them */
 	cd_util_print_field (_("Seat"),
+			     "seat", priv,
 			     cd_device_get_seat (device));
 
 	tmp = cd_device_get_format (device);
 	if (tmp != NULL && tmp[0] != '\0') {
 		/* TRANSLATORS: the device format, e.g.
 		 * ColorModel.OutputMode.OutputResolution */
-		cd_util_print_field (_("Format"), tmp);
+		cd_util_print_field (_("Format"), "format", priv, tmp);
 	}
 
 	scope = cd_device_get_scope (device);
 	if (scope != CD_OBJECT_SCOPE_UNKNOWN) {
 		/* TRANSLATORS: the object scope, e.g. temp, disk, etc */
 		cd_util_print_field (_("Scope"),
+				     "scope", priv,
 				     cd_object_scope_to_string (scope));
 	}
 
 	/* TRANSLATORS: the device colorspace, e.g. "rgb" */
 	cd_util_print_field (_("Colorspace"),
+			     "colorspace", priv,
 			     cd_colorspace_to_string (cd_device_get_colorspace (device)));
 
 	/* TRANSLATORS: the device identifier */
 	cd_util_print_field (_("Device ID"),
+			     "device-id", priv,
 			     cd_device_get_id (device));
 
 	/* print profiles */
@@ -304,15 +366,19 @@ cd_util_show_device (CdDevice *device)
 		ret = cd_profile_connect_sync (profile_tmp, NULL, &error);
 		if (!ret) {
 			cd_util_print_field (str_tmp,
+					     "profiles", priv,
 					     cd_profile_get_object_path (profile_tmp));
 			cd_util_print_field (NULL,
+					     "profiles-error", priv,
 					     error->message);
 			g_clear_error (&error);
 		} else {
 			cd_util_print_field (str_tmp,
+					     "profiles", priv,
 					     cd_profile_get_id (profile_tmp));
 			cd_util_print_field (NULL,
-					     cd_profile_get_filename(profile_tmp));
+					     "profiles-filename", priv,
+					     cd_profile_get_filename (profile_tmp));
 		}
 		g_free (str_tmp);
 	}
@@ -326,7 +392,7 @@ cd_util_show_device (CdDevice *device)
 		str_tmp = g_strdup_printf ("%s=%s",
 					   (const gchar *) l->data, tmp);
 		/* TRANSLATORS: the metadata for the device */
-		cd_util_print_field (_("Metadata"), str_tmp);
+		cd_util_print_field (_("Metadata"), "metadata", priv, str_tmp);
 		g_free (str_tmp);
 	}
 	g_list_free (list);
@@ -428,7 +494,7 @@ cd_util_sensor_cap_to_string (CdSensorCap sensor_cap)
  * cd_util_show_sensor:
  **/
 static void
-cd_util_show_sensor (CdSensor *sensor)
+cd_util_show_sensor (CdUtilPrivate *priv, CdSensor *sensor)
 {
 	CdSensorKind kind;
 	CdSensorState state;
@@ -448,6 +514,7 @@ cd_util_show_sensor (CdSensor *sensor)
 
 	/* TRANSLATORS: the internal DBus path */
 	cd_util_print_field (_("Object Path"),
+			     "object-path", priv,
 			     cd_sensor_get_object_path (sensor));
 
 	/* lock */
@@ -470,39 +537,45 @@ cd_util_show_sensor (CdSensor *sensor)
 	if (kind != CD_SENSOR_KIND_UNKNOWN) {
 		/* TRANSLATORS: the sensor type, e.g. 'output' */
 		cd_util_print_field (_("Type"),
-			 cd_sensor_kind_to_string (kind));
+				     "type", priv,
+				     cd_sensor_kind_to_string (kind));
 	}
 
 	state = cd_sensor_get_state (sensor);
 	if (state != CD_SENSOR_STATE_UNKNOWN) {
 		/* TRANSLATORS: the sensor state, e.g. 'idle' */
 		cd_util_print_field (_("State"),
-			 cd_sensor_state_to_string (state));
+				     "state", priv,
+				     cd_sensor_state_to_string (state));
 	}
 
 	tmp = cd_sensor_get_serial (sensor);
 	if (tmp != NULL) {
 		/* TRANSLATORS: sensor serial */
 		cd_util_print_field (_("Serial number"),
-			 tmp);
+				     "serial-number", priv,
+				     tmp);
 	}
 
 	tmp = cd_sensor_get_model (sensor);
 	if (tmp != NULL) {
 		/* TRANSLATORS: sensor model */
 		cd_util_print_field (_("Model"),
-			 tmp);
+				     "model", priv,
+				     tmp);
 	}
 
 	tmp = cd_sensor_get_vendor (sensor);
 	if (tmp != NULL) {
 		/* TRANSLATORS: sensor vendor */
 		cd_util_print_field (_("Vendor"),
-			 tmp);
+				     "vendor", priv,
+				     tmp);
 	}
 
 	/* TRANSLATORS: sensor identifier */
 	cd_util_print_field (_("Sensor ID"),
+			     "sensor-id", priv,
 			     cd_sensor_get_id (sensor));
 
 	/* print sensor options */
@@ -521,7 +594,7 @@ cd_util_show_sensor (CdSensor *sensor)
 		}
 
 		/* TRANSLATORS: the options for the sensor */
-		cd_util_print_field (_("Options"), str_tmp);
+		cd_util_print_field (_("Options"), "options", priv, str_tmp);
 		g_free (str_tmp);
 	}
 
@@ -534,16 +607,18 @@ cd_util_show_sensor (CdSensor *sensor)
 		str_tmp = g_strdup_printf ("%s=%s",
 					   (const gchar *) l->data, tmp);
 		/* TRANSLATORS: the metadata for the sensor */
-		cd_util_print_field (_("Metadata"), str_tmp);
+		cd_util_print_field (_("Metadata"), "metadata", priv, str_tmp);
 		g_free (str_tmp);
 	}
 
 	/* TRANSLATORS: if the sensor has a colord native driver */
 	cd_util_print_field (_("Native"),
+			     "native", priv,
 			     cd_sensor_get_native (sensor) ? "Yes" : "No");
 
 	/* TRANSLATORS: if the sensor is locked */
 	cd_util_print_field (_("Locked"),
+			     "locked", priv,
 			     cd_sensor_get_locked (sensor) ? "Yes" : "No");
 
 	/* get sensor caps */
@@ -560,7 +635,9 @@ cd_util_show_sensor (CdSensor *sensor)
 		g_string_set_size (caps_str, caps_str->len - 2);
 	/* TRANSLATORS: if the sensor supports calibrating different
 	 * display types, e.g. LCD, LED, Projector */
-	cd_util_print_field (_("Capabilities"), caps_str->str);
+	cd_util_print_field (_("Capabilities"),
+			     "capabilities", priv,
+			     caps_str->str);
 
 	/* unlock */
 	ret = cd_sensor_unlock_sync (sensor,
@@ -864,8 +941,8 @@ cd_util_get_devices (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = cd_device_connect_sync (device, NULL, error);
 		if (!ret)
 			goto out;
-		cd_util_show_device (device);
-		if (i != array->len - 1)
+		cd_util_show_device (priv, device);
+		if (i != array->len - 1 && !priv->value_only)
 			g_print ("\n");
 	}
 out:
@@ -910,8 +987,8 @@ cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error
 		ret = cd_device_connect_sync (device, NULL, error);
 		if (!ret)
 			goto out;
-		cd_util_show_device (device);
-		if (i != array->len - 1)
+		cd_util_show_device (priv, device);
+		if (i != array->len - 1 && !priv->value_only)
 			g_print ("\n");
 	}
 out:
@@ -942,8 +1019,8 @@ cd_util_get_profiles (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = cd_profile_connect_sync (profile, NULL, error);
 		if (!ret)
 			goto out;
-		cd_util_show_profile (profile);
-		if (i != array->len - 1)
+		cd_util_show_profile (priv, profile);
+		if (i != array->len - 1 && !priv->value_only)
 			g_print ("\n");
 	}
 out:
@@ -981,8 +1058,8 @@ cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = cd_sensor_connect_sync (sensor, NULL, error);
 		if (!ret)
 			goto out;
-		cd_util_show_sensor (sensor);
-		if (i != array->len - 1)
+		cd_util_show_sensor (priv, sensor);
+		if (i != array->len - 1 && !priv->value_only)
 			g_print ("\n");
 	}
 out:
@@ -1291,7 +1368,7 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_device (device);
+	cd_util_show_device (priv, device);
 out:
 	if (device_props != NULL)
 		g_hash_table_unref (device_props);
@@ -1330,7 +1407,7 @@ cd_util_find_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_device (device);
+	cd_util_show_device (priv, device);
 out:
 	if (device != NULL)
 		g_object_unref (device);
@@ -1370,7 +1447,7 @@ cd_util_find_device_by_property (CdUtilPrivate *priv, gchar **values, GError **e
 	ret = cd_device_connect_sync (device, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_device (device);
+	cd_util_show_device (priv, device);
 out:
 	if (device != NULL)
 		g_object_unref (device);
@@ -1407,7 +1484,7 @@ cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	ret = cd_profile_connect_sync (profile, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_profile (profile);
+	cd_util_show_profile (priv, profile);
 out:
 	if (profile != NULL)
 		g_object_unref (profile);
@@ -1444,7 +1521,7 @@ cd_util_find_profile_by_filename (CdUtilPrivate *priv, gchar **values, GError **
 	ret = cd_profile_connect_sync (profile, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_profile (profile);
+	cd_util_show_profile (priv, profile);
 out:
 	if (profile != NULL)
 		g_object_unref (profile);
@@ -1483,7 +1560,7 @@ cd_util_get_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
 	ret = cd_profile_connect_sync (profile, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_profile (profile);
+	cd_util_show_profile (priv, profile);
 out:
 	if (profile != NULL)
 		g_object_unref (profile);
@@ -1523,7 +1600,7 @@ cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (!ret)
 		goto out;
 	g_print ("Created profile:\n");
-	cd_util_show_profile (profile);
+	cd_util_show_profile (priv, profile);
 out:
 	if (profile != NULL)
 		g_object_unref (profile);
@@ -1914,7 +1991,7 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 	ret = cd_profile_connect_sync (profile, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_profile (profile);
+	cd_util_show_profile (priv, profile);
 out:
 	if (device != NULL)
 		g_object_unref (device);
@@ -2171,7 +2248,7 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 	ret = cd_profile_connect_sync (profile, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_profile (profile);
+	cd_util_show_profile (priv, profile);
 out:
 	if (device != NULL)
 		g_object_unref (device);
@@ -2214,7 +2291,7 @@ cd_util_import_profile (CdUtilPrivate *priv,
 	ret = cd_profile_connect_sync (profile, NULL, error);
 	if (!ret)
 		goto out;
-	cd_util_show_profile (profile);
+	cd_util_show_profile (priv, profile);
 out:
 	if (file != NULL)
 		g_object_unref (file);
@@ -2240,9 +2317,11 @@ main (int argc, char *argv[])
 {
 	CdUtilPrivate *priv;
 	gboolean ret;
+	gboolean value_only = FALSE;
 	gboolean verbose = FALSE;
 	gboolean version = FALSE;
 	gchar *cmd_descriptions = NULL;
+	gchar *filter = NULL;
 	GError *error = NULL;
 	guint retval = 1;
 	const GOptionEntry options[] = {
@@ -2252,6 +2331,12 @@ main (int argc, char *argv[])
 		{ "version", '\0', 0, G_OPTION_ARG_NONE, &version,
 			/* TRANSLATORS: command line option */
 			_("Show client and daemon versions"), NULL },
+		{ "value-only", '\0', 0, G_OPTION_ARG_NONE, &value_only,
+			/* TRANSLATORS: command line option */
+			_("Show the value without any header"), NULL },
+		{ "filter", '\0', 0, G_OPTION_ARG_STRING, &filter,
+			/* TRANSLATORS: command line option */
+			_("Filter object properties when displaying"), NULL },
 		{ NULL}
 	};
 
@@ -2463,6 +2548,11 @@ main (int argc, char *argv[])
 		goto out;
 	}
 
+	/* add filter if specified */
+	priv->value_only = value_only;
+	if (filter != NULL)
+		priv->filters = g_strsplit (filter, ",", -1);
+
 	/* set verbose? */
 	if (verbose) {
 		g_setenv ("COLORD_VERBOSE", "1", FALSE);
@@ -2518,9 +2608,11 @@ out:
 			g_object_unref (priv->client);
 		if (priv->cmd_array != NULL)
 			g_ptr_array_unref (priv->cmd_array);
+		g_strfreev (priv->filters);
 		g_option_context_free (priv->context);
 		g_free (priv);
 	}
+	g_free (filter);
 	g_free (cmd_descriptions);
 	return retval;
 }
