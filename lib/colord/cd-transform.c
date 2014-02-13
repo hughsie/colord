@@ -35,6 +35,7 @@
 #include <glib.h>
 #include <lcms2.h>
 
+#include "cd-context-lcms.h"
 #include "cd-transform.h"
 
 static void	cd_transform_class_init		(CdTransformClass	*klass);
@@ -56,6 +57,7 @@ struct _CdTransformPrivate
 	CdPixelFormat		 input_pixel_format;
 	CdPixelFormat		 output_pixel_format;
 	CdRenderingIntent	 rendering_intent;
+	cmsContext		 context_lcms;
 	cmsHPROFILE		 srgb;
 	cmsHTRANSFORM		 lcms_transform;
 	gboolean		 bpc;
@@ -416,6 +418,7 @@ static gboolean
 cd_transform_setup (CdTransform *transform, GError **error)
 {
 	CdTransformPrivate *priv = transform->priv;
+	GError *error_local = NULL;
 	cmsHPROFILE profile_in;
 	cmsHPROFILE profile_out;
 	cmsUInt32Number lcms_flags = 0;
@@ -473,7 +476,7 @@ cd_transform_setup (CdTransform *transform, GError **error)
 		profiles[0] = profile_in;
 		profiles[1] = cd_icc_get_handle (priv->abstract_icc);
 		profiles[2] = profile_out;
-		priv->lcms_transform = cmsCreateMultiprofileTransformTHR (transform,
+		priv->lcms_transform = cmsCreateMultiprofileTransformTHR (priv->context_lcms,
 									  profiles,
 									  3,
 									  priv->input_pixel_format,
@@ -483,7 +486,7 @@ cd_transform_setup (CdTransform *transform, GError **error)
 
 	} else {
 		/* create basic transform */
-		priv->lcms_transform = cmsCreateTransformTHR (transform,
+		priv->lcms_transform = cmsCreateTransformTHR (priv->context_lcms,
 							      profile_in,
 							      priv->input_pixel_format,
 							      profile_out,
@@ -494,6 +497,15 @@ cd_transform_setup (CdTransform *transform, GError **error)
 
 	/* failed? */
 	if (priv->lcms_transform == NULL) {
+		ret = cd_context_lcms_error_check (priv->context_lcms, &error_local);
+		if (!ret) {
+			g_set_error_literal (error,
+					     CD_TRANSFORM_ERROR,
+					     CD_TRANSFORM_ERROR_FAILED_TO_SETUP_TRANSFORM,
+					     error_local->message);
+			g_error_free (error_local);
+			goto out;
+		}
 		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_TRANSFORM_ERROR,
@@ -570,17 +582,6 @@ out:
 }
 
 /**
- * cd_transform_lcms2_error_cb:
- **/
-static void
-cd_transform_lcms2_error_cb (cmsContext context_id,
-			     cmsUInt32Number code,
-			     const gchar *text)
-{
-	g_warning ("lcms2(transform): Failed with error: %s [%i]", text, code);
-}
-
-/**
  * cd_transform_process:
  * @transform: a #CdTransform instance.
  * @data_in: the data buffer to convert
@@ -625,8 +626,7 @@ cd_transform_process (CdTransform *transform,
 	g_return_val_if_fail (height != 0, FALSE);
 	g_return_val_if_fail (rowstride != 0, FALSE);
 
-	/* setup error handler */
-	cmsSetLogErrorHandler (cd_transform_lcms2_error_cb);
+	_cd_context_lcms_pre26_start ();
 
 	/* check stuff that should have been set */
 	if (priv->rendering_intent == CD_RENDERING_INTENT_UNKNOWN) {
@@ -707,7 +707,7 @@ cd_transform_process (CdTransform *transform,
 		p_out += rowstride * rows_to_process;
 	}
 out:
-	cmsSetLogErrorHandler (NULL);
+	_cd_context_lcms_pre26_stop ();
 	if (pool != NULL)
 		g_thread_pool_free (pool, FALSE, TRUE);
 	return ret;
@@ -864,10 +864,11 @@ static void
 cd_transform_init (CdTransform *transform)
 {
 	transform->priv = CD_TRANSFORM_GET_PRIVATE (transform);
+	transform->priv->context_lcms = cd_context_lcms_new ();
 	transform->priv->rendering_intent = CD_RENDERING_INTENT_UNKNOWN;
 	transform->priv->input_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
 	transform->priv->output_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
-	transform->priv->srgb = cmsCreate_sRGBProfileTHR (transform);
+	transform->priv->srgb = cmsCreate_sRGBProfileTHR (transform->priv->context_lcms);
 	transform->priv->max_threads = 1;
 }
 
@@ -889,6 +890,7 @@ cd_transform_finalize (GObject *object)
 		g_object_unref (priv->abstract_icc);
 	if (priv->lcms_transform != NULL)
 		cmsDeleteTransform (priv->lcms_transform);
+	cd_context_lcms_free (priv->context_lcms);
 
 	G_OBJECT_CLASS (cd_transform_parent_class)->finalize (object);
 }

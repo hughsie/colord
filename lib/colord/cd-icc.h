@@ -182,6 +182,7 @@ gboolean	 cd_icc_save_default			(CdIcc		*icc,
 gchar		*cd_icc_to_string			(CdIcc		*icc)
 							 G_GNUC_WARN_UNUSED_RESULT;
 gpointer	 cd_icc_get_handle			(CdIcc		*icc);
+gpointer	 cd_icc_get_context			(CdIcc		*icc);
 guint32		 cd_icc_get_size			(CdIcc		*icc);
 const gchar	*cd_icc_get_filename			(CdIcc		*icc);
 void		 cd_icc_set_filename			(CdIcc		*icc,

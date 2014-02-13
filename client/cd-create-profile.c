@@ -25,32 +25,17 @@
 #include <gio/gio.h>
 #include <locale.h>
 #include <lcms2.h>
-#include <lcms2_plugin.h>
 #include <stdlib.h>
 #include <math.h>
 #include <colord-private.h>
+
+#define LCMS_CURVE_PLUGIN_TYPE_REC709	1024
 
 typedef struct {
 	GOptionContext		*context;
 	cmsHPROFILE		 lcms_profile;
 	CdIcc			*icc;
 } CdUtilPrivate;
-
-static gint lcms_error_code = 0;
-
-/**
- * cd_fix_profile_error_cb:
- **/
-static void
-cd_fix_profile_error_cb (cmsContext ContextID,
-			 cmsUInt32Number errorcode,
-			 const char *text)
-{
-	g_warning ("LCMS error %i: %s", errorcode, text);
-
-	/* copy this sytemwide */
-	lcms_error_code = errorcode;
-}
 
 static gboolean
 set_vcgt_from_data (cmsHPROFILE profile,
@@ -267,7 +252,8 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 		goto out;
 
 	/* open /tmp/$basename.icc as hProfile */
-	priv->lcms_profile = cmsOpenProfileFromMemTHR (priv->icc, data, len);
+	priv->lcms_profile = cmsOpenProfileFromMemTHR (cd_icc_get_context (priv->icc),
+						       data, len);
 	if (priv->lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error (error, 1, 0,
@@ -317,8 +303,8 @@ cd_util_create_named_color (CdUtilPrivate *priv,
 	const GNode *tmp;
 	gboolean ret = TRUE;
 
-	priv->lcms_profile = cmsCreateNULLProfileTHR (priv->icc);
-	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
+	priv->lcms_profile = cmsCreateNULLProfileTHR (cd_icc_get_context (priv->icc));
+	if (priv->lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
 				     "failed to create NULL profile");
@@ -408,8 +394,8 @@ cd_util_create_x11_gamma (CdUtilPrivate *priv,
 	points[2] = rgb.B;
 
 	/* create a bog-standard sRGB profile */
-	priv->lcms_profile = cmsCreate_sRGBProfileTHR (priv->icc);
-	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
+	priv->lcms_profile = cmsCreate_sRGBProfileTHR (cd_icc_get_context (priv->icc));
+	if (priv->lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
 				     "failed to create profile");
@@ -469,45 +455,6 @@ cd_util_build_lstar_gamma (void)
 	params[4] = 0.080002;
 	return cmsBuildParametricToneCurve (NULL, 4, params);
 }
-
-#define LCMS_CURVE_PLUGIN_TYPE_REC709	1024
-
-/**
- * cd_util_lcms_rec709_trc_cb:
- **/
-static double
-cd_util_lcms_rec709_trc_cb (int type, const double params[], double x)
-{
-	gdouble val = 0.f;
-
-	switch (type) {
-	case -LCMS_CURVE_PLUGIN_TYPE_REC709:
-		if (x < params[4])
-			val = x * params[3];
-		else
-			val = params[1] * pow (x, (1.f / params[0])) + params[2];
-		break;
-	case LCMS_CURVE_PLUGIN_TYPE_REC709:
-		if (x <= (params[3] * params[4]))
-			val = x / params[3];
-		else
-			val = pow (((x + params[2]) / params[1]), params[0]);
-		break;
-	}
-	return val;
-}
-
-/* add Rec. 709 TRC curve type */
-cmsPluginParametricCurves cd_util_lcms_rec709_trc = {
-	{ cmsPluginMagicNumber,			/* 'acpp' */
-	  2000,					/* minimum version */
-	  cmsPluginParametricCurveSig,		/* type */
-	  NULL },				/* no more plugins */
-	1,					/* number functions */
-	{LCMS_CURVE_PLUGIN_TYPE_REC709},	/* function types */
-	{5},					/* parameter count */
-	cd_util_lcms_rec709_trc_cb		/* evaluator */
-};
 
 /**
  * cd_util_build_rec709_gamma:
@@ -652,7 +599,7 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	primaries.Blue.Y = yxy.Y;
 
 	/* create profile */
-	priv->lcms_profile = cmsCreateRGBProfileTHR (priv->icc,
+	priv->lcms_profile = cmsCreateRGBProfileTHR (cd_icc_get_context (priv->icc),
 						     &white,
 						     &primaries,
 						     transfer);
@@ -681,8 +628,8 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 	guint temp;
 
 	/* create a bog-standard sRGB profile */
-	priv->lcms_profile = cmsCreate_sRGBProfileTHR (priv->icc);
-	if (priv->lcms_profile == NULL || lcms_error_code != 0) {
+	priv->lcms_profile = cmsCreate_sRGBProfileTHR (cd_icc_get_context (priv->icc));
+	if (priv->lcms_profile == NULL) {
 		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
 				     "failed to create profile");
@@ -928,11 +875,6 @@ main (int argc, char **argv)
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
-
-	/* setup LCMS */
-	cmsSetLogErrorHandler (cd_fix_profile_error_cb);
-	ret = cmsPlugin (&cd_util_lcms_rec709_trc);
-	g_assert (ret);
 
 	priv = g_new0 (CdUtilPrivate, 1);
 	priv->icc = cd_icc_new ();

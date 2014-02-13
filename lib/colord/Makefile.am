@@ -56,6 +56,8 @@ libcolordbase_include_HEADERS =					\
 	cd-version.h
 
 libcolordprivate_la_SOURCES =					\
+	cd-context-lcms.c					\
+	cd-context-lcms.h					\
 	cd-buffer.c						\
 	cd-color.c						\
 	cd-dom.c						\
