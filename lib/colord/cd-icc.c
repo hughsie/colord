@@ -3363,6 +3363,11 @@ cd_icc_create_default (CdIcc *icc, GError **error)
 		goto out;
 	}
 
+	/* get defaults from profile */
+	ret = cd_icc_load (icc, 0, error);
+	if (!ret)
+		goto out;
+
 	/* set any extra profile metadata */
 	cd_icc_add_metadata (icc,
 			     CD_PROFILE_METADATA_DATA_SOURCE,
