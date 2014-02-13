@@ -75,8 +75,8 @@ cd_icc_utils_get_coverage_calc (CdIcc *icc,
 	guint i;
 
 	/* create a proofing transform with gamut check */
-	profile_null = cmsCreateNULLProfileTHR (icc);
-	transform = cmsCreateProofingTransformTHR (icc,
+	profile_null = cmsCreateNULLProfileTHR (cd_icc_get_context (icc));
+	transform = cmsCreateProofingTransformTHR (cd_icc_get_context (icc),
 						   cd_icc_get_handle (icc),
 						   TYPE_RGB_FLT,
 						   profile_null,

@@ -36,6 +36,7 @@
 
 #include "cd-it8.h"
 #include "cd-color.h"
+#include "cd-context-lcms.h"
 
 static void	cd_it8_class_init	(CdIt8Class	*klass);
 static void	cd_it8_init		(CdIt8		*it8);
@@ -51,6 +52,7 @@ static void	cd_it8_finalize		(GObject	*object);
 struct _CdIt8Private
 {
 	CdIt8Kind		 kind;
+	cmsContext		 context_lcms;
 	CdMat3x3		 matrix;
 	gboolean		 normalized;
 	gboolean		 spectral;
@@ -275,21 +277,6 @@ cd_it8_get_kind (CdIt8 *it8)
 {
 	g_return_val_if_fail (CD_IS_IT8 (it8), 0);
 	return it8->priv->kind;
-}
-
-/**
- * cd_it8_lcms2_error_cb:
- **/
-static void
-cd_it8_lcms2_error_cb (cmsContext context_id,
-		       cmsUInt32Number code,
-		       const gchar *text)
-{
-	GError **error = (GError **) context_id;
-	g_set_error (error,
-		     CD_IT8_ERROR,
-		     CD_IT8_ERROR_FAILED,
-		     "Failed with error: %s [%i]", text, code);
 }
 
 /**
@@ -895,6 +882,7 @@ cd_it8_load_from_data (CdIt8 *it8,
 		       gsize size,
 		       GError **error)
 {
+	GError *error_local = NULL;
 	cmsHANDLE it8_lcms = NULL;
 	const gchar *tmp;
 	gboolean ret = TRUE;
@@ -905,8 +893,7 @@ cd_it8_load_from_data (CdIt8 *it8,
 	g_return_val_if_fail (data != NULL, FALSE);
 	g_return_val_if_fail (size > 0, FALSE);
 
-	/* setup error handler */
-	cmsSetLogErrorHandler (cd_it8_lcms2_error_cb);
+	_cd_context_lcms_pre26_start ();
 
 	/* clear old data */
 	g_ptr_array_set_size (it8->priv->array_rgb, 0);
@@ -915,9 +902,22 @@ cd_it8_load_from_data (CdIt8 *it8,
 	cd_mat33_clear (&it8->priv->matrix);
 
 	/* load the it8 data */
-	it8_lcms = cmsIT8LoadFromMem (error, (void *) data, size);
+	it8_lcms = cmsIT8LoadFromMem (it8->priv->context_lcms, (void *) data, size);
 	if (it8_lcms == NULL) {
+		ret = cd_context_lcms_error_check (it8->priv->context_lcms, &error_local);
+		if (!ret) {
+			g_set_error_literal (error,
+					     CD_IT8_ERROR,
+					     CD_IT8_ERROR_FAILED,
+					     error_local->message);
+			g_error_free (error_local);
+			goto out;
+		}
 		ret = FALSE;
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     "Failed to load but no error set");
 		goto out;
 	}
 
@@ -991,7 +991,7 @@ cd_it8_load_from_data (CdIt8 *it8,
 	cd_it8_set_originator (it8, cmsIT8GetProperty (it8_lcms, "ORIGINATOR"));
 	cd_it8_set_reference (it8, cmsIT8GetProperty (it8_lcms, "REFERENCE"));
 out:
-	cmsSetLogErrorHandler (NULL);
+	_cd_context_lcms_pre26_stop ();
 	if (it8_lcms != NULL)
 		cmsIT8Free (it8_lcms);
 	return ret;
@@ -1429,11 +1429,10 @@ cd_it8_save_to_data (CdIt8 *it8,
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 
-	/* setup error handler */
-	cmsSetLogErrorHandler (cd_it8_lcms2_error_cb);
+	_cd_context_lcms_pre26_start ();
 
 	/* set common data */
-	it8_lcms = cmsIT8Alloc (error);
+	it8_lcms = cmsIT8Alloc (it8->priv->context_lcms);
 	if (it8->priv->title != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "DISPLAY",
 				      it8->priv->title);
@@ -1509,7 +1508,7 @@ cd_it8_save_to_data (CdIt8 *it8,
 	if (size != NULL)
 		*size = size_tmp - 1;
 out:
-	cmsSetLogErrorHandler (NULL);
+	_cd_context_lcms_pre26_stop ();
 	if (it8_lcms != NULL)
 		cmsIT8Free (it8_lcms);
 	if (datetime != NULL)
@@ -2043,6 +2042,7 @@ static void
 cd_it8_init (CdIt8 *it8)
 {
 	it8->priv = CD_IT8_GET_PRIVATE (it8);
+	it8->priv->context_lcms = cd_context_lcms_new ();
 
 	cd_mat33_clear (&it8->priv->matrix);
 	it8->priv->array_rgb = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
@@ -2065,6 +2065,7 @@ cd_it8_finalize (GObject *object)
 
 	g_return_if_fail (CD_IS_IT8 (object));
 
+	cd_context_lcms_free (it8->priv->context_lcms);
 	g_ptr_array_unref (it8->priv->array_spectra);
 	g_ptr_array_unref (it8->priv->array_rgb);
 	g_ptr_array_unref (it8->priv->array_xyz);

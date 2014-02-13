@@ -158,6 +158,10 @@ AC_CHECK_LIB(lcms2, cmsMLUtranslationsCount, have_lcms_mlu_translations_count=ye
 if test x$have_lcms_mlu_translations_count != x; then
 	AC_DEFINE(HAVE_LCMS_MLU_TRANSLATIONS_COUNT,1,[cmsMLUtranslationsCount is available])
 fi
+AC_CHECK_LIB(lcms2, cmsCreateContext, have_lcms_create_context=yes)
+if test x$have_lcms_create_context != x; then
+	AC_DEFINE(HAVE_LCMS_CREATE_CONTEXT,1,[cmsCreateContext is available])
+fi
 
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 
