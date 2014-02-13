@@ -483,6 +483,7 @@ cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 		goto out;
 	val = cd_interp_eval (interp, wavelength, NULL);
 out:
+	g_object_unref (interp);
 	return val;
 }
 
