@@ -302,7 +302,6 @@ cd_icc_store_created_query_info_cb (GObject *source_object,
 		g_warning ("failed to search file: %s",
 			   error->message);
 		g_error_free (error);
-		return;
 	}
 	g_free (path);
 	g_object_unref (info);
@@ -537,6 +536,7 @@ cd_icc_store_search_path (CdIccStore *store,
 						      depth,
 						      cancellable,
 						      error);
+		g_object_unref (info);
 		if (!ret)
 			goto out;
 	}
