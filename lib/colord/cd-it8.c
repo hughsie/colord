@@ -2047,7 +2047,7 @@ cd_it8_init (CdIt8 *it8)
 	cd_mat33_clear (&it8->priv->matrix);
 	it8->priv->array_rgb = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
 	it8->priv->array_xyz = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_xyz_free);
-	it8->priv->array_spectra = g_ptr_array_new_with_free_func ((GDestroyNotify) g_array_unref);
+	it8->priv->array_spectra = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_spectrum_free);
 	it8->priv->options = g_ptr_array_new_with_free_func (g_free);
 	it8->priv->enable_created = TRUE;
 
