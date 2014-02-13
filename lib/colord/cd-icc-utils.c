@@ -131,6 +131,7 @@ cd_icc_utils_get_coverage_calc (CdIcc *icc,
 		*coverage = (gdouble) cnt / (gdouble) data_len;
 out:
 	g_free (data);
+	cmsCloseProfile (profile_null);
 	if (transform != NULL)
 		cmsDeleteTransform (transform);
 	return ret;
