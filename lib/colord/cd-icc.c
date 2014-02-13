@@ -63,6 +63,7 @@ struct _CdIccPrivate
 {
 	CdColorspace		 colorspace;
 	CdProfileKind		 kind;
+	cmsContext		 context_lcms;
 	cmsHPROFILE		 lcms_profile;
 	gboolean		 can_delete;
 	gchar			*checksum;
@@ -2343,6 +2344,24 @@ cd_icc_get_handle (CdIcc *icc)
 }
 
 /**
+ * cd_icc_get_context:
+ * @icc: a #CdIcc instance.
+ *
+ * Return the cmsContext instance used locally. This may be required if you
+ * are using native LCMS calls and then cd_icc_load_handle().
+ *
+ * Return value: (transfer none): Do not call cmsDeleteContext() on this value!
+ *
+ * Since: 1.1.7
+ **/
+gpointer
+cd_icc_get_context (CdIcc *icc)
+{
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
+	return icc->priv->context_lcms;
+}
+
+/**
  * cd_icc_load_handle:
  * @icc: a #CdIcc instance.
  * @handle: a cmsHPROFILE instance
@@ -2358,8 +2377,8 @@ cd_icc_get_handle (CdIcc *icc)
  * by this module.
  *
  * To handle the internal error callback, you should use the thread-safe
- * creation function, e.g. cmsCreateNULLProfileTHR(). The context_id should be
- * set as the value as the @icc parameter.
+ * creation function, e.g. cmsCreateNULLProfileTHR(). The @context_id should be
+ * set as the value of cd_icc_get_context() for this object.
  *
  * Additionally, this function cannot be called more than once, and also can't
  * be called if cd_icc_load_file() has previously been used on the @icc object.
@@ -4369,6 +4388,7 @@ cd_icc_init (CdIcc *icc)
 	guint i;
 
 	icc->priv = CD_ICC_GET_PRIVATE (icc);
+	icc->priv->context_lcms = icc;
 	icc->priv->kind = CD_PROFILE_KIND_UNKNOWN;
 	icc->priv->colorspace = CD_COLORSPACE_UNKNOWN;
 	icc->priv->named_colors = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_swatch_free);
