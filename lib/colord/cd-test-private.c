@@ -1199,6 +1199,7 @@ colord_icc_clear_func (void)
 	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_NO_DATA);
 	g_assert (tmp == NULL);
 
+	g_bytes_unref (payload);
 	g_object_unref (icc);
 }
 
@@ -1657,9 +1658,9 @@ colord_transform_func (void)
 	g_assert_cmpint (data_out[2], ==, 69);
 
 	/* get a known-correct unthreaded result */
-	img_data_in = g_new (guint8, height * width * 3);
-	img_data_out = g_new (guint8, height * width * 3);
-	img_data_check = g_new (guint8, height * width * 3);
+	img_data_in = g_new0 (guint8, height * width * 3);
+	img_data_out = g_new0 (guint8, height * width * 3);
+	img_data_check = g_new0 (guint8, height * width * 3);
 	for (i = 0; i < height * width * 3; i++)
 		img_data_in[i] = i % 0xff;
 	cd_transform_set_max_threads (transform, 1);
@@ -1705,12 +1706,17 @@ colord_transform_func (void)
 			g_assert_no_error (error);
 			g_assert (ret);
 		}
-		g_assert_cmpint (memcmp (img_data_out, img_data_check, height * width * 3), ==, 0);
+		g_assert_cmpint (memcmp (img_data_out,
+					 img_data_check,
+					 height * width * 3), ==, 0);
 		g_print ("%i threads = %.2fms\n", i,
 			 g_timer_elapsed (timer, NULL) * 1000 / repeats);
 	}
 	g_timer_destroy (timer);
 
+	g_free (img_data_in);
+	g_free (img_data_out);
+	g_free (img_data_check);
 	g_object_unref (transform);
 }
 
