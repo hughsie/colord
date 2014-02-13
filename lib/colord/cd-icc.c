@@ -1649,6 +1649,7 @@ cd_util_write_tag_localized (CdIcc *icc,
 	if (!ret)
 		goto out;
 out:
+	g_ptr_array_unref (array);
 	g_list_free (keys);
 	if (mlu != NULL)
 		cmsMLUfree (mlu);
