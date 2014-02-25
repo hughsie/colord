@@ -438,7 +438,7 @@ cd_device_get_owner (CdDevice *device)
  *
  * Gets the device profiles.
  *
- * Return value: (element-type CdProfile) (transfer full): An array of #CdProfile's
+ * Return value: (element-type CdProfile) (transfer container): An array of #CdProfile's
  *
  * Since: 0.1.0
  **/
