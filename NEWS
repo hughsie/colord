@@ -1,6 +1,17 @@
+Version 1.1.7
+~~~~~~~~~~~~~
+Released: 2014-02-28
+
+New Features:
+ - Use the new cmsContext functionality in LCMS 2.6 (Richard Hughes)
+
+Bugfixes:
+ - libcolord: Fix the GObject introspection for cd_device_get_profiles() (Richard Hughes)
+ - libcolord: Load the profile defaults when using cd_icc_create_default() (Richard Hughes)
+
 Version 1.1.6
 ~~~~~~~~~~~~~
-Released: 2013-01-20
+Released: 2014-01-20
 
 Bugfixes:
  - Fix the tag 'size' when viewing a profile in cd-iccdump (Richard Hughes)
