@@ -2,9 +2,9 @@ colord Release Notes
 
 1. Write NEWS entries for colord in the same format as usual.
 
-git shortlog COLORD_1_1_6.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog COLORD_1_1_7.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
-Version 1.1.7
+Version 1.1.8
 ~~~~~~~~~~~~~
 Released: 2014-xx-xx
 
@@ -14,8 +14,8 @@ Bugfixes:
 2. Commit changes to git:
 
 # MAKE SURE THESE ARE CORRECT
-export release_version="1.1.7"
-export release_tag="COLORD_1_1_7"
+export release_version="1.1.8"
+export release_tag="COLORD_1_1_8"
 
 git commit -a -m "Release colord ${release_version}"
 git tag -s -f -m "Release colord ${release_version}" "${release_tag}"
@@ -42,8 +42,6 @@ scp colord-${release_version}.tar.* hughsient@annarchy.freedesktop.org:/srv/www.
 
 git commit -a -m "trivial: post release version bump"
 git push
-
-7. Sync website with ./upload.sh
 
 8. Send an email to colord@lists.freedesktop.org
 
