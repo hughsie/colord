@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-13 15:56+0100\n"
-"PO-Revision-Date: 2013-09-13 14:56+0000\n"
+"POT-Creation-Date: 2014-03-18 14:56+0000\n"
+"PO-Revision-Date: 2014-03-18 14:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/colord/language/nl/)\n"
 "MIME-Version: 1.0\n"
@@ -93,12 +93,24 @@ msgstr "Repareer automatisch metadata in het profiel"
 msgid "Set the ICC profile version"
 msgstr ""
 
+#. TRANSLATORS: command description
+msgid "Export the tag data"
+msgstr ""
+
 #. TRANSLATORS: program name
 msgid "Color Management"
 msgstr "Kleur Management"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Create a CMF from CSV data"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Create a spectra from CSV data"
 msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
@@ -348,6 +360,14 @@ msgstr "Kleur"
 msgid "Show client and daemon versions"
 msgstr ""
 
+#. TRANSLATORS: command line option
+msgid "Show the value without any header"
+msgstr ""
+
+#. TRANSLATORS: command line option
+msgid "Filter object properties when displaying"
+msgstr ""
+
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
 msgstr ""
@@ -521,7 +541,6 @@ msgstr ""
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
-#. 
 msgid ""
 "This editing space was designed as SMPTE-240M and encompasses most of the "
 "possible colors available on a CMYK color printer. This is a popular choice "
@@ -532,7 +551,6 @@ msgstr ""
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
 #. don't translate those
-#. 
 msgid ""
 "This legacy profile was originally created by Adobe for use with Photoshop "
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
@@ -542,7 +560,6 @@ msgstr ""
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
-#. 
 msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
@@ -596,7 +613,6 @@ msgstr ""
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
-#. 
 msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
@@ -648,7 +664,6 @@ msgstr ""
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
-#. 
 msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
@@ -681,7 +696,6 @@ msgstr ""
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
 #. better quality, GRACoL is also a trademark don't translate please
-#. 
 msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
@@ -730,7 +744,6 @@ msgstr ""
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
-#. 
 #, no-c-format
 msgid ""
 "This profile is use for printing on newsprint, and is an ISO12647-3:2005 "
@@ -741,7 +754,6 @@ msgstr ""
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
-#. 
 msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
@@ -764,7 +776,6 @@ msgid ""
 msgstr ""
 
 #. TRANSLATORS: ITU-R is a standards body
-#. 
 msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
@@ -789,7 +800,6 @@ msgstr ""
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
-#. 
 msgid ""
 "This general purpose profile was designed by Hewlett-Packard and Microsoft "
 "and lives on as the default profile on the Internet for untagged RGB colors "
@@ -845,7 +855,6 @@ msgstr ""
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
-#. 
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
@@ -853,7 +862,6 @@ msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
-#. 
 msgid "Create a color managed device"
 msgstr "Maak een kleur gemanaged apparaat aan"
 
@@ -862,7 +870,6 @@ msgstr "Authenticatie is verplicht om een kleur gemanaged apparaat aan te kunnen
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
-#. 
 msgid "Create a color profile"
 msgstr "Maak een kleurprofiel aan"
 
@@ -871,7 +878,6 @@ msgstr "Authenticatie is verplicht om een kleurprofiel aan te kunnen maken"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
-#. 
 msgid "Remove a color managed device"
 msgstr "Verwijder een kleur gemanaged apparaat"
 
@@ -880,7 +886,6 @@ msgstr "Authenticatie is verplicht om een kleur gemanaged apparaat te kunnen ver
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
-#. 
 msgid "Remove a color profile"
 msgstr "Verwijder een kleurprofiel"
 
@@ -889,7 +894,6 @@ msgstr "Authenticatie is verplicht om een kleurprofiel te kunnen verwijderen"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
-#. 
 msgid "Modify color settings for a device"
 msgstr "Pas de kleurinstellingen van een apparaat aan"
 
@@ -898,7 +902,6 @@ msgstr "Authenticatie is verplicht om de kleurinstellingen voor een apparaat aan
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
-#. 
 msgid "Modify a color profile"
 msgstr "Pas een kleurprofiel aan"
 
@@ -912,7 +915,6 @@ msgstr "Authenticatie is verplicht om een kleurprofiel aan te kunnen passen"
 #. - This should not be set to 'yes' as unprivileged users could then
 #. set a profile set to all-white or all-black and thus make the
 #. other sessions unusable.
-#. 
 msgid "Install system color profiles"
 msgstr "Installeer systeem kleurprofielen"
 
@@ -922,7 +924,6 @@ msgstr "Authenticatie is verplicht om het kleurprofiel voor alle gebruikers te i
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
-#. 
 msgid "Inhibit color profile selection"
 msgstr "Belet selectie van een kleurprofiel"
 
@@ -932,7 +933,6 @@ msgstr "Authenticatie is verplicht om profielmatching voor een apparaat uit te s
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
-#. 
 msgid "Use color sensor"
 msgstr "Gebruik kleur-sensor"
 

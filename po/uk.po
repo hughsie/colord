@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-30 10:14+0000\n"
-"PO-Revision-Date: 2013-09-13 15:20+0000\n"
-"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"POT-Creation-Date: 2014-03-18 14:56+0000\n"
+"PO-Revision-Date: 2014-03-18 14:56+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/colord/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -96,6 +96,10 @@ msgstr "Автоматично виправляти метадані у проф
 msgid "Set the ICC profile version"
 msgstr "Встановити значення версії профілю ICC"
 
+#. TRANSLATORS: command description
+msgid "Export the tag data"
+msgstr ""
+
 #. TRANSLATORS: program name
 msgid "Color Management"
 msgstr "Керування кольорами"
@@ -103,6 +107,14 @@ msgstr "Керування кольорами"
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
 msgstr "Програма для створення дампів профілів ICC"
+
+#. TRANSLATORS: command description
+msgid "Create a CMF from CSV data"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Create a spectra from CSV data"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -351,6 +363,14 @@ msgstr "Колір"
 msgid "Show client and daemon versions"
 msgstr "Вивести дані щодо версій клієнтської частини і фонової служби"
 
+#. TRANSLATORS: command line option
+msgid "Show the value without any header"
+msgstr ""
+
+#. TRANSLATORS: command line option
+msgid "Filter object properties when displaying"
+msgstr ""
+
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
 msgstr "Записати усі діагностичні дані до файла"
@@ -524,7 +544,6 @@ msgstr "Цей профіль вільних від будь-яких відом
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
-#. 
 msgid ""
 "This editing space was designed as SMPTE-240M and encompasses most of the "
 "possible colors available on a CMYK color printer. This is a popular choice "
@@ -535,7 +554,6 @@ msgstr "Цей простір для редагування було створ�
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
 #. don't translate those
-#. 
 msgid ""
 "This legacy profile was originally created by Adobe for use with Photoshop "
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
@@ -545,7 +563,6 @@ msgstr "Першу версію цього застарілого профілю
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
-#. 
 msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
@@ -599,7 +616,6 @@ msgstr "Кольори Crayon"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
-#. 
 msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
@@ -651,7 +667,6 @@ msgstr "FOGRA28L для рулонного крейдяного"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
-#. 
 msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
@@ -684,7 +699,6 @@ msgstr "FOGRA39L для крейдяного"
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
 #. better quality, GRACoL is also a trademark don't translate please
-#. 
 msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
@@ -733,7 +747,6 @@ msgstr "IFRA26S 2004 для газетного"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
-#. 
 #, no-c-format
 msgid ""
 "This profile is use for printing on newsprint, and is an ISO12647-3:2005 "
@@ -744,7 +757,6 @@ msgstr "Цей профіль використовується для друку
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
-#. 
 msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
@@ -767,7 +779,6 @@ msgid ""
 msgstr "Першу версію цього профілю було розроблено компанією Eastman Kodak. Цю версію було названо ROMM RGB. За допомогою цього профілю можна відтворювати дуже велику кількість кольорів. Ним користуються багато фотографів для архівування зображень цифрових негативів. Якщо ви не користуєтеся точністю у 16 бітів на канал кольору, у разі використання цього профілю ви можете спостерігати сегментацію кольорів під час редагування."
 
 #. TRANSLATORS: ITU-R is a standards body
-#. 
 msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
@@ -792,7 +803,6 @@ msgstr "Цей профіль засновано на ANSI CGATS/SNAP TR 002-200
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
-#. 
 msgid ""
 "This general purpose profile was designed by Hewlett-Packard and Microsoft "
 "and lives on as the default profile on the Internet for untagged RGB colors "
@@ -848,7 +858,6 @@ msgstr "Кольори X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
-#. 
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
@@ -856,7 +865,6 @@ msgstr "У цьому іменованому просторі кольорів �
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
-#. 
 msgid "Create a color managed device"
 msgstr "Створити пристрій з керуванням кольорами"
 
@@ -865,7 +873,6 @@ msgstr "Для створення пристрою з керуванням ко�
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
-#. 
 msgid "Create a color profile"
 msgstr "Створити профіль кольорів"
 
@@ -874,7 +881,6 @@ msgstr "Для створення профілю кольорів слід пр�
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
-#. 
 msgid "Remove a color managed device"
 msgstr "Вилучити пристрій з керуванням кольорами"
 
@@ -883,7 +889,6 @@ msgstr "Для вилучення пристрою з керуванням ко�
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
-#. 
 msgid "Remove a color profile"
 msgstr "Вилучити профіль кольорів"
 
@@ -892,7 +897,6 @@ msgstr "Для вилучення профілю кольорів слід пр�
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
-#. 
 msgid "Modify color settings for a device"
 msgstr "Змінити параметри кольорів пристрою"
 
@@ -901,7 +905,6 @@ msgstr "Для внесення змін до параметрів кольор�
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
-#. 
 msgid "Modify a color profile"
 msgstr "Змінити профіль кольорів"
 
@@ -915,7 +918,6 @@ msgstr "Для внесення змін до профілю кольорів с
 #. - This should not be set to 'yes' as unprivileged users could then
 #. set a profile set to all-white or all-black and thus make the
 #. other sessions unusable.
-#. 
 msgid "Install system color profiles"
 msgstr "Встановити системі профілі кольорів"
 
@@ -925,7 +927,6 @@ msgstr "Для встановлення профілю кольорів для �
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
-#. 
 msgid "Inhibit color profile selection"
 msgstr "Заборонити вибір профілю кольорів"
 
@@ -935,7 +936,6 @@ msgstr "Для вимикання відповідності профілю пр
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
-#. 
 msgid "Use color sensor"
 msgstr "Використовувати датчик кольорів"
 

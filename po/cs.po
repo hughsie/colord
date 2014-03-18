@@ -12,9 +12,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-30 10:14+0000\n"
-"PO-Revision-Date: 2013-09-13 18:30+0000\n"
-"Last-Translator: Milan Knížek <knizek@volny.cz>\n"
+"POT-Creation-Date: 2014-03-18 14:56+0000\n"
+"PO-Revision-Date: 2014-03-18 14:56+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/colord/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -97,6 +97,10 @@ msgstr "Automaticky opravit metadata v profilu"
 msgid "Set the ICC profile version"
 msgstr "Nastavit verzi profilu ICC"
 
+#. TRANSLATORS: command description
+msgid "Export the tag data"
+msgstr ""
+
 #. TRANSLATORS: program name
 msgid "Color Management"
 msgstr "Správa barev"
@@ -104,6 +108,14 @@ msgstr "Správa barev"
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
 msgstr "Program pro výpis informací o profilu ICC"
+
+#. TRANSLATORS: command description
+msgid "Create a CMF from CSV data"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Create a spectra from CSV data"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -352,6 +364,14 @@ msgstr "Barva"
 msgid "Show client and daemon versions"
 msgstr "Zobrazit verze klienta a démona"
 
+#. TRANSLATORS: command line option
+msgid "Show the value without any header"
+msgstr ""
+
+#. TRANSLATORS: command line option
+msgid "Filter object properties when displaying"
+msgstr ""
+
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
 msgstr "Vypsat všechny ladicí informace do souboru"
@@ -525,7 +545,6 @@ msgstr "Použití toho profilu není omezeno známými vlastnickými právy"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
-#. 
 msgid ""
 "This editing space was designed as SMPTE-240M and encompasses most of the "
 "possible colors available on a CMYK color printer. This is a popular choice "
@@ -536,7 +555,6 @@ msgstr "Tento pracovní prostor byl definován jako SMPTE-240M a zahrnuje větš
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
 #. don't translate those
-#. 
 msgid ""
 "This legacy profile was originally created by Adobe for use with Photoshop "
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
@@ -546,7 +564,6 @@ msgstr "Tento zastaralý profil byl původně vytvořen společností Adobe pro 
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
-#. 
 msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
@@ -600,7 +617,6 @@ msgstr "Uhlové barvy"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
-#. 
 msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
@@ -652,7 +668,6 @@ msgstr "FOGRA28L natíraný v roli"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
-#. 
 msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
@@ -685,7 +700,6 @@ msgstr "FOGRA39L natíraný"
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
 #. better quality, GRACoL is also a trademark don't translate please
-#. 
 msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
@@ -734,7 +748,6 @@ msgstr "IFRA26S 2004 Newsprint"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
-#. 
 #, no-c-format
 msgid ""
 "This profile is use for printing on newsprint, and is an ISO12647-3:2005 "
@@ -745,7 +758,6 @@ msgstr "Tento profil se používá pro tisk na novinový papír a odpovídá nor
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
-#. 
 msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
@@ -768,7 +780,6 @@ msgid ""
 msgstr "Původně navržen společností Eastman Kodak a nazvaný ROMM RGB, tento profil umožňuje zobrazit velmi velký rozsah barev a je používán mnohými fotografy pro tvorbu, editaci a archivaci snímků RAW. Pokud se nepoužívá hloubka alespoň 16 bitů na kanál, může při zpracování snímků dojít k posterizaci."
 
 #. TRANSLATORS: ITU-R is a standards body
-#. 
 msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
@@ -793,7 +804,6 @@ msgstr "Tento profil odpovídající normě ANSI CGATS/SNAP TR 002-2007 se použ
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
-#. 
 msgid ""
 "This general purpose profile was designed by Hewlett-Packard and Microsoft "
 "and lives on as the default profile on the Internet for untagged RGB colors "
@@ -849,7 +859,6 @@ msgstr "Barvy X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
-#. 
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
@@ -857,7 +866,6 @@ msgstr "Tento profil pojmenovaných barev obsahuje všechny barvy definované X1
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
-#. 
 msgid "Create a color managed device"
 msgstr "Vytvořit zařízení se správou barev"
 
@@ -866,7 +874,6 @@ msgstr "Pro vytvoření zařízení se správou barev je vyžadováno ověření
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
-#. 
 msgid "Create a color profile"
 msgstr "Vytvořit profil barev"
 
@@ -875,7 +882,6 @@ msgstr "Pro vytvoření profilu barev je vyžadováno ověření uživatele"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
-#. 
 msgid "Remove a color managed device"
 msgstr "Odstranit zařízení se správou barev"
 
@@ -884,7 +890,6 @@ msgstr "Pro odstranění zařízení se správou barev je vyžadováno ověřen�
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
-#. 
 msgid "Remove a color profile"
 msgstr "Odstranit profil barev"
 
@@ -893,7 +898,6 @@ msgstr "Pro odstranění profilu barev je vyžadováno ověření uživatele"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
-#. 
 msgid "Modify color settings for a device"
 msgstr "Upravit nastavení barev pro zařízení"
 
@@ -902,7 +906,6 @@ msgstr "Pro úpravu nastavení barev zařízení je vyžadováno ověření uži
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
-#. 
 msgid "Modify a color profile"
 msgstr "Upravit profil barev"
 
@@ -916,7 +919,6 @@ msgstr "Pro úpravu profilu barev je vyžadováno ověření uživatele"
 #. - This should not be set to 'yes' as unprivileged users could then
 #. set a profile set to all-white or all-black and thus make the
 #. other sessions unusable.
-#. 
 msgid "Install system color profiles"
 msgstr "Instalovat profily barev pro všechny uživatele"
 
@@ -926,7 +928,6 @@ msgstr "Pro instalaci profilu barev pro všechny uživatele je vyžadováno ově
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
-#. 
 msgid "Inhibit color profile selection"
 msgstr "Zabránit výběru profilu barev"
 
@@ -936,7 +937,6 @@ msgstr "Pro znemožnění vyhledání profilu pro zařízení je vyžadováno ov
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
-#. 
 msgid "Use color sensor"
 msgstr "Použít sondu"
 

@@ -1,8 +1,7 @@
 [main]
-host = http://www.transifex.net
+host = https://www.transifex.com
 
 [colord.master]
 file_filter = po/<lang>.po
 source_file = po/colord.pot
 source_lang = en
-
