@@ -472,9 +472,9 @@ cd_edid_parse_string (const guint8 *data)
 	guint i;
 	guint replaced = 0;
 
-	/* this is always 12 bytes, but we can't guarantee it's null
+	/* this is always 13 bytes, but we can't guarantee it's null
 	 * terminated or not junk. */
-	text = g_strndup ((const gchar *) data, 12);
+	text = g_strndup ((const gchar *) data, 13);
 
 	/* remove insane newline chars */
 	g_strdelimit (text, "\n\r", '\0');
