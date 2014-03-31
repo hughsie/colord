@@ -503,7 +503,7 @@ main (int argc, char *argv[])
 		     "create-sp",
 		     "[OUTPUT.sp] [INPUT.csv] [norm]",
 		     /* TRANSLATORS: command description */
-		     _("Create a spectra from CSV data"),
+		     _("Create a spectrum from CSV data"),
 		     cd_util_create_sp);
 
 	/* sort by command name */
