@@ -817,6 +817,11 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 				     CD_PROFILE_METADATA_DATA_SOURCE,
 				     cd_dom_get_node_data (tmp));
 	}
+	tmp = cd_dom_get_node (dom, profile, "version");
+	if (tmp != NULL) {
+		cd_icc_set_version (priv->icc,
+				    cd_dom_get_node_data_as_double (tmp));
+	}
 
 	/* add CMS defines */
 	cd_icc_add_metadata (priv->icc,

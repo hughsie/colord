@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <profile>
+ <version>2.1</version>
  <name>ECI-RGBv1</name>
  <description>eciRGB v1</description>
  <_copyright>This profile is free of known copyright restrictions</_copyright>
