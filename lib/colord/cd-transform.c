@@ -120,6 +120,10 @@ cd_transform_set_input_icc (CdTransform *transform, CdIcc *icc)
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
 
+	/* no change */
+	if (transform->priv->input_icc == icc)
+		return;
+
 	if (transform->priv->input_icc != NULL)
 		g_clear_object (&transform->priv->input_icc);
 	if (icc != NULL)
@@ -158,6 +162,10 @@ cd_transform_set_output_icc (CdTransform *transform, CdIcc *icc)
 {
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
+
+	/* no change */
+	if (transform->priv->output_icc == icc)
+		return;
 
 	if (transform->priv->output_icc != NULL)
 		g_clear_object (&transform->priv->output_icc);
@@ -198,6 +206,10 @@ cd_transform_set_abstract_icc (CdTransform *transform, CdIcc *icc)
 {
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
+
+	/* no change */
+	if (transform->priv->abstract_icc == icc)
+		return;
 
 	if (transform->priv->abstract_icc != NULL)
 		g_clear_object (&transform->priv->abstract_icc);
