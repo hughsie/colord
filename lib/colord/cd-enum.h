@@ -111,6 +111,7 @@ typedef guint32 CdPixelFormat;
 #define	CD_PIXEL_FORMAT_RGB24		0x00040019	/* Since: 1.0.0 */
 #define	CD_PIXEL_FORMAT_CMYK32		0x00060021	/* Since: 1.0.0 */
 #define	CD_PIXEL_FORMAT_BGRA32		0x00044499	/* Since: 1.0.0 */
+#define	CD_PIXEL_FORMAT_RGBA32		0x00040099	/* Since: 1.1.8 */
 
 /**
  * CdColorspace:
