@@ -62,6 +62,8 @@ struct _CdTransformPrivate
 	cmsHTRANSFORM		 lcms_transform;
 	gboolean		 bpc;
 	guint			 max_threads;
+	guint			 bpp_input;
+	guint			 bpp_output;
 };
 
 G_DEFINE_TYPE (CdTransform, cd_transform, G_TYPE_OBJECT)
@@ -424,6 +426,26 @@ const struct {
 };
 
 /**
+ * cd_transform_get_bpp:
+ **/
+static guint
+cd_transform_get_bpp (CdPixelFormat format)
+{
+	switch (format) {
+	case CD_PIXEL_FORMAT_RGB24:
+		return 3;
+	case CD_PIXEL_FORMAT_ARGB32:
+	case CD_PIXEL_FORMAT_CMYK32:
+	case CD_PIXEL_FORMAT_BGRA32:
+	case CD_PIXEL_FORMAT_RGBA32:
+		return 4;
+	case CD_PIXEL_FORMAT_UNKNOWN:
+	default:
+		return 0;
+	}
+}
+
+/**
  * cd_transform_setup:
  **/
 static gboolean
@@ -506,6 +528,10 @@ cd_transform_setup (CdTransform *transform, GError **error)
 							      lcms_intent,
 							      lcms_flags);
 	}
+
+	/* find the bpp value */
+	priv->bpp_input = cd_transform_get_bpp (priv->input_pixel_format);
+	priv->bpp_output = cd_transform_get_bpp (priv->input_pixel_format);
 
 	/* failed? */
 	if (priv->lcms_transform == NULL) {
@@ -683,8 +709,8 @@ cd_transform_process (CdTransform *transform,
 					      p_out,
 					      width,
 					      rowstride);
-			p_in += rowstride;
-			p_out += rowstride;
+			p_in += rowstride * priv->bpp_input;
+			p_out += rowstride * priv->bpp_output;
 		}
 		goto out;
 	}
@@ -715,8 +741,8 @@ cd_transform_process (CdTransform *transform,
 		ret = g_thread_pool_push (pool, job, error);
 		if (!ret)
 			goto out;
-		p_in += rowstride * rows_to_process;
-		p_out += rowstride * rows_to_process;
+		p_in += rowstride * rows_to_process * priv->bpp_input;
+		p_out += rowstride * rows_to_process * priv->bpp_output;
 	}
 out:
 	_cd_context_lcms_pre26_stop ();
