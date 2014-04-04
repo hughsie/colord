@@ -1667,8 +1667,8 @@ colord_transform_func (void)
 	ret = cd_transform_process (transform,
 				    img_data_in,
 				    img_data_check,
-				    height,
 				    width,
+				    height,
 				    width,
 				    NULL,
 				    &error);
@@ -1680,8 +1680,8 @@ colord_transform_func (void)
 	ret = cd_transform_process (transform,
 				    img_data_in,
 				    img_data_out,
-				    height,
 				    width,
+				    height,
 				    width,
 				    NULL,
 				    &error);
@@ -1698,8 +1698,8 @@ colord_transform_func (void)
 			ret = cd_transform_process (transform,
 						    img_data_in,
 						    img_data_out,
-						    height,
 						    width,
+						    height,
 						    width,
 						    NULL,
 						    &error);
