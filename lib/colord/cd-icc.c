@@ -3226,7 +3226,7 @@ cd_icc_check_primaries (cmsHPROFILE profile)
 	tmp = cmsReadTag (profile, cmsSigBlueColorantTag);
 	if (tmp == NULL)
 		goto out;
-	if (tmp->X < 0.10f || tmp->Y < 0.01f || tmp->Z > 0.87f) {
+	if (tmp->X < 0.01f || tmp->Y < 0.0f || tmp->Z > 0.87f) {
 		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
 		goto out;
 	}
