@@ -1,3 +1,43 @@
+Version 1.2.0
+~~~~~~~~~~~~~
+Released: 2014-04-05
+
+New Features:
+ - Generate the CMFs from source data (Richard Hughes)
+ - Install several standard illuminants (Richard Hughes)
+ - Install the CRI Test Color Samples (Richard Hughes)
+ - Make colormgr script friendly by allowing filtering (Richard Hughes)
+ - Use the new cmsContext functionality in LCMS 2.6 (Richard Hughes)
+ - colord: Add a RGB32 pixel format for GdkPixbuf (Richard Hughes)
+ - colord: Add a utility function to calculate an XYZ value from a CMF (Richard Hughes)
+ - colord: Add a whitepoint value to cd_color_xyz_to_uvw() (Richard Hughes)
+ - colord: Add CdColorUVW and some useful functionality (Richard Hughes)
+ - colord: Add cd_color_xyz_to_cct() (Richard Hughes)
+ - colord: Add cd_icc_get_context() to get the internal cmsContext used by lcms2 (Richard Hughes)
+ - colord: Add cd_it8_utils_calculate_cri_from_cmf() to generate a CRI (Richard Hughes)
+ - colord: Add cd_spectrum_multiply() to multiply two spectra (Richard Hughes)
+ - colord: Add cd_spectrum_planckian_new() (Richard Hughes)
+ - colord: Add functionality to read and write raw tag data (Richard Hughes)
+ - colord: Support CCSS data files (Richard Hughes)
+ - colord: Support SPECTRAL_NORM in it8 files (Richard Hughes)
+ - colorhug: Support setting and getting the DAC value (Richard Hughes)
+
+Bugfixes:
+ - Correctly convert all of the image when using CdTransform (Richard Hughes)
+ - EDID strings can be up to 13 bytes (Florian Höch)
+ - Fix the blue primary check so ProPhotoRGB is not marked as invalid (Richard Hughes)
+ - Fix the tag 'size' when viewing a profile in cd-iccdump with newer lcms versions (Richard Hughes)
+ - Only include libudev in Requires.private on Linux (Richard Hughes)
+ - Use the corect sensor-kind values for GretagMacbeth sensors (Richard Hughes)
+ - colord: Do not invalidate the CdTransform if the CdIcc object does not change (Richard Hughes)
+ - colord: Do not use G_GNUC_WARN_UNUSED_RESULT when uninhibiting (Richard Hughes)
+ - colord: Fix a potential crash when destroying a CdIt8 object (Richard Hughes)
+ - colord: Fix the GObject introspection for cd_device_get_profiles() (Richard Hughes)
+ - colord: Improve the error handling in CdIt8 (Richard Hughes)
+ - colord: Load the profile defaults when using cd_icc_create_default() (Richard Hughes)
+ - colorhug: Handle failure to initialise GUsb in self-tests (Christopher James Halse Rogers)
+ - colorhug: Rename 'ColorHug Spectro' to 'ColorHug+' for trademark reasons (Richard Hughes)
+
 Version 1.1.5
 ~~~~~~~~~~~~~
 Released: 2013-12-11
