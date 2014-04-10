@@ -1,3 +1,18 @@
+Version 1.0.7
+~~~~~~~~~~~~~
+Released: 2013-04-10
+
+Note:
+ - This is the very last release of color 1.0.x -- you should upgrade to the
+   stable 1.1.x releases as soon as possible.
+
+Bugfixes:
+ - Fix a small memory leak when scanning folders of ICC files (Richard Hughes)
+ - Fix a tiny memory leak when writing MLUC tags (Richard Hughes)
+ - Fix the blue primary check so ProPhotoRGB is not marked as invalid (Richard Hughes)
+ - libcolord: Fix the GObject introspection for cd_device_get_profiles() (Richard Hughes)
+ - Restyle the i1-display3-attach and hcfr-attach figures (Pascal de Bruijn)
+
 Version 1.0.6
 ~~~~~~~~~~~~~
 Released: 2013-01-13
