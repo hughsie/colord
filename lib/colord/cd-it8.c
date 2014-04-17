@@ -1424,7 +1424,7 @@ cd_it8_save_to_data (CdIt8 *it8,
 	gchar *data_tmp = NULL;
 	gchar *date_str = NULL;
 	GDateTime *datetime = NULL;
-	gsize size_tmp = 0;
+	cmsUInt32Number size_tmp = 0;
 	guint i;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
@@ -1494,10 +1494,10 @@ cd_it8_save_to_data (CdIt8 *it8,
 	}
 
 	/* write the file */
-	ret = cmsIT8SaveToMem (it8_lcms, NULL, (cmsUInt32Number *) &size_tmp);
+	ret = cmsIT8SaveToMem (it8_lcms, NULL, &size_tmp);
 	g_assert (ret);
 	data_tmp = g_malloc (size_tmp);
-	ret = cmsIT8SaveToMem (it8_lcms, data_tmp, (cmsUInt32Number *) &size_tmp);
+	ret = cmsIT8SaveToMem (it8_lcms, data_tmp, &size_tmp);
 	g_assert (ret);
 
 	/* save for caller */
