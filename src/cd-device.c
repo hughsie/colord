@@ -917,6 +917,25 @@ cd_device_get_nullable_for_string (const gchar *value)
 }
 
 /**
+ * cd_device_set_serial:
+ **/
+static void
+cd_device_set_serial (CdDevice *device, const gchar *value)
+{
+	CdDevicePrivate *priv = device->priv;
+	gchar *tmp;
+
+	/* CUPS likes to hand us a serial with a URI prepended */
+	g_free (priv->serial);
+	tmp = g_strstr_len (value, -1, "?serial=");
+	if (tmp != NULL) {
+		priv->serial = g_strdup (tmp + 8);
+		return;
+	}
+	priv->serial = g_strdup (value);
+}
+
+/**
  * cd_device_set_property_internal:
  **/
 gboolean
@@ -957,8 +976,7 @@ cd_device_set_property_internal (CdDevice *device,
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_VENDOR) == 0) {
 		cd_device_set_vendor (device, value);
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_SERIAL) == 0) {
-		g_free (priv->serial);
-		priv->serial = g_strdup (value);
+		cd_device_set_serial (device, value);
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_COLORSPACE) == 0) {
 		g_free (priv->colorspace);
 		priv->colorspace = g_strdup (value);
