@@ -21,7 +21,7 @@
     <_message>Authentication is required to create a color managed device</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -36,7 +36,7 @@
     <_message>Authentication is required to create a color profile</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -51,7 +51,7 @@
     <_message>Authentication is required to remove a color managed device</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -66,7 +66,7 @@
     <_message>Authentication is required to remove a color profile</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -81,7 +81,7 @@
     <_message>Authentication is required to modify the color settings for a device</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -96,7 +96,7 @@
     <_message>Authentication is required to modify a color profile</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -116,7 +116,7 @@
     <_message>Authentication is required to install the color profile for all users</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
@@ -132,7 +132,7 @@
     <_message>Authentication is required to disable profile matching for a device</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
@@ -148,7 +148,7 @@
     <_message>Authentication is required to use the color sensor</_message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
-      <allow_any>no</allow_any>
+      <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
