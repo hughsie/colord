@@ -299,8 +299,6 @@
             Gets a profile path for a defined profile space.
             The defined space is set from the profile metadata,
             specifically in the <doc:tt>STANDARD_space</doc:tt> entry.
-            The <doc:tt>colord.conf</doc:tt> file allows an
-            administrator to manually override profiles if required.
           </doc:para>
           <doc:para>
             NOTE: only system wide profiles are able to define
