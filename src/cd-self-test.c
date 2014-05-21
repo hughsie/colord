@@ -35,6 +35,7 @@
 #include "cd-device.h"
 #include "cd-mapping-db.h"
 #include "cd-profile-array.h"
+#include "cd-profile-db.h"
 #include "cd-profile.h"
 
 static void
@@ -472,6 +473,75 @@ cd_device_db_func (void)
 	g_object_unref (ddb);
 }
 
+static void
+cd_profile_db_func (void)
+{
+	CdProfileDb *pdb;
+	GError *error = NULL;
+	gboolean ret;
+	gchar *value = NULL;
+
+	/* create */
+	pdb = cd_profile_db_new ();
+	g_assert (pdb != NULL);
+
+	/* connect, which should create it for us */
+	ret = cd_profile_db_load (pdb, "/tmp/profile.db", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* ensure empty */
+	ret = cd_profile_db_empty (pdb, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* set a property */
+	ret = cd_profile_db_set_property (pdb,
+					 "profile-test",
+					 "Title",
+					 500,
+					 "My Display Profile",
+					 &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	/* get a property that does not exist */
+	ret = cd_profile_db_get_property (pdb,
+					  "profile-test",
+					  "Modified",
+					  500,
+					  &value,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert_cmpstr (value, ==, NULL);
+
+	/* get a property for a different user */
+	ret = cd_profile_db_get_property (pdb,
+					  "profile-test",
+					  "Title",
+					  501,
+					  &value,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert_cmpstr (value, ==, NULL);
+
+	/* get a property that does exist */
+	ret = cd_profile_db_get_property (pdb,
+					  "profile-test",
+					  "Title",
+					  500,
+					  &value,
+					  &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert_cmpstr (value, ==, "My Display Profile");
+	g_free (value);
+
+	g_object_unref (pdb);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -487,6 +557,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);
 	g_test_add_func ("/colord/device-db", cd_device_db_func);
 	g_test_add_func ("/colord/profile", colord_profile_func);
+	g_test_add_func ("/colord/profile-db", cd_profile_db_func);
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/device-array", colord_device_array_func);
 	return g_test_run ();

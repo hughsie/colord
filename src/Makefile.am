@@ -82,6 +82,8 @@ colord_SOURCES =					\
 	cd-plugin.h					\
 	cd-profile-array.c				\
 	cd-profile-array.h				\
+	cd-profile-db.c					\
+	cd-profile-db.h					\
 	cd-profile.c					\
 	cd-profile.h					\
 	cd-sensor.c					\
@@ -136,6 +138,8 @@ cd_self_test_SOURCES =					\
 	cd-mapping-db.h					\
 	cd-profile-array.c				\
 	cd-profile-array.h				\
+	cd-profile-db.c					\
+	cd-profile-db.h					\
 	cd-profile.c					\
 	cd-profile.h					\
 	cd-resources.c					\

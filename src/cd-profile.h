@@ -107,6 +107,7 @@ void		 cd_profile_watch_sender		(CdProfile	*profile,
 gboolean	 cd_profile_set_property_internal	(CdProfile	*profile,
 							 const gchar	*property,
 							 const gchar	*value,
+							 guint		 sender_uid,
 							 GError		**error);
 const gchar	**cd_profile_get_warnings		(CdProfile	*profile);
 

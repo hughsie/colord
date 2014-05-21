@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2014 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -40,6 +40,7 @@
 #include "cd-mapping-db.h"
 #include "cd-plugin.h"
 #include "cd-profile-array.h"
+#include "cd-profile-db.h"
 #include "cd-profile.h"
 #include "cd-icc-store.h"
 #include "cd-resources.h"
@@ -56,6 +57,7 @@ typedef struct {
 	CdIccStore		*icc_store;
 	CdMappingDb		*mapping_db;
 	CdDeviceDb		*device_db;
+	CdProfileDb		*profile_db;
 #ifdef HAVE_UDEV
 	CdSensorClient		*sensor_client;
 #endif
@@ -1618,6 +1620,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			ret = cd_profile_set_property_internal (profile,
 								prop_key,
 								prop_value,
+								uid,
 								&error);
 			if (!ret) {
 				g_dbus_method_invocation_return_gerror (invocation,
@@ -1806,6 +1809,7 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 	cd_profile_set_property_internal (profile,
 					  CD_PROFILE_METADATA_FILE_CHECKSUM,
 					  checksum,
+					  0, /* uid unknown */
 					  NULL);
 
 	/* just add it to the bus with the title as the ID */
@@ -2742,6 +2746,18 @@ main (int argc, char *argv[])
 		goto out;
 	}
 
+	/* connect to the profile db */
+	priv->profile_db = cd_profile_db_new ();
+	ret = cd_profile_db_load (priv->profile_db,
+				  LOCALSTATEDIR "/lib/colord/storage.db",
+				  &error);
+	if (!ret) {
+		g_warning ("CdMain: failed to load profile database: %s",
+			   error->message);
+		g_error_free (error);
+		goto out;
+	}
+
 	/* load introspection from file */
 	priv->introspection_daemon = cd_main_load_introspection (COLORD_DBUS_INTERFACE ".xml",
 								 &error);
@@ -2845,6 +2861,8 @@ out:
 			g_object_unref (priv->mapping_db);
 		if (priv->device_db != NULL)
 			g_object_unref (priv->device_db);
+		if (priv->profile_db != NULL)
+			g_object_unref (priv->profile_db);
 		if (priv->devices_array != NULL)
 			g_object_unref (priv->devices_array);
 		if (priv->profiles_array != NULL)

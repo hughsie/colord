@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2014 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -31,6 +31,7 @@
 
 #include "cd-common.h"
 #include "cd-profile.h"
+#include "cd-profile-db.h"
 #include "cd-resources.h"
 
 static void	cd_profile_finalize	(GObject	*object);
@@ -67,6 +68,7 @@ struct _CdProfilePrivate
 	gchar				**warnings;
 	GMappedFile			*mapped_file;
 	guint				 score;
+	CdProfileDb			*db;
 };
 
 enum {
@@ -530,12 +532,46 @@ cd_profile_get_nullable_for_string (const gchar *value)
 }
 
 /**
+ * cd_profile_set_title:
+ **/
+static gboolean
+cd_profile_set_title (CdProfile *profile,
+		      const gchar *value,
+		      guint sender_uid,
+		      GError **error)
+{
+	gboolean ret = TRUE;
+	CdProfilePrivate *priv = profile->priv;
+
+	/* check title is suitable */
+	if (value == NULL || strlen (value) < 3 ||
+	    !g_utf8_validate (value, -1, NULL)) {
+		ret = FALSE;
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INPUT_INVALID,
+			     "'Title' value input invalid: %s", value);
+		goto out;
+	}
+
+	/* save in database */
+	ret = cd_profile_db_set_property (priv->db, priv->id,
+					  CD_PROFILE_PROPERTY_TITLE, sender_uid,
+					  value, error);
+	if (!ret)
+		goto out;
+out:
+	return ret;
+}
+
+/**
  * cd_profile_set_property_internal:
  **/
 gboolean
 cd_profile_set_property_internal (CdProfile *profile,
 				  const gchar *property,
 				  const gchar *value,
+				  guint sender_uid,
 				  GError **error)
 {
 	gboolean ret = TRUE;
@@ -580,6 +616,12 @@ cd_profile_set_property_internal (CdProfile *profile,
 		cd_profile_dbus_emit_property_changed (profile,
 						       property,
 						       g_variant_new_string (value));
+	} else if (g_strcmp0 (property, CD_PROFILE_PROPERTY_TITLE) == 0) {
+		ret = cd_profile_set_title (profile, value, sender_uid, error);
+		if (!ret)
+			goto out;
+		cd_profile_dbus_emit_property_changed (profile, property,
+						       g_variant_new_string (value));
 	} else {
 		/* add to metadata */
 		cd_profile_set_metadata (profile, property, value);
@@ -605,6 +647,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
 	gboolean ret;
+	guint uid;
 	const gchar *property_name = NULL;
 	const gchar *property_value = NULL;
 	GError *error = NULL;
@@ -622,6 +665,17 @@ cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_PROFILE_ERROR,
 							       CD_PROFILE_ERROR_FAILED_TO_AUTHENTICATE,
+							       "%s", error->message);
+			g_error_free (error);
+			goto out;
+		}
+
+		/* get UID */
+		uid = cd_main_get_sender_uid (connection, sender, &error);
+		if (uid == G_MAXUINT) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_PROFILE_ERROR,
+							       CD_PROFILE_ERROR_FAILED_TO_GET_UID,
 							       "%s", error->message);
 			g_error_free (error);
 			goto out;
@@ -645,6 +699,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		ret = cd_profile_set_property_internal (profile,
 							property_name,
 							property_value,
+							uid,
 							&error);
 		if (!ret) {
 			g_dbus_method_invocation_return_gerror (invocation,
@@ -699,48 +754,64 @@ out:
  * cd_profile_dbus_get_property:
  **/
 static GVariant *
-cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
+cd_profile_dbus_get_property (GDBusConnection *connection, const gchar *sender,
 			     const gchar *object_path, const gchar *interface_name,
 			     const gchar *property_name, GError **error,
 			     gpointer user_data)
 {
 	GVariant *retval = NULL;
 	CdProfile *profile = CD_PROFILE (user_data);
+	CdProfilePrivate *priv = profile->priv;
+	gboolean ret;
+	gchar *title_db = NULL;
+	guint uid;
 
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_TITLE) == 0) {
-		retval = cd_profile_get_nullable_for_string (profile->priv->title);
+		uid = cd_main_get_sender_uid (connection, sender, error);
+		if (uid == G_MAXUINT)
+			goto out;
+		ret = cd_profile_db_get_property (priv->db, priv->id,
+						  property_name, uid,
+						  &title_db, error);
+		if (!ret)
+			goto out;
+		if (title_db != NULL) {
+			retval = cd_profile_get_nullable_for_string (title_db);
+			goto out;
+		}
+		retval = cd_profile_get_nullable_for_string (priv->title);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_ID) == 0) {
-		retval = cd_profile_get_nullable_for_string (profile->priv->id);
+		retval = cd_profile_get_nullable_for_string (priv->id);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_QUALIFIER) == 0) {
-		retval = cd_profile_get_nullable_for_string (profile->priv->qualifier);
+		retval = cd_profile_get_nullable_for_string (priv->qualifier);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FORMAT) == 0) {
-		retval = cd_profile_get_nullable_for_string (profile->priv->format);
+		retval = cd_profile_get_nullable_for_string (priv->format);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FILENAME) == 0) {
-		retval = cd_profile_get_nullable_for_string (profile->priv->filename);
+		retval = cd_profile_get_nullable_for_string (priv->filename);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_KIND) == 0) {
-		retval = g_variant_new_string (cd_profile_kind_to_string (profile->priv->kind));
+		retval = g_variant_new_string (cd_profile_kind_to_string (priv->kind));
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_COLORSPACE) == 0) {
-		retval = g_variant_new_string (cd_colorspace_to_string (profile->priv->colorspace));
+		retval = g_variant_new_string (cd_colorspace_to_string (priv->colorspace));
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_HAS_VCGT) == 0) {
-		retval = g_variant_new_boolean (profile->priv->has_vcgt);
+		retval = g_variant_new_boolean (priv->has_vcgt);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_IS_SYSTEM_WIDE) == 0) {
-		retval = g_variant_new_boolean (profile->priv->is_system_wide);
+		retval = g_variant_new_boolean (priv->is_system_wide);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_METADATA) == 0) {
@@ -748,20 +819,20 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_CREATED) == 0) {
-		retval = g_variant_new_int64 (profile->priv->created);
+		retval = g_variant_new_int64 (priv->created);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_SCOPE) == 0) {
-		retval = g_variant_new_string (cd_object_scope_to_string (profile->priv->object_scope));
+		retval = g_variant_new_string (cd_object_scope_to_string (priv->object_scope));
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_OWNER) == 0) {
-		retval = g_variant_new_uint32 (profile->priv->owner);
+		retval = g_variant_new_uint32 (priv->owner);
 		goto out;
 	}
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_WARNINGS) == 0) {
-		if (profile->priv->warnings != NULL) {
-			retval = g_variant_new_strv ((const gchar * const *) profile->priv->warnings, -1);
+		if (priv->warnings != NULL) {
+			retval = g_variant_new_strv ((const gchar * const *) priv->warnings, -1);
 		} else {
 			const gchar *tmp[] = { NULL };
 			retval = g_variant_new_strv (tmp, -1);
@@ -776,6 +847,7 @@ cd_profile_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 		     "failed to get profile property %s",
 		     property_name);
 out:
+	g_free (title_db);
 	return retval;
 }
 
@@ -1417,6 +1489,7 @@ static void
 cd_profile_init (CdProfile *profile)
 {
 	profile->priv = CD_PROFILE_GET_PRIVATE (profile);
+	profile->priv->db = cd_profile_db_new ();
 	profile->priv->metadata = g_hash_table_new_full (g_str_hash,
 							 g_str_equal,
 							 g_free,
@@ -1447,6 +1520,7 @@ cd_profile_finalize (GObject *object)
 	g_free (priv->id);
 	g_free (priv->checksum);
 	g_free (priv->object_path);
+	g_object_unref (priv->db);
 	g_strfreev (priv->warnings);
 	g_hash_table_unref (priv->metadata);
 
