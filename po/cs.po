@@ -4,17 +4,17 @@
 # 
 # Translators:
 # Adam Pribyl <pribyl@lowlevel.cz>, 2008
-# fri <pavelfric@seznam.cz>, 2011
-# Milan Knížek <knizek@volny.cz>, 2011-2013
+# fri, 2011
+# Milan Knížek <knizek@volny.cz>, 2011-2014
 # Richard Hughes <richard@hughsie.com>, 2011
 # Vojtech Smejkal <smejkalv@gmail.com>, 2008
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 14:56+0000\n"
-"PO-Revision-Date: 2014-03-18 14:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-03-31 09:13+0100\n"
+"PO-Revision-Date: 2014-03-31 09:17+0000\n"
+"Last-Translator: Milan Knížek <knizek@volny.cz>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/colord/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -99,7 +99,7 @@ msgstr "Nastavit verzi profilu ICC"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "Exportovat metadata"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -111,11 +111,11 @@ msgstr "Program pro výpis informací o profilu ICC"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Vytvořit CMF z CSV"
 
 #. TRANSLATORS: command description
-msgid "Create a spectra from CSV data"
-msgstr ""
+msgid "Create a spectrum from CSV data"
+msgstr "Vytvořit spektrum z textových dat (CSV)"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -366,11 +366,11 @@ msgstr "Zobrazit verze klienta a démona"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Zobrazit hodnotu bez záhlaví"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Při zobrazení filtrovat vlastnosti objektu"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"

@@ -4,14 +4,14 @@
 # 
 # Translators:
 # POPularMAN, 2013
-# Piotr Drąg <piotrdrag@gmail.com>, 2011-2013
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 14:56+0000\n"
-"PO-Revision-Date: 2014-03-18 14:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-03-31 09:13+0100\n"
+"PO-Revision-Date: 2014-03-31 15:02+0000\n"
+"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/colord/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -96,7 +96,7 @@ msgstr "Ustawia wersję profilu ICC"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "Eksportuje dane etykiety"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -108,11 +108,11 @@ msgstr "Program do zrzucania profilu ICC"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Tworzy CMF z danych CSV"
 
 #. TRANSLATORS: command description
-msgid "Create a spectra from CSV data"
-msgstr ""
+msgid "Create a spectrum from CSV data"
+msgstr "Tworzy widmo z danych CSV"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -363,11 +363,11 @@ msgstr "Wyświetla wersje klienta i usługi"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Wyświetla wartość bez żadnych nagłówków"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Filtruje właściwości obiektu podczas wyświetlania"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"

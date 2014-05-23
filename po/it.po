@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 14:56+0000\n"
-"PO-Revision-Date: 2014-03-18 14:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-03-31 09:13+0100\n"
+"PO-Revision-Date: 2014-03-31 08:33+0000\n"
+"Last-Translator: milo <milo@ubuntu.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/colord/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -98,7 +98,7 @@ msgstr "Imposta la versione del profilo ICC"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "Esporta i dati del profilo"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -110,11 +110,11 @@ msgstr "Programma per dump di profili ICC"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Crea un CMF da dati CSV"
 
 #. TRANSLATORS: command description
-msgid "Create a spectra from CSV data"
-msgstr ""
+msgid "Create a spectrum from CSV data"
+msgstr "Crea uno spectrum da dati CSV"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -365,11 +365,11 @@ msgstr "Mostra la versione del client e del demone"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Mostra il valore senza alcuna intestazione"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Filtra le proprietà dell'oggetto nella visualizzazione"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"

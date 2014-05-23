@@ -6,14 +6,14 @@
 # Richard Hughes <richard@hughsie.com>, 2011,2013
 # vylekzhanin <vylekzhanin@mail.ru>, 2013
 # vylekzhanin <vylekzhanin@mail.ru>, 2013
-# Yuri Chornoivan <yurchor@ukr.net>, 2009-2013
+# Yuri Chornoivan <yurchor@ukr.net>, 2009-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 14:56+0000\n"
-"PO-Revision-Date: 2014-03-18 14:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-03-31 09:13+0100\n"
+"PO-Revision-Date: 2014-03-31 09:59+0000\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/colord/language/uk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -98,7 +98,7 @@ msgstr "Встановити значення версії профілю ICC"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "Експортувати дані міток"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -110,11 +110,11 @@ msgstr "Програма для створення дампів профілів
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Створити CMF на основі даних CSV"
 
 #. TRANSLATORS: command description
-msgid "Create a spectra from CSV data"
-msgstr ""
+msgid "Create a spectrum from CSV data"
+msgstr "Створити спектр на основі даних CSV"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -365,11 +365,11 @@ msgstr "Вивести дані щодо версій клієнтської ч�
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Показувати значення без заголовка"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Фільтрувати властивості об’єктів під час показу"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"

@@ -4,17 +4,18 @@
 # 
 # Translators:
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2012
-# kelemeng <kelemeng@gnome.hu>, 2012
+# kelemeng <kelemeng@ubuntu.com>, 2012
 # Peter Borsa <peter.borsa@gmail.com>, 2013
 # vylekzhanin <vylekzhanin@mail.ru>, 2013
 # Zoltan Hoppár <zoltanh721@fedoraproject.org>, 2013
+# Zoltan Hoppár <zoltanh721@fedoraproject.org>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 14:56+0000\n"
-"PO-Revision-Date: 2014-03-18 14:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-03-31 09:13+0100\n"
+"PO-Revision-Date: 2014-05-02 12:50+0000\n"
+"Last-Translator: Zoltan Hoppár <zoltanh721@fedoraproject.org>\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/colord/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,7 +52,7 @@ msgstr "Extra hibakeresési információk megjelenítése"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "Felhasznált nyelv a lokalizált szöveghez"
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
@@ -114,7 +115,7 @@ msgid "Create a CMF from CSV data"
 msgstr ""
 
 #. TRANSLATORS: command description
-msgid "Create a spectra from CSV data"
+msgid "Create a spectrum from CSV data"
 msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
@@ -297,11 +298,11 @@ msgstr "LCD RGB LED"
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "Wide Gamut LCD CCFL"
 
 #. TRANSLATORS: this is the display technology
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "Wide Gamut LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
@@ -450,7 +451,7 @@ msgstr "Profil törlése"
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "További tulajdonságokat állít be a profilon"
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
@@ -521,7 +522,7 @@ msgid ""
 msgstr "Alapértelmezett kijező célzott fehérpontja Kelvinben a kijelző beállításánál, ahol a 0 jelenti a kijelző natív alapállását. Gyakori értékek a 6500 a D65-nél és 5000 a D50-nél."
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Késleltetés minták közt"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
@@ -530,7 +531,7 @@ msgid ""
 msgstr ""
 
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "Web szolgáltatás profil - feltöltési URI"
 
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
@@ -541,7 +542,7 @@ msgid "Compatible with Adobe RGB (1998)"
 msgstr "Kompatibilis az Adobe RGB (1998)-cal"
 
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Ez a profil mentes az ismert szerzői jogi megkötésektől"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -613,7 +614,7 @@ msgid ""
 msgstr ""
 
 msgid "Crayon Colors"
-msgstr ""
+msgstr "Kréta színek"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -654,17 +655,17 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "FOGRA27L fedett"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "This profile is used for positive plate making, printing on paper types 1 and 2 (coated or matte), sheetfed offset. This profile set should no longer be used for production, use FOGRA39L instead."
 
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "FOGRA28L Web fedett"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -675,7 +676,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA29L Uncoated"
-msgstr ""
+msgstr "FOGRA29L fedetlen"
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -686,7 +687,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr ""
+msgstr "FOGRA30L fedetlen sárgás"
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 msgid ""
@@ -695,7 +696,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA39L Coated"
-msgstr ""
+msgstr "FOGRA39L fedett"
 
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
@@ -707,7 +708,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA40L SC Paper"
-msgstr ""
+msgstr "FOGRA40L SC Paper"
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 msgid ""
@@ -716,7 +717,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L Lightweight Coated"
 
 #. TRANSLATORS: ISO is a trademark
 msgid ""
@@ -726,7 +727,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "FOGRA47L Uncoated"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 msgid ""
@@ -735,7 +736,7 @@ msgid ""
 msgstr ""
 
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "GRACoL TR006 Coated"
 
 #. TRANSLATORS: coated = smooth and expensive
 msgid ""
@@ -744,7 +745,7 @@ msgid ""
 msgstr ""
 
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 Newsprint"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -793,7 +794,7 @@ msgid ""
 msgstr ""
 
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 Newsprint"
 
 #. TRANSLATORS: CGATS is a trademark
 #, no-c-format
@@ -823,7 +824,7 @@ msgid ""
 msgstr ""
 
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "SWOP TR003 Coated"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
@@ -833,7 +834,7 @@ msgid ""
 msgstr ""
 
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "SWOP TR005 Coated"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
@@ -843,7 +844,7 @@ msgid ""
 msgstr ""
 
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "Wide Gamut RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 msgid ""

@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 14:56+0000\n"
-"PO-Revision-Date: 2014-03-18 14:58+0000\n"
+"POT-Creation-Date: 2014-03-31 09:13+0100\n"
+"PO-Revision-Date: 2014-03-31 08:13+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/colord/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
@@ -113,8 +113,8 @@ msgid "Create a CMF from CSV data"
 msgstr "Create a CMF from CSV data"
 
 #. TRANSLATORS: command description
-msgid "Create a spectra from CSV data"
-msgstr "Create a spectra from CSV data"
+msgid "Create a spectrum from CSV data"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"

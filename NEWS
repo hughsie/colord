@@ -1,3 +1,16 @@
+Version 1.2.1
+~~~~~~~~~~~~~
+Released: 2014-05-23
+
+New Features:
+ - Allow users to rename session and system ICC profiles (Richard Hughes)
+
+Bugfixes:
+ - Fix building the CMF spectra on OpenBSD/sparc64 (Richard Hughes)
+ - Fix the style of two colorimeter figures (Pascal de Bruijn)
+ - Make colord polkit policy usable on servers (Stef Walter)
+ - Trim out the CUPS-supplied prefix for the printer serial number (Richard Hughes)
+
 Version 1.2.0
 ~~~~~~~~~~~~~
 Released: 2014-04-05

@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 14:56+0000\n"
-"PO-Revision-Date: 2014-03-18 14:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-03-31 09:13+0100\n"
+"PO-Revision-Date: 2014-03-31 13:24+0000\n"
+"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/colord/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -95,7 +95,7 @@ msgstr "設定 ICC 描述檔版本"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "匯出標籤資料"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -107,11 +107,11 @@ msgstr "ICC 描述檔傾印程式"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "根據 CSV 資料建立 CMF "
 
 #. TRANSLATORS: command description
-msgid "Create a spectra from CSV data"
-msgstr ""
+msgid "Create a spectrum from CSV data"
+msgstr "根據 CSV 資料建立光譜"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -362,11 +362,11 @@ msgstr "顯示客戶端與幕後程式版本"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "顯示沒有任何標頭的值"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "顯示時過濾物件屬性"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
