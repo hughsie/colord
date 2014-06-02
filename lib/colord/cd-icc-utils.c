@@ -31,6 +31,7 @@
 #include <glib-object.h>
 #include <lcms2.h>
 
+#include "cd-cleanup.h"
 #include "cd-icc-utils.h"
 
 typedef struct {
@@ -63,16 +64,16 @@ cd_icc_utils_get_coverage_calc (CdIcc *icc,
 				GError **error)
 {
 	const guint cube_size = 33;
-	cmsFloat32Number *data = NULL;
 	cmsHPROFILE profile_null = NULL;
 	cmsHTRANSFORM transform = NULL;
-	cmsUInt16Number *alarm_codes = NULL;
 	cmsUInt32Number dimensions[] = { cube_size, cube_size, cube_size };
 	CdIccUtilsGamutCheckHelper helper;
 	gboolean ret = TRUE;
 	guint cnt = 0;
 	guint data_len = cube_size * cube_size * cube_size;
 	guint i;
+	_cleanup_free cmsFloat32Number *data = NULL;
+	_cleanup_free cmsUInt16Number *alarm_codes = NULL;
 
 	/* create a proofing transform with gamut check */
 	profile_null = cmsCreateNULLProfileTHR (cd_icc_get_context (icc));
@@ -130,7 +131,6 @@ cd_icc_utils_get_coverage_calc (CdIcc *icc,
 	if (coverage != NULL)
 		*coverage = (gdouble) cnt / (gdouble) data_len;
 out:
-	g_free (data);
 	cmsCloseProfile (profile_null);
 	if (transform != NULL)
 		cmsDeleteTransform (transform);
@@ -155,31 +155,27 @@ cd_icc_utils_get_coverage (CdIcc *icc,
 			   gdouble *coverage,
 			   GError **error)
 {
-	gboolean ret;
 	gdouble coverage_tmp;
 
 	/* first see if icc has a smaller gamut volume to the reference */
-	ret = cd_icc_utils_get_coverage_calc (icc,
-					      icc_reference,
-					      &coverage_tmp,
-					      error);
-	if (!ret)
-		goto out;
+	if (!cd_icc_utils_get_coverage_calc (icc,
+					     icc_reference,
+					     &coverage_tmp,
+					     error))
+		return FALSE;
 
 	/* now try the other way around */
 	if (coverage_tmp >= 1.0f) {
-		ret = cd_icc_utils_get_coverage_calc (icc_reference,
-						      icc,
-						      &coverage_tmp,
-						      error);
-		if (!ret)
-			goto out;
+		if (!cd_icc_utils_get_coverage_calc (icc_reference,
+						     icc,
+						     &coverage_tmp,
+						     error))
+			return FALSE;
 		coverage_tmp = 1 / coverage_tmp;
 	}
 
 	/* success */
 	if (coverage != NULL)
 		*coverage = coverage_tmp;
-out:
-	return ret;
+	return TRUE;
 }

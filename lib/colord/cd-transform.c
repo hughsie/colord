@@ -35,6 +35,7 @@
 #include <glib.h>
 #include <lcms2.h>
 
+#include "cd-cleanup.h"
 #include "cd-context-lcms.h"
 #include "cd-transform.h"
 
@@ -591,32 +592,27 @@ cd_transform_process_func (gpointer data, gpointer user_data)
 static gboolean
 cd_transform_set_max_threads_default (CdTransform *transform, GError **error)
 {
-	gchar *data = NULL;
-	gboolean ret;
+	_cleanup_free gchar *data = NULL;
 	gchar *tmp;
 
 	/* use "cpu cores" to work out best number of threads */
-	ret = g_file_get_contents ("/proc/cpuinfo", &data, NULL, error);
-	if (!ret)
-		goto out;
+	if (!g_file_get_contents ("/proc/cpuinfo", &data, NULL, error))
+		return FALSE;
 	tmp = g_strstr_len (data, -1, "cpu cores\t: ");
 	if (tmp == NULL) {
 		/* some processors do not provide this info */
 		transform->priv->max_threads = 1;
-		goto out;
+		return TRUE;
 	}
 	transform->priv->max_threads = g_ascii_strtoull (tmp + 12, NULL, 10);
 	if (transform->priv->max_threads == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_TRANSFORM_ERROR,
 				     CD_TRANSFORM_ERROR_LAST,
 				     "Failed to parse number of cores");
-		goto out;
+		return FALSE;
 	}
-out:
-	g_free (data);
-	return ret;
+	return TRUE;
 }
 
 /**

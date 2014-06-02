@@ -11,6 +11,8 @@ AM_CPPFLAGS =						\
 	$(LCMS_CFLAGS)					\
 	-I$(top_srcdir)/client				\
 	-I$(top_builddir)/lib				\
+	-I$(top_srcdir)/lib/colord			\
+	-I$(top_builddir)/lib/colord			\
 	-I$(top_srcdir)/src				\
 	-DCD_COMPILATION				\
 	-DCD_DISABLE_DEPRECATED				\

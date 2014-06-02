@@ -29,6 +29,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include "cd-cleanup.h"
 #include "cd-icc-store.h"
 
 static void	cd_icc_store_finalize	(GObject	*object);
@@ -168,27 +169,22 @@ cd_icc_store_find_by_directory (CdIccStore *store, const gchar *path)
 static gboolean
 cd_icc_store_remove_icc (CdIccStore *store, const gchar *filename)
 {
-	CdIcc *icc = NULL;
-	gboolean ret = FALSE;
+	_cleanup_unref_object CdIcc *icc = NULL;
 
 	/* find exact pointer */
 	icc = cd_icc_store_find_by_filename (store, filename);
 	if (icc == NULL)
-		goto out;
+		return FALSE;
 
 	/* we have a ref so we can emit the signal */
-	ret = g_ptr_array_remove (store->priv->icc_array, icc);
-	if (!ret) {
+	if (!g_ptr_array_remove (store->priv->icc_array, icc)) {
 		g_warning ("failed to remove %s", filename);
-		goto out;
+		return FALSE;
 	}
 
 	/* emit a signal */
 	g_signal_emit (store, signals[SIGNAL_REMOVED], 0, icc);
-out:
-	if (icc != NULL)
-		g_object_unref (icc);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -197,20 +193,18 @@ out:
 static gboolean
 cd_icc_store_add_icc (CdIccStore *store, GFile *file, GError **error)
 {
-	CdIcc *icc;
-	CdIcc *icc_tmp = NULL;
 	CdIccStorePrivate *priv = store->priv;
-	gboolean ret;
-	gchar *cache_key = NULL;
-	gchar *filename;
-	gchar *basename = NULL;
-	GBytes *data = NULL;
+	_cleanup_free gchar *filename;
+	_cleanup_unref_bytes GBytes *data = NULL;
+	_cleanup_unref_object CdIcc *icc;
+	_cleanup_unref_object CdIcc *icc_tmp = NULL;
 
 	/* use the GResource cache if available */
 	icc = cd_icc_new ();
 	filename = g_file_get_path (file);
 	if (store->priv->cache != NULL) {
 		if (g_str_has_prefix (filename, "/usr/share/color/icc/colord/")) {
+			_cleanup_free gchar *cache_key = NULL;
 			cache_key = g_build_filename ("/org/freedesktop/colord",
 						      "profiles",
 						      filename + 28,
@@ -224,35 +218,36 @@ cd_icc_store_add_icc (CdIccStore *store, GFile *file, GError **error)
 
 	/* parse new icc object */
 	if (data != NULL) {
+		_cleanup_free gchar *basename = NULL;
+		basename = g_path_get_basename (filename);
 		g_debug ("Using built-in %s", basename);
 		cd_icc_set_filename (icc, filename);
-		ret = cd_icc_load_data (icc,
+		if (!cd_icc_load_data (icc,
 					g_bytes_get_data (data, NULL),
 					g_bytes_get_size (data),
 					CD_ICC_LOAD_FLAGS_METADATA,
-					error);
-		if (!ret)
-			goto out;
+					error)) {
+			return FALSE;
+		}
 	} else {
-		ret = cd_icc_load_file (icc,
+		if (!cd_icc_load_file (icc,
 					file,
 					store->priv->load_flags,
 					NULL,
-					error);
-		if (!ret)
-			goto out;
+					error)) {
+			return FALSE;
+		}
 	}
 
 	/* check it's not a duplicate */
 	icc_tmp = cd_icc_store_find_by_checksum (store, cd_icc_get_checksum (icc));
 	if (icc_tmp != NULL) {
-		ret = TRUE;
 		g_debug ("CdIccStore: Failed to add %s as profile %s "
 			 "already exists with the same checksum of %s",
 			 filename,
 			 cd_icc_get_filename (icc_tmp),
 			 cd_icc_get_checksum (icc_tmp));
-		goto out;
+		return TRUE;
 	}
 
 	/* add to list */
@@ -260,15 +255,7 @@ cd_icc_store_add_icc (CdIccStore *store, GFile *file, GError **error)
 
 	/* emit a signal */
 	g_signal_emit (store, signals[SIGNAL_ADDED], 0, icc);
-out:
-	if (data != NULL)
-		g_bytes_unref (data);
-	if (icc_tmp != NULL)
-		g_object_unref (icc_tmp);
-	g_object_unref (icc);
-	g_free (filename);
-	g_free (cache_key);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -279,13 +266,13 @@ cd_icc_store_created_query_info_cb (GObject *source_object,
 				    GAsyncResult *res,
 				    gpointer user_data)
 {
-	GFileInfo *info;
-	GError *error = NULL;
-	gchar *path;
-	GFile *file = G_FILE (source_object);
-	GFile *parent;
-	gboolean ret;
 	CdIccStore *store = CD_ICC_STORE (user_data);
+	GError *error = NULL;
+	GFile *file = G_FILE (source_object);
+	gboolean ret;
+	_cleanup_unref_object GFile *parent = NULL;
+	_cleanup_unref_object GFileInfo *info;
+	_cleanup_free gchar *path = NULL;
 
 	info = g_file_query_info_finish (file, res, NULL);
 	if (info == NULL)
@@ -303,9 +290,6 @@ cd_icc_store_created_query_info_cb (GObject *source_object,
 			   error->message);
 		g_error_free (error);
 	}
-	g_free (path);
-	g_object_unref (info);
-	g_object_unref (parent);
 }
 
 /**
@@ -339,10 +323,9 @@ cd_icc_store_file_monitor_changed_cb (GFileMonitor *monitor,
 				      GFileMonitorEvent event_type,
 				      CdIccStore *store)
 {
-	gchar *path = NULL;
-	gchar *parent_path = NULL;
 	CdIcc *tmp;
 	CdIccStoreDirHelper *helper;
+	_cleanup_free gchar *path = NULL;
 
 	/* icc was deleted */
 	if (event_type == G_FILE_MONITOR_EVENT_DELETED) {
@@ -355,7 +338,7 @@ cd_icc_store_file_monitor_changed_cb (GFileMonitor *monitor,
 		if (tmp != NULL) {
 			/* is a file */
 			cd_icc_store_remove_icc (store, path);
-			goto out;
+			return;
 		}
 
 		/* is a directory, urgh. Remove all ICCs there. */
@@ -365,14 +348,14 @@ cd_icc_store_file_monitor_changed_cb (GFileMonitor *monitor,
 			g_ptr_array_remove (store->priv->directory_array,
 					    helper);
 		}
-		goto out;
+		return;
 	}
 
 	/* ignore temp files */
 	path = g_file_get_path (file);
 	if (g_strrstr (path, ".goutputstream") != NULL) {
 		g_debug ("ignoring gvfs temporary file");
-		goto out;
+		return;
 	}
 
 	/* only care about created objects */
@@ -386,11 +369,8 @@ cd_icc_store_file_monitor_changed_cb (GFileMonitor *monitor,
 					 NULL,
 					 cd_icc_store_created_query_info_cb,
 					 store);
-		goto out;
+		return;
 	}
-out:
-	g_free (path);
-	g_free (parent_path);
 }
 
 /**
@@ -406,47 +386,36 @@ cd_icc_store_search_path_child (CdIccStore *store,
 {
 	const gchar *name;
 	const gchar *type;
-	gboolean ret = TRUE;
-	gchar *full_path;
-	GFile *file = NULL;
+	_cleanup_free gchar *full_path = NULL;
+	_cleanup_unref_object GFile *file = NULL;
 
 	/* further down the worm-hole */
 	name = g_file_info_get_name (info);
 	full_path = g_build_filename (path, name, NULL);
 	if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-		ret = cd_icc_store_search_path (store,
+		return cd_icc_store_search_path (store,
 						full_path,
 						depth + 1,
 						cancellable,
 						error);
-		if (!ret)
-			goto out;
-		goto out;
 	}
 
 	/* ignore temp files */
 	if (g_strrstr (full_path, ".goutputstream") != NULL) {
 		g_debug ("ignoring gvfs temporary file");
-		goto out;
+		return TRUE;
 	}
 
 	/* check type */
 	type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
 	if (g_strcmp0 (type, "application/vnd.iccprofile") != 0) {
 		g_debug ("Incorrect content type for %s, got %s", full_path, type);
-		goto out;
+		return TRUE;
 	}
 
 	/* is a file */
 	file = g_file_new_for_path (full_path);
-	ret = cd_icc_store_add_icc (store, file, error);
-	if (!ret)
-		goto out;
-out:
-	if (file != NULL)
-		g_object_unref (file);
-	g_free (full_path);
-	return ret;
+	return cd_icc_store_add_icc (store, file, error);
 }
 
 /**
@@ -460,11 +429,11 @@ cd_icc_store_search_path (CdIccStore *store,
 			  GError **error)
 {
 	CdIccStoreDirHelper *helper;
-	GFileEnumerator *enumerator = NULL;
-	GFile *file = NULL;
-	gboolean ret = TRUE;
-	GFileInfo *info;
 	GError *error_local = NULL;
+	gboolean ret = TRUE;
+	_cleanup_unref_object GFileEnumerator *enumerator = NULL;
+	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_unref_object GFileInfo *info = NULL;
 
 	/* check sanity */
 	if (depth > CD_ICC_STORE_MAX_RECURSION_LEVELS) {
@@ -541,9 +510,6 @@ cd_icc_store_search_path (CdIccStore *store,
 			goto out;
 	}
 out:
-	if (enumerator != NULL)
-		g_object_unref (enumerator);
-	g_object_unref (file);
 	return ret;
 }
 
@@ -636,10 +602,9 @@ cd_icc_store_search_kind (CdIccStore *store,
 			  GCancellable *cancellable,
 			  GError **error)
 {
-	gboolean ret = TRUE;
 	gchar *tmp;
-	GPtrArray *locations;
 	guint i;
+	_cleanup_unref_ptrarray GPtrArray *locations = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC_STORE (store), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -669,20 +634,17 @@ cd_icc_store_search_kind (CdIccStore *store,
 	/* add any found locations */
 	for (i = 0; i < locations->len; i++) {
 		tmp = g_ptr_array_index (locations, i);
-		ret = cd_icc_store_search_location (store,
-						    tmp,
-						    search_flags,
-						    cancellable,
-						    error);
-		if (!ret)
-			goto out;
+		if (!cd_icc_store_search_location (store,
+						   tmp,
+						   search_flags,
+						   cancellable,
+						   error))
+			return FALSE;
 
 		/* only create the first location */
 		search_flags &= ~CD_ICC_STORE_SEARCH_FLAGS_CREATE_LOCATION;
 	}
-out:
-	g_ptr_array_unref (locations);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -706,9 +668,7 @@ cd_icc_store_search_location (CdIccStore *store,
 			      GCancellable *cancellable,
 			      GError **error)
 {
-	gboolean ret = TRUE;
-	gboolean exists;
-	GFile *file;
+	_cleanup_unref_object GFile *file = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC_STORE (store), FALSE);
 	g_return_val_if_fail (location != NULL, FALSE);
@@ -716,25 +676,18 @@ cd_icc_store_search_location (CdIccStore *store,
 
 	/* does folder exist? */
 	file = g_file_new_for_path (location);
-	exists = g_file_query_exists (file, cancellable);
-	if (!exists) {
+	if (!g_file_query_exists (file, cancellable)) {
 		if ((search_flags & CD_ICC_STORE_SEARCH_FLAGS_CREATE_LOCATION) > 0) {
-			ret = g_file_make_directory_with_parents (file, cancellable, error);
-			if (!ret)
-				goto out;
+			if (!g_file_make_directory_with_parents (file, cancellable, error))
+				return FALSE;
 		} else {
 			/* the directory does not exist */
-			goto out;
+			return TRUE;
 		}
 	}
 
 	/* search all */
-	ret = cd_icc_store_search_path (store, location, 0, cancellable, error);
-	if (!ret)
-		goto out;
-out:
-	g_object_unref (file);
-	return ret;
+	return cd_icc_store_search_path (store, location, 0, cancellable, error);
 }
 
 /**

@@ -79,7 +79,6 @@ cd_device_array_get_by_id_owner (CdDeviceArray *device_array,
 				 guint owner)
 {
 	CdDeviceArrayPrivate *priv = device_array->priv;
-	CdDevice *device = NULL;
 	CdDevice *device_tmp;
 	guint i;
 
@@ -88,20 +87,15 @@ cd_device_array_get_by_id_owner (CdDeviceArray *device_array,
 		device_tmp = g_ptr_array_index (priv->array, i);
 		if (cd_device_get_owner (device_tmp) != owner)
 			continue;
-		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0) {
-			device = g_object_ref (device_tmp);
-			goto out;
-		}
+		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0)
+			return g_object_ref (device_tmp);
 	}
 	for (i = 0; i < priv->array->len; i++) {
 		device_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0) {
-			device = g_object_ref (device_tmp);
-			goto out;
-		}
+		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0)
+			return g_object_ref (device_tmp);
 	}
-out:
-	return device;
+	return NULL;
 }
 
 /**
@@ -112,20 +106,16 @@ cd_device_array_get_by_object_path (CdDeviceArray *device_array,
 				     const gchar *object_path)
 {
 	CdDeviceArrayPrivate *priv = device_array->priv;
-	CdDevice *device = NULL;
 	CdDevice *device_tmp;
 	guint i;
 
 	/* find device */
 	for (i = 0; i < priv->array->len; i++) {
 		device_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (cd_device_get_object_path (device_tmp),
-			       object_path) == 0) {
-			device = g_object_ref (device_tmp);
-			break;
-		}
+		if (g_strcmp0 (cd_device_get_object_path (device_tmp), object_path) == 0)
+			return g_object_ref (device_tmp);
 	}
-	return device;
+	return NULL;
 }
 
 /**
@@ -137,7 +127,6 @@ cd_device_array_get_by_property (CdDeviceArray *device_array,
 				 const gchar *value)
 {
 	CdDeviceArrayPrivate *priv = device_array->priv;
-	CdDevice *device = NULL;
 	CdDevice *device_tmp;
 	const gchar *value_tmp;
 	guint i;
@@ -146,12 +135,10 @@ cd_device_array_get_by_property (CdDeviceArray *device_array,
 	for (i = 0; i < priv->array->len; i++) {
 		device_tmp = g_ptr_array_index (priv->array, i);
 		value_tmp = cd_device_get_metadata (device_tmp, key);
-		if (g_strcmp0 (value_tmp, value) == 0) {
-			device = g_object_ref (device_tmp);
-			break;
-		}
+		if (g_strcmp0 (value_tmp, value) == 0)
+			return g_object_ref (device_tmp);
 	}
-	return device;
+	return NULL;
 }
 
 /**

@@ -27,6 +27,8 @@
 #include <string.h>
 #include <lcms2.h>
 
+#include "cd-cleanup.h"
+
 #include "ch-common.h"
 #include "ch-device.h"
 #include "ch-device-queue.h"
@@ -207,12 +209,12 @@ ch_device_queue_process_write_command_cb (GObject *source,
 	const gchar *device_id;
 	const gchar *tmp;
 	gboolean ret;
-	gchar *error_msg = NULL;
 	GError *error = NULL;
 	guint i;
 	guint pending_commands;
 	ChError last_error_code = 0;
 	GUsbDevice *device = G_USB_DEVICE (source);
+	_cleanup_free gchar *error_msg = NULL;
 
 	/* mark it as not in use */
 	device_id = g_usb_device_get_platform_id (device);
@@ -302,7 +304,6 @@ out:
 		g_simple_async_result_complete_in_idle (helper->res);
 		ch_device_queue_free_helper (helper);
 	}
-	g_free (error_msg);
 }
 
 /**
@@ -316,18 +317,17 @@ ch_device_queue_process_data (ChDeviceQueueHelper *helper,
 {
 	ChDeviceQueueData *data_tmp;
 	const gchar *device_id;
-	gboolean ret = FALSE;
 
 	/* is this command already complete? */
 	if (data->state == CH_DEVICE_QUEUE_DATA_STATE_COMPLETE)
-		goto out;
+		return FALSE;
 
 	/* is this device already busy? */
 	device_id = g_usb_device_get_platform_id (data->device);
 	data_tmp = g_hash_table_lookup (helper->device_queue->priv->devices_in_use,
 					device_id);
 	if (data_tmp != NULL)
-		goto out;
+		return FALSE;
 
 	/* write this command and wait for a response */
 	ch_device_write_command_async (data->device,
@@ -344,13 +344,9 @@ ch_device_queue_process_data (ChDeviceQueueHelper *helper,
 			     g_strdup (device_id),
 			     data);
 
-	/* success */
-	ret = TRUE;
-
 	/* remove this from the command queue -- TODO: retries? */
 	data->state = CH_DEVICE_QUEUE_DATA_STATE_WAITING_FOR_HW;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -711,21 +707,18 @@ ch_device_queue_buffer_uint16_from_le_cb (guint8 *output_buffer,
 					  gpointer user_data,
 					  GError **error)
 {
-	gboolean ret = TRUE;
 	guint16 tmp;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (guint16)) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     sizeof (guint16), output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 	tmp = cd_buffer_read_uint16_le (output_buffer);
 	memcpy (output_buffer, &tmp, sizeof (tmp));
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -737,21 +730,18 @@ ch_device_queue_buffer_uint32_from_le_cb (guint8 *output_buffer,
 					  gpointer user_data,
 					  GError **error)
 {
-	gboolean ret = TRUE;
 	guint32 tmp;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (guint32)) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     sizeof (guint32), output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 	tmp = cd_buffer_read_uint32_le (output_buffer);
 	memcpy (output_buffer, &tmp, sizeof (tmp));
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -899,22 +889,19 @@ ch_device_queue_buffer_to_firmware_ver_cb (guint8 *output_buffer,
 					   GError **error)
 {
 	ChDeviceQueueGetFirmwareVerHelper *helper = (void *) user_data;
-	gboolean ret = TRUE;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (guint16) * 3) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     sizeof (guint16) * 3, output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 
 	*helper->major = cd_buffer_read_uint16_le (output_buffer + 0);
 	*helper->minor = cd_buffer_read_uint16_le (output_buffer + 2);
 	*helper->micro = cd_buffer_read_uint16_le (output_buffer + 4);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -985,17 +972,15 @@ ch_device_queue_buffer_to_get_calibration_cb (guint8 *output_buffer,
 {
 	ChDeviceQueueGetCalibrationHelper *helper = (void *) user_data;
 	ChPackedFloat pf_tmp;
-	gboolean ret = TRUE;
 	gdouble *calibration_tmp;
 	guint i;
 
 	/* check buffer size */
 	if (output_buffer_size != 60) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %i, got %" G_GSIZE_FORMAT,
 			     60, output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 
 	/* convert back into floating point */
@@ -1017,8 +1002,7 @@ ch_device_queue_buffer_to_get_calibration_cb (guint8 *output_buffer,
 			 (const char *) output_buffer + 9*4 + 1,
 			 CH_CALIBRATION_DESCRIPTION_LEN);
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1146,7 +1130,6 @@ ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
 {
 	const CdMat3x3 *calibration;
 	const gchar *description;
-	gboolean ret = TRUE;
 	gdouble *calibration_tmp;
 	guint8 types = 0;
 	guint i;
@@ -1157,9 +1140,8 @@ ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
 
 	/* ensure correct kind */
 	if (cd_it8_get_kind (ccmx) != CD_IT8_KIND_CCMX) {
-		ret = FALSE;
 		g_set_error (error, 1, 0, "is not a CCMX file");
-		goto out;
+		return FALSE;
 	}
 
 	/* get the supported display types */
@@ -1178,18 +1160,16 @@ ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
 
 	/* no types set in CCMX file */
 	if (types == 0) {
-		ret = FALSE;
 		g_set_error_literal (error, 1, 0, "No TYPE_x in ccmx file");
-		goto out;
+		return FALSE;
 	}
 
 	/* get the description from the ccmx file */
 	description = cd_it8_get_title (ccmx);
 	if (description == NULL) {
-		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
 				     "CCMX file does not have DISPLAY");
-		goto out;
+		return FALSE;
 	}
 
 	/* get the values and check for sanity */
@@ -1198,11 +1178,10 @@ ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
 	for (i = 0; i < 9; i++) {
 		if (calibration_tmp[i] < -10.0f ||
 		    calibration_tmp[i] > 10.0f) {
-			ret = FALSE;
 			g_set_error (error, 1, 0,
 				     "Matrix value %i out of range %f",
 				     i, calibration_tmp[i]);
-			goto out;
+			return FALSE;
 		}
 	}
 
@@ -1213,8 +1192,7 @@ ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
 					 calibration,
 					 types,
 					 description);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1363,24 +1341,21 @@ ch_device_queue_buffer_to_double_cb (guint8 *output_buffer,
 				     GError **error)
 {
 	ChPackedFloat pf_tmp;
-	gboolean ret = TRUE;
 	gdouble tmp;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (ChPackedFloat)) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     sizeof (ChPackedFloat), output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 
 	/* convert back into floating point */
 	memcpy (&pf_tmp, output_buffer, sizeof (ChPackedFloat));
 	ch_packed_float_to_double (&pf_tmp, &tmp);
 	memcpy (user_data, &tmp, sizeof (tmp));
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -2112,16 +2087,14 @@ ch_device_queue_buffer_dark_offsets_cb (guint8 *output_buffer,
 					GError **error)
 {
 	CdColorRGB *value = (CdColorRGB *) user_data;
-	gboolean ret = TRUE;
 	guint16 tmp;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (guint16) * 3) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     sizeof (guint16) * 3, output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 
 	/* convert back into floating point */
@@ -2131,8 +2104,7 @@ ch_device_queue_buffer_dark_offsets_cb (guint8 *output_buffer,
 	value->G = (gdouble) tmp / (gdouble) 0xffff;
 	tmp = cd_buffer_read_uint16_le (output_buffer + 4);
 	value->B = (gdouble) tmp / (gdouble) 0xffff;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -2251,15 +2223,13 @@ ch_device_queue_buffer_triple_rgb_cb (guint8 *output_buffer,
 {
 	CdColorRGB *value = (CdColorRGB *) user_data;
 	ChPackedFloat tmp;
-	gboolean ret = TRUE;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (ChPackedFloat) * 3) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     sizeof (ChPackedFloat) * 3, output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 
 	/* convert back into floating point */
@@ -2269,8 +2239,7 @@ ch_device_queue_buffer_triple_rgb_cb (guint8 *output_buffer,
 	ch_packed_float_to_double (&tmp, &value->G);
 	memcpy (&tmp, output_buffer + 8, sizeof (ChPackedFloat));
 	ch_packed_float_to_double (&tmp, &value->B);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -2322,15 +2291,13 @@ ch_device_queue_buffer_triple_xyz_cb (guint8 *output_buffer,
 {
 	CdColorXYZ *value = (CdColorXYZ *) user_data;
 	ChPackedFloat tmp;
-	gboolean ret = TRUE;
 
 	/* check buffer size */
 	if (output_buffer_size != sizeof (ChPackedFloat) * 3) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     sizeof (ChPackedFloat) * 3, output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 
 	/* convert back into floating point */
@@ -2340,8 +2307,7 @@ ch_device_queue_buffer_triple_xyz_cb (guint8 *output_buffer,
 	ch_packed_float_to_double (&tmp, &value->Y);
 	memcpy (&tmp, output_buffer + 8, sizeof (ChPackedFloat));
 	ch_packed_float_to_double (&tmp, &value->Z);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -2480,33 +2446,29 @@ ch_device_queue_buffer_read_flash_cb (guint8 *output_buffer,
 				      GError **error)
 {
 	ChDeviceQueueReadFlashHelper *helper = (ChDeviceQueueReadFlashHelper *) user_data;
-	gboolean ret = TRUE;
 	guint8 expected_checksum;
 
 	/* check buffer size */
 	if (output_buffer_size != helper->len + 1) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     helper->len + 1, output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 
 	/* verify checksum */
 	expected_checksum = ch_device_queue_calculate_checksum (output_buffer + 1,
 								helper->len);
 	if (output_buffer[0] != expected_checksum) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Checksum @0x%04x invalid",
 			     helper->address);
-		goto out;
+		return FALSE;
 	}
 
 	/* copy data to final location */
 	memcpy (helper->data, output_buffer + 1, helper->len);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -2571,41 +2533,34 @@ ch_device_queue_buffer_verify_flash_cb (guint8 *output_buffer,
 					GError **error)
 {
 	ChDeviceQueueReadFlashHelper *helper = (ChDeviceQueueReadFlashHelper *) user_data;
-	gboolean ret = TRUE;
 	guint8 expected_checksum;
 
 	/* check buffer size */
 	if (output_buffer_size != helper->len + 1) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Wrong output buffer size, expected %" G_GSIZE_FORMAT ", got %" G_GSIZE_FORMAT,
 			     helper->len + 1, output_buffer_size);
-		goto out;
+		return FALSE;
 	}
 
 	/* verify checksum */
 	expected_checksum = ch_device_queue_calculate_checksum (output_buffer + 1,
 								helper->len);
 	if (output_buffer[0] != expected_checksum) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Checksum @0x%04x invalid",
 			     helper->address);
-		goto out;
+		return FALSE;
 	}
 
 	/* verify data */
-	if (memcmp (helper->data,
-		    output_buffer + 1,
-		    helper->len) != 0) {
-		ret = FALSE;
+	if (memcmp (helper->data, output_buffer + 1, helper->len) != 0) {
 		g_set_error (error, 1, 0,
 			     "Failed to verify at @0x%04x",
 			     helper->address);
-		goto out;
+		return FALSE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 static void

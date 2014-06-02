@@ -30,6 +30,8 @@
 #include <colord-private.h>
 #include <huey/huey.h>
 
+#include "cd-cleanup.h"
+
 #include "../src/cd-sensor.h"
 
 typedef struct
@@ -123,7 +125,7 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* measure */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
@@ -132,7 +134,6 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 					      &error);
 	if (state->sample == NULL) {
 		cd_sensor_huey_get_sample_state_finish (state, error);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -214,9 +215,9 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	const guint8 spin_leds[] = { 0x0, 0x1, 0x2, 0x4, 0x8, 0x4, 0x2, 0x1, 0x0, 0xff };
 	gboolean ret = FALSE;
-	gchar *serial_number_tmp = NULL;
-	GError *error = NULL;
 	guint i;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_free gchar *serial_number_tmp = NULL;
 
 	/* try to find the USB device */
 	priv->device = cd_sensor_open_usb_device (sensor,
@@ -226,7 +227,6 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	if (priv->device == NULL) {
 		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 	huey_ctx_set_device (priv->ctx, priv->device);
@@ -238,7 +238,6 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	ret = huey_device_unlock (priv->device, &error);
 	if (!ret) {
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -246,7 +245,6 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	serial_number_tmp = huey_device_get_serial_number (priv->device, &error);
 	if (serial_number_tmp == NULL) {
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 	cd_sensor_set_serial (sensor, serial_number_tmp);
@@ -256,7 +254,6 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	ret = huey_ctx_setup (priv->ctx, &error);
 	if (!ret) {
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -265,7 +262,6 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 		ret = huey_device_set_leds (priv->device, spin_leds[i], &error);
 		if (!ret) {
 			g_simple_async_result_set_from_error (res, error);
-			g_error_free (error);
 			goto out;
 		}
 		g_usleep (50000);
@@ -273,7 +269,6 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 out:
 	/* set state */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-	g_free (serial_number_tmp);
 }
 
 void
@@ -304,19 +299,15 @@ cd_sensor_lock_finish (CdSensor *sensor,
 		       GError **error)
 {
 	GSimpleAsyncResult *simple;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		ret = FALSE;
-		goto out;
-	}
-out:
-	return ret;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+	return TRUE;
 }
 
 static void
@@ -327,23 +318,20 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	gboolean ret = FALSE;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* close */
 	if (priv->device != NULL) {
 		ret = g_usb_device_close (priv->device, &error);
 		if (!ret) {
 			g_simple_async_result_set_from_error (res, error);
-			g_error_free (error);
-			goto out;
+			return;
 		}
 
 		/* clear */
 		g_object_unref (priv->device);
 		priv->device = NULL;
 	}
-out:
-	return;
 }
 
 void
@@ -374,19 +362,15 @@ cd_sensor_unlock_finish (CdSensor *sensor,
 			 GError **error)
 {
 	GSimpleAsyncResult *simple;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		ret = FALSE;
-		goto out;
-	}
-out:
-	return ret;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+	return TRUE;
 }
 
 gboolean
@@ -424,7 +408,7 @@ cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 						      &value,
 						      error);
 		if (!ret)
-			goto out;
+			return FALSE;
 
 		/* write details */
 		g_string_append_printf (data,
@@ -432,8 +416,7 @@ cd_sensor_dump_device (CdSensor *sensor, GString *data, GError **error)
 					i,
 					value);
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 static void

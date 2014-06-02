@@ -33,6 +33,7 @@
 #include <colord.h>
 #include <string.h>
 
+#include "cd-cleanup.h"
 #include "cd-compat-edid.h"
 
 /**
@@ -54,31 +55,26 @@ cd_edid_install_profile (unsigned char *edid,
 			 CdEdidScope scope,
 			 char *profile_fn)
 {
-	CdClient *client = NULL;
-	CdDevice *device = NULL;
-	CdEdidError rc = CD_EDID_ERROR_OK;
-	CdProfile *profile = NULL;
 	gboolean ret;
-	gchar *md5 = NULL;
-	GError *error = NULL;
-	GFile *file = NULL;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_free gchar *md5 = NULL;
+	_cleanup_unref_object CdClient *client = NULL;
+	_cleanup_unref_object CdDevice *device = NULL;
+	_cleanup_unref_object CdProfile *profile = NULL;
+	_cleanup_unref_object GFile *file = NULL;
 
 	g_return_val_if_fail (profile_fn != NULL, CD_EDID_ERROR_RESOURCE);
 
 	/* bad input */
-	if (edid == NULL || edid_len == 0) {
-		rc = CD_EDID_ERROR_NO_DATA;
-		goto out;
-	}
+	if (edid == NULL || edid_len == 0)
+		return CD_EDID_ERROR_NO_DATA;
 
 	/* conect to daemon */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("Failed to connect to colord: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* find device that matches the output EDID */
@@ -91,20 +87,16 @@ cd_edid_install_profile (unsigned char *edid,
 							 NULL,
 							 &error);
 	if (device == NULL) {
-		rc = CD_EDID_ERROR_MONITOR_NOT_FOUND;
 		g_printerr ("Failed to find device that matches %s: %s",
 			    md5, error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_MONITOR_NOT_FOUND;
 	}
 
 	/* read device properties */
 	ret = cd_device_connect_sync (device, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("device disappeared: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* import profile */
@@ -122,21 +114,17 @@ cd_edid_install_profile (unsigned char *edid,
 								   &error);
 	}
 	if (profile == NULL) {
-		rc = CD_EDID_ERROR_NO_PROFILE;
 		g_printerr ("Could not import profile %s: %s",
 			    profile_fn,
 			    error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_NO_PROFILE;
 	}
 
 	/* read profile properties */
 	ret = cd_profile_connect_sync (profile, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("profile disappeared: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* add profile to device */
@@ -152,13 +140,11 @@ cd_edid_install_profile (unsigned char *edid,
 			/* ignore this */
 			g_clear_error (&error);
 		} else {
-			rc = CD_EDID_ERROR_SET_CONFIG;
 			g_printerr ("could not add profile %s to device %s: %s",
 				    cd_profile_get_id(profile),
 				    cd_device_get_id(device),
 				    error->message);
-			g_error_free (error);
-			goto out;
+			return CD_EDID_ERROR_SET_CONFIG;
 		}
 	}
 
@@ -168,38 +154,24 @@ cd_edid_install_profile (unsigned char *edid,
 						   NULL,
 						   &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_SET_CONFIG;
 		g_printerr ("could not add default profile %s to device %s: %s",
 			    cd_profile_get_id(profile),
 			    cd_device_get_id(device),
 			    error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_SET_CONFIG;
 	}
 
 	/* install system-wide */
 	if (scope == CD_EDID_SCOPE_SYSTEM) {
 		ret = cd_profile_install_system_wide_sync (profile, NULL, &error);
 		if (!ret) {
-			rc = CD_EDID_ERROR_PROFILE_COPY;
 			g_printerr ("could not set profile %s systemwide: %s",
 				    cd_profile_get_id (profile),
 				    error->message);
-			g_error_free (error);
-			goto out;
+			return CD_EDID_ERROR_PROFILE_COPY;
 		}
 	}
-out:
-	if (file != NULL)
-		g_object_unref (file);
-	if (client != NULL)
-		g_object_unref (client);
-	if (device != NULL)
-		g_object_unref (device);
-	if (profile != NULL)
-		g_object_unref (profile);
-	g_free (md5);
-	return rc;
+	return CD_EDID_ERROR_OK;
 }
 
 /**
@@ -219,31 +191,26 @@ cd_edid_remove_profile (unsigned char *edid,
 			int edid_len,
 			char *profile_fn)
 {
-	CdClient *client = NULL;
-	CdDevice *device = NULL;
-	CdProfile *profile = NULL;
 	gboolean ret;
-	gchar *md5 = NULL;
-	GError *error = NULL;
-	GFile *file = NULL;
-	CdEdidError rc = CD_EDID_ERROR_OK;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_free gchar *md5 = NULL;
+	_cleanup_unref_object CdClient *client = NULL;
+	_cleanup_unref_object CdDevice *device = NULL;
+	_cleanup_unref_object CdProfile *profile = NULL;
+	_cleanup_unref_object GFile *file = NULL;
 
 	g_return_val_if_fail (profile_fn != NULL, CD_EDID_ERROR_RESOURCE);
 
 	/* bad input */
-	if (edid == NULL || edid_len == 0) {
-		rc = CD_EDID_ERROR_NO_DATA;
-		goto out;
-	}
+	if (edid == NULL || edid_len == 0)
+		return CD_EDID_ERROR_NO_DATA;
 
 	/* conect to daemon */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("Failed to connect to colord: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* find device that matches the output EDID */
@@ -256,20 +223,16 @@ cd_edid_remove_profile (unsigned char *edid,
 							 NULL,
 							 &error);
 	if (device == NULL) {
-		rc = CD_EDID_ERROR_MONITOR_NOT_FOUND;
 		g_printerr ("Failed to find device that matches %s: %s",
 			    md5, error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_MONITOR_NOT_FOUND;
 	}
 
 	/* read device properties */
 	ret = cd_device_connect_sync (device, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("device disappeared: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* find profile */
@@ -279,21 +242,17 @@ cd_edid_remove_profile (unsigned char *edid,
 							   NULL,
 							   &error);
 	if (profile == NULL) {
-		rc = CD_EDID_ERROR_NO_PROFILE;
 		g_printerr ("Could not find profile %s: %s",
 			    profile_fn,
 			    error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_NO_PROFILE;
 	}
 
 	/* read profile properties */
 	ret = cd_profile_connect_sync (profile, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("profile disappeared: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* remove profile from device */
@@ -302,25 +261,13 @@ cd_edid_remove_profile (unsigned char *edid,
 					     NULL,
 					     &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_SET_CONFIG;
 		g_printerr ("could not remove profile %s from device %s: %s",
 			    cd_profile_get_id (profile),
 			    cd_device_get_id (device),
 			    error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_SET_CONFIG;
 	}
-out:
-	if (file != NULL)
-		g_object_unref (file);
-	if (client != NULL)
-		g_object_unref (client);
-	if (device != NULL)
-		g_object_unref (device);
-	if (profile != NULL)
-		g_object_unref (profile);
-	g_free (md5);
-	return rc;
+	return CD_EDID_ERROR_OK;
 }
 
 /**
@@ -340,29 +287,24 @@ cd_edid_get_profile (unsigned char *edid,
 		     int edid_len,
 		     char **profile_fn)
 {
-	CdClient *client = NULL;
-	CdDevice *device = NULL;
-	CdProfile *profile = NULL;
 	const gchar *filename;
 	gboolean ret;
-	gchar *md5 = NULL;
-	GError *error = NULL;
-	CdEdidError rc = CD_EDID_ERROR_OK;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_free gchar *md5 = NULL;
+	_cleanup_unref_object CdClient *client = NULL;
+	_cleanup_unref_object CdDevice *device = NULL;
+	_cleanup_unref_object CdProfile *profile = NULL;
 
 	/* bad input */
-	if (edid == NULL || edid_len == 0) {
-		rc = CD_EDID_ERROR_NO_DATA;
-		goto out;
-	}
+	if (edid == NULL || edid_len == 0)
+		return CD_EDID_ERROR_NO_DATA;
 
 	/* conect to daemon */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("Failed to connect to colord: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* find device that matches the output EDID */
@@ -375,59 +317,41 @@ cd_edid_get_profile (unsigned char *edid,
 							 NULL,
 							 &error);
 	if (device == NULL) {
-		rc = CD_EDID_ERROR_MONITOR_NOT_FOUND;
 		g_printerr ("Failed to find device that matches %s: %s",
 			    md5, error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_MONITOR_NOT_FOUND;
 	}
 
 	/* read device properties */
 	ret = cd_device_connect_sync (device, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("device disappeared: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* get the default profile for the device */
 	profile = cd_device_get_default_profile (device);
 	if (profile == NULL) {
-		rc = CD_EDID_ERROR_NO_PROFILE;
 		g_printerr ("No profile for %s: %s",
 			    cd_device_get_id (device),
 			    error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_NO_PROFILE;
 	}
 
 	/* read profile properties */
 	ret = cd_profile_connect_sync (profile, NULL, &error);
 	if (!ret) {
-		rc = CD_EDID_ERROR_ACCESS_CONFIG;
 		g_printerr ("profile disappeared: %s", error->message);
-		g_error_free (error);
-		goto out;
+		return CD_EDID_ERROR_ACCESS_CONFIG;
 	}
 
 	/* get filename */
 	filename = cd_profile_get_filename (profile);
-	if (filename == NULL) {
-		rc = CD_EDID_ERROR_INVALID_PROFILE;
-		goto out;
-	}
+	if (filename == NULL)
+		return CD_EDID_ERROR_INVALID_PROFILE;
 
 	/* return filename of profile */
 	if (profile_fn != NULL)
 		*profile_fn = strdup (filename);
-out:
-	if (client != NULL)
-		g_object_unref (client);
-	if (device != NULL)
-		g_object_unref (device);
-	if (profile != NULL)
-		g_object_unref (profile);
-	g_free (md5);
-	return rc;
+	return CD_EDID_ERROR_OK;
 }

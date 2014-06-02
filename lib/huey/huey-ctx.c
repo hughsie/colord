@@ -137,7 +137,7 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 						&priv->calibration_lcd,
 						error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	g_debug ("device calibration LCD: %s",
 		 cd_mat33_to_string (&priv->calibration_lcd));
 
@@ -148,7 +148,7 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 						&priv->calibration_crt,
 						error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	g_debug ("device calibration CRT: %s",
 		 cd_mat33_to_string (&priv->calibration_crt));
 
@@ -158,7 +158,7 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 					       &priv->calibration_value,
 					       error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* this vector changes between sensor 1 and 3 */
 	ret = huey_device_read_register_vector (priv->device,
@@ -166,9 +166,8 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 						&priv->dark_offset,
 						error);
 	if (!ret)
-		goto out;
-out:
-	return ret;
+		return FALSE;
+	return TRUE;
 }
 
 /**
@@ -267,7 +266,7 @@ huey_ctx_sample_for_threshold (HueyCtx *ctx,
 				     &reply_read,
 				     error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* get value */
 	raw->R = cd_buffer_read_uint32_be (reply+2);
@@ -280,7 +279,7 @@ huey_ctx_sample_for_threshold (HueyCtx *ctx,
 				     &reply_read,
 				     error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* get value */
 	raw->G = cd_buffer_read_uint32_be (reply+2);
@@ -293,12 +292,11 @@ huey_ctx_sample_for_threshold (HueyCtx *ctx,
 				     &reply_read,
 				     error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* get value */
 	raw->B = cd_buffer_read_uint32_be (reply+2);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -338,10 +336,9 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 {
 	CdColorRGB values;
 	CdColorXYZ color_result;
-	CdColorXYZ *result = NULL;
 	CdMat3x3 *device_calibration;
 	CdVec3 *temp;
-	gboolean ret = FALSE;
+	gboolean ret;
 	HueyCtxDeviceRaw color_native;
 	HueyCtxMultiplier multiplier;
 
@@ -354,7 +351,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 				     HUEY_CTX_ERROR,
 				     HUEY_CTX_ERROR_NO_SUPPORT,
 				     "Huey cannot measure in projector mode");
-		goto out;
+		return FALSE;
 	}
 
 	/* set this to one value for a quick approximate value */
@@ -366,7 +363,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 					     &color_native,
 					     error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	g_debug ("initial values: red=%i, green=%i, blue=%i",
 		 color_native.R, color_native.G, color_native.B);
 
@@ -389,7 +386,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 					     &color_native,
 					     error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	g_debug ("raw values: red=%i, green=%i, blue=%i",
 		 color_native.R, color_native.G, color_native.B);
 
@@ -439,9 +436,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 		 color_result.X, color_result.Y, color_result.Z);
 
 	/* save result */
-	result = cd_color_xyz_dup (&color_result);
-out:
-	return result;
+	return cd_color_xyz_dup (&color_result);
 }
 
 /**

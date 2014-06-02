@@ -25,6 +25,8 @@
 #include <gudev/gudev.h>
 #include <cd-device.h>
 
+#include "cd-cleanup.h"
+
 struct CdPluginPrivate {
 	GUdevClient		*udev_client;
 	GHashTable		*devices;
@@ -85,23 +87,22 @@ cd_plugin_get_scanner_id_for_udev_device (GUdevDevice *udev_device)
 static void
 cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 {
-	CdDevice *device = NULL;
 	const gchar *devclass;
 	const gchar *seat;
 	gboolean ret;
-	gchar *id = NULL;
-	gchar *model = NULL;
-	gchar *vendor = NULL;
+	_cleanup_free gchar *id = NULL;
+	_cleanup_free gchar *model = NULL;
+	_cleanup_free gchar *vendor = NULL;
+	_cleanup_unref_object CdDevice *device = NULL;
 
 	/* is a scanner? */
-	ret = g_udev_device_has_property (udev_device, "libsane_matched");
-	if (!ret)
-		goto out;
+	if (!g_udev_device_has_property (udev_device, "libsane_matched"))
+		return;
 
 	/* skip hubs */
 	devclass = g_udev_device_get_sysfs_attr (udev_device, "bDeviceClass");
 	if (devclass == NULL || g_strcmp0 (devclass, "09") == 0)
-		goto out;
+		return;
 
 	/* replace underscores with spaces */
 	model = g_strdup (g_udev_device_get_property (udev_device,
@@ -170,12 +171,6 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 
 	g_debug ("CdPlugin: emit add: %s", id);
 	cd_plugin_device_added (plugin, device);
-out:
-	if (device != NULL)
-		g_object_unref (device);
-	g_free (id);
-	g_free (model);
-	g_free (vendor);
 }
 
 /**
@@ -197,21 +192,19 @@ cd_plugin_uevent_cb (GUdevClient *udev_client,
 		sysfs_path = g_udev_device_get_sysfs_path (udev_device);
 		device = g_hash_table_lookup (plugin->priv->devices, sysfs_path);
 		if (device == NULL)
-			goto out;
+			return;
 
 		g_debug ("CdPlugin: remove %s", sysfs_path);
 		cd_plugin_device_removed (plugin, device);
 		g_hash_table_remove (plugin->priv->devices, sysfs_path);
-		goto out;
+		return;
 	}
 
 	/* add */
 	if (g_strcmp0 (action, "add") == 0) {
 		cd_plugin_add (plugin, udev_device);
-		goto out;
+		return;
 	}
-out:
-	return;
 }
 
 /**

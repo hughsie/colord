@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2009-2013 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2009-2014 Richard Hughes <richard@hughsie.com>
  * Copyright (C) 2013 Christopher James Halse Rogers <raof@ubuntu.com>
  *
  * Licensed under the GNU General Public License Version 2
@@ -29,6 +29,8 @@
 #include <gudev/gudev.h>
 #include <dbus/dbus.h>
 #include <colord/colord.h>
+
+#include "cd-cleanup.h"
 
 typedef struct {
 	gchar		*argv0;
@@ -66,13 +68,12 @@ cd_main_dev_find_by_id (CdMainPrivate *priv,
 
 	/* nothing to find */
 	if (priv->array->len == 0)
-		goto out;
+		return NULL;
 	for (i = 0; i < priv->array->len; i++) {
 		tmp = g_ptr_array_index (priv->array, i);
 		if (g_strcmp0 (tmp->id, id) == 0)
 			return tmp;
 	}
-out:
 	return NULL;
 }
 
@@ -82,9 +83,7 @@ out:
 static gchar *
 cd_client_get_id_for_sane_device (const SANE_Device *sane_device)
 {
-	gchar *id;
-	id = g_strdup_printf ("sane-%s", sane_device->model);
-	return id;
+	return g_strdup_printf ("sane-%s", sane_device->model);
 }
 
 typedef struct {
@@ -101,19 +100,13 @@ cd_main_colord_create_device_cb (GObject *source_object,
 				 gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (source_object);
-	CdDevice *device;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_object CdDevice *device;
 
 	/* get result */
 	device = cd_client_create_device_finish (client, res, &error);
-	if (device == NULL) {
-		g_warning ("failed to create device: %s",
-			   error->message);
-		g_error_free (error);
-	}
-
-	if (device != NULL)
-		g_object_unref (device);
+	if (device == NULL)
+		g_warning ("failed to create device: %s", error->message);
 }
 
 /**
@@ -122,17 +115,17 @@ cd_main_colord_create_device_cb (GObject *source_object,
 static void
 cd_sane_client_add (CdMainPrivate *priv, const SANE_Device *sane_device)
 {
-	gchar *id = NULL;
-	gchar *model = NULL;
-	gchar *vendor = NULL;
 	CdMainDev *dev;
-	GHashTable *properties = NULL;
+	_cleanup_free gchar *id = NULL;
+	_cleanup_free gchar *model = NULL;
+	_cleanup_free gchar *vendor = NULL;
+	_cleanup_unref_hashtable GHashTable *properties = NULL;
 
 	/* ignore noname, no support devices */
 	if (g_strcmp0 (sane_device->vendor, "Noname") == 0) {
 		g_debug ("CdSaneClient: Ignoring sane device %s",
 			 sane_device->name);
-		goto out;
+		return;
 	}
 
 	/* convert device_id 'plustek:libusb:004:002' to suitable id */
@@ -142,7 +135,7 @@ cd_sane_client_add (CdMainPrivate *priv, const SANE_Device *sane_device)
 	dev = cd_main_dev_find_by_id (priv, id);
 	if (dev != NULL) {
 		dev->valid = TRUE;
-		goto out;
+		return;
 	}
 
 	/* Make human readable */
@@ -184,12 +177,6 @@ cd_sane_client_add (CdMainPrivate *priv, const SANE_Device *sane_device)
 				 NULL,
 				 cd_main_colord_create_device_cb,
 				 NULL);
-out:
-	if (properties != NULL)
-		g_hash_table_unref (properties);
-	g_free (id);
-	g_free (model);
-	g_free (vendor);
 }
 
 /**
@@ -201,16 +188,11 @@ cd_main_colord_delete_device_cb (GObject *source_object,
 				 gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (source_object);
-	gboolean ret;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* get result */
-	ret = cd_client_delete_device_finish (client, res, &error);
-	if (!ret) {
-		g_warning ("failed to delete device: %s",
-			   error->message);
-		g_error_free (error);
-	}
+	if (!cd_client_delete_device_finish (client, res, &error))
+		g_warning ("failed to delete device: %s", error->message);
 }
 
 /**
@@ -285,14 +267,13 @@ cd_sane_add_device_if_from_colord_sane (gpointer data,
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	const gchar *cmdline;
 	gboolean ret;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	ret = cd_device_connect_sync (device, NULL, &error);
 
 	if (!ret) {
 		g_warning ("failed to receive list of devices: %s",
 			   error->message);
-		g_error_free (error);
 		return;
 	}
 
@@ -317,13 +298,12 @@ cd_sane_populate_existing_devices_cb (GObject *source_object,
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	GPtrArray *devices;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	devices = cd_client_get_devices_by_kind_finish (priv->client, res, &error);
 	if (error != NULL) {
 		g_warning ("failed to receive list of devices: %s",
 			   error->message);
-		g_error_free (error);
 		return;
 	}
 
@@ -344,14 +324,13 @@ cd_main_colord_connect_cb (GObject *source_object,
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	gboolean ret;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* get result */
 	ret = cd_client_connect_finish (priv->client, res, &error);
 	if (!ret) {
 		g_warning ("failed to connect to colord: %s",
 			   error->message);
-		g_error_free (error);
 		return;
 	}
 

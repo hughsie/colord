@@ -24,6 +24,8 @@
 #include <gudev/gudev.h>
 #include <glib.h>
 
+#include "cd-cleanup.h"
+
 struct CdPluginPrivate {
 	GUdevClient		*udev_client;
 	gboolean		 scan_in_progress;
@@ -72,8 +74,8 @@ static void
 cd_plugin_config_enabled_sane_devices(CdPluginPrivate *priv)
 {
 	const gchar *argv[] = {COLORD_SANE_BINARY, NULL};
-	GError *error = NULL;
 	GPid colord_sane_pid;
+	_cleanup_free_error GError *error = NULL;
 
 	if (priv->scan_in_progress)
 		return;
@@ -89,7 +91,6 @@ cd_plugin_config_enabled_sane_devices(CdPluginPrivate *priv)
 	if (error != NULL) {
 		g_warning ("CdPlugin: failed to spawn colord-sane helper: %s",
 			   error->message);
-		g_error_free (error);
 		return;
 	}
 

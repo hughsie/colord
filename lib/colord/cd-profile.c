@@ -37,6 +37,7 @@
 #include <glib/gstdio.h>
 #include <string.h>
 
+#include "cd-cleanup.h"
 #include "cd-profile.h"
 
 static void	cd_profile_class_init	(CdProfileClass	*klass);
@@ -184,19 +185,15 @@ cd_profile_get_filename (CdProfile *profile)
 gboolean
 cd_profile_has_access (CdProfile *profile)
 {
-	gboolean ret = TRUE;
-
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 	g_return_val_if_fail (profile->priv->proxy != NULL, FALSE);
 
 	/* virtual profile */
 	if (profile->priv->filename == NULL)
-		goto out;
+		return TRUE;
 
 	/* profile on disk */
-	ret = g_access (profile->priv->filename, R_OK) == 0;
-out:
-	return ret;
+	return g_access (profile->priv->filename, R_OK) == 0;
 }
 
 /**
@@ -623,21 +620,19 @@ cd_profile_connect_finish (CdProfile *profile,
 static void
 cd_profile_fixup_dbus_error (GError *error)
 {
-	gchar *name = NULL;
+	_cleanup_free gchar *name = NULL;
 
 	g_return_if_fail (error != NULL);
 
 	/* is a remote error? */
 	if (!g_dbus_error_is_remote_error (error))
-		goto out;
+		return;
 
 	/* parse the remote error */
 	name = g_dbus_error_get_remote_error (error);
 	error->domain = CD_PROFILE_ERROR;
 	error->code = cd_profile_error_from_string (name);
 	g_dbus_error_strip_remote_error (error);
-out:
-	g_free (name);
 }
 
 static void
@@ -645,23 +640,23 @@ cd_profile_connect_cb (GObject *source_object,
 		       GAsyncResult *res,
 		       gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *filename = NULL;
-	GVariant *id = NULL;
-	GVariant *qualifier = NULL;
-	GVariant *format = NULL;
-	GVariant *title = NULL;
-	GVariant *kind = NULL;
-	GVariant *colorspace = NULL;
-	GVariant *scope = NULL;
-	GVariant *owner = NULL;
-	GVariant *warnings = NULL;
-	GVariant *created = NULL;
-	GVariant *has_vcgt = NULL;
-	GVariant *is_system_wide = NULL;
-	GVariant *metadata = NULL;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 	CdProfile *profile;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *filename = NULL;
+	_cleanup_unref_variant GVariant *id = NULL;
+	_cleanup_unref_variant GVariant *qualifier = NULL;
+	_cleanup_unref_variant GVariant *format = NULL;
+	_cleanup_unref_variant GVariant *title = NULL;
+	_cleanup_unref_variant GVariant *kind = NULL;
+	_cleanup_unref_variant GVariant *colorspace = NULL;
+	_cleanup_unref_variant GVariant *scope = NULL;
+	_cleanup_unref_variant GVariant *owner = NULL;
+	_cleanup_unref_variant GVariant *warnings = NULL;
+	_cleanup_unref_variant GVariant *created = NULL;
+	_cleanup_unref_variant GVariant *has_vcgt = NULL;
+	_cleanup_unref_variant GVariant *is_system_wide = NULL;
+	_cleanup_unref_variant GVariant *metadata = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	profile = CD_PROFILE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
 	profile->priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
@@ -673,8 +668,8 @@ cd_profile_connect_cb (GObject *source_object,
 						 "Failed to connect to profile %s: %s",
 						 cd_profile_get_object_path (profile),
 						 error->message);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* get profile id */
@@ -690,7 +685,8 @@ cd_profile_connect_cb (GObject *source_object,
 						 CD_PROFILE_ERROR_INTERNAL,
 						 "Failed to connect to missing profile %s",
 						 cd_profile_get_object_path (profile));
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* get filename */
@@ -785,37 +781,7 @@ cd_profile_connect_cb (GObject *source_object,
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-out:
-	if (id != NULL)
-		g_variant_unref (id);
-	if (kind != NULL)
-		g_variant_unref (kind);
-	if (colorspace != NULL)
-		g_variant_unref (colorspace);
-	if (scope != NULL)
-		g_variant_unref (scope);
-	if (owner != NULL)
-		g_variant_unref (owner);
-	if (warnings != NULL)
-		g_variant_unref (warnings);
-	if (created != NULL)
-		g_variant_unref (created);
-	if (has_vcgt != NULL)
-		g_variant_unref (has_vcgt);
-	if (is_system_wide != NULL)
-		g_variant_unref (is_system_wide);
-	if (metadata != NULL)
-		g_variant_unref (metadata);
-	if (filename != NULL)
-		g_variant_unref (filename);
-	if (qualifier != NULL)
-		g_variant_unref (qualifier);
-	if (format != NULL)
-		g_variant_unref (format);
-	if (title != NULL)
-		g_variant_unref (title);
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -900,9 +866,9 @@ cd_profile_set_property_cb (GObject *source_object,
 			    GAsyncResult *res,
 			    gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -913,16 +879,13 @@ cd_profile_set_property_cb (GObject *source_object,
 						 CD_PROFILE_ERROR_INTERNAL,
 						 "Failed to SetProperty: %s",
 						 error->message);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1007,9 +970,9 @@ cd_profile_install_system_wide_cb (GObject *source_object,
 				   GAsyncResult *res,
 				   gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_unref_variant GVariant *result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1017,16 +980,13 @@ cd_profile_install_system_wide_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_profile_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1167,26 +1127,19 @@ cd_profile_load_icc (CdProfile *profile,
 		     GCancellable *cancellable,
 		     GError **error)
 {
-	CdIcc *icc = NULL;
-	CdIcc *icc_tmp;
-	gboolean ret;
-	GFile *file;
+	_cleanup_unref_object CdIcc *icc = NULL;
+	_cleanup_unref_object GFile *file = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 
 	/* load local instance */
-	icc_tmp = cd_icc_new ();
+	icc = cd_icc_new ();
 	file = g_file_new_for_path (profile->priv->filename);
-	ret = cd_icc_load_file (icc_tmp, file, flags, cancellable, error);
-	if (!ret)
-		goto out;
+	if (!cd_icc_load_file (icc, file, flags, cancellable, error))
+		return NULL;
 
 	/* success */
-	icc = g_object_ref (icc_tmp);
-out:
-	g_object_unref (file);
-	g_object_unref (icc_tmp);
-	return icc;
+	return g_object_ref (icc);
 }
 
 /*

@@ -87,7 +87,7 @@ huey_device_send_data (GUsbDevice *device,
 					     NULL,
 					     error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* some commands need to retry the read */
 	for (i = 0; i < HUEY_MAX_READ_RETRIES; i++) {
@@ -102,13 +102,12 @@ huey_device_send_data (GUsbDevice *device,
 						       NULL,
 						       error);
 		if (!ret)
-			goto out;
+			return FALSE;
 
 		/* the second byte seems to be the command again */
 		cd_buffer_debug (CD_BUFFER_KIND_RESPONSE,
 				 reply, *reply_read);
 		if (reply[1] != request[0]) {
-			ret = FALSE;
 			g_set_error (error,
 				     HUEY_DEVICE_ERROR,
 				     HUEY_DEVICE_ERROR_INTERNAL,
@@ -116,43 +115,38 @@ huey_device_send_data (GUsbDevice *device,
 				     "expected 0x%02x",
 				     reply[1],
 				     request[0]);
-			goto out;
+			return FALSE;
 		}
 
 		/* the first byte is status */
-		if (reply[0] == HUEY_RC_SUCCESS) {
-			ret = TRUE;
-			goto out;
-		}
+		if (reply[0] == HUEY_RC_SUCCESS)
+			return TRUE;
 
 		/* failure, the return buffer is set to "Locked" */
 		if (reply[0] == HUEY_RC_LOCKED) {
-			ret = FALSE;
 			g_set_error_literal (error,
 					     HUEY_DEVICE_ERROR,
 					     HUEY_DEVICE_ERROR_INTERNAL,
 					     "the device is locked");
-			goto out;
+			return FALSE;
 		}
 
 		/* failure, the return buffer is set to "NoCmd" */
 		if (reply[0] == HUEY_RC_ERROR) {
-			ret = FALSE;
 			g_set_error (error,
 				     HUEY_DEVICE_ERROR,
 				     HUEY_DEVICE_ERROR_INTERNAL,
 				     "failed to issue command: %s", &reply[2]);
-			goto out;
+			return FALSE;
 		}
 
 		/* we ignore retry */
 		if (reply[0] != HUEY_RC_RETRY) {
-			ret = FALSE;
 			g_set_error (error,
 				     HUEY_DEVICE_ERROR,
 				     HUEY_DEVICE_ERROR_INTERNAL,
 				     "return value unknown: 0x%02x", reply[0]);
-			goto out;
+			return FALSE;
 		}
 	}
 
@@ -162,8 +156,7 @@ huey_device_send_data (GUsbDevice *device,
 		     HUEY_DEVICE_ERROR_INTERNAL,
 		     "gave up retrying after %i reads",
 		     HUEY_MAX_READ_RETRIES);
-out:
-	return ret;
+	return FALSE;
 }
 
 /**
@@ -198,9 +191,8 @@ huey_device_unlock (GUsbDevice *device, GError **error)
 				     &reply_read,
 				     error);
 	if (!ret)
-		goto out;
-out:
-	return ret;
+		return FALSE;
+	return TRUE;
 }
 
 /**
@@ -213,7 +205,6 @@ huey_device_get_serial_number (GUsbDevice *device, GError **error)
 {
 	gboolean ret;
 	guint32 tmp;
-	gchar *serial_number = NULL;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -223,10 +214,8 @@ huey_device_get_serial_number (GUsbDevice *device, GError **error)
 					      &tmp,
 					      error);
 	if (!ret)
-		goto out;
-	serial_number = g_strdup_printf ("%i", tmp);
-out:
-	return serial_number;
+		return NULL;
+	return g_strdup_printf ("%i", tmp);
 }
 
 /**
@@ -238,7 +227,6 @@ gchar *
 huey_device_get_unlock_string (GUsbDevice *device, GError **error)
 {
 	gboolean ret;
-	gchar *str = NULL;
 	gchar tmp[5];
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
@@ -250,10 +238,8 @@ huey_device_get_unlock_string (GUsbDevice *device, GError **error)
 						sizeof (tmp),
 						error);
 	if (!ret)
-		goto out;
-	str = g_strndup (tmp, sizeof (tmp));
-out:
-	return str;
+		return NULL;
+	return g_strndup (tmp, sizeof (tmp));
 }
 
 /**
@@ -294,8 +280,7 @@ huey_device_set_leds (GUsbDevice *device, guint8 value, GError **error)
 gdouble
 huey_device_get_ambient (GUsbDevice *device, GError **error)
 {
-	gboolean ret = FALSE;
-	gboolean retval = -1;
+	gboolean ret;
 	gsize reply_read;
 	guint8 reply[8];
 	guint8 request[] = { HUEY_CMD_GET_AMBIENT,
@@ -318,12 +303,10 @@ huey_device_get_ambient (GUsbDevice *device, GError **error)
 				     &reply_read,
 				     error);
 	if (!ret)
-		goto out;
+		return -1.f;
 
 	/* parse the value */
-	retval = (gdouble) cd_buffer_read_uint16_be (reply+5) / HUEY_AMBIENT_UNITS_TO_LUX;
-out:
-	return retval;
+	return (gdouble) cd_buffer_read_uint16_be (reply+5) / HUEY_AMBIENT_UNITS_TO_LUX;
 }
 
 /**
@@ -360,10 +343,9 @@ huey_device_read_register_byte (GUsbDevice *device,
 				     &reply_read,
 				     error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	*value = reply[3];
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -379,7 +361,7 @@ huey_device_read_register_string (GUsbDevice *device,
 				  GError **error)
 {
 	guint8 i;
-	gboolean ret = TRUE;
+	gboolean ret;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -391,10 +373,9 @@ huey_device_read_register_string (GUsbDevice *device,
 						      (guint8*) &value[i],
 						      error);
 		if (!ret)
-			goto out;
+			return FALSE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -410,7 +391,7 @@ huey_device_read_register_word (GUsbDevice *device,
 {
 	guint8 i;
 	guint8 tmp[4];
-	gboolean ret = TRUE;
+	gboolean ret;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -422,13 +403,12 @@ huey_device_read_register_word (GUsbDevice *device,
 							  tmp+i,
 							  error);
 		if (!ret)
-			goto out;
+			return FALSE;
 	}
 
 	/* convert to a 32 bit integer */
 	*value = cd_buffer_read_uint32_be (tmp);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -454,12 +434,11 @@ huey_device_read_register_float (GUsbDevice *device,
 						  &tmp,
 						  error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* convert to float */
 	*((guint32 *)value) = tmp;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -473,7 +452,7 @@ huey_device_read_register_vector (GUsbDevice *device,
 				  CdVec3 *value,
 				  GError **error)
 {
-	gboolean ret = TRUE;
+	gboolean ret;
 	guint i;
 	gfloat tmp = 0.0f;
 	gdouble *vector_data;
@@ -491,13 +470,12 @@ huey_device_read_register_vector (GUsbDevice *device,
 						       &tmp,
 						       error);
 		if (!ret)
-			goto out;
+			return FALSE;
 
 		/* save in matrix */
 		*(vector_data+i) = tmp;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -511,7 +489,7 @@ huey_device_read_register_matrix (GUsbDevice *device,
 				  CdMat3x3 *value,
 				  GError **error)
 {
-	gboolean ret = TRUE;
+	gboolean ret;
 	guint i;
 	gfloat tmp = 0.0f;
 	gdouble *matrix_data;
@@ -529,11 +507,10 @@ huey_device_read_register_matrix (GUsbDevice *device,
 							  &tmp,
 							  error);
 		if (!ret)
-			goto out;
+			return FALSE;
 
 		/* save in matrix */
 		*(matrix_data+i) = tmp;
 	}
-out:
-	return ret;
+	return TRUE;
 }

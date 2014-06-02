@@ -79,7 +79,6 @@ cd_profile_array_get_by_id_owner (CdProfileArray *profile_array,
 				  guint owner)
 {
 	CdProfileArrayPrivate *priv = profile_array->priv;
-	CdProfile *profile = NULL;
 	CdProfile *profile_tmp;
 	guint i;
 
@@ -88,20 +87,15 @@ cd_profile_array_get_by_id_owner (CdProfileArray *profile_array,
 		profile_tmp = g_ptr_array_index (priv->array, i);
 		if (cd_profile_get_owner (profile_tmp) != owner)
 			continue;
-		if (g_strcmp0 (cd_profile_get_id (profile_tmp), id) == 0) {
-			profile = g_object_ref (profile_tmp);
-			goto out;
-		}
+		if (g_strcmp0 (cd_profile_get_id (profile_tmp), id) == 0)
+			return g_object_ref (profile_tmp);
 	}
 	for (i = 0; i < priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (cd_profile_get_id (profile_tmp), id) == 0) {
-			profile = g_object_ref (profile_tmp);
-			goto out;
-		}
+		if (g_strcmp0 (cd_profile_get_id (profile_tmp), id) == 0)
+			return g_object_ref (profile_tmp);
 	}
-out:
-	return profile;
+	return NULL;
 }
 
 /**
@@ -140,29 +134,22 @@ cd_profile_array_get_by_filename (CdProfileArray *profile_array,
 				  const gchar *filename)
 {
 	CdProfileArrayPrivate *priv = profile_array->priv;
-	CdProfile *profile = NULL;
 	CdProfile *profile_tmp;
 	guint i;
 
 	g_return_val_if_fail (filename != NULL, NULL);
 
 	/* support getting the file without the path */
-	if (filename[0] != '/') {
-		profile = cd_profile_array_get_by_basename (profile_array, filename);
-		goto out;
-	}
+	if (filename[0] != '/')
+		return cd_profile_array_get_by_basename (profile_array, filename);
 
 	/* find profile */
 	for (i = 0; i < priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (cd_profile_get_filename (profile_tmp),
-			       filename) == 0) {
-			profile = g_object_ref (profile_tmp);
-			break;
-		}
+		if (g_strcmp0 (cd_profile_get_filename (profile_tmp), filename) == 0)
+			return g_object_ref (profile_tmp);
 	}
-out:
-	return profile;
+	return NULL;
 }
 
 /**
@@ -174,27 +161,20 @@ cd_profile_array_get_by_property (CdProfileArray *profile_array,
 				  const gchar *value)
 {
 	CdProfileArrayPrivate *priv = profile_array->priv;
-	CdProfile *profile = NULL;
 	CdProfile *profile_tmp;
 	guint i;
 
 	/* special case */
-	if (g_strcmp0 (key, CD_PROFILE_PROPERTY_FILENAME) == 0) {
-		profile = cd_profile_array_get_by_filename (profile_array, value);
-		goto out;
-	}
+	if (g_strcmp0 (key, CD_PROFILE_PROPERTY_FILENAME) == 0)
+		return cd_profile_array_get_by_filename (profile_array, value);
 
 	/* find profile */
 	for (i = 0; i < priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (cd_profile_get_metadata_item (profile_tmp, key),
-			       value) == 0) {
-			profile = g_object_ref (profile_tmp);
-			break;
-		}
+		if (g_strcmp0 (cd_profile_get_metadata_item (profile_tmp, key), value) == 0)
+			return g_object_ref (profile_tmp);
 	}
-out:
-	return profile;
+	return NULL;
 }
 
 /**
@@ -213,10 +193,8 @@ cd_profile_array_get_by_kind (CdProfileArray *profile_array,
 	array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 	for (i = 0; i < priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
-		if (cd_profile_get_kind (profile_tmp) == kind) {
-			g_ptr_array_add (array,
-					 g_object_ref (profile_tmp));
-		}
+		if (cd_profile_get_kind (profile_tmp) == kind)
+			g_ptr_array_add (array, g_object_ref (profile_tmp));
 	}
 	return array;
 }
@@ -242,10 +220,8 @@ cd_profile_array_get_by_metadata (CdProfileArray *profile_array,
 		profile_tmp = g_ptr_array_index (priv->array, i);
 		hash_tmp = cd_profile_get_metadata (profile_tmp);
 		value_tmp = g_hash_table_lookup (hash_tmp, key);
-		if (g_strcmp0 (value_tmp, value) == 0) {
-			g_ptr_array_add (array,
-					 g_object_ref (profile_tmp));
-		}
+		if (g_strcmp0 (value_tmp, value) == 0)
+			g_ptr_array_add (array, g_object_ref (profile_tmp));
 	}
 	return array;
 }
@@ -265,11 +241,8 @@ cd_profile_array_get_by_object_path (CdProfileArray *profile_array,
 	/* find profile */
 	for (i = 0; i < priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (cd_profile_get_object_path (profile_tmp),
-			       object_path) == 0) {
-			profile = g_object_ref (profile_tmp);
-			break;
-		}
+		if (g_strcmp0 (cd_profile_get_object_path (profile_tmp), object_path) == 0)
+			return g_object_ref (profile_tmp);
 	}
 	return profile;
 }
@@ -282,9 +255,8 @@ cd_profile_array_get_variant (CdProfileArray *profile_array)
 {
 	CdProfileArrayPrivate *priv = profile_array->priv;
 	CdProfile *profile;
-	guint i;
-	GVariant *variant;
 	GVariant **variant_array = NULL;
+	guint i;
 
 	/* copy the object paths */
 	variant_array = g_new0 (GVariant *, priv->array->len + 1);
@@ -294,11 +266,9 @@ cd_profile_array_get_variant (CdProfileArray *profile_array)
 	}
 
 	/* format the value */
-	variant = g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
-				       variant_array,
-				       priv->array->len);
-
-	return variant;
+	return g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
+				    variant_array,
+				    priv->array->len);
 }
 
 /**

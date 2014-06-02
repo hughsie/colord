@@ -31,6 +31,7 @@
 #include <string.h>
 #include <colorhug/colorhug.h>
 
+#include "cd-cleanup.h"
 #include "cd-sensor.h"
 
 typedef struct
@@ -96,16 +97,15 @@ cd_sensor_colorhug_get_sample_cb (GObject *object,
 				  gpointer user_data)
 {
 	gboolean ret = FALSE;
-	GError *error = NULL;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+	_cleanup_free_error GError *error = NULL;
 
 	/* get data */
 	ret = ch_device_queue_process_finish (device_queue, res, &error);
 	if (!ret) {
 		cd_sensor_colorhug_get_sample_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 	g_debug ("finished values: red=%0.6lf, green=%0.6lf, blue=%0.6lf",
 		 state->xyz.X, state->xyz.Y, state->xyz.Z);
@@ -114,8 +114,6 @@ cd_sensor_colorhug_get_sample_cb (GObject *object,
 	state->ret = TRUE;
 	state->sample = cd_color_xyz_dup (&state->xyz);
 	cd_sensor_colorhug_get_sample_state_finish (state, NULL);
-out:
-	return;
 }
 
 
@@ -129,7 +127,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 	guint16 calibration_index;
 	CdSensorAsyncState *state;
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
@@ -156,8 +154,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 						      callback,
 						      user_data,
 						      error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* set state */
@@ -183,8 +180,6 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 				       state->cancellable,
 				       cd_sensor_colorhug_get_sample_cb,
 				       state);
-out:
-	return;
 }
 
 CdColorXYZ *
@@ -245,14 +240,13 @@ cd_sensor_colorhug_get_remote_hash_cb (GObject *object,
 	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
 	gboolean ret;
 	gchar *sha1;
-	GError *error = NULL;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
+	_cleanup_free_error GError *error = NULL;
 
 	/* get data, although don't fail if it does not exist */
 	ret = ch_device_queue_process_finish (device_queue, res, &error);
 	if (!ret) {
 		g_warning ("ignoring error: %s", error->message);
-		g_error_free (error);
 	} else {
 		sha1 = ch_sha1_to_string (&state->sha1);
 		cd_sensor_add_option (state->sensor,
@@ -273,17 +267,16 @@ cd_sensor_colorhug_startup_cb (GObject *object,
 {
 	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
 	gboolean ret;
-	gchar *serial_number_tmp = NULL;
-	GError *error = NULL;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (state->sensor);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_free gchar *serial_number_tmp = NULL;
 
 	/* get data */
 	ret = ch_device_queue_process_finish (device_queue, res, &error);
 	if (!ret) {
 		cd_sensor_colorhug_lock_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* set this */
@@ -301,9 +294,6 @@ cd_sensor_colorhug_startup_cb (GObject *object,
 				       state->cancellable,
 				       cd_sensor_colorhug_get_remote_hash_cb,
 				       state);
-out:
-	g_free (serial_number_tmp);
-	return;
 }
 
 /**
@@ -326,7 +316,7 @@ cd_sensor_lock_async (CdSensor *sensor,
 {
 	CdSensorAsyncState *state;
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
@@ -341,8 +331,7 @@ cd_sensor_lock_async (CdSensor *sensor,
 						      callback,
 						      user_data,
 						      error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* set state */
@@ -376,8 +365,6 @@ cd_sensor_lock_async (CdSensor *sensor,
 				       state->cancellable,
 				       cd_sensor_colorhug_startup_cb,
 				       state);
-out:
-	return;
 }
 
 gboolean
@@ -386,19 +373,15 @@ cd_sensor_lock_finish (CdSensor *sensor,
 		       GError **error)
 {
 	GSimpleAsyncResult *simple;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		ret = FALSE;
-		goto out;
-	}
-out:
-	return ret;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+	return TRUE;
 }
 
 static void
@@ -409,23 +392,20 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
 	gboolean ret = FALSE;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* close */
 	if (priv->device != NULL) {
 		ret = g_usb_device_close (priv->device, &error);
 		if (!ret) {
 			g_simple_async_result_set_from_error (res, error);
-			g_error_free (error);
-			goto out;
+			return;
 		}
 
 		/* clear */
 		g_object_unref (priv->device);
 		priv->device = NULL;
 	}
-out:
-	return;
 }
 
 void
@@ -456,19 +436,15 @@ cd_sensor_unlock_finish (CdSensor *sensor,
 			 GError **error)
 {
 	GSimpleAsyncResult *simple;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		ret = FALSE;
-		goto out;
-	}
-out:
-	return ret;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+	return TRUE;
 }
 
 /**********************************************************************/
@@ -510,22 +486,19 @@ cd_sensor_colorhug_set_options_cb (GObject *object,
 				  gpointer user_data)
 {
 	gboolean ret = FALSE;
-	GError *error = NULL;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+	_cleanup_free_error GError *error = NULL;
 
 	/* get data */
 	ret = ch_device_queue_process_finish (device_queue, res, &error);
 	if (!ret) {
 		cd_sensor_colorhug_set_options_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* do next option */
 	cd_sensor_set_next_option (state);
-out:
-	return;
 }
 
 static void
@@ -534,23 +507,20 @@ cd_sensor_colorhug_write_eeprom_cb (GObject *object,
 				   gpointer user_data)
 {
 	gboolean ret = FALSE;
-	GError *error = NULL;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+	_cleanup_free_error GError *error = NULL;
 
 	/* get data */
 	ret = ch_device_queue_process_finish (device_queue, res, &error);
 	if (!ret) {
 		cd_sensor_colorhug_set_options_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* all done */
 	state->ret = TRUE;
 	cd_sensor_colorhug_set_options_state_finish (state, NULL);
-out:
-	return;
 }
 
 static void
@@ -561,9 +531,9 @@ cd_sensor_set_next_option (CdSensorAsyncState *state)
 	const gchar *key = NULL;
 	const gchar *magic = "Un1c0rn2";
 	gboolean ret;
-	GError *error = NULL;
-	GList *keys;
 	GVariant *value;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_free_list GList *keys;
 
 	/* write eeprom to preserve settings */
 	keys = g_hash_table_get_keys (state->options);
@@ -591,8 +561,8 @@ cd_sensor_set_next_option (CdSensorAsyncState *state)
 				     &error);
 		if (!ret) {
 			cd_sensor_colorhug_set_options_state_finish (state, error);
-			g_error_free (error);
-			goto out;
+			g_hash_table_remove (state->options, key);
+			return;
 		}
 
 		/* set the remote hash */
@@ -614,12 +584,8 @@ cd_sensor_set_next_option (CdSensorAsyncState *state)
 			     "Sensor option %s is not supported",
 			     key);
 		cd_sensor_colorhug_set_options_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		g_hash_table_remove (state->options, key);
 	}
-out:
-	g_hash_table_remove (state->options, key);
-	g_list_free (keys);
 }
 
 void

@@ -31,6 +31,8 @@
 
 #include "../src/cd-sensor.h"
 
+#include "cd-cleanup.h"
+
 #include <dtp94/dtp94.h>
 
 typedef struct
@@ -96,7 +98,7 @@ cd_sensor_dtp94_sample_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* take a measurement from the sensor */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
@@ -105,7 +107,6 @@ cd_sensor_dtp94_sample_thread_cb (GSimpleAsyncResult *res,
 					   &error);
 	if (state->sample == NULL) {
 		cd_sensor_dtp94_get_sample_state_finish (state, error);
-		g_error_free (error);
 		goto out;
 	}
 	state->ret = TRUE;
@@ -178,8 +179,8 @@ cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
 	gboolean ret = FALSE;
-	gchar *serial = NULL;
-	GError *error = NULL;
+	_cleanup_free gchar *serial = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* try to find the USB device */
 	priv->device = cd_sensor_open_usb_device (sensor,
@@ -189,7 +190,6 @@ cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
 	if (priv->device == NULL) {
 		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -201,7 +201,6 @@ cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
 	if (!ret) {
 		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -210,14 +209,12 @@ cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
 	if (serial == NULL) {
 		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 	cd_sensor_set_serial (sensor, serial);
 out:
 	/* set state */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-	g_free (serial);
 }
 
 void
@@ -248,19 +245,15 @@ cd_sensor_lock_finish (CdSensor *sensor,
 		       GError **error)
 {
 	GSimpleAsyncResult *simple;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		ret = FALSE;
-		goto out;
-	}
-out:
-	return ret;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+	return TRUE;
 }
 
 static void
@@ -271,23 +264,20 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
 	gboolean ret = FALSE;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* close */
 	if (priv->device != NULL) {
 		ret = g_usb_device_close (priv->device, &error);
 		if (!ret) {
 			g_simple_async_result_set_from_error (res, error);
-			g_error_free (error);
-			goto out;
+			return;
 		}
 
 		/* clear */
 		g_object_unref (priv->device);
 		priv->device = NULL;
 	}
-out:
-	return;
 }
 
 void
@@ -318,19 +308,15 @@ cd_sensor_unlock_finish (CdSensor *sensor,
 			 GError **error)
 {
 	GSimpleAsyncResult *simple;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
 	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error)) {
-		ret = FALSE;
-		goto out;
-	}
-out:
-	return ret;
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+	return TRUE;
 }
 
 gboolean

@@ -115,6 +115,7 @@ colord_it8_spectra_util_func (void)
 	CdSpectrum *unity;
 	GError *error = NULL;
 	GFile *file;
+	GPtrArray *array;
 	gboolean ret;
 	gchar *filename;
 
@@ -141,7 +142,8 @@ colord_it8_spectra_util_func (void)
 	g_assert_cmpint (cd_it8_get_kind (spectra), ==, CD_IT8_KIND_SPECT);
 
 	/* calculate the XYZ value */
-	data = g_ptr_array_index (cd_it8_get_spectrum_array (spectra), 0);
+	array = cd_it8_get_spectrum_array (spectra);
+	data = g_ptr_array_index (array, 0);
 	unity = cd_spectrum_new ();
 	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf, unity, data, &value, 1.f, &error);
 	g_assert_no_error (error);
@@ -153,6 +155,7 @@ colord_it8_spectra_util_func (void)
 	g_assert_cmpfloat (value.Y, <, 1.f + 0.01);
 	g_assert_cmpfloat (value.Z, >, 0.813050f - 0.01);
 	g_assert_cmpfloat (value.Z, <, 0.813050f + 0.01);
+	g_ptr_array_unref (array);
 
 	cd_spectrum_free (unity);
 	g_object_unref (cmf);
@@ -521,6 +524,7 @@ colord_it8_ccmx_util_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 	g_object_unref (file);
+	g_free (filename);
 
 	/* load measured */
 	filename = cd_test_get_filename ("measured.ti3");
@@ -530,6 +534,7 @@ colord_it8_ccmx_util_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 	g_object_unref (file);
+	g_free (filename);
 
 	/* calculate CCMX */
 	ccmx = cd_it8_new_with_kind (CD_IT8_KIND_CCMX);
@@ -1198,6 +1203,7 @@ colord_icc_clear_func (void)
 	tmp = cd_icc_get_model (icc, NULL, &error);
 	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_NO_DATA);
 	g_assert (tmp == NULL);
+	g_error_free (error);
 
 	g_bytes_unref (payload);
 	g_object_unref (icc);
@@ -2038,6 +2044,7 @@ colord_icc_tags_func (void)
 	g_assert_no_error (error);
 	cd_icc_set_tag_data (icc, "xxxx", data, &error);
 	g_assert_no_error (error);
+	g_bytes_unref (data);
 
 	/* re-get raw tag data */
 	data = cd_icc_get_tag_data (icc, "desc", &error);

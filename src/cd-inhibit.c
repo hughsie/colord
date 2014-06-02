@@ -104,7 +104,6 @@ static CdInhibitItem *
 cd_inhibit_get_by_sender (CdInhibit *inhibit,
 			  const gchar *sender)
 {
-	CdInhibitItem *item = NULL;
 	CdInhibitItem *item_tmp;
 	CdInhibitPrivate *priv = inhibit->priv;
 	guint i;
@@ -112,12 +111,10 @@ cd_inhibit_get_by_sender (CdInhibit *inhibit,
 	/* find sender */
 	for (i = 0; i < priv->array->len; i++) {
 		item_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (item_tmp->sender, sender) == 0) {
-			item = item_tmp;
-			break;
-		}
+		if (g_strcmp0 (item_tmp->sender, sender) == 0)
+			return item_tmp;
 	}
-	return item;
+	return NULL;
 }
 
 /**
@@ -127,7 +124,6 @@ gboolean
 cd_inhibit_remove (CdInhibit *inhibit, const gchar *sender, GError **error)
 {
 	CdInhibitItem *item;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_INHIBIT (inhibit), FALSE);
 	g_return_val_if_fail (sender != NULL, FALSE);
@@ -135,28 +131,24 @@ cd_inhibit_remove (CdInhibit *inhibit, const gchar *sender, GError **error)
 	/* do we already exist */
 	item = cd_inhibit_get_by_sender (inhibit, sender);
 	if (item == NULL) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "not set inhibitor for %s",
 			     sender);
-		goto out;
+		return FALSE;
 	}
  
 	/* remove */
-	ret = g_ptr_array_remove (inhibit->priv->array, item);
-	if (!ret) {
+	if (!g_ptr_array_remove (inhibit->priv->array, item)) {
 		g_set_error (error, 1, 0,
 			     "cannot remove inhibit item for %s",
 			     sender);
-		goto out;
+		return FALSE;
 	}
 
 	/* emit signal */
 	g_debug ("CdInhibit: emit changed");
 	g_signal_emit (inhibit, signals[SIGNAL_CHANGED], 0);
-
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -168,18 +160,15 @@ cd_inhibit_name_vanished_cb (GDBusConnection *connection,
 			     gpointer user_data)
 {
 	CdInhibit *inhibit = CD_INHIBIT (user_data);
-	gboolean ret;
 	GError *error = NULL;
 
 	/* just remove */
-	ret = cd_inhibit_remove (inhibit, name, &error);
-	if (!ret) {
+	if (!cd_inhibit_remove (inhibit, name, &error)) {
 		g_warning ("CdInhibit: failed to remove when %s vanished: %s",
 			   name, error->message);
 		g_error_free (error);
 	} else {
-		g_debug ("CdInhibit: remove inhibit as %s vanished",
-			 name);
+		g_debug ("CdInhibit: remove inhibit as %s vanished", name);
 	}
 }
 
@@ -190,7 +179,6 @@ gboolean
 cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 {
 	CdInhibitItem *item;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_INHIBIT (inhibit), FALSE);
 	g_return_val_if_fail (sender != NULL, FALSE);
@@ -198,11 +186,10 @@ cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 	/* do we already exist */
 	item = cd_inhibit_get_by_sender (inhibit, sender);
 	if (item != NULL) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "already set inhibitor for %s",
 			     sender);
-		goto out;
+		return FALSE;
 	}
 
 	/* add */
@@ -220,9 +207,7 @@ cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 	/* emit signal */
 	g_debug ("CdInhibit: emit changed");
 	g_signal_emit (inhibit, signals[SIGNAL_CHANGED], 0);
-
-out:
-	return ret;
+	return TRUE;
 }
 
 /**

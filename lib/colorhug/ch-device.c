@@ -54,28 +54,20 @@ ch_device_error_quark (void)
 gboolean
 ch_device_open (GUsbDevice *device, GError **error)
 {
-	gboolean ret;
-
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* load device */
-	ret = g_usb_device_open (device, error);
-	if (!ret)
-		goto out;
-	ret = g_usb_device_set_configuration (device,
-					      CH_USB_CONFIG,
-					      error);
-	if (!ret)
-		goto out;
-	ret = g_usb_device_claim_interface (device,
-					    CH_USB_INTERFACE,
-					    G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
-					    error);
-	if (!ret)
-		goto out;
-out:
-	return ret;
+	if (!g_usb_device_open (device, error))
+		return FALSE;
+	if (!g_usb_device_set_configuration (device, CH_USB_CONFIG, error))
+		return FALSE;
+	if (!g_usb_device_claim_interface (device,
+					   CH_USB_INTERFACE,
+					   G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
+					   error))
+		return FALSE;
+	return TRUE;
 }
 
 /**
@@ -102,15 +94,12 @@ ch_device_get_mode (GUsbDevice *device)
 	/* is a legacy device */
 	if (g_usb_device_get_vid (device) == CH_USB_VID_LEGACY &&
 	    g_usb_device_get_pid (device) == CH_USB_PID_LEGACY) {
-		state = CH_DEVICE_MODE_LEGACY;
-		goto out;
+		return CH_DEVICE_MODE_LEGACY;
 	}
 
 	/* vendor doesn't match */
-	if (g_usb_device_get_vid (device) != CH_USB_VID) {
-		state = CH_DEVICE_MODE_UNKNOWN;
-		goto out;
-	}
+	if (g_usb_device_get_vid (device) != CH_USB_VID)
+		return CH_DEVICE_MODE_UNKNOWN;
 
 	/* use the product ID to work out the state */
 	switch (g_usb_device_get_pid (device)) {
@@ -130,7 +119,6 @@ ch_device_get_mode (GUsbDevice *device)
 		state = CH_DEVICE_MODE_UNKNOWN;
 		break;
 	}
-out:
 	return state;
 }
 

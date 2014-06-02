@@ -31,6 +31,7 @@
 #include <math.h>
 #include <glib-object.h>
 
+#include "cd-cleanup.h"
 #include "cd-color.h"
 #include "cd-interp-linear.h"
 #include "cd-spectrum.h"
@@ -301,7 +302,7 @@ cd_spectrum_planckian_new (gdouble temperature)
 
 	/* sanity check */
 	if (temperature < 1.0 || temperature > 1e6)
-		goto out;
+		return NULL;
 
 	/* create spectrum with 1nm resolution */
 	s = cd_spectrum_sized_new (531);
@@ -317,7 +318,6 @@ cd_spectrum_planckian_new (gdouble temperature)
 		tmp = (c1 * pow (wl, -5.0)) / (exp (c2 / (wl * temperature)) - 1.0);
 		cd_spectrum_add_value (s, tmp / norm);
 	}
-out:
 	return s;
 }
 
@@ -452,9 +452,7 @@ cd_spectrum_set_norm (CdSpectrum *spectrum, gdouble norm)
 gdouble
 cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 {
-	CdInterp *interp;
-	gboolean ret;
-	gdouble val = -1.0;
+	_cleanup_unref_object CdInterp *interp = NULL;
 	guint i;
 	guint size;
 
@@ -478,13 +476,9 @@ cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 	}
 
 	/* get the interpolated value */
-	ret = cd_interp_prepare (interp, NULL);
-	if (!ret)
-		goto out;
-	val = cd_interp_eval (interp, wavelength, NULL);
-out:
-	g_object_unref (interp);
-	return val;
+	if (!cd_interp_prepare (interp, NULL))
+		return -1.f;
+	return cd_interp_eval (interp, wavelength, NULL);
 }
 
 /**

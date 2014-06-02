@@ -35,6 +35,7 @@
 #include <string.h>
 
 #include "cd-it8.h"
+#include "cd-cleanup.h"
 #include "cd-color.h"
 #include "cd-context-lcms.h"
 
@@ -285,26 +286,22 @@ cd_it8_get_kind (CdIt8 *it8)
 static gboolean
 cd_it8_parse_luminance (const gchar *text, CdColorXYZ *xyz, GError **error)
 {
-	gboolean ret = TRUE;
-	gchar **split;
+	_cleanup_free_strv gchar **split = NULL;
 
 	split = g_strsplit (text, " ", -1);
 	if (g_strv_length (split) != 3) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "LUMINANCE_XYZ_CDM2 format invalid: %s",
 			     text);
-		goto out;
+		return FALSE;
 	}
 
 	xyz->X = g_ascii_strtod (split[0], NULL);
 	xyz->Y = g_ascii_strtod (split[1], NULL);
 	xyz->Z = g_ascii_strtod (split[2], NULL);
-out:
-	g_strfreev (split);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -436,29 +433,26 @@ cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	CdColorRGB *rgb;
 	CdColorXYZ *xyz;
 	const gchar *tmp;
-	gboolean ret = TRUE;
 	guint i;
 	guint number_of_sets = 0;
 
 	tmp = cmsIT8GetProperty (it8_lcms, "COLOR_REP");
 	if (g_strcmp0 (tmp, "RGB") != 0) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "Invalid data format: %s", tmp);
-		goto out;
+		return FALSE;
 	}
 
 	/* copy out data entries */
 	number_of_sets = _cmsIT8GetPropertyInt (it8_lcms, "NUMBER_OF_SETS");
 	if (number_of_sets == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, NUMBER_OF_SETS required");
-		goto out;
+		return FALSE;
 	}
 
 	for (i = 0; i < number_of_sets; i++) {
@@ -481,8 +475,7 @@ cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cd_color_xyz_set (xyz, 0.0, 0.0, 0.0);
 		g_ptr_array_add (it8->priv->array_xyz, xyz);
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -495,19 +488,17 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	CdColorXYZ luminance;
 	CdColorXYZ *xyz;
 	const gchar *tmp;
-	gboolean ret = TRUE;
 	gboolean scaled_to_y100 = FALSE;
 	guint i;
 	guint number_of_sets = 0;
 
 	tmp = cmsIT8GetProperty (it8_lcms, "COLOR_REP");
 	if (g_strcmp0 (tmp, "RGB_XYZ") != 0) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "Invalid data format: %s", tmp);
-		goto out;
+		return FALSE;
 	}
 
 	/* if normalized, then scale back up */
@@ -515,9 +506,8 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	if (g_strcmp0 (tmp, "YES") == 0) {
 		scaled_to_y100 = TRUE;
 		tmp = cmsIT8GetProperty (it8_lcms, "LUMINANCE_XYZ_CDM2");
-		ret = cd_it8_parse_luminance (tmp, &luminance, error);
-		if (!ret)
-			goto out;
+		if (!cd_it8_parse_luminance (tmp, &luminance, error))
+			return FALSE;
 	}
 
 	/* set spectral flag */
@@ -530,12 +520,11 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* copy out data entries */
 	number_of_sets = _cmsIT8GetPropertyInt (it8_lcms, "NUMBER_OF_SETS");
 	if (number_of_sets == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, NUMBER_OF_SETS required");
-		goto out;
+		return FALSE;
 	}
 	for (i = 0; i < number_of_sets; i++) {
 		rgb = cd_color_rgb_new ();
@@ -562,8 +551,7 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		}
 		g_ptr_array_add (it8->priv->array_xyz, xyz);
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -572,18 +560,16 @@ out:
 static gboolean
 cd_it8_load_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
-	gboolean ret = TRUE;
 	const gchar *tmp;
 
 	/* check color format */
 	tmp = cmsIT8GetProperty (it8_lcms, "COLOR_REP");
 	if (g_strcmp0 (tmp, "XYZ") != 0) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "Invalid CCMX data format: %s", tmp);
-		goto out;
+		return FALSE;
 	}
 
 	/* set instrument */
@@ -599,8 +585,7 @@ cd_it8_load_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	it8->priv->matrix.m20 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 0);
 	it8->priv->matrix.m21 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 1);
 	it8->priv->matrix.m22 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 2);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -611,7 +596,6 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdSpectrum *spectrum;
 	gboolean has_index;
-	gboolean ret = TRUE;
 	gchar *label;
 	gdouble spectral_end;
 	gdouble spectral_norm;
@@ -625,40 +609,36 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* get spectra endpoints */
 	spectral_start = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_START_NM");
 	if (spectral_start == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, SPECTRAL_START_NM required");
-		goto out;
+		return FALSE;
 	}
 	spectral_end = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_END_NM");
 	if (spectral_end == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, SPECTRAL_END_NM required");
-		goto out;
+		return FALSE;
 	}
 
 	/* get number of bands */
 	spectral_bands = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_BANDS");
 	if (spectral_bands == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format: SPECTRAL_BANDS required");
-		goto out;
+		return FALSE;
 	}
 	if (spectral_bands < 2 || spectral_bands > 16384) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "Invalid CCSS spectral size: %i", spectral_bands);
-		goto out;
+		return FALSE;
 	}
 
 	/* get spectral norm */
@@ -670,36 +650,33 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	 * SPECT or CMF but like any good library support each mode */
 	number_of_fields = _cmsIT8GetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS");
 	if (number_of_fields == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, NUMBER_OF_FIELDS required");
-		goto out;
+		return FALSE;
 	}
 	if (spectral_bands == number_of_fields) {
 		has_index = FALSE;
 	} else if (spectral_bands + 1 == number_of_fields) {
 		has_index = TRUE;
 	} else {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "Invalid CCSS: bands = %i, fields = %i",
 			     spectral_bands, number_of_fields);
-		goto out;
+		return FALSE;
 	}
 
 	/* read out the arrays of data */
 	number_of_sets = _cmsIT8GetPropertyInt (it8_lcms, "NUMBER_OF_SETS");
 	if (number_of_sets == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, NUMBER_OF_SETS required");
-		goto out;
+		return FALSE;
 	}
 	for (j = 0; j < (guint) number_of_sets; j++) {
 		spectrum = cd_spectrum_sized_new (spectral_bands);
@@ -720,8 +697,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cd_spectrum_set_norm (spectrum, spectral_norm);
 		g_ptr_array_add (it8->priv->array_spectra, spectrum);
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -731,7 +707,6 @@ static gboolean
 cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdSpectrum *spectrum;
-	gboolean ret = TRUE;
 	gdouble spectral_end;
 	gdouble spectral_norm;
 	gdouble spectral_start;
@@ -744,40 +719,36 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* get spectra endpoints */
 	spectral_start = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_START_NM");
 	if (spectral_start == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, SPECTRAL_START_NM required");
-		goto out;
+		return FALSE;
 	}
 	spectral_end = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_END_NM");
 	if (spectral_end == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, SPECTRAL_END_NM required");
-		goto out;
+		return FALSE;
 	}
 
 	/* get number of bands */
 	spectral_bands = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_BANDS");
 	if (spectral_bands == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, SPECTRAL_BANDS required");
-		goto out;
+		return FALSE;
 	}
 	if (spectral_bands < 2 || spectral_bands > 16384) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "Invalid CCSS spectral size: %i", spectral_bands);
-		goto out;
+		return FALSE;
 	}
 
 	/* get spectral norm */
@@ -788,12 +759,11 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* CMF files are un-indexed and implicitly XYZ */
 	number_of_fields = _cmsIT8GetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS");
 	if (number_of_fields == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, NUMBER_OF_FIELDS required");
-		goto out;
+		return FALSE;
 	}
 	if (spectral_bands != number_of_fields) {
 		g_set_error (error,
@@ -801,7 +771,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "Invalid CMF: bands != fields (%i, %i)",
 			     spectral_bands, number_of_fields);
-		goto out;
+		return FALSE;
 	}
 
 	/* read out the arrays of data */
@@ -812,7 +782,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			     CD_IT8_ERROR_INVALID_FORMAT,
 			     "Invalid CMF: sets != 3 (%i)",
 			     number_of_sets);
-		goto out;
+		return FALSE;
 	}
 	for (j = 0; j < (guint) number_of_sets; j++) {
 		spectrum = cd_spectrum_sized_new (spectral_bands);
@@ -831,8 +801,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cd_spectrum_set_norm (spectrum, spectral_norm);
 		g_ptr_array_add (it8->priv->array_spectra, spectrum);
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1012,25 +981,20 @@ out:
 gboolean
 cd_it8_load_from_file (CdIt8 *it8, GFile *file, GError **error)
 {
-	gboolean ret;
-	gchar *data = NULL;
 	gsize size = 0;
+	_cleanup_free gchar *data = NULL;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
 
 	/* load file */
-	ret = g_file_load_contents (file, NULL, &data, &size, NULL, error);
-	if (!ret)
-		goto out;
+	if (!g_file_load_contents (file, NULL, &data, &size, NULL, error))
+		return FALSE;
 
 	/* load data */
-	ret = cd_it8_load_from_data (it8, data, size, error);
-	if (!ret)
-		goto out;
-out:
-	g_free (data);
-	return ret;
+	if (!cd_it8_load_from_data (it8, data, size, error))
+		return FALSE;
+	return TRUE;
 }
 
 /**
@@ -1071,11 +1035,10 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	CdColorXYZ lumi_xyz;
 	CdColorXYZ *xyz_tmp;
 	gboolean is_white;
-	gboolean ret = TRUE;
-	gchar *lumi_str = NULL;
 	gdouble normalize = 0.0f;
 	guint i;
 	guint luminance_samples = 0;
+	_cleanup_free gchar *lumi_str = NULL;
 
 	/* calculate the absolute XYZ in candelas per meter squared */
 	cd_color_xyz_clear (&lumi_xyz);
@@ -1096,12 +1059,11 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 				normalize = xyz_tmp->Y;
 		}
 		if (luminance_samples == 0) {
-			ret = FALSE;
 			g_set_error_literal (error,
 					     CD_IT8_ERROR,
 					     CD_IT8_ERROR_FAILED,
 					     "Failed to find any white samples");
-			goto out;
+			return FALSE;
 		}
 		lumi_xyz.X /= luminance_samples;
 		lumi_xyz.Y /= luminance_samples;
@@ -1171,9 +1133,7 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			_cmsIT8SetDataRowColDbl(it8_lcms, i, 6, xyz_tmp->Z);
 		}
 	}
-out:
-	g_free (lumi_str);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1261,8 +1221,6 @@ static gboolean
 cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdSpectrum *spectrum;
-	gboolean ret = TRUE;
-	gchar *label;
 	guint i;
 	guint j;
 	guint number_of_sets;
@@ -1275,12 +1233,11 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* check data is valid */
 	number_of_sets = it8->priv->array_spectra->len;
 	if (number_of_sets != 3) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Cannot write CMF: XYZ data required");
-		goto out;
+		return FALSE;
 	}
 
 	/* all the arrays have to have the same length */
@@ -1295,10 +1252,10 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	for (i = 0; i < spectral_bands; i++) {
+		_cleanup_free gchar *label = NULL;
 		label = g_strdup_printf ("SPEC_%.0f",
 					 cd_spectrum_get_wavelength (spectrum, i));
 		cmsIT8SetDataFormat (it8_lcms, i, label);
-		g_free (label);
 	}
 
 	/* set DATA */
@@ -1310,8 +1267,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 						 cd_spectrum_get_value (spectrum, i));
 		}
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1322,8 +1278,6 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdSpectrum *spectrum;
 	gboolean has_index = FALSE;
-	gboolean ret = TRUE;
-	gchar *label;
 	guint i;
 	guint j;
 	guint number_of_sets;
@@ -1352,12 +1306,11 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* check data is valid */
 	number_of_sets = it8->priv->array_spectra->len;
 	if (number_of_sets == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Cannot write CCSS: spectral data required");
-		goto out;
+		return FALSE;
 	}
 	if (number_of_sets > 1)
 		has_index = TRUE;
@@ -1376,10 +1329,10 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cmsIT8SetDataFormat (it8_lcms, 0, "SAMPLE_ID");
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	for (i = 0; i < spectral_bands; i++) {
+		_cleanup_free gchar *label;
 		label = g_strdup_printf ("SPEC_%.0f",
 					 cd_spectrum_get_wavelength (spectrum, i));
 		cmsIT8SetDataFormat (it8_lcms, i + has_index, label);
-		g_free (label);
 	}
 
 	/* set DATA */
@@ -1395,8 +1348,7 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 						 cd_spectrum_get_value (spectrum, i));
 		}
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1421,8 +1373,8 @@ cd_it8_save_to_data (CdIt8 *it8,
 	cmsHANDLE it8_lcms = NULL;
 	const gchar *tmp;
 	gboolean ret;
-	gchar *data_tmp = NULL;
-	gchar *date_str = NULL;
+	_cleanup_free gchar *data_tmp = NULL;
+	_cleanup_free gchar *date_str = NULL;
 	GDateTime *datetime = NULL;
 	cmsUInt32Number size_tmp = 0;
 	guint i;
@@ -1513,8 +1465,6 @@ out:
 		cmsIT8Free (it8_lcms);
 	if (datetime != NULL)
 		g_date_time_unref (datetime);
-	g_free (data_tmp);
-	g_free (date_str);
 	return ret;
 }
 
@@ -1533,27 +1483,20 @@ out:
 gboolean
 cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
 {
-	gboolean ret;
-	gchar *data = NULL;
 	gsize size = 0;
+	_cleanup_free gchar *data = NULL;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
 
 	/* get data */
-	ret = cd_it8_save_to_data (it8, &data, &size, error);
-	if (!ret)
-		goto out;
+	if (!cd_it8_save_to_data (it8, &data, &size, error))
+		return FALSE;
 
 	/* save file */
-	ret = g_file_replace_contents (file, data, size, NULL,
-				       FALSE, G_FILE_CREATE_NONE,
-				       NULL, NULL, error);
-	if (!ret)
-		goto out;
-out:
-	g_free (data);
-	return ret;
+	return g_file_replace_contents (file, data, size, NULL,
+					FALSE, G_FILE_CREATE_NONE,
+					NULL, NULL, error);
 }
 
 /**

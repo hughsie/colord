@@ -28,6 +28,7 @@
 #include <glib-object.h>
 #include <lcms2.h>
 
+#include "cd-cleanup.h"
 #include "cd-sensor.h"
 
 typedef struct
@@ -92,7 +93,7 @@ static gboolean
 cd_sensor_get_sample_wait_cb (CdSensorAsyncState *state)
 {
 	CdSensorDummyPrivate *priv = cd_sensor_dummy_get_private (state->sensor);
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* never setup */
 	if (priv->transform_fake == NULL) {
@@ -101,8 +102,7 @@ cd_sensor_get_sample_wait_cb (CdSensorAsyncState *state)
 				     CD_SENSOR_ERROR_NO_SUPPORT,
 				     "no fake transfor set up");
 		cd_sensor_get_sample_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return G_SOURCE_REMOVE;
 	}
 
 	/* run the sample through the profile */
@@ -117,7 +117,6 @@ cd_sensor_get_sample_wait_cb (CdSensorAsyncState *state)
 
 	/* just return without a problem */
 	cd_sensor_get_sample_state_finish (state, NULL);
-out:
 	return G_SOURCE_REMOVE;
 }
 
@@ -199,7 +198,7 @@ cd_sensor_set_options_async (CdSensor *sensor,
 {
 	CdSensorDummyPrivate *priv = cd_sensor_dummy_get_private (sensor);
 	GSimpleAsyncResult *res;
-	GList *keys;
+	_cleanup_free_list GList *keys = NULL;
 	GList *l;
 	gboolean ret = TRUE;
 	const gchar *key_name;
@@ -242,7 +241,6 @@ cd_sensor_set_options_async (CdSensor *sensor,
 			break;
 		}
 	}
-	g_list_free (keys);
 
 	/* success */
 	if (ret)

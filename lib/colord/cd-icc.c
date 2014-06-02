@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include "cd-cleanup.h"
 #include "cd-context-lcms.h"
 #include "cd-icc.h"
 
@@ -168,7 +169,6 @@ cd_icc_read_tag (CdIcc *icc, cmsTagSignature sig, GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
 	gchar sig_string[5];
-	gboolean ret;
 	gpointer tmp;
 
 	/* ensure context error is not present to aid debugging */
@@ -177,12 +177,11 @@ cd_icc_read_tag (CdIcc *icc, cmsTagSignature sig, GError **error)
 	/* read raw value */
 	tmp = cmsReadTag (priv->lcms_profile, sig);
 	if (tmp != NULL)
-		goto out;
+		return tmp;
 
 	/* any context error? */
-	ret = cd_context_lcms_error_check (priv->context_lcms, error);
-	if (!ret)
-		goto out;
+	if (!cd_context_lcms_error_check (priv->context_lcms, error))
+		return NULL;
 
 	/* missing value */
 	cd_icc_uint32_to_str (GINT32_FROM_BE (sig), sig_string);
@@ -190,8 +189,7 @@ cd_icc_read_tag (CdIcc *icc, cmsTagSignature sig, GError **error)
 		     CD_ICC_ERROR,
 		     CD_ICC_ERROR_NO_DATA,
 		     "No data for tag %s [0x%04x]", sig_string, sig);
-out:
-	return tmp;
+	return NULL;
 }
 
 /**
@@ -201,28 +199,23 @@ static gboolean
 cd_icc_write_tag (CdIcc *icc, cmsTagSignature sig, gpointer data, GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
-	gboolean ret;
 	gchar sig_string[5];
 
 	/* ensure context error is not present to aid debugging */
 	cd_context_lcms_error_clear (priv->context_lcms);
 
-	/* read raw value */
-	ret = cmsWriteTag (priv->lcms_profile, sig, data);
-	if (ret)
-		goto out;
+	/* write raw value */
+	if (cmsWriteTag (priv->lcms_profile, sig, data))
+		return TRUE;
 
 	/* due to a bug in lcms2, writing with data==NULL returns FALSE
 	 * with no conext error set */
-	if (data == NULL) {
-		ret = TRUE;
-		goto out;
-	}
+	if (data == NULL)
+		return TRUE;
 
 	/* any context error? */
-	ret = cd_context_lcms_error_check (priv->context_lcms, error);
-	if (!ret)
-		goto out;
+	if (!cd_context_lcms_error_check (priv->context_lcms, error))
+		return FALSE;
 
 	/* missing value */
 	cd_icc_uint32_to_str (GINT32_FROM_BE (sig), sig_string);
@@ -230,8 +223,7 @@ cd_icc_write_tag (CdIcc *icc, cmsTagSignature sig, gpointer data, GError **error
 		     CD_ICC_ERROR,
 		     CD_ICC_ERROR_NO_DATA,
 		     "Failed to write tag %s [0x%04x]", sig_string, sig);
-out:
-	return ret;
+	return FALSE;
 }
 
 /**
@@ -905,13 +897,12 @@ cd_icc_get_precooked_md5 (cmsHPROFILE lcms_profile)
 		}
 	}
 	if (md5_precooked == FALSE)
-		goto out;
+		return NULL;
 
 	/* convert to a hex string */
 	md5 = g_new0 (gchar, 32 + 1);
 	for (i = 0; i < 16; i++)
 		g_snprintf (md5 + i * 2, 3, "%02x", icc_id[i]);
-out:
 	return md5;
 }
 
@@ -1101,45 +1092,37 @@ cd_icc_load_metadata_item (CdIcc *icc,
 			   const gunichar *value,
 			   GError **error)
 {
-	gboolean ret = TRUE;
-	gchar *ascii_name;
-	gchar *ascii_value = NULL;
-	GError *error_local = NULL;
+	_cleanup_free gchar *ascii_name = NULL;
+	_cleanup_free gchar *ascii_value = NULL;
+	_cleanup_free_error GError *error_local = NULL;
 
 	/* parse name */
 	ascii_name = g_ucs4_to_utf8 (name, -1, NULL, NULL, &error_local);
 	if (ascii_name == NULL) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_ICC_ERROR,
 			     CD_ICC_ERROR_CORRUPTION_DETECTED,
 			     "Could not convert name in dict: %s",
 			     error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* parse value */
 	ascii_value = g_ucs4_to_utf8 (value, -1, NULL, NULL, &error_local);
 	if (ascii_value == NULL) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_ICC_ERROR,
 			     CD_ICC_ERROR_CORRUPTION_DETECTED,
 			     "Could not convert value in dict: %s",
 			     error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* all okay */
 	g_hash_table_insert (icc->priv->metadata,
 			     g_strdup (ascii_name),
 			     g_strdup (ascii_value));
-out:
-	g_free (ascii_name);
-	g_free (ascii_value);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1150,7 +1133,6 @@ cd_icc_load_metadata (CdIcc *icc, GError **error)
 {
 	cmsHANDLE dict;
 	const cmsDICTentry *entry;
-	gboolean ret = TRUE;
 	GError *error_local = NULL;
 
 	/* get dictionary metadata */
@@ -1161,24 +1143,21 @@ cd_icc_load_metadata (CdIcc *icc, GError **error)
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_NO_DATA)) {
 			g_error_free (error_local);
-			goto out;
+			return TRUE;
 		}
-		ret = FALSE;
 		g_propagate_error (error, error_local);
-		goto out;
+		return FALSE;
 	}
 	for (entry = cmsDictGetEntryList (dict);
 	     entry != NULL;
 	     entry = cmsDictNextEntry (entry)) {
-		ret = cd_icc_load_metadata_item (icc,
-						 (const gunichar *) entry->Name,
-						 (const gunichar *) entry->Value,
-						 error);
-		if (!ret)
-			goto out;
+		if (!cd_icc_load_metadata_item (icc,
+						(const gunichar *) entry->Name,
+						(const gunichar *) entry->Value,
+						error))
+			return FALSE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1281,7 +1260,6 @@ cd_icc_load_data (CdIcc *icc,
 		  GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -1289,33 +1267,30 @@ cd_icc_load_data (CdIcc *icc,
 
 	/* ensure we have the header */
 	if (data_len < 0x84) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_PARSE,
 				     "icc was not valid (file size too small)");
-		goto out;
+		return FALSE;
 	}
 
 	/* load icc into lcms */
 	priv->lcms_profile = cmsOpenProfileFromMemTHR (priv->context_lcms,
 						       data, data_len);
 	if (priv->lcms_profile == NULL) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_PARSE,
 				     "failed to load: not an ICC icc");
-		goto out;
+		return FALSE;
 	}
 
 	/* save length to avoid trusting the profile */
 	priv->size = data_len;
 
 	/* load cached data */
-	ret = cd_icc_load (icc, flags, error);
-	if (!ret)
-		goto out;
+	if (!cd_icc_load (icc, flags, error))
+		return FALSE;
 
 	/* calculate the data MD5 if there was no embedded profile */
 	if (priv->checksum == NULL &&
@@ -1324,8 +1299,7 @@ cd_icc_load_data (CdIcc *icc,
 							      (const guchar *) data,
 							      data_len);
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1338,15 +1312,15 @@ cd_util_write_dict_entry (cmsHANDLE dict,
 			  GError **error)
 {
 	gboolean ret = FALSE;
-	gunichar *mb_key = NULL;
-	gunichar *mb_value = NULL;
+	_cleanup_free gunichar *mb_key = NULL;
+	_cleanup_free gunichar *mb_value = NULL;
 
 	mb_key = g_utf8_to_ucs4 (key, -1, NULL, NULL, error);
 	if (mb_key == NULL)
-		goto out;
+		return FALSE;
 	mb_value = g_utf8_to_ucs4 (value, -1, NULL, NULL, error);
 	if (mb_value == NULL)
-		goto out;
+		return FALSE;
 	ret = cmsDictAddEntry (dict,
 			       (const wchar_t *) mb_key,
 			       (const wchar_t *) mb_value,
@@ -1356,12 +1330,9 @@ cd_util_write_dict_entry (cmsHANDLE dict,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_SAVE,
 				     "Failed to write dict entry");
-		goto out;
+		return FALSE;
 	}
-out:
-	g_free (mb_key);
-	g_free (mb_value);
-	return ret;
+	return TRUE;
 }
 
 typedef struct {
@@ -1392,57 +1363,54 @@ cd_util_mlu_object_parse (const gchar *locale,
 			  GError **error)
 {
 	CdMluObject *obj = NULL;
-	gchar *key = NULL;
-	gchar **split = NULL;
 	guint type;
 	gunichar *wtext;
+	_cleanup_free gchar *key = NULL;
+	_cleanup_free_strv gchar **split = NULL;
 
 	/* untranslated version */
 	if (locale == NULL || locale[0] == '\0') {
 		wtext = g_utf8_to_ucs4 (utf8_text, -1, NULL, NULL, error);
 		if (wtext == NULL)
-			goto out;
+			return NULL;
 		obj = g_new0 (CdMluObject, 1);
 		obj->wtext = wtext;
-		goto out;
+		return obj;
 	}
 
 	/* ignore ##@latin */
 	if (g_strstr_len (locale, -1, "@") != NULL)
-		goto out;
+		return NULL;
 
 	key = g_strdup (locale);
 	g_strdelimit (key, ".", '\0');
 	split = g_strsplit (key, "_", -1);
 	if (strlen (split[0]) != 2)
-		goto out;
+		return NULL;
 	type = g_strv_length (split);
 	if (type > 2)
-		goto out;
+		return NULL;
 
 	/* convert to wchars */
 	wtext = g_utf8_to_ucs4 (utf8_text, -1, NULL, NULL, error);
 	if (wtext == NULL)
-		goto out;
+		return NULL;
 
 	/* lv */
 	if (type == 1) {
 		obj = g_new0 (CdMluObject, 1);
 		obj->language_code = g_strdup (split[0]);
 		obj->wtext = wtext;
-		goto out;
+		return obj;
 	}
 
 	/* en_GB */
 	if (strlen (split[1]) != 2)
-		goto out;
+		return NULL;
 	obj = g_new0 (CdMluObject, 1);
 	obj->language_code = g_strdup (split[0]);
 	obj->country_code = g_strdup (split[1]);
 	obj->wtext = wtext;
-out:
-	g_free (key);
-	g_strfreev (split);
 	return obj;
 }
 
@@ -1521,15 +1489,15 @@ cd_util_write_tag_localized (CdIcc *icc,
 			     GError **error)
 {
 	CdMluObject *obj;
+	GError *error_local = NULL;
+	GList *l;
 	cmsMLU *mlu = NULL;
 	const gchar *locale;
 	const gchar *value;
 	gboolean ret = TRUE;
-	GError *error_local = NULL;
-	GList *keys;
-	GList *l;
-	GPtrArray *array;
 	guint i;
+	_cleanup_free_list GList *keys;
+	_cleanup_unref_ptrarray GPtrArray *array = NULL;
 
 	/* convert all the hash entries into CdMluObject's */
 	keys = g_hash_table_get_keys (hash);
@@ -1592,8 +1560,6 @@ cd_util_write_tag_localized (CdIcc *icc,
 	if (!ret)
 		goto out;
 out:
-	g_ptr_array_unref (array);
-	g_list_free (keys);
 	if (mlu != NULL)
 		cmsMLUfree (mlu);
 	return ret;
@@ -1605,8 +1571,7 @@ out:
 static gboolean
 cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
 {
-	gboolean ret = FALSE;
-	GFile *parent_dir = NULL;
+	_cleanup_unref_object GFile *parent_dir = NULL;
 
 	/* get parent directory */
 	parent_dir = g_file_get_parent (file);
@@ -1615,20 +1580,15 @@ cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_CREATE,
 				     "could not get parent dir");
-		goto out;
+		return FALSE;
 	}
 
 	/* ensure desination does not already exist */
-	ret = g_file_query_exists (parent_dir, NULL);
-	if (ret)
-		goto out;
-	ret = g_file_make_directory_with_parents (parent_dir, NULL, error);
-	if (!ret)
-		goto out;
-out:
-	if (parent_dir != NULL)
-		g_object_unref (parent_dir);
-	return ret;
+	if (g_file_query_exists (parent_dir, NULL))
+		return TRUE;
+	if (!g_file_make_directory_with_parents (parent_dir, NULL, error))
+		return FALSE;
+	return TRUE;
 }
 
 /**
@@ -1708,13 +1668,13 @@ static GBytes *
 cd_icc_serialize_profile_fallback (CdIcc *icc, GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
-	gboolean ret;
 	GBytes *data = NULL;
-	gchar *data_tmp = NULL;
-	gchar *temp_file = NULL;
 	GError *error_local = NULL;
+	gboolean ret;
 	gint fd;
 	gsize length = 0;
+	_cleanup_free gchar *data_tmp = NULL;
+	_cleanup_free gchar *temp_file = NULL;
 
 	/* get unique temp file */
 	fd = g_file_open_tmp ("colord-XXXXXX.icc", &temp_file, &error_local);
@@ -1752,8 +1712,6 @@ out:
 		close (fd);
 	if (temp_file != NULL)
 		g_unlink (temp_file);
-	g_free (temp_file);
-	g_free (data_tmp);
 	return data;
 }
 
@@ -1766,8 +1724,7 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 	CdIccPrivate *priv = icc->priv;
 	cmsUInt32Number length = 0;
 	gboolean ret;
-	GBytes *data = NULL;
-	gchar *data_tmp = NULL;
+	_cleanup_free gchar *data_tmp = NULL;
 
 	/* get size of profile */
 	ret = cmsSaveProfileToMem (priv->lcms_profile,
@@ -1777,7 +1734,7 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_SAVE,
 				     "failed to dump ICC file");
-		goto out;
+		return NULL;
 	}
 
 	/* sanity check to 16Mb */
@@ -1788,7 +1745,7 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 			     "failed to save ICC file, requested %u "
 			     "bytes and limit is 16Mb",
 			     length);
-		goto out;
+		return NULL;
 	}
 
 	/* allocate and get profile data */
@@ -1800,14 +1757,11 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_SAVE,
 				     "failed to dump ICC file to memory");
-		goto out;
+		return NULL;
 	}
 
 	/* success */
-	data = g_bytes_new (data_tmp, length);
-out:
-	g_free (data_tmp);
-	return data;
+	return g_bytes_new (data_tmp, length);
 }
 
 /**
@@ -1834,8 +1788,8 @@ cd_icc_save_data (CdIcc *icc,
 	gboolean ret = FALSE;
 	GBytes *data = NULL;
 	GList *l;
-	GList *md_keys = NULL;
 	guint i;
+	_cleanup_free_list GList *md_keys = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 
@@ -1988,7 +1942,6 @@ cd_icc_save_data (CdIcc *icc,
 	}
 out:
 	_cd_context_lcms_pre26_stop ();
-	g_list_free (md_keys);
 	if (dict != NULL)
 		cmsDictFree (dict);
 	return data;
@@ -2052,23 +2005,20 @@ cd_icc_save_file (CdIcc *icc,
 		  GError **error)
 {
 	gboolean ret;
-	GBytes *data = NULL;
-	GError *error_local = NULL;
+	_cleanup_unref_bytes GBytes *data = NULL;
+	_cleanup_free_error GError *error_local = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
 
 	/* get data */
 	data = cd_icc_save_data (icc, flags, error);
-	if (data == NULL) {
-		ret = FALSE;
-		goto out;
-	}
+	if (data == NULL)
+		return FALSE;
 
 	/* ensure parent directories exist */
-	ret = cd_icc_save_file_mkdir_parents (file, error);
-	if (!ret)
-		goto out;
+	if (!cd_icc_save_file_mkdir_parents (file, error))
+		return FALSE;
 
 	/* actually write file */
 	ret = g_file_replace_contents (file,
@@ -2086,12 +2036,9 @@ cd_icc_save_file (CdIcc *icc,
 			     CD_ICC_ERROR_FAILED_TO_SAVE,
 			     "failed to save ICC file: %s",
 			     error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
-out:
-	g_bytes_unref (data);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -2114,10 +2061,9 @@ cd_icc_save_default (CdIcc *icc,
 		     GError **error)
 {
 	const gchar *root = "edid"; /* TODO: only for cd_icc_create_from_edid() */
-	gboolean ret;
-	gchar *basename;
-	gchar *filename;
-	GFile *file;
+	_cleanup_free gchar *basename = NULL;
+	_cleanup_free gchar *filename = NULL;
+	_cleanup_unref_object GFile *file = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 
@@ -2125,14 +2071,7 @@ cd_icc_save_default (CdIcc *icc,
 	basename = g_strdup_printf ("%s-%s.icc", root, icc->priv->checksum);
 	filename = g_build_filename (g_get_user_data_dir (), "icc", basename, NULL);
 	file = g_file_new_for_path (filename);
-	ret = cd_icc_save_file (icc, file, flags, cancellable, error);
-	if (!ret)
-		goto out;
-out:
-	g_object_unref (file);
-	g_free (filename);
-	g_free (basename);
-	return ret;
+	return cd_icc_save_file (icc, file, flags, cancellable, error);
 }
 
 /**
@@ -2173,10 +2112,10 @@ cd_icc_load_file (CdIcc *icc,
 {
 	CdIccPrivate *priv = icc->priv;
 	gboolean ret = FALSE;
-	gchar *data = NULL;
-	GError *error_local = NULL;
-	GFileInfo *info = NULL;
 	gsize length;
+	_cleanup_free gchar *data = NULL;
+	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_unref_object GFileInfo *info = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
@@ -2190,8 +2129,7 @@ cd_icc_load_file (CdIcc *icc,
 			     CD_ICC_ERROR_FAILED_TO_OPEN,
 			     "failed to load file: %s",
 			     error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* parse the data */
@@ -2201,7 +2139,7 @@ cd_icc_load_file (CdIcc *icc,
 				flags,
 				error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* find out if the user could delete this profile */
 	info = g_file_query_info (file,
@@ -2215,19 +2153,14 @@ cd_icc_load_file (CdIcc *icc,
 			     CD_ICC_ERROR_FAILED_TO_OPEN,
 			     "failed to query file: %s",
 			     error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 	priv->can_delete = g_file_info_get_attribute_boolean (info,
 							      G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE);
 
 	/* save filename for later */
 	priv->filename = g_file_get_path (file);
-out:
-	if (info != NULL)
-		g_object_unref (info);
-	g_free (data);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -2249,7 +2182,6 @@ cd_icc_load_fd (CdIcc *icc,
 {
 	CdIccPrivate *priv = icc->priv;
 	FILE *stream = NULL;
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (fd > 0, FALSE);
@@ -2257,32 +2189,26 @@ cd_icc_load_fd (CdIcc *icc,
 	/* convert the file descriptor to a stream */
 	stream = fdopen (fd, "r");
 	if (stream == NULL) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_ICC_ERROR,
 			     CD_ICC_ERROR_FAILED_TO_OPEN,
 			     "failed to open stream from fd %i",
 			     fd);
-		goto out;
+		return FALSE;
 	}
 
 	/* parse the ICC file */
 	priv->lcms_profile = cmsOpenProfileFromStreamTHR (priv->context_lcms, stream, "r");
 	if (priv->lcms_profile == NULL) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_OPEN,
 				     "failed to open stream");
-		goto out;
+		return FALSE;
 	}
 
 	/* load cached data */
-	ret = cd_icc_load (icc, flags, error);
-	if (!ret)
-		goto out;
-out:
-	return ret;
+	return cd_icc_load (icc, flags, error);
 }
 
 /**
@@ -2351,7 +2277,6 @@ cd_icc_load_handle (CdIcc *icc,
 {
 	CdIccPrivate *priv = icc->priv;
 	cmsContext context;
-	gboolean ret;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (handle != NULL, FALSE);
@@ -2360,22 +2285,17 @@ cd_icc_load_handle (CdIcc *icc,
 	/* check the THR version has been correctly set up */
 	context = cmsGetProfileContextID (handle);
 	if (context == NULL) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_CREATE,
 				     "lcms2 threadsafe version (THR) not used, "
 				     "or context not set");
-		goto out;
+		return FALSE;
 	}
 
 	/* load profile */
 	priv->lcms_profile = handle;
-	ret = cd_icc_load (icc, flags, error);
-	if (!ret)
-		goto out;
-out:
-	return ret;
+	return cd_icc_load (icc, flags, error);
 }
 
 /**
@@ -2618,11 +2538,10 @@ cd_icc_load_named_colors (CdIcc *icc, GError **error)
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_NO_DATA)) {
 			g_error_free (error_local);
-			goto out;
+			return TRUE;
 		}
-		ret = FALSE;
 		g_propagate_error (error, error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* get each NC */
@@ -2660,11 +2579,7 @@ cd_icc_load_named_colors (CdIcc *icc, GError **error)
 		}
 		g_string_free (string, TRUE);
 	}
-
-	/* success */
-	ret = TRUE;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -2719,29 +2634,24 @@ GDateTime *
 cd_icc_get_created (CdIcc *icc)
 {
 	CdIccPrivate *priv = icc->priv;
-	gboolean ret;
-	GDateTime *created = NULL;
 	struct tm created_tm;
 	time_t created_t;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
 	/* get the profile creation time and date */
-	ret = cmsGetHeaderCreationDateTime (priv->lcms_profile, &created_tm);
-	if (!ret)
-		goto out;
+	if (!cmsGetHeaderCreationDateTime (priv->lcms_profile, &created_tm))
+		return NULL;
 
 	created_tm.tm_isdst = -1;
 
 	/* convert to UNIX time */
 	created_t = mktime (&created_tm);
 	if (created_t == (time_t) -1)
-		goto out;
+		return NULL;
 
 	/* instantiate object */
-	created = g_date_time_new_from_unix_local (created_t);
-out:
-	return created;
+	return g_date_time_new_from_unix_local (created_t);
 }
 
 /**
@@ -2773,13 +2683,10 @@ cd_icc_get_locale_key (const gchar *locale)
 	gchar *locale_key;
 
 	/* en_US is the default locale in an ICC profile */
-	if (locale == NULL || g_str_has_prefix (locale, "en_US")) {
-		locale_key = g_strdup ("");
-		goto out;
-	}
+	if (locale == NULL || g_str_has_prefix (locale, "en_US"))
+		return g_strdup ("");
 	locale_key = g_strdup (locale);
 	g_strdelimit (locale_key, ".(", '\0');
-out:
 	return locale_key;
 }
 
@@ -2798,12 +2705,12 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	const gchar *country_code = "\0\0\0";
 	const gchar *language_code = "\0\0\0";
 	const gchar *value;
-	gchar *locale_key = NULL;
-	gchar *text_buffer = NULL;
 	gchar *tmp;
 	guint32 text_size;
 	guint i;
-	gunichar *wtext = NULL;
+	_cleanup_free gchar *locale_key = NULL;
+	_cleanup_free gchar *text_buffer = NULL;
+	_cleanup_free gunichar *wtext = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
@@ -2895,9 +2802,6 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	value = tmp;
 out:
 	_cd_context_lcms_pre26_stop ();
-	g_free (locale_key);
-	g_free (text_buffer);
-	g_free (wtext);
 	return value;
 }
 
@@ -3372,7 +3276,6 @@ cd_icc_create_from_edid_data (CdIcc *icc, CdEdid *edid, GError **error)
 {
 	CdIccPrivate *priv = icc->priv;
 	const gchar *data;
-	gboolean ret = FALSE;
 
 	/* not loaded */
 	if (priv->lcms_profile != NULL) {
@@ -3380,19 +3283,19 @@ cd_icc_create_from_edid_data (CdIcc *icc, CdEdid *edid, GError **error)
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_CREATE,
 				     "already loaded or generated");
-		goto out;
+		return FALSE;
 	}
 
 	/* create from parsed object */
-	ret = cd_icc_create_from_edid (icc,
-				       cd_edid_get_gamma (edid),
-				       cd_edid_get_red (edid),
-				       cd_edid_get_green (edid),
-				       cd_edid_get_blue (edid),
-				       cd_edid_get_white (edid),
-				       error);
-	if (!ret)
-		goto out;
+	if (!cd_icc_create_from_edid (icc,
+				      cd_edid_get_gamma (edid),
+				      cd_edid_get_red (edid),
+				      cd_edid_get_green (edid),
+				      cd_edid_get_blue (edid),
+				      cd_edid_get_white (edid),
+				      error)) {
+		return FALSE;
+	}
 
 	/* set copyright */
 	cd_icc_set_copyright (icc, NULL,
@@ -3415,8 +3318,7 @@ cd_icc_create_from_edid_data (CdIcc *icc, CdEdid *edid, GError **error)
 	data = cd_edid_get_vendor_name (edid);
 	if (data != NULL)
 		cd_icc_add_metadata (icc, CD_PROFILE_METADATA_EDID_VENDOR, data);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -3589,12 +3491,12 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 	cmsHTRANSFORM transform = NULL;
 	const guint component_width = 3;
 	gdouble tmp;
-	gdouble *values_in = NULL;
-	gdouble *values_out = NULL;
 	gfloat divadd;
 	gfloat divamount;
 	GPtrArray *array = NULL;
 	guint i;
+	_cleanup_free gdouble *values_in = NULL;
+	_cleanup_free gdouble *values_out = NULL;
 
 	_cd_context_lcms_pre26_start ();
 
@@ -3666,8 +3568,6 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 	}
 out:
 	_cd_context_lcms_pre26_stop ();
-	g_free (values_in);
-	g_free (values_out);
 	if (transform != NULL)
 		cmsDeleteTransform (transform);
 	if (srgb_profile != NULL)
@@ -3693,10 +3593,10 @@ cd_icc_set_vcgt (CdIcc *icc, GPtrArray *vcgt, GError **error)
 	CdColorRGB *tmp;
 	cmsToneCurve *curve[3];
 	gboolean ret;
-	guint16 *blue;
-	guint16 *green;
-	guint16 *red;
 	guint i;
+	_cleanup_free guint16 *blue = NULL;
+	_cleanup_free guint16 *green = NULL;
+	_cleanup_free guint16 *red = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (icc->priv->lcms_profile != NULL, FALSE);
@@ -3736,9 +3636,6 @@ out:
 	_cd_context_lcms_pre26_stop ();
 	for (i = 0; i < 3; i++)
 		cmsFreeToneCurve (curve[i]);
-	g_free (red);
-	g_free (green);
-	g_free (blue);
 	return ret;
 }
 
@@ -3748,18 +3645,17 @@ out:
 static CdProfileWarning
 cd_icc_check_whitepoint (CdIcc *icc)
 {
-	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	guint temp = icc->priv->temperature;
 
 	/* not set */
 	if (temp == 0)
-		goto out;
+		return CD_PROFILE_WARNING_NONE;
 
 	/* hardcoded sanity check */
 	if (temp < 3000 || temp > 10000)
-		warning = CD_PROFILE_WARNING_WHITEPOINT_UNLIKELY;
-out:
-	return warning;
+		return CD_PROFILE_WARNING_WHITEPOINT_UNLIKELY;
+
+	return CD_PROFILE_WARNING_NONE;
 }
 
 /**
@@ -3769,7 +3665,6 @@ static CdProfileWarning
 cd_icc_check_vcgt (CdIcc *icc)
 {
 	CdIccPrivate *priv = icc->priv;
-	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsFloat32Number in;
 	cmsFloat32Number now[3];
 	cmsFloat32Number previous[3] = { -1, -1, -1};
@@ -3780,7 +3675,7 @@ cd_icc_check_vcgt (CdIcc *icc)
 	/* does profile have monotonic VCGT */
 	vcgt = cmsReadTag (priv->lcms_profile, cmsSigVcgtTag);
 	if (vcgt == NULL)
-		goto out;
+		return CD_PROFILE_WARNING_NONE;
 	for (i = 0; i < size; i++) {
 		in = (gdouble) i / (gdouble) (size - 1);
 		now[0] = cmsEvalToneCurveFloat(vcgt[0], in);
@@ -3792,16 +3687,14 @@ cd_icc_check_vcgt (CdIcc *icc)
 			if (now[0] < previous[0] ||
 			    now[1] < previous[1] ||
 			    now[2] < previous[2]) {
-				warning = CD_PROFILE_WARNING_VCGT_NON_MONOTONIC;
-				goto out;
+				return CD_PROFILE_WARNING_VCGT_NON_MONOTONIC;
 			}
 		}
 		previous[0] = now[0];
 		previous[1] = now[1];
 		previous[2] = now[2];
 	}
-out:
-	return warning;
+	return CD_PROFILE_WARNING_NONE;
 }
 
 /**
@@ -3851,7 +3744,6 @@ static CdProfileWarning
 cd_icc_check_primaries (CdIcc *icc)
 {
 	CdIccPrivate *priv = icc->priv;
-	CdProfileWarning warning = CD_PROFILE_WARNING_NONE;
 	cmsCIEXYZ *tmp;
 
 	/* The values used to check are based on the following ultra-wide
@@ -3871,31 +3763,25 @@ cd_icc_check_primaries (CdIcc *icc)
 	/* check red */
 	tmp = cmsReadTag (priv->lcms_profile, cmsSigRedColorantTag);
 	if (tmp == NULL)
-		goto out;
-	if (tmp->X > 0.85f || tmp->Y < 0.15f || tmp->Z < -0.01) {
-		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
-		goto out;
-	}
+		return CD_PROFILE_WARNING_NONE;
+	if (tmp->X > 0.85f || tmp->Y < 0.15f || tmp->Z < -0.01)
+		return CD_PROFILE_WARNING_PRIMARIES_INVALID;
 
 	/* check green */
 	tmp = cmsReadTag (priv->lcms_profile, cmsSigGreenColorantTag);
 	if (tmp == NULL)
-		goto out;
-	if (tmp->X < 0.10f || tmp->Y > 0.85f || tmp->Z < -0.01f) {
-		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
-		goto out;
-	}
+		return CD_PROFILE_WARNING_NONE;
+	if (tmp->X < 0.10f || tmp->Y > 0.85f || tmp->Z < -0.01f)
+		return CD_PROFILE_WARNING_PRIMARIES_INVALID;
 
 	/* check blue */
 	tmp = cmsReadTag (priv->lcms_profile, cmsSigBlueColorantTag);
 	if (tmp == NULL)
-		goto out;
-	if (tmp->X < 0.01f || tmp->Y < 0.0f || tmp->Z > 0.87f) {
-		warning = CD_PROFILE_WARNING_PRIMARIES_INVALID;
-		goto out;
-	}
-out:
-	return warning;
+		return CD_PROFILE_WARNING_NONE;
+	if (tmp->X < 0.01f || tmp->Y < 0.0f || tmp->Z > 0.87f)
+		return CD_PROFILE_WARNING_PRIMARIES_INVALID;
+
+	return CD_PROFILE_WARNING_NONE;
 }
 
 /**

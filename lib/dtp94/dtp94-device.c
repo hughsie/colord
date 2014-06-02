@@ -89,7 +89,7 @@ dtp94_device_send_data (GUsbDevice *device,
 					       NULL,
 					       error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* get sync response */
 	ret = g_usb_device_interrupt_transfer (device,
@@ -101,19 +101,17 @@ dtp94_device_send_data (GUsbDevice *device,
 					       NULL,
 					       error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	if (reply_read == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     DTP94_DEVICE_ERROR,
 				     DTP94_DEVICE_ERROR_INTERNAL,
 				     "failed to get data from device");
-		goto out;
+		return FALSE;
 	}
 	cd_buffer_debug (CD_BUFFER_KIND_RESPONSE,
 			 reply, *reply_read);
-out:
-	return ret;
+	return TRUE;
 }
 
 static gboolean
@@ -140,22 +138,20 @@ dtp94_device_send_cmd_issue (GUsbDevice *device,
 				      &reply_read,
 				      error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* device busy */
 	rc = dtp94_rc_parse (buffer, reply_read);
 	if (rc == DTP94_RC_BAD_COMMAND) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     DTP94_DEVICE_ERROR,
 				     DTP94_DEVICE_ERROR_NO_DATA,
 				     "device busy");
-		goto out;
+		return FALSE;
 	}
 
 	/* no success */
 	if (rc != DTP94_RC_OK) {
-		ret = FALSE;
 		buffer[reply_read] = '\0';
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,
@@ -163,10 +159,9 @@ dtp94_device_send_cmd_issue (GUsbDevice *device,
 			     "unexpected response from device: %s [%s]",
 			     (const gchar *) buffer,
 			     dtp94_rc_to_string (rc));
-		goto out;
+		return FALSE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -214,52 +209,42 @@ dtp94_device_send_cmd (GUsbDevice *device,
 gboolean
 dtp94_device_setup (GUsbDevice *device, GError **error)
 {
-	gboolean ret;
-
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* reset device */
-	ret = dtp94_device_send_cmd (device, "0PR\r", error);
-	if (!ret)
-		goto out;
+	if (!dtp94_device_send_cmd (device, "0PR\r", error))
+		return FALSE;
 
 	/* reset device again */
-	ret = dtp94_device_send_cmd (device, "0PR\r", error);
-	if (!ret)
-		goto out;
+	if (!dtp94_device_send_cmd (device, "0PR\r", error))
+		return FALSE;
 
 	/* set color data separator to '\t' */
-	ret = dtp94_device_send_cmd (device, "0207CF\r", error);
-	if (!ret)
-		goto out;
+	if (!dtp94_device_send_cmd (device, "0207CF\r", error))
+		return FALSE;
 
 	/* set delimeter to CR */
-	ret = dtp94_device_send_cmd (device, "0008CF\r", error);
-	if (!ret)
-		goto out;
+	if (!dtp94_device_send_cmd (device, "0008CF\r", error))
+		return FALSE;
 
 	/* set extra digit resolution */
-	ret = dtp94_device_send_cmd (device, "010ACF\r", error);
-	if (!ret)
-		goto out;
+	if (!dtp94_device_send_cmd (device, "010ACF\r", error))
+		return FALSE;
 
 	/* no black point subtraction */
-	ret = dtp94_device_send_cmd (device, "0019CF\r", error);
-	if (!ret)
-		goto out;
+	if (!dtp94_device_send_cmd (device, "0019CF\r", error))
+		return FALSE;
 
 	/* set to factory calibration */
-	ret = dtp94_device_send_cmd (device, "EFC\r", error);
-	if (!ret)
-		goto out;
+	if (!dtp94_device_send_cmd (device, "EFC\r", error))
+		return FALSE;
 
 	/* compensate for offset drift */
-	ret = dtp94_device_send_cmd (device, "0117CF\r", error);
-	if (!ret)
-		goto out;
-out:
-	return ret;
+	if (!dtp94_device_send_cmd (device, "0117CF\r", error))
+		return FALSE;
+
+	return TRUE;
 }
 
 /**
@@ -299,7 +284,7 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 		break;
 	}
 	if (!ret)
-		goto out;
+		return NULL;
 
 	/* get sample */
 	ret = dtp94_device_send_data (device,
@@ -308,7 +293,7 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 				      &reply_read,
 				      error);
 	if (!ret)
-		goto out;
+		return NULL;
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
 	if (tmp == NULL || memcmp (tmp + 1, "<00>", 4) != 0) {
 		buffer[reply_read] = '\0';
@@ -317,7 +302,7 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 			     DTP94_DEVICE_ERROR_INTERNAL,
 			     "unexpected response from device: %s",
 			     (const gchar *) buffer);
-		goto out;
+		return NULL;
 	}
 
 	/* format is raw ASCII with fixed formatting:
@@ -331,7 +316,6 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 			  g_ascii_strtod (tmp + 1, NULL),
 			  g_ascii_strtod (tmp + 13, NULL),
 			  g_ascii_strtod (tmp + 25, NULL));
-out:
 	return result;
 }
 
@@ -344,7 +328,6 @@ gchar *
 dtp94_device_get_serial (GUsbDevice *device, GError **error)
 {
 	gboolean ret;
-	gchar *serial = NULL;
 	gchar *tmp;
 	gsize reply_read;
 	guint8 buffer[128];
@@ -358,7 +341,7 @@ dtp94_device_get_serial (GUsbDevice *device, GError **error)
 				      &reply_read,
 				      error);
 	if (!ret)
-		goto out;
+		return NULL;
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
 	if (tmp == NULL || memcmp (tmp + 1, "<00>", 4) != 0) {
 		buffer[reply_read] = '\0';
@@ -367,10 +350,8 @@ dtp94_device_get_serial (GUsbDevice *device, GError **error)
 			     DTP94_DEVICE_ERROR_INTERNAL,
 			     "unexpected response from device: %s",
 			     (const gchar *) buffer);
-		goto out;
+		return NULL;
 	}
 	tmp[0] = '\0';
-	serial = g_strdup (tmp);
-out:
-	return serial;
+	return g_strdup (tmp);
 }

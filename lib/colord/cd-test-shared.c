@@ -26,6 +26,7 @@
 
 #include <glib.h>
 
+#include "cd-cleanup.h"
 #include "cd-test-shared.h"
 
 /**
@@ -34,28 +35,23 @@
 gchar *
 cd_test_get_filename (const gchar *filename)
 {
-	gchar *full = NULL;
 	gchar *tmp;
-	gchar *path = NULL;
+	_cleanup_free gchar *path = NULL;
 	char full_tmp[PATH_MAX];
 
 	/* running in the installed system */
 	if (g_getenv ("INSTALLED_TESTS") != NULL) {
-		full = g_build_filename (LIBEXECDIR,
+		return g_build_filename (LIBEXECDIR,
 					 "installed-tests",
 					 PACKAGE_NAME,
 					 filename,
 					 NULL);
-		goto out;
 	}
 	path = g_build_filename (TESTDATADIR, filename, NULL);
 	tmp = realpath (path, full_tmp);
 	if (tmp == NULL)
-		goto out;
-	full = g_strdup (full_tmp);
-out:
-	g_free (path);
-	return full;
+		return NULL;
+	return g_strdup (full_tmp);
 }
 
 static GMainLoop *_test_loop = NULL;

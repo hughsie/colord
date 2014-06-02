@@ -26,6 +26,7 @@
 #include <sqlite3.h>
 #include <syslog.h>
 
+#include "cd-cleanup.h"
 #include "cd-common.h"
 #include "cd-device-db.h"
 
@@ -51,32 +52,29 @@ cd_device_db_load (CdDeviceDb *ddb,
 		    GError  **error)
 {
 	const gchar *statement;
-	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
-	gchar *path = NULL;
 	gint rc;
+	_cleanup_free gchar *path = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
 	g_return_val_if_fail (ddb->priv->db == NULL, FALSE);
 
 	/* ensure the path exists */
 	path = g_path_get_dirname (filename);
-	ret = cd_main_mkdir_with_parents (path, error);
-	if (!ret)
-		goto out;
+	if (!cd_main_mkdir_with_parents (path, error))
+		return FALSE;
 
 	g_debug ("CdDeviceDb: trying to open database '%s'", filename);
 	syslog (LOG_INFO, "Using device database file %s", filename);
 	rc = sqlite3_open (filename, &ddb->priv->db);
 	if (rc != SQLITE_OK) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "Can't open database: %s\n",
 			     sqlite3_errmsg (ddb->priv->db));
 		sqlite3_close (ddb->priv->db);
-		goto out;
+		return FALSE;
 	}
 
 	/* we don't need to keep doing fsync */
@@ -106,9 +104,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 			    "PRIMARY KEY (device_id, property));";
 		sqlite3_exec (ddb->priv->db, statement, NULL, NULL, NULL);
 	}
-out:
-	g_free (path);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -119,7 +115,6 @@ cd_device_db_empty (CdDeviceDb *ddb,
 		     GError  **error)
 {
 	const gchar *statement;
-	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gint rc;
 
@@ -130,17 +125,15 @@ cd_device_db_empty (CdDeviceDb *ddb,
 	rc = sqlite3_exec (ddb->priv->db, statement,
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
-		goto out;
+		return FALSE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -304,8 +297,8 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
-	GPtrArray *array_tmp = NULL;
 	gchar *value = NULL;
+	_cleanup_unref_ptrarray GPtrArray *array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
 	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
@@ -346,7 +339,6 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 	/* success */
 	value = g_strdup (g_ptr_array_index (array_tmp, 0));
 out:
-	g_ptr_array_unref (array_tmp);
 	sqlite3_free (statement);
 	return value;
 }
@@ -362,7 +354,7 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
-	GPtrArray *array_tmp = NULL;
+	_cleanup_unref_ptrarray GPtrArray *array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
 	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
@@ -389,7 +381,6 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 	/* success */
 	array = g_ptr_array_ref (array_tmp);
 out:
-	g_ptr_array_unref (array_tmp);
 	sqlite3_free (statement);
 	return array;
 }
@@ -406,7 +397,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
-	GPtrArray *array_tmp = NULL;
+	_cleanup_unref_ptrarray GPtrArray *array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
 	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
@@ -435,7 +426,6 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 	/* success */
 	array = g_ptr_array_ref (array_tmp);
 out:
-	g_ptr_array_unref (array_tmp);
 	sqlite3_free (statement);
 	return array;
 }
@@ -495,4 +485,3 @@ cd_device_db_new (void)
 	}
 	return CD_DEVICE_DB (cd_device_db_object);
 }
-

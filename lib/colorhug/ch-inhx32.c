@@ -25,6 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "cd-cleanup.h"
+
 #include "ch-inhx32.h"
 
 #define	CH_RECORD_TYPE_DATA		0
@@ -64,14 +66,12 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 		  gsize *out_size,
 		  GError **error)
 {
-	gboolean ret;
 	gboolean verbose;
 	gchar *ptr;
 	gint checksum;
 	gint end;
 	gint i;
 	gint offset = 0;
-	GString *string = NULL;
 	guint8 data_tmp;
 	guint addr32 = 0;
 	guint addr32_last = 0;
@@ -80,6 +80,7 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 	guint j;
 	guint len_tmp;
 	guint type;
+	_cleanup_free_string GString *string = NULL;
 
 	g_return_val_if_fail (in_buffer != NULL, FALSE);
 
@@ -91,10 +92,9 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 		/* length, 16-bit address, type */
 		if (sscanf (&in_buffer[offset], ":%02x%04x%02x",
 			    &len_tmp, &addr_low, &type) != 3) {
-			ret = FALSE;
 			g_set_error_literal (error, 1, 0,
 					     "invalid inhx32 syntax");
-			goto out;
+			return FALSE;
 		}
 
 		/* position of checksum */
@@ -107,10 +107,9 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 			checksum = (checksum + (0x100 - data_tmp)) & 0xff;
 		}
 		if (ch_inhx32_parse_uint8 (in_buffer, end) != checksum)  {
-			ret = FALSE;
 			g_set_error_literal (error, 1, 0,
 					     "invalid checksum");
-			goto out;
+			return FALSE;
 		}
 
 		/* process different record types */
@@ -154,19 +153,17 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 			break;
 		case CH_RECORD_TYPE_EXTENDED:
 			if (sscanf (&in_buffer[offset+9], "%04x", &addr_high) != 1) {
-				ret = FALSE;
 				g_set_error_literal (error, 1, 0,
 						     "invalid hex syntax");
-				goto out;
+				return FALSE;
 			}
 			addr_high <<= 16;
 			addr32 = addr_high + addr_low;
 			break;
 		default:
-			ret = FALSE;
 			g_set_error_literal (error, 1, 0,
 					     "invalid record type");
-			goto out;
+			return FALSE;
 		}
 
 		/* advance to start of next line */
@@ -186,11 +183,5 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 		*out_size = string->len;
 	if (out_buffer != NULL)
 		*out_buffer = g_memdup (string->str, string->len);
-
-	/* success */
-	ret = TRUE;
-out:
-	if (string != NULL)
-		g_string_free (string, TRUE);
-	return ret;
+	return TRUE;
 }

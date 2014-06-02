@@ -27,6 +27,7 @@
 #include <signal.h>
 #include <gio/gio.h>
 
+#include "cd-cleanup.h"
 #include "cd-state.h"
 
 #define CD_STATE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_STATE, CdStatePrivate))
@@ -123,18 +124,16 @@ cd_state_print_parent_chain (CdState *state, guint level)
 gboolean
 cd_state_set_percentage (CdState *state, guint percentage)
 {
-	gboolean ret = FALSE;
-
 	/* is it the same */
 	if (percentage == state->priv->last_percentage)
-		goto out;
+		return FALSE;
 
 	/* is it invalid */
 	if (percentage > 100) {
 		cd_state_print_parent_chain (state, 0);
 		g_warning ("percentage %i%% is invalid on %p!",
 			   percentage, state);
-		goto out;
+		return FALSE;
 	}
 
 	/* is it less */
@@ -144,7 +143,7 @@ cd_state_set_percentage (CdState *state, guint percentage)
 			g_critical ("percentage should not go down from %i to %i on %p!",
 				    state->priv->last_percentage, percentage, state);
 		}
-		goto out;
+		return FALSE;
 	}
 
 	/* save */
@@ -152,15 +151,11 @@ cd_state_set_percentage (CdState *state, guint percentage)
 
 	/* are we so low we don't care */
 	if (state->priv->global_share < 0.001)
-		goto out;
+		return FALSE;
 
 	/* emit */
 	g_signal_emit (state, signals [SIGNAL_PERCENTAGE_CHANGED], 0, percentage);
-
-	/* success */
-	ret = TRUE;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -180,11 +175,10 @@ cd_state_set_subpercentage (CdState *state, guint percentage)
 {
 	/* are we so low we don't care */
 	if (state->priv->global_share < 0.01)
-		goto out;
+		return TRUE;
 
 	/* just emit */
 	g_signal_emit (state, signals [SIGNAL_SUBPERCENTAGE_CHANGED], 0, percentage);
-out:
 	return TRUE;
 }
 
@@ -270,8 +264,6 @@ cd_state_child_subpercentage_changed_cb (CdState *child, guint percentage, CdSta
 gboolean
 cd_state_reset (CdState *state)
 {
-	gboolean ret = TRUE;
-
 	g_return_val_if_fail (CD_IS_STATE (state), FALSE);
 
 	/* reset values */
@@ -306,7 +298,7 @@ cd_state_reset (CdState *state)
 	g_free (state->priv->step_profile);
 	state->priv->step_data = NULL;
 	state->priv->step_profile = NULL;
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -369,22 +361,18 @@ cd_state_get_child (CdState *state)
 gboolean
 cd_state_set_number_steps_real (CdState *state, guint steps, const gchar *strloc)
 {
-	gboolean ret = FALSE;
-
 	g_return_val_if_fail (state != NULL, FALSE);
 
 	/* nothing to do for 0 steps */
-	if (steps == 0) {
-		ret = TRUE;
-		goto out;
-	}
+	if (steps == 0)
+		return TRUE;
 
 	/* did we call done on a state that did not have a size set? */
 	if (state->priv->steps != 0) {
 		g_warning ("steps already set to %i, can't set %i! [%s]",
 			     state->priv->steps, steps, strloc);
 		cd_state_print_parent_chain (state, 0);
-		goto out;
+		return FALSE;
 	}
 
 	/* set id */
@@ -403,11 +391,7 @@ cd_state_set_number_steps_real (CdState *state, guint steps, const gchar *strloc
 
 	/* global share just got smaller */
 	state->priv->global_share /= steps;
-
-	/* success */
-	ret = TRUE;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -420,7 +404,6 @@ cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gi
 	guint i;
 	gint value_temp;
 	guint total;
-	gboolean ret = FALSE;
 
 	g_return_val_if_fail (state != NULL, FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -445,18 +428,17 @@ cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gi
 			     CD_STATE_ERROR_INVALID,
 			     "percentage not 100: %i",
 			     total);
-		goto out;
+		return FALSE;
 	}
 
 	/* set step number */
-	ret = cd_state_set_number_steps_real (state, i+1, strloc);
-	if (!ret) {
+	if (!cd_state_set_number_steps_real (state, i+1, strloc)) {
 		g_set_error (error,
 			     CD_STATE_ERROR,
 			     CD_STATE_ERROR_INVALID,
 			     "failed to set number steps: %i",
 			     i+1);
-		goto out;
+		return FALSE;
 	}
 
 	/* save this data */
@@ -475,11 +457,7 @@ cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gi
 		state->priv->step_data[i+1] = total;
 	}
 	va_end (args);
-
-	/* success */
-	ret = TRUE;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -490,9 +468,9 @@ cd_state_show_profile (CdState *state)
 {
 	gdouble division;
 	gdouble total_time = 0.0f;
-	GString *result;
 	guint i;
 	guint uncumalitive = 0;
+	_cleanup_free_string GString *result;
 
 	/* get the total time so we can work out the divisor */
 	for (i = 0; i < state->priv->steps; i++)
@@ -523,7 +501,6 @@ cd_state_show_profile (CdState *state)
 gboolean
 cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 {
-	gboolean ret = TRUE;
 	gdouble elapsed;
 	gfloat percentage;
 
@@ -536,8 +513,7 @@ cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 			     "done on a state %p that did not have a size set! [%s]",
 			     state, strloc);
 		cd_state_print_parent_chain (state, 0);
-		ret = FALSE;
-		goto out;
+		return FALSE;
 	}
 
 	/* save the step interval for profiling */
@@ -554,8 +530,7 @@ cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 		g_set_error (error, CD_STATE_ERROR, CD_STATE_ERROR_INVALID,
 			     "already at 100%% state [%s]", strloc);
 		cd_state_print_parent_chain (state, 0);
-		ret = FALSE;
-		goto out;
+		return FALSE;
 	}
 
 	/* is child not at 100%? */
@@ -565,8 +540,8 @@ cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 			g_print ("child is at %i/%i steps and parent done [%s]\n",
 				 child_priv->current, child_priv->steps, strloc);
 			cd_state_print_parent_chain (state->priv->child, 0);
-			ret = TRUE;
 			/* do not abort, as we want to clean this up */
+			return TRUE;
 		}
 	}
 
@@ -593,8 +568,7 @@ cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 	/* reset child if it exists */
 	if (state->priv->child != NULL)
 		cd_state_reset (state->priv->child);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -603,22 +577,19 @@ out:
 gboolean
 cd_state_finished_real (CdState *state, GError **error, const gchar *strloc)
 {
-	gboolean ret = TRUE;
-
 	g_return_val_if_fail (state != NULL, FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* is already at 100%? */
 	if (state->priv->current == state->priv->steps)
-		goto out;
+		return TRUE;
 
 	/* all done */
 	state->priv->current = state->priv->steps;
 
 	/* set new percentage */
 	cd_state_set_percentage (state, 100);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**

@@ -29,6 +29,7 @@
 
 #include <colord/colord.h>
 
+#include "cd-cleanup.h"
 #include "cd-debug.h"
 #include "cd-state.h"
 #include "cd-session.h"
@@ -157,8 +158,7 @@ cd_main_emit_update_sample (CdMainPrivate *priv,
 			    CdColorRGB *color,
 			    GError **error)
 {
-	gboolean ret = TRUE;
-	GHashTable *hash = NULL;
+	_cleanup_unref_hashtable GHashTable *hash = NULL;
 
 	/* emit signal */
 	g_debug ("CdMain: Emitting UpdateSample(%f,%f,%f)",
@@ -189,18 +189,14 @@ cd_main_emit_update_sample (CdMainPrivate *priv,
 		g_hash_table_insert (hash,
 				     g_strdup ("sample[blue]"),
 				     g_variant_take_ref (g_variant_new_double (color->B)));
-		ret = cd_sensor_set_options_sync (priv->sensor,
-						  hash,
-						  priv->cancellable,
-						  error);
-		if (!ret)
-			goto out;
+		if (!cd_sensor_set_options_sync (priv->sensor,
+						 hash,
+						 priv->cancellable,
+						 error))
+			return FALSE;
 	}
 	cd_main_calib_idle_delay (priv->sample_delay);
-out:
-	if (hash != NULL)
-		g_hash_table_unref (hash);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -361,21 +357,16 @@ cd_main_calib_get_sample (CdMainPrivate *priv,
 			  GError **error)
 {
 	CdColorXYZ *xyz_tmp;
-	gboolean ret = TRUE;
 
 	xyz_tmp = cd_sensor_get_sample_sync (priv->sensor,
 					     priv->device_kind,
 					     priv->cancellable,
 					     error);
-	if (xyz_tmp == NULL) {
-		ret = FALSE;
-		goto out;
-	}
+	if (xyz_tmp == NULL)
+		return FALSE;
 	cd_color_xyz_copy (xyz_tmp, xyz);
-out:
-	if (xyz_tmp != NULL)
-		cd_color_xyz_free (xyz_tmp);
-	return ret;
+	cd_color_xyz_free (xyz_tmp);
+	return TRUE;
 }
 
 /**
@@ -389,18 +380,14 @@ cd_main_calib_get_native_whitepoint (CdMainPrivate *priv,
 	CdColorRGB rgb;
 	CdColorXYZ xyz;
 	cmsCIExyY chroma;
-	gboolean ret = TRUE;
 
 	rgb.R = 1.0;
 	rgb.G = 1.0;
 	rgb.B = 1.0;
-	ret = cd_main_emit_update_sample (priv, &rgb, error);
-	if (!ret)
-		goto out;
-
-	ret = cd_main_calib_get_sample (priv, &xyz, error);
-	if (!ret)
-		goto out;
+	if (!cd_main_emit_update_sample (priv, &rgb, error))
+		return FALSE;
+	if (!cd_main_calib_get_sample (priv, &xyz, error))
+		return FALSE;
 
 	/* save the absolute XYZ measurement so we can scale each sample->Y
 	 * to 1.0 for the gamma error check */
@@ -410,8 +397,7 @@ cd_main_calib_get_native_whitepoint (CdMainPrivate *priv,
 	cmsXYZ2xyY (&chroma, (cmsCIEXYZ *) &xyz);
 	g_debug ("x:%f,y:%f,Y:%f", chroma.x, chroma.y, chroma.Y);
 	cmsTempFromWhitePoint (temp, &chroma);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -425,7 +411,6 @@ cd_main_calib_try_item (CdMainPrivate *priv,
 {
 	CdColorXYZ xyz;
 	cmsCIELab lab;
-	gboolean ret = TRUE;
 	gdouble error_tmp;
 	gdouble lumi_measured;
 	gdouble lumi_target;
@@ -434,9 +419,8 @@ cd_main_calib_try_item (CdMainPrivate *priv,
 	cd_main_emit_update_gamma (priv, priv->array);
 
 	/* get the sample using the default matrix */
-	ret = cd_main_calib_get_sample (priv, &xyz, error);
-	if (!ret)
-		goto out;
+	if (!cd_main_calib_get_sample (priv, &xyz, error))
+		return FALSE;
 
 	/* get error */
 	cmsXYZ2Lab (&priv->whitepoint, &lab, (const cmsCIEXYZ *) &xyz);
@@ -462,8 +446,7 @@ cd_main_calib_try_item (CdMainPrivate *priv,
 		if (new_best != NULL)
 			*new_best = TRUE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -491,7 +474,7 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 				  97,	/* get other samples */
 				  -1);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* copy the current color balance as the best */
 	cd_color_rgb_copy (&item->color, &item->best_so_far);
@@ -499,12 +482,11 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 	/* get a baseline error */
 	ret = cd_main_calib_try_item (priv, item, NULL, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* use a different smallest interval for each quality */
 	if (priv->quality == CD_PROFILE_QUALITY_LOW) {
@@ -523,20 +505,15 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 	for (i = 0; i < 500; i++) {
 
 		/* check if cancelled */
-		ret = g_cancellable_set_error_if_cancelled (priv->cancellable,
-							    error);
-		if (ret) {
-			ret = FALSE;
-			goto out;
-		}
+		if (g_cancellable_set_error_if_cancelled (priv->cancellable, error))
+			return FALSE;
 
 		/* blue */
 		cd_color_rgb_copy (&item->best_so_far, &item->color);
 		if (item->best_so_far.B > interval) {
 			item->color.B = item->best_so_far.B - interval;
-			ret = cd_main_calib_try_item (priv, item, &new_best, error);
-			if (!ret)
-				goto out;
+			if (!cd_main_calib_try_item (priv, item, &new_best, error))
+				return FALSE;
 			if (new_best) {
 				g_debug ("New best: blue down by %f", interval);
 				new_best = FALSE;
@@ -545,9 +522,8 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		}
 		if (item->best_so_far.B < 1.0 - interval) {
 			item->color.B = item->best_so_far.B + interval;
-			ret = cd_main_calib_try_item (priv, item, &new_best, error);
-			if (!ret)
-				goto out;
+			if (!cd_main_calib_try_item (priv, item, &new_best, error))
+				return FALSE;
 			if (new_best) {
 				g_debug ("New best: blue up by %f", interval);
 				new_best = FALSE;
@@ -559,9 +535,8 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		cd_color_rgb_copy (&item->best_so_far, &item->color);
 		if (item->best_so_far.R > interval) {
 			item->color.R = item->best_so_far.R - interval;
-			ret = cd_main_calib_try_item (priv, item, &new_best, error);
-			if (!ret)
-				goto out;
+			if (!cd_main_calib_try_item (priv, item, &new_best, error))
+				return FALSE;
 			if (new_best) {
 				g_debug ("New best: red down by %f", interval);
 				new_best = FALSE;
@@ -570,9 +545,8 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		}
 		if (item->best_so_far.R < 1.0 - interval) {
 			item->color.R = item->best_so_far.R + interval;
-			ret = cd_main_calib_try_item (priv, item, &new_best, error);
-			if (!ret)
-				goto out;
+			if (!cd_main_calib_try_item (priv, item, &new_best, error))
+				return FALSE;
 			if (new_best) {
 				g_debug ("New best: red up by %f", interval);
 				new_best = FALSE;
@@ -584,9 +558,8 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		cd_color_rgb_copy (&item->best_so_far, &item->color);
 		if (item->best_so_far.G > interval) {
 			item->color.G = item->best_so_far.G - interval;
-			ret = cd_main_calib_try_item (priv, item, &new_best, error);
-			if (!ret)
-				goto out;
+			if (!cd_main_calib_try_item (priv, item, &new_best, error))
+				return FALSE;
 			if (new_best) {
 				g_debug ("New best: green down by %f", interval);
 				new_best = FALSE;
@@ -595,9 +568,8 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		}
 		if (item->best_so_far.G < 1.0 - interval) {
 			item->color.G = item->best_so_far.G + interval;
-			ret = cd_main_calib_try_item (priv, item, &new_best, error);
-			if (!ret)
-				goto out;
+			if (!cd_main_calib_try_item (priv, item, &new_best, error))
+				return FALSE;
 			if (new_best) {
 				g_debug ("New best: green up by %f", interval);
 				new_best = FALSE;
@@ -606,9 +578,8 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 		}
 
 		/* done */
-		ret = cd_state_done (state_local, error);
-		if (!ret)
-			goto out;
+		if (!cd_state_done (state_local, error))
+			return FALSE;
 
 		/* done */
 		interval /= 2;
@@ -626,11 +597,7 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 			   &item->color);
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
-out:
-	return ret;
+	return cd_state_done (state, error);
 }
 
 /**
@@ -649,7 +616,7 @@ cd_main_calib_interpolate_up (CdMainPrivate *priv,
 	gboolean ret = TRUE;
 	gdouble mix;
 	guint i;
-	GPtrArray *old_array;
+	_cleanup_unref_ptrarray GPtrArray *old_array;
 
 	/* make a deep copy */
 	old_array = g_ptr_array_new_with_free_func (g_free);
@@ -679,8 +646,6 @@ cd_main_calib_interpolate_up (CdMainPrivate *priv,
 					  &result->color);
 		g_ptr_array_add (priv->array, result);
 	}
-//out:
-	g_ptr_array_unref (old_array);
 	return ret;
 }
 
@@ -700,11 +665,11 @@ cd_main_calib_process (CdMainPrivate *priv,
 	cmsCIExyY whitepoint_tmp;
 	gboolean ret;
 	gdouble temp;
-	GPtrArray *gamma_data = NULL;
-	GPtrArray *vcgt_smoothed = NULL;
-	GString *error_str = NULL;
 	guint i;
 	guint precision_steps = 0;
+	_cleanup_free_string GString *error_str = NULL;
+	_cleanup_unref_ptrarray GPtrArray *gamma_data = NULL;
+	_cleanup_unref_ptrarray GPtrArray *vcgt_smoothed = NULL;
 
 	/* reset the state */
 	ret = cd_state_set_steps (state,
@@ -716,7 +681,7 @@ cd_main_calib_process (CdMainPrivate *priv,
 				  1,	/* write calibrate point */
 				  -1);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* clear gamma ramp to linear */
 	priv->array = g_ptr_array_new_with_free_func (g_free);
@@ -735,15 +700,14 @@ cd_main_calib_process (CdMainPrivate *priv,
 	/* get whitepoint */
 	ret = cd_main_calib_get_native_whitepoint (priv, &priv->native_whitepoint, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	if (priv->native_whitepoint < 1000 ||
 	    priv->native_whitepoint > 100000) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_SESSION_ERROR,
 				     CD_SESSION_ERROR_FAILED_TO_GET_WHITEPOINT,
 				     "failed to get native temperature");
-		goto out;
+		return FALSE;
 	}
 	g_debug ("native temperature %f", priv->native_whitepoint);
 
@@ -758,9 +722,8 @@ cd_main_calib_process (CdMainPrivate *priv,
 	cmsxyY2XYZ (&priv->whitepoint, &whitepoint_tmp);
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* should we seed the first value with a good approximation */
 	if (priv->target_whitepoint > 0) {
@@ -774,12 +737,8 @@ cd_main_calib_process (CdMainPrivate *priv,
 	/* process the last item in the array (255,255,255) */
 	item = g_ptr_array_index (priv->array, 1);
 	state_local = cd_state_get_child (state);
-	ret = cd_main_calib_process_item (priv,
-					  item,
-					  state_local,
-					  error);
-	if (!ret)
-		goto out;
+	if (!cd_main_calib_process_item (priv, item, state_local, error))
+		return FALSE;
 
 	/* ensure white is normalised to 1 */
 	temp = 1.0f / (gdouble) MAX (MAX (item->color.R, item->color.G), item->color.B);
@@ -788,9 +747,8 @@ cd_main_calib_process (CdMainPrivate *priv,
 	item->color.B *= temp;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* expand out the array into more points (interpolating) */
 	if (priv->quality == CD_PROFILE_QUALITY_LOW) {
@@ -800,9 +758,8 @@ cd_main_calib_process (CdMainPrivate *priv,
 	} else if (priv->quality == CD_PROFILE_QUALITY_HIGH) {
 		precision_steps = 21;
 	}
-	ret = cd_main_calib_interpolate_up (priv, precision_steps, error);
-	if (!ret)
-		goto out;
+	if (!cd_main_calib_interpolate_up (priv, precision_steps, error))
+		return FALSE;
 
 	/* refine the other points */
 	state_local = cd_state_get_child (state);
@@ -813,41 +770,35 @@ cd_main_calib_process (CdMainPrivate *priv,
 		rgb.R = 1.0 / (gdouble) (priv->array->len - 1) * (gdouble) i;
 		rgb.G = 1.0 / (gdouble) (priv->array->len - 1) * (gdouble) i;
 		rgb.B = 1.0 / (gdouble) (priv->array->len - 1) * (gdouble) i;
-		ret = cd_main_emit_update_sample (priv, &rgb, error);
-		if (!ret)
-			goto out;
+		if (!cd_main_emit_update_sample (priv, &rgb, error))
+			return FALSE;
 
 		/* process this section */
 		item = g_ptr_array_index (priv->array, i);
 		state_loop = cd_state_get_child (state_local);
-		ret = cd_main_calib_process_item (priv, item, state_loop, error);
-		if (!ret)
-			goto out;
+		if (!cd_main_calib_process_item (priv, item, state_loop, error))
+			return FALSE;
 
 		/* done */
-		ret = cd_state_done (state_local, error);
-		if (!ret)
-			goto out;
+		if (!cd_state_done (state_local, error))
+			return FALSE;
 	}
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* set this */
 	cd_main_emit_update_gamma (priv, priv->array);
 
 	/* get new whitepoint */
-	ret = cd_main_calib_get_native_whitepoint (priv, &temp, error);
-	if (!ret)
-		goto out;
+	if (!cd_main_calib_get_native_whitepoint (priv, &temp, error))
+		return FALSE;
 	g_debug ("new native temperature %f", temp);
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* save the results */
 	priv->it8_cal = cd_it8_new_with_kind (CD_IT8_KIND_CAL);
@@ -864,7 +815,6 @@ cd_main_calib_process (CdMainPrivate *priv,
 	/* smooth the gamma data to avoid jagged peaks */
 	vcgt_smoothed = cd_color_rgb_array_interpolate (gamma_data, 256);
 	if (vcgt_smoothed == NULL) {
-		ret = FALSE;
 		error_str = g_string_new ("Gamma correction table was non-monotonic: ");
 		for (i = 0; i < gamma_data->len; i++) {
 			rgb_tmp = g_ptr_array_index (gamma_data, i);
@@ -878,7 +828,7 @@ cd_main_calib_process (CdMainPrivate *priv,
 				     CD_SESSION_ERROR,
 				     CD_SESSION_ERROR_FAILED_TO_GENERATE_PROFILE,
 				     error_str->str);
-		goto out;
+		return FALSE;
 	}
 
 	/* write the new smoothed monotonic data */
@@ -888,17 +838,7 @@ cd_main_calib_process (CdMainPrivate *priv,
 	}
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
-out:
-	if (error_str != NULL)
-		g_string_free (error_str, TRUE);
-	if (gamma_data != NULL)
-		g_ptr_array_unref (gamma_data);
-	if (vcgt_smoothed != NULL)
-		g_ptr_array_unref (vcgt_smoothed);
-	return ret;
+	return cd_state_done (state, error);
 }
 
 /**
@@ -919,9 +859,8 @@ static gboolean
 cd_main_load_samples (CdMainPrivate *priv, GError **error)
 {
 	const gchar *filename;
-	gboolean ret;
-	gchar *path;
-	GFile *file;
+	_cleanup_free gchar *path;
+	_cleanup_unref_object GFile *file;
 
 	filename = cd_main_get_display_ti1 (priv->quality);
 	path = g_build_filename (DATADIR,
@@ -932,13 +871,7 @@ cd_main_load_samples (CdMainPrivate *priv, GError **error)
 	g_debug ("opening source file %s", path);
 	file = g_file_new_for_path (path);
 	priv->it8_ti1 = cd_it8_new ();
-	ret = cd_it8_load_from_file (priv->it8_ti1, file, error);
-	if (!ret)
-		goto out;
-out:
-	g_free (path);
-	g_object_unref (file);
-	return ret;
+	return cd_it8_load_from_file (priv->it8_ti1, file, error);
 }
 
 /**
@@ -948,18 +881,16 @@ static gboolean
 cd_main_write_colprof_files (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret = TRUE;
-	gchar *filename_ti3 = NULL;
-	gchar *data_cal = NULL;
-	gchar *data_ti3 = NULL;
-	gchar *data = NULL;
-	gchar *path_ti3 = NULL;
+	_cleanup_free gchar *data_cal = NULL;
+	_cleanup_free gchar *data = NULL;
+	_cleanup_free gchar *data_ti3 = NULL;
+	_cleanup_free gchar *filename_ti3 = NULL;
+	_cleanup_free gchar *path_ti3 = NULL;
 
 	/* build temp path */
 	priv->working_path = g_dir_make_tmp ("colord-session-XXXXXX", error);
-	if (priv->working_path == NULL) {
-		ret = FALSE;
-		goto out;
-	}
+	if (priv->working_path == NULL)
+		return FALSE;
 
 	/* save .ti3 with ti1 and cal data appended together */
 	ret = cd_it8_save_to_data (priv->it8_ti3,
@@ -967,29 +898,20 @@ cd_main_write_colprof_files (CdMainPrivate *priv, GError **error)
 				   NULL,
 				   error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	ret = cd_it8_save_to_data (priv->it8_cal,
 				   &data_cal,
 				   NULL,
 				   error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	data = g_strdup_printf ("%s\n%s", data_ti3, data_cal);
 	filename_ti3 = g_strdup_printf ("%s.ti3", priv->basename);
 	path_ti3 = g_build_filename (priv->working_path,
 				     filename_ti3,
 				     NULL);
 	g_debug ("saving %s", path_ti3);
-	ret = g_file_set_contents (path_ti3, data, -1, error);
-	if (!ret)
-		goto out;
-out:
-	g_free (data);
-	g_free (data_cal);
-	g_free (data_ti3);
-	g_free (filename_ti3);
-	g_free (path_ti3);
-	return ret;
+	return g_file_set_contents (path_ti3, data, -1, error);
 }
 
 /**
@@ -1017,37 +939,34 @@ cd_main_find_argyll_tool (const gchar *command,
 			  GError **error)
 {
 	gboolean ret;
-	gchar *filename;
+	_cleanup_free gchar *filename;
 
 	/* try the original argyllcms filename installed in /usr/local/bin */
 	filename = g_strdup_printf ("/usr/local/bin/%s", command);
 	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
 	if (ret)
-		goto out;
+		return filename;
 
 	/* try the debian filename installed in /usr/bin */
 	g_free (filename);
 	filename = g_strdup_printf ("/usr/bin/argyll-%s", command);
 	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
 	if (ret)
-		goto out;
+		return filename;
 
 	/* try the original argyllcms filename installed in /usr/bin */
 	g_free (filename);
 	filename = g_strdup_printf ("/usr/bin/%s", command);
 	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
 	if (ret)
-		goto out;
+		return filename;
 
 	/* eek */
-	g_free (filename);
-	filename = NULL;
 	g_set_error (error,
 		     CD_SESSION_ERROR,
 		     CD_SESSION_ERROR_FAILED_TO_FIND_TOOL,
 		     "failed to get filename for %s", command);
-out:
-	return filename;
+	return NULL;
 }
 
 /**
@@ -1057,9 +976,9 @@ static gboolean
 cd_main_import_profile (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret = TRUE;
-	gchar *filename;
-	gchar *path;
-	GFile *file;
+	_cleanup_free gchar *filename;
+	_cleanup_free gchar *path;
+	_cleanup_unref_object GFile *file;
 
 	filename = g_strdup_printf ("%s.icc", priv->basename);
 	path = g_build_filename (priv->working_path,
@@ -1071,10 +990,8 @@ cd_main_import_profile (CdMainPrivate *priv, GError **error)
 						       file,
 						       priv->cancellable,
 						       error);
-	if (priv->profile == NULL) {
-		ret = FALSE;
-		goto out;
-	}
+	if (priv->profile == NULL)
+		return FALSE;
 	g_debug ("imported %s", cd_profile_get_object_path (priv->profile));
 
 	/* add profile to device and set default */
@@ -1082,28 +999,24 @@ cd_main_import_profile (CdMainPrivate *priv, GError **error)
 				       priv->cancellable,
 				       error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	ret = cd_device_add_profile_sync (priv->device,
 					  CD_DEVICE_RELATION_HARD,
 					  priv->profile,
 					  priv->cancellable,
 					  error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	ret = cd_device_make_profile_default_sync (priv->device,
 						   priv->profile,
 						   priv->cancellable,
 						   error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	g_debug ("set %s default on %s",
 		 cd_profile_get_id (priv->profile),
 		 cd_device_get_id (priv->device));
-out:
-	g_free (filename);
-	g_free (path);
-	g_object_unref (file);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1112,13 +1025,12 @@ out:
 static gboolean
 cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 {
-	CdIcc *icc;
 	gboolean ret;
-	gchar *brightness_str = NULL;
-	gchar *profile_fn = NULL;
-	gchar *profile_path = NULL;
-	GError *error_local = NULL;
-	GFile *file = NULL;
+	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_free gchar *profile_fn = NULL;
+	_cleanup_free gchar *profile_path = NULL;
+	_cleanup_unref_object CdIcc *icc;
+	_cleanup_unref_object GFile *file = NULL;
 
 	/* get profile */
 	profile_fn = g_strdup_printf ("%s.icc", priv->basename);
@@ -1135,7 +1047,7 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 				priv->cancellable,
 				error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* add DICT data */
 	cd_icc_add_metadata (icc,
@@ -1163,11 +1075,11 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 			     CD_PROFILE_METADATA_MEASUREMENT_DEVICE,
 			     cd_sensor_kind_to_string (cd_sensor_get_kind (priv->sensor)));
 	if (priv->screen_brightness > 0) {
+		_cleanup_free gchar *brightness_str = NULL;
 		brightness_str = g_strdup_printf ("%u", priv->screen_brightness);
 		cd_icc_add_metadata (icc,
 				     CD_PROFILE_METADATA_SCREEN_BRIGHTNESS,
 				     brightness_str);
-		g_free (brightness_str);
 	}
 
 	/* save file */
@@ -1182,17 +1094,9 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 			     CD_SESSION_ERROR_FAILED_TO_SAVE_PROFILE,
 			     "failed to save profile to %s: %s",
 			     profile_path, error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
-out:
-	g_free (profile_fn);
-	g_free (profile_path);
-	if (icc != NULL)
-		g_object_unref (icc);
-	if (file != NULL)
-		g_object_unref (file);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1202,18 +1106,16 @@ static gboolean
 cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret;
-	gchar *command;
-	gchar *stderr_data = NULL;
 	gint exit_status = 0;
-	gchar *cmd_debug = NULL;
-	GPtrArray *array = NULL;
+	_cleanup_free gchar *cmd_debug = NULL;
+	_cleanup_free gchar *command;
+	_cleanup_free gchar *stderr_data = NULL;
+	_cleanup_unref_ptrarray GPtrArray *array = NULL;
 
 	/* get correct name of the command */
 	command = cd_main_find_argyll_tool ("colprof", error);
-	if (command == NULL) {
-		ret = FALSE;
-		goto out;
-	}
+	if (command == NULL)
+		return FALSE;
 
 	/* argument array */
 	array = g_ptr_array_new_with_free_func (g_free);
@@ -1243,22 +1145,15 @@ cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 			    &exit_status,
 			    error);
 	if (!ret)
-		goto out;
+		return FALSE;
 	if (exit_status != 0) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_GENERATE_PROFILE,
 			     "colprof failed: %s", stderr_data);
-		goto out;
+		return FALSE;
 	}
-out:
-	if (array != NULL)
-		g_ptr_array_unref (array);
-	g_free (command);
-	g_free (stderr_data);
-	g_free (cmd_debug);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1271,7 +1166,6 @@ cd_main_display_get_samples (CdMainPrivate *priv,
 {
 	CdColorRGB rgb;
 	CdColorXYZ xyz;
-	gboolean ret = TRUE;
 	guint i;
 	guint size;
 
@@ -1282,23 +1176,17 @@ cd_main_display_get_samples (CdMainPrivate *priv,
 				      i,
 				      &rgb,
 				      NULL);
-		ret = cd_main_emit_update_sample (priv, &rgb, error);
-		if (!ret)
-			goto out;
-		ret = cd_main_calib_get_sample (priv, &xyz, error);
-		if (!ret)
-			goto out;
-		cd_it8_add_data (priv->it8_ti3,
-				 &rgb,
-				 &xyz);
+		if (!cd_main_emit_update_sample (priv, &rgb, error))
+			return FALSE;
+		if (!cd_main_calib_get_sample (priv, &xyz, error))
+			return FALSE;
+		cd_it8_add_data (priv->it8_ti3, &rgb, &xyz);
 
 		/* done */
-		ret = cd_state_done (state, error);
-		if (!ret)
-			goto out;
+		if (!cd_state_done (state, error))
+			return FALSE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1322,17 +1210,15 @@ cd_main_display_characterize (CdMainPrivate *priv,
 				  1,	/* import profile */
 				  -1);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* load the ti1 file */
-	ret = cd_main_load_samples (priv, error);
-	if (!ret)
-		goto out;
+	if (!cd_main_load_samples (priv, error))
+		return FALSE;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* create the ti3 file */
 	priv->it8_ti3 = cd_it8_new_with_kind (CD_IT8_KIND_TI3);
@@ -1346,49 +1232,42 @@ cd_main_display_characterize (CdMainPrivate *priv,
 	state_local = cd_state_get_child (state);
 	ret = cd_main_display_get_samples (priv, state_local, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* write out files */
 	ret = cd_main_write_colprof_files (priv, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* run colprof */
 	ret = cd_main_generate_profile (priv, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* set metadata on the profile */
 	ret = cd_main_set_profile_metadata (priv, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* import profile */
 	ret = cd_main_import_profile (priv, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
-out:
-	return ret;
+	return cd_state_done (state, error);
 }
 
 /**
@@ -1399,17 +1278,11 @@ cd_main_remove_temp_file (const gchar *filename,
 			  GCancellable *cancellable,
 			  GError **error)
 {
-	gboolean ret;
-	GFile *file;
+	_cleanup_unref_object GFile *file;
 
 	g_debug ("removing %s", filename);
 	file = g_file_new_for_path (filename);
-	ret = g_file_delete (file, cancellable, error);
-	if (!ret)
-		goto out;
-out:
-	g_object_unref (file);
-	return ret;
+	return g_file_delete (file, cancellable, error);
 }
 
 /**
@@ -1421,14 +1294,12 @@ cd_main_remove_temp_files (CdMainPrivate *priv, GError **error)
 	const gchar *filename;
 	gboolean ret;
 	gchar *src;
-	GDir *dir;
+	_cleanup_close_dir GDir *dir;
 
 	/* try to open */
 	dir = g_dir_open (priv->working_path, 0, error);
-	if (dir == NULL) {
-		ret = FALSE;
-		goto out;
-	}
+	if (dir == NULL)
+		return FALSE;
 
 	/* find each */
 	while ((filename = g_dir_read_name (dir))) {
@@ -1440,19 +1311,13 @@ cd_main_remove_temp_files (CdMainPrivate *priv, GError **error)
 						error);
 		g_free (src);
 		if (!ret)
-			goto out;
+			return FALSE;
 	}
 
 	/* remove directory */
-	ret = cd_main_remove_temp_file (priv->working_path,
-					priv->cancellable,
-					error);
-	if (!ret)
-		goto out;
-out:
-	if (dir != NULL)
-		g_dir_close (dir);
-	return ret;
+	return cd_main_remove_temp_file (priv->working_path,
+					 priv->cancellable,
+					 error);
 }
 
 /**
@@ -1465,7 +1330,7 @@ cd_main_start_calibration (CdMainPrivate *priv,
 {
 	CdState *state_local;
 	gboolean ret;
-	GError *error_local = NULL;
+	_cleanup_free_error GError *error_local = NULL;
 
 	/* reset the state */
 	ret = cd_state_set_steps (state,
@@ -1475,7 +1340,7 @@ cd_main_start_calibration (CdMainPrivate *priv,
 				  1,	/* remove temp files */
 				  -1);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* do the calibration */
 	state_local = cd_state_get_child (state);
@@ -1487,50 +1352,40 @@ cd_main_start_calibration (CdMainPrivate *priv,
 			priv->status = CD_SESSION_STATUS_WAITING_FOR_INTERACTION;
 			cd_main_emit_interaction_required (priv,
 							   CD_SESSION_INTERACTION_MOVE_TO_CALIBRATION);
-			g_error_free (error_local);
-			ret = TRUE;
+			return TRUE;
 		} else if (g_error_matches (error_local,
 					    CD_SENSOR_ERROR,
 					    CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE)) {
 			priv->status = CD_SESSION_STATUS_WAITING_FOR_INTERACTION;
 			cd_main_emit_interaction_required (priv,
 							   CD_SESSION_INTERACTION_MOVE_TO_SURFACE);
-			g_error_free (error_local);
-			ret = TRUE;
-		} else {
-			g_propagate_error (error, error_local);
-			goto out;
+			return TRUE;
 		}
-		goto out;
+		g_propagate_error (error, error_local);
+		return FALSE;
 	}
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* do the characterization */
 	state_local = cd_state_get_child (state);
 	ret = cd_main_display_characterize (priv, state_local, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
+	if (!cd_state_done (state, error))
+		return FALSE;
 
 	/* remove temp files */
 	ret = cd_main_remove_temp_files (priv, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* done */
-	ret = cd_state_done (state, error);
-	if (!ret)
-		goto out;
-out:
-	return ret;
+	return cd_state_done (state, error);
 }
 
 /**
@@ -1540,15 +1395,11 @@ static gboolean
 cd_main_start_calibration_cb (gpointer user_data)
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
-	gboolean ret;
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* reset the state */
 	cd_state_reset (priv->state);
-	ret = cd_main_start_calibration (priv,
-					 priv->state,
-					 &error);
-	if (!ret) {
+	if (!cd_main_start_calibration (priv, priv->state, &error)) {
 		/* use the error code if it's our error domain */
 		if (error->domain == CD_SESSION_ERROR) {
 			cd_main_emit_finished (priv,
@@ -1560,18 +1411,16 @@ cd_main_start_calibration_cb (gpointer user_data)
 					       error->message);
 		}
 		g_timeout_add (200, cd_main_finished_quit_cb, priv);
-		g_error_free (error);
-		goto out;
+		return FALSE;
 	}
 
 	/* still waiting */
 	if (priv->status == CD_SESSION_STATUS_WAITING_FOR_INTERACTION)
-		goto out;
+		return FALSE;
 
 	/* success */
 	cd_main_emit_finished (priv, CD_SESSION_ERROR_NONE, NULL);
 	g_timeout_add (200, cd_main_finished_quit_cb, priv);
-out:
 	return FALSE;
 }
 
@@ -1614,10 +1463,9 @@ cd_main_find_device (CdMainPrivate *priv,
 		     const gchar *device_id,
 		     GError **error)
 {
-	CdDevice *device = NULL;
-	CdDevice *device_tmp;
 	gboolean ret;
-	GError *error_local = NULL;
+	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_unref_object CdDevice *device_tmp;
 
 	device_tmp = cd_client_find_device_sync (priv->client,
 						 device_id,
@@ -1628,8 +1476,7 @@ cd_main_find_device (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_DEVICE,
 			     "%s", error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 	ret = cd_device_connect_sync (device_tmp,
 				      NULL,
@@ -1639,8 +1486,7 @@ cd_main_find_device (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_DEVICE,
 			     "%s", error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* mark device to be profiled in colord */
@@ -1652,16 +1498,11 @@ cd_main_find_device (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_INTERNAL,
 			     "%s", error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* success */
-	device = g_object_ref (device_tmp);
-out:
-	if (device_tmp != NULL)
-		g_object_unref (device_tmp);
-	return device;
+	return g_object_ref (device_tmp);
 }
 
 /**
@@ -1672,10 +1513,9 @@ cd_main_find_sensor (CdMainPrivate *priv,
 		     const gchar *sensor_id,
 		     GError **error)
 {
-	CdSensor *sensor_tmp;
-	CdSensor *sensor = NULL;
 	gboolean ret;
-	GError *error_local = NULL;
+	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_unref_object CdSensor *sensor_tmp;
 
 	sensor_tmp = cd_client_find_sensor_sync (priv->client,
 						 sensor_id,
@@ -1686,8 +1526,7 @@ cd_main_find_sensor (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 	ret = cd_sensor_connect_sync (sensor_tmp,
 				      NULL,
@@ -1697,8 +1536,7 @@ cd_main_find_sensor (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* lock the sensor */
@@ -1710,16 +1548,11 @@ cd_main_find_sensor (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* success */
-	sensor = g_object_ref (sensor_tmp);
-out:
-	if (sensor_tmp != NULL)
-		g_object_unref (sensor_tmp);
-	return sensor;
+	return g_object_ref (sensor_tmp);
 }
 
 /**
@@ -1729,7 +1562,7 @@ static void
 cd_main_set_basename (CdMainPrivate *priv)
 {
 	const gchar *tmp;
-	gchar *date_str = NULL;
+	_cleanup_free gchar *date_str = NULL;
 	GDateTime *datetime;
 	GString *str;
 
@@ -1757,7 +1590,6 @@ cd_main_set_basename (CdMainPrivate *priv)
 	datetime = g_date_time_new_now_utc ();
 	date_str = g_date_time_format (datetime, "%F %H-%M-%S");
 	g_string_append_printf (str, "%s ", date_str);
-	g_free (date_str);
 	g_date_time_unref (datetime);
 
 	/* add the sensor */
@@ -1812,7 +1644,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 						       CD_SESSION_ERROR_INTERNAL,
 						       "cannot execute method %s on %s",
 						       method_name, interface_name);
-		goto out;
+		return;
 	}
 
 	if (g_strcmp0 (method_name, "Start") == 0) {
@@ -1868,7 +1700,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 							       CD_SESSION_ERROR_INTERNAL,
 							       "cannot start as status is %s",
 							       cd_main_status_to_text (priv->status));
-			goto out;
+			return;
 		}
 
 		/* check the quality argument */
@@ -1878,7 +1710,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 							       CD_SESSION_ERROR_INVALID_VALUE,
 							       "invalid quality value %i",
 							       priv->quality);
-			goto out;
+			return;
 		}
 
 		/* check the gamma */
@@ -1888,7 +1720,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 							       CD_SESSION_ERROR_INVALID_VALUE,
 							       "invalid target gamma value %f",
 							       priv->target_gamma);
-			goto out;
+			return;
 		}
 
 		/* check the whitepoint */
@@ -1900,7 +1732,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 							       CD_SESSION_ERROR_INVALID_VALUE,
 							       "invalid target whitepoint value %i",
 							       priv->target_whitepoint);
-			goto out;
+			return;
 		}
 
 		/* watch to see when the sender quits */
@@ -1921,7 +1753,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 								error);
 			g_error_free (error);
 			g_timeout_add (200, cd_main_finished_quit_cb, priv);
-			goto out;
+			return;
 		}
 		priv->sensor = cd_main_find_sensor (priv,
 						    sensor_id,
@@ -1931,7 +1763,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 								error);
 			g_error_free (error);
 			g_timeout_add (200, cd_main_finished_quit_cb, priv);
-			goto out;
+			return;
 		}
 
 		/* set the filename of all the calibrated files */
@@ -1948,7 +1780,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		}
 		priv->status = CD_SESSION_STATUS_WAITING_FOR_INTERACTION;
 		g_dbus_method_invocation_return_value (invocation, NULL);
-		goto out;
+		return;
 	}
 
 	if (g_strcmp0 (method_name, "Cancel") == 0) {
@@ -1960,13 +1792,13 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 							       CD_SESSION_ERROR_INTERNAL,
 							       "cannot cancel as status is %s",
 							       cd_main_status_to_text (priv->status));
-			goto out;
+			return;
 		}
 		g_cancellable_cancel (priv->cancellable);
 		priv->status = CD_SESSION_STATUS_IDLE;
 		g_timeout_add (1000, cd_main_quit_loop_cb, priv);
 		g_dbus_method_invocation_return_value (invocation, NULL);
-		goto out;
+		return;
 	}
 
 	if (g_strcmp0 (method_name, "Resume") == 0) {
@@ -1977,20 +1809,18 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 							       CD_SESSION_ERROR_INTERNAL,
 							       "cannot resume as status is %s",
 							       cd_main_status_to_text (priv->status));
-			goto out;
+			return;
 		}
 
 		/* actually start the process now */
 		priv->status = CD_SESSION_STATUS_IDLE;
 		g_idle_add (cd_main_start_calibration_cb, priv);
 		g_dbus_method_invocation_return_value (invocation, NULL);
-		goto out;
+		return;
 	}
 
 	/* we suck */
 	g_critical ("failed to process method %s", method_name);
-out:
-	return;
 }
 
 /**
@@ -2002,33 +1832,25 @@ cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 			     const gchar *property_name, GError **error,
 			     gpointer user_data)
 {
-	GVariant *retval = NULL;
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 
 	/* main interface */
-	if (g_strcmp0 (interface_name,
-		       CD_SESSION_DBUS_INTERFACE) == 0) {
-		if (g_strcmp0 (property_name, "DaemonVersion") == 0) {
-			retval = g_variant_new_string (VERSION);
-		} else {
-			g_critical ("failed to get %s property %s",
-				    interface_name, property_name);
-		}
-		goto out;
+	if (g_strcmp0 (interface_name, CD_SESSION_DBUS_INTERFACE) == 0) {
+		if (g_strcmp0 (property_name, "DaemonVersion") == 0)
+			return g_variant_new_string (VERSION);
+		g_critical ("failed to get %s property %s", interface_name, property_name);
+		return NULL;
 	}
 
 	/* display interface */
 	if (g_strcmp0 (interface_name, CD_SESSION_DBUS_INTERFACE_DISPLAY) == 0) {
-		if (g_strcmp0 (property_name, "Progress") == 0) {
-			retval = g_variant_new_uint32 (priv->progress);
-		} else {
-			g_critical ("failed to get %s property %s",
-				    interface_name, property_name);
-		}
-		goto out;
+		if (g_strcmp0 (property_name, "Progress") == 0)
+			return g_variant_new_uint32 (priv->progress);
+		g_critical ("failed to get %s property %s", interface_name, property_name);
+		return NULL;
 	}
-out:
-	return retval;
+
+	return NULL;
 }
 
 /**
@@ -2102,26 +1924,16 @@ cd_main_timed_exit_cb (gpointer user_data)
 static GDBusNodeInfo *
 cd_main_load_introspection (const gchar *filename, GError **error)
 {
-	gboolean ret;
-	gchar *data = NULL;
-	GDBusNodeInfo *info = NULL;
-	GFile *file;
+	_cleanup_free gchar *data = NULL;
+	_cleanup_unref_object GFile *file;
 
 	/* load file */
 	file = g_file_new_for_path (filename);
-	ret = g_file_load_contents (file, NULL, &data,
-				    NULL, NULL, error);
-	if (!ret)
-		goto out;
+	if (!g_file_load_contents (file, NULL, &data, NULL, NULL, error))
+		return NULL;
 
 	/* build introspection from XML */
-	info = g_dbus_node_info_new_for_xml (data, error);
-	if (info == NULL)
-		goto out;
-out:
-	g_object_unref (file);
-	g_free (data);
-	return info;
+	return g_dbus_node_info_new_for_xml (data, error);
 }
 
 /**

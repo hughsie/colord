@@ -26,6 +26,7 @@
 #include <sqlite3.h>
 #include <syslog.h>
 
+#include "cd-cleanup.h"
 #include "cd-common.h"
 #include "cd-profile-db.h"
 
@@ -51,32 +52,29 @@ cd_profile_db_load (CdProfileDb *pdb,
 		    GError  **error)
 {
 	const gchar *statement;
-	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
-	gchar *path = NULL;
 	gint rc;
+	_cleanup_free gchar *path = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
 	g_return_val_if_fail (pdb->priv->db == NULL, FALSE);
 
 	/* ensure the path exists */
 	path = g_path_get_dirname (filename);
-	ret = cd_main_mkdir_with_parents (path, error);
-	if (!ret)
-		goto out;
+	if (!cd_main_mkdir_with_parents (path, error))
+		return FALSE;
 
 	g_debug ("CdProfileDb: trying to open database '%s'", filename);
 	syslog (LOG_INFO, "Using profile database file %s", filename);
 	rc = sqlite3_open (filename, &pdb->priv->db);
 	if (rc != SQLITE_OK) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "Can't open database: %s\n",
 			     sqlite3_errmsg (pdb->priv->db));
 		sqlite3_close (pdb->priv->db);
-		goto out;
+		return FALSE;
 	}
 
 	/* we don't need to keep doing fsync */
@@ -95,9 +93,7 @@ cd_profile_db_load (CdProfileDb *pdb,
 			    "PRIMARY KEY (profile_id, property, uid));";
 		sqlite3_exec (pdb->priv->db, statement, NULL, NULL, NULL);
 	}
-out:
-	g_free (path);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -107,7 +103,6 @@ gboolean
 cd_profile_db_empty (CdProfileDb *pdb, GError **error)
 {
 	const gchar *statement;
-	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gint rc;
 
@@ -118,17 +113,15 @@ cd_profile_db_empty (CdProfileDb *pdb, GError **error)
 	rc = sqlite3_exec (pdb->priv->db, statement,
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
 		sqlite3_free (error_msg);
-		goto out;
+		return FALSE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**

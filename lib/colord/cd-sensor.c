@@ -36,6 +36,7 @@
 #include <glib.h>
 #include <string.h>
 
+#include "cd-cleanup.h"
 #include "cd-sensor.h"
 
 static void	cd_sensor_class_init	(CdSensorClass	*klass);
@@ -498,21 +499,21 @@ cd_sensor_connect_cb (GObject *source_object,
 		      GAsyncResult *res,
 		      gpointer user_data)
 {
-	GVariant *model = NULL;
-	GVariant *id = NULL;
-	GVariant *serial = NULL;
-	GVariant *vendor = NULL;
-	GVariant *kind = NULL;
-	GVariant *state = NULL;
-	GVariant *mode = NULL;
-	GVariant *native = NULL;
-	GVariant *embedded = NULL;
-	GVariant *locked = NULL;
-	GVariant *caps = NULL;
-	GVariant *metadata = NULL;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_unref_variant GVariant *model = NULL;
+	_cleanup_unref_variant GVariant *id = NULL;
+	_cleanup_unref_variant GVariant *serial = NULL;
+	_cleanup_unref_variant GVariant *vendor = NULL;
+	_cleanup_unref_variant GVariant *kind = NULL;
+	_cleanup_unref_variant GVariant *state = NULL;
+	_cleanup_unref_variant GVariant *mode = NULL;
+	_cleanup_unref_variant GVariant *native = NULL;
+	_cleanup_unref_variant GVariant *embedded = NULL;
+	_cleanup_unref_variant GVariant *locked = NULL;
+	_cleanup_unref_variant GVariant *caps = NULL;
+	_cleanup_unref_variant GVariant *metadata = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 	CdSensor *sensor = CD_SENSOR (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
-	GError *error = NULL;
+	_cleanup_free_error GError *error = NULL;
 
 	/* get result */
 	sensor->priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
@@ -524,8 +525,7 @@ cd_sensor_connect_cb (GObject *source_object,
 						 cd_sensor_get_object_path (sensor),
 						 error->message);
 		g_simple_async_result_complete (res_source);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* get kind */
@@ -614,32 +614,6 @@ cd_sensor_connect_cb (GObject *source_object,
 
 	/* we're done */
 	g_simple_async_result_complete (res_source);
-out:
-	if (kind != NULL)
-		g_variant_unref (kind);
-	if (state != NULL)
-		g_variant_unref (state);
-	if (mode != NULL)
-		g_variant_unref (mode);
-	if (id != NULL)
-		g_variant_unref (id);
-	if (serial != NULL)
-		g_variant_unref (serial);
-	if (model != NULL)
-		g_variant_unref (model);
-	if (vendor != NULL)
-		g_variant_unref (vendor);
-	if (native != NULL)
-		g_variant_unref (native);
-	if (embedded != NULL)
-		g_variant_unref (embedded);
-	if (locked != NULL)
-		g_variant_unref (locked);
-	if (caps != NULL)
-		g_variant_unref (caps);
-	if (metadata != NULL)
-		g_variant_unref (metadata);
-	g_object_unref (res_source);
 }
 
 /**
@@ -762,21 +736,19 @@ cd_sensor_lock_finish (CdSensor *sensor,
 static void
 cd_sensor_fixup_dbus_error (GError *error)
 {
-	gchar *name = NULL;
+	_cleanup_free gchar *name = NULL;
 
 	g_return_if_fail (error != NULL);
 
 	/* is a remote error? */
 	if (!g_dbus_error_is_remote_error (error))
-		goto out;
+		return;
 
 	/* parse the remote error */
 	name = g_dbus_error_get_remote_error (error);
 	error->domain = CD_SENSOR_ERROR;
 	error->code = cd_sensor_error_from_string (name);
 	g_dbus_error_strip_remote_error (error);
-out:
-	g_free (name);
 }
 
 static void
@@ -784,9 +756,9 @@ cd_sensor_lock_cb (GObject *source_object,
 		   GAsyncResult *res,
 		   gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -794,16 +766,13 @@ cd_sensor_lock_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_sensor_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -880,9 +849,9 @@ cd_sensor_unlock_cb (GObject *source_object,
 		     GAsyncResult *res,
 		     gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -890,16 +859,13 @@ cd_sensor_unlock_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_sensor_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -976,9 +942,9 @@ cd_sensor_set_options_cb (GObject *source_object,
 			  GAsyncResult *res,
 			  gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -986,16 +952,13 @@ cd_sensor_set_options_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_sensor_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1090,10 +1053,10 @@ cd_sensor_get_sample_cb (GObject *source_object,
 			 GAsyncResult *res,
 			 gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
 	CdColorXYZ *xyz;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1101,8 +1064,8 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_sensor_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
@@ -1116,10 +1079,7 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	g_simple_async_result_set_op_res_gpointer (res_source,
 						   xyz,
 						   (GDestroyNotify) cd_color_xyz_free);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**

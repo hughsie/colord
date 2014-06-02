@@ -28,6 +28,7 @@
 
 #include <glib.h>
 
+#include "cd-cleanup.h"
 #include "cd-dom.h"
 
 static void	cd_dom_class_init	(CdDomClass	*klass);
@@ -84,14 +85,13 @@ cd_dom_print_node_cb (GNode *node, gpointer user_data)
 	guint i;
 
 	if (data == NULL)
-		goto out;
+		return FALSE;
 	for (i = 0; i < depth; i++)
 		g_string_append (string, " ");
 	g_string_append_printf (string,
 				"<%s> [%s]\n",
 				data->name,
 				data->cdata->str);
-out:
 	return FALSE;
 }
 
@@ -222,8 +222,7 @@ cd_dom_parse_xml_data (CdDom *dom,
 		       gssize data_len,
 		       GError **error)
 {
-	gboolean ret;
-	GMarkupParseContext *ctx;
+	_cleanup_unref_markup_parse_context GMarkupParseContext *ctx = NULL;
 	const GMarkupParser parser = {
 		cd_dom_start_element_cb,
 		cd_dom_end_element_cb,
@@ -238,15 +237,12 @@ cd_dom_parse_xml_data (CdDom *dom,
 					  G_MARKUP_PREFIX_ERROR_POSITION,
 					  dom,
 					  NULL);
-	ret = g_markup_parse_context_parse (ctx,
-					    data,
-					    data_len,
-					    error);
-	if (!ret)
-		goto out;
-out:
-	g_markup_parse_context_free (ctx);
-	return ret;
+	if (!g_markup_parse_context_parse (ctx,
+					   data,
+					   data_len,
+					   error))
+		return FALSE;
+	return TRUE;
 }
 
 /**
@@ -322,7 +318,6 @@ cd_dom_get_node_data_as_double (const GNode *node)
 {
 	const gchar *tmp;
 	gchar *endptr = NULL;
-	gdouble value = G_MAXDOUBLE;
 	gdouble value_tmp;
 
 	g_return_val_if_fail (node != NULL, G_MAXDOUBLE);
@@ -330,17 +325,15 @@ cd_dom_get_node_data_as_double (const GNode *node)
 	/* get string */
 	tmp = cd_dom_get_node_data (node);
 	if (tmp == NULL)
-		goto out;
+		return G_MAXDOUBLE;
 
 	/* convert to string */
 	value_tmp = g_ascii_strtod (tmp, &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return G_MAXDOUBLE;
 
 	/* success */
-	value = value_tmp;
-out:
-	return value;
+	return value_tmp;
 }
 
 /**
@@ -359,26 +352,23 @@ cd_dom_get_node_data_as_int (const GNode *node)
 	const gchar *tmp;
 	gchar *endptr = NULL;
 	gint64 value_tmp;
-	gint value = G_MAXINT;
 
 	g_return_val_if_fail (node != NULL, G_MAXINT);
 
 	/* get string */
 	tmp = cd_dom_get_node_data (node);
 	if (tmp == NULL)
-		goto out;
+		return G_MAXINT;
 
 	/* convert to string */
 	value_tmp = g_ascii_strtoll (tmp, &endptr, 10);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return G_MAXINT;
 	if (value_tmp > G_MAXINT || value_tmp < G_MININT)
-		goto out;
+		return G_MAXINT;
 
 	/* success */
-	value = (gint) value_tmp;
-out:
-	return value;
+	return (gint) value_tmp;
 }
 
 /**
@@ -416,7 +406,7 @@ cd_dom_get_node_attribute (const GNode *node, const gchar *key)
 const GNode *
 cd_dom_get_node (CdDom *dom, const GNode *root, const gchar *path)
 {
-	gchar **split;
+	_cleanup_free_strv gchar **split = NULL;
 	const GNode *node;
 	guint i;
 
@@ -432,10 +422,8 @@ cd_dom_get_node (CdDom *dom, const GNode *root, const gchar *path)
 	for (i = 0; split[i] != NULL; i++) {
 		node = cd_dom_get_child_node (node, split[i]);
 		if (node == NULL)
-			goto out;
+			return NULL;
 	}
-out:
-	g_strfreev (split);
 	return node;
 }
 
@@ -453,36 +441,33 @@ out:
 gboolean
 cd_dom_get_node_lab (const GNode *node, CdColorLab *lab)
 {
-	gboolean ret = FALSE;
 	const GNode *values[3];
 	gchar *endptr = NULL;
 
 	/* find nodes */
 	values[0] = cd_dom_get_child_node (node, "L");
 	if (values[0] == NULL)
-		goto out;
+		return FALSE;
 	values[1] = cd_dom_get_child_node (node, "a");
 	if (values[1] == NULL)
-		goto out;
+		return FALSE;
 	values[2] = cd_dom_get_child_node (node, "b");
 	if (values[2] == NULL)
-		goto out;
+		return FALSE;
 
 	/* parse values */
 	lab->L = g_ascii_strtod (cd_dom_get_node_data (values[0]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 	lab->a = g_ascii_strtod (cd_dom_get_node_data (values[1]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 	lab->b = g_ascii_strtod (cd_dom_get_node_data (values[2]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 
 	/* success */
-	ret = TRUE;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -499,36 +484,33 @@ out:
 gboolean
 cd_dom_get_node_rgb (const GNode *node, CdColorRGB *rgb)
 {
-	gboolean ret = FALSE;
 	const GNode *values[3];
 	gchar *endptr = NULL;
 
 	/* find nodes */
 	values[0] = cd_dom_get_child_node (node, "R");
 	if (values[0] == NULL)
-		goto out;
+		return FALSE;
 	values[1] = cd_dom_get_child_node (node, "G");
 	if (values[1] == NULL)
-		goto out;
+		return FALSE;
 	values[2] = cd_dom_get_child_node (node, "B");
 	if (values[2] == NULL)
-		goto out;
+		return FALSE;
 
 	/* parse values */
 	rgb->R = g_ascii_strtod (cd_dom_get_node_data (values[0]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 	rgb->G = g_ascii_strtod (cd_dom_get_node_data (values[1]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 	rgb->B = g_ascii_strtod (cd_dom_get_node_data (values[2]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 
 	/* success */
-	ret = TRUE;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -545,36 +527,33 @@ out:
 gboolean
 cd_dom_get_node_yxy (const GNode *node, CdColorYxy *yxy)
 {
-	gboolean ret = FALSE;
 	const GNode *values[3];
 	gchar *endptr = NULL;
 
 	/* find nodes */
 	values[0] = cd_dom_get_child_node (node, "Y");
 	if (values[0] == NULL)
-		goto out;
+		return FALSE;
 	values[1] = cd_dom_get_child_node (node, "x");
 	if (values[1] == NULL)
-		goto out;
+		return FALSE;
 	values[2] = cd_dom_get_child_node (node, "y");
 	if (values[2] == NULL)
-		goto out;
+		return FALSE;
 
 	/* parse values */
 	yxy->Y = g_ascii_strtod (cd_dom_get_node_data (values[0]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 	yxy->x = g_ascii_strtod (cd_dom_get_node_data (values[1]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 	yxy->y = g_ascii_strtod (cd_dom_get_node_data (values[2]), &endptr);
 	if (endptr != NULL && endptr[0] != '\0')
-		goto out;
+		return FALSE;
 
 	/* success */
-	ret = TRUE;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -601,7 +580,7 @@ cd_dom_get_node_localized (const GNode *node, const gchar *key)
 	/* does it exist? */
 	tmp = cd_dom_get_child_node (node, key);
 	if (tmp == NULL)
-		goto out;
+		return NULL;
 	data_unlocalized = cd_dom_get_node_data (tmp);
 
 	/* find a node called name */
@@ -622,7 +601,6 @@ cd_dom_get_node_localized (const GNode *node, const gchar *key)
 				     g_strdup (xml_lang != NULL ? xml_lang : ""),
 				     g_strdup (data_localized));
 	}
-out:
 	return hash;
 }
 
@@ -634,12 +612,11 @@ cd_dom_destroy_node_cb (GNode *node, gpointer user_data)
 {
 	CdDomNodeData *data = node->data;
 	if (data == NULL)
-		goto out;
+		return FALSE;
 	g_free (data->name);
 	g_string_free (data->cdata, TRUE);
 	g_hash_table_unref (data->attributes);
 	g_slice_free (CdDomNodeData, data);
-out:
 	return FALSE;
 }
 

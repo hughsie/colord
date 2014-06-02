@@ -28,6 +28,7 @@
 #include <glib-object.h>
 #include <stdlib.h>
 
+#include "cd-cleanup.h"
 #include "cd-sensor.h"
 #include "cd-spawn.h"
 
@@ -122,8 +123,8 @@ static void
 cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, CdSensorAsyncState *state)
 {
 	CdSensorArgyllPrivate *priv = cd_sensor_argyll_get_private (state->sensor);
-	gchar **parts = NULL;
-	GError *error;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_free_strv gchar **parts = NULL;
 
 	g_debug ("line='%s'", line);
 
@@ -131,13 +132,13 @@ cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, CdSensorAsync
 	if (g_str_has_prefix (line, "Place instrument on spot to be measured")) {
 		if (priv->pos_required == CD_SENSOR_ARGYLL_POS_UNKNOWN)
 			cd_spawn_send_stdin (spawn, "");
-		goto out;
+		return;
 	}
 
 	/* got calibration */
 	if (g_strcmp0 (line, "Calibration complete") == 0) {
 		priv->pos_required = CD_SENSOR_ARGYLL_POS_UNKNOWN;
-		goto out;
+		return;
 	}
 
 	/* got measurement */
@@ -149,7 +150,7 @@ cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, CdSensorAsync
 		state->sample->Y = atof (parts[5]);
 		state->sample->Z = atof (parts[6]);
 		cd_sensor_get_sample_state_finish (state, NULL);
-		goto out;
+		return;
 	}
 
 	/* failed */
@@ -158,8 +159,7 @@ cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, CdSensorAsync
 				     CD_SENSOR_ERROR_INTERNAL,
 				     "failed to contact hardware (replug)");
 		cd_sensor_get_sample_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* need surface */
@@ -168,8 +168,7 @@ cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, CdSensorAsync
 				     CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE,
 				     "Move to surface position");
 		cd_sensor_get_sample_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* need calibrate */
@@ -180,18 +179,14 @@ cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, CdSensorAsync
 		if (priv->pos_required == CD_SENSOR_ARGYLL_POS_UNKNOWN) {
 			cd_spawn_send_stdin (spawn, "");
 			priv->pos_required = CD_SENSOR_ARGYLL_POS_CALIBRATE;
-			goto out;
+			return;
 		}
 		error = g_error_new (CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE,
 				     "Move to calibration position");
 		cd_sensor_get_sample_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
-out:
-	g_strfreev (parts);
-	return;
 }
 
 static const gchar *
@@ -243,8 +238,8 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 	CdSensorAsyncState *state;
 	const gchar *envp[] = { "ARGYLL_NOT_INTERACTIVE=1", NULL };
 	gboolean ret;
-	GError *error = NULL;
-	GPtrArray *argv = NULL;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_ptrarray GPtrArray *argv = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
@@ -284,8 +279,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 				     &error);
 		if (!ret) {
 			cd_sensor_get_sample_state_finish (state, error);
-			g_error_free (error);
-			goto out;
+			return;
 		}
 	} else {
 		cd_spawn_send_stdin (priv->spawn, "");
@@ -295,9 +289,6 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 	state->timeout_id = g_timeout_add (CD_SENSOR_ARGYLL_MAX_SAMPLE_TIME,
 					     (GSourceFunc) cd_sensor_get_sample_timeout_cb,
 					     state);
-out:
-	if (argv != NULL)
-		g_ptr_array_unref (argv);
 }
 
 CdColorXYZ *
@@ -387,10 +378,10 @@ cd_sensor_find_device_details (CdSensor *sensor, GError **error)
 	const gchar *argyll_name;
 	const gchar *envp[] = { "ARGYLL_NOT_INTERACTIVE=1", NULL };
 	gboolean ret;
-	gchar **lines = NULL;
-	gchar *stdout = NULL;
 	guint i;
 	guint listno = 0;
+	_cleanup_free gchar *stdout = NULL;
+	_cleanup_free_strv gchar **lines = NULL;
 
 	/* spawn the --help output to parse the comm-port */
 	ret = g_spawn_sync (NULL,
@@ -404,18 +395,17 @@ cd_sensor_find_device_details (CdSensor *sensor, GError **error)
 			    NULL,
 			    error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* split into lines and search */
 	lines = g_strsplit (stdout, "\n", -1);
 	argyll_name = cd_sensor_to_argyll_name (sensor);
 	if (argyll_name == NULL) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_INTERNAL,
 				     "Failed to find sensor");
-		goto out;
+		return FALSE;
 	}
 	for (i = 0; lines[i] != NULL; i++) {
 
@@ -432,18 +422,14 @@ cd_sensor_find_device_details (CdSensor *sensor, GError **error)
 
 	/* did we find the right device */
 	if (priv->communication_port == 0) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_SENSOR_ERROR,
 			     CD_SENSOR_ERROR_INTERNAL,
 			     "Failed to find device %s",
 			     argyll_name);
-		goto out;
+		return FALSE;
 	}
-out:
-	g_strfreev (lines);
-	g_free (stdout);
-	return ret;
+	return TRUE;
 }
 
 static void
@@ -484,17 +470,15 @@ cd_sensor_unlock_exit_cb (CdSpawn *spawn,
 			  CdSpawnExitType exit_type,
 			  CdSensorAsyncState *state)
 {
-	GError *error;
-
 	if (exit_type == CD_SPAWN_EXIT_TYPE_SIGQUIT) {
 		state->ret = TRUE;
 		cd_sensor_unlock_state_finish (state, NULL);
 	} else {
+		_cleanup_free_error GError *error = NULL;
 		error = g_error_new (CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_INTERNAL,
 				     "exited without sigquit");
 		cd_sensor_unlock_state_finish (state, error);
-		g_error_free (error);
 	}
 }
 
@@ -506,8 +490,6 @@ cd_sensor_unlock_async (CdSensor *sensor,
 {
 	CdSensorArgyllPrivate *priv = cd_sensor_argyll_get_private (sensor);
 	CdSensorAsyncState *state;
-	gboolean ret;
-	GError *error = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
@@ -525,24 +507,20 @@ cd_sensor_unlock_async (CdSensor *sensor,
 					   G_CALLBACK (cd_sensor_unlock_exit_cb),
 					   state);
 	/* kill spotread */
-	ret = cd_spawn_kill (priv->spawn);
-	if (!ret) {
+	if (!cd_spawn_kill (priv->spawn)) {
+		_cleanup_free_error GError *error = NULL;
 		g_set_error (&error,
 			     CD_SENSOR_ERROR,
 			     CD_SENSOR_ERROR_INTERNAL,
 			     "failed to kill spotread");
 		cd_sensor_unlock_state_finish (state, error);
-		g_error_free (error);
-		goto out;
+		return;
 	}
-out:
-	return;
 }
 
 gboolean
 cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
-	gboolean ret;
 	CdSensorArgyllPrivate *priv;
 	g_object_set (sensor,
 		      "native", FALSE,
@@ -555,9 +533,5 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 				(GDestroyNotify) cd_sensor_unref_private);
 
 	/* try to map find the correct communication port */
-	ret = cd_sensor_find_device_details (sensor, error);
-	if (!ret)
-		goto out;
-out:
-	return ret;
+	return cd_sensor_find_device_details (sensor, error);
 }

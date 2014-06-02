@@ -31,6 +31,7 @@
 #include <glib-object.h>
 #include <math.h>
 
+#include "cd-cleanup.h"
 #include "cd-color.h"
 #include "cd-it8-utils.h"
 #include "cd-math.h"
@@ -48,17 +49,15 @@ ch_it8_utils_4color_read_data (CdIt8 *it8,
 	CdColorXYZ ave_XYZ[5];
 	CdColorXYZ tmp_XYZ;
 	CdColorYxy tmp_Yxy[5];
-	gboolean ret = TRUE;
 	guint i, j;
 	guint len;
 
 	/* ensur we have multiple of 5s */
 	len = cd_it8_get_data_size (it8);
 	if (len % 5 != 0) {
-		ret = FALSE;
 		g_set_error_literal (error, 1, 0,
 				     "expected black, white, red, green, blue");
-		goto out;
+		return FALSE;
 	}
 
 	/* find patches */
@@ -110,8 +109,7 @@ ch_it8_utils_4color_read_data (CdIt8 *it8,
 	vec_w->v0 = tmp_Yxy[1].x;
 	vec_w->v1 = tmp_Yxy[1].y;
 	vec_w->v2 = 1 - tmp_Yxy[1].x - tmp_Yxy[1].y;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -132,13 +130,12 @@ ch_it8_utils_4color_decompose (CdIt8 *it8,
 	gchar *tmp;
 
 	/* read reference matrix */
-	ret = ch_it8_utils_4color_read_data (it8,
-				   &chroma,
-				   &white_v,
-				   abs_lumi,
-				   error);
-	if (!ret)
-		goto out;
+	if (!ch_it8_utils_4color_read_data (it8,
+					    &chroma,
+					    &white_v,
+					    abs_lumi,
+					    error))
+		return FALSE;
 
 	/* print what we've got */
 	tmp = cd_mat33_to_string (&chroma);
@@ -151,12 +148,11 @@ ch_it8_utils_4color_decompose (CdIt8 *it8,
 	/* invert chroma of M_RGB and multiply it with white */
 	ret = cd_mat33_reciprocal (&chroma, &chroma_inv);
 	if (!ret) {
-		ret = FALSE;
 		tmp = cd_mat33_to_string (&chroma);
 		g_set_error (error, 1, 0,
 			     "failed to invert %s", tmp);
 		g_free (tmp);
-		goto out;
+		return FALSE;
 	}
 	cd_mat33_vector_multiply (&chroma_inv, &white_v, &lumi_v);
 
@@ -168,8 +164,7 @@ ch_it8_utils_4color_decompose (CdIt8 *it8,
 
 	/* create RGB */
 	cd_mat33_matrix_multiply (&chroma, &lumi, rgb);
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -195,29 +190,25 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	CdMat3x3 m_rgb_inv;
 	CdMat3x3 n_rgb;
 	const gdouble *data;
-	gboolean ret;
-	gchar *tmp = NULL;
+	_cleanup_free gchar *tmp = NULL;
 	gdouble m_lumi = 0.0f;
 	gdouble n_lumi = 0.0f;
 	guint i;
 
 	/* read reference matrix */
-	ret = ch_it8_utils_4color_decompose (it8_reference, &n_rgb, &n_lumi, error);
-	if (!ret)
-		goto out;
+	if (!ch_it8_utils_4color_decompose (it8_reference, &n_rgb, &n_lumi, error))
+		return FALSE;
 
 	/* read measured matrix */
-	ret = ch_it8_utils_4color_decompose (it8_measured, &m_rgb, &m_lumi, error);
-	if (!ret)
-		goto out;
+	if (!ch_it8_utils_4color_decompose (it8_measured, &m_rgb, &m_lumi, error))
+		return FALSE;
 
 	/* create m_RGB^-1 */
-	ret = cd_mat33_reciprocal (&m_rgb, &m_rgb_inv);
-	if (!ret) {
+	if (!cd_mat33_reciprocal (&m_rgb, &m_rgb_inv)) {
 		tmp = cd_mat33_to_string (&m_rgb);
 		g_set_error (error, 1, 0,
 			     "failed to invert %s", tmp);
-		goto out;
+		return FALSE;
 	}
 
 	/* create M */
@@ -235,10 +226,9 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	data = cd_mat33_get_data (&calibration);
 	for (i = 0; i < 9; i++) {
 		if (fpclassify (data[i]) != FP_NORMAL) {
-			ret = FALSE;
 			g_set_error (error, 1, 0,
 				     "Matrix value %i non-normal: %f", i, data[i]);
-			goto out;
+			return FALSE;
 		}
 	}
 
@@ -246,9 +236,7 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	cd_it8_set_matrix (it8_ccmx, &calibration);
 	cd_it8_set_instrument (it8_ccmx, cd_it8_get_instrument (it8_measured));
 	cd_it8_set_reference (it8_ccmx, cd_it8_get_instrument (it8_reference));
-out:
-	g_free (tmp);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -273,7 +261,6 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 				     GError **error)
 {
 	CdSpectrum *observer[3];
-	gboolean ret = TRUE;
 	gdouble end;
 	gdouble i_val;
 	gdouble o_val;
@@ -288,23 +275,21 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 
 	/* check this is a CMF */
 	if (cd_it8_get_kind (cmf) != CD_IT8_KIND_CMF) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_FAILED,
 				     "not a CMF IT8 object");
-		goto out;
+		return FALSE;
 	}
 	observer[0] = cd_it8_get_spectrum_by_id (cmf, "X");
 	observer[1] = cd_it8_get_spectrum_by_id (cmf, "Y");
 	observer[2] = cd_it8_get_spectrum_by_id (cmf, "Z");
 	if (observer[0] == NULL || observer[1] == NULL || observer[2] == NULL) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_FAILED,
 				     "CMF IT8 object has no X,Y,Y channel");
-		goto out;
+		return FALSE;
 	}
 
 	/* calculate the integrals */
@@ -327,8 +312,7 @@ cd_it8_utils_calculate_xyz_from_cmf (CdIt8 *cmf,
 	value->X /= scale;
 	value->Y /= scale;
 	value->Z /= scale;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**

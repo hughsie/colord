@@ -68,7 +68,6 @@ ch_sha1_to_string (const ChSha1 *sha1)
 gboolean
 ch_sha1_parse (const gchar *value, ChSha1 *sha1, GError **error)
 {
-	gboolean ret = TRUE;
 	gchar tmp[3] = { '\0', '\0', '\0'};
 	guint i;
 	guint len;
@@ -79,11 +78,10 @@ ch_sha1_parse (const gchar *value, ChSha1 *sha1, GError **error)
 	/* not a SHA1 hash */
 	len = strlen (value);
 	if (len != 40) {
-		ret = FALSE;
 		g_set_error (error, 1, 0,
 			     "Invalid SHA1 hash '%s'",
 			     value);
-		goto out;
+		return FALSE;
 	}
 
 	/* parse */
@@ -92,6 +90,5 @@ ch_sha1_parse (const gchar *value, ChSha1 *sha1, GError **error)
 		tmp[1] = value[i+1];
 		sha1->bytes[i/2] = g_ascii_strtoull (tmp, NULL, 16);
 	}
-out:
-	return ret;
+	return TRUE;
 }

@@ -40,6 +40,7 @@
 
 #include <glib/gi18n.h>
 
+#include "cd-cleanup.h"
 #include "cd-spawn.h"
 
 static void     cd_spawn_finalize	(GObject       *object);
@@ -100,8 +101,8 @@ cd_spawn_emit_whole_lines (CdSpawn *spawn, GString *string)
 {
 	guint i;
 	guint size;
-	gchar **lines;
 	guint bytes_processed;
+	_cleanup_free_strv gchar **lines = NULL;
 
 	/* if nothing then don't emit */
 	if (string->len == 0)
@@ -125,8 +126,6 @@ cd_spawn_emit_whole_lines (CdSpawn *spawn, GString *string)
 
 	/* remove the text we've processed */
 	g_string_erase (string, 0, bytes_processed);
-
-	g_strfreev (lines);
 	return TRUE;
 }
 
@@ -260,7 +259,6 @@ cd_spawn_check_child (CdSpawn *spawn)
 	/* don't emit if we just closed an invalid dispatcher */
 	g_debug ("emitting exit %s", cd_spawn_exit_type_enum_to_string (spawn->priv->exit));
 	g_signal_emit (spawn, signals [SIGNAL_EXIT], 0, spawn->priv->exit);
-
 	return G_SOURCE_REMOVE;
 }
 
@@ -275,7 +273,7 @@ cd_spawn_sigkill_cb (CdSpawn *spawn)
 	/* check if process has already gone */
 	if (spawn->priv->finished) {
 		g_debug ("already finished, ignoring");
-		return FALSE;
+		return G_SOURCE_REMOVE;
 	}
 
 	/* set this in case the script catches the signal and exits properly */
@@ -285,10 +283,11 @@ cd_spawn_sigkill_cb (CdSpawn *spawn)
 	retval = kill (spawn->priv->child_pid, SIGKILL);
 	if (retval == EINVAL) {
 		g_warning ("The signum argument is an invalid or unsupported number");
-		return FALSE;
-	} else if (retval == EPERM) {
+		return G_SOURCE_REMOVE;
+	}
+	if (retval == EPERM) {
 		g_warning ("You do not have the privilege to send a signal to the process");
-		return FALSE;
+		return G_SOURCE_REMOVE;
 	}
 
 	/* never repeat */
@@ -367,23 +366,20 @@ cd_spawn_send_stdin (CdSpawn *spawn, const gchar *command)
 {
 	gint wrote;
 	gint length;
-	gchar *buffer = NULL;
-	gboolean ret = TRUE;
+	_cleanup_free gchar *buffer = NULL;
 
 	g_return_val_if_fail (CD_IS_SPAWN (spawn), FALSE);
 
 	/* check if process has already gone */
 	if (spawn->priv->finished) {
 		g_debug ("already finished, ignoring");
-		ret = FALSE;
-		goto out;
+		return FALSE;
 	}
 
 	/* is there a process running? */
 	if (spawn->priv->child_pid == -1) {
 		g_debug ("no child pid");
-		ret = FALSE;
-		goto out;
+		return FALSE;
 	}
 
 	/* buffer always has to have trailing newline */
@@ -397,11 +393,9 @@ cd_spawn_send_stdin (CdSpawn *spawn, const gchar *command)
 	wrote = write (spawn->priv->stdin_fd, buffer, length);
 	if (wrote != length) {
 		g_warning ("wrote %i/%i bytes on fd %i (%s)", wrote, length, spawn->priv->stdin_fd, strerror (errno));
-		ret = FALSE;
+		return FALSE;
 	}
-out:
-	g_free (buffer);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -411,10 +405,10 @@ gboolean
 cd_spawn_argv (CdSpawn *spawn, gchar **argv, gchar **envp, GError **error)
 {
 	gboolean ret = TRUE;
-	GError *error_local = NULL;
 	guint i;
 	guint len;
 	gint rc;
+	_cleanup_free_error GError *error_local = NULL;
 
 	g_return_val_if_fail (CD_IS_SPAWN (spawn), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -441,22 +435,19 @@ cd_spawn_argv (CdSpawn *spawn, gchar **argv, gchar **envp, GError **error)
 				 &error_local);
 	if (!ret) {
 		g_set_error (error, 1, 0, "failed to spawn %s: %s", argv[0], error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* install an idle handler to check if the child returnd successfully. */
 	rc = fcntl (spawn->priv->stdout_fd, F_SETFL, O_NONBLOCK);
 	if (rc < 0) {
-		ret = FALSE;
 		g_set_error_literal (error, 1, 0, "stdout fcntl failed");
-		goto out;
+		return FALSE;
 	}
 	rc = fcntl (spawn->priv->stderr_fd, F_SETFL, O_NONBLOCK);
 	if (rc < 0) {
-		ret = FALSE;
 		g_set_error_literal (error, 1, 0, "stderr fcntl failed");
-		goto out;
+		return FALSE;
 	}
 
 	/* sanity check */
@@ -468,8 +459,7 @@ cd_spawn_argv (CdSpawn *spawn, gchar **argv, gchar **envp, GError **error)
 	/* poll quickly */
 	spawn->priv->poll_id = g_timeout_add (CD_SPAWN_POLL_DELAY, (GSourceFunc) cd_spawn_check_child, spawn);
 	g_source_set_name_by_id (spawn->priv->poll_id, "[CdSpawn] main poll");
-out:
-	return ret;
+	return TRUE;
 }
 
 /**

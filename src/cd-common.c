@@ -27,6 +27,7 @@
 #include <polkit/polkit.h>
 #endif
 
+#include "cd-cleanup.h"
 #include "cd-common.h"
 
 /**
@@ -73,7 +74,7 @@ cd_main_get_sender_uid (GDBusConnection *connection,
 			GError **error)
 {
 	guint uid = G_MAXUINT;
-	GVariant *value;
+	_cleanup_unref_variant GVariant *value;
 
 	/* call into DBus to get the user ID that issued the request */
 	value = g_dbus_connection_call_sync (connection,
@@ -88,10 +89,8 @@ cd_main_get_sender_uid (GDBusConnection *connection,
 					     200,
 					     NULL,
 					     error);
-	if (value != NULL) {
+	if (value != NULL)
 		g_variant_get (value, "(u)", &uid);
-		g_variant_unref (value);
-	}
 	return uid;
 }
 
@@ -104,7 +103,7 @@ cd_main_get_sender_pid (GDBusConnection *connection,
 			GError **error)
 {
 	guint pid = G_MAXUINT;
-	GVariant *value;
+	_cleanup_unref_variant GVariant *value = NULL;
 
 	/* call into DBus to get the user ID that issued the request */
 	value = g_dbus_connection_call_sync (connection,
@@ -119,10 +118,8 @@ cd_main_get_sender_pid (GDBusConnection *connection,
 					     200,
 					     NULL,
 					     error);
-	if (value != NULL) {
+	if (value != NULL)
 		g_variant_get (value, "(u)", &pid);
-		g_variant_unref (value);
-	}
 	return pid;
 }
 
@@ -135,13 +132,12 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 			      const gchar *action_id,
 			      GError **error)
 {
-	gboolean ret = FALSE;
-	GError *error_local = NULL;
 	guint uid;
+	_cleanup_free_error GError *error_local = NULL;
 #ifdef USE_POLKIT
-	PolkitAuthorizationResult *result = NULL;
-	PolkitSubject *subject = NULL;
-	PolkitAuthority *authority = NULL;
+	_cleanup_unref_object PolkitAuthority *authority = NULL;
+	_cleanup_unref_object PolkitAuthorizationResult *result = NULL;
+	_cleanup_unref_object PolkitSubject *subject = NULL;
 #endif
 
 	/* uid 0 is allowed to do all actions */
@@ -153,24 +149,21 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 			     "could not get uid to authenticate %s: %s",
 			     action_id,
 			     error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* the root user can always do all actions */
 	if (uid == 0) {
 		g_debug ("CdCommon: not checking %s for %s as uid 0",
 			 action_id, sender);
-		ret = TRUE;
-		goto out;
+		return TRUE;
 	}
 
 	/* a client running as the daemon user may also do all actions */
 	if (uid == getuid ()) {
 		g_debug ("CdCommon: not checking %s for %s as running as daemon user",
 			 action_id, sender);
-		ret = TRUE;
-		goto out;
+		return TRUE;
 	}
 
 #ifdef USE_POLKIT
@@ -182,8 +175,7 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 			     CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE,
 			     "failed to get polkit authorit: %s",
 			     error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* do authorization async */
@@ -201,8 +193,7 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 			     "could not check %s for auth: %s",
 			     action_id,
 			     error_local->message);
-		g_error_free (error_local);
-		goto out;
+		return FALSE;
 	}
 
 	/* did not auth */
@@ -212,25 +203,13 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 			     CD_CLIENT_ERROR_FAILED_TO_AUTHENTICATE,
 			     "failed to obtain %s auth",
 			     action_id);
-		goto out;
+		return FALSE;
 	}
 #else
 	g_warning ("CdCommon: not checking %s for %s as no PolicyKit support",
 		   action_id, sender);
 #endif
-
-	/* success */
-	ret = TRUE;
-out:
-#ifdef USE_POLKIT
-	if (authority != NULL)
-		g_object_unref (authority);
-	if (result != NULL)
-		g_object_unref (result);
-	if (subject != NULL)
-		g_object_unref (subject);
-#endif
-	return ret;
+	return TRUE;
 }
 
 
@@ -240,19 +219,11 @@ out:
 gboolean
 cd_main_mkdir_with_parents (const gchar *filename, GError **error)
 {
-	gboolean ret;
-	GFile *file = NULL;
-
 	/* ensure desination exists */
-	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
-	if (!ret) {
+	if (!g_file_test (filename, G_FILE_TEST_EXISTS)) {
+		_cleanup_unref_object GFile *file = NULL;
 		file = g_file_new_for_path (filename);
-		ret = g_file_make_directory_with_parents (file, NULL, error);
-		if (!ret)
-			goto out;
+		return g_file_make_directory_with_parents (file, NULL, error);
 	}
-out:
-	if (file != NULL)
-		g_object_unref (file);
-	return ret;
+	return TRUE;
 }

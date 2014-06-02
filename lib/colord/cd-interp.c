@@ -177,7 +177,6 @@ gboolean
 cd_interp_prepare (CdInterp *interp, GError **error)
 {
 	CdInterpClass *klass = CD_INTERP_GET_CLASS (interp);
-	gboolean ret = TRUE;
 
 	g_return_val_if_fail (CD_IS_INTERP (interp), FALSE);
 	g_return_val_if_fail (!interp->priv->prepared, FALSE);
@@ -186,25 +185,22 @@ cd_interp_prepare (CdInterp *interp, GError **error)
 	 * with them */
 	interp->priv->size = interp->priv->x->len;
 	if (interp->priv->size == 0) {
-		ret = FALSE;
 		g_set_error_literal (error,
 				     CD_INTERP_ERROR,
 				     CD_INTERP_ERROR_FAILED,
 				     "no data to prepare");
-		goto out;
+		return FALSE;
 	}
 
 	/* call if support */
 	if (klass != NULL && klass->prepare != NULL) {
-		ret = klass->prepare (interp, error);
-		if (!ret)
-			goto out;
+		if (!klass->prepare (interp, error))
+			return FALSE;
 	}
 
 	/* success */
 	interp->priv->prepared = TRUE;
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -228,22 +224,19 @@ cd_interp_eval (CdInterp *interp, gdouble value, GError **error)
 	CdInterpPrivate *priv = interp->priv;
 	const gdouble *x;
 	const gdouble *y;
-	gdouble result = -1.0f;
 
 	g_return_val_if_fail (CD_IS_INTERP (interp), -1);
 	g_return_val_if_fail (priv->prepared, -1);
 
 	/* no points */
 	if (priv->size == 0)
-		goto out;
+		return -1.0f;
 
 	/* only one point */
 	x = &g_array_index (priv->x, gdouble, 0);
 	y = &g_array_index (priv->y, gdouble, 0);
-	if (priv->size == 1) {
-		result = y[0];
-		goto out;
-	}
+	if (priv->size == 1)
+		return y[0];
 
 	/* only 2 points */
 	if (priv->size == 2) {
@@ -251,8 +244,7 @@ cd_interp_eval (CdInterp *interp, gdouble value, GError **error)
 		dx = x[1] - x[0];
 		dy = y[1] - y[0];
 		m = dy / dx;
-		result = y[0] + m * value;
-		goto out;
+		return y[0] + m * value;
 	}
 
 	/* no support */
@@ -261,13 +253,11 @@ cd_interp_eval (CdInterp *interp, gdouble value, GError **error)
 				     CD_INTERP_ERROR,
 				     CD_INTERP_ERROR_FAILED,
 				     "no superclass");
-		goto out;
+		return FALSE;
 	}
 
 	/* call the klass function */
-	result = klass->eval (interp, value, error);
-out:
-	return result;
+	return klass->eval (interp, value, error);
 }
 
 /**

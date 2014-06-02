@@ -52,14 +52,13 @@ dtp94_rc_parse (const guint8 *data, gsize length)
 	    data[1] == '\0' ||
 	    data[2] == '\0' ||
 	    data[3] != '>') {
-		goto out;
+		return tmp;
 	}
 
 	/* parse number */
 	tmp = g_ascii_strtoull ((const gchar *) data + 1, &endptr, 16);
 	if (endptr == (const gchar *) data + 1)
-		goto out;
-out:
+		return tmp; // valid?
 	return tmp;
 }
 

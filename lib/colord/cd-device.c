@@ -36,6 +36,7 @@
 #include <glib.h>
 #include <string.h>
 
+#include "cd-cleanup.h"
 #include "cd-device.h"
 #include "cd-profile.h"
 #include "cd-profile-sync.h"
@@ -487,23 +488,20 @@ cd_device_set_profiles_array_from_variant (CdDevice *device,
 					   GVariant *profiles)
 {
 	CdProfile *profile_tmp;
-	gchar *object_path_tmp;
 	gsize len;
 	guint i;
 
 	g_ptr_array_set_size (device->priv->profiles, 0);
 	if (profiles == NULL)
-		goto out;
+		return;
 	len = g_variant_n_children (profiles);
 	for (i = 0; i < len; i++) {
+		_cleanup_free gchar *object_path_tmp = NULL;
 		g_variant_get_child (profiles, i,
 				     "o", &object_path_tmp);
 		profile_tmp = cd_profile_new_with_object_path (object_path_tmp);
 		g_ptr_array_add (device->priv->profiles, profile_tmp);
-		g_free (object_path_tmp);
 	}
-out:
-	return;
 }
 
 /**
@@ -721,27 +719,27 @@ cd_device_connect_cb (GObject *source_object,
 		      GAsyncResult *res,
 		      gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *created = NULL;
-	GVariant *modified = NULL;
-	GVariant *id = NULL;
-	GVariant *kind = NULL;
-	GVariant *model = NULL;
-	GVariant *serial = NULL;
-	GVariant *seat = NULL;
-	GVariant *format = NULL;
-	GVariant *vendor = NULL;
-	GVariant *profiling_inhibitors = NULL;
-	GVariant *colorspace = NULL;
-	GVariant *scope = NULL;
-	GVariant *enabled = NULL;
-	GVariant *embedded = NULL;
-	GVariant *owner = NULL;
-	GVariant *mode = NULL;
-	GVariant *profiles = NULL;
-	GVariant *metadata = NULL;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 	CdDevice *device;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_unref_variant GVariant *colorspace = NULL;
+	_cleanup_unref_variant GVariant *created = NULL;
+	_cleanup_unref_variant GVariant *embedded = NULL;
+	_cleanup_unref_variant GVariant *enabled = NULL;
+	_cleanup_unref_variant GVariant *format = NULL;
+	_cleanup_unref_variant GVariant *id = NULL;
+	_cleanup_unref_variant GVariant *kind = NULL;
+	_cleanup_unref_variant GVariant *metadata = NULL;
+	_cleanup_unref_variant GVariant *model = NULL;
+	_cleanup_unref_variant GVariant *mode = NULL;
+	_cleanup_unref_variant GVariant *modified = NULL;
+	_cleanup_unref_variant GVariant *owner = NULL;
+	_cleanup_unref_variant GVariant *profiles = NULL;
+	_cleanup_unref_variant GVariant *profiling_inhibitors = NULL;
+	_cleanup_unref_variant GVariant *scope = NULL;
+	_cleanup_unref_variant GVariant *seat = NULL;
+	_cleanup_unref_variant GVariant *serial = NULL;
+	_cleanup_unref_variant GVariant *vendor = NULL;
 
 	device = CD_DEVICE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
 	device->priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
@@ -753,8 +751,8 @@ cd_device_connect_cb (GObject *source_object,
 						 "Failed to connect to device %s: %s",
 						 cd_device_get_object_path (device),
 						 error->message);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* get device id */
@@ -770,7 +768,8 @@ cd_device_connect_cb (GObject *source_object,
 						 CD_DEVICE_ERROR_INTERNAL,
 						 "Failed to connect to missing device %s",
 						 cd_device_get_object_path (device));
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* get kind */
@@ -892,45 +891,7 @@ cd_device_connect_cb (GObject *source_object,
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-out:
-	if (id != NULL)
-		g_variant_unref (id);
-	if (model != NULL)
-		g_variant_unref (model);
-	if (vendor != NULL)
-		g_variant_unref (vendor);
-	if (profiling_inhibitors != NULL)
-		g_variant_unref (profiling_inhibitors);
-	if (serial != NULL)
-		g_variant_unref (serial);
-	if (seat != NULL)
-		g_variant_unref (seat);
-	if (format != NULL)
-		g_variant_unref (format);
-	if (colorspace != NULL)
-		g_variant_unref (colorspace);
-	if (scope != NULL)
-		g_variant_unref (scope);
-	if (enabled != NULL)
-		g_variant_unref (enabled);
-	if (embedded != NULL)
-		g_variant_unref (embedded);
-	if (owner != NULL)
-		g_variant_unref (owner);
-	if (mode != NULL)
-		g_variant_unref (mode);
-	if (created != NULL)
-		g_variant_unref (created);
-	if (modified != NULL)
-		g_variant_unref (modified);
-	if (kind != NULL)
-		g_variant_unref (kind);
-	if (profiles != NULL)
-		g_variant_unref (profiles);
-	if (metadata != NULL)
-		g_variant_unref (metadata);
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1016,21 +977,19 @@ cd_device_set_property_finish (CdDevice *device,
 static void
 cd_device_fixup_dbus_error (GError *error)
 {
-	gchar *name = NULL;
+	_cleanup_free gchar *name = NULL;
 
 	g_return_if_fail (error != NULL);
 
 	/* is a remote error? */
 	if (!g_dbus_error_is_remote_error (error))
-		goto out;
+		return;
 
 	/* parse the remote error */
 	name = g_dbus_error_get_remote_error (error);
 	error->domain = CD_DEVICE_ERROR;
 	error->code = cd_device_error_from_string (name);
 	g_dbus_error_strip_remote_error (error);
-out:
-	g_free (name);
 }
 
 static void
@@ -1038,9 +997,9 @@ cd_device_set_property_cb (GObject *source_object,
 			    GAsyncResult *res,
 			    gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1048,16 +1007,13 @@ cd_device_set_property_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1141,9 +1097,9 @@ cd_device_add_profile_cb (GObject *source_object,
 			    GAsyncResult *res,
 			    gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1151,16 +1107,13 @@ cd_device_add_profile_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1244,9 +1197,9 @@ cd_device_remove_profile_cb (GObject *source_object,
 			     GAsyncResult *res,
 			     gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1254,16 +1207,13 @@ cd_device_remove_profile_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1344,9 +1294,9 @@ cd_device_make_profile_default_cb (GObject *source_object,
 				   GAsyncResult *res,
 				   gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1354,16 +1304,13 @@ cd_device_make_profile_default_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1444,9 +1391,9 @@ cd_device_profiling_inhibit_cb (GObject *source_object,
 				GAsyncResult *res,
 				gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1454,16 +1401,13 @@ cd_device_profiling_inhibit_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1541,9 +1485,9 @@ cd_device_profiling_uninhibit_cb (GObject *source_object,
 				  GAsyncResult *res,
 				  gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1551,16 +1495,13 @@ cd_device_profiling_uninhibit_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1638,11 +1579,11 @@ cd_device_get_profile_for_qualifiers_cb (GObject *source_object,
 					 GAsyncResult *res,
 					 gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
 	CdProfile *profile;
 	gchar *object_path = NULL;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1650,8 +1591,8 @@ cd_device_get_profile_for_qualifiers_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* create CdProfile object */
@@ -1664,11 +1605,7 @@ cd_device_get_profile_for_qualifiers_cb (GObject *source_object,
 	g_simple_async_result_set_op_res_gpointer (res_source,
 						   profile, (GDestroyNotify)
 						   g_object_unref);
-	g_variant_unref (result);
-out:
-	g_free (object_path);
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1756,11 +1693,11 @@ cd_device_get_profile_relation_cb (GObject *source_object,
 				   GAsyncResult *res,
 				   gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	gchar *relation_string = NULL;
 	CdDeviceRelation relation;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_free gchar *relation_string = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_unref_variant GVariant *result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1768,8 +1705,8 @@ cd_device_get_profile_relation_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
@@ -1778,11 +1715,7 @@ cd_device_get_profile_relation_cb (GObject *source_object,
 	relation = cd_device_relation_from_string (relation_string);
 
 	g_simple_async_result_set_op_res_gssize (res_source, relation);
-	g_variant_unref (result);
-out:
-	g_free (relation_string);
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
@@ -1863,9 +1796,9 @@ cd_device_set_enabled_cb (GObject *source_object,
 				   GAsyncResult *res,
 				   gpointer user_data)
 {
-	GError *error = NULL;
-	GVariant *result;
-	GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_free_error GError *error = NULL;
+	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1873,16 +1806,13 @@ cd_device_set_enabled_cb (GObject *source_object,
 	if (result == NULL) {
 		cd_device_fixup_dbus_error (error);
 		g_simple_async_result_set_from_error (res_source, error);
-		g_error_free (error);
-		goto out;
+		g_simple_async_result_complete_in_idle (res_source);
+		return;
 	}
 
 	/* success */
 	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_variant_unref (result);
-out:
 	g_simple_async_result_complete_in_idle (res_source);
-	g_object_unref (res_source);
 }
 
 /**
