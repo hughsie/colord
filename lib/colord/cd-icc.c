@@ -2123,7 +2123,7 @@ cd_icc_save_default (CdIcc *icc,
 
 	/* build a per-user filename */
 	basename = g_strdup_printf ("%s-%s.icc", root, icc->priv->checksum);
-	filename = g_build_filename (g_get_user_data_dir (), "icc", NULL);
+	filename = g_build_filename (g_get_user_data_dir (), "icc", basename, NULL);
 	file = g_file_new_for_path (filename);
 	ret = cd_icc_save_file (icc, file, flags, cancellable, error);
 	if (!ret)
