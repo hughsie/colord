@@ -220,6 +220,8 @@ cd_sensor_dbus_emit_property_changed (CdSensor *sensor,
 				       &builder,
 				       &invalidated_builder),
 				       NULL);
+	g_variant_builder_clear (&builder);
+	g_variant_builder_clear (&invalidated_builder);
 }
 
 /**
