@@ -24,6 +24,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#include "cd-cleanup.h"
 #include "cd-inhibit.h"
 
 static void     cd_inhibit_finalize	(GObject     *object);
@@ -160,13 +161,12 @@ cd_inhibit_name_vanished_cb (GDBusConnection *connection,
 			     gpointer user_data)
 {
 	CdInhibit *inhibit = CD_INHIBIT (user_data);
-	GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* just remove */
 	if (!cd_inhibit_remove (inhibit, name, &error)) {
 		g_warning ("CdInhibit: failed to remove when %s vanished: %s",
 			   name, error->message);
-		g_error_free (error);
 	} else {
 		g_debug ("CdInhibit: remove inhibit as %s vanished", name);
 	}

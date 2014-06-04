@@ -75,7 +75,7 @@ cd_plugin_config_enabled_sane_devices(CdPluginPrivate *priv)
 {
 	const gchar *argv[] = {COLORD_SANE_BINARY, NULL};
 	GPid colord_sane_pid;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	if (priv->scan_in_progress)
 		return;

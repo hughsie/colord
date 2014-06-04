@@ -452,9 +452,9 @@ cd_spectrum_set_norm (CdSpectrum *spectrum, gdouble norm)
 gdouble
 cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 {
-	_cleanup_unref_object CdInterp *interp = NULL;
 	guint i;
 	guint size;
+	_cleanup_object_unref_ CdInterp *interp = NULL;
 
 	g_return_val_if_fail (spectrum != NULL, -1.f);
 

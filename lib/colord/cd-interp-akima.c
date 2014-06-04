@@ -63,15 +63,15 @@ cd_interp_akima_prepare (CdInterp *interp, GError **error)
 	CdInterpAkima *interp_akima = CD_INTERP_AKIMA (interp);
 	CdInterpAkimaPrivate *priv = interp_akima->priv;
 	gdouble tmp = 0.0;
-	_cleanup_free gdouble *dx = NULL;
-	_cleanup_free gdouble *dy = NULL;
-	_cleanup_free gdouble *slope_m = NULL;
 	gdouble *x;
 	gdouble *y;
 	gint i;
 	gint n;
 	GArray *array_x;
 	GArray *array_y;
+	_cleanup_free_ gdouble *dx = NULL;
+	_cleanup_free_ gdouble *dy = NULL;
+	_cleanup_free_ gdouble *slope_m = NULL;
 
 	/* only add the points if they are going to be used */
 	if (cd_interp_get_size (interp) <= 2)

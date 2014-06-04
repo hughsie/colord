@@ -222,7 +222,7 @@ cd_dom_parse_xml_data (CdDom *dom,
 		       gssize data_len,
 		       GError **error)
 {
-	_cleanup_unref_markup_parse_context GMarkupParseContext *ctx = NULL;
+	_cleanup_markup_parse_context_unref_ GMarkupParseContext *ctx = NULL;
 	const GMarkupParser parser = {
 		cd_dom_start_element_cb,
 		cd_dom_end_element_cb,
@@ -406,9 +406,9 @@ cd_dom_get_node_attribute (const GNode *node, const gchar *key)
 const GNode *
 cd_dom_get_node (CdDom *dom, const GNode *root, const gchar *path)
 {
-	_cleanup_free_strv gchar **split = NULL;
 	const GNode *node;
 	guint i;
+	_cleanup_strv_free_ gchar **split = NULL;
 
 	g_return_val_if_fail (CD_IS_DOM (dom), NULL);
 	g_return_val_if_fail (path != NULL, NULL);

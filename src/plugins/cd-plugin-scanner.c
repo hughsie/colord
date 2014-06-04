@@ -89,11 +89,10 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 {
 	const gchar *devclass;
 	const gchar *seat;
-	gboolean ret;
-	_cleanup_free gchar *id = NULL;
-	_cleanup_free gchar *model = NULL;
-	_cleanup_free gchar *vendor = NULL;
-	_cleanup_unref_object CdDevice *device = NULL;
+	_cleanup_free_ gchar *id = NULL;
+	_cleanup_free_ gchar *model = NULL;
+	_cleanup_free_ gchar *vendor = NULL;
+	_cleanup_object_unref_ CdDevice *device = NULL;
 
 	/* is a scanner? */
 	if (!g_udev_device_has_property (udev_device, "libsane_matched"))

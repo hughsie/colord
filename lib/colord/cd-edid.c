@@ -29,6 +29,7 @@
   #include <libudev.h>
 #endif
 
+#include "cd-cleanup.h"
 #include "cd-edid.h"
 #include "cd-quirk.h"
 
@@ -111,12 +112,12 @@ static gchar *
 cd_edid_convert_pnp_id_to_string (const gchar *pnp_id)
 {
 #ifdef HAVE_UDEV
-	gchar *modalias = NULL;
 	gchar *vendor = NULL;
 	struct udev_hwdb *hwdb = NULL;
 	struct udev_list_entry *e;
 	struct udev_list_entry *v;
 	struct udev *udev;
+	_cleanup_free_ gchar *modalias = NULL;
 
 	/* connect to the hwdb */
 	udev = udev_new ();
@@ -140,14 +141,12 @@ cd_edid_convert_pnp_id_to_string (const gchar *pnp_id)
 	/* quirk the name */
 	vendor = cd_quirk_vendor_name (udev_list_entry_get_value (v));
 out:
-	g_free (modalias);
 	if (hwdb != NULL)
 		udev_hwdb_unref (hwdb);
 	if (udev != NULL)
 		udev_unref (udev);
 #else
 	gboolean ret;
-	gchar *data = NULL;
 	gchar *idx2;
 	gchar *idx;
 	gchar *vendor = NULL;
@@ -156,6 +155,7 @@ out:
 				   "/usr/share/misc/pnp.ids",
 				   "/usr/share/libgnome-desktop/pnp.ids",
 				   NULL };
+	_cleanup_free_ gchar *data = NULL;
 
 	for (i = 0; pnp_ids[i] != NULL; i++) {
 		ret = g_file_get_contents (pnp_ids[i], &data, NULL, NULL);
@@ -179,7 +179,6 @@ out:
 			idx++;
 	}
 out:
-	g_free (data);
 #endif
 	return vendor;
 }

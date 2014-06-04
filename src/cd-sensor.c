@@ -173,7 +173,7 @@ cd_sensor_get_id (CdSensor *sensor)
 static void
 cd_sensor_set_id (CdSensor *sensor, const gchar *id)
 {
-	_cleanup_free gchar *id_tmp = NULL;
+	_cleanup_free_ gchar *id_tmp = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 	g_free (sensor->priv->id);
@@ -303,9 +303,9 @@ cd_sensor_load (CdSensor *sensor, GError **error)
 {
 	CdSensorIface *desc;
 	GModule *handle;
-	_cleanup_free gchar *backend_name = NULL;
-	_cleanup_free gchar *path_fallback = NULL;
-	_cleanup_free gchar *path = NULL;
+	_cleanup_free_ gchar *backend_name = NULL;
+	_cleanup_free_ gchar *path_fallback = NULL;
+	_cleanup_free_ gchar *path = NULL;
 
 	/* no module */
 	if (sensor->priv->kind == CD_SENSOR_KIND_UNKNOWN)
@@ -547,7 +547,7 @@ cd_sensor_set_options_cb (GObject *source_object,
 	gboolean ret;
 	CdSensor *sensor = CD_SENSOR (source_object);
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* get the result */
 	ret = sensor->priv->desc->set_options_finish (sensor, res, &error);
@@ -569,7 +569,7 @@ cd_sensor_lock_cb (GObject *source_object,
 	CdSensor *sensor = CD_SENSOR (source_object);
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* get the result */
 	ret = sensor->priv->desc->lock_finish (sensor, res, &error);
@@ -596,7 +596,7 @@ cd_sensor_unlock_cb (GObject *source_object,
 	CdSensor *sensor = CD_SENSOR (source_object);
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* get the result */
 	if (sensor->priv->desc != NULL &&
@@ -625,7 +625,7 @@ cd_sensor_unlock_quietly_cb (GObject *source_object,
 {
 	CdSensor *sensor = CD_SENSOR (source_object);
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* get the result */
 	if (sensor->priv->desc != NULL &&
@@ -684,7 +684,7 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	const gchar *cap_tmp = NULL;
 	gboolean ret;
 	gchar *key;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "Lock") == 0) {
@@ -844,8 +844,8 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	/* return '' */
 	if (g_strcmp0 (method_name, "SetOptions") == 0) {
 
-		_cleanup_unref_hashtable GHashTable *options = NULL;
-		_cleanup_unref_variant GVariant *result = NULL;
+		_cleanup_hashtable_unref_ GHashTable *options = NULL;
+		_cleanup_variant_unref_ GVariant *result = NULL;
 
 		g_debug ("CdSensor %s:SetOptions()", sender);
 
@@ -907,7 +907,7 @@ cd_sensor_get_options_as_variant (CdSensor *sensor)
 {
 	GList *l;
 	GVariantBuilder builder;
-	_cleanup_free_list GList *list = NULL;
+	_cleanup_list_free_ GList *list = NULL;
 
 	/* do not try to build an empty array */
 	if (g_hash_table_size (sensor->priv->options) == 0)
@@ -934,7 +934,7 @@ cd_sensor_get_metadata_as_variant (CdSensor *sensor)
 {
 	GList *l;
 	GVariantBuilder builder;
-	_cleanup_free_list GList *list = NULL;
+	_cleanup_list_free_ GList *list = NULL;
 
 	/* we always must have at least one bit of metadata */
 	if (g_hash_table_size (sensor->priv->metadata) == 0)
@@ -1040,7 +1040,7 @@ cd_sensor_register_object (CdSensor *sensor,
 			   GDBusInterfaceInfo *info,
 			   GError **error)
 {
-	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
 
 	static const GDBusInterfaceVTable interface_vtable = {
 		cd_sensor_dbus_method_call,
@@ -1097,7 +1097,7 @@ cd_sensor_open_usb_device (CdSensor *sensor,
 	CdSensorPrivate *priv = sensor->priv;
 	guint8 busnum;
 	guint8 devnum;
-	_cleanup_unref_object GUsbDevice *device = NULL;
+	_cleanup_object_unref_ GUsbDevice *device = NULL;
 
 	/* convert from GUdevDevice to GUsbDevice */
 	busnum = g_udev_device_get_sysfs_attr_as_int (priv->device, "busnum");
@@ -1271,7 +1271,7 @@ void
 cd_sensor_set_index (CdSensor *sensor,
 		     guint idx)
 {
-	_cleanup_free gchar *id;
+	_cleanup_free_ gchar *id;
 	id = g_strdup_printf ("%s-%02i",
 			      cd_sensor_kind_to_string (sensor->priv->kind),
 			      idx);

@@ -453,13 +453,13 @@ static gboolean
 cd_transform_setup (CdTransform *transform, GError **error)
 {
 	CdTransformPrivate *priv = transform->priv;
-	GError *error_local = NULL;
 	cmsHPROFILE profile_in;
 	cmsHPROFILE profile_out;
 	cmsUInt32Number lcms_flags = 0;
 	gboolean ret = TRUE;
 	gint lcms_intent = -1;
 	guint i;
+	_cleanup_error_free_ GError *error_local = NULL;
 
 	/* find native rendering intent */
 	for (i = 0; map_rendering_intent[i].colord != CD_RENDERING_INTENT_LAST; i++) {
@@ -542,7 +542,6 @@ cd_transform_setup (CdTransform *transform, GError **error)
 					     CD_TRANSFORM_ERROR,
 					     CD_TRANSFORM_ERROR_FAILED_TO_SETUP_TRANSFORM,
 					     error_local->message);
-			g_error_free (error_local);
 			goto out;
 		}
 		ret = FALSE;
@@ -592,8 +591,8 @@ cd_transform_process_func (gpointer data, gpointer user_data)
 static gboolean
 cd_transform_set_max_threads_default (CdTransform *transform, GError **error)
 {
-	_cleanup_free gchar *data = NULL;
 	gchar *tmp;
+	_cleanup_free_ gchar *data = NULL;
 
 	/* use "cpu cores" to work out best number of threads */
 	if (!g_file_get_contents ("/proc/cpuinfo", &data, NULL, error))

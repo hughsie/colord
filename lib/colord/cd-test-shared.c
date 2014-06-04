@@ -36,8 +36,8 @@ gchar *
 cd_test_get_filename (const gchar *filename)
 {
 	gchar *tmp;
-	_cleanup_free gchar *path = NULL;
 	char full_tmp[PATH_MAX];
+	_cleanup_free_ gchar *path = NULL;
 
 	/* running in the installed system */
 	if (g_getenv ("INSTALLED_TESTS") != NULL) {

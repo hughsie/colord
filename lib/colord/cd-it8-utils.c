@@ -190,10 +190,10 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	CdMat3x3 m_rgb_inv;
 	CdMat3x3 n_rgb;
 	const gdouble *data;
-	_cleanup_free gchar *tmp = NULL;
 	gdouble m_lumi = 0.0f;
 	gdouble n_lumi = 0.0f;
 	guint i;
+	_cleanup_free_ gchar *tmp = NULL;
 
 	/* read reference matrix */
 	if (!ch_it8_utils_4color_decompose (it8_reference, &n_rgb, &n_lumi, error))

@@ -73,7 +73,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
-	_cleanup_free gchar *path = NULL;
+	_cleanup_free_ gchar *path = NULL;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (mdb->priv->db == NULL, FALSE);
@@ -361,7 +361,7 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
-	_cleanup_unref_ptrarray GPtrArray *array_tmp = NULL;
+	_cleanup_ptrarray_unref_ GPtrArray *array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), NULL);
 	g_return_val_if_fail (mdb->priv->db != NULL, NULL);
@@ -410,7 +410,7 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
-	_cleanup_unref_ptrarray GPtrArray *array_tmp = NULL;
+	_cleanup_ptrarray_unref_ GPtrArray *array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), NULL);
 	g_return_val_if_fail (mdb->priv->db != NULL, NULL);

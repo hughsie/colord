@@ -169,7 +169,7 @@ cd_icc_store_find_by_directory (CdIccStore *store, const gchar *path)
 static gboolean
 cd_icc_store_remove_icc (CdIccStore *store, const gchar *filename)
 {
-	_cleanup_unref_object CdIcc *icc = NULL;
+	_cleanup_object_unref_ CdIcc *icc = NULL;
 
 	/* find exact pointer */
 	icc = cd_icc_store_find_by_filename (store, filename);
@@ -194,17 +194,17 @@ static gboolean
 cd_icc_store_add_icc (CdIccStore *store, GFile *file, GError **error)
 {
 	CdIccStorePrivate *priv = store->priv;
-	_cleanup_free gchar *filename;
-	_cleanup_unref_bytes GBytes *data = NULL;
-	_cleanup_unref_object CdIcc *icc;
-	_cleanup_unref_object CdIcc *icc_tmp = NULL;
+	_cleanup_bytes_unref_ GBytes *data = NULL;
+	_cleanup_free_ gchar *filename;
+	_cleanup_object_unref_ CdIcc *icc;
+	_cleanup_object_unref_ CdIcc *icc_tmp = NULL;
 
 	/* use the GResource cache if available */
 	icc = cd_icc_new ();
 	filename = g_file_get_path (file);
 	if (store->priv->cache != NULL) {
 		if (g_str_has_prefix (filename, "/usr/share/color/icc/colord/")) {
-			_cleanup_free gchar *cache_key = NULL;
+			_cleanup_free_ gchar *cache_key = NULL;
 			cache_key = g_build_filename ("/org/freedesktop/colord",
 						      "profiles",
 						      filename + 28,
@@ -218,7 +218,7 @@ cd_icc_store_add_icc (CdIccStore *store, GFile *file, GError **error)
 
 	/* parse new icc object */
 	if (data != NULL) {
-		_cleanup_free gchar *basename = NULL;
+		_cleanup_free_ gchar *basename = NULL;
 		basename = g_path_get_basename (filename);
 		g_debug ("Using built-in %s", basename);
 		cd_icc_set_filename (icc, filename);
@@ -267,29 +267,22 @@ cd_icc_store_created_query_info_cb (GObject *source_object,
 				    gpointer user_data)
 {
 	CdIccStore *store = CD_ICC_STORE (user_data);
-	GError *error = NULL;
 	GFile *file = G_FILE (source_object);
 	gboolean ret;
-	_cleanup_unref_object GFile *parent = NULL;
-	_cleanup_unref_object GFileInfo *info;
-	_cleanup_free gchar *path = NULL;
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_free_ gchar *path = NULL;
+	_cleanup_object_unref_ GFileInfo *info;
+	_cleanup_object_unref_ GFile *parent = NULL;
 
 	info = g_file_query_info_finish (file, res, NULL);
 	if (info == NULL)
 		return;
 	parent = g_file_get_parent (file);
 	path = g_file_get_path (parent);
-	ret = cd_icc_store_search_path_child (store,
-					      path,
-					      info,
-					      0,
-					      NULL,
-					      &error);
-	if (!ret) {
-		g_warning ("failed to search file: %s",
-			   error->message);
-		g_error_free (error);
-	}
+	ret = cd_icc_store_search_path_child (store, path, info,
+					      0, NULL, &error);
+	if (!ret)
+		g_warning ("failed to search file: %s", error->message);
 }
 
 /**
@@ -325,7 +318,7 @@ cd_icc_store_file_monitor_changed_cb (GFileMonitor *monitor,
 {
 	CdIcc *tmp;
 	CdIccStoreDirHelper *helper;
-	_cleanup_free gchar *path = NULL;
+	_cleanup_free_ gchar *path = NULL;
 
 	/* icc was deleted */
 	if (event_type == G_FILE_MONITOR_EVENT_DELETED) {
@@ -386,8 +379,8 @@ cd_icc_store_search_path_child (CdIccStore *store,
 {
 	const gchar *name;
 	const gchar *type;
-	_cleanup_free gchar *full_path = NULL;
-	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_free_ gchar *full_path = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	/* further down the worm-hole */
 	name = g_file_info_get_name (info);
@@ -431,9 +424,9 @@ cd_icc_store_search_path (CdIccStore *store,
 	CdIccStoreDirHelper *helper;
 	GError *error_local = NULL;
 	gboolean ret = TRUE;
-	_cleanup_unref_object GFileEnumerator *enumerator = NULL;
-	_cleanup_unref_object GFile *file = NULL;
-	_cleanup_unref_object GFileInfo *info = NULL;
+	_cleanup_object_unref_ GFileEnumerator *enumerator = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
+	_cleanup_object_unref_ GFileInfo *info = NULL;
 
 	/* check sanity */
 	if (depth > CD_ICC_STORE_MAX_RECURSION_LEVELS) {
@@ -604,7 +597,7 @@ cd_icc_store_search_kind (CdIccStore *store,
 {
 	gchar *tmp;
 	guint i;
-	_cleanup_unref_ptrarray GPtrArray *locations = NULL;
+	_cleanup_ptrarray_unref_ GPtrArray *locations = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC_STORE (store), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -668,7 +661,7 @@ cd_icc_store_search_location (CdIccStore *store,
 			      GCancellable *cancellable,
 			      GError **error)
 {
-	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC_STORE (store), FALSE);
 	g_return_val_if_fail (location != NULL, FALSE);

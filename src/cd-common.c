@@ -74,7 +74,7 @@ cd_main_get_sender_uid (GDBusConnection *connection,
 			GError **error)
 {
 	guint uid = G_MAXUINT;
-	_cleanup_unref_variant GVariant *value;
+	_cleanup_variant_unref_ GVariant *value;
 
 	/* call into DBus to get the user ID that issued the request */
 	value = g_dbus_connection_call_sync (connection,
@@ -103,7 +103,7 @@ cd_main_get_sender_pid (GDBusConnection *connection,
 			GError **error)
 {
 	guint pid = G_MAXUINT;
-	_cleanup_unref_variant GVariant *value = NULL;
+	_cleanup_variant_unref_ GVariant *value = NULL;
 
 	/* call into DBus to get the user ID that issued the request */
 	value = g_dbus_connection_call_sync (connection,
@@ -133,11 +133,11 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 			      GError **error)
 {
 	guint uid;
-	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
 #ifdef USE_POLKIT
-	_cleanup_unref_object PolkitAuthority *authority = NULL;
-	_cleanup_unref_object PolkitAuthorizationResult *result = NULL;
-	_cleanup_unref_object PolkitSubject *subject = NULL;
+	_cleanup_object_unref_ PolkitAuthority *authority = NULL;
+	_cleanup_object_unref_ PolkitAuthorizationResult *result = NULL;
+	_cleanup_object_unref_ PolkitSubject *subject = NULL;
 #endif
 
 	/* uid 0 is allowed to do all actions */
@@ -221,7 +221,7 @@ cd_main_mkdir_with_parents (const gchar *filename, GError **error)
 {
 	/* ensure desination exists */
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS)) {
-		_cleanup_unref_object GFile *file = NULL;
+		_cleanup_object_unref_ GFile *file = NULL;
 		file = g_file_new_for_path (filename);
 		return g_file_make_directory_with_parents (file, NULL, error);
 	}

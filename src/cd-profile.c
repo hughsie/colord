@@ -199,8 +199,8 @@ static void
 cd_profile_set_object_path (CdProfile *profile)
 {
 	struct passwd *pw;
-	_cleanup_free gchar *path_tmp;
-	_cleanup_free gchar *path_owner;
+	_cleanup_free_ gchar *path_tmp;
+	_cleanup_free_ gchar *path_owner;
 
 	/* append the uid to the object path */
 	pw = getpwuid (profile->priv->owner);
@@ -391,12 +391,12 @@ static gboolean
 cd_profile_install_system_wide (CdProfile *profile, GError **error)
 {
 	CdProfilePrivate *priv = profile->priv;
-	GError *error_local = NULL;
 	gboolean ret = TRUE;
-	_cleanup_free gchar *basename = NULL;
-	_cleanup_free gchar *filename = NULL;
-	_cleanup_unref_object GFile *file_dest = NULL;
-	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
+	_cleanup_free_ gchar *basename = NULL;
+	_cleanup_free_ gchar *filename = NULL;
+	_cleanup_object_unref_ GFile *file_dest = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	/* is icc filename set? */
 	if (priv->filename == NULL) {
@@ -454,7 +454,6 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 				     "failed to write mapped file %s: %s",
 				     priv->filename,
 				     error_local->message);
-			g_error_free (error_local);
 			return FALSE;
 		}
 	} else {
@@ -468,7 +467,6 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 				     "failed to copy %s: %s",
 				     priv->filename,
 				     error_local->message);
-			g_error_free (error_local);
 			return FALSE;
 		}
 	}
@@ -483,7 +481,7 @@ cd_profile_get_metadata_as_variant (CdProfile *profile)
 {
 	GList *l;
 	GVariantBuilder builder;
-	_cleanup_free_list GList *list = NULL;
+	_cleanup_list_free_ GList *list = NULL;
 
 	/* do not try to build an empty array */
 	if (g_hash_table_size (profile->priv->metadata) == 0)
@@ -621,7 +619,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	guint uid;
 	const gchar *property_name = NULL;
 	const gchar *property_value = NULL;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "SetProperty") == 0) {
@@ -726,7 +724,7 @@ cd_profile_dbus_get_property (GDBusConnection *connection, const gchar *sender,
 
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_TITLE) == 0) {
 		guint uid;
-		_cleanup_free gchar *title_db = NULL;
+		_cleanup_free_ gchar *title_db = NULL;
 
 		uid = cd_main_get_sender_uid (connection, sender, error);
 		if (uid == G_MAXUINT)
@@ -790,7 +788,7 @@ cd_profile_register_object (CdProfile *profile,
 			    GDBusInterfaceInfo *info,
 			    GError **error)
 {
-	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
 
 	static const GDBusInterfaceVTable interface_vtable = {
 		cd_profile_dbus_method_call,
@@ -872,9 +870,9 @@ cd_profile_set_from_profile (CdProfile *profile, CdIcc *icc, GError **error)
 	gboolean ret = FALSE;
 	guint i;
 	struct tm created;
-	_cleanup_free_list GList *keys = NULL;
-	_cleanup_unref_array GArray *flags = NULL;
-	_cleanup_unref_hashtable GHashTable *metadata = NULL;
+	_cleanup_array_unref_ GArray *flags = NULL;
+	_cleanup_hashtable_unref_ GHashTable *metadata = NULL;
+	_cleanup_list_free_ GList *keys = NULL;
 
 	/* get the description as the title */
 	value = cd_icc_get_description (icc, NULL, error);
@@ -1022,8 +1020,8 @@ cd_profile_load_from_fd (CdProfile *profile,
 {
 	CdProfilePrivate *priv = profile->priv;
 	gboolean ret;
-	_cleanup_free_error GError *error_local = NULL;
-	_cleanup_unref_object CdIcc *icc = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
+	_cleanup_object_unref_ CdIcc *icc = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 
@@ -1078,9 +1076,9 @@ cd_profile_load_from_filename (CdProfile *profile, const gchar *filename, GError
 {
 	CdProfilePrivate *priv = profile->priv;
 	gboolean ret = FALSE;
-	_cleanup_free_error GError *error_local = NULL;
-	_cleanup_unref_object CdIcc *icc = NULL;
-	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
+	_cleanup_object_unref_ CdIcc *icc = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 

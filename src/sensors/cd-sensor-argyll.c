@@ -123,8 +123,8 @@ static void
 cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, CdSensorAsyncState *state)
 {
 	CdSensorArgyllPrivate *priv = cd_sensor_argyll_get_private (state->sensor);
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_free_strv gchar **parts = NULL;
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_strv_free_ gchar **parts = NULL;
 
 	g_debug ("line='%s'", line);
 
@@ -238,8 +238,8 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 	CdSensorAsyncState *state;
 	const gchar *envp[] = { "ARGYLL_NOT_INTERACTIVE=1", NULL };
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_unref_ptrarray GPtrArray *argv = NULL;
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_ptrarray_unref_ GPtrArray *argv = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
@@ -380,8 +380,8 @@ cd_sensor_find_device_details (CdSensor *sensor, GError **error)
 	gboolean ret;
 	guint i;
 	guint listno = 0;
-	_cleanup_free gchar *stdout = NULL;
-	_cleanup_free_strv gchar **lines = NULL;
+	_cleanup_free_ gchar *stdout = NULL;
+	_cleanup_strv_free_ gchar **lines = NULL;
 
 	/* spawn the --help output to parse the comm-port */
 	ret = g_spawn_sync (NULL,
@@ -474,7 +474,7 @@ cd_sensor_unlock_exit_cb (CdSpawn *spawn,
 		state->ret = TRUE;
 		cd_sensor_unlock_state_finish (state, NULL);
 	} else {
-		_cleanup_free_error GError *error = NULL;
+		_cleanup_error_free_ GError *error = NULL;
 		error = g_error_new (CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_INTERNAL,
 				     "exited without sigquit");
@@ -508,7 +508,7 @@ cd_sensor_unlock_async (CdSensor *sensor,
 					   state);
 	/* kill spotread */
 	if (!cd_spawn_kill (priv->spawn)) {
-		_cleanup_free_error GError *error = NULL;
+		_cleanup_error_free_ GError *error = NULL;
 		g_set_error (&error,
 			     CD_SENSOR_ERROR,
 			     CD_SENSOR_ERROR_INTERNAL,

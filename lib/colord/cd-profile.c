@@ -620,7 +620,7 @@ cd_profile_connect_finish (CdProfile *profile,
 static void
 cd_profile_fixup_dbus_error (GError *error)
 {
-	_cleanup_free gchar *name = NULL;
+	_cleanup_free_ gchar *name = NULL;
 
 	g_return_if_fail (error != NULL);
 
@@ -641,22 +641,22 @@ cd_profile_connect_cb (GObject *source_object,
 		       gpointer user_data)
 {
 	CdProfile *profile;
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_unref_variant GVariant *filename = NULL;
-	_cleanup_unref_variant GVariant *id = NULL;
-	_cleanup_unref_variant GVariant *qualifier = NULL;
-	_cleanup_unref_variant GVariant *format = NULL;
-	_cleanup_unref_variant GVariant *title = NULL;
-	_cleanup_unref_variant GVariant *kind = NULL;
-	_cleanup_unref_variant GVariant *colorspace = NULL;
-	_cleanup_unref_variant GVariant *scope = NULL;
-	_cleanup_unref_variant GVariant *owner = NULL;
-	_cleanup_unref_variant GVariant *warnings = NULL;
-	_cleanup_unref_variant GVariant *created = NULL;
-	_cleanup_unref_variant GVariant *has_vcgt = NULL;
-	_cleanup_unref_variant GVariant *is_system_wide = NULL;
-	_cleanup_unref_variant GVariant *metadata = NULL;
-	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_variant_unref_ GVariant *colorspace = NULL;
+	_cleanup_variant_unref_ GVariant *created = NULL;
+	_cleanup_variant_unref_ GVariant *filename = NULL;
+	_cleanup_variant_unref_ GVariant *format = NULL;
+	_cleanup_variant_unref_ GVariant *has_vcgt = NULL;
+	_cleanup_variant_unref_ GVariant *id = NULL;
+	_cleanup_variant_unref_ GVariant *is_system_wide = NULL;
+	_cleanup_variant_unref_ GVariant *kind = NULL;
+	_cleanup_variant_unref_ GVariant *metadata = NULL;
+	_cleanup_variant_unref_ GVariant *owner = NULL;
+	_cleanup_variant_unref_ GVariant *qualifier = NULL;
+	_cleanup_variant_unref_ GVariant *scope = NULL;
+	_cleanup_variant_unref_ GVariant *title = NULL;
+	_cleanup_variant_unref_ GVariant *warnings = NULL;
 
 	profile = CD_PROFILE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
 	profile->priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
@@ -866,9 +866,9 @@ cd_profile_set_property_cb (GObject *source_object,
 			    GAsyncResult *res,
 			    gpointer user_data)
 {
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_unref_variant GVariant *result = NULL;
-	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_variant_unref_ GVariant *result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -970,9 +970,9 @@ cd_profile_install_system_wide_cb (GObject *source_object,
 				   GAsyncResult *res,
 				   gpointer user_data)
 {
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_unref_object GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_unref_variant GVariant *result = NULL;
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	_cleanup_variant_unref_ GVariant *result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1127,8 +1127,8 @@ cd_profile_load_icc (CdProfile *profile,
 		     GCancellable *cancellable,
 		     GError **error)
 {
-	_cleanup_unref_object CdIcc *icc = NULL;
-	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_object_unref_ CdIcc *icc = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 

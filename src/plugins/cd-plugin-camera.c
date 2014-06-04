@@ -79,7 +79,7 @@ cd_plugin_is_device_embedded (GUdevDevice *device)
 	const gchar *removable;
 	gboolean embedded = FALSE;
 	guint i;
-	_cleanup_unref_ptrarray GPtrArray *array;
+	_cleanup_ptrarray_unref_ GPtrArray *array;
 
 	/* get a chain of all the parent devices */
 	array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
@@ -110,10 +110,10 @@ static void
 cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 {
 	const gchar *seat;
-	_cleanup_free gchar *id = NULL;
-	_cleanup_free gchar *model = NULL;
-	_cleanup_free gchar *vendor = NULL;
-	_cleanup_unref_object CdDevice *device = NULL;
+	_cleanup_free_ gchar *id = NULL;
+	_cleanup_free_ gchar *model = NULL;
+	_cleanup_free_ gchar *vendor = NULL;
+	_cleanup_object_unref_ CdDevice *device = NULL;
 
 	/* is a proper camera and not a webcam */
 	if (!g_udev_device_has_property (udev_device, "ID_GPHOTO2"))

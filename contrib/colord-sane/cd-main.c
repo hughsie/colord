@@ -100,8 +100,8 @@ cd_main_colord_create_device_cb (GObject *source_object,
 				 gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (source_object);
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_unref_object CdDevice *device;
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_object_unref_ CdDevice *device;
 
 	/* get result */
 	device = cd_client_create_device_finish (client, res, &error);
@@ -116,10 +116,10 @@ static void
 cd_sane_client_add (CdMainPrivate *priv, const SANE_Device *sane_device)
 {
 	CdMainDev *dev;
-	_cleanup_free gchar *id = NULL;
-	_cleanup_free gchar *model = NULL;
-	_cleanup_free gchar *vendor = NULL;
-	_cleanup_unref_hashtable GHashTable *properties = NULL;
+	_cleanup_free_ gchar *id = NULL;
+	_cleanup_free_ gchar *model = NULL;
+	_cleanup_free_ gchar *vendor = NULL;
+	_cleanup_hashtable_unref_ GHashTable *properties = NULL;
 
 	/* ignore noname, no support devices */
 	if (g_strcmp0 (sane_device->vendor, "Noname") == 0) {
@@ -188,7 +188,7 @@ cd_main_colord_delete_device_cb (GObject *source_object,
 				 gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (source_object);
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* get result */
 	if (!cd_client_delete_device_finish (client, res, &error))
@@ -267,7 +267,7 @@ cd_sane_add_device_if_from_colord_sane (gpointer data,
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	const gchar *cmdline;
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	ret = cd_device_connect_sync (device, NULL, &error);
 
@@ -298,7 +298,7 @@ cd_sane_populate_existing_devices_cb (GObject *source_object,
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	GPtrArray *devices;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	devices = cd_client_get_devices_by_kind_finish (priv->client, res, &error);
 	if (error != NULL) {
@@ -324,7 +324,7 @@ cd_main_colord_connect_cb (GObject *source_object,
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* get result */
 	ret = cd_client_connect_finish (priv->client, res, &error);

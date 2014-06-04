@@ -285,8 +285,8 @@ static void
 cd_device_set_object_path (CdDevice *device)
 {
 	struct passwd *pw;
-	_cleanup_free gchar *path_owner = NULL;
-	_cleanup_free gchar *path_tmp = NULL;
+	_cleanup_free_ gchar *path_owner = NULL;
+	_cleanup_free_ gchar *path_tmp = NULL;
 
 	/* append the uid to the object path */
 	pw = getpwuid (device->priv->owner);
@@ -314,7 +314,7 @@ cd_device_set_object_path (CdDevice *device)
 void
 cd_device_set_id (CdDevice *device, const gchar *id)
 {
-	_cleanup_free gchar *enabled_str = NULL;
+	_cleanup_free_ gchar *enabled_str = NULL;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
 
@@ -431,8 +431,8 @@ static gboolean
 cd_device_match_qualifier (const gchar *qual1, const gchar *qual2)
 {
 	guint i;
-	_cleanup_free_strv gchar **split1 = NULL;
-	_cleanup_free_strv gchar **split2 = NULL;
+	_cleanup_strv_free_ gchar **split1 = NULL;
+	_cleanup_strv_free_ gchar **split2 = NULL;
 
 	/* split into substring */
 	split1 = g_strsplit (qual1, ".", 3);
@@ -537,7 +537,7 @@ cd_device_get_profiles_as_variant (CdDevice *device)
 	const gchar *tmp;
 	guint i;
 	guint idx = 0;
-	_cleanup_free GVariant **profiles = NULL;
+	_cleanup_free_ GVariant **profiles = NULL;
 
 	/* Object paths are assembled in this order:
 	 *
@@ -698,7 +698,7 @@ cd_device_add_profile (CdDevice *device,
 	CdDeviceProfileItem *item;
 	gboolean create_item = TRUE;
 	guint i;
-	_cleanup_unref_object CdProfile *profile = NULL;
+	_cleanup_object_unref_ CdProfile *profile = NULL;
 
 	/* is it available */
 	profile = cd_profile_array_get_by_object_path (priv->profile_array,
@@ -775,7 +775,7 @@ cd_device_set_property_to_db (CdDevice *device,
 			      const gchar *value)
 {
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	if (device->priv->object_scope != CD_OBJECT_SCOPE_DISK)
 		return;
@@ -799,7 +799,7 @@ cd_device_get_metadata_as_variant (CdDevice *device)
 {
 	GList *l;
 	GVariantBuilder builder;
-	_cleanup_free_list GList *list = NULL;
+	_cleanup_list_free_ GList *list = NULL;
 
 	/* do not try to build an empty array */
 	if (g_hash_table_size (device->priv->metadata) == 0)
@@ -1055,7 +1055,7 @@ cd_device_set_enabled (CdDevice *device,
 {
 	CdDevicePrivate *priv = device->priv;
 	gboolean ret;
-	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
 
 	/* device is already the correct state */
 	if (priv->enabled == enabled)
@@ -1112,7 +1112,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	const gchar *property_value = NULL;
 	gboolean ret;
 	guint i = 0;
-	_cleanup_free_error GError *error = NULL;
+	_cleanup_error_free_ GError *error = NULL;
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "AddProfile") == 0) {
@@ -1263,7 +1263,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	/* return 'o' */
 	if (g_strcmp0 (method_name, "GetProfileForQualifiers") == 0) {
 		gchar **regexes = NULL;
-		_cleanup_free gchar *strv_debug = NULL;
+		_cleanup_free_ gchar *strv_debug = NULL;
 
 		/* find the profile by the qualifier search string */
 		g_variant_get (parameters, "(^a&s)", &regexes);
@@ -1523,7 +1523,7 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 {
 	CdDevice *device = CD_DEVICE (user_data);
 	CdDevicePrivate *priv = device->priv;
-	_cleanup_free_strv gchar **bus_names = NULL;
+	_cleanup_strv_free_ gchar **bus_names = NULL;
 
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_CREATED) == 0)
 		return g_variant_new_uint64 (priv->created);
@@ -1582,7 +1582,7 @@ cd_device_register_object (CdDevice *device,
 			   GDBusInterfaceInfo *info,
 			   GError **error)
 {
-	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
 
 	static const GDBusInterfaceVTable interface_vtable = {
 		cd_device_dbus_method_call,

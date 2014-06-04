@@ -245,7 +245,6 @@ cd_icc_to_string (CdIcc *icc)
 	cmsTagSignature sig_link;
 	cmsTagTypeSignature tag_type;
 	gboolean ret;
-	gchar *tag_wrfix;
 	gchar tag_str[5] = "    ";
 	GDateTime *created;
 	GError *error_local = NULL;
@@ -299,10 +298,9 @@ cd_icc_to_string (CdIcc *icc)
 	/* date and time */
 	created = cd_icc_get_created (icc);
 	if (created != NULL) {
-		gchar *created_str;
+		_cleanup_free_ gchar *created_str;
 		created_str = g_date_time_format (created, "%F, %T");
 		g_string_append_printf (str, "  Date, Time\t= %s\n", created_str);
-		g_free (created_str);
 		g_date_time_unref (created);
 	}
 
@@ -365,6 +363,8 @@ cd_icc_to_string (CdIcc *icc)
 	g_string_append (str, "\n");
 	number_tags = cmsGetTagCount (priv->lcms_profile);
 	for (i = 0; i < number_tags; i++) {
+		_cleanup_free_ gchar *tag_wrfix = NULL;
+
 		sig = cmsGetTagSignature (priv->lcms_profile, i);
 
 		/* convert to text */
@@ -402,7 +402,6 @@ cd_icc_to_string (CdIcc *icc)
 		tag_wrfix = g_new0 (gchar, tag_size);
 		cmsReadRawTag (priv->lcms_profile, sig, tag_wrfix, 4);
 		memcpy (&tmp, tag_wrfix, 4);
-		g_free (tag_wrfix);
 
 		cd_icc_uint32_to_str (tmp, tag_str);
 		tag_type = GUINT32_FROM_BE (tmp);
@@ -581,8 +580,6 @@ cd_icc_to_string (CdIcc *icc)
 		{
 			cmsHANDLE dict;
 			const cmsDICTentry *entry;
-			gchar *ascii_name;
-			gchar *ascii_value;
 
 			g_string_append_printf (str, "Dictionary:\n");
 			dict = cd_icc_read_tag (icc, sig, &error_local);
@@ -595,6 +592,8 @@ cd_icc_to_string (CdIcc *icc)
 			for (entry = cmsDictGetEntryList (dict);
 			     entry != NULL;
 			     entry = cmsDictNextEntry (entry)) {
+				_cleanup_free_ gchar *ascii_name;
+				_cleanup_free_ gchar *ascii_value;
 
 				/* convert from wchar_t to UTF-8 */
 				ascii_name = g_ucs4_to_utf8 ((gunichar *) entry->Name, -1,
@@ -604,8 +603,6 @@ cd_icc_to_string (CdIcc *icc)
 				g_string_append_printf (str, "  %s\t->\t%s\n",
 							ascii_name != NULL ? ascii_name : "Invalid UCS4",
 							ascii_value != NULL ? ascii_value : "Invalid UCS4");
-				g_free (ascii_name);
-				g_free (ascii_value);
 			}
 			break;
 		}
@@ -633,7 +630,6 @@ cd_icc_to_string (CdIcc *icc)
 			gchar name[cmsMAX_PATH];
 			gchar prefix[33];
 			gchar suffix[33];
-			GString *string;
 			guint j;
 
 			g_string_append_printf (str, "Named colors:\n");
@@ -652,6 +648,7 @@ cd_icc_to_string (CdIcc *icc)
 				continue;
 			}
 			for (j = 0; j < tmp; j++) {
+				_cleanup_string_free_ GString *string;
 
 				/* parse title */
 				string = g_string_new ("");
@@ -688,7 +685,6 @@ cd_icc_to_string (CdIcc *icc)
 							j,
 							string->str,
 							lab.L, lab.a, lab.b);
-				g_string_free (string, TRUE);
 			}
 			break;
 		}
@@ -1092,9 +1088,9 @@ cd_icc_load_metadata_item (CdIcc *icc,
 			   const gunichar *value,
 			   GError **error)
 {
-	_cleanup_free gchar *ascii_name = NULL;
-	_cleanup_free gchar *ascii_value = NULL;
-	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
+	_cleanup_free_ gchar *ascii_name = NULL;
+	_cleanup_free_ gchar *ascii_value = NULL;
 
 	/* parse name */
 	ascii_name = g_ucs4_to_utf8 (name, -1, NULL, NULL, &error_local);
@@ -1312,8 +1308,8 @@ cd_util_write_dict_entry (cmsHANDLE dict,
 			  GError **error)
 {
 	gboolean ret = FALSE;
-	_cleanup_free gunichar *mb_key = NULL;
-	_cleanup_free gunichar *mb_value = NULL;
+	_cleanup_free_ gunichar *mb_key = NULL;
+	_cleanup_free_ gunichar *mb_value = NULL;
 
 	mb_key = g_utf8_to_ucs4 (key, -1, NULL, NULL, error);
 	if (mb_key == NULL)
@@ -1365,8 +1361,8 @@ cd_util_mlu_object_parse (const gchar *locale,
 	CdMluObject *obj = NULL;
 	guint type;
 	gunichar *wtext;
-	_cleanup_free gchar *key = NULL;
-	_cleanup_free_strv gchar **split = NULL;
+	_cleanup_free_ gchar *key = NULL;
+	_cleanup_strv_free_ gchar **split = NULL;
 
 	/* untranslated version */
 	if (locale == NULL || locale[0] == '\0') {
@@ -1496,8 +1492,8 @@ cd_util_write_tag_localized (CdIcc *icc,
 	const gchar *value;
 	gboolean ret = TRUE;
 	guint i;
-	_cleanup_free_list GList *keys;
-	_cleanup_unref_ptrarray GPtrArray *array = NULL;
+	_cleanup_list_free_ GList *keys;
+	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
 
 	/* convert all the hash entries into CdMluObject's */
 	keys = g_hash_table_get_keys (hash);
@@ -1571,7 +1567,7 @@ out:
 static gboolean
 cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
 {
-	_cleanup_unref_object GFile *parent_dir = NULL;
+	_cleanup_object_unref_ GFile *parent_dir = NULL;
 
 	/* get parent directory */
 	parent_dir = g_file_get_parent (file);
@@ -1673,8 +1669,8 @@ cd_icc_serialize_profile_fallback (CdIcc *icc, GError **error)
 	gboolean ret;
 	gint fd;
 	gsize length = 0;
-	_cleanup_free gchar *data_tmp = NULL;
-	_cleanup_free gchar *temp_file = NULL;
+	_cleanup_free_ gchar *data_tmp = NULL;
+	_cleanup_free_ gchar *temp_file = NULL;
 
 	/* get unique temp file */
 	fd = g_file_open_tmp ("colord-XXXXXX.icc", &temp_file, &error_local);
@@ -1724,7 +1720,7 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 	CdIccPrivate *priv = icc->priv;
 	cmsUInt32Number length = 0;
 	gboolean ret;
-	_cleanup_free gchar *data_tmp = NULL;
+	_cleanup_free_ gchar *data_tmp = NULL;
 
 	/* get size of profile */
 	ret = cmsSaveProfileToMem (priv->lcms_profile,
@@ -1789,7 +1785,7 @@ cd_icc_save_data (CdIcc *icc,
 	GBytes *data = NULL;
 	GList *l;
 	guint i;
-	_cleanup_free_list GList *md_keys = NULL;
+	_cleanup_list_free_ GList *md_keys = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 
@@ -2005,8 +2001,8 @@ cd_icc_save_file (CdIcc *icc,
 		  GError **error)
 {
 	gboolean ret;
-	_cleanup_unref_bytes GBytes *data = NULL;
-	_cleanup_free_error GError *error_local = NULL;
+	_cleanup_bytes_unref_ GBytes *data = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
@@ -2061,9 +2057,9 @@ cd_icc_save_default (CdIcc *icc,
 		     GError **error)
 {
 	const gchar *root = "edid"; /* TODO: only for cd_icc_create_from_edid() */
-	_cleanup_free gchar *basename = NULL;
-	_cleanup_free gchar *filename = NULL;
-	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_free_ gchar *basename = NULL;
+	_cleanup_free_ gchar *filename = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 
@@ -2113,9 +2109,9 @@ cd_icc_load_file (CdIcc *icc,
 	CdIccPrivate *priv = icc->priv;
 	gboolean ret = FALSE;
 	gsize length;
-	_cleanup_free gchar *data = NULL;
-	_cleanup_free_error GError *error_local = NULL;
-	_cleanup_unref_object GFileInfo *info = NULL;
+	_cleanup_error_free_ GError *error_local = NULL;
+	_cleanup_free_ gchar *data = NULL;
+	_cleanup_object_unref_ GFileInfo *info = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
@@ -2708,9 +2704,9 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	gchar *tmp;
 	guint32 text_size;
 	guint i;
-	_cleanup_free gchar *locale_key = NULL;
-	_cleanup_free gchar *text_buffer = NULL;
-	_cleanup_free gunichar *wtext = NULL;
+	_cleanup_free_ gchar *locale_key = NULL;
+	_cleanup_free_ gchar *text_buffer = NULL;
+	_cleanup_free_ gunichar *wtext = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
@@ -2943,10 +2939,10 @@ cd_icc_set_description (CdIcc *icc, const gchar *locale, const gchar *value)
 void
 cd_icc_set_description_items (CdIcc *icc, GHashTable *values)
 {
+	GList *l;
 	const gchar *key;
 	const gchar *value;
-	GList *keys;
-	GList *l;
+	_cleanup_list_free_ GList *keys = NULL;
 
 	g_return_if_fail (CD_IS_ICC (icc));
 
@@ -2957,7 +2953,6 @@ cd_icc_set_description_items (CdIcc *icc, GHashTable *values)
 		value = g_hash_table_lookup (values, key);
 		cd_icc_set_description (icc, key, value);
 	}
-	g_list_free (keys);
 }
 
 /**
@@ -2994,8 +2989,8 @@ cd_icc_set_copyright_items (CdIcc *icc, GHashTable *values)
 {
 	const gchar *key;
 	const gchar *value;
-	GList *keys;
 	GList *l;
+	_cleanup_list_free_ GList *keys = NULL;
 
 	g_return_if_fail (CD_IS_ICC (icc));
 
@@ -3006,7 +3001,6 @@ cd_icc_set_copyright_items (CdIcc *icc, GHashTable *values)
 		value = g_hash_table_lookup (values, key);
 		cd_icc_set_copyright (icc, key, value);
 	}
-	g_list_free (keys);
 }
 
 /**
@@ -3043,8 +3037,8 @@ cd_icc_set_manufacturer_items (CdIcc *icc, GHashTable *values)
 {
 	const gchar *key;
 	const gchar *value;
-	GList *keys;
 	GList *l;
+	_cleanup_list_free_ GList *keys = NULL;
 
 	g_return_if_fail (CD_IS_ICC (icc));
 
@@ -3055,7 +3049,6 @@ cd_icc_set_manufacturer_items (CdIcc *icc, GHashTable *values)
 		value = g_hash_table_lookup (values, key);
 		cd_icc_set_manufacturer (icc, key, value);
 	}
-	g_list_free (keys);
 }
 
 /**
@@ -3092,8 +3085,8 @@ cd_icc_set_model_items (CdIcc *icc, GHashTable *values)
 {
 	const gchar *key;
 	const gchar *value;
-	GList *keys;
 	GList *l;
+	_cleanup_list_free_ GList *keys = NULL;
 
 	g_return_if_fail (CD_IS_ICC (icc));
 
@@ -3104,7 +3097,6 @@ cd_icc_set_model_items (CdIcc *icc, GHashTable *values)
 		value = g_hash_table_lookup (values, key);
 		cd_icc_set_model (icc, key, value);
 	}
-	g_list_free (keys);
 }
 
 /**
@@ -3495,8 +3487,8 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 	gfloat divamount;
 	GPtrArray *array = NULL;
 	guint i;
-	_cleanup_free gdouble *values_in = NULL;
-	_cleanup_free gdouble *values_out = NULL;
+	_cleanup_free_ gdouble *values_in = NULL;
+	_cleanup_free_ gdouble *values_out = NULL;
 
 	_cd_context_lcms_pre26_start ();
 
@@ -3594,9 +3586,9 @@ cd_icc_set_vcgt (CdIcc *icc, GPtrArray *vcgt, GError **error)
 	cmsToneCurve *curve[3];
 	gboolean ret;
 	guint i;
-	_cleanup_free guint16 *blue = NULL;
-	_cleanup_free guint16 *green = NULL;
-	_cleanup_free guint16 *red = NULL;
+	_cleanup_free_ guint16 *blue = NULL;
+	_cleanup_free_ guint16 *green = NULL;
+	_cleanup_free_ guint16 *red = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (icc->priv->lcms_profile != NULL, FALSE);

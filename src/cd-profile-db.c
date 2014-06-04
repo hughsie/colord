@@ -54,7 +54,7 @@ cd_profile_db_load (CdProfileDb *pdb,
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
-	_cleanup_free gchar *path = NULL;
+	_cleanup_free_ gchar *path = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
 	g_return_val_if_fail (pdb->priv->db == NULL, FALSE);

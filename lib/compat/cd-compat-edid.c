@@ -56,12 +56,12 @@ cd_edid_install_profile (unsigned char *edid,
 			 char *profile_fn)
 {
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_free gchar *md5 = NULL;
-	_cleanup_unref_object CdClient *client = NULL;
-	_cleanup_unref_object CdDevice *device = NULL;
-	_cleanup_unref_object CdProfile *profile = NULL;
-	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_free_ gchar *md5 = NULL;
+	_cleanup_object_unref_ CdClient *client = NULL;
+	_cleanup_object_unref_ CdDevice *device = NULL;
+	_cleanup_object_unref_ CdProfile *profile = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	g_return_val_if_fail (profile_fn != NULL, CD_EDID_ERROR_RESOURCE);
 
@@ -192,12 +192,12 @@ cd_edid_remove_profile (unsigned char *edid,
 			char *profile_fn)
 {
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_free gchar *md5 = NULL;
-	_cleanup_unref_object CdClient *client = NULL;
-	_cleanup_unref_object CdDevice *device = NULL;
-	_cleanup_unref_object CdProfile *profile = NULL;
-	_cleanup_unref_object GFile *file = NULL;
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_free_ gchar *md5 = NULL;
+	_cleanup_object_unref_ CdClient *client = NULL;
+	_cleanup_object_unref_ CdDevice *device = NULL;
+	_cleanup_object_unref_ CdProfile *profile = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	g_return_val_if_fail (profile_fn != NULL, CD_EDID_ERROR_RESOURCE);
 
@@ -289,11 +289,11 @@ cd_edid_get_profile (unsigned char *edid,
 {
 	const gchar *filename;
 	gboolean ret;
-	_cleanup_free_error GError *error = NULL;
-	_cleanup_free gchar *md5 = NULL;
-	_cleanup_unref_object CdClient *client = NULL;
-	_cleanup_unref_object CdDevice *device = NULL;
-	_cleanup_unref_object CdProfile *profile = NULL;
+	_cleanup_error_free_ GError *error = NULL;
+	_cleanup_free_ gchar *md5 = NULL;
+	_cleanup_object_unref_ CdClient *client = NULL;
+	_cleanup_object_unref_ CdDevice *device = NULL;
+	_cleanup_object_unref_ CdProfile *profile = NULL;
 
 	/* bad input */
 	if (edid == NULL || edid_len == 0)

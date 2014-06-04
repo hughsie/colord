@@ -80,7 +80,7 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 	guint j;
 	guint len_tmp;
 	guint type;
-	_cleanup_free_string GString *string = NULL;
+	_cleanup_string_free_ GString *string = NULL;
 
 	g_return_val_if_fail (in_buffer != NULL, FALSE);
 
