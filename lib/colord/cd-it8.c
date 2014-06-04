@@ -862,8 +862,6 @@ cd_it8_load_from_data (CdIt8 *it8,
 	g_return_val_if_fail (data != NULL, FALSE);
 	g_return_val_if_fail (size > 0, FALSE);
 
-	_cd_context_lcms_pre26_start ();
-
 	/* clear old data */
 	g_ptr_array_set_size (it8->priv->array_rgb, 0);
 	g_ptr_array_set_size (it8->priv->array_xyz, 0);
@@ -959,7 +957,6 @@ cd_it8_load_from_data (CdIt8 *it8,
 	cd_it8_set_originator (it8, cmsIT8GetProperty (it8_lcms, "ORIGINATOR"));
 	cd_it8_set_reference (it8, cmsIT8GetProperty (it8_lcms, "REFERENCE"));
 out:
-	_cd_context_lcms_pre26_stop ();
 	if (it8_lcms != NULL)
 		cmsIT8Free (it8_lcms);
 	return ret;
@@ -1380,8 +1377,6 @@ cd_it8_save_to_data (CdIt8 *it8,
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 
-	_cd_context_lcms_pre26_start ();
-
 	/* set common data */
 	it8_lcms = cmsIT8Alloc (it8->priv->context_lcms);
 	if (it8->priv->title != NULL) {
@@ -1459,7 +1454,6 @@ cd_it8_save_to_data (CdIt8 *it8,
 	if (size != NULL)
 		*size = size_tmp - 1;
 out:
-	_cd_context_lcms_pre26_stop ();
 	if (it8_lcms != NULL)
 		cmsIT8Free (it8_lcms);
 	if (datetime != NULL)
@@ -1844,7 +1838,6 @@ cd_it8_get_property (GObject *object,
 		break;
 	}
 }
-
 
 /**
  * cd_it8_set_property:

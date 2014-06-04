@@ -42,13 +42,7 @@
 static GError **
 cd_context_lcms_get_error (gpointer ctx)
 {
-	GError **error_ctx;
-#ifdef HAVE_LCMS_CREATE_CONTEXT
-	error_ctx = cmsGetContextUserData (ctx);
-#else
-	error_ctx = (GError **) ctx;
-#endif
-	return error_ctx;
+	return cmsGetContextUserData (ctx);
 }
 
 /**
@@ -158,39 +152,10 @@ cd_context_lcms_new (void)
 	cmsContext ctx;
 	GError **error_ctx;
 	error_ctx = g_new0 (GError *, 1);
-#ifdef HAVE_LCMS_CREATE_CONTEXT
 	ctx = cmsCreateContext (NULL, error_ctx);
 	cmsSetLogErrorHandlerTHR (ctx, cd_context_lcms2_error_cb);
 	cmsPluginTHR (ctx, &cd_icc_lcms_plugins);
-#else
-	ctx = (cmsContext) error_ctx;
-	cmsSetLogErrorHandler (cd_context_lcms2_error_cb);
-	/* we've disabled this as it's unreliable without a context */
-	if(0) cmsPlugin (&cd_icc_lcms_plugins);
-#endif
 	return ctx;
-}
-
-/**
- * _cd_context_lcms_pre26_start:
- **/
-void
-_cd_context_lcms_pre26_start (void)
-{
-#ifndef HAVE_LCMS_CREATE_CONTEXT
-	cmsSetLogErrorHandler (cd_context_lcms2_error_cb);
-#endif
-}
-
-/**
- * _cd_context_lcms_pre26_stop:
- **/
-void
-_cd_context_lcms_pre26_stop (void)
-{
-#ifndef HAVE_LCMS_CREATE_CONTEXT
-	cmsSetLogErrorHandler (NULL);
-#endif
 }
 
 /**
@@ -201,17 +166,11 @@ cd_context_lcms_free (gpointer ctx)
 {
 	GError **error_ctx;
 
-#ifdef HAVE_LCMS_CREATE_CONTEXT
 	error_ctx = cmsGetContextUserData (ctx);
-#else
-	error_ctx = (GError **) ctx;
-#endif
 	g_clear_error (error_ctx);
 
-#ifdef HAVE_LCMS_CREATE_CONTEXT
 	cmsUnregisterPluginsTHR (ctx);
 	cmsDeleteContext (ctx);
-#endif
 }
 
 /**

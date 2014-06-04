@@ -52,10 +52,6 @@ typedef enum {
 	CD_MLUC_LAST
 } CdIccMluc;
 
-#ifndef HAVE_LCMS_GET_HEADER_CREATOR
-#define cmsSigProfileDescriptionMLTag	0x6473636d
-#endif
-
 /**
  * CdIccPrivate:
  *
@@ -258,7 +254,6 @@ cd_icc_to_string (CdIcc *icc)
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
 	/* setup error handler */
-	_cd_context_lcms_pre26_start ();
 
 	/* print header */
 	str = g_string_new ("icc:\nHeader:\n");
@@ -279,7 +274,6 @@ cd_icc_to_string (CdIcc *icc)
 	/* colorspace */
 	g_string_append_printf (str, "  Colorspace\t= %s\n",
 				cd_colorspace_to_string (cd_icc_get_colorspace (icc)));
-
 
 	/* PCS */
 	g_string_append (str, "  Conn. Space\t= ");
@@ -344,12 +338,10 @@ cd_icc_to_string (CdIcc *icc)
 		break;
 	}
 
-#ifdef HAVE_LCMS_GET_HEADER_CREATOR
 	/* creator */
 	tmp = cmsGetHeaderCreator (priv->lcms_profile);
 	cd_icc_uint32_to_str (GUINT32_FROM_BE (tmp), tag_str);
 	g_string_append_printf (str, "  Creator\t= %s\n", tag_str);
-#endif
 
 	/* profile ID */
 	cmsGetHeaderProfileID (priv->lcms_profile, profile_id);
@@ -363,8 +355,6 @@ cd_icc_to_string (CdIcc *icc)
 	g_string_append (str, "\n");
 	number_tags = cmsGetTagCount (priv->lcms_profile);
 	for (i = 0; i < number_tags; i++) {
-		_cleanup_free_ gchar *tag_wrfix = NULL;
-
 		sig = cmsGetTagSignature (priv->lcms_profile, i);
 
 		/* convert to text */
@@ -382,26 +372,14 @@ cd_icc_to_string (CdIcc *icc)
 			continue;
 		}
 
-		/* get the tag type
-		 *
-		 * LCMS2 has an interesting bug where calling:
-		 *  cmsReadRawTag(hProfile, sig, buffer, sizeof(buffer))
-		 * actually writes the wrole tag to buffer, which overflows if
-		 * tag_size > buffer. To work around this allocate a hugely
-		 * wasteful buffer of the whole tag size just to get the first
-		 * four bytes.
-		 *
-		 * But hey, at least we don't crash anymore...
-		 */
+		/* get the tag type */
 		tag_size = cmsReadRawTag (priv->lcms_profile, sig, NULL, 0);
 		if (tag_size == 0 || tag_size > 16 * 1024 * 1024) {
 			g_string_append_printf (str, "WARNING: Tag size impossible %i", tag_size);
 			continue;
 		}
 		g_string_append_printf (str, "  size\t%i\n", tag_size);
-		tag_wrfix = g_new0 (gchar, tag_size);
-		cmsReadRawTag (priv->lcms_profile, sig, tag_wrfix, 4);
-		memcpy (&tmp, tag_wrfix, 4);
+		cmsReadRawTag (priv->lcms_profile, sig, &tmp, 4);
 
 		cd_icc_uint32_to_str (tmp, tag_str);
 		tag_type = GUINT32_FROM_BE (tmp);
@@ -414,16 +392,8 @@ cd_icc_to_string (CdIcc *icc)
 		case cmsSigMultiLocalizedUnicodeType:
 		{
 			cmsMLU *mlu;
-			gchar *text_buffer;
-			guint32 text_size;
-#ifdef HAVE_LCMS_MLU_TRANSLATIONS_COUNT
-			gchar country_code[3] = "\0\0\0";
-			gchar language_code[3] = "\0\0\0";
-			GError *error = NULL;
 			guint32 j;
 			guint32 mlu_size;
-			gunichar *wtext;
-#endif
 
 			g_string_append_printf (str, "Text:\n");
 			mlu = cd_icc_read_tag (icc, sig, &error_local);
@@ -433,11 +403,17 @@ cd_icc_to_string (CdIcc *icc)
 				g_clear_error (&error_local);
 				break;
 			}
-#ifdef HAVE_LCMS_MLU_TRANSLATIONS_COUNT
 			mlu_size = cmsMLUtranslationsCount (mlu);
 			if (mlu_size == 0)
 				g_string_append_printf (str, "  Info:\t\tMLU empty!\n");
 			for (j = 0; j < mlu_size; j++) {
+				gchar country_code[3] = "\0\0\0";
+				gchar language_code[3] = "\0\0\0";
+				guint32 text_size;
+				_cleanup_free_ gchar *text_buffer = NULL;
+				_cleanup_free_ gunichar *wtext = NULL;
+				_cleanup_error_free_ GError *error = NULL;
+
 				ret = cmsMLUtranslationsCodes (mlu,
 							       j,
 							       language_code,
@@ -463,7 +439,6 @@ cd_icc_to_string (CdIcc *icc)
 								language_code[0] != '\0' ? language_code : "en",
 								country_code[0] != '\0' ? country_code : "US",
 								error->message);
-					g_clear_error (&error);
 					continue;
 				}
 				g_string_append_printf (str, "  %s_%s:\t%s [%i bytes]\n",
@@ -471,26 +446,7 @@ cd_icc_to_string (CdIcc *icc)
 							country_code[0] != '\0' ? country_code : "**",
 							text_buffer,
 							text_size);
-				g_free (text_buffer);
-				g_free (wtext);
 			}
-#else
-			text_size = cmsMLUgetASCII (mlu,
-						    cmsNoLanguage,
-						    cmsNoCountry,
-						    NULL, 0);
-			text_buffer = g_new0 (gchar, text_size + 1);
-			text_size = cmsMLUgetASCII (mlu,
-						    cmsNoLanguage,
-						    cmsNoCountry,
-						    text_buffer,
-						    text_size);
-			if (text_size > 0) {
-				g_string_append_printf (str, "  en_US:\t%s [%i bytes]\n",
-							text_buffer, text_size);
-			}
-			g_free (text_buffer);
-#endif
 			break;
 		}
 		case cmsSigXYZType:
@@ -700,7 +656,6 @@ cd_icc_to_string (CdIcc *icc)
 	if (str->len > 0)
 		g_string_truncate (str, str->len - 1);
 
-	_cd_context_lcms_pre26_stop ();
 	return g_string_free (str, FALSE);
 }
 
@@ -1165,10 +1120,7 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 	CdIccPrivate *priv = icc->priv;
 	cmsColorSpaceSignature colorspace;
 	cmsProfileClassSignature profile_class;
-	gboolean ret = TRUE;
 	guint i;
-
-	_cd_context_lcms_pre26_start ();
 
 	/* get version */
 	priv->version = cmsGetProfileVersion (priv->lcms_profile);
@@ -1193,9 +1145,8 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 
 	/* read optional metadata? */
 	if ((flags & CD_ICC_LOAD_FLAGS_METADATA) > 0) {
-		ret = cd_icc_load_metadata (icc, error);
-		if (!ret)
-			goto out;
+		if (!cd_icc_load_metadata (icc, error))
+			return FALSE;
 	}
 
 	/* get precooked profile ID if one exists */
@@ -1212,28 +1163,23 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 
 	/* read named colors if the client cares */
 	if ((flags & CD_ICC_LOAD_FLAGS_NAMED_COLORS) > 0) {
-		ret = cd_icc_load_named_colors (icc, error);
-		if (!ret)
-			goto out;
+		if (!cd_icc_load_named_colors (icc, error))
+			return FALSE;
 	}
 
 	/* read primaries if the client cares */
 	if ((flags & CD_ICC_LOAD_FLAGS_PRIMARIES) > 0 &&
 	    priv->colorspace == CD_COLORSPACE_RGB) {
-		ret = cd_icc_load_primaries (icc, error);
-		if (!ret)
-			goto out;
+		if (!cd_icc_load_primaries (icc, error))
+			return FALSE;
 	}
 
 	/* read characterization data if the client cares */
 	if ((flags & CD_ICC_LOAD_FLAGS_CHARACTERIZATION) > 0) {
-		ret = cd_icc_load_characterization_data (icc, error);
-		if (!ret)
-			goto out;
+		if (!cd_icc_load_characterization_data (icc, error))
+			return FALSE;
 	}
-out:
-	_cd_context_lcms_pre26_stop ();
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -1588,130 +1534,6 @@ cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
 }
 
 /**
- * cd_icc_check_error_cb:
- **/
-static void
-cd_icc_check_error_cb (cmsContext context_id,
-		       cmsUInt32Number code,
-		       const char *message)
-{
-#ifdef HAVE_LCMS_CREATE_CONTEXT
-	gboolean *ret = (gboolean *) cmsGetContextUserData (context_id);
-#else
-	gboolean *ret = (gboolean *) context_id;
-#endif
-	*ret = FALSE;
-}
-
-/**
- * cd_icc_check_lcms2_MemoryWrite:
- *
- * - Create a sRGB profile with some metadata
- * - Serialize it to a memory blob
- * - Load the resulting memory blob
- *
- * If there are any errors thrown, we're being compiled against a LCMS2 with
- * the bad MemoryWrite() implementation.
- **/
-static gboolean
-cd_icc_check_lcms2_MemoryWrite (void)
-{
-	cmsHANDLE dict;
-	cmsHPROFILE p;
-	cmsUInt32Number size;
-	gboolean ret = TRUE;
-	gchar *data;
-	cmsContext ctx;
-
-	/* create context */
-#ifdef HAVE_LCMS_CREATE_CONTEXT
-	ctx = cmsCreateContext (NULL, &ret);
-	cmsSetLogErrorHandlerTHR (ctx, cd_icc_check_error_cb);
-#else
-	cmsSetLogErrorHandler (cd_icc_check_error_cb);
-	ctx = (void *) &ret;
-#endif
-
-	/* create test data */
-	p = cmsCreate_sRGBProfileTHR (ctx);
-	dict = cmsDictAlloc (NULL);
-	cmsDictAddEntry (dict, L"1", L"2", NULL, NULL);
-	cmsWriteTag (p, cmsSigMetaTag, dict);
-	cmsSaveProfileToMem (p, NULL, &size);
-	data = g_malloc (size);
-	cmsSaveProfileToMem (p, data, &size);
-	cmsCloseProfile (p);
-	cmsDictFree (dict);
-
-	/* open file */
-	p = cmsOpenProfileFromMemTHR (ctx, data, size);
-	dict = cmsReadTag (p, cmsSigMetaTag);
-	g_assert (dict != (gpointer) 0x01); /* appease GCC */
-	cmsCloseProfile (p);
-	g_free (data);
-#ifdef HAVE_LCMS_CREATE_CONTEXT
-	cmsDeleteContext (ctx);
-#else
-	_cd_context_lcms_pre26_stop ();
-#endif
-	return ret;
-}
-
-/**
- * cd_icc_serialize_profile_fallback:
- **/
-static GBytes *
-cd_icc_serialize_profile_fallback (CdIcc *icc, GError **error)
-{
-	CdIccPrivate *priv = icc->priv;
-	GBytes *data = NULL;
-	GError *error_local = NULL;
-	gboolean ret;
-	gint fd;
-	gsize length = 0;
-	_cleanup_free_ gchar *data_tmp = NULL;
-	_cleanup_free_ gchar *temp_file = NULL;
-
-	/* get unique temp file */
-	fd = g_file_open_tmp ("colord-XXXXXX.icc", &temp_file, &error_local);
-	if (fd < 0) {
-		g_set_error (error,
-			     CD_ICC_ERROR,
-			     CD_ICC_ERROR_FAILED_TO_SAVE,
-			     "failed to open temp file: %s",
-			     error_local->message);
-		g_error_free (error_local);
-		goto out;
-	}
-
-	/* dump to a file, avoiding the problematic call to MemoryWrite() */
-	ret = cmsSaveProfileToFile (priv->lcms_profile, temp_file);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "failed to dump ICC file to temp file");
-		goto out;
-	}
-	ret = g_file_get_contents (temp_file, &data_tmp, &length, NULL);
-	if (!ret) {
-		g_set_error_literal (error,
-				     CD_ICC_ERROR,
-				     CD_ICC_ERROR_FAILED_TO_SAVE,
-				     "failed to load temp file");
-		goto out;
-	}
-	/* success */
-	data = g_bytes_new (data_tmp, length);
-out:
-	if (fd >= 0)
-		close (fd);
-	if (temp_file != NULL)
-		g_unlink (temp_file);
-	return data;
-}
-
-/**
  * cd_icc_serialize_profile:
  **/
 static GBytes *
@@ -1789,8 +1611,6 @@ cd_icc_save_data (CdIcc *icc,
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 
-	_cd_context_lcms_pre26_start ();
-
 	/* convert profile kind */
 	for (i = 0; map_profile_kind[i].colord != CD_PROFILE_KIND_LAST; i++) {
 		if (map_profile_kind[i].colord == priv->kind) {
@@ -1861,14 +1681,12 @@ cd_icc_save_data (CdIcc *icc,
 						       error);
 		if (!ret)
 			goto out;
-#ifdef HAVE_LCMS_GET_HEADER_CREATOR
 		ret = cd_util_write_tag_localized (icc,
 						   cmsSigProfileDescriptionMLTag,
 						   priv->mluc_data[CD_MLUC_DESCRIPTION],
 						   error);
 		if (!ret)
 			goto out;
-#endif
 		ret = cd_util_write_tag_ascii_default (icc,
 						       cmsSigCopyrightTag,
 						       priv->mluc_data[CD_MLUC_COPYRIGHT],
@@ -1924,20 +1742,8 @@ cd_icc_save_data (CdIcc *icc,
 				     "failed to compute profile id");
 		goto out;
 	}
-
-	/* LCMS2 doesn't serialize some tags properly when using the function
-	 * cmsSaveProfileToMem() twice, so until lcms 2.6 is released we have to
-	 * use a fallback version which uses a temporary file.
-	 * See https://github.com/mm2/Little-CMS/commit/1d2643cb8153c48dcfdee3d5cda43a38f7e719e2
-	 * for the fix. */
-	if (cd_icc_check_lcms2_MemoryWrite ()) {
-		data = cd_icc_serialize_profile (icc, error);
-	} else {
-		g_debug ("Using file serialization due to bad MemoryWrite.");
-		data = cd_icc_serialize_profile_fallback (icc, error);
-	}
+	data = cd_icc_serialize_profile (icc, error);
 out:
-	_cd_context_lcms_pre26_stop ();
 	if (dict != NULL)
 		cmsDictFree (dict);
 	return data;
@@ -2710,8 +2516,6 @@ cd_icc_get_mluc_data (CdIcc *icc,
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
-	_cd_context_lcms_pre26_start ();
-
 	/* does cache entry exist already? */
 	locale_key = cd_icc_get_locale_key (locale);
 	value = g_hash_table_lookup (priv->mluc_data[mluc], locale_key);
@@ -2797,7 +2601,6 @@ cd_icc_get_mluc_data (CdIcc *icc,
 			     tmp);
 	value = tmp;
 out:
-	_cd_context_lcms_pre26_stop ();
 	return value;
 }
 
@@ -3211,8 +3014,6 @@ cd_icc_create_default (CdIcc *icc, GError **error)
 	CdIccPrivate *priv = icc->priv;
 	gboolean ret = TRUE;
 
-	_cd_context_lcms_pre26_start ();
-
 	/* not loaded */
 	if (priv->lcms_profile != NULL) {
 		ret = FALSE;
@@ -3247,7 +3048,6 @@ cd_icc_create_default (CdIcc *icc, GError **error)
 			     CD_PROFILE_METADATA_STANDARD_SPACE,
 			     cd_standard_space_to_string (CD_STANDARD_SPACE_SRGB));
 out:
-	_cd_context_lcms_pre26_stop ();
 	return ret;
 }
 
@@ -3344,8 +3144,6 @@ cd_icc_create_from_edid (CdIcc *icc,
 	cmsToneCurve *transfer_curve[3] = { NULL, NULL, NULL };
 	gboolean ret = FALSE;
 
-	_cd_context_lcms_pre26_start ();
-
 	/* not loaded */
 	if (priv->lcms_profile != NULL) {
 		g_set_error_literal (error,
@@ -3403,7 +3201,6 @@ cd_icc_create_from_edid (CdIcc *icc,
 	/* success */
 	ret = TRUE;
 out:
-	_cd_context_lcms_pre26_stop ();
 	if (transfer_curve[0] != NULL)
 		cmsFreeToneCurve (transfer_curve[0]);
 	return ret;
@@ -3433,8 +3230,6 @@ cd_icc_get_vcgt (CdIcc *icc, guint size, GError **error)
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 	g_return_val_if_fail (icc->priv->lcms_profile != NULL, NULL);
 
-	_cd_context_lcms_pre26_start ();
-
 	/* get tone curves from icc */
 	vcgt = cmsReadTag (icc->priv->lcms_profile, cmsSigVcgtType);
 	if (vcgt == NULL || vcgt[0] == NULL) {
@@ -3457,7 +3252,6 @@ cd_icc_get_vcgt (CdIcc *icc, guint size, GError **error)
 		g_ptr_array_add (array, tmp);
 	}
 out:
-	_cd_context_lcms_pre26_stop ();
 	return array;
 }
 
@@ -3489,8 +3283,6 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 	guint i;
 	_cleanup_free_ gdouble *values_in = NULL;
 	_cleanup_free_ gdouble *values_out = NULL;
-
-	_cd_context_lcms_pre26_start ();
 
 	/* run through the icc */
 	colorspace = cd_icc_get_colorspace (icc);
@@ -3559,7 +3351,6 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 		g_ptr_array_add (array, data);
 	}
 out:
-	_cd_context_lcms_pre26_stop ();
 	if (transform != NULL)
 		cmsDeleteTransform (transform);
 	if (srgb_profile != NULL)
@@ -3593,8 +3384,6 @@ cd_icc_set_vcgt (CdIcc *icc, GPtrArray *vcgt, GError **error)
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (icc->priv->lcms_profile != NULL, FALSE);
 
-	_cd_context_lcms_pre26_start ();
-
 	/* unwrap data */
 	red = g_new0 (guint16, vcgt->len);
 	green = g_new0 (guint16, vcgt->len);
@@ -3625,7 +3414,6 @@ cd_icc_set_vcgt (CdIcc *icc, GPtrArray *vcgt, GError **error)
 		goto out;
 	}
 out:
-	_cd_context_lcms_pre26_stop ();
 	for (i = 0; i < 3; i++)
 		cmsFreeToneCurve (curve[i]);
 	return ret;
@@ -3969,8 +3757,6 @@ cd_icc_get_warnings (CdIcc *icc)
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 	g_return_val_if_fail (priv->lcms_profile != NULL, NULL);
 
-	_cd_context_lcms_pre26_start ();
-
 	flags = g_array_new (FALSE, FALSE, sizeof (CdProfileWarning));
 
 	/* check that the profile has a description and a copyright */
@@ -4024,7 +3810,6 @@ cd_icc_get_warnings (CdIcc *icc)
 	if (warning != CD_PROFILE_WARNING_NONE)
 		g_array_append_val (flags, warning);
 out:
-	_cd_context_lcms_pre26_stop ();
 	return flags;
 }
 

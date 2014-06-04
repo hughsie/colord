@@ -35,10 +35,6 @@ void		 cd_context_lcms_error_clear	(gpointer	 ctx);
 gboolean	 cd_context_lcms_error_check	(gpointer	 ctx,
 						 GError		**error);
 
-/* not part of the API */
-void		_cd_context_lcms_pre26_start	(void);
-void		_cd_context_lcms_pre26_stop	(void);
-
 G_END_DECLS
 
 #endif /* __CD_CONTEXT_PRIVATE_H */

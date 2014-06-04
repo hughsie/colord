@@ -659,8 +659,6 @@ cd_transform_process (CdTransform *transform,
 	g_return_val_if_fail (height != 0, FALSE);
 	g_return_val_if_fail (rowstride != 0, FALSE);
 
-	_cd_context_lcms_pre26_start ();
-
 	/* check stuff that should have been set */
 	if (priv->rendering_intent == CD_RENDERING_INTENT_UNKNOWN) {
 		ret = FALSE;
@@ -740,7 +738,6 @@ cd_transform_process (CdTransform *transform,
 		p_out += rowstride * rows_to_process * priv->bpp_output;
 	}
 out:
-	_cd_context_lcms_pre26_stop ();
 	if (pool != NULL)
 		g_thread_pool_free (pool, FALSE, TRUE);
 	return ret;
