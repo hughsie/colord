@@ -63,7 +63,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:color_select]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -77,7 +83,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][1:color_select]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -91,7 +103,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:multiplier_value]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -105,7 +123,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][1:multiplier_value]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -119,7 +143,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:integral_time]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -133,7 +163,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:integral_time]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -147,7 +183,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:major][2:minor][2:micro]
  *
- * This command is available in bootloader and firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ✓
+ * ColorHug2      |      ✓       |      ✓
+ * ColorHug+      |      ✓       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -171,7 +213,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:index]
  * OUT: [1:retval][1:cmd][2*9:matrix_value][1:types][23:description]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -185,7 +233,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:index][4*9:matrix_value][1:types][23:description]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -199,7 +253,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:serial_number]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -213,7 +273,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][4:serial_number]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -227,7 +293,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:led_state]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -245,7 +317,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][1:led_state][1:repeat][1:on-time][1:off-time]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -259,7 +337,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:red][2:green][2:blue]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -275,7 +359,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:red][2:green][2:blue]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -289,7 +379,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][60:owner-name]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -303,7 +399,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][60:owner-name]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -317,7 +419,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][60:owner-email]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -331,7 +439,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][60:owner-email]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -345,7 +459,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][8:eeprom_magic]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -359,7 +479,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:count]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -376,7 +502,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -399,7 +531,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:calibration-index]
  * OUT: [1:retval][1:cmd][4:red][4:green][4:blue]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -416,7 +554,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:addr]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.31
  **/
@@ -431,7 +575,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:vref]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.31
  **/
@@ -446,7 +596,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:vref]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.31
  **/
@@ -462,7 +618,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:red-idx][2:green-idx][2:blue-idx]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.31
  **/
@@ -476,7 +638,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:red-idx][2:green-idx][2:blue-idx]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.31
  **/
@@ -490,7 +658,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd] (but with success the device will disconnect)
  *
- * This command is available in bootloader and firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ✓
+ * ColorHug2      |      ✓       |      ✓
+ * ColorHug+      |      ✓       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -504,7 +678,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:address][1:length]
  * OUT: [1:retval][1:cmd][1:checksum][1-60:data]
  *
- * This command is only available in bootloader mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ×
+ * ColorHug2      |      ✓       |      ×
+ * ColorHug+      |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
@@ -520,7 +700,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:address][2:length]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in bootloader mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ×
+ * ColorHug2      |      ✓       |      ×
+ * ColorHug+      |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
@@ -535,7 +721,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:address][1:length][1:checksum][1-32:data]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in bootloader mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ×
+ * ColorHug2      |      ✓       |      ×
+ * ColorHug+      |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
@@ -549,7 +741,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in bootloader mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ×
+ * ColorHug2      |      ✓       |      ×
+ * ColorHug+      |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
@@ -576,8 +774,15 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][1:success]
  * OUT: [1:retval][1:cmd]
  *
- * This command is available in bootloader and firmware mode, although
- * different values of @success are permitted in each.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ✓
+ * ColorHug2      |      ✓       |      ✓
+ * ColorHug+      |      ✓       |      ✓
+
+ * Different values of @success are permitted in each mode.
  *
  * Since: 0.1.29
  **/
@@ -591,7 +796,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:scale]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -605,7 +816,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][4:scale]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -619,7 +836,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:scale]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -633,7 +856,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][4:scale]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -659,7 +888,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][6*2:types]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -673,7 +908,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][6*2:types]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -693,7 +934,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:hw_version]
  *
- * This command is available in bootloader and firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ✓
+ * ColorHug2      |      ✓       |      ✓
+ * ColorHug+      |      ✓       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -715,7 +962,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][30:reading_array]
  *
- * This command is available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -736,7 +989,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:pcb_errata]
  * OUT: [1:retval][1:cmd]
  *
- * This command is available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -750,7 +1009,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][2:pcb_errata]
  *
- * This command is available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -766,7 +1031,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][20:sha1_hash]
  * OUT: [1:retval][1:cmd]
  *
- * This command is available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -781,7 +1052,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][20:sha1_hash]
  *
- * This command is available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -797,7 +1074,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][1:measure_mode]
  * OUT: [1:retval][1:cmd]
  *
- * This command is available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -811,7 +1094,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:measure_mode]
  *
- * This command is available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ✓
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -825,7 +1114,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:address][1:length]
  * OUT: [1:retval][1:cmd][1-60:data]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -839,7 +1134,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][2:address][1:length][1-60:data]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -853,7 +1154,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:temperature]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ✓
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -867,7 +1174,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][4:value]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 1.1.6
  **/
@@ -881,7 +1194,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd][4:value]
  * OUT: [1:retval][1:cmd]
  *
- * This command is only available in firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
  *
  * Since: 1.1.6
  **/
@@ -896,7 +1215,13 @@ G_BEGIN_DECLS
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd]
  *
- * This command is available in bootloader and firmware mode.
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ✓       |      ✓
+ * ColorHug2      |      ✓       |      ✓
+ * ColorHug+      |      ✓       |      ✓
  *
  * Since: 0.1.29
  **/
