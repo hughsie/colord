@@ -112,6 +112,9 @@ ch_device_get_mode (GUsbDevice *device)
 	case CH_USB_PID_FIRMWARE:
 		state = CH_DEVICE_MODE_FIRMWARE;
 		break;
+	case CH_USB_PID_FIRMWARE2:
+		state = CH_DEVICE_MODE_FIRMWARE2;
+		break;
 	case CH_USB_PID_FIRMWARE_PLUS:
 		state = CH_DEVICE_MODE_FIRMWARE_PLUS;
 		break;
