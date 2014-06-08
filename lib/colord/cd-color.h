@@ -140,6 +140,8 @@ void		 cd_color_uvw_copy			(const CdColorUVW	*src,
 							 CdColorUVW		*dest);
 void		 cd_color_lab_copy			(const CdColorLab	*src,
 							 CdColorLab		*dest);
+gdouble		 cd_color_lab_delta_e76			(const CdColorLab	*p1,
+							 const CdColorLab	*p2);
 void		 cd_color_xyz_clear			(CdColorXYZ		*dest);
 void		 cd_color_rgb_copy			(const CdColorRGB	*src,
 							 CdColorRGB		*dest);

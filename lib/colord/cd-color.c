@@ -545,6 +545,25 @@ cd_color_lab_set (CdColorLab *dest, gdouble L, gdouble a, gdouble b)
 }
 
 /**
+ * cd_color_lab_delta_e76:
+ * @p1: Lab value 1
+ * @p2: Lab value 2
+ *
+ * Calculates the ΔE of two colors using the 1976 formula.
+ *
+ * Return value: distance metric, where JND ΔE ≈ 2.3
+ *
+ * Since: 0.1.32
+ **/
+gdouble
+cd_color_lab_delta_e76 (const CdColorLab *p1, const CdColorLab *p2)
+{
+	return sqrt (pow (p2->L - p1->L, 2) +
+		     pow (p2->a - p1->a, 2) +
+		     pow (p2->b - p1->b, 2));
+}
+
+/**
  * cd_color_yxy_set:
  * @dest: the destination color
  * @Y: component value
