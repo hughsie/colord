@@ -307,6 +307,7 @@ cd_sensor_load (CdSensor *sensor, GError **error)
 	gchar *path = NULL;
 	gchar *path_fallback = NULL;
 	GModule *handle;
+	const gchar *module_name;
 
 	/* no module */
 	if (sensor->priv->kind == CD_SENSOR_KIND_UNKNOWN) {
@@ -314,9 +315,20 @@ cd_sensor_load (CdSensor *sensor, GError **error)
 		goto out;
 	}
 
+	/* some modules are shared */
+	switch (sensor->priv->kind) {
+	case CD_SENSOR_KIND_COLORHUG:
+	case CD_SENSOR_KIND_COLORHUG2:
+		module_name = "colorhug";
+		break;
+	default:
+		module_name = cd_sensor_kind_to_string (sensor->priv->kind);
+		break;
+	}
+
 	/* can we load a module? */
 	backend_name = g_strdup_printf ("libcolord_sensor_%s." G_MODULE_SUFFIX,
-					cd_sensor_kind_to_string (sensor->priv->kind));
+					module_name);
 	path = g_build_filename (LIBDIR, "colord-sensors", backend_name, NULL);
 	g_debug ("Trying to load sensor driver: %s", path);
 	handle = g_module_open (path, G_MODULE_BIND_LOCAL);

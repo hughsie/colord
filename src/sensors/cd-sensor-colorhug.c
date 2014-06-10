@@ -365,12 +365,14 @@ cd_sensor_lock_async (CdSensor *sensor,
 	ch_device_queue_get_serial_number (priv->device_queue,
 					   priv->device,
 					   &state->serial_number);
-	ch_device_queue_set_integral_time (priv->device_queue,
-					   priv->device,
-					   CH_INTEGRAL_TIME_VALUE_MAX);
-	ch_device_queue_set_multiplier (priv->device_queue,
-					priv->device,
-					CH_FREQ_SCALE_100);
+	if (cd_sensor_get_kind (sensor) == CD_SENSOR_KIND_COLORHUG) {
+		ch_device_queue_set_integral_time (priv->device_queue,
+						   priv->device,
+						   CH_INTEGRAL_TIME_VALUE_MAX);
+		ch_device_queue_set_multiplier (priv->device_queue,
+						priv->device,
+						CH_FREQ_SCALE_100);
+	}
 	ch_device_queue_process_async (priv->device_queue,
 				       CH_DEVICE_QUEUE_PROCESS_FLAGS_NONE,
 				       state->cancellable,
