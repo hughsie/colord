@@ -48,7 +48,7 @@ typedef struct {
 static const CdEnumMatch enum_sensor_kind[] = {
 	{CD_SENSOR_KIND_UNKNOWN,			"unknown"},	/* fall though value */
 	{CD_SENSOR_KIND_COLORHUG,			"colorhug"},
-	{CD_SENSOR_KIND_COLORHUG_SPECTRO,		"colorhug-spectro"},
+	{CD_SENSOR_KIND_COLORHUG_PLUS,			"colorhug-plus"},
 	{CD_SENSOR_KIND_COLORIMTRE_HCFR,		"colorimtre-hcfr"},
 	{CD_SENSOR_KIND_COLOR_MUNKI_PHOTO,		"color-munki-photo"},
 	{CD_SENSOR_KIND_COLOR_MUNKI_SMILE,		"color-munki-smile"},
