@@ -362,8 +362,8 @@ cd_sensor_to_argyll_name (CdSensor *sensor)
 		return "GretagMacbeth Huey";
 	case CD_SENSOR_KIND_COLORHUG:
 		return "Hughski ColorHug";
-	case CD_SENSOR_KIND_COLORHUG_SPECTRO:
-		return "Hughski ColorHug Spectro";
+	case CD_SENSOR_KIND_COLORHUG_PLUS:
+		return "Hughski ColorHug+";
 	default:
 		break;
 	}
