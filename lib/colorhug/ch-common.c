@@ -134,6 +134,12 @@ ch_strerror (ChError error_enum)
 	case CH_ERROR_SELF_TEST_ADC_VREF:
 		str = "Self test failed: ADC Vref";
 		break;
+	case CH_ERROR_I2C_SLAVE_ADDRESS:
+		str = "I2C set slave address failed";
+		break;
+	case CH_ERROR_I2C_SLAVE_CONFIG:
+		str = "I2C set slave config failed";
+		break;
 	default:
 		str = "Unknown error, please report";
 		break;
