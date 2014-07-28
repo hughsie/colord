@@ -1174,6 +1174,16 @@ cd_profile_load_icc (CdProfile *profile,
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 
+	/* not a local profile */
+	if (profile->priv->filename == NULL) {
+		g_set_error (error,
+			     CD_PROFILE_ERROR,
+			     CD_PROFILE_ERROR_INTERNAL,
+			     "%s has no local instance",
+			     profile->priv->id);
+		return NULL;
+	}
+
 	/* load local instance */
 	icc_tmp = cd_icc_new ();
 	file = g_file_new_for_path (profile->priv->filename);
