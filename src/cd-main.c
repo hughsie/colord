@@ -2280,18 +2280,20 @@ cd_main_load_plugins (CdMainPrivate *priv)
 }
 
 /**
- * cd_main_check_duplicate_edids_for_output:
+ * cd_main_get_edid_for_output:
  **/
-static gchar *
-cd_main_check_duplicate_edids_for_output (const gchar *output_name)
+static CdEdid *
+cd_main_get_edid_for_output (const gchar *output_name)
 {
 	gboolean ret;
 	gsize len = 0;
+	_cleanup_bytes_unref_ GBytes *data = NULL;
 	_cleanup_error_free_ GError *error = NULL;
 	_cleanup_free_ gchar *edid_data = NULL;
 	_cleanup_free_ gchar *edid_fn = NULL;
 	_cleanup_free_ gchar *enabled_data = NULL;
 	_cleanup_free_ gchar *enabled_fn = NULL;
+	_cleanup_object_unref_ CdEdid *edid = NULL;
 
 	/* check output is actually an output */
 	enabled_fn = g_build_filename ("/sys/class/drm",
@@ -2323,10 +2325,32 @@ cd_main_check_duplicate_edids_for_output (const gchar *output_name)
 		return NULL;
 	}
 
-	/* simple MD5 checksum */
-	return g_compute_checksum_for_data (G_CHECKSUM_MD5,
-					    (const guchar *) edid_data,
-					    len);
+	/* parse EDID */
+	edid = cd_edid_new ();
+	data = g_bytes_new (edid_data, len);
+	if (!cd_edid_parse (edid, data, &error)) {
+		g_warning ("failed to get edid data: %s", error->message);
+		return NULL;
+	}
+	return g_object_ref (edid);
+}
+
+/**
+ * cd_main_get_display_id:
+ **/
+static gchar *
+cd_main_get_display_id (CdEdid *edid)
+{
+	GString *device_id;
+
+	device_id = g_string_new ("xrandr");
+	if (cd_edid_get_vendor_name (edid) != NULL)
+		g_string_append_printf (device_id, "-%s", cd_edid_get_vendor_name (edid));
+	if (cd_edid_get_monitor_name (edid) != NULL)
+		g_string_append_printf (device_id, "-%s", cd_edid_get_monitor_name (edid));
+	if (cd_edid_get_serial_number (edid) != NULL)
+		g_string_append_printf (device_id, "-%s", cd_edid_get_serial_number (edid));
+	return g_string_free (device_id, FALSE);
 }
 
 /**
@@ -2336,9 +2360,7 @@ static gboolean
 cd_main_check_duplicate_edids (void)
 {
 	const gchar *fn;
-	const gchar *old_output;
 	gboolean use_xrandr_mode = FALSE;
-	gchar *checksum;
 	_cleanup_dir_close_ GDir *dir;
 	_cleanup_hashtable_unref_ GHashTable *hash = NULL;
 
@@ -2347,19 +2369,24 @@ cd_main_check_duplicate_edids (void)
 		return FALSE;
 
 	/* read all the outputs in /sys/class/drm and search for duplicates */
-	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	while (!use_xrandr_mode && (fn = g_dir_read_name (dir)) != NULL) {
-		checksum = cd_main_check_duplicate_edids_for_output (fn);
-		if (checksum == NULL)
+		gpointer old_output;
+		_cleanup_object_unref_ CdEdid *edid = NULL;
+		edid = cd_main_get_edid_for_output (fn);
+		if (edid == NULL)
 			continue;
-		g_debug ("display %s has EDID %s", fn, checksum);
-		old_output = g_hash_table_lookup (hash, checksum);
+		g_debug ("display %s has ID '%s' from MD5 %s",
+			 fn, cd_main_get_display_id (edid),
+			 cd_edid_get_checksum (edid));
+		old_output = g_hash_table_lookup (hash, cd_edid_get_checksum (edid));
 		if (old_output != NULL) {
-			g_debug ("output %s and %s have duplicate EDID",
-				 old_output, fn);
+			g_debug ("output %s has duplicate EDID", fn);
 			use_xrandr_mode = TRUE;
 		}
-		g_hash_table_insert (hash, checksum, g_strdup (fn));
+		g_hash_table_insert (hash,
+				     g_strdup (cd_main_get_display_id (edid)),
+				     GINT_TO_POINTER (1));
 	}
 	return use_xrandr_mode;
 }
