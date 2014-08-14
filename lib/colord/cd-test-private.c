@@ -1989,6 +1989,30 @@ colord_edid_func (void)
 	g_assert_cmpfloat (cd_edid_get_gamma (edid), <, 2.2f + 0.01);
 	g_free (data);
 
+	/* Dell external Panel */
+	filename = cd_test_get_filename ("DELL-U2713H.bin");
+	g_assert (filename != NULL);
+	ret = g_file_get_contents (filename, &data, &length, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	data_edid = g_bytes_new (data, length);
+	ret = cd_edid_parse (edid, data_edid, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_free (filename);
+	g_bytes_unref (data_edid);
+	g_assert_cmpstr (cd_edid_get_monitor_name (edid), ==, "DELL U2713H");
+	g_assert_cmpstr (cd_edid_get_vendor_name (edid), ==, "Dell");
+	g_assert_cmpstr (cd_edid_get_serial_number (edid), ==, "C6F0K34T1CWL");
+	g_assert_cmpstr (cd_edid_get_eisa_id (edid), ==, NULL);
+	g_assert_cmpstr (cd_edid_get_checksum (edid), ==, "ac6dab5272cfbd2e87dd9c635f4c0e9d");
+	g_assert_cmpstr (cd_edid_get_pnp_id (edid), ==, "DEL");
+	g_assert_cmpint (cd_edid_get_height (edid), ==, 34);
+	g_assert_cmpint (cd_edid_get_width (edid), ==, 60);
+	g_assert_cmpfloat (cd_edid_get_gamma (edid), >=, 2.2f - 0.01);
+	g_assert_cmpfloat (cd_edid_get_gamma (edid), <, 2.2f + 0.01);
+	g_free (data);
+
 	g_object_unref (edid);
 }
 

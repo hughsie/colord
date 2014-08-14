@@ -1,4 +1,5 @@
 test_files =						\
+	DELL-U2713H.bin.bin				\
 	LG-L225W-External.bin				\
 	Lenovo-T61-Internal.bin				\
 	calibration.ccmx				\
