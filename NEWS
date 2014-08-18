@@ -1,3 +1,18 @@
+Version 1.2.2
+~~~~~~~~~~~~~
+Released: 2014-08-18
+
+New Features:
+ - Add a helper to calculate the ΔE of two colors (Richard Hughes)
+ - Bump the lcms2 dep to 2.6 (Richard Hughes)
+ - Use the ColorHug sensor driver for the ColorHug2 hardware (Richard Hughes)
+
+Bugfixes:
+ - Actually parse the EDID for better duplicate detection (Richard Hughes)
+ - Actually write a file when using cd_icc_save_default() (Richard Hughes)
+ - Do not try to return a CdIcc instance for virtual profiles (Richard Hughes)
+ - Use __attribute__(cleanup) to simplify memory cleanup (Richard Hughes)
+
 Version 1.2.1
 ~~~~~~~~~~~~~
 Released: 2014-05-23
