@@ -1652,7 +1652,7 @@ colord_device_async_func (void)
 	GError *error = NULL;
 	GHashTable *device_props;
 	const gchar *device_name = "device_async_dave";
-	gchar *device_path;
+	gchar *device_path, *device_path_nouid;
 	struct passwd *user_details;
 
 	/* no running colord to use */
@@ -1666,6 +1666,8 @@ colord_device_async_func (void)
 				      device_name,
 				      user_details->pw_name,
 				      user_details->pw_uid);
+	device_path_nouid = g_strdup_printf("/org/freedesktop/ColorManager/devices/%s",
+				            device_name);
 
 	client = cd_client_new ();
 
@@ -1700,9 +1702,16 @@ colord_device_async_func (void)
 
 	/* set a property in another instance */
 	device_tmp = cd_device_new_with_object_path (device_path);
-	ret = cd_device_connect_sync (device_tmp, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (ret);
+	ret = cd_device_connect_sync (device_tmp, NULL, NULL);
+	if (!ret) {
+		g_object_unref (device_tmp);
+		g_free (device_path);
+		device_tmp = cd_device_new_with_object_path (device_path_nouid);
+		device_path = device_path_nouid;
+		ret = cd_device_connect_sync (device_tmp, NULL, &error);
+		g_assert_no_error (error);
+		g_assert (ret);
+	}
 	ret = cd_device_set_model_sync (device_tmp, "Cray", NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -2252,7 +2261,8 @@ colord_device_seat_func (void)
 	/* check the seat */
 #ifdef HAVE_LIBSYSTEMD_LOGIN
 	tmp = cd_device_get_seat (device);
-	g_assert_cmpstr (tmp, ==, "seat0");
+	if (tmp)
+		g_assert_cmpstr (tmp, ==, "seat0");
 #endif
 
 	/* delete device */
