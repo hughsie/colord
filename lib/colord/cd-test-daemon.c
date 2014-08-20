@@ -27,6 +27,7 @@
 #include <glib-object.h>
 #include <pwd.h>
 
+#include "cd-cleanup.h"
 #include "cd-client.h"
 #include "cd-client-sync.h"
 #include "cd-device.h"
@@ -1645,15 +1646,15 @@ colord_device_connect_cb (GObject *object, GAsyncResult *res, gpointer user_data
 static void
 colord_device_async_func (void)
 {
-	CdClient *client;
 	CdDevice *device;
 	CdDevice *device_tmp;
 	gboolean ret;
 	GError *error = NULL;
 	GHashTable *device_props;
 	const gchar *device_name = "device_async_dave";
-	gchar *device_path;
 	struct passwd *user_details;
+	_cleanup_free_ gchar *device_path = NULL;
+	_cleanup_object_unref_ CdClient *client = NULL;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -1701,8 +1702,19 @@ colord_device_async_func (void)
 	/* set a property in another instance */
 	device_tmp = cd_device_new_with_object_path (device_path);
 	ret = cd_device_connect_sync (device_tmp, NULL, &error);
+	if (g_error_matches (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_INTERNAL)) {
+		g_clear_error (&error);
+		/* try this again, with the chroot-ized version */
+		g_free (device_path);
+		device_path = g_strdup_printf ("/org/freedesktop/ColorManager/devices/%s",
+					       device_name);
+		g_object_unref (device_tmp);
+		device_tmp = cd_device_new_with_object_path (device_path);
+		ret = cd_device_connect_sync (device_tmp, NULL, &error);
+	}
 	g_assert_no_error (error);
 	g_assert (ret);
+
 	ret = cd_device_set_model_sync (device_tmp, "Cray", NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -1714,9 +1726,6 @@ colord_device_async_func (void)
 	g_assert_no_error (error);
 	g_assert (ret);
 	g_object_unref (device_tmp);
-
-	g_object_unref (client);
-	g_free(device_path);
 }
 
 static void
