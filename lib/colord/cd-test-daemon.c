@@ -2252,7 +2252,8 @@ colord_device_seat_func (void)
 	/* check the seat */
 #ifdef HAVE_LIBSYSTEMD_LOGIN
 	tmp = cd_device_get_seat (device);
-	g_assert_cmpstr (tmp, ==, "seat0");
+	if (tmp)
+		g_assert_cmpstr (tmp, ==, "seat0");
 #endif
 
 	/* delete device */
