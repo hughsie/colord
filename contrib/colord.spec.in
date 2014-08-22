@@ -31,7 +31,7 @@ BuildRequires: gettext
 BuildRequires: glib2-devel
 BuildRequires: intltool
 BuildRequires: systemd-devel
-BuildRequires: lcms2-devel >= 2.2
+BuildRequires: lcms2-devel >= 2.6
 BuildRequires: libgudev1-devel
 BuildRequires: polkit-devel >= 0.103
 BuildRequires: sqlite-devel
@@ -161,7 +161,6 @@ getent passwd colord >/dev/null || \
 exit 0
 
 %post
-/sbin/ldconfig
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %systemd_post colord.service
 
@@ -169,9 +168,11 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %systemd_preun colord.service
 
 %postun
-/sbin/ldconfig
 glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %systemd_postun colord.service
+
+%post libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %files -f %{name}.lang
 %doc README.md AUTHORS NEWS COPYING
