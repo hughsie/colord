@@ -399,6 +399,9 @@ ch_device_mode_to_string (ChDeviceMode device_mode)
 	case CH_DEVICE_MODE_FIRMWARE2:
 		str = "firmware2";
 		break;
+	case CH_DEVICE_MODE_BOOTLOADER2:
+		str = "bootloader2";
+		break;
 	default:
 		str = "unknown";
 		break;

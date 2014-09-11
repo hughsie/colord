@@ -106,6 +106,9 @@ ch_device_get_mode (GUsbDevice *device)
 	case CH_USB_PID_BOOTLOADER:
 		state = CH_DEVICE_MODE_BOOTLOADER;
 		break;
+	case CH_USB_PID_BOOTLOADER2:
+		state = CH_DEVICE_MODE_BOOTLOADER2;
+		break;
 	case CH_USB_PID_BOOTLOADER_PLUS:
 		state = CH_DEVICE_MODE_BOOTLOADER_PLUS;
 		break;
