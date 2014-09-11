@@ -513,3 +513,71 @@ ch_device_write_command (GUsbDevice *device,
 
 	return helper.ret;
 }
+
+/**
+ * ch_device_check_firmware:
+ * @data: firmware binary data
+ * @data_len: size of @data
+ *
+ * Checks the firmware is suitable for the ColorHug device that is attached.
+ *
+ * Return value: %TRUE if the command was executed successfully.
+ *
+ * Since: 1.2.3
+ **/
+gboolean
+ch_device_check_firmware (GUsbDevice *device,
+			  const guint8 *data,
+			  gsize data_len,
+			  GError **error)
+{
+	ChDeviceMode device_mode_fw;
+
+	/* this is only a heuristic */
+	device_mode_fw = ch_device_mode_from_firmware (data, data_len);
+	switch (ch_device_get_mode (device)) {
+	case CH_DEVICE_MODE_LEGACY:
+	case CH_DEVICE_MODE_BOOTLOADER:
+	case CH_DEVICE_MODE_FIRMWARE:
+		/* fw versions < 1.2.2 has no magic bytes */
+		if (device_mode_fw == CH_DEVICE_MODE_FIRMWARE2 ||
+		    device_mode_fw == CH_DEVICE_MODE_FIRMWARE_PLUS) {
+			g_set_error (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_INVALID_VALUE,
+				     "This firmware is not designed for "
+				     "ColorHug (identifier is '%s')",
+				     ch_device_mode_to_string (device_mode_fw));
+			return FALSE;
+		}
+		break;
+	case CH_DEVICE_MODE_BOOTLOADER2:
+	case CH_DEVICE_MODE_FIRMWARE2:
+		if (device_mode_fw != CH_DEVICE_MODE_FIRMWARE2) {
+			g_set_error (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_INVALID_VALUE,
+				     "This firmware is not designed for "
+				     "ColorHug2 (identifier is '%s')",
+				     ch_device_mode_to_string (device_mode_fw));
+			return FALSE;
+		}
+		break;
+	case CH_DEVICE_MODE_BOOTLOADER_PLUS:
+	case CH_DEVICE_MODE_FIRMWARE_PLUS:
+		if (device_mode_fw != CH_DEVICE_MODE_FIRMWARE_PLUS) {
+			g_set_error (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_INVALID_VALUE,
+				     "This firmware is not designed for "
+				     "ColorHug+ (identifier is '%s')",
+				     ch_device_mode_to_string (device_mode_fw));
+			return FALSE;
+		}
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
+	}
+	return TRUE;
+}

@@ -63,6 +63,11 @@ gboolean	 ch_device_write_command	(GUsbDevice	*device,
 						 GCancellable	*cancellable,
 						 GError		**error)
 						 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 ch_device_check_firmware	(GUsbDevice	*device,
+						 const guint8	*data,
+						 gsize		 data_len,
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 
