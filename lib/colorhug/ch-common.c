@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include <glib.h>
+#include <string.h>
 
 #include "ch-common.h"
 
@@ -407,4 +408,32 @@ ch_device_mode_to_string (ChDeviceMode device_mode)
 		break;
 	}
 	return str;
+}
+
+/**
+ * ch_device_mode_from_firmware:
+ * @data: firmware binary data
+ * @data_len: size of @data
+ *
+ * Gets the device mode from the unique code stored in the firmware data.
+ * The firmware identifier has been present since colorhug-1.2.2.bin for
+ * ColorHug and all firmware versions for ColorHug2 and ColorHug+.
+ *
+ * Return value: A #ChDeviceMode
+ *
+ * Since: 1.2.3
+ **/
+ChDeviceMode
+ch_device_mode_from_firmware (const guint8 *data, gsize data_len)
+{
+	gsize i;
+	for (i = 0; i < data_len - 8; i++) {
+		if (memcmp (data + i, CH_FIRMWARE_ID_TOKEN1, 8) == 0)
+			return CH_DEVICE_MODE_FIRMWARE;
+		if (memcmp (data + i, CH_FIRMWARE_ID_TOKEN2, 8) == 0)
+			return CH_DEVICE_MODE_FIRMWARE2;
+		if (memcmp (data + i, CH_FIRMWARE_ID_TOKEN_PLUS, 8) == 0)
+			return CH_DEVICE_MODE_FIRMWARE_PLUS;
+	}
+	return CH_DEVICE_MODE_UNKNOWN;
 }

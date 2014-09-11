@@ -1230,6 +1230,9 @@ G_BEGIN_DECLS
 
 /* secret code */
 #define	CH_WRITE_EEPROM_MAGIC			"Un1c0rn2"
+#define	CH_FIRMWARE_ID_TOKEN1			"40338ceb"
+#define	CH_FIRMWARE_ID_TOKEN2			"2082b5e0"
+#define	CH_FIRMWARE_ID_TOKEN_PLUS		"6d6f05a9"
 
 /* input and output buffer offsets */
 #define	CH_BUFFER_INPUT_CMD			0x00
@@ -1374,6 +1377,8 @@ const gchar	*ch_multiplier_to_string	(ChFreqScale	 multiplier);
 const gchar	*ch_color_select_to_string	(ChColorSelect	 color_select);
 const gchar	*ch_measure_mode_to_string	(ChMeasureMode	 measure_mode);
 const gchar	*ch_device_mode_to_string	(ChDeviceMode	 device_mode);
+ChDeviceMode	 ch_device_mode_from_firmware	(const guint8	*data,
+						 gsize		 data_len);
 
 G_END_DECLS
 

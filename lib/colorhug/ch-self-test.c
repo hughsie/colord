@@ -1205,6 +1205,37 @@ out:
 		g_object_unref (device);
 }
 
+/**
+ * ch_test_firmware_func:
+ *
+ * This tests the firmware detection.
+ */
+static void
+ch_test_firmware_func (void)
+{
+	ChDeviceMode device_mode;
+	guint8 firmware_data[1024];
+	guint i;
+
+	/* set to something predictable */
+	for (i = 0; i < sizeof(firmware_data); i++)
+		firmware_data[i] = i % 255;
+
+	/* test with no firmware ID */
+	device_mode = ch_device_mode_from_firmware (firmware_data, 1024);
+	g_assert_cmpint (device_mode, ==, CH_DEVICE_MODE_UNKNOWN);
+
+	/* test with V1 signature */
+	memcpy (firmware_data + 64, CH_FIRMWARE_ID_TOKEN1, 8);
+	device_mode = ch_device_mode_from_firmware (firmware_data, 1024);
+	g_assert_cmpint (device_mode, ==, CH_DEVICE_MODE_FIRMWARE);
+
+	/* test with V2 signature */
+	memcpy (firmware_data + 64, CH_FIRMWARE_ID_TOKEN2, 8);
+	device_mode = ch_device_mode_from_firmware (firmware_data, 1024);
+	g_assert_cmpint (device_mode, ==, CH_DEVICE_MODE_FIRMWARE2);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1224,6 +1255,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/ColorHug/reading", ch_test_reading_func);
 	g_test_add_func ("/ColorHug/reading-xyz", ch_test_reading_xyz_func);
 	g_test_add_func ("/ColorHug/device-incomplete-request", ch_test_incomplete_request_func);
+	g_test_add_func ("/ColorHug/firmware", ch_test_firmware_func);
 
 	return g_test_run ();
 }
