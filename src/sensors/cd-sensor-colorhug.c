@@ -133,6 +133,9 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 
 	/* no hardware support */
 	switch (cap) {
+	case CD_SENSOR_CAP_CALIBRATION:
+		calibration_index = CH_CALIBRATION_INDEX_FACTORY_ONLY;
+		break;
 	case CD_SENSOR_CAP_LCD:
 		calibration_index = CH_CALIBRATION_INDEX_LCD;
 		break;
@@ -650,10 +653,10 @@ gboolean
 cd_sensor_coldplug (CdSensor *sensor, GError **error)
 {
 	CdSensorColorhugPrivate *priv;
-	guint64 caps = cd_bitfield_from_enums (CD_SENSOR_CAP_LCD, -1);
+	guint64 caps = cd_bitfield_from_enums (CD_SENSOR_CAP_CALIBRATION,
+					       CD_SENSOR_CAP_LCD, -1);
 	g_object_set (sensor,
 		      "native", TRUE,
-		      "kind", CD_SENSOR_KIND_COLORHUG,
 		      "caps", caps,
 		      NULL);
 	/* create private data */
