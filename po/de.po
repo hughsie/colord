@@ -8,14 +8,15 @@
 # Christian Kirbach <christian.kirbach@gmail.com>, 2013
 # Christoph Brill <egore911@googlemail.com>, 2013
 # jwildeboer <jan.wildeboer@gmx.de>, 2013
+# jwildeboer <jan.wildeboer@gmx.de>, 2013
 # Matthias Vogelgesang <matthias.vogelgesang@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-31 09:13+0100\n"
-"PO-Revision-Date: 2014-03-31 08:13+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-09-12 16:17+0100\n"
+"PO-Revision-Date: 2014-09-10 17:30+0000\n"
+"Last-Translator: Christian <Christian.Kirbach@googlemail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/colord/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -112,11 +113,11 @@ msgstr "Programm zum Ablegen des ICC-Farbprofils"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Ein CMF aus CSV-Daten erstellen"
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "Ein Spektrum aus CSV-Daten erstellen"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -367,15 +368,15 @@ msgstr "Zeige Client- und Daemonversionen an"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Den Wert ohne Kopfzeile anzeigen"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Objekteigenschaften beim Anzeigen filtern"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "Alle Fehlerdiagnosedaten in eine Datei schreiben"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -644,7 +645,7 @@ msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr ""
+msgstr "Dieses Profil wurde mit einer Helligkeits-Gammakurve entworfen. Dies bedeutet, dass der Bildschirm auf die gleiche Weise kalibriert werden muss. Dieses Profil ist nur für fortgeschrittene Benutzer nützlich und nicht für den allgemeinen Gebrauch empfohlen."
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored

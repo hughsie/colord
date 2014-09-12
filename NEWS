@@ -1,3 +1,16 @@
+Version 1.2.3
+~~~~~~~~~~~~~
+Released: 2014-09-12
+
+New Features:
+ - colorhug: Add ch_device_check_firmware() (Richard Hughes)
+ - colorhug: Add ch_device_mode_from_firmware() (Richard Hughes)
+ - colorhug: Use a different PID for the ColorHug2 bootloader (Richard Hughes)
+
+Bugfixes:
+ - Fix the device path to allow uid or username to be omitted (Iain Lane)
+ - There is no seat if running in a chroot (Iain Lane)
+
 Version 1.2.2
 ~~~~~~~~~~~~~
 Released: 2014-08-18
