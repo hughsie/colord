@@ -179,7 +179,7 @@ out:
  * @it8_ccmx: The calculated correction matrix
  * @error: A #GError, or %NULL
  *
- * This calculates the colorimter correction matrix using the Four-Color
+ * This calculates the colorimeter correction matrix using the Four-Color
  * Matrix Method by Yoshihiro Ohno and Jonathan E. Hardis, 1997.
  *
  * Return value: %TRUE if a correction matrix was found.
