@@ -57,6 +57,16 @@ void		 cd_vec3_init			(CdVec3			*dest,
 						 gdouble		 v0,
 						 gdouble		 v1,
 						 gdouble		 v2);
+void		 cd_mat33_init			(CdMat3x3		*dest,
+						 gdouble		 m00,
+						 gdouble		 m01,
+						 gdouble		 m02,
+						 gdouble		 m10,
+						 gdouble		 m11,
+						 gdouble		 m12,
+						 gdouble		 m20,
+						 gdouble		 m21,
+						 gdouble		 m22);
 void		 cd_mat33_clear			(const CdMat3x3		*src);
 gchar		*cd_mat33_to_string		(const CdMat3x3		*src);
 gdouble		*cd_mat33_get_data		(const CdMat3x3		*src);

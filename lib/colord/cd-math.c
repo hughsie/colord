@@ -184,6 +184,40 @@ cd_vec3_squared_error (const CdVec3 *src1, const CdVec3 *src2)
 }
 
 /**
+ * cd_mat33_init:
+ * @dest: the destination matrix
+ * @m00: component value
+ * @m01: component value
+ * @m02: component value
+ * @m10: component value
+ * @m11: component value
+ * @m12: component value
+ * @m20: component value
+ * @m21: component value
+ * @m22: component value
+ *
+ * Initialises a matrix.
+ **/
+void
+cd_mat33_init (CdMat3x3 *dest,
+	       gdouble m00, gdouble m01, gdouble m02,
+	       gdouble m10, gdouble m11, gdouble m12,
+	       gdouble m20, gdouble m21, gdouble m22)
+{
+	g_return_if_fail (dest != NULL);
+
+	dest->m00 = m00;
+	dest->m01 = m01;
+	dest->m02 = m02;
+	dest->m10 = m10;
+	dest->m11 = m11;
+	dest->m12 = m12;
+	dest->m20 = m20;
+	dest->m21 = m21;
+	dest->m22 = m22;
+}
+
+/**
  * cd_mat33_clear:
  * @src: the source
  *
