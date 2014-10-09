@@ -125,11 +125,13 @@ AC_SUBST(LIBM)
 GLIB_GSETTINGS
 
 # check for PIE (position independent executable) support
-AX_CHECK_COMPILE_FLAG([-fPIE],
-		      [AX_CHECK_LINK_FLAG([-fPIE -pie],
-					  [PIE_CFLAGS="-fPIE" PIE_LDFLAGS="-pie"])])
-AC_SUBST(PIE_CFLAGS)
-AC_SUBST(PIE_LDFLAGS)
+if test x$with_pic != xno; then
+	AX_CHECK_COMPILE_FLAG([-fPIE],
+			      [AX_CHECK_LINK_FLAG([-fPIE -pie],
+						  [PIE_CFLAGS="-fPIE" PIE_LDFLAGS="-pie"])])
+	AC_SUBST(PIE_CFLAGS)
+	AC_SUBST(PIE_LDFLAGS)
+fi
 
 # check for full RELRO (relocation read-only) support
 AX_CHECK_LINK_FLAG([-Wl,-z,relro,-z,now],
