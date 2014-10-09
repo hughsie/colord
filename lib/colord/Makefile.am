@@ -8,6 +8,7 @@ endif
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)						\
 	$(LCMS_CFLAGS)						\
+	$(PIE_CFLAGS)						\
 	$(UDEV_CFLAGS)						\
 	-I$(top_srcdir)						\
 	-I$(top_srcdir)/lib					\
@@ -83,11 +84,13 @@ libcolordprivate_la_LIBADD =					\
 	$(LCMS_LIBS)						\
 	$(GLIB_LIBS)
 libcolordprivate_la_LDFLAGS =					\
+	$(PIE_LDFLAGS)						\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)	\
 	-export-dynamic						\
 	-no-undefined						\
 	-export-symbols-regex '^cd_.*'
 libcolordprivate_la_CFLAGS =					\
+	$(PIE_CFLAGS)						\
 	$(WARNINGFLAGS_C)
 
 libcolord_la_SOURCES =						\
@@ -109,6 +112,7 @@ libcolord_la_LDFLAGS =						\
 	-no-undefined						\
 	-export-symbols-regex '^cd_.*'
 libcolord_la_CFLAGS =						\
+	$(PIE_CFLAGS)						\
 	$(WARNINGFLAGS_C)
 
 pkgconfigdir = $(libdir)/pkgconfig
