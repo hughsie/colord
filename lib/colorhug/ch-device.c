@@ -161,9 +161,11 @@ typedef struct {
 	GCancellable		*cancellable;
 	GSimpleAsyncResult	*res;
 	guint8			*buffer;
+	guint8			*buffer_orig;
 	guint8			*buffer_out;
 	gsize			 buffer_out_len;
 	guint8			 cmd;
+	guint			 retried_cnt;
 } ChDeviceHelper;
 
 /**
@@ -210,8 +212,11 @@ ch_device_free_helper (ChDeviceHelper *helper)
 	g_object_unref (helper->device);
 	g_object_unref (helper->res);
 	g_free (helper->buffer);
+	g_free (helper->buffer_orig);
 	g_free (helper);
 }
+
+static void ch_device_request_cb (GObject *source_object, GAsyncResult *res, gpointer user_data);
 
 /**
  * ch_device_reply_cb:
@@ -252,12 +257,36 @@ ch_device_reply_cb (GObject *source_object,
 	    (actual_len != helper->buffer_out_len + CH_BUFFER_OUTPUT_DATA &&
 	     actual_len != CH_USB_HID_EP_SIZE)) {
 		error_enum = helper->buffer[CH_BUFFER_OUTPUT_RETVAL];
+
+		/* handle incomplete previous request */
+		if (error_enum == CH_ERROR_INCOMPLETE_REQUEST &&
+		    helper->retried_cnt == 0) {
+			helper->retried_cnt++;
+			memcpy (helper->buffer, helper->buffer_orig, CH_USB_HID_EP_SIZE);
+			if (g_getenv ("COLORHUG_VERBOSE") != NULL) {
+				ch_print_data_buffer ("request",
+						      helper->buffer,
+						      CH_USB_HID_EP_SIZE);
+			}
+			g_usb_device_interrupt_transfer_async (helper->device,
+							       CH_USB_HID_EP_OUT,
+							       helper->buffer,
+							       CH_USB_HID_EP_SIZE,
+							       CH_DEVICE_USB_TIMEOUT,
+							       helper->cancellable,
+							       ch_device_request_cb,
+							       helper);
+			/* we're re-using the helper, so don't deallocate it */
+			return;
+		}
+
 		msg = g_strdup_printf ("Invalid read: retval=0x%02x [%s] "
-				       "cmd=0x%02x (expected 0x%x [%s]) "
+				       "cmd=0x%02x [%s] (expected 0x%x [%s]) "
 				       "len=%" G_GSIZE_FORMAT " (expected %" G_GSIZE_FORMAT " or %i)",
 				       error_enum,
 				       ch_strerror (error_enum),
 				       helper->buffer[CH_BUFFER_OUTPUT_CMD],
+				       ch_command_to_string (helper->buffer[CH_BUFFER_OUTPUT_CMD]),
 				       helper->cmd,
 				       ch_command_to_string (helper->cmd),
 				       actual_len,
@@ -417,6 +446,7 @@ ch_device_write_command_async (GUsbDevice *device,
 			buffer_in,
 			buffer_in_len);
 	}
+	helper->buffer_orig = g_memdup (helper->buffer, CH_USB_HID_EP_SIZE);
 
 	/* request */
 	if (g_getenv ("COLORHUG_VERBOSE") != NULL) {
