@@ -1,3 +1,15 @@
+Version 1.2.4
+~~~~~~~~~~~~~
+Released: 2014-10-12
+
+New Features:
+ - libcolord: Add cd_mat33_init() helper function (Richard Hughes)
+ - libcolorhug: Retry the command if the response is incomplete (Richard Hughes)
+
+Bugfixes:
+ - Don't enable PIE support when --without-pic is specified (Richard Hughes)
+ - libcolord: Build with PIE enabled (Richard Hughes)
+
 Version 1.2.3
 ~~~~~~~~~~~~~
 Released: 2014-09-12
