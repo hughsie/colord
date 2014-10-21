@@ -1176,8 +1176,8 @@ ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
 	calibration = cd_it8_get_matrix (ccmx);
 	calibration_tmp = cd_mat33_get_data (calibration);
 	for (i = 0; i < 9; i++) {
-		if (calibration_tmp[i] < -10.0f ||
-		    calibration_tmp[i] > 10.0f) {
+		if (calibration_tmp[i] < -100.0f ||
+		    calibration_tmp[i] > 100.0f) {
 			g_set_error (error, 1, 0,
 				     "Matrix value %i out of range %f",
 				     i, calibration_tmp[i]);
