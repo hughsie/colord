@@ -1,6 +1,7 @@
 iconsdir = $(datadir)/colord/icons
 icons_DATA = 	 				\
 	colorhug-attach.svg			\
+	colorhug2-attach.svg			\
 	dtp94-attach.svg			\
 	hcfr-attach.svg				\
 	huey-attach.svg				\
