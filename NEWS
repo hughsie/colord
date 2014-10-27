@@ -1,3 +1,17 @@
+Version 1.0.8
+~~~~~~~~~~~~~
+Released: 2013-10-27
+
+New Features:
+ - Use the ColorHug sensor driver for the ColorHug2 hardware (Richard Hughes)
+ - Add a branding-less ColorHug2 figure (Pascal de Bruijn)
+
+Bugfixes:
+ - Fix building the CMF spectra on OpenBSD/sparc64 (Richard Hughes)
+ - colorhug: Rename 'ColorHug Spectro' to 'ColorHug+' for trademark reasons (Richard Hughes)
+ - colorhug: Retry the command submission if the hardware response is incomplete (Richard Hughes)
+ - libcolord: Do not try to return a CdIcc instance for virtual profiles (Richard Hughes)
+
 Version 1.0.7
 ~~~~~~~~~~~~~
 Released: 2013-04-10
