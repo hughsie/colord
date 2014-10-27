@@ -470,7 +470,7 @@ cd_state_show_profile (CdState *state)
 	gdouble total_time = 0.0f;
 	guint i;
 	guint uncumalitive = 0;
-	_cleanup_string_free_ GString *result;
+	_cleanup_string_free_ GString *result = NULL;
 
 	/* get the total time so we can work out the divisor */
 	for (i = 0; i < state->priv->steps; i++)
@@ -492,7 +492,6 @@ cd_state_show_profile (CdState *state)
 					state->priv->step_profile[i] / division);
 	}
 	g_printerr ("\n\n%s-1 ] at %s\n\n", result->str, state->priv->id);
-	g_string_free (result, TRUE);
 }
 
 /**

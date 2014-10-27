@@ -1361,7 +1361,7 @@ cd_main_start_calibration (CdMainPrivate *priv,
 							   CD_SESSION_INTERACTION_MOVE_TO_SURFACE);
 			return TRUE;
 		}
-		g_propagate_error (error, error_local);
+		*error = g_error_copy (error_local);
 		return FALSE;
 	}
 
