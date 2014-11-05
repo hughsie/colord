@@ -1,3 +1,20 @@
+Version 1.1.8
+~~~~~~~~~~~~~
+Released: 2014-11-05
+
+New Features:
+ - Add a branding-less ColorHug2 figure (Pascal de Bruijn)
+ - Use the ColorHug sensor driver for the ColorHug2 hardware (Richard Hughes)
+
+Bugfixes:
+ - Actually write a file when using cd_icc_save_default() (Richard Hughes)
+ - Add a RGB32 pixel format for GdkPixbuf (Richard Hughes)
+ - Correctly convert all of the image when using CdTransform (Richard Hughes)
+ - Do not try to return a CdIcc instance for virtual profiles (Richard Hughes)
+ - EDID strings can be up to 13 bytes (Florian Höch)
+ - Fix building the CMF spectra on OpenBSD/sparc64 (Richard Hughes)
+ - Retry the command submission if the ColorHug response is incomplete (Richard Hughes)
+
 Version 1.1.7
 ~~~~~~~~~~~~~
 Released: 2014-02-28
