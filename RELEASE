@@ -2,10 +2,10 @@ colord Release Notes
 
 1. Write NEWS entries for colord in the same format as usual.
 
-git shortlog COLORD_1_0_8.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog COLORD_1_0_9.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
-Version 1.0.9
-~~~~~~~~~~~~~
+Version 1.0.10
+~~~~~~~~~~~~~~
 Released: 2013-xx-xx
 
 New Features:
@@ -14,8 +14,8 @@ Bugfixes:
 2. Commit changes to git:
 
 # MAKE SURE THESE ARE CORRECT
-export release_version="1.0.9"
-export release_tag="COLORD_1_0_9"
+export release_version="1.0.10"
+export release_tag="COLORD_1_0_10"
 
 git commit -a -m "Release colord ${release_version}"
 git tag -s -f -m "Release colord ${release_version}" "${release_tag}"
@@ -27,7 +27,7 @@ git push
 
 make distcheck
 
-3a. Generate the additon verification metadata
+3a. Generate the addition verification metadata
 
 sha1sum colord-${release_version}.tar.xz > colord-${release_version}.tar.xz.sha1
 gpg -b -a colord-${release_version}.tar.xz
