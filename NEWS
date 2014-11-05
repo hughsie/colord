@@ -1,6 +1,13 @@
+Version 1.0.9
+~~~~~~~~~~~~~
+Released: 2014-11-05
+
+Bugfixes:
+ - Use the colorhug native driver for ColorHug2 hardware (Richard Hughes)
+
 Version 1.0.8
 ~~~~~~~~~~~~~
-Released: 2013-10-27
+Released: 2014-10-27
 
 New Features:
  - Use the ColorHug sensor driver for the ColorHug2 hardware (Richard Hughes)
