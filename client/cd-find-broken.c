@@ -25,6 +25,8 @@
 #include <colord.h>
 #include <locale.h>
 
+#include "cd-cleanup.h"
+
 typedef struct {
 	GHashTable	*cmfbinary;
 	GHashTable	*vendors;
@@ -43,26 +45,24 @@ cd_find_broken_parse_filename (CdFindBrokenPriv *priv,
 			       const gchar *filename,
 			       GError **error)
 {
-	CdIcc *icc = NULL;
 	CdProfileWarning warning;
 	const gchar *tmp;
-	GArray *warnings = NULL;
 	gboolean ret;
-	gchar *vendor = NULL;
-	GFile *file = NULL;
 	guint i;
 	guint *val;
+	_cleanup_array_unref_ GArray *warnings = NULL;
+	_cleanup_free_ gchar *vendor = NULL;
+	_cleanup_object_unref_ CdIcc *icc = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	/* load file */
 	icc = cd_icc_new ();
 	file = g_file_new_for_path (filename);
-	ret = cd_icc_load_file (icc,
-				file,
+	ret = cd_icc_load_file (icc, file,
 				CD_ICC_LOAD_FLAGS_METADATA | CD_ICC_LOAD_FLAGS_PRIMARIES,
-				NULL,
-				error);
+				NULL, error);
 	if (!ret)
-		goto out;
+		return FALSE;
 
 	/* append to CSV file */
 	g_string_append_printf (priv->csv_all, "%s,\"%s\",\"%s\",%s,%s,%.1f,%s,%s\n",
@@ -115,7 +115,7 @@ cd_find_broken_parse_filename (CdFindBrokenPriv *priv,
 	/* any problems */
 	warnings = cd_icc_get_warnings (icc);
 	if (warnings->len == 0)
-		goto out;
+		return FALSE;
 
 	/* count those with problems */
 	val = g_hash_table_lookup (priv->vendors_broken, vendor);
@@ -136,13 +136,7 @@ cd_find_broken_parse_filename (CdFindBrokenPriv *priv,
 					cd_profile_warning_to_string (warning));
 	}
 	priv->csv_fail->str[priv->csv_fail->len - 1] = '\n';
-out:
-	if (warnings != NULL)
-		g_array_unref (warnings);
-	g_object_unref (file);
-	g_object_unref (icc);
-	g_free (vendor);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -164,7 +158,6 @@ main (int argc, char *argv[])
 	const gchar *fn_all = "./all.csv";
 	const gchar *fn_failures = "./results.csv";
 	gboolean ret;
-	GError *error = NULL;
 	gint retval = EXIT_FAILURE;
 	GList *l;
 	GList *list;
@@ -172,6 +165,7 @@ main (int argc, char *argv[])
 	guint total = 0;
 	guint total_with_warnings = 0;
 	guint *val;
+	_cleanup_error_free_ GError *error = NULL;
 
 	if (argc < 2) {
 		g_warning ("usage: cd-find-broken.c filename, e.g. 'uploads/*'");
@@ -266,13 +260,11 @@ main (int argc, char *argv[])
 	ret = g_file_set_contents (fn_all, priv->csv_all->str, -1, &error);
 	if (!ret) {
 		g_warning ("%s", error->message);
-		g_error_free (error);
 		goto out;
 	}
 	ret = g_file_set_contents (fn_failures, priv->csv_fail->str, -1, &error);
 	if (!ret) {
 		g_warning ("%s", error->message);
-		g_error_free (error);
 		goto out;
 	}
 

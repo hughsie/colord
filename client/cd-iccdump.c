@@ -29,6 +29,8 @@
 #include <math.h>
 #include <colord-private.h>
 
+#include "cd-cleanup.h"
+
 static gint lcms_error_code = 0;
 
 /**
@@ -51,30 +53,20 @@ cd_fix_profile_error_cb (cmsContext ContextID,
 static gboolean
 cd_iccdump_print_file (const gchar *filename, GError **error)
 {
-	CdIcc *icc;
-	gboolean ret;
-	gchar *str = NULL;
-	GFile *file;
+	_cleanup_free_ gchar *str = NULL;
+	_cleanup_object_unref_ CdIcc *icc = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	/* load the profile */
 	icc = cd_icc_new ();
 	file = g_file_new_for_path (filename);
-	ret = cd_icc_load_file (icc,
-				file,
-				CD_ICC_LOAD_FLAGS_NONE,
-				NULL,
-				error);
-	if (!ret)
-		goto out;
+	if (!cd_icc_load_file (icc, file, CD_ICC_LOAD_FLAGS_NONE, NULL, error))
+		return FALSE;
 
 	/* dump it to text on the console */
 	str = cd_icc_to_string (icc);
 	g_print ("%s\n", str);
-out:
-	g_free (str);
-	g_object_unref (file);
-	g_object_unref (icc);
-	return ret;
+	return TRUE;
 }
 
 /**
@@ -84,10 +76,10 @@ int
 main (int argc, char **argv)
 {
 	gboolean ret;
-	GError *error = NULL;
 	GOptionContext *context;
 	gint i;
 	guint retval = EXIT_FAILURE;
+	_cleanup_error_free_ GError *error = NULL;
 
 	setlocale (LC_ALL, "");
 
@@ -104,10 +96,8 @@ main (int argc, char **argv)
 	ret = g_option_context_parse (context, &argc, &argv, &error);
 	if (!ret) {
 		/* TRANSLATORS: the user didn't read the man page */
-		g_print ("%s: %s\n",
-			 _("Failed to parse arguments"),
+		g_print ("%s: %s\n", _("Failed to parse arguments"),
 			 error->message);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -117,7 +107,6 @@ main (int argc, char **argv)
 		if (!ret) {
 			g_warning ("Failed to dump %s: %s",
 				   argv[i], error->message);
-			g_error_free (error);
 			goto out;
 		}
 	}
@@ -128,4 +117,3 @@ out:
 	g_option_context_free (context);
 	return retval;
 }
-
