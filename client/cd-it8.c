@@ -29,6 +29,8 @@
 #include <stdio.h>
 #include <colord/colord.h>
 
+#include "cd-cleanup.h"
+
 #define CD_ERROR			1
 #define CD_ERROR_INVALID_ARGUMENTS	0
 #define CD_ERROR_NO_SUCH_CMD		1
@@ -338,6 +340,62 @@ out:
 }
 
 /**
+ * cd_util_calculate_ccmx:
+ **/
+static gboolean
+cd_util_calculate_ccmx (CdUtilPrivate *priv,
+			gchar **values,
+			GError **error)
+{
+	gchar *tmp;
+	_cleanup_free_ gchar *basename = NULL;
+	_cleanup_object_unref_ CdIt8 *it8_ccmx = NULL;
+	_cleanup_object_unref_ CdIt8 *it8_meas = NULL;
+	_cleanup_object_unref_ CdIt8 *it8_ref = NULL;
+	_cleanup_object_unref_ GFile *file_ccmx = NULL;
+	_cleanup_object_unref_ GFile *file_meas = NULL;
+	_cleanup_object_unref_ GFile *file_ref = NULL;
+
+	/* check args */
+	if (g_strv_length (values) != 3) {
+		g_set_error_literal (error,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
+				     "Not enough arguments, expected: file, file, file");
+		return FALSE;
+	}
+
+	/* load reference */
+	it8_ref = cd_it8_new ();
+	file_ref = g_file_new_for_path (values[0]);
+	if (!cd_it8_load_from_file (it8_ref, file_ref, error))
+		return FALSE;
+
+	/* load measurement */
+	it8_meas = cd_it8_new ();
+	file_meas = g_file_new_for_path (values[1]);
+	if (!cd_it8_load_from_file (it8_meas, file_meas, error))
+		return FALSE;
+
+	/* caclulate correction matrix */
+	it8_ccmx = cd_it8_new_with_kind (CD_IT8_KIND_CCMX);
+	if (!cd_it8_utils_calculate_ccmx (it8_ref, it8_meas, it8_ccmx, error))
+		return FALSE;
+
+	/* save CCMX file */
+	basename = g_path_get_basename (values[2]);
+	tmp = g_strrstr (basename, ".");
+	if (tmp != NULL)
+		*tmp = '\0';
+	cd_it8_add_option (it8_ccmx, "TYPE_FACTORY");
+	cd_it8_set_title (it8_ccmx, basename);
+	file_ccmx = g_file_new_for_path (values[2]);
+	if (!cd_it8_save_to_file (it8_ccmx, file_ccmx, error))
+		return FALSE;
+	return TRUE;
+}
+
+/**
  * cd_util_create_sp:
  **/
 static gboolean
@@ -505,6 +563,12 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Create a spectrum from CSV data"),
 		     cd_util_create_sp);
+	cd_util_add (priv->cmd_array,
+		     "calculate-ccmx",
+		     "[REFERENCE.ti3] [MEASURED.ti3] [OUTPUT.ccmx]",
+		     /* TRANSLATORS: command description */
+		     _("Create a CCMX from reference and measurement data"),
+		     cd_util_calculate_ccmx);
 
 	/* sort by command name */
 	g_ptr_array_sort (priv->cmd_array,
