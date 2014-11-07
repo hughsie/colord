@@ -1,12 +1,14 @@
 man_MANS_DIST = 					\
 	colormgr.1					\
 	cd-create-profile.1				\
-	cd-fix-profile.1
+	cd-fix-profile.1				\
+	cd-it8.1
 
 EXTRA_DIST =						\
 	colormgr.sgml					\
 	cd-create-profile.sgml				\
 	cd-fix-profile.sgml				\
+	cd-it8.sgml					\
 	$(man_MANS_DIST)
 
 if HAVE_DOCBOOK2MAN
@@ -22,6 +24,9 @@ cd-create-profile.1: cd-create-profile.sgml
 	$(AM_V_GEN)					\
 	docbook2man $? > /dev/null
 cd-fix-profile.1: cd-fix-profile.sgml
+	$(AM_V_GEN)					\
+	docbook2man $? > /dev/null
+cd-it8.1: cd-it8.sgml
 	$(AM_V_GEN)					\
 	docbook2man $? > /dev/null
 endif

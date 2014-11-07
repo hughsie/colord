@@ -20,13 +20,13 @@ COLORD_LIBS =						\
 	$(top_builddir)/lib/colord/libcolord.la
 
 noinst_PROGRAMS =					\
-	cd-it8						\
 	cd-find-broken
 
 bin_PROGRAMS =						\
 	colormgr					\
 	cd-create-profile				\
 	cd-iccdump					\
+	cd-it8						\
 	cd-fix-profile
 
 cd_find_broken_SOURCES =				\
