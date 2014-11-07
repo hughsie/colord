@@ -19,28 +19,12 @@ COLORD_LIBS =						\
 	$(top_builddir)/lib/colord/libcolordprivate.la	\
 	$(top_builddir)/lib/colord/libcolord.la
 
-noinst_PROGRAMS =					\
-	cd-find-broken
-
 bin_PROGRAMS =						\
 	colormgr					\
 	cd-create-profile				\
 	cd-iccdump					\
 	cd-it8						\
 	cd-fix-profile
-
-cd_find_broken_SOURCES =				\
-	cd-find-broken.c
-
-cd_find_broken_LDADD =					\
-	$(COLORD_LIBS)					\
-	$(GLIB_LIBS)
-
-cd_find_broken_LDFLAGS =				\
-	$(PIE_LDFLAGS)
-
-cd_find_broken_CFLAGS =					\
-	$(WARNINGFLAGS_C)
 
 colormgr_SOURCES =					\
 	cd-util.c
