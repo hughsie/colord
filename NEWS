@@ -1,3 +1,17 @@
+Version 1.2.5
+~~~~~~~~~~~~~
+Released: 2014-11-10
+
+New Features:
+ - Add a branding-less ColorHug2 figure (Pascal de Bruijn)
+ - Add the calculate-ccmx subcommand to cd-it8 (Richard Hughes)
+ - Install the now-useful cd-it8 helper (Richard Hughes)
+
+Bugfixes:
+ - Drop nb.po, its superfluous with nb_NO.po around (Torstein Husebø)
+ - Fix a crash in the session helper while calibrating (Richard Hughes)
+ - Remove the private cd-find-broken tool (Richard Hughes)
+
 Version 1.2.4
 ~~~~~~~~~~~~~
 Released: 2014-10-12

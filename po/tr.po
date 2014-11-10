@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Caner Başaran <basaran.caner@gmail.com>, 2014
 # Necdet Yücel <necdetyucel@gmail.com>, 2012
 # Onuralp SEZER <thunderbirdtr@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-31 09:13+0100\n"
-"PO-Revision-Date: 2014-03-31 08:13+0000\n"
+"POT-Creation-Date: 2014-11-10 11:04+0000\n"
+"PO-Revision-Date: 2014-11-10 11:04+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/projects/p/colord/language/tr/)\n"
 "MIME-Version: 1.0\n"
@@ -27,12 +28,13 @@ msgstr ""
 msgid "ICC profile creation program"
 msgstr ""
 
+#. TRANSLATORS: the user didn't read the man page
 msgid "Failed to parse arguments"
 msgstr ""
 
 #. TRANSLATORS: the user forgot to use -o
 msgid "No output filename specified"
-msgstr ""
+msgstr "Çıkış dosyası belirtilmemiş"
 
 #. TRANSLATORS: this is a command alias
 #, c-format
@@ -44,7 +46,7 @@ msgstr "Geçersiz komut, geçerli komutlar şunlardır:"
 
 #. TRANSLATORS: command line option
 msgid "Show extra debugging information"
-msgstr ""
+msgstr "Ek olarak hata ayıklama bilgileri göster"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
@@ -56,7 +58,7 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Clear any metadata in the profile"
-msgstr ""
+msgstr "Profildeki tüm metaveriyi temizle"
 
 #. TRANSLATORS: command description
 msgid "Initialize any metadata for the profile"
@@ -64,35 +66,35 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Add a metadata item to the profile"
-msgstr ""
+msgstr "Profile metaveri öğesi ekle"
 
 #. TRANSLATORS: command description
 msgid "Remove a metadata item from the profile"
-msgstr ""
+msgstr "Profilden metaveri öğesi çıkar"
 
 #. TRANSLATORS: command description
 msgid "Sets the copyright string"
-msgstr ""
+msgstr "Telif hakkı metni ayarla"
 
 #. TRANSLATORS: command description
 msgid "Sets the description string"
-msgstr ""
+msgstr "Açıklama metni ayarla"
 
 #. TRANSLATORS: command description
 msgid "Sets the manufacturer string"
-msgstr ""
+msgstr "Üretici metni ayarla"
 
 #. TRANSLATORS: command description
 msgid "Sets the model string"
-msgstr ""
+msgstr "Model metni ayarla"
 
 #. TRANSLATORS: command description
 msgid "Automatically fix metadata in the profile"
-msgstr ""
+msgstr "Otomatik profildeki metaveriyi düzelt"
 
 #. TRANSLATORS: command description
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "ICC profil sürümü ayarla"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
@@ -112,6 +114,10 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Create a CCMX from reference and measurement data"
 msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
@@ -136,7 +142,7 @@ msgstr ""
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 msgid "Title"
-msgstr ""
+msgstr "Başlık"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 msgid "Qualifier"
@@ -146,12 +152,12 @@ msgstr ""
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 msgid "Type"
-msgstr ""
+msgstr "Tip"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 msgid "Colorspace"
-msgstr ""
+msgstr "Renk Uzayı"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 msgid "Scope"
@@ -179,7 +185,7 @@ msgid "Metadata"
 msgstr "MetaVeri"
 
 msgid "Warning"
-msgstr ""
+msgstr "Uyarı"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -190,16 +196,16 @@ msgstr "Yaratıldı"
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 msgid "Modified"
-msgstr ""
+msgstr "Değiştirildi"
 
 #. TRANSLATORS: the device enabled state
 msgid "Enabled"
-msgstr ""
+msgstr "Etkinleştirildi"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 msgid "Embedded"
-msgstr ""
+msgstr "Tümleşik"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -256,7 +262,7 @@ msgstr "Spot"
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 msgid "Ambient"
-msgstr ""
+msgstr "Ortam"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
@@ -265,18 +271,18 @@ msgstr ""
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
-msgstr ""
+msgstr "Genel LCD"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 msgid "LED Generic"
-msgstr ""
+msgstr "Genel LED"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 msgid "Plasma"
-msgstr ""
+msgstr "Plazma"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -308,7 +314,7 @@ msgstr ""
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
-msgstr ""
+msgstr "Bilinmeyen"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 msgid "State"
@@ -320,11 +326,11 @@ msgstr "Seri Numarası"
 
 #. TRANSLATORS: sensor identifier
 msgid "Sensor ID"
-msgstr ""
+msgstr "Sensör ID"
 
 #. TRANSLATORS: the options for the sensor
 msgid "Options"
-msgstr ""
+msgstr "Seçenekler"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 msgid "Native"
@@ -344,7 +350,7 @@ msgstr ""
 
 #. TRANSLATORS: this is the sensor title
 msgid "Sensor"
-msgstr ""
+msgstr "Sensör"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the calibrate position and press enter."
@@ -355,7 +361,7 @@ msgid "Set the device to the surface position and press enter."
 msgstr ""
 
 msgid "Color"
-msgstr ""
+msgstr "Renk"
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"

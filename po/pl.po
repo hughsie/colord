@@ -5,13 +5,14 @@
 # Translators:
 # POPularMAN, 2013
 # Piotr Drąg <piotrdrag@gmail.com>, 2011-2014
+# POPularMAN, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-31 09:13+0100\n"
-"PO-Revision-Date: 2014-03-31 15:02+0000\n"
-"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
+"POT-Creation-Date: 2014-11-10 11:04+0000\n"
+"PO-Revision-Date: 2014-11-10 11:04+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Polish (http://www.transifex.com/projects/p/colord/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -27,6 +28,7 @@ msgstr "Profil do utworzenia"
 msgid "ICC profile creation program"
 msgstr "Program do tworzenia profili ICC"
 
+#. TRANSLATORS: the user didn't read the man page
 msgid "Failed to parse arguments"
 msgstr "Przetworzenie parametrów się nie powiodło"
 
@@ -113,6 +115,10 @@ msgstr "Tworzy CMF z danych CSV"
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
 msgstr "Tworzy widmo z danych CSV"
+
+#. TRANSLATORS: command description
+msgid "Create a CCMX from reference and measurement data"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -547,7 +553,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr ""
+msgstr "Ta przestrzeń edycji została zaprojektowana jako SMPTE-240M i obejmuje większość możliwych kolorów dostępnych w kolorowych drukarkach CMYK. Jest to popularny profil do edycji fotografii i drukowania, jako że może odwzorować wszystkie kolory SWOP."
 
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
@@ -557,7 +563,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr "Ten profil zgodności został utworzony przez firmę Adobe do użycia z programami Photoshop i Illustrator. Ze względu na to, że profil ten jest oparty na oryginalnych ustawieniach monitora Apple 13\" RGB i jest podobny do sRGB, nie powinien być używany jako profil do wyświetlania lub dla nowych zdjęć."
+msgstr "Ten profil zgodności został utworzony przez firmę Adobe do użycia z programami Photoshop i Illustrator. Ze względu na to, że profil ten jest oparty na oryginalnych ustawieniach monitora Apple 13\" RGB i jest podobny do sRGB, nie powinien być używany jako profil do wyświetlania lub dla nowych obrazów."
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -566,7 +572,7 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "Ta przestrzeń edycji może wyświetlać bardziej nasycone kolory niż RGB firmy Adobe i jest odpowiednia do obrazów z mocno nasyconymi kolorami, często używanymi w reklamach. Ten profil jest bardzo podobny do DonRGB4, ale może wyświetlać bardzo nasyconą czerwoną barwę, czasami występującą w Fujichrome Velvia."
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 msgid ""
@@ -574,7 +580,7 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "Ta przestrzeń edycji może wyświetlać bardziej nasycone kolory niż RGB firmy Adobe. Ten profil jest mniej podatny na błędy kwantowania w porównaniu do RGB ProPhoto, ale zachowuje więcej szczegółów cieniowania. W większości przypadków RGB ProPhoto jest lepszym wyborem."
 
 msgid "Blue"
 msgstr "Niebieski"
@@ -584,21 +590,21 @@ msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "Ten profil testowy sprawia, że wszystkie kolory na ekranie są nieco bardziej niebieskie przez zmianę tablicy wyszukiwania karty graficznej. Umożliwia to sprawdzanie poprawności kalibracji."
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr ""
+msgstr "To jest przestrzeń edycji RGB używana z programami Adobe Photoshop 5.0 i nowszymi. Ten profil został zaprojektowany jako kompromis między RGB ColorMatch a RGB firmy Adobe zorientowany na wyjście i był preferowany przez niektóre punkty drukowania fotografii."
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "Ten teoretyczny profil został zaprojektowany do użycia w eksperymentach z kolorem. Prawdopodobnie nie ma potrzeby używać go jako przestrzeń edycji lub profil wyświetlania."
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -607,7 +613,7 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr ""
+msgstr "Ten profil został zaprojektowany przez firmę Radius dla monitorów PressView. Należy używać tego profilu tylko jako profilu wyświetlania lub przestrzeń edycji, jako że nie jest on znacząco różny od sRGB. Powinno się go używać wyłącznie do wyświetlania obrazów utworzonych na monitorach PressView."
 
 msgid "Crayon Colors"
 msgstr "Pastelowe kolory"
@@ -618,14 +624,14 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "Ten nazwany profil kolorów zawiera wszystkie powszechnie używane kolory kredek firmy Crayola. Jest to profil testowy zaprojektowany do testowania osadzania nazwanych kolorów w dokumentach."
 
 #. TRANSLATORS: saturated means vivid bright colors
 msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "Ta przestrzeń edycji może wyświetlać bardziej nasycone kolory niż RGB firmy Adobe i jest odpowiednia do obrazów z mocno nasyconymi kolorami, często używanymi w reklamach."
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 msgid ""
@@ -633,14 +639,14 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr ""
+msgstr "Ten profil jest zalecany przez ECI (European Color Initiative) jako przestrzeń edycji do profesjonalnej edycji obrazów, mająca na celu objęcie wszystkich kolorów możliwych do wdrukowania na prasach drukarskich. Ten profil jest czasami używany jako format wymiany danych kolorów między wydawcami a drukarniami."
 
 #. TRANSLATORS: lightness is a technical word for brightness
 msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr ""
+msgstr "Ten profil został zaprojektowany z krzywą gamma jasności, co oznacza, że monitor musi być skalibrowany w ten sam sposób. Ten profil jest przydatny tylko dla zaawansowanych użytkowników i nie jest zalecany do ogólnego użytku."
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -648,7 +654,7 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr ""
+msgstr "Ten profil został zaprojektowany do przechowywania zeskanowanych przezroczystych taśm filmowych. Jest on odpowiedni do przechowywania obrazów z kolorowych negatywów, aczkolwiek obecnie RGB ProPhoto jest popularniejszym profilem do archiwizacji."
 
 msgid "FOGRA27L Coated"
 msgstr "Powlekany FOGRA27L"
@@ -658,10 +664,10 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "Ten profil jest używany do pozytywnego tworzenia klisz, drukowania na papierze typu 1 i 2 (powlekany lub matowy), offset arkuszowy. Ten zestaw profilów nie powinien być używany do produkcji. Zamiast niego należy używać FOGRA39L."
 
 msgid "FOGRA28L Web Coated"
-msgstr "Powlekany sieciowy FOGRA28L"
+msgstr "Powlekany rolowy FOGRA28L"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -669,7 +675,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "Ten profil jest używany pozytywnego tworzenia klisz, drukowania na papierze typu 3 (LWC), offset rolowy. Ten zestaw profilów nie powinien być używany do produkcji. Zamiast niego należy używać FOGRA45."
 
 msgid "FOGRA29L Uncoated"
 msgstr "Niepowlekany FOGRA29L"
@@ -680,7 +686,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr ""
+msgstr "Ten profil jest używany pozytywnego tworzenia klisz, drukowania na papierze typu 4 (niepowlekany, biały), offset arkuszowy. Ten zestaw profilów nie powinien być używany do produkcji. Zamiast niego należy używać FOGRA47."
 
 msgid "FOGRA30L Uncoated Yellowish"
 msgstr "Niepowlekany, żółtawy FOGRA30L"
@@ -689,7 +695,7 @@ msgstr "Niepowlekany, żółtawy FOGRA30L"
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr ""
+msgstr "Ten profil jest używany pozytywnego tworzenia klisz, drukowania na papierze typu 5 (niepowlekany, żółtawy), offset arkuszowy."
 
 msgid "FOGRA39L Coated"
 msgstr "Powlekany FOGRA39L"
@@ -701,7 +707,7 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr ""
+msgstr "Ten profil jest używany do pozytywnego tworzenia klisz, drukowania na papierze typu 1 i 2 (powlekany lub matowy), offset arkuszowy. Ten profil nie różni się znacznie od amerykańskiego GRACoL 2006 (TR 006)."
 
 msgid "FOGRA40L SC Paper"
 msgstr "Papier SC FOGRA40L"
@@ -710,7 +716,7 @@ msgstr "Papier SC FOGRA40L"
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr ""
+msgstr "Ten profil jest używany do drukowania na papierze SC (superkalandrowanym), offset rolowy. Nie ma swojego amerykańskiego odpowiednika."
 
 msgid "FOGRA45L Lightweight Coated"
 msgstr "Lekki powlekany FOGRA45L"
@@ -720,7 +726,7 @@ msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr ""
+msgstr "Ten profil zgodny z ISO 12647-2:2004 jest używany do drukowania na ulepszonym lekkim, powlekanym papierze (LWC) dla drukowania gorącym offsetem rolowym 60 l/cm. Zastępuje on FOGRA28L."
 
 msgid "FOGRA47L Uncoated"
 msgstr "Niepowlekany FOGRA47L"
@@ -729,16 +735,16 @@ msgstr "Niepowlekany FOGRA47L"
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr ""
+msgstr "Ten profil zgodny z ISO 12647-2 jest używany do drukowania na niepowlekanym białym papierze 115 g/m² (typu 4) dla drukowania offsetem arkuszowym 60 l/cm."
 
 msgid "GRACoL TR006 Coated"
-msgstr "Powlekany GRACoL TR006"
+msgstr "Powlekany TR006 GRACoL"
 
 #. TRANSLATORS: coated = smooth and expensive
 msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
-msgstr ""
+msgstr "Ten profil jest używany do drukowania na amerykańskim powlekanym papierze pierwszej i drugiej jakości, offset arkuszowy i rycina. Jest on amerykańskim odpowiednikiem FOGRA39."
 
 msgid "IFRA26S 2004 Newsprint"
 msgstr "Gazetowy IFRA26S 2004"
@@ -751,7 +757,7 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr ""
+msgstr "Ten profil jest używany do drukowania na papierze gazetowym, i jest profilem zgodnym z ISO12647-3:2005 zaprojektowanym dla pras drukarskich mających 26% TVI (przyrost punktów). Jest on zalecany przez WAN-IFRA do drukowania na zimno na papierze gazetowym na całym świecie."
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -759,14 +765,14 @@ msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
-msgstr ""
+msgstr "Ten profil określa zakres kolorów używany w standardzie obrazu NTSC. Jest to przestarzały standard, który został zastąpiony przez SMTE-C. Powinien on być używany tylko do dekodowania archiwalnych nagrań wideo."
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr ""
+msgstr "Ten profil określa zakres kolorów używany w standardach obrazu PAL i SECAM i jest bardzo podobny do sRGB. Powinien on być używany tylko do kodowania i dekodowania nagrań wideo."
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 msgid ""
@@ -774,30 +780,30 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr ""
+msgstr "Oryginalnie zaprojektowany przez firmę Eastman Kodak i nazwany RGB ROMM, ten profil może wyświetlać szeroki zakres kolorów i jest używany przez wielu fotografów do renderowania, edycji i archiwizowania obrazów RAW. Podczas edycji obrazów może wystąpić pasmowanie, jeśli obrazy nie posiadają 16-bitowej precyzji na kanał."
 
 #. TRANSLATORS: ITU-R is a standards body
 msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "Rekomendacja ITU-R BT.709 jest standardem telewizji wysokiej rozdzielczości, który został po raz pierwszy przyjęty w 1990 roku. Profil 709 używa tego samego zakresu kolorów co sRGB, ale z inną krzywą luminacji."
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "Jest to obecny standard używany w Ameryce Północnej i Japonii do nagrań studyjnych. Powinien on być używany tylko do kodowania i dekodowania nagrań wideo."
 
 msgid "SNAP TR002 Newsprint"
-msgstr "Gazetowy SNAP TR002"
+msgstr "Gazetowy TR002 SNAP"
 
 #. TRANSLATORS: CGATS is a trademark
 #, no-c-format
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr ""
+msgstr "Jest to profil oparty na ANSI CGATS/SNAP TR 002-2007 do drukowania na papierze gazetowym w Stanach Zjednoczonych, offset na zimno. TVI (przyrost punktów) wynosi 26%."
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -807,7 +813,7 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr ""
+msgstr "Ten profil ogólnego przeznaczenia został zaprojektowany przez firmy Hewlett-Packard i Microsoft, i służy jako domyślny profil w Internecie dla nieoznaczonych kolorów RGB i telewizji HDTV. Większość nieskalibrowanych ekranów może wyświetlać większość kolorów dostępnych w sRGB, aczkolwiek ten profil jest czasami złym wyborem do drukowania."
 
 msgid "Swapped Red and Green"
 msgstr "Zamieniony czerwony z niebieskim"
@@ -817,27 +823,27 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "Ten profil testowy wymienia kanał czerwony i zielony, i jest przydatny jako test wizualny poprawnego zastosowywania profilów. Jeśli ten profil został zastosowany dwa razy, obraz wygląda na niezmieniony."
 
 msgid "SWOP TR003 Coated"
-msgstr "Powlekany SWOP TR003"
+msgstr "Powlekany TR003 SWOP"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr ""
+msgstr "Ten profil jest używany do drukowania na amerykańskim powlekanym papierze trzeciej jakości, offset arkuszowy i rycina. Jest on używany do drukowania magazynów o wysokiej jakości za pomocą białego papieru."
 
 msgid "SWOP TR005 Coated"
-msgstr "Powlekany SWOP TR005"
+msgstr "Powlekany TR005 SWOP"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr ""
+msgstr "Ten profil jest używany do drukowania na amerykańskim powlekanym papierze piątej jakości, offset arkuszowy i rycina. Jest on używany do drukowania standardowych magazynów za pomocą żółtawego papieru."
 
 msgid "Wide Gamut RGB"
 msgstr "RGB o szerokim gamucie"
@@ -849,7 +855,7 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr ""
+msgstr "Ta przestrzeń edycji została zaprojektowana przez firmę Adobe Systems do obejmowania o wiele więcej kolorów niż RGB firmy Adobe. Ten profil jest używany do drukowania na urządzeniach typu kamery filmowe i może określać wiele kolorów, które nie mogą być wyświetlane na ekranie komputera. Podczas edycji obrazów może wystąpić pasmowanie, jeśli obrazy nie posiadają 16-bitowej precyzji na kanał."
 
 msgid "X11 Colors"
 msgstr "Kolory X11"
@@ -859,7 +865,7 @@ msgstr "Kolory X11"
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr ""
+msgstr "Ten nazwany profil kolorów zawiera wszystkie kolory określone przez X11, przyjmując, że kolory źródłowe powinny być sRGB."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices

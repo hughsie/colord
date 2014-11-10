@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-31 09:13+0100\n"
-"PO-Revision-Date: 2014-04-21 20:00+0000\n"
-"Last-Translator: thanos <tomtryf@gmail.com>\n"
+"POT-Creation-Date: 2014-11-10 11:04+0000\n"
+"PO-Revision-Date: 2014-11-10 11:04+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/colord/language/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,6 +26,7 @@ msgstr "Προφίλ για να δημιουργήσετε"
 msgid "ICC profile creation program"
 msgstr "Πρόγραμμα δημιουργίας προφίλ ICC"
 
+#. TRANSLATORS: the user didn't read the man page
 msgid "Failed to parse arguments"
 msgstr "Αποτυχία ανάλυσης ορισμάτων"
 
@@ -112,6 +113,10 @@ msgstr "Δημιουργήστε ένα CMF από τα δεδομένα CSV"
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
 msgstr "Δημιουργήστε ένα φάσμα από τα δεδομένα CSV"
+
+#. TRANSLATORS: command description
+msgid "Create a CCMX from reference and measurement data"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"

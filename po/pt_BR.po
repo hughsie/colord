@@ -4,16 +4,16 @@
 # 
 # Translators:
 # Enrico Nicoletto <enrico.BR@gmx.co.uk>, 2013
-# osc <snd.noise@gmail.com>, 2013
-# osc <snd.noise@gmail.com>, 2013
+# Farid Abdelnour <snd.noise@gmail.com>, 2013
+# Farid Abdelnour <snd.noise@gmail.com>, 2013
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2012-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-31 09:13+0100\n"
-"PO-Revision-Date: 2014-04-08 23:10+0000\n"
-"Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
+"POT-Creation-Date: 2014-11-10 11:04+0000\n"
+"PO-Revision-Date: 2014-11-10 11:04+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/colord/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,6 +29,7 @@ msgstr "Perfil a ser criado"
 msgid "ICC profile creation program"
 msgstr "Program de criação de perfile de ICC"
 
+#. TRANSLATORS: the user didn't read the man page
 msgid "Failed to parse arguments"
 msgstr "Falha ao analisar argumentos"
 
@@ -115,6 +116,10 @@ msgstr "Cria um CMF a partir dos dados CSV"
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
 msgstr "Cria um espectro a partir dos dados CSV"
+
+#. TRANSLATORS: command description
+msgid "Create a CCMX from reference and measurement data"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"

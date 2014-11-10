@@ -5,13 +5,13 @@
 # Translators:
 # Fran Dieguez <frandieguez@gnome.org>, 2011
 # Fran Diéguez <frandieguez@ubuntu.com>, 2011-2012
-# mbouzada <mbouzada@gmail.com>, 2011
+# Miguel Anxo Bouzada <mbouzada@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-31 09:13+0100\n"
-"PO-Revision-Date: 2014-03-31 08:13+0000\n"
+"POT-Creation-Date: 2014-11-10 11:04+0000\n"
+"PO-Revision-Date: 2014-11-10 11:04+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/colord/language/gl/)\n"
 "MIME-Version: 1.0\n"
@@ -28,6 +28,7 @@ msgstr "Perfíl a crear"
 msgid "ICC profile creation program"
 msgstr "Programa de creación de perfiles ICC"
 
+#. TRANSLATORS: the user didn't read the man page
 msgid "Failed to parse arguments"
 msgstr "Produciuse un fallo ao analizar os argumentos"
 
@@ -113,6 +114,10 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
+msgstr ""
+
+#. TRANSLATORS: command description
+msgid "Create a CCMX from reference and measurement data"
 msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
