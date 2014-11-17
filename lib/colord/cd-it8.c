@@ -616,8 +616,8 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 				     "Invalid format, SPECTRAL_START_NM required");
 		return FALSE;
 	}
-	spectral_start = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_START_NM");
-	spectral_end = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_END_NM");
+	spectral_start = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_START_NM");
+	spectral_end = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_END_NM");
 	if (spectral_end == 0) {
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
@@ -719,7 +719,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	guint spectral_bands;
 
 	/* get spectra endpoints */
-	spectral_start = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_START_NM");
+	spectral_start = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_START_NM");
 	if (spectral_start == 0) {
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
@@ -727,7 +727,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 				     "Invalid format, SPECTRAL_START_NM required");
 		return FALSE;
 	}
-	spectral_end = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_END_NM");
+	spectral_end = _cmsIT8GetPropertyDbl (it8_lcms, "SPECTRAL_END_NM");
 	if (spectral_end == 0) {
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
@@ -1241,8 +1241,8 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* all the arrays have to have the same length */
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	spectral_bands = cd_spectrum_get_size (spectrum);
-	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
-	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
 	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_NORM", cd_spectrum_get_norm (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands);
@@ -1321,8 +1321,8 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* all the arrays have to have the same length */
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	spectral_bands = cd_spectrum_get_size (spectrum);
-	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
-	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
+	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands + has_index);
 	if (it8->priv->normalized)
