@@ -520,6 +520,31 @@ cd_spectrum_normalize (CdSpectrum *spectrum, gdouble wavelength, gdouble value)
 }
 
 /**
+ * cd_spectrum_normalize_max:
+ * @spectrum: a #CdSpectrum instance
+ * @value: the value to normalize to
+ *
+ * Normalizes a spectrum to a specific value at its maximum value.
+ *
+ * Since: 1.2.6
+ **/
+void
+cd_spectrum_normalize_max (CdSpectrum *spectrum, gdouble value)
+{
+	gdouble max = 0.f;
+	gdouble tmp;
+	guint i;
+
+	for (i = 0; i < spectrum->data->len; i++) {
+		tmp = cd_spectrum_get_value_raw (spectrum, i);
+		if (tmp > max)
+			max = tmp;
+	}
+	if (max > 0.f)
+		spectrum->norm = value / max;
+}
+
+/**
  * cd_spectrum_multiply:
  * @s1: a #CdSpectrum instance, possibly an illuminant.
  * @s2: a #CdSpectrum instance, possibly an absorption spectrum.

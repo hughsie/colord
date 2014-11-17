@@ -226,12 +226,19 @@ colord_spectrum_func (void)
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value_for_nm (s, 50) - 0.5), <, 0.0001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value_for_nm (s, 350) - 1.0f), <, 0.0001f);
 
-	/* test normalisation */
+	/* test normalisation to a specific wavelength */
 	cd_spectrum_normalize (s, 200, 1.f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 0) - 0.666f), <, 0.001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 1) - 1.000f), <, 0.001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 2) - 1.333f), <, 0.001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_norm (s) - 1.333f), <, 0.001f);
+
+	/* test normalisation */
+	cd_spectrum_normalize_max (s, 100.f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 0) - 50.f), <, 0.001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 1) - 75.f), <, 0.001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 2) - 100.f), <, 0.001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_norm (s) - 100.f), <, 0.001f);
 
 	/* test raw value */
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value_raw (s, 0) - 0.5f), <, 0.001f);
