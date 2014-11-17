@@ -56,13 +56,20 @@ CdSpectrum *
 cd_spectrum_dup (const CdSpectrum *spectrum)
 {
 	CdSpectrum *dest;
+	gdouble tmp;
+	guint i;
+
 	g_return_val_if_fail (spectrum != NULL, NULL);
+
 	dest = cd_spectrum_new ();
 	dest->id = g_strdup (spectrum->id);
 	dest->start = spectrum->start;
 	dest->end = spectrum->end;
 	dest->norm = spectrum->norm;
-	dest->data = g_array_ref (spectrum->data);
+	for (i = 0; i < spectrum->data->len; i++) {
+		tmp = cd_spectrum_get_value_raw (spectrum, i);
+		cd_spectrum_add_value (dest, tmp);
+	}
 	return dest;
 }
 
