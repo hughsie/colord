@@ -214,6 +214,10 @@ colord_spectrum_func (void)
 	g_assert_cmpint (cd_spectrum_get_size (s), ==, 3);
 	g_assert_cmpstr (cd_spectrum_get_id (s), ==, "dave");
 
+	/* get resolution of the spectra */
+	val = cd_spectrum_get_resolution (s);
+	g_assert_cmpfloat (ABS (val - 66.66f), <, 0.01f);
+
 	/* test interpolation */
 	val = cd_spectrum_get_value_for_nm (s, 100.1f);
 	g_assert_cmpfloat (ABS (val - 0.50f), <, 0.001f);

@@ -240,6 +240,23 @@ cd_spectrum_get_norm (const CdSpectrum *spectrum)
 }
 
 /**
+ * cd_spectrum_get_resolution:
+ * @spectrum: a #CdSpectrum instance.
+ *
+ * Gets the divisor of the spectra, for instance a .
+ *
+ * Return value: the value
+ *
+ * Since: 1.2.6
+ **/
+gdouble
+cd_spectrum_get_resolution (const CdSpectrum *spectrum)
+{
+	g_return_val_if_fail (spectrum != NULL, 0.0f);
+	return (spectrum->end - spectrum->start) / (gdouble) spectrum->data->len;
+}
+
+/**
  * cd_spectrum_get_type:
  *
  * Gets a specific type.
