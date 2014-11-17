@@ -1261,8 +1261,13 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	for (j = 0; j < number_of_sets; j++) {
 		spectrum = g_ptr_array_index (it8->priv->array_spectra, j);
 		for (i = 0; i < spectral_bands; i++) {
-			_cmsIT8SetDataRowColDbl (it8_lcms, j, i,
-						 cd_spectrum_get_value (spectrum, i));
+			if (it8->priv->normalized) {
+				_cmsIT8SetDataRowColDbl (it8_lcms, j, i,
+							 cd_spectrum_get_value (spectrum, i));
+			} else {
+				_cmsIT8SetDataRowColDbl (it8_lcms, j, i,
+							 cd_spectrum_get_value_raw (spectrum, i));
+			}
 		}
 	}
 	return TRUE;
@@ -1319,8 +1324,9 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
-	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_NORM", cd_spectrum_get_norm (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands + has_index);
+	if (it8->priv->normalized)
+		_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_NORM", cd_spectrum_get_norm (spectrum));
 
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */
 	if (has_index)
@@ -1342,8 +1348,13 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 					     cd_spectrum_get_id (spectrum));
 		}
 		for (i = 0; i < spectral_bands; i++) {
-			_cmsIT8SetDataRowColDbl (it8_lcms, j, i + has_index,
-						 cd_spectrum_get_value (spectrum, i));
+			if (it8->priv->normalized) {
+				_cmsIT8SetDataRowColDbl (it8_lcms, j, i + has_index,
+							 cd_spectrum_get_value (spectrum, i));
+			} else {
+				_cmsIT8SetDataRowColDbl (it8_lcms, j, i + has_index,
+							 cd_spectrum_get_value_raw (spectrum, i));
+			}
 		}
 	}
 	return TRUE;
