@@ -249,6 +249,10 @@ colord_spectrum_func (void)
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value_raw (s, 1) - 0.75f), <, 0.001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value_raw (s, 2) - 1.f), <, 0.001f);
 
+	/* test setting of data */
+	cd_spectrum_set_value (s, 0, 10.f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 0) - 10.0f), <, 0.001f);
+
 	cd_spectrum_free (s);
 }
 

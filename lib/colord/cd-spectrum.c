@@ -110,6 +110,24 @@ cd_spectrum_get_value (const CdSpectrum *spectrum, guint idx)
 }
 
 /**
+ * cd_spectrum_set_value:
+ * @spectrum: a #CdSpectrum instance.
+ * @idx: an index into the data
+ * @data: a data value
+ *
+ * Overwrites the spectrum data at a specified index.
+ *
+ * Since: 1.2.6
+ **/
+void
+cd_spectrum_set_value (CdSpectrum *spectrum, guint idx, gdouble data)
+{
+	g_return_if_fail (spectrum != NULL);
+	g_return_if_fail (idx < spectrum->data->len);
+	g_array_index (spectrum->data, gdouble, idx) = data / spectrum->norm;
+}
+
+/**
  * cd_spectrum_get_value_raw:
  * @spectrum: a #CdSpectrum instance.
  * @idx: an index into the data

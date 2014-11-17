@@ -72,6 +72,9 @@ void		 cd_spectrum_set_end		(CdSpectrum		*spectrum,
 						 gdouble		 end);
 void		 cd_spectrum_set_norm		(CdSpectrum		*spectrum,
 						 gdouble		 norm);
+void		 cd_spectrum_set_value		(CdSpectrum		*spectrum,
+						 guint			 idx,
+						 gdouble		 data);
 void		 cd_spectrum_add_value		(CdSpectrum		*spectrum,
 						 gdouble		 data);
 CdSpectrum	*cd_spectrum_multiply		(CdSpectrum		*s1,
