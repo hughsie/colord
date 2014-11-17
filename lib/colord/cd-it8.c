@@ -697,7 +697,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cd_spectrum_set_start (spectrum, spectral_start);
 		cd_spectrum_set_end (spectrum, spectral_end);
 		cd_spectrum_set_norm (spectrum, spectral_norm);
-		g_ptr_array_add (it8->priv->array_spectra, spectrum);
+		cd_it8_add_spectrum (it8, spectrum);
 	}
 	return TRUE;
 }
@@ -801,7 +801,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cd_spectrum_set_start (spectrum, spectral_start);
 		cd_spectrum_set_end (spectrum, spectral_end);
 		cd_spectrum_set_norm (spectrum, spectral_norm);
-		g_ptr_array_add (it8->priv->array_spectra, spectrum);
+		cd_it8_add_spectrum (it8, spectrum);
 	}
 	return TRUE;
 }
