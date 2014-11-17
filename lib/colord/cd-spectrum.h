@@ -52,6 +52,8 @@ gdouble		 cd_spectrum_get_norm		(const CdSpectrum	*spectrum);
 guint		 cd_spectrum_get_size		(const CdSpectrum	*spectrum);
 gdouble		 cd_spectrum_get_value		(const CdSpectrum	*spectrum,
 						 guint			 idx);
+gdouble		 cd_spectrum_get_value_raw	(const CdSpectrum	*spectrum,
+						 guint			 idx);
 gdouble		 cd_spectrum_get_wavelength	(const CdSpectrum	*spectrum,
 						 guint			 idx);
 gdouble		 cd_spectrum_get_value_for_nm	(const CdSpectrum	*spectrum,

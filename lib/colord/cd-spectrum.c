@@ -103,6 +103,26 @@ cd_spectrum_get_value (const CdSpectrum *spectrum, guint idx)
 }
 
 /**
+ * cd_spectrum_get_value_raw:
+ * @spectrum: a #CdSpectrum instance.
+ * @idx: an index into the data
+ *
+ * Gets the spectrum data at a specified index, without any normalization
+ * applied. Most people should use cd_spectrum_get_value() instead.
+ *
+ * Return value: spectral data value, or -1 for invalid
+ *
+ * Since: 1.2.6
+ **/
+gdouble
+cd_spectrum_get_value_raw (const CdSpectrum *spectrum, guint idx)
+{
+	g_return_val_if_fail (spectrum != NULL, -1.0f);
+	g_return_val_if_fail (idx < spectrum->data->len, -1.0f);
+	return g_array_index (spectrum->data, gdouble, idx);
+}
+
+/**
  * cd_spectrum_get_wavelength:
  * @spectrum: a #CdSpectrum instance.
  * @idx: an index into the data
