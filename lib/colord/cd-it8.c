@@ -595,6 +595,7 @@ static gboolean
 cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
 	CdSpectrum *spectrum;
+	const gchar *tmp;
 	gboolean has_index;
 	gchar *label;
 	gdouble spectral_end;
@@ -607,14 +608,15 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	guint spectral_bands;
 
 	/* get spectra endpoints */
-	spectral_start = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_START_NM");
-	if (spectral_start == 0) {
+	tmp = cmsIT8GetProperty (it8_lcms, "SPECTRAL_START_NM");
+	if (tmp == NULL) {
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
 				     CD_IT8_ERROR_INVALID_FORMAT,
 				     "Invalid format, SPECTRAL_START_NM required");
 		return FALSE;
 	}
+	spectral_start = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_START_NM");
 	spectral_end = _cmsIT8GetPropertyInt (it8_lcms, "SPECTRAL_END_NM");
 	if (spectral_end == 0) {
 		g_set_error_literal (error,
