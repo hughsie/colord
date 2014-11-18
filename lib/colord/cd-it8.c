@@ -597,7 +597,6 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	CdSpectrum *spectrum;
 	const gchar *tmp;
 	gboolean has_index;
-	gchar *label;
 	gdouble spectral_end;
 	gdouble spectral_norm;
 	gdouble spectral_start;
@@ -686,9 +685,9 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			cd_spectrum_set_id (spectrum,
 					    cmsIT8GetDataRowCol(it8_lcms, j, 0));
 		} else {
+			_cleanup_free_ gchar *label = NULL;
 			label = g_strdup_printf ("%i", j + 1);
 			cd_spectrum_set_id (spectrum, label);
-			g_free (label);
 		}
 		for (i = has_index; i < number_of_fields; i++) {
 			cd_spectrum_add_value (spectrum,
