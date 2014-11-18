@@ -1335,8 +1335,16 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	for (i = 0; i < spectral_bands; i++) {
 		_cleanup_free_ gchar *label;
-		label = g_strdup_printf ("SPEC_%.0f",
-					 cd_spectrum_get_wavelength (spectrum, i));
+		/* there are more spectral bands than integers between the
+		 * start and stop wavelengths */
+		if ((cd_spectrum_get_end (spectrum) -
+		     cd_spectrum_get_start (spectrum)) < spectral_bands) {
+			label = g_strdup_printf ("SPEC_%.0f",
+						 cd_spectrum_get_wavelength (spectrum, i) * 1000.f);
+		} else {
+			label = g_strdup_printf ("SPEC_%.0f",
+						 cd_spectrum_get_wavelength (spectrum, i));
+		}
 		cmsIT8SetDataFormat (it8_lcms, i + has_index, label);
 	}
 
