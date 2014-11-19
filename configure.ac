@@ -254,9 +254,11 @@ dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(examples, AS_HELP_STRING([--enable-examples],[enable DBus example code]),
 	      enable_examples=$enableval,enable_examples=yes)
 AM_CONDITIONAL(CD_BUILD_EXAMPLES, test x$enable_examples = xyes)
-PKG_CHECK_MODULES(DBUS, dbus-1, have_dbus=yes, have_dbus=no)
-if test x$enable_examples = xyes -a x$have_dbus = xno ; then
-	AC_MSG_ERROR([DBus examples require dbus-1 package, not found])
+if test x$enable_examples = xyes; then
+	PKG_CHECK_MODULES(DBUS, dbus-1, have_dbus=yes, have_dbus=no)
+	if test x$have_dbus = xno ; then
+		AC_MSG_ERROR([DBus examples require dbus-1 package, not found])
+	fi
 fi
 
 dnl ---------------------------------------------------------------------------
