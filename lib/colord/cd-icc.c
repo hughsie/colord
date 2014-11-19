@@ -292,7 +292,7 @@ cd_icc_to_string (CdIcc *icc)
 	/* date and time */
 	created = cd_icc_get_created (icc);
 	if (created != NULL) {
-		_cleanup_free_ gchar *created_str;
+		_cleanup_free_ gchar *created_str = NULL;
 		created_str = g_date_time_format (created, "%F, %T");
 		g_string_append_printf (str, "  Date, Time\t= %s\n", created_str);
 		g_date_time_unref (created);
@@ -548,8 +548,8 @@ cd_icc_to_string (CdIcc *icc)
 			for (entry = cmsDictGetEntryList (dict);
 			     entry != NULL;
 			     entry = cmsDictNextEntry (entry)) {
-				_cleanup_free_ gchar *ascii_name;
-				_cleanup_free_ gchar *ascii_value;
+				_cleanup_free_ gchar *ascii_name = NULL;
+				_cleanup_free_ gchar *ascii_value = NULL;
 
 				/* convert from wchar_t to UTF-8 */
 				ascii_name = g_ucs4_to_utf8 ((gunichar *) entry->Name, -1,
@@ -604,7 +604,7 @@ cd_icc_to_string (CdIcc *icc)
 				continue;
 			}
 			for (j = 0; j < tmp; j++) {
-				_cleanup_string_free_ GString *string;
+				_cleanup_string_free_ GString *string = NULL;
 
 				/* parse title */
 				string = g_string_new ("");
@@ -1438,7 +1438,7 @@ cd_util_write_tag_localized (CdIcc *icc,
 	const gchar *value;
 	gboolean ret = TRUE;
 	guint i;
-	_cleanup_list_free_ GList *keys;
+	_cleanup_list_free_ GList *keys = NULL;
 	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
 
 	/* convert all the hash entries into CdMluObject's */

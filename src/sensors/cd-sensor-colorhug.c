@@ -538,7 +538,7 @@ cd_sensor_set_next_option (CdSensorAsyncState *state)
 	gboolean ret;
 	GVariant *value;
 	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_list_free_ GList *keys;
+	_cleanup_list_free_ GList *keys = NULL;
 
 	/* write eeprom to preserve settings */
 	keys = g_hash_table_get_keys (state->options);

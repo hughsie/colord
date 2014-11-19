@@ -616,7 +616,7 @@ cd_main_calib_interpolate_up (CdMainPrivate *priv,
 	gboolean ret = TRUE;
 	gdouble mix;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *old_array;
+	_cleanup_ptrarray_unref_ GPtrArray *old_array = NULL;
 
 	/* make a deep copy */
 	old_array = g_ptr_array_new_with_free_func (g_free);
@@ -859,8 +859,8 @@ static gboolean
 cd_main_load_samples (CdMainPrivate *priv, GError **error)
 {
 	const gchar *filename;
-	_cleanup_free_ gchar *path;
-	_cleanup_object_unref_ GFile *file;
+	_cleanup_free_ gchar *path = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	filename = cd_main_get_display_ti1 (priv->quality);
 	path = g_build_filename (DATADIR,
@@ -939,7 +939,7 @@ cd_main_find_argyll_tool (const gchar *command,
 			  GError **error)
 {
 	gboolean ret;
-	_cleanup_free_ gchar *filename;
+	_cleanup_free_ gchar *filename = NULL;
 
 	/* try the original argyllcms filename installed in /usr/local/bin */
 	filename = g_strdup_printf ("/usr/local/bin/%s", command);
@@ -976,9 +976,9 @@ static gboolean
 cd_main_import_profile (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret = TRUE;
-	_cleanup_free_ gchar *filename;
-	_cleanup_free_ gchar *path;
-	_cleanup_object_unref_ GFile *file;
+	_cleanup_free_ gchar *filename = NULL;
+	_cleanup_free_ gchar *path = NULL;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	filename = g_strdup_printf ("%s.icc", priv->basename);
 	path = g_build_filename (priv->working_path,
@@ -1029,7 +1029,7 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	_cleanup_error_free_ GError *error_local = NULL;
 	_cleanup_free_ gchar *profile_fn = NULL;
 	_cleanup_free_ gchar *profile_path = NULL;
-	_cleanup_object_unref_ CdIcc *icc;
+	_cleanup_object_unref_ CdIcc *icc = NULL;
 	_cleanup_object_unref_ GFile *file = NULL;
 
 	/* get profile */
@@ -1108,7 +1108,7 @@ cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 	gboolean ret;
 	gint exit_status = 0;
 	_cleanup_free_ gchar *cmd_debug = NULL;
-	_cleanup_free_ gchar *command;
+	_cleanup_free_ gchar *command = NULL;
 	_cleanup_free_ gchar *stderr_data = NULL;
 	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
 
@@ -1278,7 +1278,7 @@ cd_main_remove_temp_file (const gchar *filename,
 			  GCancellable *cancellable,
 			  GError **error)
 {
-	_cleanup_object_unref_ GFile *file;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	g_debug ("removing %s", filename);
 	file = g_file_new_for_path (filename);
@@ -1294,7 +1294,7 @@ cd_main_remove_temp_files (CdMainPrivate *priv, GError **error)
 	const gchar *filename;
 	gboolean ret;
 	gchar *src;
-	_cleanup_dir_close_ GDir *dir;
+	_cleanup_dir_close_ GDir *dir = NULL;
 
 	/* try to open */
 	dir = g_dir_open (priv->working_path, 0, error);
@@ -1465,7 +1465,7 @@ cd_main_find_device (CdMainPrivate *priv,
 {
 	gboolean ret;
 	_cleanup_error_free_ GError *error_local = NULL;
-	_cleanup_object_unref_ CdDevice *device_tmp;
+	_cleanup_object_unref_ CdDevice *device_tmp = NULL;
 
 	device_tmp = cd_client_find_device_sync (priv->client,
 						 device_id,
@@ -1515,7 +1515,7 @@ cd_main_find_sensor (CdMainPrivate *priv,
 {
 	gboolean ret;
 	_cleanup_error_free_ GError *error_local = NULL;
-	_cleanup_object_unref_ CdSensor *sensor_tmp;
+	_cleanup_object_unref_ CdSensor *sensor_tmp = NULL;
 
 	sensor_tmp = cd_client_find_sensor_sync (priv->client,
 						 sensor_id,
@@ -1923,7 +1923,7 @@ static GDBusNodeInfo *
 cd_main_load_introspection (const gchar *filename, GError **error)
 {
 	_cleanup_free_ gchar *data = NULL;
-	_cleanup_object_unref_ GFile *file;
+	_cleanup_object_unref_ GFile *file = NULL;
 
 	/* load file */
 	file = g_file_new_for_path (filename);

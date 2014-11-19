@@ -74,7 +74,7 @@ cd_main_get_sender_uid (GDBusConnection *connection,
 			GError **error)
 {
 	guint uid = G_MAXUINT;
-	_cleanup_variant_unref_ GVariant *value;
+	_cleanup_variant_unref_ GVariant *value = NULL;
 
 	/* call into DBus to get the user ID that issued the request */
 	value = g_dbus_connection_call_sync (connection,

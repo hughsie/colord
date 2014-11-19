@@ -79,7 +79,7 @@ cd_plugin_is_device_embedded (GUdevDevice *device)
 	const gchar *removable;
 	gboolean embedded = FALSE;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *array;
+	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
 
 	/* get a chain of all the parent devices */
 	array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);

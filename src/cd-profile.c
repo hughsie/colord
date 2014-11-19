@@ -199,8 +199,8 @@ static void
 cd_profile_set_object_path (CdProfile *profile)
 {
 	struct passwd *pw;
-	_cleanup_free_ gchar *path_tmp;
-	_cleanup_free_ gchar *path_owner;
+	_cleanup_free_ gchar *path_tmp = NULL;
+	_cleanup_free_ gchar *path_owner = NULL;
 
 	/* append the uid to the object path */
 	pw = getpwuid (profile->priv->owner);

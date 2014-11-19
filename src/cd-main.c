@@ -81,8 +81,8 @@ cd_main_profile_removed (CdMainPrivate *priv, CdProfile *profile)
 	CdDevice *device_tmp;
 	gboolean ret;
 	guint i;
-	_cleanup_free_ gchar *object_path_tmp;
-	_cleanup_ptrarray_unref_ GPtrArray *devices;
+	_cleanup_free_ gchar *object_path_tmp = NULL;
+	_cleanup_ptrarray_unref_ GPtrArray *devices = NULL;
 
 	/* remove from the array before emitting */
 	object_path_tmp = g_strdup (cd_profile_get_object_path (profile));
@@ -141,7 +141,7 @@ cd_main_device_removed (CdMainPrivate *priv, CdDevice *device)
 {
 	GError *error = NULL;
 	gboolean ret;
-	_cleanup_free_ gchar *object_path_tmp;
+	_cleanup_free_ gchar *object_path_tmp = NULL;
 
 	/* remove from the array before emitting */
 	object_path_tmp = g_strdup (cd_device_get_object_path (device));
@@ -219,7 +219,7 @@ cd_main_create_profile (CdMainPrivate *priv,
 			CdObjectScope scope,
 			GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile_tmp;
+	_cleanup_object_unref_ CdProfile *profile_tmp = NULL;
 
 	g_assert (priv->connection != NULL);
 
@@ -374,7 +374,7 @@ cd_main_device_auto_add_from_md (CdMainPrivate *priv,
 {
 	CdProfile *profile_tmp;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *array;
+	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
 
 	/* get all the profiles, and check to see if any of them contain
 	 * MAPPING_device_id that matches the device */
@@ -400,7 +400,7 @@ cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 	guint64 timestamp;
 	guint i;
 	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array;
+	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
 
 	/* get data */
 	array = cd_mapping_db_get_profiles (priv->mapping_db,
@@ -687,7 +687,7 @@ cd_main_profile_auto_add_from_db (CdMainPrivate *priv,
 {
 	guint i;
 	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array;
+	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
 
 	/* get data */
 	array = cd_mapping_db_get_devices (priv->mapping_db,
@@ -813,7 +813,7 @@ cd_main_get_standard_space_metadata (CdMainPrivate *priv,
 	guint i;
 	guint score_best = 0;
 	guint score_tmp;
-	_cleanup_ptrarray_unref_ GPtrArray *array;
+	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
 
 	/* get all the profiles with this metadata */
 	array = cd_profile_array_get_by_metadata (priv->profiles_array,
@@ -872,7 +872,7 @@ cd_main_get_cmdline_for_pid (guint pid)
 	gsize len = 0;
 	guint i;
 	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *proc_path;
+	_cleanup_free_ gchar *proc_path = NULL;
 
 	/* just read the link */
 	proc_path = g_strdup_printf ("/proc/%i/cmdline", pid);
@@ -1684,7 +1684,7 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 	gboolean ret;
 	_cleanup_error_free_ GError *error = NULL;
 	_cleanup_free_ gchar *profile_id = NULL;
-	_cleanup_object_unref_ CdProfile *profile;
+	_cleanup_object_unref_ CdProfile *profile = NULL;
 
 	/* create profile */
 	profile = cd_profile_new ();
@@ -1761,7 +1761,7 @@ cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 	gboolean ret;
 	guint i;
 	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ CdDevice *device;
+	_cleanup_object_unref_ CdDevice *device = NULL;
 	_cleanup_ptrarray_unref_ GPtrArray *array_properties = NULL;
 
 	device = cd_main_create_device (priv,
@@ -1791,7 +1791,7 @@ cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 		return;
 	}
 	for (i = 0; i < array_properties->len; i++) {
-		_cleanup_free_ gchar *value;
+		_cleanup_free_ gchar *value = NULL;
 		property = g_ptr_array_index (array_properties, i);
 		value = cd_device_db_get_property (priv->device_db,
 						   device_id,
@@ -2089,8 +2089,8 @@ cd_main_timed_exit_cb (gpointer user_data)
 static GDBusNodeInfo *
 cd_main_load_introspection (const gchar *filename, GError **error)
 {
-	_cleanup_bytes_unref_ GBytes *data;
-	_cleanup_free_ gchar *path;
+	_cleanup_bytes_unref_ GBytes *data = NULL;
+	_cleanup_free_ gchar *path = NULL;
 
 	/* lookup data */
 	path = g_build_filename ("/org/freedesktop/colord", filename, NULL);
@@ -2232,9 +2232,9 @@ cd_main_load_plugins (CdMainPrivate *priv)
 {
 	const gchar *filename_tmp;
 	gboolean ret;
-	_cleanup_dir_close_ GDir *dir;
+	_cleanup_dir_close_ GDir *dir = NULL;
 	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *path;
+	_cleanup_free_ gchar *path = NULL;
 
 	/* search in the plugin directory for plugins */
 	path = g_build_filename (LIBDIR, "colord-plugins", NULL);
@@ -2361,7 +2361,7 @@ cd_main_check_duplicate_edids (void)
 {
 	const gchar *fn;
 	gboolean use_xrandr_mode = FALSE;
-	_cleanup_dir_close_ GDir *dir;
+	_cleanup_dir_close_ GDir *dir = NULL;
 	_cleanup_hashtable_unref_ GHashTable *hash = NULL;
 
 	dir = g_dir_open ("/sys/class/drm", 0, NULL);
@@ -2455,7 +2455,7 @@ cd_main_dmi_get_vendor (void)
 		"/sys/class/dmi/id/chassis_vendor",
 		"/sys/class/dmi/id/board_vendor",
 		NULL};
-	_cleanup_free_ gchar *tmp;
+	_cleanup_free_ gchar *tmp = NULL;
 
 	/* get vendor name */
 	tmp = cd_main_dmi_get_from_filenames (sysfs_vendor);
@@ -2474,7 +2474,7 @@ cd_main_dmi_get_model (void)
 		"/sys/class/dmi/id/board_name",
 		NULL};
 	gchar *model;
-	_cleanup_free_ gchar *tmp;
+	_cleanup_free_ gchar *tmp = NULL;
 
 	/* thinkpad puts the common name in the version field, urgh */
 	tmp = cd_main_dmi_get_from_filename ("/sys/class/dmi/id/product_version");

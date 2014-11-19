@@ -1082,7 +1082,7 @@ cd_client_import_profile_query_info_cb (GObject *source_object,
 	const gchar *type;
 	_cleanup_error_free_ GError *error = NULL;
 	_cleanup_free_ gchar *filename = NULL;
-	_cleanup_object_unref_ GFileInfo *info;
+	_cleanup_object_unref_ GFileInfo *info = NULL;
 
 	/* get the file info */
 	filename = g_file_get_path (helper->dest);

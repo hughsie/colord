@@ -101,7 +101,7 @@ cd_main_colord_create_device_cb (GObject *source_object,
 {
 	CdClient *client = CD_CLIENT (source_object);
 	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ CdDevice *device;
+	_cleanup_object_unref_ CdDevice *device = NULL;
 
 	/* get result */
 	device = cd_client_create_device_finish (client, res, &error);

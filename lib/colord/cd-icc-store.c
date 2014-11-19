@@ -195,8 +195,8 @@ cd_icc_store_add_icc (CdIccStore *store, GFile *file, GError **error)
 {
 	CdIccStorePrivate *priv = store->priv;
 	_cleanup_bytes_unref_ GBytes *data = NULL;
-	_cleanup_free_ gchar *filename;
-	_cleanup_object_unref_ CdIcc *icc;
+	_cleanup_free_ gchar *filename = NULL;
+	_cleanup_object_unref_ CdIcc *icc = NULL;
 	_cleanup_object_unref_ CdIcc *icc_tmp = NULL;
 
 	/* use the GResource cache if available */
@@ -271,7 +271,7 @@ cd_icc_store_created_query_info_cb (GObject *source_object,
 	gboolean ret;
 	_cleanup_error_free_ GError *error = NULL;
 	_cleanup_free_ gchar *path = NULL;
-	_cleanup_object_unref_ GFileInfo *info;
+	_cleanup_object_unref_ GFileInfo *info = NULL;
 	_cleanup_object_unref_ GFile *parent = NULL;
 
 	info = g_file_query_info_finish (file, res, NULL);

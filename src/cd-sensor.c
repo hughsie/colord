@@ -1283,7 +1283,7 @@ void
 cd_sensor_set_index (CdSensor *sensor,
 		     guint idx)
 {
-	_cleanup_free_ gchar *id;
+	_cleanup_free_ gchar *id = NULL;
 	id = g_strdup_printf ("%s-%02i",
 			      cd_sensor_kind_to_string (sensor->priv->kind),
 			      idx);
