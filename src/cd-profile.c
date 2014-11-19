@@ -26,7 +26,9 @@
 #include <lcms2.h>
 #include <string.h>
 #include <stdlib.h>
+#ifdef HAVE_PWD_H
 #include <pwd.h>
+#endif
 #include <math.h>
 
 #include "cd-cleanup.h"
@@ -198,11 +200,14 @@ cd_profile_get_id (CdProfile *profile)
 static void
 cd_profile_set_object_path (CdProfile *profile)
 {
+#ifdef HAVE_PWD_H
 	struct passwd *pw;
+#endif
 	_cleanup_free_ gchar *path_tmp = NULL;
 	_cleanup_free_ gchar *path_owner = NULL;
 
 	/* append the uid to the object path */
+#ifdef HAVE_PWD_H
 	pw = getpwuid (profile->priv->owner);
 	if (profile->priv->owner == 0 ||
 	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
@@ -213,6 +218,15 @@ cd_profile_set_object_path (CdProfile *profile)
 					    pw->pw_name,
 					    profile->priv->owner);
 	}
+#else
+	if (profile->priv->owner == 0) {
+		path_tmp = g_strdup (profile->priv->id);
+	} else {
+		path_tmp = g_strdup_printf ("%s_%d",
+					    profile->priv->id,
+					    profile->priv->owner);
+	}
+#endif
 	/* make sure object path is sane */
 	path_owner = cd_main_ensure_dbus_path (path_tmp);
 

@@ -24,7 +24,6 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <locale.h>
-#include <pwd.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <colord/colord.h>

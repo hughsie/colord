@@ -139,6 +139,11 @@ AX_CHECK_LINK_FLAG([-Wl,-z,relro,-z,now],
 AC_SUBST([RELRO_LDFLAGS])
 
 dnl ---------------------------------------------------------------------------
+dnl - Check headers that may not exist on all platforms
+dnl ---------------------------------------------------------------------------
+AC_CHECK_HEADER(pwd.h)
+
+dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 COLORD_REQUIRES_PRIVATE="lcms2"

@@ -24,7 +24,9 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <locale.h>
+#ifdef HAVE_PWD_H
 #include <pwd.h>
+#endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <colord/colord.h>
@@ -137,10 +139,17 @@ cd_util_print_field_time (const gchar *title,
 static void
 cd_util_show_owner (CdUtilPrivate *priv, guint uid)
 {
+#ifdef HAVE_PWD_H
 	struct passwd *pw;
 	pw = getpwuid (uid);
 	/* TRANSLATORS: profile owner */
 	cd_util_print_field (_("Owner"), "owner", priv, pw->pw_name);
+#else
+	_cleanup_free_ gchar *str = NULL;
+	str = g_strdup_printf ("%u", uid);
+	/* TRANSLATORS: profile UID */
+	cd_util_print_field (_("Owner"), "owner", priv, str);
+#endif
 }
 
 /**

@@ -284,11 +284,14 @@ cd_device_set_kind (CdDevice *device, CdDeviceKind kind)
 static void
 cd_device_set_object_path (CdDevice *device)
 {
+#ifdef HAVE_PWD_H
 	struct passwd *pw;
+#endif
 	_cleanup_free_ gchar *path_owner = NULL;
 	_cleanup_free_ gchar *path_tmp = NULL;
 
 	/* append the uid to the object path */
+#ifdef HAVE_PWD_H
 	pw = getpwuid (device->priv->owner);
 	if (device->priv->owner == 0 ||
 	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
@@ -299,6 +302,15 @@ cd_device_set_object_path (CdDevice *device)
 					    pw->pw_name,
 					    device->priv->owner);
 	}
+#else
+	if (device->priv->owner == 0) {
+		path_tmp = g_strdup (device->priv->id);
+	} else {
+		path_tmp = g_strdup_printf ("%s_%d",
+					    device->priv->id,
+					    device->priv->owner);
+	}
+#endif
 
 	/* make sure object path is sane */
 	path_owner = cd_main_ensure_dbus_path (path_tmp);
