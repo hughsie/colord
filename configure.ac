@@ -142,6 +142,7 @@ dnl ---------------------------------------------------------------------------
 dnl - Check headers that may not exist on all platforms
 dnl ---------------------------------------------------------------------------
 AC_CHECK_HEADER(pwd.h)
+AC_CHECK_HEADER(syslog.h)
 
 dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies

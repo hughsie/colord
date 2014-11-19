@@ -23,7 +23,9 @@
 #include <glib/gi18n.h>
 #include <unistd.h>
 #include <stdio.h>
+#ifdef HAVE_SYSLOG_H
 #include <syslog.h>
+#endif
 
 #include <cd-debug.h>
 
@@ -58,10 +60,20 @@ cd_debug_ignore_cb (const gchar *log_domain,
 {
 	/* syslog */
 	switch (log_level) {
+	case G_LOG_LEVEL_INFO:
+#ifdef HAVE_SYSLOG_H
+		syslog (LOG_INFO, "%s", message);
+#else
+		g_print ("%s\n", message);
+#endif
 	case G_LOG_LEVEL_CRITICAL:
 	case G_LOG_LEVEL_ERROR:
 	case G_LOG_LEVEL_WARNING:
+#ifdef HAVE_SYSLOG_H
 		syslog (LOG_WARNING, "%s", message);
+#else
+		g_print ("%s\n", message);
+#endif
 		break;
 	default:
 		break;
@@ -82,10 +94,20 @@ cd_debug_handler_cb (const gchar *log_domain,
 
 	/* syslog */
 	switch (log_level) {
+	case G_LOG_LEVEL_INFO:
+#ifdef HAVE_SYSLOG_H
+		syslog (LOG_INFO, "%s", message);
+#else
+		g_print ("%s\n", message);
+#endif
 	case G_LOG_LEVEL_CRITICAL:
 	case G_LOG_LEVEL_ERROR:
 	case G_LOG_LEVEL_WARNING:
+#ifdef HAVE_SYSLOG_H
 		syslog (LOG_WARNING, "%s", message);
+#else
+		g_print ("%s\n", message);
+#endif
 		break;
 	default:
 		break;
@@ -141,6 +163,17 @@ cd_debug_pre_parse_hook (GOptionContext *context,
 }
 
 /**
+ * cd_debug_destroy:
+ */
+void
+cd_debug_destroy (void)
+{
+#ifdef HAVE_SYSLOG_H
+	closelog ();
+#endif
+}
+
+/**
  * cd_debug_setup:
  */
 void
@@ -161,6 +194,9 @@ cd_debug_setup (gboolean enabled)
 				   cd_debug_ignore_cb, NULL);
 	}
 
+#ifdef HAVE_SYSLOG_H
+	openlog ("colord", LOG_CONS, LOG_DAEMON);
+#endif
 	/* are we on an actual TTY? */
 	_console = (isatty (fileno (stdout)) == 1);
 }

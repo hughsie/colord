@@ -24,7 +24,6 @@
 #include <gio/gio.h>
 #include <glib-object.h>
 #include <sqlite3.h>
-#include <syslog.h>
 
 #include "cd-cleanup.h"
 #include "cd-common.h"
@@ -65,7 +64,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 		return FALSE;
 
 	g_debug ("CdDeviceDb: trying to open database '%s'", filename);
-	syslog (LOG_INFO, "Using device database file %s", filename);
+	g_info ("Using device database file %s", filename);
 	rc = sqlite3_open (filename, &ddb->priv->db);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,

@@ -27,5 +27,6 @@
 gboolean	 cd_debug_is_verbose		(void);
 GOptionGroup	*cd_debug_get_option_group	(void);
 void		 cd_debug_setup			(gboolean	 enabled);
+void		 cd_debug_destroy		(void);
 
 #endif /* __CD_DEBUG_H__ */

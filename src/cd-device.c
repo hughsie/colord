@@ -25,7 +25,9 @@
 #include <gio/gio.h>
 #include <sys/time.h>
 #include <string.h>
+#ifdef HAVE_PWD_H
 #include <pwd.h>
+#endif
 
 #include "cd-cleanup.h"
 #include "cd-common.h"
