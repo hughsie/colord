@@ -508,6 +508,8 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		tmp = cmsIT8GetProperty (it8_lcms, "LUMINANCE_XYZ_CDM2");
 		if (!cd_it8_parse_luminance (tmp, &luminance, error))
 			return FALSE;
+	} else {
+		cd_color_xyz_set (&luminance, 1.f, 1.f, 1.f);
 	}
 
 	/* set spectral flag */
