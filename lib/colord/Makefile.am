@@ -7,6 +7,7 @@ endif
 
 AM_CPPFLAGS = \
 	$(GLIB_CFLAGS)						\
+	$(GLIB_UNIX_CFLAGS)					\
 	$(LCMS_CFLAGS)						\
 	$(PIE_CFLAGS)						\
 	$(UDEV_CFLAGS)						\
@@ -82,7 +83,8 @@ libcolordprivate_la_LIBADD =					\
 	$(LIBM)							\
 	$(UDEV_LIBS)						\
 	$(LCMS_LIBS)						\
-	$(GLIB_LIBS)
+	$(GLIB_LIBS)						\
+	$(GLIB_UNIX_LIBS)
 libcolordprivate_la_LDFLAGS =					\
 	$(PIE_LDFLAGS)						\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)	\
@@ -105,6 +107,7 @@ libcolord_la_SOURCES =						\
 libcolord_la_LIBADD =						\
 	$(UDEV_LIBS)						\
 	$(GLIB_LIBS)						\
+	$(GLIB_UNIX_LIBS)					\
 	libcolordprivate.la
 libcolord_la_LDFLAGS =						\
 	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)	\
@@ -137,6 +140,7 @@ cd_test_daemon_SOURCES =					\
 
 cd_test_daemon_LDADD =						\
 	$(GLIB_LIBS)						\
+	$(GLIB_UNIX_LIBS)					\
 	$(lib_LTLIBRARIES)
 
 cd_test_daemon_CFLAGS = $(WARNINGFLAGS_C)
@@ -148,6 +152,7 @@ cd_test_private_SOURCES =					\
 
 cd_test_private_LDADD =						\
 	$(GLIB_LIBS)						\
+	$(GLIB_UNIX_LIBS)					\
 	$(UDEV_LIBS)						\
 	$(lib_LTLIBRARIES)
 

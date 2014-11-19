@@ -38,7 +38,9 @@
 #include <sys/types.h>
 
 #include <gio/gio.h>
+#ifdef __unix__
 #include <gio/gunixfdlist.h>
+#endif
 #include <glib/gstdio.h>
 #include <glib.h>
 
@@ -709,10 +711,8 @@ cd_client_create_profile (CdClient *client,
 			  GAsyncReadyCallback callback,
 			  gpointer user_data)
 {
-	const gchar *filename;
 	GDBusConnection *connection;
 	gint fd = -1;
-	gint retval;
 	GList *list, *l;
 	GVariant *body;
 	GVariantBuilder builder;
@@ -757,10 +757,13 @@ cd_client_create_profile (CdClient *client,
 						  "CreateProfileWithFd");
 
 	/* get fd if possible top avoid open() in daemon */
+#ifdef __unix__
 	if (properties != NULL) {
+		const gchar *filename;
 		filename = g_hash_table_lookup (properties,
 						CD_PROFILE_PROPERTY_FILENAME);
 		if (filename != NULL) {
+			gint retval;
 			fd = open (filename, O_RDONLY);
 			if (fd < 0) {
 				g_simple_async_result_set_error (res,
@@ -782,6 +785,7 @@ cd_client_create_profile (CdClient *client,
 			close (fd);
 		}
 	}
+#endif
 
 	/* set parameters */
 	body = g_variant_new ("(ssha{ss})",

@@ -149,7 +149,16 @@ dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 COLORD_REQUIRES_PRIVATE="lcms2"
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.36.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gio-unix-2.0 gmodule-2.0)
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.36.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gmodule-2.0)
+
+dnl ---------------------------------------------------------------------------
+dnl - Check Linux-specific dependencies
+dnl ---------------------------------------------------------------------------
+AC_CHECK_DEFINE(__unix__, enable_unix="yes")
+if test x$enable_unix != xno; then
+	PKG_CHECK_MODULES(GLIB_UNIX, gio-unix-2.0)
+fi
+
 AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
 	      enable_gusb=$enableval, enable_gusb=yes)
 if test x$enable_gusb != xno; then

@@ -12,6 +12,7 @@ dist_introspection_DATA = 				\
 AM_CPPFLAGS =						\
 	$(PIE_CFLAGS)					\
 	$(GLIB_CFLAGS)					\
+	$(GLIB_UNIX_CFLAGS)				\
 	$(POLKIT_CFLAGS)				\
 	$(LCMS_CFLAGS)					\
 	$(GUDEV_CFLAGS)					\
@@ -105,7 +106,8 @@ colord_LDADD =						\
 	$(GUSB_LIBS)					\
 	$(LIBSYSTEMD_LOGIN_LIBS)			\
 	$(COLORD_PRIVATE_LIBS)				\
-	$(GLIB_LIBS)
+	$(GLIB_LIBS)					\
+	$(GLIB_UNIX_LIBS)
 
 colord_LDFLAGS =					\
 	$(PIE_LDFLAGS)					\
@@ -152,7 +154,8 @@ cd_self_test_LDADD =					\
 	$(LCMS_LIBS)					\
 	$(SQLITE_LIBS)					\
 	$(LIBSYSTEMD_LOGIN_LIBS)			\
-	$(GLIB_LIBS)
+	$(GLIB_LIBS)					\
+	$(GLIB_UNIX_LIBS)
 
 cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
 

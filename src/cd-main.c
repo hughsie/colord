@@ -23,7 +23,9 @@
 
 #include <stdlib.h>
 #include <gio/gio.h>
+#ifdef __unix__
 #include <gio/gunixfdlist.h>
+#endif
 #include <glib/gi18n.h>
 #include <locale.h>
 
@@ -910,7 +912,6 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	const gchar *scope_tmp = NULL;
 	gboolean register_on_bus = TRUE;
 	gboolean ret;
-	gint fd = -1;
 	guint i;
 	guint pid;
 	guint uid;
@@ -1455,8 +1456,10 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	if (g_strcmp0 (method_name, "CreateProfile") == 0 ||
 	    g_strcmp0 (method_name, "CreateProfileWithFd") == 0) {
 
+#ifdef __unix__
 		GDBusMessage *message;
 		GUnixFDList *fd_list;
+#endif
 		gint32 fd_handle = 0;
 
 		/* require auth */
@@ -1548,9 +1551,11 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* get any file descriptor in the message */
+#ifdef __unix__
 		message = g_dbus_method_invocation_get_message (invocation);
 		fd_list = g_dbus_message_get_unix_fd_list (message);
 		if (fd_list != NULL && g_unix_fd_list_get_length (fd_list) == 1) {
+			gint fd;
 			fd = g_unix_fd_list_get (fd_list, fd_handle, &error);
 			if (fd < 0) {
 				g_warning ("CdMain: failed to get fd from message: %s",
@@ -1582,7 +1587,25 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 				return;
 			}
 		}
-
+#else
+		if (filename != NULL) {
+			ret = cd_profile_load_from_filename (profile,
+							     filename,
+							     &error);
+			if (!ret) {
+				g_warning ("CdMain: failed to profile from filename: %s",
+					   error->message);
+				g_dbus_method_invocation_return_gerror (invocation, error);
+				return;
+			}
+		} else {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_CLIENT_ERROR,
+							       CD_CLIENT_ERROR_NOT_SUPPORTED,
+							       "no FD support");
+			return;
+		}
+#endif
 		/* auto add profiles from the database and metadata */
 		cd_main_profile_auto_add_from_db (priv, profile);
 		cd_main_profile_auto_add_from_md (priv, profile);
