@@ -262,6 +262,19 @@ if test x$enable_examples = xyes; then
 fi
 
 dnl ---------------------------------------------------------------------------
+dnl - Build ArgyllCMS sensor
+dnl ---------------------------------------------------------------------------
+AC_ARG_ENABLE(argyllcms-sensor, AS_HELP_STRING([--enable-argyllcms-sensor],[enable ArgllCMS sensor]),
+	      enable_argyllcms_sensor=$enableval,enable_argyllcms_sensor=yes)
+AM_CONDITIONAL(HAVE_ARGYLLCMS_SENSOR, test x$enable_argyllcms_sensor = xyes)
+if test x$enable_argyllcms_sensor = xyes; then
+	AC_PATH_PROG(SPOTREAD, spotread, no)
+	if test "$SPOTREAD" = "no" ; then
+		AC_MSG_ERROR([argyllcms sensor requires spotread, not found])
+	fi
+fi
+
+dnl ---------------------------------------------------------------------------
 dnl - Build reverse engineering
 dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(reverse, AS_HELP_STRING([--enable-reverse],[enable reverse engineering tools]),
@@ -441,6 +454,7 @@ echo "
         GUsb support:              ${enable_gusb}
         Extra print profiles:      ${enable_print_profiles}
         Install tests:             ${enable_installed_tests}
+        ArgyllCMS sensor:          ${enable_argyllcms_sensor}
         Building libcolordcompat:  ${build_libcolordcompat}
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
