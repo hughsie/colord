@@ -159,12 +159,14 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 		return TRUE;
 	}
 
+#ifdef HAVE_GETUID
 	/* a client running as the daemon user may also do all actions */
 	if (uid == getuid ()) {
 		g_debug ("CdCommon: not checking %s for %s as running as daemon user",
 			 action_id, sender);
 		return TRUE;
 	}
+#endif
 
 #ifdef USE_POLKIT
 	/* get authority */

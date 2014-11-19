@@ -139,10 +139,11 @@ AX_CHECK_LINK_FLAG([-Wl,-z,relro,-z,now],
 AC_SUBST([RELRO_LDFLAGS])
 
 dnl ---------------------------------------------------------------------------
-dnl - Check headers that may not exist on all platforms
+dnl - Check headers and functions that may not exist on all platforms
 dnl ---------------------------------------------------------------------------
 AC_CHECK_HEADER(pwd.h)
 AC_CHECK_HEADER(syslog.h)
+AC_CHECK_FUNC(getuid, AC_DEFINE([HAVE_GETUID], [], [getuid() is available]))
 
 dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
