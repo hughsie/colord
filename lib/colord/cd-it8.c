@@ -1773,14 +1773,18 @@ cd_it8_set_spectrum_array (CdIt8 *it8, GPtrArray *data)
 void
 cd_it8_add_spectrum (CdIt8 *it8, CdSpectrum *spectrum)
 {
+	const gchar *id;
 	CdSpectrum *tmp;
 
 	g_return_if_fail (CD_IS_IT8 (it8));
 
 	/* remove any existing spectra with this same ID */
-	tmp = cd_it8_get_spectrum_by_id (it8, cd_spectrum_get_id (spectrum));
-	if (tmp != NULL)
-		g_ptr_array_remove (it8->priv->array_spectra, tmp);
+	id = cd_spectrum_get_id (spectrum);
+	if (id != NULL) {
+		tmp = cd_it8_get_spectrum_by_id (it8, id);
+		if (tmp != NULL)
+			g_ptr_array_remove (it8->priv->array_spectra, tmp);
+	}
 
 	/* add this */
 	g_ptr_array_add (it8->priv->array_spectra, cd_spectrum_dup (spectrum));
