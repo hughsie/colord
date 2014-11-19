@@ -1106,6 +1106,7 @@ cd_sensor_open_usb_device (CdSensor *sensor,
 			   gint interface,
 			   GError **error)
 {
+#ifdef HAVE_UDEV
 	CdSensorPrivate *priv = sensor->priv;
 	guint8 busnum;
 	guint8 devnum;
@@ -1130,6 +1131,10 @@ cd_sensor_open_usb_device (CdSensor *sensor,
 		return NULL;
 	}
 	return g_object_ref (device);
+#else
+	g_set_error_literal (error, 1, 0, "failed: no gudev support");
+	return NULL;
+#endif
 }
 #endif
 
