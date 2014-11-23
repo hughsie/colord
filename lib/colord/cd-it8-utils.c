@@ -30,6 +30,7 @@
 
 #include <glib-object.h>
 #include <math.h>
+#include <lcms2.h>
 
 #include "cd-cleanup.h"
 #include "cd-color.h"
@@ -447,4 +448,94 @@ out:
 	if (reference_illuminant != NULL)
 		cd_spectrum_free (reference_illuminant);
 	return ret;
+}
+
+/**
+ * _cd_color_rgb_is_gray:
+ * @rgb: The sample color
+ * @delta: The allowed difference, e.g. 0.01f
+ *
+ * This returns TRUE for grey patches with a neutral axis.
+ *
+ * Return value: %TRUE if the color is gray.
+ **/
+static gboolean
+_cd_color_rgb_is_gray (CdColorRGB *rgb, gdouble delta)
+{
+	if (ABS (rgb->R - rgb->G) > delta)
+		return FALSE;
+	if (ABS (rgb->G - rgb->B) > delta)
+		return FALSE;
+	if (ABS (rgb->R - rgb->B) > delta)
+		return FALSE;
+	return TRUE;
+}
+
+/**
+ * cd_it8_utils_calculate_gamma:
+ * @it8: The reference data
+ * @gamma_y: The estimated gamma
+ * @error: A #GError, or %NULL
+ *
+ * This estimates the gamma from values obtained from an .ti3 file.
+ *
+ * Return value: %TRUE if a valid value was found.
+ *
+ * Since: 0.2.6
+ **/
+gboolean
+cd_it8_utils_calculate_gamma (CdIt8 *it8, gdouble *gamma_y, GError **error)
+{
+	CdColorRGB rgb;
+	CdColorXYZ xyz;
+	cmsToneCurve *curve;
+	gdouble len;
+	gdouble max = 0.f;
+	guint cnt = 0;
+	guint i;
+	_cleanup_free_ cmsFloat32Number *data_y = NULL;
+
+	/* find the grey gamma ramp */
+	len = cd_it8_get_data_size (it8);
+	data_y = g_new0 (cmsFloat32Number, len);
+	for (i = 0; i < len; i++) {
+		cd_it8_get_data_item (it8, i, &rgb, &xyz);
+		/* ignore if not R == G == B */
+		if (!_cd_color_rgb_is_gray (&rgb, 0.01f)) {
+			cnt = 0;
+			continue;
+		}
+		data_y[cnt++]  = xyz.Y;
+	}
+
+	/* we didn't get any measurements */
+	if (cnt == 0) {
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "Unable to detect gamma measurements");
+		return FALSE;
+	}
+
+	/* normalize */
+	for (i = 0; i < cnt; i++) {
+		if (data_y[i] > max)
+			max = data_y[i];
+	}
+	if (max <= 0.1f) {
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_FAILED,
+			     "Unable to get readings for gamma");
+		return FALSE;
+	}
+	for (i = 0; i < cnt; i++)
+		data_y[i] /= max;
+
+	/* use lcms2 to calculate the gamma */
+	curve = cmsBuildTabulatedToneCurveFloat (NULL, cnt, data_y);
+	if (gamma_y != NULL)
+		*gamma_y = cmsEstimateGamma (curve, 0.1);
+	cmsFreeToneCurve (curve);
+	return TRUE;
 }

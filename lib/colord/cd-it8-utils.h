@@ -52,6 +52,9 @@ gboolean	 cd_it8_utils_calculate_cri_from_cmf	(CdIt8		*cmf,
 							 gdouble	 resolution,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 cd_it8_utils_calculate_gamma		(CdIt8		*it8,
+							 gdouble	*gamma_y,
+							 GError		**error);
 
 G_END_DECLS
 
