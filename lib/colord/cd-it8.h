@@ -174,6 +174,11 @@ CdSpectrum	*cd_it8_get_spectrum_by_id	(CdIt8		*it8,
 						 const gchar	*id);
 gboolean	 cd_it8_has_option		(CdIt8		*it8,
 						 const gchar	*option);
+CdColorXYZ	*cd_it8_get_xyz_for_rgb		(CdIt8		*it8,
+						 gdouble	 R,
+						 gdouble	 G,
+						 gdouble	 B,
+						 gdouble	 delta);
 
 G_END_DECLS
 

@@ -1745,6 +1745,43 @@ cd_it8_get_data_item (CdIt8 *it8, guint idx, CdColorRGB *rgb, CdColorXYZ *xyz)
 }
 
 /**
+ * cd_it8_get_xyz_for_rgb:
+ * @it8: a #CdIt8 instance.
+ * @R: the red value
+ * @G: the green value
+ * @B: the blue value
+ * @delta: the smallest difference between colors, e.g. 0.01f
+ *
+ * Gets the XYZ value for a specific RGB value.
+ *
+ * Return value: (transfer none): A CdColorXYZ, or %NULL if the sample does not exist.
+ *
+ * Since: 1.2.6
+ **/
+CdColorXYZ *
+cd_it8_get_xyz_for_rgb (CdIt8 *it8, gdouble R, gdouble G, gdouble B, gdouble delta)
+{
+	CdColorXYZ *xyz_tmp;
+	guint i;
+	const CdColorRGB *rgb_tmp;
+
+	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
+
+	for (i = 0; i < it8->priv->array_xyz->len; i++) {
+		rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, i);
+		if (ABS (rgb_tmp->R - R) > delta)
+			continue;
+		if (ABS (rgb_tmp->G - G) > delta)
+			continue;
+		if (ABS (rgb_tmp->B - B) > delta)
+			continue;
+		xyz_tmp = g_ptr_array_index (it8->priv->array_xyz, i);
+		return xyz_tmp;
+	}
+	return NULL;
+}
+
+/**
  * cd_it8_set_spectrum_array:
  * @it8: a #CdIt8 instance.
  * @data: (transfer container) (element-type CdSpectrum): the spectral data

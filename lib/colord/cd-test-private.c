@@ -2107,6 +2107,7 @@ colord_it8_gamma_func (void)
 {
 	CdColorRGB rgb;
 	CdColorXYZ xyz;
+	CdColorXYZ *tmp;
 	GError *error = NULL;
 	cmsToneCurve *curve;
 	gboolean ret;
@@ -2125,6 +2126,13 @@ colord_it8_gamma_func (void)
 	cd_color_rgb_set (&rgb, 0.f, 9.f, 1.f);
 	cd_color_xyz_set (&xyz, 0.f, 0.f, 0.9f);
 	cd_it8_add_data (it8, &rgb, &xyz);
+
+	/* find green */
+	tmp = cd_it8_get_xyz_for_rgb (it8, 0.f, 1.f, 0.f, 0.01f);
+	g_assert (tmp != NULL);
+	g_assert_cmpfloat (ABS (tmp->X - 0.0f), <, 0.01);
+	g_assert_cmpfloat (ABS (tmp->Y - 0.9f), <, 0.01);
+	g_assert_cmpfloat (ABS (tmp->Z - 0.0f), <, 0.01);
 
 	/* add some ramp data with a gamma of 2.4 */
 	curve = cmsBuildGamma (NULL, 2.4);
