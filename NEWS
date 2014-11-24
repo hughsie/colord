@@ -1,3 +1,28 @@
+Version 1.2.6
+~~~~~~~~~~~~~
+Released: 2014-11-24
+
+New Features:
+ - Allowing compile using mingw (Richard Hughes)
+ - Make the ArgyllCMS sensor driver optional (Richard Hughes)
+ - libcolord: Add cd_it8_get_xyz_for_rgb() (Richard Hughes)
+ - libcolord: Add cd_it8_utils_calculate_gamma() (Richard Hughes)
+ - libcolord: Add cd_spectrum_get_resolution() (Richard Hughes)
+ - libcolord: Add cd_spectrum_get_value_raw() (Richard Hughes)
+ - libcolord: Add cd_spectrum_normalize_max() (Richard Hughes)
+ - libcolord: Add cd_spectrum_set_value() (Richard Hughes)
+
+Bugfixes:
+ - libcolord: Allow a SPECTRAL_START_NM value of zero (Richard Hughes)
+ - libcolord: Always replace CCSS spectral data of the same ID (Richard Hughes)
+ - libcolord: Deep copy the spectral data when using cd_spectrum_dup() (Richard Hughes)
+ - libcolord: Fix using cd_it8_add_spectrum() where the spectra have no ID values (Richard Hughes)
+ - libcolord: Never allow duplicate CCSS IDs for small wavelength ranges (Richard Hughes)
+ - libcolord: Only set SPECTRAL_NORM when the normalisation is enabled (Richard Hughes)
+ - libcolord: Return correct values when no LUMINANCE_XYZ_CDM2 is specified (Richard Hughes)
+ - libcolord: Use double precision for SPECTRAL_START_NM and SPECTRAL_END_NM (Richard Hughes)
+ - libcolord: When using cd_it8_add_spectrum() replace any with the same ID (Richard Hughes)
+
 Version 1.2.5
 ~~~~~~~~~~~~~
 Released: 2014-11-10

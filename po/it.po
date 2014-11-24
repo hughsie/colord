@@ -11,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 11:04+0000\n"
-"PO-Revision-Date: 2014-11-10 11:04+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-11-24 14:27+0000\n"
+"PO-Revision-Date: 2014-11-11 18:28+0000\n"
+"Last-Translator: Milo Casagrande <milo@ubuntu.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/colord/language/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -119,13 +119,14 @@ msgstr "Crea uno spectrum da dati CSV"
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "Crea un CCMX da dati di riferimento e misurazioni"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
 msgstr "%B %e %Y, %I.%M.%S %p"
 
 #. TRANSLATORS: profile owner
+#. TRANSLATORS: profile UID
 msgid "Owner"
 msgstr "Proprietario"
 

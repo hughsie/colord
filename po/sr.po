@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 11:04+0000\n"
-"PO-Revision-Date: 2014-11-10 11:04+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2014-11-24 14:27+0000\n"
+"PO-Revision-Date: 2014-11-14 21:47+0000\n"
+"Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/colord/language/sr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -48,7 +48,7 @@ msgstr "Приказује додатне податке за уклањање �
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "Језик за коришћење приликом подешавања локализованог текста"
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
@@ -96,7 +96,7 @@ msgstr "Подешава издање ИЦЦ профила"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "Извози податке ознаке"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -104,25 +104,26 @@ msgstr "Управљање бојом"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "Програм за избачај ИЦЦ профила"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Прави ЦМФ из ЦСВ података"
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "Прави спектар из ЦСВ података"
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "Прави ЦЦМИкс из података упуте и мерења"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr "%e. %B %Y, %H:%M:%S"
+msgstr "%e. %B %Y., %H:%M:%S"
 
 #. TRANSLATORS: profile owner
+#. TRANSLATORS: profile UID
 msgid "Owner"
 msgstr "Власник"
 
@@ -286,29 +287,29 @@ msgstr "Плазма"
 #. * where LCD stands for 'Liquid Crystal Display'
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 msgid "LCD CCFL"
-msgstr ""
+msgstr "ЛЦД ЦЦФЛ"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "ЛЦД РГБ ЛЕД"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "ЛЦД ЦЦФЛ широког распона"
 
 #. TRANSLATORS: this is the display technology
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "ЛЦД РГБ ЛЕД широког распона"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 msgid "LCD White LED"
-msgstr ""
+msgstr "ЛЦД ЛЕД белог"
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
@@ -367,15 +368,15 @@ msgstr "Приказује издања програма и позадинца"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Прикажи вредност без заглавља"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Издвој својства предмета приликом приказивања"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "Исписује све податке прочишћавања у датотеку"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -411,15 +412,15 @@ msgstr "Ствара уређај"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Налази уређај из ИБ-а уређаја"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Налази уређај са датом вредношћу својства"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Налази профил из ИБ-а профила"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -435,7 +436,7 @@ msgstr "Ствара профил"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Додаје профил уређају који већ постоји"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -451,7 +452,7 @@ msgstr "Брише профил"
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "Поставља додатна својства на профилу"
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
@@ -487,7 +488,7 @@ msgstr "Враћа све профиле који одговарају озна�
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Увози профил и инсталира га за корисника"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -500,10 +501,10 @@ msgid "Daemon version:"
 msgstr "Издање позадинца:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Продавац система:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Модел система:"
 
 msgid "Default gamma for the display"
 msgstr "Основна гама за екран"
@@ -522,27 +523,27 @@ msgid ""
 msgstr "Основна циљна бела тачка у Келвинима за калибрацију екрана, где 0 значи изворно екрана. Опште вредности су 6500 за Д65 и 5000 за Д50."
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Застој између интервала узорка"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "Ово је застој између подешавања боје узорка и тражења од мерног инструмента да узме узорак. Потребно је да би и графички управљачки програм и сам приказ увели кашњење."
 
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "Путања веб услуге отпремања профила"
 
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr ""
+msgstr "Путања веб услуге која омогућава алатима калибрације да отпреме посебан профил на Интернет."
 
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Сагласан са Адобе РГБ (1998)"
 
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Овај профил је ослобођен познатих ограничења ауторских права"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -551,7 +552,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr ""
+msgstr "Овај простор уређивања је осмишљен као СМПТЕ-240М и обухвата већину могићих боја доступних на штампачима ЦМЈК боје. Ово је популаран избор за уређивање фотографија и за коришћење у штампању, јер све СВОП боје могу бити произведене."
 
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
@@ -561,7 +562,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr ""
+msgstr "Овај стари профил изворно је направио Адобе за употребу са Фотошопом и Илустратором. Зато што је заснован на изворном Епловом 13\" РГБ монитору и зато што је сличан са сРГБ-ом, не треба да се користи као профил приказа или за нове слике."
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -570,7 +571,7 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "Овај простор уређивања може да прикаже засићеније боје него Адобе РГБ и пригодан је за слике са врло засићеним бојама често коришћеним у рекламама. Врло је сличан са ДонРГБ4, али може да прикаже супер-засићене црвене боје понекад присутне у Фуџикром Велвији."
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 msgid ""
@@ -578,31 +579,31 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "Овај простор уређивања може да прикаже засићеније боје него Адобе РГБ. Мање је подложан грешкама квантизације у поређењу са Профото РГБ-ом, иако се очува више појединости сенке. У већини примерака Профото РГБ је вероватно бољи избор."
 
 msgid "Blue"
-msgstr ""
+msgstr "Плава"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "Овај пробни профил се користи да учини све боје на екрану незнатно плављим мењајући табелу тражења видео картице. Ово омогућава кориснику да провери да ли је калибрација исправно примењена."
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr ""
+msgstr "Ово је простор уређивања РГБ-а за коришћење са Адобе Фотошопом 5.0 или новијим. Осмишљен је као излазно-средишњи компромис између Колор-меч РГБ-а и Адобе РГБ-а и коришћен да би био омиљен код неких услуга штампања фотографија."
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "Овај теоријски профил је осмишљен за коришћење у експериментима боје. Вероватно нећете желети да користите овај профил као простор уређивања или као профил приказа."
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -611,10 +612,10 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr ""
+msgstr "Овај профил је осмислио Радијус за „PressView“ монитор. Користите овај профил само као профил приказа или као простор уређивања јер као профил се не разликује значајно од сРГБ-а. Требало би да користите овај профил само ако прегледате слике направљене на „PressView“ монитору."
 
 msgid "Crayon Colors"
-msgstr ""
+msgstr "Крејон боје"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -622,14 +623,14 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "Овај профил именоване боје садржи све крејон боје Крејоле у употреби. То је пробни профил осмишљен за испробавање уграђивања именованих боја у документима."
 
 #. TRANSLATORS: saturated means vivid bright colors
 msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "Овај простор уређивања може да прикаже засићеније боје него Адобе РГБ и пригодан је за слике са врло засићеним бојама често коришћеним у рекламама."
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 msgid ""
@@ -637,14 +638,14 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr ""
+msgstr "Овај профил препоручује ЕЦИ (Европско прегалаштво боје) као простор уређивања за професионално уређивање слика и има за циљ да покрије све боје које могу бити одштампане на штампарским пресама. Понекад се користи као запис размене података боје између издавача и штампарских кућа."
 
 #. TRANSLATORS: lightness is a technical word for brightness
 msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr ""
+msgstr "Овај профил је осмишљен са кривом гамута светлине што значи да и монитор мора бити калибрисан на исти начин. Овај профил је користан само напредним корисницима и не препоручује се за општу употребу."
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -652,20 +653,20 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr ""
+msgstr "Овај профил је осмишљен за складиштење архиве скенираног филма прозрачности. Погодан је за чување слика са негатива боје, иако је данас Профото РГБ популарнији профил за архивирање."
 
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "ФОГРА27Л глазиран"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "Овај профил се користи за превлачење позитива, за штампање на папиру врсте 1 и 2 (глазираном или храпавом), офсет хранилице листова папира. Овај скуп профила не би требао више да се користи за производњу, користите ФОГРА39Л."
 
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "ФОГРА28Л веб глазиран"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -673,10 +674,10 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "Овај профил се користи за превлачење позитива, за штампање на папиру врсте 3 (LWC), офсет хранилице ролни папира. Овај скуп профила не би требао више да се користи за производњу, користите ФОГРА45."
 
 msgid "FOGRA29L Uncoated"
-msgstr ""
+msgstr "ФОГРА29Л неглазиран"
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -684,19 +685,19 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr ""
+msgstr "Овај профил се користи за превлачење позитива, за штампање на папиру врсте 4 (неглазираном белом), офсет хранилице листова папира. Овај скуп профила не би требао више да се користи за производњу, користите ФОГРА47."
 
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr ""
+msgstr "ФОГРА30Л Неглазирани жућкасти"
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr ""
+msgstr "Овај профил се користи за превлачење позитива, за штампање на папиру врсте 5 (неглазираном жућкастом), офсет хранилице листова папира."
 
 msgid "FOGRA39L Coated"
-msgstr ""
+msgstr "ФОГРА39Л глазиран"
 
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
@@ -705,47 +706,47 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr ""
+msgstr "Овај профил се користи за штампање на папиру врсте 1 и 2 (глазираном или храпавом), офсет хранилице листова папира. Овај профил не разликује се значајно од америчког ГРАЦоЛ-а 2006 (ТР 006)."
 
 msgid "FOGRA40L SC Paper"
-msgstr ""
+msgstr "ФОГРА40Л СЦ папир"
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr ""
+msgstr "Овај профил се користи за штампање на СЦ-у (суперпресованом) папиру, офсет хранилице ролни папира. Не постоји познати амерички еквивалент."
 
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "ФОГРА45Л лагано глазиран"
 
 #. TRANSLATORS: ISO is a trademark
 msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr ""
+msgstr "Овај профил сагласан са ИСО 12647-2:2004 користи се за штампање на побољшаном лагано глазираном (LWC) папиру за штампање на 60 l/cm термичком влакну у ролнама. Мења ФОГРА28Л."
 
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "ФОГРА47Л неглазиран"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr ""
+msgstr "Овај профил сагласан са ИСО 12647-2 користи се за штампање на неглазираном белом 115 g/m<sup>2</sup> (папиру врсте 4) за штампање на 60 l/cm хранилици листова папира."
 
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "ГРАЦоЛ ТР006 глазиран"
 
 #. TRANSLATORS: coated = smooth and expensive
 msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
-msgstr ""
+msgstr "Овај профил се користи за штампање на америчком глазираном папиру степена 1 и 2, офсету хранилице листова папира и гравури. Амерички је еквивалент за ФОГРА39."
 
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "ИФРА26С 2004 новинска хартија"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -755,7 +756,7 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr ""
+msgstr "Овај профил се користи за штампање на новинској хартији, и јесте профил сагласан са ИСО12647-3:2005 осмишљен за штампање излагањем пресе 26% ПВТ (појачање тачке). Препоручује га „WAN-IFRA“ за хладно штампање на новинској хартији широм света."
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -763,14 +764,14 @@ msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
-msgstr ""
+msgstr "Овај профил одређује опсег боја коришћених са НТСЦ видео стандардом. То је застарели стандард који је замењен СМТЕ-Цом. Требало би да користите овај профил само за декодирање архивираних снимака."
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr ""
+msgstr "Овај профил одређује опсег боја коришћених са ПАЛ и СЕЦАМ видео стандардима и врло је сличан сРГБ-у. Требало би да користите овај профил само за кодирање или декодирање снимака."
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 msgid ""
@@ -778,30 +779,30 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr ""
+msgstr "Првобитно га је осмислио Истман Кодак и назвао га је РОММ РГБ, може да прикаже врло широк опсег боја и користе га многи фотографи за исцртавање, уређивање и архивирање сирових слика. Осим ако не радите са тачношћу од 16 бита по каналу, можете видети здруживање боја када уређујете слике."
 
 #. TRANSLATORS: ITU-R is a standards body
 msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "ИТУ-Р препорука БТ.709 је стандард телевизије високе дефиниције који је први пут прихваћен 1990. Профил Рец. 709 користи исти опсег боја као сРГБ иако је крива осветљаја другачија."
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "Ово је текући стандард који се користи у Северној Америци и Јапану за студијска снимања. Требало би да користите овај профил само за кодирање или декодирање снимака."
 
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "СНАП ТР002 новинска хартија"
 
 #. TRANSLATORS: CGATS is a trademark
 #, no-c-format
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr ""
+msgstr "Ово је профил заснован на АНСИ ЦГАТС/СНАП ТР 002-2007 за штампање на новинској хартији у САД-у, хладни офсет. ПВТ (појачање тачке) је 26%."
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -811,40 +812,40 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr ""
+msgstr "Овај профил опште сврхе је осмислио Хевлет-Пакард и Мајкрософт и постоји као основни профил на Интернету за неозначене РГБ боје и користи се у телевизији високе дефиниције. Већина некалибрисаних екрана може да прикаже већину боја доступних у сРГБ-у, мада је овај профул понекад лош избор за штампање."
 
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Размењена црвена и зелена"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "Овај профил пробе размењује црвене и зелене канале и користан је као видна провера да су профили исправно примењени. Ако је овај профил примењен два пута, слика изгледа неизмењена."
 
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "СВОП ТР003 глазиран"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr ""
+msgstr "Овај профил се користи за штампање на америчком глазираном папиру степена 3, офсету хранилице листова папира и гравури. Користи се за врло квалитетно штампање часописа на белој хартији."
 
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "СВОП ТР005 глазиран"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr ""
+msgstr "Овај профил се користи за штампање на америчком глазираном папиру степена 5, офсету хранилице листова папира и гравури. Користи се за уобичајено штампање часописа на жућкастој хартији."
 
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "РГБ широког распона"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 msgid ""
@@ -853,17 +854,17 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr ""
+msgstr "Овај простор уређивања је осмислио Адобе Систем за снимање више боја него Адобе РГБ. Овај профил се користи за штампање на уређајима као што су снимачи филмова и може да одреди више боја него што може бити приказано на екранима рачунара. Осим ако не радите са тачношћу од 16 бита по каналу, можете видети здруживање боја када уређујете слике."
 
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 боје"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr ""
+msgstr "Овај именовани профил боје садржи све боје које је одредио Х11, претпостављајући да боје извора требају бити сРГБ."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -964,7 +965,7 @@ msgstr "Излази након учитавања погона"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Прави лажни сензор за испробавање"
 
 msgid "Color Management D-Bus Service"
 msgstr "Услуга Д-сабирнице управљања бојом"
