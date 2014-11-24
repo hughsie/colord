@@ -141,8 +141,8 @@ AC_SUBST([RELRO_LDFLAGS])
 dnl ---------------------------------------------------------------------------
 dnl - Check headers and functions that may not exist on all platforms
 dnl ---------------------------------------------------------------------------
-AC_CHECK_HEADER(pwd.h)
-AC_CHECK_HEADER(syslog.h)
+AC_CHECK_HEADERS([pwd.h])
+AC_CHECK_HEADERS([syslog.h])
 AC_CHECK_FUNC(getuid, AC_DEFINE([HAVE_GETUID], [], [getuid() is available]))
 
 dnl ---------------------------------------------------------------------------
