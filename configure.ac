@@ -191,7 +191,7 @@ AM_CONDITIONAL(HAVE_UNIX, test x$enable_unix = xyes)
 AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
 	      enable_gusb=$enableval, enable_gusb=yes)
 if test x$enable_gusb != xno; then
-	PKG_CHECK_MODULES(GUSB, gusb >= 0.1.1)
+	PKG_CHECK_MODULES(GUSB, gusb >= 0.2.2)
 	AC_DEFINE(HAVE_GUSB,1,[whether gusb is available])
 fi
 AM_CONDITIONAL(HAVE_GUSB, test x$enable_gusb = xyes)

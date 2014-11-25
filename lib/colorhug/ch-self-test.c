@@ -91,16 +91,13 @@ ch_test_device_queue_func (void)
 	guint valid_devices = 0;
 	GUsbContext *usb_ctx;
 	GUsbDevice *device;
-	GUsbDeviceList *list;
 
 	/* try to find any ColorHug devices */
 	usb_ctx = g_usb_context_new (NULL);
 	if (usb_ctx == NULL)
 		return;
 
-	list = g_usb_device_list_new (usb_ctx);
-	g_usb_device_list_coldplug (list);
-	devices = g_usb_device_list_get_devices (list);
+	devices = g_usb_context_get_devices (usb_ctx);
 
 	/* watch for any failed devices */
 	device_queue = ch_device_queue_new ();
@@ -212,7 +209,6 @@ ch_test_device_queue_func (void)
 out:
 	g_ptr_array_unref (devices);
 	g_object_unref (device_queue);
-	g_object_unref (list);
 	g_object_unref (usb_ctx);
 }
 
@@ -451,7 +447,6 @@ ch_client_get_default (GError **error)
 	gboolean ret;
 	GUsbContext *usb_ctx;
 	GUsbDevice *device = NULL;
-	GUsbDeviceList *list;
 
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
@@ -464,18 +459,10 @@ ch_client_get_default (GError **error)
 			    "No device found; USB initialisation failed");
 		return NULL;
 	}
-	list = g_usb_device_list_new (usb_ctx);
-	g_usb_device_list_coldplug (list);
-	device = g_usb_device_list_find_by_vid_pid (list,
-						    CH_USB_VID,
-						    CH_USB_PID_FIRMWARE,
-						    NULL);
-	if (device == NULL) {
-		device = g_usb_device_list_find_by_vid_pid (list,
-							    CH_USB_VID,
-							    CH_USB_PID_FIRMWARE_PLUS,
-							    error);
-	}
+	device = g_usb_context_find_by_vid_pid (usb_ctx,
+						CH_USB_VID,
+						CH_USB_PID_FIRMWARE,
+						error);
 	if (device == NULL)
 		goto out;
 	g_debug ("Found ColorHug device %s",
@@ -485,8 +472,6 @@ ch_client_get_default (GError **error)
 		goto out;
 out:
 	g_object_unref (usb_ctx);
-	if (list != NULL)
-		g_object_unref (list);
 	return device;
 }
 
