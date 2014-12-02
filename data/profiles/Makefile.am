@@ -89,191 +89,154 @@ profiles_DATA =						\
 	$(generatedprofiles)
 
 AdobeRGB1998.icc: AdobeRGB1998.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/AdobeRGB1998.xml
 AppleRGB.icc: AppleRGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/AppleRGB.xml
 BestRGB.icc: BestRGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/BestRGB.xml
 BetaRGB.icc: BetaRGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/BetaRGB.xml
 BruceRGB.icc: BruceRGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/BruceRGB.xml
 CIE-RGB.icc: CIE-RGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/CIE-RGB.xml
 ColorMatchRGB.icc: ColorMatchRGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/ColorMatchRGB.xml
 DonRGB4.icc: DonRGB4.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/DonRGB4.xml
 ECI-RGBv1.icc: ECI-RGBv1.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/ECI-RGBv1.xml
 ECI-RGBv2.icc: ECI-RGBv2.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/ECI-RGBv2.xml
 EktaSpacePS5.icc: EktaSpacePS5.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/EktaSpacePS5.xml
 NTSC-RGB.icc: NTSC-RGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/NTSC-RGB.xml
 PAL-RGB.icc: PAL-RGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/PAL-RGB.xml
 ProPhotoRGB.icc: ProPhotoRGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/ProPhotoRGB.xml
 SMPTE-C-RGB.icc: SMPTE-C-RGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/SMPTE-C-RGB.xml
 sRGB.icc: sRGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/sRGB.xml
 WideGamutRGB.icc: WideGamutRGB.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/WideGamutRGB.xml
 SwappedRedAndGreen.icc: SwappedRedAndGreen.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/SwappedRedAndGreen.xml
 x11-colors.icc: x11-colors.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/x11-colors.xml
 Crayons.icc: Crayons.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/Crayons.xml
 Bluish.icc: Bluish.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/Bluish.xml
 Gamma6500K.icc: Gamma6500K.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/Gamma6500K.xml
 Gamma5500K.icc: Gamma5500K.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/Gamma5500K.xml
 Gamma5000K.icc: Gamma5000K.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/Gamma5000K.xml
 
 if CD_BUILD_PRINT_PROFILES
 FOGRA27L_coated.icc: FOGRA27L_coated.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/FOGRA27L_coated.xml
 FOGRA28L_webcoated.icc: FOGRA28L_webcoated.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/FOGRA28L_webcoated.xml
 FOGRA29L_uncoated.icc: FOGRA29L_uncoated.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/FOGRA29L_uncoated.xml
 FOGRA30L_uncoated_yellowish.icc: FOGRA30L_uncoated_yellowish.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/FOGRA30L_uncoated_yellowish.xml
 FOGRA39L_coated.icc: FOGRA39L_coated.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/FOGRA39L_coated.xml
 FOGRA40L_SC_paper.icc: FOGRA40L_SC_paper.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/FOGRA40L_SC_paper.xml
 FOGRA45L_lwc.icc: FOGRA45L_lwc.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/FOGRA45L_lwc.xml
 FOGRA47L_uncoated.icc: FOGRA47L_uncoated.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/FOGRA47L_uncoated.xml
 GRACoL_TR006_coated.icc: GRACoL_TR006_coated.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/GRACoL_TR006_coated.xml
 SNAP_TR002_newsprint.icc: SNAP_TR002_newsprint.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/SNAP_TR002_newsprint.xml
 SWOP_TR003_coated_3.icc: SWOP_TR003_coated_3.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/SWOP_TR003_coated_3.xml
 SWOP_TR005_coated_5.icc: SWOP_TR005_coated_5.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/SWOP_TR005_coated_5.xml
 IFRA26S_2004_newsprint.icc: IFRA26S_2004_newsprint.xml
-	$(AM_V_GEN)						\
-	$(top_builddir)/client/cd-create-profile$(EXEEXT)	\
-		--output $@					\
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
 		$(builddir)/IFRA26S_2004_newsprint.xml
 endif
 

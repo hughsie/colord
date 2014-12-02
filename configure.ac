@@ -157,7 +157,34 @@ dnl ---------------------------------------------------------------------------
 AC_CHECK_DEFINE([__unix__], enable_unix="yes", enable_unix="no")
 if test x$enable_unix != xno; then
 	PKG_CHECK_MODULES(GLIB_UNIX, gio-unix-2.0)
+	CD_IT8="\$(top_builddir)/client/cd-it8"
+	CD_CREATE_PROFILE="\$(top_builddir)/client/cd-create-profile"
+else
+	# look for a wine that can run our win32 and win64 client tools
+	case "$build_cpu" in
+	x86_64*)
+		AC_PATH_PROG(WINE, wine64, no);;
+	*)
+		AC_PATH_PROG(WINE, wine, no);;
+	esac
+
+	# we don't have wine, so try to use the system tools instead
+	if test $WINE = no; then
+		AC_PATH_PROG(CD_IT8, [cd-it8], no)
+		if test $CD_IT8 = no; then
+			AC_MSG_ERROR([Non-UNIX build requires either wine or colord])
+		fi
+		AC_PATH_PROG(CD_CREATE_PROFILE, [cd-create-profile], no)
+		if test $CD_CREATE_PROFILE = no; then
+			AC_MSG_ERROR([Non-UNIX build requires either wine or colord])
+		fi
+	else
+		CD_IT8="$WINE \$(top_builddir)/client/cd-it8\$(EXEEXT)"
+		CD_CREATE_PROFILE="$WINE \$(top_builddir)/client/cd-create-profile\$(EXEEXT)"
+	fi
 fi
+AC_SUBST([CD_IT8])
+AC_SUBST([CD_CREATE_PROFILE])
 AM_CONDITIONAL(HAVE_UNIX, test x$enable_unix = xyes)
 
 AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
@@ -456,6 +483,8 @@ echo "
         compiler:                  ${CC}
         cflags:                    ${CFLAGS}
         cppflags:                  ${CPPFLAGS}
+        cd-it8:                    ${CD_IT8}
+        cd-create-profile:         ${CD_CREATE_PROFILE}
         gobject-introspection:     ${found_introspection}
         PolicyKit support:         ${enable_polkit}
         Reverse engineering tools: ${enable_reverse}
