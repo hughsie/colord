@@ -1,3 +1,11 @@
+Version 1.2.7
+~~~~~~~~~~~~~
+Released: 2014-12-02
+
+Bugfixes:
+ - Don't build the daemon when compiling for MinGW (Richard Hughes)
+ - Use wine to run the client build tools when compiling under MinGW (Richard Hughes)
+
 Version 1.2.6
 ~~~~~~~~~~~~~
 Released: 2014-11-24
