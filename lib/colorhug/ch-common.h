@@ -51,7 +51,7 @@ G_BEGIN_DECLS
 #define	CH_USB_PID_LEGACY			0xf8da
 
 /* the default timeout in client tools */
-#define CH_DEVICE_USB_TIMEOUT			5000 /* ms */
+#define CH_DEVICE_USB_TIMEOUT			10000 /* ms */
 
 /* constants for ownership tags */
 #define CH_OWNER_LENGTH_MAX			60
