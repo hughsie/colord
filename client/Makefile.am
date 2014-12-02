@@ -20,11 +20,15 @@ COLORD_LIBS =						\
 	$(top_builddir)/lib/colord/libcolord.la
 
 bin_PROGRAMS =						\
-	colormgr					\
 	cd-create-profile				\
 	cd-iccdump					\
 	cd-it8						\
 	cd-fix-profile
+
+if HAVE_UNIX
+bin_PROGRAMS +=						\
+	colormgr
+endif
 
 colormgr_SOURCES =					\
 	cd-util.c

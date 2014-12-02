@@ -1,5 +1,9 @@
-SUBDIRS =						\
+SUBDIRS =
+
+if HAVE_UNIX
+SUBDIRS +=						\
 	session-helper
+endif
 
 if HAVE_SANE
 SUBDIRS +=						\

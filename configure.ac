@@ -154,10 +154,11 @@ PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.36.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.
 dnl ---------------------------------------------------------------------------
 dnl - Check Linux-specific dependencies
 dnl ---------------------------------------------------------------------------
-AC_CHECK_DEFINE(__unix__, enable_unix="yes")
+AC_CHECK_DEFINE([__unix__], enable_unix="yes", enable_unix="no")
 if test x$enable_unix != xno; then
 	PKG_CHECK_MODULES(GLIB_UNIX, gio-unix-2.0)
 fi
+AM_CONDITIONAL(HAVE_UNIX, test x$enable_unix = xyes)
 
 AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
 	      enable_gusb=$enableval, enable_gusb=yes)
@@ -471,6 +472,7 @@ echo "
         udev rules.d dir:          ${with_udevrulesdir}
         using libsystemd-login:    ${enable_systemd_login}
         systemd service dir:       ${with_systemdsystemunitdir}
+        Unix support:              ${enable_unix}
 "
 
 

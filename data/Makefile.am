@@ -8,6 +8,7 @@ SUBDIRS = 						\
 	tests						\
 	ti1
 
+if HAVE_UNIX
 dbusdir = $(sysconfdir)/dbus-1/system.d
 dist_dbus_DATA = org.freedesktop.ColorManager.conf
 
@@ -19,6 +20,7 @@ $(dbusservicemain_DATA): $(dbusservicemain_in_files) Makefile
 	sed -e "s|\@daemon_user\@|$(daemon_user)|" > $@
 
 systemdservicemain_in_files = colord.service.in
+endif
 
 if HAVE_SYSTEMD
 systemdservicemaindir = $(systemdsystemunitdir)
@@ -29,7 +31,7 @@ $(systemdservicemain_DATA): $(systemdservicemain_in_files) Makefile
 endif
 
 EXTRA_DIST =						\
-	$(dbusservicemain_in_files)				\
+	$(dbusservicemain_in_files)			\
 	org.freedesktop.ColorManager.conf.in
 
 if HAVE_SYSTEMD

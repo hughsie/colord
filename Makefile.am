@@ -5,10 +5,7 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 NULL =
 
 SUBDIRS = 						\
-	policy						\
-	man						\
 	lib						\
-	rules						\
 	po
 
 # this needs libcolord
@@ -23,8 +20,13 @@ SUBDIRS += 						\
 	data
 
 # this needs data/profiles/*.icc
+if HAVE_UNIX
 SUBDIRS += 						\
+	man						\
+	policy						\
+	rules						\
 	src
+endif
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`
