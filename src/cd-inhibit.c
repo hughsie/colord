@@ -196,7 +196,7 @@ cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 	item = g_new0 (CdInhibitItem, 1);
 	item->sender = g_strdup (sender);
 	item->watcher_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
-					     item->sender,
+					     sender,
 					     G_BUS_NAME_WATCHER_FLAGS_NONE,
 					     NULL,
 					     cd_inhibit_name_vanished_cb,
