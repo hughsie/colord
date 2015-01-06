@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 11:04+0000\n"
-"PO-Revision-Date: 2014-11-10 11:04+0000\n"
+"POT-Creation-Date: 2014-12-02 14:47+0000\n"
+"PO-Revision-Date: 2015-01-06 09:31+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Norwegian Nynorsk (Norway) (http://www.transifex.com/projects/p/colord/language/nn_NO/)\n"
 "MIME-Version: 1.0\n"
@@ -122,6 +122,7 @@ msgid "%B %e %Y, %I:%M:%S %p"
 msgstr ""
 
 #. TRANSLATORS: profile owner
+#. TRANSLATORS: profile UID
 msgid "Owner"
 msgstr ""
 
