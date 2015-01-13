@@ -325,6 +325,7 @@ AC_ARG_ENABLE(sane, AS_HELP_STRING([--enable-sane],[Enable SANE support]),
 has_sane=no
 if test x$enable_sane != xno; then
 	PKG_CHECK_MODULES(SANE, sane-backends, has_sane=yes, has_sane=no)
+	PKG_CHECK_MODULES(DBUS, dbus-1, have_dbus=yes, have_dbus=no)
 	if test $has_sane = "no"; then
 		# fall back to detecting the header for some distros
 		AC_CHECK_HEADER(sane/sane.h, has_sane=yes, has_sane=no)
