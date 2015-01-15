@@ -1,3 +1,16 @@
+Version 1.2.8
+~~~~~~~~~~~~~
+Released: 2015-01-15
+
+Notes:
+ - The required libgusb library version has been bumped to 0.2.2
+
+Bugfixes:
+ - Check for dbus when enabling sane (Niels Ole Salscheider)
+ - Do not use the deprecated GUsbDeviceList (Richard Hughes)
+ - Fix build without gobject-introspection (Niels Ole Salscheider)
+ - Fix possible critical warning when using g_dbus_watch_name() (Richard Hughes)
+
 Version 1.2.7
 ~~~~~~~~~~~~~
 Released: 2014-12-02

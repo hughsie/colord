@@ -37,7 +37,7 @@ BuildRequires: polkit-devel >= 0.103
 BuildRequires: sqlite-devel
 BuildRequires: gobject-introspection-devel
 BuildRequires: vala-tools
-BuildRequires: libgusb-devel
+BuildRequires: libgusb-devel >= 0.2.2
 BuildRequires: gtk-doc
 BuildRequires: color-filesystem
 %if !0%{?rhel}
