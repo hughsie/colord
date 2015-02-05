@@ -434,6 +434,8 @@ ch_device_mode_from_firmware (const guint8 *data, gsize data_len)
 			return CH_DEVICE_MODE_FIRMWARE2;
 		if (memcmp (data + i, CH_FIRMWARE_ID_TOKEN_PLUS, 8) == 0)
 			return CH_DEVICE_MODE_FIRMWARE_PLUS;
+		if (memcmp (data + i, CH_FIRMWARE_ID_TOKEN_ALS, 8) == 0)
+			return CH_DEVICE_MODE_FIRMWARE_ALS;
 	}
 	return CH_DEVICE_MODE_UNKNOWN;
 }

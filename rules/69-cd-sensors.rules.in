@@ -1,5 +1,5 @@
 ########################################################################
-# Copyright (C) 2009-2010 Richard Hughes <richard@hughsie.com>
+# Copyright (C) 2009-2015 Richard Hughes <richard@hughsie.com>
 #
 # Licensed under the GNU General Public License Version 2
 #
@@ -85,6 +85,10 @@ ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1004", ENV{COLORD_SENSOR_KIND}="colo
 # ColorHug Plus
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1003", ENV{COLORD_SENSOR_KIND}="colorhug-plus", ENV{COLORD_IGNORE}="1"
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1002", ENV{COLORD_SENSOR_KIND}="colorhug-plus", ENV{COLORD_SENSOR_CAPS}="lcd"
+
+# ColorHug ALS
+ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1006", ENV{COLORD_SENSOR_KIND}="colorhug-als", ENV{COLORD_IGNORE}="1"
+ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1007", ENV{COLORD_SENSOR_KIND}="colorhug-als", ENV{COLORD_IGNORE}="1"
 
 # color calibration device
 ENV{COLORD_SENSOR_KIND}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"

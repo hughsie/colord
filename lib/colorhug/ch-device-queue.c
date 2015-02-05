@@ -1216,17 +1216,19 @@ ch_device_queue_write_firmware (ChDeviceQueue	*device_queue,
 {
 	gsize chunk_len;
 	guint idx;
+	guint16 runcode_addr;
 
 	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
 	g_return_if_fail (G_USB_IS_DEVICE (device));
 	g_return_if_fail (data != NULL);
 
 	/* erase flash */
+	runcode_addr = ch_device_get_runcode_address (device);
 	g_debug ("Erasing at %04x size %" G_GSIZE_FORMAT,
-		 CH_EEPROM_ADDR_RUNCODE, len);
+		 runcode_addr, len);
 	ch_device_queue_erase_flash (device_queue,
 				     device,
-				     CH_EEPROM_ADDR_RUNCODE,
+				     runcode_addr,
 				     len);
 
 	/* just write in 32 byte chunks, as we're sure that the firmware
@@ -1238,11 +1240,11 @@ ch_device_queue_write_firmware (ChDeviceQueue	*device_queue,
 		if (idx + chunk_len > len)
 			chunk_len = len - idx;
 		g_debug ("Writing at %04x size %" G_GSIZE_FORMAT,
-			 CH_EEPROM_ADDR_RUNCODE + idx,
+			 runcode_addr + idx,
 			 chunk_len);
 		ch_device_queue_write_flash (device_queue,
 					     device,
-					     CH_EEPROM_ADDR_RUNCODE + idx,
+					     runcode_addr + idx,
 					     (guint8 *) data + idx,
 					     chunk_len);
 		idx += chunk_len;
@@ -1270,6 +1272,7 @@ ch_device_queue_verify_firmware (ChDeviceQueue	*device_queue,
 {
 	gsize chunk_len;
 	guint idx;
+	guint16 runcode_addr;
 
 	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
 	g_return_if_fail (G_USB_IS_DEVICE (device));
@@ -1278,15 +1281,16 @@ ch_device_queue_verify_firmware (ChDeviceQueue	*device_queue,
 	/* read in 60 byte chunks */
 	idx = 0;
 	chunk_len = 60;
+	runcode_addr = ch_device_get_runcode_address (device);
 	do {
 		if (idx + chunk_len > len)
 			chunk_len = len - idx;
 		g_debug ("Verifying at %04x size %" G_GSIZE_FORMAT,
-			 CH_EEPROM_ADDR_RUNCODE + idx,
+			 runcode_addr + idx,
 			 chunk_len);
 		ch_device_queue_verify_flash (device_queue,
 					      device,
-					      CH_EEPROM_ADDR_RUNCODE + idx,
+					      runcode_addr + idx,
 					      data + idx,
 					      chunk_len);
 		idx += chunk_len;

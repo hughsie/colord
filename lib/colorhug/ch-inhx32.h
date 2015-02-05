@@ -37,6 +37,12 @@ gboolean	 ch_inhx32_to_bin		(const gchar	*in_buffer,
 						 gsize		*out_size,
 						 GError		**error)
 						 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 ch_inhx32_to_bin_full		(const gchar	*in_buffer,
+						 guint8		**out_buffer,
+						 gsize		*out_size,
+						 guint16	 runcode_addr,
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 
 G_END_DECLS
 

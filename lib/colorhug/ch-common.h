@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011-2013 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -35,9 +35,11 @@ G_BEGIN_DECLS
 #define	CH_USB_VID				0x273f
 #define	CH_USB_PID_BOOTLOADER			0x1000
 #define	CH_USB_PID_BOOTLOADER2			0x1005
+#define	CH_USB_PID_BOOTLOADER_ALS		0x1006	/* since 1.2.9 */
 #define	CH_USB_PID_BOOTLOADER_PLUS		0x1003
 #define	CH_USB_PID_FIRMWARE			0x1001
 #define	CH_USB_PID_FIRMWARE2			0x1004
+#define	CH_USB_PID_FIRMWARE_ALS			0x1007	/* since 1.2.9 */
 #define	CH_USB_PID_FIRMWARE_PLUS		0x1002
 #define	CH_USB_CONFIG				0x0001
 #define	CH_USB_INTERFACE			0x0000
@@ -1233,6 +1235,7 @@ G_BEGIN_DECLS
 #define	CH_WRITE_EEPROM_MAGIC			"Un1c0rn2"
 #define	CH_FIRMWARE_ID_TOKEN1			"40338ceb"
 #define	CH_FIRMWARE_ID_TOKEN2			"2082b5e0"
+#define	CH_FIRMWARE_ID_TOKEN_ALS		"84f40464"	/* since 1.2.9 */
 #define	CH_FIRMWARE_ID_TOKEN_PLUS		"6d6f05a9"
 
 /* input and output buffer offsets */
@@ -1244,6 +1247,7 @@ G_BEGIN_DECLS
 
 /* where the custom firmware is stored */
 #define CH_EEPROM_ADDR_RUNCODE			0x4000
+#define CH_EEPROM_ADDR_RUNCODE_ALS		0x2000		/* since 1.2.9 */
 
 /* the number of useful samples from the the CCD */
 #define CH_CCD_SPECTRAL_RESOLUTION		3648
@@ -1368,6 +1372,8 @@ typedef enum {
 	CH_DEVICE_MODE_FIRMWARE_PLUS,
 	CH_DEVICE_MODE_FIRMWARE2,	/* since 1.2.2 */
 	CH_DEVICE_MODE_BOOTLOADER2,	/* since 1.2.3 */
+	CH_DEVICE_MODE_BOOTLOADER_ALS,	/* since 1.2.9 */
+	CH_DEVICE_MODE_FIRMWARE_ALS,	/* since 1.2.9 */
 	CH_DEVICE_MODE_LAST
 } ChDeviceMode;
 

@@ -47,10 +47,11 @@ ch_inhx32_parse_uint8 (const gchar *data, guint pos)
 }
 
 /**
- * ch_inhx32_to_bin:
+ * ch_inhx32_to_bin_full:
  * @in_buffer: A %NULL terminated Intel hex byte string
  * @out_buffer: The output byte buffer
  * @out_size: The size of @out_buffer
+ * @runcode_addr: The runcode address of the firmware
  * @error: A #GError or %NULL
  *
  * Converts the Intel hex byte string into a binary packed
@@ -58,13 +59,14 @@ ch_inhx32_parse_uint8 (const gchar *data, guint pos)
  *
  * Return value: packed value to host byte order
  *
- * Since: 0.1.29
+ * Since: 1.2.9
  **/
 gboolean
-ch_inhx32_to_bin (const gchar *in_buffer,
-		  guint8 **out_buffer,
-		  gsize *out_size,
-		  GError **error)
+ch_inhx32_to_bin_full (const gchar *in_buffer,
+		       guint8 **out_buffer,
+		       gsize *out_size,
+		       guint16 runcode_addr,
+		       GError **error)
 {
 	gboolean verbose;
 	gchar *ptr;
@@ -83,6 +85,7 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 	_cleanup_string_free_ GString *string = NULL;
 
 	g_return_val_if_fail (in_buffer != NULL, FALSE);
+	g_return_val_if_fail (runcode_addr > 0, FALSE);
 
 	/* only if set */
 	verbose = g_getenv ("VERBOSE") != NULL;
@@ -122,7 +125,7 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 
 			/* Parse bytes from line into hexBuf */
 			for (i = offset + 9; i < end; i += 2) {
-				if (addr32 >= CH_EEPROM_ADDR_RUNCODE &&
+				if (addr32 >= runcode_addr &&
 				    addr32 < 0xfff0) {
 
 					/* find out if there are any
@@ -134,7 +137,9 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 								g_debug ("Filling address 0x%04x",
 									 addr32_last + j);
 							}
-							g_string_append_c (string, 0xff);
+							/* although 0xff might be clearer,
+							 * we can't write 0xffff to pic14 */
+							g_string_append_c (string, 0x00);
 						}
 					}
 					data_tmp = ch_inhx32_parse_uint8 (in_buffer, i);
@@ -184,4 +189,29 @@ ch_inhx32_to_bin (const gchar *in_buffer,
 	if (out_buffer != NULL)
 		*out_buffer = g_memdup (string->str, string->len);
 	return TRUE;
+}
+
+/**
+ * ch_inhx32_to_bin:
+ * @in_buffer: A %NULL terminated Intel hex byte string
+ * @out_buffer: The output byte buffer
+ * @out_size: The size of @out_buffer
+ * @error: A #GError or %NULL
+ *
+ * Converts the Intel hex byte string into a binary packed
+ * representation suitable for direct flashing the ColorHug.
+ *
+ * Return value: packed value to host byte order
+ *
+ * Since: 0.1.29
+ **/
+gboolean
+ch_inhx32_to_bin (const gchar *in_buffer,
+		  guint8 **out_buffer,
+		  gsize *out_size,
+		  GError **error)
+{
+	return ch_inhx32_to_bin_full (in_buffer, out_buffer, out_size,
+				      CH_EEPROM_ADDR_RUNCODE,
+				      error);
 }

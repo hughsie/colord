@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011-2013 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -112,6 +112,9 @@ ch_device_get_mode (GUsbDevice *device)
 	case CH_USB_PID_BOOTLOADER_PLUS:
 		state = CH_DEVICE_MODE_BOOTLOADER_PLUS;
 		break;
+	case CH_USB_PID_BOOTLOADER_ALS:
+		state = CH_DEVICE_MODE_BOOTLOADER_ALS;
+		break;
 	case CH_USB_PID_FIRMWARE:
 		state = CH_DEVICE_MODE_FIRMWARE;
 		break;
@@ -120,6 +123,9 @@ ch_device_get_mode (GUsbDevice *device)
 		break;
 	case CH_USB_PID_FIRMWARE_PLUS:
 		state = CH_DEVICE_MODE_FIRMWARE_PLUS;
+		break;
+	case CH_USB_PID_FIRMWARE_ALS:
+		state = CH_DEVICE_MODE_FIRMWARE_ALS;
 		break;
 	default:
 		state = CH_DEVICE_MODE_UNKNOWN;
@@ -571,6 +577,7 @@ ch_device_check_firmware (GUsbDevice *device,
 	case CH_DEVICE_MODE_FIRMWARE:
 		/* fw versions < 1.2.2 has no magic bytes */
 		if (device_mode_fw == CH_DEVICE_MODE_FIRMWARE2 ||
+		    device_mode_fw == CH_DEVICE_MODE_FIRMWARE_ALS ||
 		    device_mode_fw == CH_DEVICE_MODE_FIRMWARE_PLUS) {
 			g_set_error (error,
 				     CH_DEVICE_ERROR,
@@ -605,9 +612,52 @@ ch_device_check_firmware (GUsbDevice *device,
 			return FALSE;
 		}
 		break;
+	case CH_DEVICE_MODE_BOOTLOADER_ALS:
+	case CH_DEVICE_MODE_FIRMWARE_ALS:
+		if (device_mode_fw != CH_DEVICE_MODE_FIRMWARE_ALS) {
+			g_set_error (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_INVALID_VALUE,
+				     "This firmware is not designed for "
+				     "ColorHug ALS (identifier is '%s')",
+				     ch_device_mode_to_string (device_mode_fw));
+			return FALSE;
+		}
+		break;
 	default:
 		g_assert_not_reached ();
 		break;
 	}
 	return TRUE;
+}
+
+/**
+ * ch_device_get_runcode_address:
+ * @device:		A #GUsbDevice
+ *
+ * Returns the runcode address for the ColorHug device.
+ *
+ * Return value: the runcode address, or 0 for error
+ *
+ * Since: 1.2.9
+ **/
+guint16
+ch_device_get_runcode_address (GUsbDevice *device)
+{
+	switch (ch_device_get_mode (device)) {
+	case CH_DEVICE_MODE_LEGACY:
+	case CH_DEVICE_MODE_BOOTLOADER:
+	case CH_DEVICE_MODE_FIRMWARE:
+	case CH_DEVICE_MODE_BOOTLOADER2:
+	case CH_DEVICE_MODE_FIRMWARE2:
+	case CH_DEVICE_MODE_BOOTLOADER_PLUS:
+	case CH_DEVICE_MODE_FIRMWARE_PLUS:
+		return CH_EEPROM_ADDR_RUNCODE;
+	case CH_DEVICE_MODE_FIRMWARE_ALS:
+	case CH_DEVICE_MODE_BOOTLOADER_ALS:
+		return CH_EEPROM_ADDR_RUNCODE_ALS;
+	default:
+		break;
+	}
+	return 0;
 }
