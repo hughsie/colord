@@ -1346,6 +1346,7 @@ typedef enum {
 	CH_ERROR_SELF_TEST_ADC_VREF,
 	CH_ERROR_I2C_SLAVE_ADDRESS,
 	CH_ERROR_I2C_SLAVE_CONFIG,
+	/*< private >*/
 	CH_ERROR_LAST
 } ChError;
 
@@ -1360,6 +1361,7 @@ typedef enum {
 	CH_PCB_ERRATA_NONE		= 0,
 	CH_PCB_ERRATA_SWAPPED_LEDS	= 1 << 0,
 	CH_PCB_ERRATA_NO_WELCOME	= 1 << 1,
+	/*< private >*/
 	CH_PCB_ERRATA_LAST		= 1 << 2
 } ChPcbErrata;
 
@@ -1374,6 +1376,7 @@ typedef enum {
 	CH_DEVICE_MODE_BOOTLOADER2,	/* since 1.2.3 */
 	CH_DEVICE_MODE_BOOTLOADER_ALS,	/* since 1.2.9 */
 	CH_DEVICE_MODE_FIRMWARE_ALS,	/* since 1.2.9 */
+	/*< private >*/
 	CH_DEVICE_MODE_LAST
 } ChDeviceMode;
 
