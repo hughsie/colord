@@ -154,6 +154,7 @@ cd_test_private_LDADD =						\
 	$(GLIB_LIBS)						\
 	$(GLIB_UNIX_LIBS)					\
 	$(UDEV_LIBS)						\
+	$(LCMS_LIBS)						\
 	$(lib_LTLIBRARIES)
 
 cd_test_private_CFLAGS = $(WARNINGFLAGS_C)
