@@ -2537,6 +2537,7 @@ ch_device_queue_buffer_verify_flash_cb (guint8 *output_buffer,
 					GError **error)
 {
 	ChDeviceQueueReadFlashHelper *helper = (ChDeviceQueueReadFlashHelper *) user_data;
+	guint16 i;
 	guint8 expected_checksum;
 
 	/* check buffer size */
@@ -2559,9 +2560,13 @@ ch_device_queue_buffer_verify_flash_cb (guint8 *output_buffer,
 
 	/* verify data */
 	if (memcmp (helper->data, output_buffer + 1, helper->len) != 0) {
+		for (i = 0; i < helper->len; i++) {
+			if (helper->data[i] != output_buffer[i + 1])
+				break;
+		}
 		g_set_error (error, 1, 0,
 			     "Failed to verify at @0x%04x",
-			     helper->address);
+			     helper->address + i);
 		return FALSE;
 	}
 	return TRUE;
