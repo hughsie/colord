@@ -536,7 +536,7 @@ cd_main_get_seat_for_process (guint pid)
 	rc = sd_pid_get_session (pid, &sd_session);
 	if (rc != 0) {
 		g_warning ("failed to get session [pid %i]: %s",
-			   pid, strerror (rc));
+			   pid, strerror (-rc));
 		goto out;
 	}
 
@@ -544,7 +544,7 @@ cd_main_get_seat_for_process (guint pid)
 	rc = sd_session_get_seat (sd_session, &sd_seat);
 	if (rc != 0) {
 		g_warning ("failed to get seat for session %s [pid %i]: %s",
-			   sd_session, pid, strerror (rc));
+			   sd_session, pid, strerror (-rc));
 		goto out;
 	}
 	seat = g_strdup (sd_seat);
