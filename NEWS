@@ -1,3 +1,15 @@
+Version 1.2.9
+~~~~~~~~~~~~~
+Released: 2015-02-20
+
+New Features:
+ - colorhug: Add support for the ColorHug ALS device (Richard Hughes)
+ - colorhug: Return the exact address on verification failure (Richard Hughes)
+
+Bugfixes:
+ - Fix cd-test-private linking (Christopher James Halse Rogers)
+ - Fix reporting of logind errors (Christopher James Halse Rogers)
+
 Version 1.2.8
 ~~~~~~~~~~~~~
 Released: 2015-01-15
