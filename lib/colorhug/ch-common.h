@@ -73,6 +73,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -93,6 +94,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -113,6 +115,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -133,6 +136,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -153,6 +157,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -173,6 +178,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -193,6 +199,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ✓
  * ColorHug2      |      ✓       |      ✓
  * ColorHug+      |      ✓       |      ✓
+ * ColorHugALS    |      ✓       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -223,6 +230,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -243,6 +251,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -263,6 +272,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -283,6 +293,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -303,6 +314,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ✓       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -327,6 +339,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -347,6 +360,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -369,6 +383,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -389,6 +404,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -409,6 +425,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -429,6 +446,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -449,6 +467,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -469,6 +488,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -489,6 +509,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -512,6 +533,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -541,6 +563,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -564,6 +587,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.31
  **/
@@ -585,6 +609,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.31
  **/
@@ -606,6 +631,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.31
  **/
@@ -628,6 +654,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.31
  **/
@@ -648,6 +675,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.31
  **/
@@ -668,6 +696,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ✓
  * ColorHug2      |      ✓       |      ✓
  * ColorHug+      |      ✓       |      ✓
+ * ColorHugALS    |      ✓       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -688,6 +717,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ×
  * ColorHug2      |      ✓       |      ×
  * ColorHug+      |      ✓       |      ×
+ * ColorHugALS    |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
@@ -710,6 +740,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ×
  * ColorHug2      |      ✓       |      ×
  * ColorHug+      |      ✓       |      ×
+ * ColorHugALS    |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
@@ -731,6 +762,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ×
  * ColorHug2      |      ✓       |      ×
  * ColorHug+      |      ✓       |      ×
+ * ColorHugALS    |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
@@ -751,6 +783,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ×
  * ColorHug2      |      ✓       |      ×
  * ColorHug+      |      ✓       |      ×
+ * ColorHugALS    |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
@@ -784,7 +817,8 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ✓
  * ColorHug2      |      ✓       |      ✓
  * ColorHug+      |      ✓       |      ✓
-
+ * ColorHugALS    |      ✓       |      ✓
+ *
  * Different values of @success are permitted in each mode.
  *
  * Since: 0.1.29
@@ -806,6 +840,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -826,6 +861,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -846,6 +882,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -866,6 +903,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -898,6 +936,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -918,6 +957,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -945,6 +985,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ✓
  * ColorHug2      |      ✓       |      ✓
  * ColorHug+      |      ✓       |      ✓
+ * ColorHugALS    |      ✓       |      ✓
  *
  * Since: 0.1.29
  **/
@@ -973,6 +1014,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1000,6 +1042,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1020,6 +1063,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1042,6 +1086,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1063,6 +1108,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1085,6 +1131,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1105,6 +1152,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ✓
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ×
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1125,6 +1173,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1145,6 +1194,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1165,6 +1215,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ✓
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 0.1.29
  **/
@@ -1185,6 +1236,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 1.1.6
  **/
@@ -1205,6 +1257,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ×       |      ×
  * ColorHug2      |      ×       |      ×
  * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
  *
  * Since: 1.1.6
  **/
@@ -1226,6 +1279,7 @@ G_BEGIN_DECLS
  * ColorHug       |      ✓       |      ✓
  * ColorHug2      |      ✓       |      ✓
  * ColorHug+      |      ✓       |      ✓
+ * ColorHugALS    |      ✓       |      ×
  *
  * Since: 0.1.29
  **/
