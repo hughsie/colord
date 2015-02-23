@@ -939,7 +939,7 @@ cd_main_find_argyll_tool (const gchar *command,
 			  GError **error)
 {
 	gboolean ret;
-	_cleanup_free_ gchar *filename = NULL;
+	gchar *filename;
 
 	/* try the original argyllcms filename installed in /usr/local/bin */
 	filename = g_strdup_printf ("/usr/local/bin/%s", command);
