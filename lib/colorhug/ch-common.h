@@ -973,7 +973,8 @@ G_BEGIN_DECLS
  * 0x01		= ColorHug
  * 0x02		= ColorHug2
  * 0x03		= ColorHug+
- * 0x04-0x0f	= Reserved for future use
+ * 0x04		= ColorHugALS
+ * 0x05-0x0f	= Reserved for future use
  *
  * IN:  [1:cmd]
  * OUT: [1:retval][1:cmd][1:hw_version]
