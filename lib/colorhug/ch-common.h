@@ -1293,6 +1293,11 @@ G_BEGIN_DECLS
 #define	CH_FIRMWARE_ID_TOKEN_ALS		"84f40464"	/* since 1.2.9 */
 #define	CH_FIRMWARE_ID_TOKEN_PLUS		"6d6f05a9"
 
+#define CH_DEVICE_GUID_COLORHUG			"40338ceb-b966-4eae-adae-9c32edfcc484"	/* since 1.2.9 */
+#define CH_DEVICE_GUID_COLORHUG2		"2082b5e0-7a64-478a-b1b2-e3404fab6dad"	/* since 1.2.9 */
+#define CH_DEVICE_GUID_COLORHUG_ALS		"84f40464-9272-4ef7-9399-cd95f12da696"	/* since 1.2.9 */
+#define CH_DEVICE_GUID_COLORHUG_PLUS		"6d6f05a9-3ecb-43a2-bcbb-3844f1825366"	/* since 1.2.9 */
+
 /* input and output buffer offsets */
 #define	CH_BUFFER_INPUT_CMD			0x00
 #define	CH_BUFFER_INPUT_DATA			0x01

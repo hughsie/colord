@@ -69,6 +69,7 @@ gboolean	 ch_device_check_firmware	(GUsbDevice	*device,
 						 GError		**error)
 						 G_GNUC_WARN_UNUSED_RESULT;
 guint16		 ch_device_get_runcode_address	(GUsbDevice	*device);
+const gchar	*ch_device_get_guid		(GUsbDevice	*device);
 
 G_END_DECLS
 

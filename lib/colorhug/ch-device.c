@@ -661,3 +661,33 @@ ch_device_get_runcode_address (GUsbDevice *device)
 	}
 	return 0;
 }
+
+/**
+ * ch_device_get_guid:
+ * @device: A #GUsbDevice
+ *
+ * Returns the GUID for the connected ColorHug device.
+ *
+ * Return value: the GUID address, or %NULL for error
+ *
+ * Since: 1.2.9
+ **/
+const gchar *
+ch_device_get_guid (GUsbDevice *device)
+{
+	ChDeviceMode mode = ch_device_get_mode (device);
+	if (mode == CH_DEVICE_MODE_LEGACY ||
+	    mode == CH_DEVICE_MODE_FIRMWARE ||
+	    mode == CH_DEVICE_MODE_BOOTLOADER)
+		return CH_DEVICE_GUID_COLORHUG;
+	if (mode == CH_DEVICE_MODE_FIRMWARE2 ||
+	    mode == CH_DEVICE_MODE_BOOTLOADER2)
+		return CH_DEVICE_GUID_COLORHUG2;
+	if (mode == CH_DEVICE_MODE_FIRMWARE_PLUS ||
+	    mode == CH_DEVICE_MODE_BOOTLOADER_PLUS)
+		return CH_DEVICE_GUID_COLORHUG_PLUS;
+	if (mode == CH_DEVICE_MODE_FIRMWARE_ALS ||
+	    mode == CH_DEVICE_MODE_BOOTLOADER_ALS)
+		return CH_DEVICE_GUID_COLORHUG_ALS;
+	return NULL;
+}
