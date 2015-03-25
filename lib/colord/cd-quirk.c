@@ -72,6 +72,7 @@ cd_quirk_vendor_name (const gchar *vendor)
 		{ "Funai Electric Co., Ltd.", "Funai" },
 		{ "Gigabyte Technology Co., Ltd.", "Gigabyte" },
 		{ "Goldstar Company Ltd", "LG" },
+		{ "GOOGLE", "Google" },
 		{ "Hewlett-Packard", "Hewlett Packard" },
 		{ "Hitachi America Ltd", "Hitachi" },
 		{ "HP", "Hewlett Packard" },
