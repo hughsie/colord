@@ -6,12 +6,13 @@
 # Fran Dieguez <frandieguez@gnome.org>, 2011
 # Fran Diéguez <frandieguez@ubuntu.com>, 2011-2012
 # Miguel Anxo Bouzada <mbouzada@gmail.com>, 2011
+# Miguel Anxo Bouzada <mbouzada@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 11:04+0000\n"
-"PO-Revision-Date: 2014-11-10 11:04+0000\n"
+"POT-Creation-Date: 2015-04-08 20:30+0100\n"
+"PO-Revision-Date: 2015-03-21 06:54+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Galician (http://www.transifex.com/projects/p/colord/language/gl/)\n"
 "MIME-Version: 1.0\n"
@@ -125,6 +126,7 @@ msgid "%B %e %Y, %I:%M:%S %p"
 msgstr "%e de %B de %Y, %I:%M:%S %p"
 
 #. TRANSLATORS: profile owner
+#. TRANSLATORS: profile UID
 msgid "Owner"
 msgstr "Propietario"
 

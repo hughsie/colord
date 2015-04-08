@@ -19,7 +19,7 @@ cd po
 make colord.pot
 INTLTOOL_EXTRACT="/usr/bin/intltool-extract" XGETTEXT="/usr/bin/xgettext --no-location" srcdir=. /usr/bin/intltool-update --gettext-package colord --pot
 tx push --source
-tx pull --all
+tx pull --all --minimum-perc=5
 git add *.po
 
 2. Commit changes to git:

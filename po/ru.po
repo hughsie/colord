@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Serge Vylekzhanin <vylekzhanin@mail.ru>, 2013-2014
+# Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2011
+# Serge Vylekzhanin <vylekzhanin@mail.ru>, 2013-2015
 # Yuri Kozlov <yuray@komyakino.ru>, 2012
 # Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-02 14:47+0000\n"
-"PO-Revision-Date: 2014-11-26 14:01+0000\n"
+"POT-Creation-Date: 2015-04-08 20:30+0100\n"
+"PO-Revision-Date: 2015-03-21 20:31+0000\n"
 "Last-Translator: Serge Vylekzhanin <vylekzhanin@mail.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/colord/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -263,7 +264,7 @@ msgstr "Точечный"
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 msgid "Ambient"
-msgstr "Рассеянность"
+msgstr "Окружающая освещённость"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
@@ -462,7 +463,7 @@ msgstr "Устанавливает модель устройства"
 
 #. TRANSLATORS: command description
 msgid "Enables or disables the device"
-msgstr "Включить или выключить устройство"
+msgstr "Включает или отключает устройство"
 
 #. TRANSLATORS: command description
 msgid "Gets the default profile for a device"
@@ -874,7 +875,7 @@ msgid "Create a color managed device"
 msgstr "Создать цветоуправляемое устройство"
 
 msgid "Authentication is required to create a color managed device"
-msgstr "Необходима аутентификация для создания цветоуправляемого устройства"
+msgstr " Для создания цветоуправляемого устройства необходима аутентификация"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
@@ -882,7 +883,7 @@ msgid "Create a color profile"
 msgstr "Создать цветовой профиль"
 
 msgid "Authentication is required to create a color profile"
-msgstr "Необходима аутентификация для создания цветового профиля"
+msgstr "Для создания цветового профиля необходима аутентификация"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
@@ -890,7 +891,7 @@ msgid "Remove a color managed device"
 msgstr "Удалить цветоуправляемое устройство"
 
 msgid "Authentication is required to remove a color managed device"
-msgstr "Необходима аутентификация для удаления цветоуправляемого устройства"
+msgstr "Для удаления цветоуправляемого устройства необходима аутентификация"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -898,7 +899,7 @@ msgid "Remove a color profile"
 msgstr "Удалить цветовой профиль"
 
 msgid "Authentication is required to remove a color profile"
-msgstr "Необходима аутентификация для удаления цветового профиля"
+msgstr "Для удаления цветового профиля необходима аутентификация"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
@@ -906,7 +907,7 @@ msgid "Modify color settings for a device"
 msgstr "Изменить цветовые параметры для устройства"
 
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Необходима аутентификация для изменения цветовых параметров устройства"
+msgstr "Для изменения цветовых параметров устройства необходима аутентификация"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
@@ -914,7 +915,7 @@ msgid "Modify a color profile"
 msgstr "Изменить цветовой профиль"
 
 msgid "Authentication is required to modify a color profile"
-msgstr "Необходима аутентификация для изменения цветового профиля"
+msgstr "Для изменения цветового профиля необходима аутентификация"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -927,7 +928,7 @@ msgid "Install system color profiles"
 msgstr "Установить цветовые профили в системный каталог"
 
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Необходима аутентификация для установки цветового профиля для всех пользователей"
+msgstr "Для установки цветового профиля для всех пользователей необходима аутентификация"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
@@ -936,7 +937,7 @@ msgid "Inhibit color profile selection"
 msgstr "Запретить выбор цветового профиля"
 
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Необходима аутентификация для отключения подбора профилей для устройства"
+msgstr "Для отключения подбора профилей для устройства необходима аутентификация"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
@@ -945,7 +946,7 @@ msgid "Use color sensor"
 msgstr "Использовать цветовой датчик"
 
 msgid "Authentication is required to use the color sensor"
-msgstr "Необходима аутентификация для использования цветового датчика"
+msgstr "Для использования цветового датчика необходима аутентификация"
 
 #. TRANSLATORS: turn on all debugging
 msgid "Show debugging information for all files"

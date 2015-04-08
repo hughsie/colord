@@ -4,7 +4,10 @@
 # 
 # Translators:
 # Adolfo Jayme Barrientos <fito@libreoffice.org>, 2013
+# Adolfo Jayme Barrientos, 2013
+# Adolfo Jayme Barrientos, 2015
 # Daniel Mustieles <daniel.mustieles@gmail.com>, 2012-2013
+# Facundo Dario Illanes <fdillanes@gmail.com>, 2014
 # Facundo Dario Illanes <fdillanes@gmail.com>, 2014
 # Fernando Gonzalez Blanco <fgonz@fedoraproject.org>, 2009
 # Javier Alejandro Castro <javier.alejandro.castro@gmail.com>, 2008
@@ -15,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 11:04+0000\n"
-"PO-Revision-Date: 2014-11-10 11:04+0000\n"
+"POT-Creation-Date: 2015-04-08 20:30+0100\n"
+"PO-Revision-Date: 2015-03-21 06:54+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/colord/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -130,6 +133,7 @@ msgid "%B %e %Y, %I:%M:%S %p"
 msgstr "%e/%B/%Y, %I:%M:%S %p"
 
 #. TRANSLATORS: profile owner
+#. TRANSLATORS: profile UID
 msgid "Owner"
 msgstr "Propietario"
 

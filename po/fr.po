@@ -5,13 +5,15 @@
 # Translators:
 # Étienne BERSAC <bersace03@free.fr>, 2013
 # frizer23 <jourliiaenne@voila.fr>, 2013
+# frizer23 <jourliiaenne@voila.fr>, 2013
+# roumano <roumano@gmail.com>, 2013
 # roumano <roumano@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-10 11:04+0000\n"
-"PO-Revision-Date: 2014-11-10 11:04+0000\n"
+"POT-Creation-Date: 2015-04-08 20:30+0100\n"
+"PO-Revision-Date: 2015-03-21 06:54+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/colord/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -125,6 +127,7 @@ msgid "%B %e %Y, %I:%M:%S %p"
 msgstr ""
 
 #. TRANSLATORS: profile owner
+#. TRANSLATORS: profile UID
 msgid "Owner"
 msgstr "Propriétaire"
 

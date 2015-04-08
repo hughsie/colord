@@ -1,3 +1,14 @@
+Version 1.2.10
+~~~~~~~~~~~~~~
+Released: 2015-04-08
+
+New Features:
+ - colorhug: Add GUIDs for each device (Richard Hughes)
+
+Bugfixes:
+ - Add a vendor quirk for Google (Richard Hughes)
+ - Fix session-helper failing to find argyll tool (Tim Waugh)
+
 Version 1.2.9
 ~~~~~~~~~~~~~
 Released: 2015-02-20
