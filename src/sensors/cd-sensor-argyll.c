@@ -358,6 +358,8 @@ cd_sensor_to_argyll_name (CdSensor *sensor)
 		return "Datacolor Spyder3";
 	case CD_SENSOR_KIND_SPYDER:
 		return "Datacolor Spyder4";
+	case CD_SENSOR_KIND_SPYDER5:
+		return "Datacolor Spyder5";
 	case CD_SENSOR_KIND_HUEY:
 		return "GretagMacbeth Huey";
 	case CD_SENSOR_KIND_COLORHUG:
