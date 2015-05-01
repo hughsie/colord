@@ -70,6 +70,7 @@ static const CdEnumMatch enum_sensor_kind[] = {
 	{CD_SENSOR_KIND_SPYDER2,			"spyder2"},
 	{CD_SENSOR_KIND_SPYDER3,			"spyder3"},
 	{CD_SENSOR_KIND_SPYDER4,			"spyder4"},
+	{CD_SENSOR_KIND_SPYDER5,			"spyder5"},
 	{CD_SENSOR_KIND_SPYDER,				"spyder"},
 	{0, NULL}
 };

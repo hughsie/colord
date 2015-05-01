@@ -16,7 +16,8 @@ icons_DATA = 	 				\
 	color-munki-photo-screen.svg		\
 	spyder2-attach.svg			\
 	spyder3-attach.svg			\
-	spyder4-attach.svg
+	spyder4-attach.svg			\
+	spyder5-attach.svg
 
 EXTRA_DIST =				\
 	$(icons_DATA)
