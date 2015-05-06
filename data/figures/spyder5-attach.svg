@@ -28,7 +28,7 @@
     </rdf:RDF>
   </metadata>
   <sodipodi:namedview
-     inkscape:cy="167.99921"
+     inkscape:cy="124.51093"
      pagecolor="#e5e6e4"
      borderopacity="1"
      showborder="false"
@@ -56,8 +56,8 @@
      inkscape:snap-to-guides="true"
      inkscape:current-layer="layer12"
      inkscape:snap-bbox-midpoints="false"
-     inkscape:zoom="1"
-     inkscape:cx="-13.545207"
+     inkscape:zoom="2"
+     inkscape:cx="172.2487"
      inkscape:snap-grids="true"
      inkscape:pageopacity="1">
     <inkscape:grid
@@ -105,30 +105,30 @@
     <path
        inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
        inkscape:connector-curvature="0"
-       d="m 394.0002,232.00002 0,-48.78125 -6,-4 0,48.78125 z"
+       d="m 394.0002,-56.649767 0,48.78125 -6,3.9999999 0,-48.7812499 z"
        id="rect3883-1-8-5-1-8"
        sodipodi:nodetypes="ccccc"
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
-       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#eeeeec;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:#eeeeec;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;marker:none;enable-background:new" />
     <path
        inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
        inkscape:connector-curvature="0"
-       d="m 394.0002,232.00002 0,-48.78125 -6,-4 0,48.78125 z"
+       d="m 394.0002,-56.649767 0,48.78125 -6,3.9999999 0,-48.7812499 z"
        id="rect3883-1-8-5-1"
        sodipodi:nodetypes="ccccc"
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
-       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:new" />
     <path
        inkscape:export-filename="/home/lapo.fedora/colorimeters1.png"
        inkscape:connector-curvature="0"
-       d="m 394.0002,236.00002 0,-1.78125 -6,-4 0,1.78125 z"
+       d="m 394.0002,-60.649767 0,1.78125 -6,4 0,-1.78125 z"
        id="rect3883-1-8-5-0"
        sodipodi:nodetypes="ccccc"
        inkscape:export-ydpi="90"
        inkscape:export-xdpi="90"
-       style="color:#000000;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new" />
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#babdb6;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:new" />
     <path
        style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1"
        d="m 334.48502,-17.817865 c -29.69759,18.2821881 -50.73313,53.004609 -52.5,92.5 28.35906,28.631135 48.23283,61.858465 57.5,96.500005 36.93443,17.86456 72.45465,17.34434 105.5,-0.5 12.97616,-37.56179 31.20681,-69.33854 55.03033,-98.616122 -3.54475,-39.909604 -20.52453,-70.0964911 -52.53033,-90.383883 -36.95956,9.7126083 -75.33333,9.1721682 -113,0.5 z"
