@@ -378,18 +378,26 @@ cd_client_connect_cb (GObject *source_object,
 	/* get daemon version */
 	daemon_version = g_dbus_proxy_get_cached_property (client->priv->proxy,
 							   CD_CLIENT_PROPERTY_DAEMON_VERSION);
-	if (daemon_version != NULL)
+	if (daemon_version != NULL) {
+		g_free (client->priv->daemon_version);
 		client->priv->daemon_version = g_variant_dup_string (daemon_version, NULL);
+	}
 
 	/* get system info */
 	system_vendor = g_dbus_proxy_get_cached_property (client->priv->proxy,
 							  CD_CLIENT_PROPERTY_SYSTEM_VENDOR);
-	if (system_vendor != NULL)
+	if (system_vendor != NULL) {
+		g_free (client->priv->system_vendor);
 		client->priv->system_vendor = g_variant_dup_string (system_vendor, NULL);
+	}
+
+	/* get system model */
 	system_model = g_dbus_proxy_get_cached_property (client->priv->proxy,
 							 CD_CLIENT_PROPERTY_SYSTEM_MODEL);
-	if (system_model != NULL)
+	if (system_model != NULL) {
+		g_free (client->priv->system_model);
 		client->priv->system_model = g_variant_dup_string (system_model, NULL);
+	}
 
 	/* get signals from DBus */
 	g_signal_connect (client->priv->proxy,
