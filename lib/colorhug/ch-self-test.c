@@ -461,8 +461,14 @@ ch_client_get_default (GError **error)
 	}
 	device = g_usb_context_find_by_vid_pid (usb_ctx,
 						CH_USB_VID,
-						CH_USB_PID_FIRMWARE,
-						error);
+						CH_USB_PID_FIRMWARE_ALS_SENSOR_HID,
+						NULL);
+	if (device == NULL) {
+		device = g_usb_context_find_by_vid_pid (usb_ctx,
+							CH_USB_VID,
+							CH_USB_PID_FIRMWARE,
+							error);
+	}
 	if (device == NULL)
 		goto out;
 	g_debug ("Found ColorHug device %s",
@@ -506,7 +512,7 @@ ch_test_state_func (void)
 	device_queue = ch_device_queue_new ();
 	ch_device_queue_set_leds (device_queue,
 				  device,
-				  3,
+				  1,
 				  0,
 				  0x00,
 				  0x00);
@@ -525,7 +531,7 @@ ch_test_state_func (void)
 				       &error);
 	g_assert_no_error (error);
 	g_assert (ret);
-	g_assert_cmpint (leds, ==, 3);
+	g_assert_cmpint (leds, ==, 1);
 
 	/* verify color select */
 	if (ch_device_get_mode (device) == CH_DEVICE_MODE_FIRMWARE) {
@@ -667,6 +673,13 @@ ch_test_eeprom_func (void)
 
 	/* load the device */
 	device = ch_client_get_default (&error);
+	if (device != NULL && g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE) {
+		ret = g_usb_device_close (device, &error);
+		g_assert_no_error (error);
+		g_assert (ret);
+		g_debug ("not capable device, skipping tests");
+		return;
+	}
 	if (device == NULL && g_error_matches (error,
 					       G_USB_DEVICE_ERROR,
 					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
@@ -996,6 +1009,13 @@ ch_test_reading_xyz_func (void)
 
 	/* load the device */
 	device = ch_client_get_default (&error);
+	if (device != NULL && g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE) {
+		ret = g_usb_device_close (device, &error);
+		g_assert_no_error (error);
+		g_assert (ret);
+		g_debug ("not capable device, skipping tests");
+		return;
+	}
 	if (device == NULL && g_error_matches (error,
 					       G_USB_DEVICE_ERROR,
 					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
@@ -1137,6 +1157,13 @@ ch_test_incomplete_request_func (void)
 
 	/* load the device */
 	device = ch_client_get_default (&error);
+	if (device != NULL && g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE) {
+		ret = g_usb_device_close (device, &error);
+		g_assert_no_error (error);
+		g_assert (ret);
+		g_debug ("not capable device, skipping tests");
+		return;
+	}
 	if (device == NULL && g_error_matches (error,
 					       G_USB_DEVICE_ERROR,
 					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
