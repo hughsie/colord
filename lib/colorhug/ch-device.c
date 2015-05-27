@@ -62,11 +62,14 @@ ch_device_open (GUsbDevice *device, GError **error)
 		return FALSE;
 	if (!g_usb_device_set_configuration (device, CH_USB_CONFIG, error))
 		return FALSE;
-	if (!g_usb_device_claim_interface (device,
-					   CH_USB_INTERFACE,
-					   G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
-					   error))
-		return FALSE;
+
+	if (g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE_ALS_SENSOR_HID) {
+		if (!g_usb_device_claim_interface (device,
+						   CH_USB_INTERFACE,
+						   G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
+						   error))
+			return FALSE;
+	}
 	return TRUE;
 }
 
@@ -125,6 +128,7 @@ ch_device_get_mode (GUsbDevice *device)
 		state = CH_DEVICE_MODE_FIRMWARE_PLUS;
 		break;
 	case CH_USB_PID_FIRMWARE_ALS:
+	case CH_USB_PID_FIRMWARE_ALS_SENSOR_HID:
 		state = CH_DEVICE_MODE_FIRMWARE_ALS;
 		break;
 	default:
@@ -166,6 +170,8 @@ typedef struct {
 	gsize			 buffer_out_len;
 	guint8			 cmd;
 	guint			 retried_cnt;
+	guint8			 report_type;	/* only for Sensor HID */
+	guint			 report_length;	/* only for Sensor HID */
 } ChDeviceHelper;
 
 /**
@@ -382,6 +388,159 @@ ch_device_emulate_cb (gpointer user_data)
 	return G_SOURCE_REMOVE;
 }
 
+#define CH_REPORT_ALS				0x00
+#define CH_REPORT_HID_SENSOR			0x01
+#define CH_REPORT_SENSOR_SETTINGS		0x02
+#define CH_REPORT_SYSTEM_SETTINGS		0x03
+#define CH_SENSOR_HID_REPORT_GET		0x01
+#define CH_SENSOR_HID_REPORT_SET		0x09
+#define CH_SENSOR_HID_FEATURE			0x0300
+
+/**
+ * ch_device_sensor_hid_set_cb:
+ **/
+static void
+ch_device_sensor_hid_set_cb (GObject *source_object,
+			     GAsyncResult *res,
+			     gpointer user_data)
+{
+	GError *error = NULL;
+	gssize actual_len;
+	GUsbDevice *device = G_USB_DEVICE (source_object);
+	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+
+	/* get the result */
+	actual_len = g_usb_device_control_transfer_finish (device,
+							   res,
+							   &error);
+	if (actual_len != helper->report_length) {
+		g_simple_async_result_take_error (helper->res, error);
+		g_simple_async_result_complete_in_idle (helper->res);
+		ch_device_free_helper (helper);
+		return;
+	}
+//	ch_print_data_buffer ("reply", helper->buffer, helper->report_length);
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
+	g_simple_async_result_complete_in_idle (helper->res);
+	ch_device_free_helper (helper);
+}
+
+/**
+ * ch_device_sensor_hid_get_cb:
+ **/
+static void
+ch_device_sensor_hid_get_cb (GObject *source_object,
+			     GAsyncResult *res,
+			     gpointer user_data)
+{
+	GError *error = NULL;
+	gssize actual_len;
+	gboolean another_request_required = FALSE;
+	GUsbDevice *device = G_USB_DEVICE (source_object);
+	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+
+	/* get the result */
+	actual_len = g_usb_device_control_transfer_finish (device,
+							   res,
+							   &error);
+	if (actual_len != helper->report_length) {
+		g_simple_async_result_take_error (helper->res, error);
+		g_simple_async_result_complete_in_idle (helper->res);
+		ch_device_free_helper (helper);
+		return;
+	}
+//	ch_print_data_buffer ("reply", helper->buffer, helper->report_length);
+
+	switch (helper->cmd) {
+	case CH_CMD_TAKE_READING_RAW:
+		memcpy(helper->buffer_out, helper->buffer + 3, 4);
+		break;
+	case CH_CMD_GET_COLOR_SELECT:
+		memcpy(helper->buffer_out, helper->buffer + 1, 1);
+		break;
+	case CH_CMD_GET_INTEGRAL_TIME:
+		memcpy(helper->buffer_out, helper->buffer + 4, 2);
+		break;
+	case CH_CMD_GET_LEDS:
+		memcpy(helper->buffer_out, helper->buffer + 2, 1);
+		break;
+	case CH_CMD_GET_MULTIPLIER:
+		memcpy(helper->buffer_out, helper->buffer + 3, 1);
+		break;
+	case CH_CMD_GET_FIRMWARE_VERSION:
+		memcpy(helper->buffer_out, helper->buffer + 2, 6);
+		break;
+	case CH_CMD_GET_HARDWARE_VERSION:
+		memcpy(helper->buffer_out, helper->buffer + 1, 1);
+		break;
+	case CH_CMD_GET_SERIAL_NUMBER:
+		memcpy(helper->buffer_out, helper->buffer + 8, 4);
+		break;
+	case CH_CMD_SET_COLOR_SELECT:
+		memcpy(helper->buffer + 1, helper->buffer_orig + 1, 1);
+		another_request_required = TRUE;
+		break;
+	case CH_CMD_SET_INTEGRAL_TIME:
+		memcpy(helper->buffer + 4, helper->buffer_orig + 1, 2);
+		another_request_required = TRUE;
+		break;
+	case CH_CMD_SET_LEDS:
+		memcpy(helper->buffer + 2, helper->buffer_orig + 1, 1);
+		another_request_required = TRUE;
+		break;
+	case CH_CMD_SET_MULTIPLIER:
+		memcpy(helper->buffer + 3, helper->buffer_orig + 1, 1);
+		another_request_required = TRUE;
+		break;
+	case CH_CMD_SET_FLASH_SUCCESS:
+		memcpy(helper->buffer + 13, helper->buffer_orig + 1, 1);
+		another_request_required = TRUE;
+		break;
+	case CH_CMD_RESET:
+		helper->buffer[12] = 1;
+		another_request_required = TRUE;
+		break;
+	case CH_CMD_SET_SERIAL_NUMBER:
+		memcpy(helper->buffer + 8, helper->buffer_orig + 1, 4);
+		another_request_required = TRUE;
+		break;
+	default:
+		g_simple_async_result_set_error (helper->res,
+						 CH_DEVICE_ERROR,
+						 CH_ERROR_UNKNOWN_CMD,
+						 "No Sensor HID support for 0x%02x",
+						 helper->cmd);
+		g_simple_async_result_complete_in_idle (helper->res);
+		ch_device_free_helper (helper);
+		return;
+	}
+
+	/* getting the value was enough */
+	if (!another_request_required) {
+		g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
+		g_simple_async_result_complete_in_idle (helper->res);
+		ch_device_free_helper (helper);
+		return;
+	}
+
+//	ch_print_data_buffer ("request", helper->buffer, helper->report_length);
+	g_usb_device_control_transfer_async (device,
+					     G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     CH_SENSOR_HID_REPORT_SET,
+					     CH_SENSOR_HID_FEATURE | helper->report_type,
+					     0x0000,
+					     helper->buffer,
+					     helper->report_length,
+					     CH_DEVICE_USB_TIMEOUT,
+					     helper->cancellable,
+					     ch_device_sensor_hid_set_cb,
+					     helper);
+}
+
 /**
  * ch_device_write_command_async:
  * @device:		A #GUsbDevice
@@ -465,6 +624,66 @@ ch_device_write_command_async (GUsbDevice *device,
 	g_object_set_data (G_OBJECT (device),
 			   "ChCommonDeviceBusy",
 			   GUINT_TO_POINTER (TRUE));
+
+	/* handle ALS in sensor-hid mode differently */
+	if (g_usb_device_get_pid (device) == CH_USB_PID_FIRMWARE_ALS_SENSOR_HID) {
+
+		/* try to map the commands to Sensor HID requests */
+		switch (helper->cmd) {
+		case CH_CMD_TAKE_READING_RAW:
+			helper->report_type = CH_REPORT_ALS;
+			helper->report_length = 7;
+			break;
+		case CH_CMD_GET_COLOR_SELECT:
+		case CH_CMD_GET_INTEGRAL_TIME:
+		case CH_CMD_GET_LEDS:
+		case CH_CMD_GET_MULTIPLIER:
+		case CH_CMD_SET_COLOR_SELECT:
+		case CH_CMD_SET_INTEGRAL_TIME:
+		case CH_CMD_SET_LEDS:
+		case CH_CMD_SET_MULTIPLIER:
+			helper->report_type = CH_REPORT_SENSOR_SETTINGS;
+			helper->report_length = 6;
+			break;
+		case CH_CMD_GET_FIRMWARE_VERSION:
+		case CH_CMD_GET_HARDWARE_VERSION:
+		case CH_CMD_GET_SERIAL_NUMBER:
+		case CH_CMD_RESET:
+		case CH_CMD_SET_FLASH_SUCCESS:
+		case CH_CMD_SET_SERIAL_NUMBER:
+			helper->report_type = CH_REPORT_SYSTEM_SETTINGS;
+			helper->report_length = 14;
+			break;
+		default:
+			g_simple_async_result_set_error (helper->res,
+							 CH_DEVICE_ERROR,
+							 CH_ERROR_UNKNOWN_CMD,
+							 "No Sensor HID support for 0x%02x",
+							 helper->cmd);
+			g_simple_async_result_complete_in_idle (helper->res);
+			ch_device_free_helper (helper);
+			return;
+		}
+
+		/* do control transfer */
+		memset(helper->buffer, '\0', helper->report_length);
+//		ch_print_data_buffer ("request", helper->buffer, helper->report_length);
+		g_usb_device_control_transfer_async (device,
+						     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
+						     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+						     G_USB_DEVICE_RECIPIENT_INTERFACE,
+						     CH_SENSOR_HID_REPORT_GET,
+						     CH_SENSOR_HID_FEATURE | helper->report_type,
+						     0x0000,
+						     helper->buffer,
+						     helper->report_length,
+						     CH_DEVICE_USB_TIMEOUT,
+						     helper->cancellable,
+						     ch_device_sensor_hid_get_cb,
+						     helper);
+		return;
+
+	}
 
 	/* do interrupt transfer */
 	g_usb_device_interrupt_transfer_async (helper->device,

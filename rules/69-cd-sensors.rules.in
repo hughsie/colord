@@ -92,6 +92,7 @@ ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1002", ENV{COLORD_SENSOR_KIND}="colo
 # ColorHug ALS
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1006", ENV{COLORD_SENSOR_KIND}="colorhug-als", ENV{COLORD_IGNORE}="1"
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1007", ENV{COLORD_SENSOR_KIND}="colorhug-als", ENV{COLORD_IGNORE}="1"
+ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1008", ENV{COLORD_SENSOR_KIND}="colorhug-als", ENV{COLORD_IGNORE}="1"
 
 # color calibration device
 ENV{COLORD_SENSOR_KIND}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"
