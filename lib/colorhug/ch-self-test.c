@@ -636,6 +636,11 @@ ch_test_state_func (void)
 		g_timer_destroy (timer);
 	}
 
+	/* close */
+	ret = g_usb_device_close (device, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	g_object_unref (device_queue);
 }
 
@@ -964,6 +969,11 @@ ch_test_reading_func (void)
 	g_assert (ret);
 	g_assert_cmpint (take_reading, >, 0);
 
+	/* close */
+	ret = g_usb_device_close (device, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	g_object_unref (device);
 	g_object_unref (device_queue);
 }
@@ -1098,6 +1108,12 @@ ch_test_reading_xyz_func (void)
 		g_assert_cmpfloat (scaling_factor_actual, <, 1.1);
 		reading1.Z = reading2.Z * 2;
 	}
+
+	/* close */
+	ret = g_usb_device_close (device, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
 	g_object_unref (device);
 	g_object_unref (device_queue);
 }
