@@ -425,6 +425,39 @@ ch_device_sensor_hid_set_cb (GObject *source_object,
 }
 
 /**
+ * ch_device_sensor_hid_report_cb:
+ **/
+static void
+ch_device_sensor_hid_report_cb (GObject *source_object,
+				GAsyncResult *res,
+				gpointer user_data)
+{
+	GError *error = NULL;
+	gsize actual_len;
+	GUsbDevice *device = G_USB_DEVICE (source_object);
+	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+
+	/* get the result */
+	actual_len = g_usb_device_interrupt_transfer_finish (device,
+							     res,
+							     &error);
+	if ((gssize) actual_len < 0) {
+		g_simple_async_result_take_error (helper->res, error);
+		g_simple_async_result_complete_in_idle (helper->res);
+		ch_device_free_helper (helper);
+		return;
+	}
+
+	/* copy out data */
+	memcpy (helper->buffer_out, helper->buffer + 3, 4);
+
+	/* success */
+	g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
+	g_simple_async_result_complete_in_idle (helper->res);
+	ch_device_free_helper (helper);
+}
+
+/**
  * ch_device_sensor_hid_get_cb:
  **/
 static void
@@ -659,6 +692,19 @@ ch_device_write_command_async (GUsbDevice *device,
 							 helper->cmd);
 			g_simple_async_result_complete_in_idle (helper->res);
 			ch_device_free_helper (helper);
+			return;
+		}
+
+		/* need to use this rather than feature control */
+		if (helper->report_type == CH_REPORT_ALS) {
+			g_usb_device_interrupt_transfer_async (helper->device,
+							       CH_USB_HID_EP_IN,
+							       helper->buffer,
+							       helper->report_length,
+							       CH_DEVICE_USB_TIMEOUT,
+							       helper->cancellable,
+							       ch_device_sensor_hid_report_cb,
+							       helper);
 			return;
 		}
 
