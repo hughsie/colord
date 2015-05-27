@@ -62,14 +62,11 @@ ch_device_open (GUsbDevice *device, GError **error)
 		return FALSE;
 	if (!g_usb_device_set_configuration (device, CH_USB_CONFIG, error))
 		return FALSE;
-
-	if (g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE_ALS_SENSOR_HID) {
-		if (!g_usb_device_claim_interface (device,
-						   CH_USB_INTERFACE,
-						   G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
-						   error))
-			return FALSE;
-	}
+	if (!g_usb_device_claim_interface (device,
+					   CH_USB_INTERFACE,
+					   G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
+					   error))
+		return FALSE;
 	return TRUE;
 }
 
