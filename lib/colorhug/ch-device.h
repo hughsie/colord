@@ -39,6 +39,9 @@ GQuark		 ch_device_error_quark		(void);
 gboolean	 ch_device_open			(GUsbDevice	*device,
 						 GError		**error)
 						 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 ch_device_close		(GUsbDevice	*device,
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 ch_device_is_colorhug		(GUsbDevice	*device);
 ChDeviceMode	 ch_device_get_mode		(GUsbDevice	*device);
 void		 ch_device_write_command_async	(GUsbDevice	*device,

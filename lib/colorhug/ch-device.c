@@ -71,6 +71,28 @@ ch_device_open (GUsbDevice *device, GError **error)
 }
 
 /**
+ * ch_device_close:
+ *
+ * Since: 1.2.11
+ **/
+gboolean
+ch_device_close (GUsbDevice *device, GError **error)
+{
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	/* unload device */
+	if (!g_usb_device_release_interface (device,
+					     CH_USB_INTERFACE,
+					     G_USB_DEVICE_CLAIM_INTERFACE_BIND_KERNEL_DRIVER,
+					     error))
+		return FALSE;
+	if (!g_usb_device_close (device, error))
+		return FALSE;
+	return TRUE;
+}
+
+/**
  * ch_device_is_colorhug:
  *
  * Since: 0.1.29
