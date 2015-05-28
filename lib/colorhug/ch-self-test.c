@@ -643,7 +643,7 @@ ch_test_state_func (void)
 	}
 
 	/* close */
-	ret = g_usb_device_close (device, &error);
+	ret = ch_device_close (device, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -674,7 +674,7 @@ ch_test_eeprom_func (void)
 	/* load the device */
 	device = ch_client_get_default (&error);
 	if (device != NULL && g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE) {
-		ret = g_usb_device_close (device, &error);
+		ret = ch_device_close (device, &error);
 		g_assert_no_error (error);
 		g_assert (ret);
 		g_debug ("not capable device, skipping tests");
@@ -917,6 +917,9 @@ ch_test_eeprom_func (void)
 	g_assert (ret);
 #endif
 
+	ret = ch_device_close (device, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 	g_object_unref (device);
 	g_object_unref (device_queue);
 }
@@ -983,7 +986,7 @@ ch_test_reading_func (void)
 	g_assert_cmpint (take_reading, >, 0);
 
 	/* close */
-	ret = g_usb_device_close (device, &error);
+	ret = ch_device_close (device, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -1010,7 +1013,7 @@ ch_test_reading_xyz_func (void)
 	/* load the device */
 	device = ch_client_get_default (&error);
 	if (device != NULL && g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE) {
-		ret = g_usb_device_close (device, &error);
+		ret = ch_device_close (device, &error);
 		g_assert_no_error (error);
 		g_assert (ret);
 		g_debug ("not capable device, skipping tests");
@@ -1130,7 +1133,7 @@ ch_test_reading_xyz_func (void)
 	}
 
 	/* close */
-	ret = g_usb_device_close (device, &error);
+	ret = ch_device_close (device, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -1158,7 +1161,7 @@ ch_test_incomplete_request_func (void)
 	/* load the device */
 	device = ch_client_get_default (&error);
 	if (device != NULL && g_usb_device_get_pid (device) != CH_USB_PID_FIRMWARE) {
-		ret = g_usb_device_close (device, &error);
+		ret = ch_device_close (device, &error);
 		g_assert_no_error (error);
 		g_assert (ret);
 		g_debug ("not capable device, skipping tests");
@@ -1229,8 +1232,12 @@ ch_test_incomplete_request_func (void)
 	g_assert_cmpint (buffer[0], ==, CH_ERROR_INCOMPLETE_REQUEST);
 	g_assert_cmpint (buffer[1], ==, CH_CMD_GET_FIRMWARE_VERSION);
 out:
-	if (device != NULL)
+	if (device != NULL) {
+		ret = ch_device_close (device, &error);
+		g_assert_no_error (error);
+		g_assert (ret);
 		g_object_unref (device);
+	}
 }
 
 /**
