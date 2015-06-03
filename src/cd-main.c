@@ -600,7 +600,7 @@ cd_main_create_device (CdMainPrivate *priv,
  * cd_main_device_array_to_variant:
  **/
 static GVariant *
-cd_main_device_array_to_variant (GPtrArray *array)
+cd_main_device_array_to_variant (GPtrArray *array, guint uid)
 {
 	CdDevice *device;
 	guint i;
@@ -611,6 +611,16 @@ cd_main_device_array_to_variant (GPtrArray *array)
 	variant_array = g_new0 (GVariant *, array->len + 1);
 	for (i = 0; i < array->len; i++) {
 		device = g_ptr_array_index (array, i);
+
+		/* only show devices created by root and the calling
+		 * user, but if called *by* root return all devices
+		 * from all users */
+		if (uid != 0) {
+			if (cd_device_get_owner (device) != 0 &&
+			    cd_device_get_owner (device) != uid)
+				continue;
+		}
+
 		variant_array[length] = g_variant_new_object_path (
 			cd_device_get_object_path (device));
 		length++;
@@ -943,7 +953,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 
 		/* format the value */
 		array = cd_device_array_get_array (priv->devices_array);
-		value = cd_main_device_array_to_variant (array);
+		value = cd_main_device_array_to_variant (array, uid);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		return;
@@ -981,7 +991,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 						     device_kind);
 
 		/* format the value */
-		value = cd_main_device_array_to_variant (array);
+		value = cd_main_device_array_to_variant (array, uid);
 		tuple = g_variant_new_tuple (&value, 1);
 		g_dbus_method_invocation_return_value (invocation, tuple);
 		return;
