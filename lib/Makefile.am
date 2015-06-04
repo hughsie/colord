@@ -11,6 +11,7 @@ SUBDIRS +=						\
 	colorhug					\
 	dtp94						\
 	huey						\
+	ospark						\
 	munki
 endif
 

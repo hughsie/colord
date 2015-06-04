@@ -476,6 +476,7 @@ lib/compat/Makefile
 lib/dtp94/Makefile
 lib/huey/Makefile
 lib/munki/Makefile
+lib/ospark/Makefile
 ])
 AC_OUTPUT
 

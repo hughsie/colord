@@ -179,10 +179,12 @@ cd_buffer_debug (CdBufferKind buffer_kind,
 {
 	guint i;
 	if (buffer_kind == CD_BUFFER_KIND_REQUEST)
-		g_print ("%c[%dmrequest\t", 0x1B, 31);
+		g_print ("%c[%dmrequest\n", 0x1B, 31);
 	else if (buffer_kind == CD_BUFFER_KIND_RESPONSE)
-		g_print ("%c[%dmresponse\t", 0x1B, 34);
+		g_print ("%c[%dmresponse\n", 0x1B, 34);
 	for (i = 0; i <  length; i++) {
+		if (i > 0 && i % 8 == 0)
+			g_print ("\n");
 		g_print ("%02x [%c]\t",
 			 data[i],
 			 g_ascii_isprint (data[i]) ? data[i] : '?');
