@@ -1,3 +1,18 @@
+Version 1.2.11
+~~~~~~~~~~~~~~
+Released: 2015-06-08
+
+New Features:
+ - Add defines and artwork for the Spyder5 device (Richard Hughes)
+ - Add defines for the OceanOptics Spark sensor (Richard Hughes)
+ - libcolorhug: Add ch_device_close (Benjamin Tissoires)
+ - libcolorhug: Handle low-level commands when in Sensor HID mode (Richard Hughes)
+
+Bugfixes:
+ - libcolord: Fix leak in cd_context_lcms_free (Roman Lebedev)
+ - libcolord: Fix leak previously in cd_client_connect_cb (Roman Lebedev)
+ - Only return devices created by the calling user when doing GetDevices (Richard Hughes)
+
 Version 1.2.10
 ~~~~~~~~~~~~~~
 Released: 2015-04-08
