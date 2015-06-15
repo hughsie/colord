@@ -264,15 +264,19 @@ fi
 AM_CONDITIONAL(BUILD_LIBCOLORDCOMPAT, test x$build_libcolordcompat = xyes)
 
 dnl ---------------------------------------------------------------------------
-dnl - Use libsystemd-login to track the process seat
+dnl - Use systemd-login to track the process seat
 dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(systemd-login, AS_HELP_STRING([--enable-systemd-login],[Build systemd-login support]),
+AC_ARG_ENABLE(systemd-login, AS_HELP_STRING([--enable-systemd-login],[Build systemd seat-tracking support]),
 	      enable_systemd_login=$enableval, enable_systemd_login=yes)
 AM_CONDITIONAL(HAVE_LIBSYSTEMD_LOGIN, test x$enable_systemd_login = xyes)
 if test x$enable_systemd_login != xno; then
-	PKG_CHECK_MODULES(LIBSYSTEMD_LOGIN,
-			  [libsystemd-login >= 44])
-	AC_DEFINE([HAVE_LIBSYSTEMD_LOGIN], 1, [Define to 1 if libsystemd-login is available])
+	PKG_CHECK_MODULES(LIBSYSTEMD,
+			  [libsystemd],
+			  [LIBSYSTEMD_LOGIN_CFLAGS=$LIBSYSTEMD_CFLAGS;
+			   LIBSYSTEMD_LOGIN_LIBS=$LIBSYSTEMD_LIBS],
+			  [PKG_CHECK_MODULES(LIBSYSTEMD_LOGIN,
+			                     [libsystemd-login >= 44])])
+	AC_DEFINE([HAVE_LIBSYSTEMD_LOGIN], 1, [Define to 1 if systemd login is available])
 fi
 AC_SUBST(HAVE_LIBSYSTEMD_LOGIN)
 AC_SUBST(LIBSYSTEMD_LOGIN_CFLAGS)
@@ -501,7 +505,7 @@ echo "
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
         udev rules.d dir:          ${with_udevrulesdir}
-        using libsystemd-login:    ${enable_systemd_login}
+        systemd-login support:     ${enable_systemd_login}
         systemd service dir:       ${with_systemdsystemunitdir}
         Unix support:              ${enable_unix}
 "
