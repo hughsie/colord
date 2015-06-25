@@ -327,6 +327,10 @@ void		 ch_device_queue_verify_firmware	(ChDeviceQueue	*device_queue,
 							 GUsbDevice	*device,
 							 const guint8	*data,
 							 gsize		 len);
+void		 ch_device_queue_read_firmware		(ChDeviceQueue	*device_queue,
+							 GUsbDevice	*device,
+							 guint8		**data,
+							 gsize		*len);
 
 G_END_DECLS
 

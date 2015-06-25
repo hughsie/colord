@@ -1298,6 +1298,61 @@ ch_device_queue_verify_firmware (ChDeviceQueue	*device_queue,
 }
 
 /**
+ * ch_device_queue_read_firmware:
+ * @device_queue:	A #ChDeviceQueue
+ * @device:		A #GUsbDevice
+ * @data:		Firmware binary data
+ * @len:		Size of @data
+ *
+ * Reads firmware on the device.
+ *
+ * NOTE: This command is available on hardware version: 1 & 2
+ *
+ * Since: 1.2.11
+ **/
+void
+ch_device_queue_read_firmware (ChDeviceQueue	*device_queue,
+			       GUsbDevice	*device,
+			       guint8		**data,
+			       gsize		*len)
+{
+	gsize chunk_len = 60;
+	guint idx = 0;
+	guint16 runcode_addr;
+	guint8 *data_tmp;
+	gsize len_tmp;
+
+	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
+	g_return_if_fail (G_USB_IS_DEVICE (device));
+	g_return_if_fail (data != NULL);
+
+	/* assume firmware is padded */
+	len_tmp = ch_device_get_runcode_address (device);
+	data_tmp = g_malloc0 (len_tmp);
+
+	/* read in 60 byte chunks */
+	runcode_addr = ch_device_get_runcode_address (device);
+	do {
+		if (idx + chunk_len > len_tmp)
+			chunk_len = len_tmp - idx;
+		g_debug ("Reading at %04x size %" G_GSIZE_FORMAT,
+			 runcode_addr + idx,
+			 chunk_len);
+		ch_device_queue_read_flash (device_queue,
+					    device,
+					    runcode_addr + idx,
+					    data_tmp + idx,
+					    chunk_len);
+		idx += chunk_len;
+	} while (idx < len_tmp);
+
+	/* return */
+	*data = data_tmp;
+	if (len != NULL)
+		*len = len_tmp;
+}
+
+/**
  * ch_device_queue_clear_calibration:
  * @device_queue:	A #ChDeviceQueue
  * @device:		A #GUsbDevice
