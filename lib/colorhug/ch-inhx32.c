@@ -178,9 +178,8 @@ ch_inhx32_to_bin_full (const gchar *in_buffer,
 		offset = ptr - in_buffer;
 	}
 
-	/* ensure flash finishes on a 64 byte boundary */
-	end = string->len % CH_FLASH_WRITE_BLOCK_SIZE;
-	for (i = 0; i < CH_FLASH_WRITE_BLOCK_SIZE - end; i++)
+	/* pad out to device size so we can read back a verifiable blob */
+	for (i = string->len; i < runcode_addr; i++)
 		g_string_append_len (string, "\0", 1);
 
 	/* save data */
