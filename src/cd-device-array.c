@@ -76,7 +76,8 @@ cd_device_array_remove (CdDeviceArray *device_array, CdDevice *device)
 CdDevice *
 cd_device_array_get_by_id_owner (CdDeviceArray *device_array,
 				 const gchar *id,
-				 guint owner)
+				 guint owner,
+				 CdDeviceArrayFlags flags)
 {
 	CdDeviceArrayPrivate *priv = device_array->priv;
 	CdDevice *device_tmp;
@@ -90,10 +91,12 @@ cd_device_array_get_by_id_owner (CdDeviceArray *device_array,
 		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0)
 			return g_object_ref (device_tmp);
 	}
-	for (i = 0; i < priv->array->len; i++) {
-		device_tmp = g_ptr_array_index (priv->array, i);
-		if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0)
-			return g_object_ref (device_tmp);
+	if (flags & CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL) {
+		for (i = 0; i < priv->array->len; i++) {
+			device_tmp = g_ptr_array_index (priv->array, i);
+			if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0)
+				return g_object_ref (device_tmp);
+		}
 	}
 	return NULL;
 }

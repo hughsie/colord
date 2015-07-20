@@ -720,7 +720,8 @@ cd_main_profile_auto_add_from_db (CdMainPrivate *priv,
 		device_id_tmp = g_ptr_array_index (array, i);
 		device_tmp = cd_device_array_get_by_id_owner (priv->devices_array,
 							      device_id_tmp,
-							      cd_profile_get_owner (profile));
+							      cd_profile_get_owner (profile),
+							      CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
 		if (device_tmp == NULL)
 			continue;
 
@@ -747,7 +748,8 @@ cd_main_profile_auto_add_from_md (CdMainPrivate *priv,
 		return;
 	device = cd_device_array_get_by_id_owner (priv->devices_array,
 						  device_id,
-						  cd_profile_get_owner (profile));
+						  cd_profile_get_owner (profile),
+						  CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
 	if (device == NULL)
 		return;
 	cd_main_auto_add_from_md (priv, device, profile);
@@ -1022,7 +1024,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			 sender, device_id);
 		device = cd_device_array_get_by_id_owner (priv->devices_array,
 							  device_id,
-							  uid);
+							  uid,
+							  CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
 		if (device == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_CLIENT_ERROR,
@@ -1279,7 +1282,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 		device = cd_device_array_get_by_id_owner (priv->devices_array,
 							  device_id,
-							  uid);
+							  uid,
+							  CD_DEVICE_ARRAY_FLAG_NONE);
 		if (device != NULL) {
 			/* where we try to manually add an existing
 			 * virtual device, which means promoting it to
@@ -1399,7 +1403,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			 sender, device_id);
 		device = cd_device_array_get_by_id_owner (priv->devices_array,
 							  device_id,
-							  uid);
+							  uid,
+							  CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
 		if (device == NULL) {
 			/* fall back to checking the object path */
 			device = cd_device_array_get_by_object_path (priv->devices_array,

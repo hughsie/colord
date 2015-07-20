@@ -178,10 +178,13 @@ colord_device_array_func (void)
 	cd_device_array_add (device_array, device);
 	g_object_unref (device);
 
-	device = cd_device_array_get_by_id_owner (device_array, "does not exist", 0);
+	device = cd_device_array_get_by_id_owner (device_array, "does not exist", 0, CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
 	g_assert (device == NULL);
 
-	device = cd_device_array_get_by_id_owner (device_array, "dave", 0);
+	device = cd_device_array_get_by_id_owner (device_array, "dave", 999, CD_DEVICE_ARRAY_FLAG_NONE);
+	g_assert (device == NULL);
+
+	device = cd_device_array_get_by_id_owner (device_array, "dave", 0, CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
 	g_assert (device != NULL);
 	g_assert_cmpstr (cd_device_get_id (device), ==, "dave");
 	g_object_unref (device);
