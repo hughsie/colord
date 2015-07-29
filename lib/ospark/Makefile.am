@@ -17,7 +17,7 @@ privlib_LTLIBRARIES =						\
 	libospark-private.la
 
 libospark_private_la_SOURCES =					\
-	osp.h							\
+	ospark.h						\
 	osp-device.c						\
 	osp-device.h						\
 	osp-enum.c						\
