@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Balázs Úr <urbalazs@gmail.com>, 2014
+# Balázs Úr <urbalazs@gmail.com>, 2014-2015
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2012
 # kelemeng <kelemeng@ubuntu.com>, 2012
 # kelemeng <kelemeng@ubuntu.com>, 2012
@@ -15,10 +15,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:30+0100\n"
-"PO-Revision-Date: 2015-03-21 06:54+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Hungarian (http://www.transifex.com/projects/p/colord/language/hu/)\n"
+"POT-Creation-Date: 2015-08-19 15:08+0100\n"
+"PO-Revision-Date: 2015-07-06 19:30+0000\n"
+"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
+"Language-Team: Hungarian (http://www.transifex.com/hughsie/colord/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -103,7 +103,7 @@ msgstr "Állítsa be az ICC profil verzióját"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "A címkeadat exportálása"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -123,7 +123,7 @@ msgstr "Spektrum létrehozása CSV adatokból"
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "CCMX létrehozása a hivatkozásból és a mérési adatokból"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -375,15 +375,15 @@ msgstr "Jelenítse meg a kliens és a daemon verzióját is"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Az érték megjelenítése mindenféle fejléc nélkül"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Objektumtulajdonságok szűrése megjelenítéskor"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "Minden hibakeresési adat kiírása fájlba"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -419,15 +419,15 @@ msgstr "Eszköz létrehozása"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Eszköz keresése az eszközazonosítóból"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Eszköz keresése egy megadott tulajdonságértékkel"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Profil keresése a profilazonosítóból"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -508,10 +508,10 @@ msgid "Daemon version:"
 msgstr "Daemon verziója"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Rendszergyártó:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Rendszermodell:"
 
 msgid "Default gamma for the display"
 msgstr "Alapértelmezett gamma érték a kijelzőhöz"

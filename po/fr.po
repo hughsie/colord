@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Étienne BERSAC <bersace03@free.fr>, 2013
+# fabricio s <fabrice.silva@gipsa-lab.fr>, 2015
 # frizer23 <jourliiaenne@voila.fr>, 2013
 # frizer23 <jourliiaenne@voila.fr>, 2013
 # roumano <roumano@gmail.com>, 2013
@@ -12,10 +13,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:30+0100\n"
-"PO-Revision-Date: 2015-03-21 06:54+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/colord/language/fr/)\n"
+"POT-Creation-Date: 2015-08-19 15:08+0100\n"
+"PO-Revision-Date: 2015-08-15 20:53+0000\n"
+"Last-Translator: fabricio s <fabrice.silva@gipsa-lab.fr>\n"
+"Language-Team: French (http://www.transifex.com/hughsie/colord/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,7 +29,7 @@ msgstr "Profil à créer"
 
 #. TRANSLATORS: program name
 msgid "ICC profile creation program"
-msgstr ""
+msgstr "Programme de création de profil ICC"
 
 #. TRANSLATORS: the user didn't read the man page
 msgid "Failed to parse arguments"
@@ -64,7 +65,7 @@ msgstr "Effacer toutes les métadonnées du profil"
 
 #. TRANSLATORS: command description
 msgid "Initialize any metadata for the profile"
-msgstr ""
+msgstr "Initialiser les métadonnées du profil"
 
 #. TRANSLATORS: command description
 msgid "Add a metadata item to the profile"
@@ -76,19 +77,19 @@ msgstr "Enlever une métadonnée au profil"
 
 #. TRANSLATORS: command description
 msgid "Sets the copyright string"
-msgstr ""
+msgstr "Définir le copyright"
 
 #. TRANSLATORS: command description
 msgid "Sets the description string"
-msgstr ""
+msgstr "Définir la description"
 
 #. TRANSLATORS: command description
 msgid "Sets the manufacturer string"
-msgstr ""
+msgstr "Définir le fabricant"
 
 #. TRANSLATORS: command description
 msgid "Sets the model string"
-msgstr ""
+msgstr "Définir le modèle"
 
 #. TRANSLATORS: command description
 msgid "Automatically fix metadata in the profile"
@@ -96,11 +97,11 @@ msgstr "Réparer automatiquement les métadonnées du profil"
 
 #. TRANSLATORS: command description
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "Définir la version du profil ICC"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "Exporter le tag"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -108,19 +109,19 @@ msgstr "Gestion des couleurs"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "Programme d'export du profil ICC"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Créer un CMF à partir de données CSV"
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "Créer un spectre à partir de données CSV"
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "Créer un CCMX à partir de données de référence et de mesures"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -168,7 +169,7 @@ msgstr ""
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 msgid "Gamma Table"
-msgstr ""
+msgstr "Table Gamma"
 
 #. TRANSLATORS: if the profile is installed for all users
 msgid "System Wide"
@@ -234,7 +235,7 @@ msgstr "Numéro de série"
 #. * systemd these can be setup as three independant seats with
 #. * different sessions running on them
 msgid "Seat"
-msgstr ""
+msgstr "Poste"
 
 #. TRANSLATORS: the device identifier
 msgid "Device ID"
@@ -247,7 +248,7 @@ msgstr "Profil"
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
 msgid "CRT"
-msgstr ""
+msgstr "CRT"
 
 #. TRANSLATORS: this is a desktop printer
 msgid "Printer"
@@ -255,7 +256,7 @@ msgstr "Imprimante"
 
 #. TRANSLATORS: a beamer used for presentations
 msgid "Projector"
-msgstr ""
+msgstr "Vidéo-projecteur"
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
@@ -265,7 +266,7 @@ msgstr ""
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 msgid "Ambient"
-msgstr ""
+msgstr "Ambiance"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
@@ -274,12 +275,12 @@ msgstr "Calibrage"
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD générique"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 msgid "LED Generic"
-msgstr ""
+msgstr "LED générique"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
@@ -291,7 +292,7 @@ msgstr "Plasma"
 #. * where LCD stands for 'Liquid Crystal Display'
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
@@ -329,7 +330,7 @@ msgstr "Numéro de série"
 
 #. TRANSLATORS: sensor identifier
 msgid "Sensor ID"
-msgstr ""
+msgstr "Identifiant du capteur"
 
 #. TRANSLATORS: the options for the sensor
 msgid "Options"
@@ -337,19 +338,19 @@ msgstr "Options"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 msgid "Native"
-msgstr ""
+msgstr "Natif"
 
 #. TRANSLATORS: if the sensor is locked
 msgid "Locked"
-msgstr ""
+msgstr "Verrouillé"
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 msgid "Capabilities"
-msgstr ""
+msgstr "Possibilités"
 
 msgid "There are no supported sensors attached"
-msgstr ""
+msgstr "Aucun capteur supporté détecté"
 
 #. TRANSLATORS: this is the sensor title
 msgid "Sensor"
@@ -357,11 +358,11 @@ msgstr "Capteur"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the calibrate position and press enter."
-msgstr "Mettez l’appareil dans sa position de calibrage et appuyez sur entrée."
+msgstr "Placer l’appareil en position d'étalonnage et appuyer sur Entrée."
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the surface position and press enter."
-msgstr ""
+msgstr "Placer l'appareil en position surface et appuyer sur Entrée"
 
 msgid "Color"
 msgstr "Couleur"
@@ -372,7 +373,7 @@ msgstr "Montrer les versions du client et du démon"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Montrer la valeur sans en-tête"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
@@ -392,15 +393,15 @@ msgstr "Récupère tous les périphérique avec gestion de couleurs, d'un certai
 
 #. TRANSLATORS: command description
 msgid "Gets all the available color profiles"
-msgstr "Récupérer tous les profils de couleurs disponible"
+msgstr "Récupère tous les profils de couleurs disponibles"
 
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
-msgstr ""
+msgstr "Récupère tous les capteurs de couleurs disponibles"
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"
-msgstr ""
+msgstr "Lit une valeur depuis le capteur"
 
 #. TRANSLATORS: command description
 msgid "Locks the color sensor"
@@ -408,7 +409,7 @@ msgstr "Bloque le capteur de couleur"
 
 #. TRANSLATORS: command description
 msgid "Sets one or more sensor options"
-msgstr ""
+msgstr "Définit une ou plusieurs options du capteur"
 
 #. TRANSLATORS: command description
 msgid "Create a device"
@@ -416,15 +417,15 @@ msgstr "Crée un appareil"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Cherche un appareil par son identifiant"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Cherche un appareil avec une valeur donnée d'une propriété"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Cherche un profil par son identifiant"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -440,7 +441,7 @@ msgstr "Crée un profil"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Ajoute un profil à un périphérique déjà défini"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -492,7 +493,7 @@ msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Importe un profil et l'installe pour l'utilisateur"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
@@ -511,12 +512,12 @@ msgid "System model:"
 msgstr ""
 
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "Valeur par défaut de gamma pour l'affichage"
 
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr ""
+msgstr "La valeur gamma cible par défaut. Les valeurs usuelles sont 1.8, 2.2 et 2.4."
 
 msgid "Default display target whitepoint"
 msgstr ""
@@ -819,7 +820,7 @@ msgid ""
 msgstr ""
 
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Rouge et vert inversés"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 msgid ""
@@ -858,10 +859,10 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr ""
+msgstr "Cet espace d'édition a été conçu par Adobe Systems pour ?? bien plus de couleurs que Adobe RGB. Ce profil est utilisé pour des appareils de transfert sur pellicule et définit de nombreuses couleurs qui ne peuvent être affichées sur un écran d'ordinateur. À moins de travailler avec une profondeur de 16bits par canal, un effet de postérisation peut apparaître lors de l'édition d'images."
 
 msgid "X11 Colors"
-msgstr ""
+msgstr "Couleurs X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -938,7 +939,7 @@ msgid "Inhibit color profile selection"
 msgstr "Empêcher la sélection du profil de couleur"
 
 msgid "Authentication is required to disable profile matching for a device"
-msgstr ""
+msgstr "Il est nécessaire de s’authentifier pour désactiver la détection de profil pour un périphérique"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
@@ -961,7 +962,7 @@ msgstr "Montrer les options de débogage"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 msgid "Exit after a small delay"
-msgstr ""
+msgstr "Quitter après un court délai"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
@@ -969,7 +970,7 @@ msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Créer un capteur fictif pour test"
 
 msgid "Color Management D-Bus Service"
 msgstr "Service D-Bus de gestion de couleurs"

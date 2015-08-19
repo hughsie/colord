@@ -1,3 +1,16 @@
+Version 1.2.12
+~~~~~~~~~~~~~~
+Released: 2015-08-19
+
+New Features:
+ - Add a new private library libospark for future use (Richard Hughes)
+
+Bugfixes:
+ - Allow creating devices with the same device ID from different users (Richard Hughes)
+ - Check for, and prefer, libsystemd over libsystemd-login (Christopher James Halse Rogers)
+ - ColorHug: Add ch_device_queue_read_firmware() (Richard Hughes)
+ - ColorHug: When converting HEX to BIN pad out the entire size (Richard Hughes)
+
 Version 1.2.11
 ~~~~~~~~~~~~~~
 Released: 2015-06-08
