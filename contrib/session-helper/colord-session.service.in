@@ -1,0 +1,7 @@
+[Unit]
+Description=Color management helper
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.ColorHelper
+ExecStart=@servicedir@/colord-session

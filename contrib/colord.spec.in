@@ -200,6 +200,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libexecdir}/colord-session
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
 %{_datadir}/dbus-1/services/org.freedesktop.ColorHelper.service
+/usr/lib/systemd/user/colord-session.service
 
 # sane helper
 %if 0%{?enable_sane}

@@ -1,3 +1,4 @@
 [D-BUS Service]
 Name=org.freedesktop.ColorHelper
 Exec=@servicedir@/colord-session
+SystemdService=colord-session.service
