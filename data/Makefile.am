@@ -20,6 +20,10 @@ $(dbusservicemain_DATA): $(dbusservicemain_in_files) Makefile
 	sed -e "s|\@daemon_user\@|$(daemon_user)|" > $@
 
 systemdservicemain_in_files = colord.service.in
+
+tmpfilesdir = $(libdir)/tmpfiles.d/colord.conf
+dist_tmpfiles_DATA = colord.conf
+
 endif
 
 if HAVE_SYSTEMD
