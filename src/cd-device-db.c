@@ -53,7 +53,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
-	_cleanup_free_ gchar *path = NULL;
+	g_autofree gchar *path = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
 	g_return_val_if_fail (ddb->priv->db == NULL, FALSE);
@@ -297,7 +297,7 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 	gchar *statement;
 	gint rc;
 	gchar *value = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array_tmp = NULL;
+	g_autoptr(GPtrArray) array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
 	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
@@ -353,7 +353,7 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array_tmp = NULL;
+	g_autoptr(GPtrArray) array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
 	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
@@ -396,7 +396,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array_tmp = NULL;
+	g_autoptr(GPtrArray) array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
 	g_return_val_if_fail (ddb->priv->db != NULL, NULL);

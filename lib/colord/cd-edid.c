@@ -117,7 +117,7 @@ cd_edid_convert_pnp_id_to_string (const gchar *pnp_id)
 	struct udev_list_entry *e;
 	struct udev_list_entry *v;
 	struct udev *udev;
-	_cleanup_free_ gchar *modalias = NULL;
+	g_autofree gchar *modalias = NULL;
 
 	/* connect to the hwdb */
 	udev = udev_new ();
@@ -155,7 +155,7 @@ out:
 				   "/usr/share/misc/pnp.ids",
 				   "/usr/share/libgnome-desktop/pnp.ids",
 				   NULL };
-	_cleanup_free_ gchar *data = NULL;
+	g_autofree gchar *data = NULL;
 
 	for (i = 0; pnp_ids[i] != NULL; i++) {
 		ret = g_file_get_contents (pnp_ids[i], &data, NULL, NULL);

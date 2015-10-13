@@ -112,9 +112,9 @@ cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
 	CdSpectrum *sp = NULL;
 	CdSpectrum *unity = NULL;
 	gboolean ret;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	_cleanup_object_unref_ CdIt8 *cmf = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	/* measure */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
@@ -245,8 +245,8 @@ cd_sensor_spark_lock_thread_cb (GSimpleAsyncResult *res,
 {
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *serial_number_tmp = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *serial_number_tmp = NULL;
 
 	/* try to find the USB device */
 	priv->device = cd_sensor_open_usb_device (sensor,
@@ -322,7 +322,7 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
 	gboolean ret = FALSE;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* close */
 	if (priv->device != NULL) {

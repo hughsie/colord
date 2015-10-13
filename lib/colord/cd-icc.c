@@ -292,7 +292,7 @@ cd_icc_to_string (CdIcc *icc)
 	/* date and time */
 	created = cd_icc_get_created (icc);
 	if (created != NULL) {
-		_cleanup_free_ gchar *created_str = NULL;
+		g_autofree gchar *created_str = NULL;
 		created_str = g_date_time_format (created, "%F, %T");
 		g_string_append_printf (str, "  Date, Time\t= %s\n", created_str);
 		g_date_time_unref (created);
@@ -410,9 +410,9 @@ cd_icc_to_string (CdIcc *icc)
 				gchar country_code[3] = "\0\0\0";
 				gchar language_code[3] = "\0\0\0";
 				guint32 text_size;
-				_cleanup_free_ gchar *text_buffer = NULL;
-				_cleanup_free_ gunichar *wtext = NULL;
-				_cleanup_error_free_ GError *error = NULL;
+				g_autofree gchar *text_buffer = NULL;
+				g_autofree gunichar *wtext = NULL;
+				g_autoptr(GError) error = NULL;
 
 				ret = cmsMLUtranslationsCodes (mlu,
 							       j,
@@ -548,8 +548,8 @@ cd_icc_to_string (CdIcc *icc)
 			for (entry = cmsDictGetEntryList (dict);
 			     entry != NULL;
 			     entry = cmsDictNextEntry (entry)) {
-				_cleanup_free_ gchar *ascii_name = NULL;
-				_cleanup_free_ gchar *ascii_value = NULL;
+				g_autofree gchar *ascii_name = NULL;
+				g_autofree gchar *ascii_value = NULL;
 
 				/* convert from wchar_t to UTF-8 */
 				ascii_name = g_ucs4_to_utf8 ((gunichar *) entry->Name, -1,
@@ -604,7 +604,7 @@ cd_icc_to_string (CdIcc *icc)
 				continue;
 			}
 			for (j = 0; j < tmp; j++) {
-				_cleanup_string_free_ GString *string = NULL;
+				g_autoptr(GString) string = NULL;
 
 				/* parse title */
 				string = g_string_new ("");
@@ -1043,9 +1043,9 @@ cd_icc_load_metadata_item (CdIcc *icc,
 			   const gunichar *value,
 			   GError **error)
 {
-	_cleanup_error_free_ GError *error_local = NULL;
-	_cleanup_free_ gchar *ascii_name = NULL;
-	_cleanup_free_ gchar *ascii_value = NULL;
+	g_autoptr(GError) error_local = NULL;
+	g_autofree gchar *ascii_name = NULL;
+	g_autofree gchar *ascii_value = NULL;
 
 	/* parse name */
 	ascii_name = g_ucs4_to_utf8 (name, -1, NULL, NULL, &error_local);
@@ -1254,8 +1254,8 @@ cd_util_write_dict_entry (cmsHANDLE dict,
 			  GError **error)
 {
 	gboolean ret = FALSE;
-	_cleanup_free_ gunichar *mb_key = NULL;
-	_cleanup_free_ gunichar *mb_value = NULL;
+	g_autofree gunichar *mb_key = NULL;
+	g_autofree gunichar *mb_value = NULL;
 
 	mb_key = g_utf8_to_ucs4 (key, -1, NULL, NULL, error);
 	if (mb_key == NULL)
@@ -1307,8 +1307,8 @@ cd_util_mlu_object_parse (const gchar *locale,
 	CdMluObject *obj = NULL;
 	guint type;
 	gunichar *wtext;
-	_cleanup_free_ gchar *key = NULL;
-	_cleanup_strv_free_ gchar **split = NULL;
+	g_autofree gchar *key = NULL;
+	g_auto(GStrv) split = NULL;
 
 	/* untranslated version */
 	if (locale == NULL || locale[0] == '\0') {
@@ -1438,8 +1438,8 @@ cd_util_write_tag_localized (CdIcc *icc,
 	const gchar *value;
 	gboolean ret = TRUE;
 	guint i;
-	_cleanup_list_free_ GList *keys = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GList) keys = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* convert all the hash entries into CdMluObject's */
 	keys = g_hash_table_get_keys (hash);
@@ -1513,7 +1513,7 @@ out:
 static gboolean
 cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
 {
-	_cleanup_object_unref_ GFile *parent_dir = NULL;
+	g_autoptr(GFile) parent_dir = NULL;
 
 	/* get parent directory */
 	parent_dir = g_file_get_parent (file);
@@ -1542,7 +1542,7 @@ cd_icc_serialize_profile (CdIcc *icc, GError **error)
 	CdIccPrivate *priv = icc->priv;
 	cmsUInt32Number length = 0;
 	gboolean ret;
-	_cleanup_free_ gchar *data_tmp = NULL;
+	g_autofree gchar *data_tmp = NULL;
 
 	/* get size of profile */
 	ret = cmsSaveProfileToMem (priv->lcms_profile,
@@ -1607,7 +1607,7 @@ cd_icc_save_data (CdIcc *icc,
 	GBytes *data = NULL;
 	GList *l;
 	guint i;
-	_cleanup_list_free_ GList *md_keys = NULL;
+	g_autoptr(GList) md_keys = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 
@@ -1807,8 +1807,8 @@ cd_icc_save_file (CdIcc *icc,
 		  GError **error)
 {
 	gboolean ret;
-	_cleanup_bytes_unref_ GBytes *data = NULL;
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GBytes) data = NULL;
+	g_autoptr(GError) error_local = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
@@ -1863,9 +1863,9 @@ cd_icc_save_default (CdIcc *icc,
 		     GError **error)
 {
 	const gchar *root = "edid"; /* TODO: only for cd_icc_create_from_edid() */
-	_cleanup_free_ gchar *basename = NULL;
-	_cleanup_free_ gchar *filename = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autofree gchar *basename = NULL;
+	g_autofree gchar *filename = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 
@@ -1915,9 +1915,9 @@ cd_icc_load_file (CdIcc *icc,
 	CdIccPrivate *priv = icc->priv;
 	gboolean ret = FALSE;
 	gsize length;
-	_cleanup_error_free_ GError *error_local = NULL;
-	_cleanup_free_ gchar *data = NULL;
-	_cleanup_object_unref_ GFileInfo *info = NULL;
+	g_autoptr(GError) error_local = NULL;
+	g_autofree gchar *data = NULL;
+	g_autoptr(GFileInfo) info = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
@@ -2510,9 +2510,9 @@ cd_icc_get_mluc_data (CdIcc *icc,
 	gchar *tmp;
 	guint32 text_size;
 	guint i;
-	_cleanup_free_ gchar *locale_key = NULL;
-	_cleanup_free_ gchar *text_buffer = NULL;
-	_cleanup_free_ gunichar *wtext = NULL;
+	g_autofree gchar *locale_key = NULL;
+	g_autofree gchar *text_buffer = NULL;
+	g_autofree gunichar *wtext = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
@@ -2745,7 +2745,7 @@ cd_icc_set_description_items (CdIcc *icc, GHashTable *values)
 	GList *l;
 	const gchar *key;
 	const gchar *value;
-	_cleanup_list_free_ GList *keys = NULL;
+	g_autoptr(GList) keys = NULL;
 
 	g_return_if_fail (CD_IS_ICC (icc));
 
@@ -2793,7 +2793,7 @@ cd_icc_set_copyright_items (CdIcc *icc, GHashTable *values)
 	const gchar *key;
 	const gchar *value;
 	GList *l;
-	_cleanup_list_free_ GList *keys = NULL;
+	g_autoptr(GList) keys = NULL;
 
 	g_return_if_fail (CD_IS_ICC (icc));
 
@@ -2841,7 +2841,7 @@ cd_icc_set_manufacturer_items (CdIcc *icc, GHashTable *values)
 	const gchar *key;
 	const gchar *value;
 	GList *l;
-	_cleanup_list_free_ GList *keys = NULL;
+	g_autoptr(GList) keys = NULL;
 
 	g_return_if_fail (CD_IS_ICC (icc));
 
@@ -2889,7 +2889,7 @@ cd_icc_set_model_items (CdIcc *icc, GHashTable *values)
 	const gchar *key;
 	const gchar *value;
 	GList *l;
-	_cleanup_list_free_ GList *keys = NULL;
+	g_autoptr(GList) keys = NULL;
 
 	g_return_if_fail (CD_IS_ICC (icc));
 
@@ -3281,8 +3281,8 @@ cd_icc_get_response (CdIcc *icc, guint size, GError **error)
 	gfloat divamount;
 	GPtrArray *array = NULL;
 	guint i;
-	_cleanup_free_ gdouble *values_in = NULL;
-	_cleanup_free_ gdouble *values_out = NULL;
+	g_autofree gdouble *values_in = NULL;
+	g_autofree gdouble *values_out = NULL;
 
 	/* run through the icc */
 	colorspace = cd_icc_get_colorspace (icc);
@@ -3377,9 +3377,9 @@ cd_icc_set_vcgt (CdIcc *icc, GPtrArray *vcgt, GError **error)
 	cmsToneCurve *curve[3];
 	gboolean ret;
 	guint i;
-	_cleanup_free_ guint16 *blue = NULL;
-	_cleanup_free_ guint16 *green = NULL;
-	_cleanup_free_ guint16 *red = NULL;
+	g_autofree guint16 *blue = NULL;
+	g_autofree guint16 *green = NULL;
+	g_autofree guint16 *red = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
 	g_return_val_if_fail (icc->priv->lcms_profile != NULL, FALSE);

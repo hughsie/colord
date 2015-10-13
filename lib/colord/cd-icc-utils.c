@@ -72,8 +72,8 @@ cd_icc_utils_get_coverage_calc (CdIcc *icc,
 	guint cnt = 0;
 	guint data_len = cube_size * cube_size * cube_size;
 	guint i;
-	_cleanup_free_ cmsFloat32Number *data = NULL;
-	_cleanup_free_ cmsUInt16Number *alarm_codes = NULL;
+	g_autofree cmsFloat32Number *data = NULL;
+	g_autofree cmsUInt16Number *alarm_codes = NULL;
 
 	/* create a proofing transform with gamut check */
 	profile_null = cmsCreateNULLProfileTHR (cd_icc_get_context (icc));

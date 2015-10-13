@@ -96,15 +96,15 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	gdouble tlimit;
 	gint exit_status = 0;
 	gsize len = 0;
-	_cleanup_free_ gchar *cmdline = NULL;
-	_cleanup_free_ gchar *data = NULL;
-	_cleanup_free_ gchar *debug_stderr = NULL;
-	_cleanup_free_ gchar *debug_stdout = NULL;
-	_cleanup_free_ gchar *output_fn = NULL;
-	_cleanup_free_ gchar *ti3_fn = NULL;
-	_cleanup_object_unref_ GFile *output_file = NULL;
-	_cleanup_object_unref_ GFile *ti3_file = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *argv = NULL;
+	g_autofree gchar *cmdline = NULL;
+	g_autofree gchar *data = NULL;
+	g_autofree gchar *debug_stderr = NULL;
+	g_autofree gchar *debug_stdout = NULL;
+	g_autofree gchar *output_fn = NULL;
+	g_autofree gchar *ti3_fn = NULL;
+	g_autoptr(GFile) output_file = NULL;
+	g_autoptr(GFile) ti3_file = NULL;
+	g_autoptr(GPtrArray) argv = NULL;
 
 #ifndef TOOL_COLPROF
 	/* no support */
@@ -664,7 +664,7 @@ cd_util_icc_set_metadata_coverage (CdIcc *icc, GError **error)
 {
 	const gchar *tmp;
 	gdouble coverage = 0.0f;
-	_cleanup_free_ gchar *coverage_tmp = NULL;
+	g_autofree gchar *coverage_tmp = NULL;
 	_cleanup_object_unref_ CdIcc *icc_srgb = NULL;
 
 	/* is sRGB? */
@@ -700,7 +700,7 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 	gboolean ret = TRUE;
 	GHashTable *hash;
 	gssize data_len = -1;
-	_cleanup_free_ gchar *data = NULL;
+	g_autofree gchar *data = NULL;
 	_cleanup_object_unref_ CdDom *dom = NULL;
 
 	/* parse the XML into DOM */
@@ -802,10 +802,10 @@ main (int argc, char **argv)
 	CdUtilPrivate *priv;
 	gboolean ret;
 	guint retval = EXIT_FAILURE;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *cmd_descriptions = NULL;
-	_cleanup_free_ gchar *filename = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *cmd_descriptions = NULL;
+	g_autofree gchar *filename = NULL;
+	g_autoptr(GFile) file = NULL;
 	const GOptionEntry options[] = {
 		{ "output", 'o', 0, G_OPTION_ARG_STRING, &filename,
 		/* TRANSLATORS: command line option */

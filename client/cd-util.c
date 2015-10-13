@@ -124,7 +124,7 @@ cd_util_print_field_time (const gchar *title,
 			  gint64 usecs)
 {
 	GDateTime *datetime;
-	_cleanup_free_ gchar *str = NULL;
+	g_autofree gchar *str = NULL;
 
 	datetime = g_date_time_new_from_unix_utc (usecs / G_USEC_PER_SEC);
 	/* TRANSLATORS: this is the profile creation date strftime format */
@@ -145,7 +145,7 @@ cd_util_show_owner (CdUtilPrivate *priv, guint uid)
 	/* TRANSLATORS: profile owner */
 	cd_util_print_field (_("Owner"), "owner", priv, pw->pw_name);
 #else
-	_cleanup_free_ gchar *str = NULL;
+	g_autofree gchar *str = NULL;
 	str = g_strdup_printf ("%u", uid);
 	/* TRANSLATORS: profile UID */
 	cd_util_print_field (_("Owner"), "owner", priv, str);
@@ -167,8 +167,8 @@ cd_util_show_profile (CdUtilPrivate *priv, CdProfile *profile)
 	GList *l;
 	guint i;
 	guint size;
-	_cleanup_hashtable_unref_ GHashTable *metadata = NULL;
-	_cleanup_list_free_ GList *list = NULL;
+	g_autoptr(GHashTable) metadata = NULL;
+	g_autoptr(GList) list = NULL;
 
 	/* TRANSLATORS: the internal DBus path */
 	cd_util_print_field (_("Object Path"),
@@ -273,8 +273,8 @@ cd_util_show_device (CdUtilPrivate *priv, CdDevice *device)
 	GList *l;
 	GPtrArray *profiles;
 	guint i;
-	_cleanup_hashtable_unref_ GHashTable *metadata = NULL;
-	_cleanup_list_free_ GList *list = NULL;
+	g_autoptr(GHashTable) metadata = NULL;
+	g_autoptr(GList) list = NULL;
 
 	/* TRANSLATORS: the internal DBus path */
 	cd_util_print_field (_("Object Path"),
@@ -513,11 +513,11 @@ cd_util_show_sensor (CdUtilPrivate *priv, CdSensor *sensor)
 	guint caps;
 	guint i;
 	GVariant *value_tmp;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_hashtable_unref_ GHashTable *metadata = NULL;
-	_cleanup_hashtable_unref_ GHashTable *options = NULL;
-	_cleanup_list_free_ GList *list = NULL;
-	_cleanup_string_free_ GString *caps_str = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GHashTable) metadata = NULL;
+	g_autoptr(GHashTable) options = NULL;
+	g_autoptr(GList) list = NULL;
+	g_autoptr(GString) caps_str = NULL;
 
 	/* TRANSLATORS: the internal DBus path */
 	cd_util_print_field (_("Object Path"),
@@ -692,7 +692,7 @@ cd_util_add (GPtrArray *array,
 {
 	guint i;
 	CdUtilItem *item;
-	_cleanup_strv_free_ gchar **names = NULL;
+	g_auto(GStrv) names = NULL;
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (description != NULL);
@@ -770,7 +770,7 @@ cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError *
 {
 	guint i;
 	CdUtilItem *item;
-	_cleanup_string_free_ GString *string = NULL;
+	g_autoptr(GString) string = NULL;
 
 	/* find command */
 	for (i = 0; i < priv->cmd_array->len; i++) {
@@ -808,10 +808,10 @@ cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 	GDateTime *dt;
 	GError *error_local = NULL;
 	guint i;
-	_cleanup_free_ gchar *mapping_db = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *devices = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *profiles = NULL;
-	_cleanup_string_free_ GString *str = NULL;
+	g_autofree gchar *mapping_db = NULL;
+	g_autoptr(GPtrArray) devices = NULL;
+	g_autoptr(GPtrArray) profiles = NULL;
+	g_autoptr(GString) str = NULL;
 
 	/* header */
 	str = g_string_new ("");
@@ -913,7 +913,7 @@ cd_util_get_devices (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	CdDevice *device;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* execute sync method */
 	array = cd_client_get_devices_sync (priv->client, NULL, error);
@@ -938,7 +938,7 @@ cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error
 {
 	CdDevice *device;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -976,7 +976,7 @@ cd_util_get_profiles (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	CdProfile *profile;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* execute sync method */
 	array = cd_client_get_profiles_sync (priv->client, NULL, error);
@@ -1001,7 +1001,7 @@ cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	CdSensor *sensor;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* execute sync method */
 	array = cd_client_get_sensors_sync (priv->client, NULL, error);
@@ -1033,7 +1033,7 @@ cd_util_sensor_lock (CdUtilPrivate *priv, gchar **values, GError **error)
 	CdSensor *sensor;
 	GMainLoop *loop = NULL;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* execute sync method */
 	array = cd_client_get_sensors_sync (priv->client, NULL, error);
@@ -1075,7 +1075,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 	GError *error_local = NULL;
 	guint i;
 	guint j;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -1186,8 +1186,8 @@ cd_util_sensor_set_options (CdUtilPrivate *priv, gchar **values, GError **error)
 	gchar *endptr = NULL;
 	gdouble val;
 	guint i;
-	_cleanup_hashtable_unref_ GHashTable *options = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GHashTable) options = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1257,7 +1257,7 @@ static gboolean
 cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	guint mask;
-	_cleanup_hashtable_unref_ GHashTable *device_props = NULL;
+	g_autoptr(GHashTable) device_props = NULL;
 	_cleanup_object_unref_ CdDevice *device = NULL;
 
 	if (g_strv_length (values) < 3) {
@@ -1977,7 +1977,7 @@ cd_util_import_profile (CdUtilPrivate *priv,
 			GError **error)
 {
 	_cleanup_object_unref_ CdProfile *profile = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -2022,9 +2022,9 @@ main (int argc, char *argv[])
 	gboolean verbose = FALSE;
 	gboolean version = FALSE;
 	guint retval = 1;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *cmd_descriptions = NULL;
-	_cleanup_free_ gchar *filter = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *cmd_descriptions = NULL;
+	g_autofree gchar *filter = NULL;
 	const GOptionEntry options[] = {
 		{ "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
 			/* TRANSLATORS: command line option */
@@ -2287,7 +2287,7 @@ main (int argc, char *argv[])
 	ret = cd_util_run (priv, argv[1], (gchar**) &argv[2], &error);
 	if (!ret) {
 		if (g_error_matches (error, CD_ERROR, CD_ERROR_NO_SUCH_CMD)) {
-			_cleanup_free_ gchar *tmp = NULL;
+			g_autofree gchar *tmp = NULL;
 			tmp = g_option_context_get_help (priv->context, TRUE, NULL);
 			g_print ("%s", tmp);
 		} else {

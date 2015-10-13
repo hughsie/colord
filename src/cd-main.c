@@ -82,8 +82,8 @@ cd_main_profile_removed (CdMainPrivate *priv, CdProfile *profile)
 	CdDevice *device_tmp;
 	gboolean ret;
 	guint i;
-	_cleanup_free_ gchar *object_path_tmp = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *devices = NULL;
+	g_autofree gchar *object_path_tmp = NULL;
+	g_autoptr(GPtrArray) devices = NULL;
 
 	/* remove from the array before emitting */
 	object_path_tmp = g_strdup (cd_profile_get_object_path (profile));
@@ -141,7 +141,7 @@ cd_main_device_removed (CdMainPrivate *priv, CdDevice *device)
 {
 	GError *error = NULL;
 	gboolean ret;
-	_cleanup_free_ gchar *object_path_tmp = NULL;
+	g_autofree gchar *object_path_tmp = NULL;
 
 	/* remove from the array before emitting */
 	object_path_tmp = g_strdup (cd_device_get_object_path (device));
@@ -276,7 +276,7 @@ cd_main_auto_add_from_md (CdMainPrivate *priv,
 	const gchar **warnings;
 	gboolean ret;
 	guint64 timestamp;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* check device and profile hasn't been manually removed */
 	profile_id = cd_profile_get_id (profile);
@@ -332,7 +332,7 @@ cd_main_auto_add_from_db (CdMainPrivate *priv,
 {
 	gboolean ret;
 	guint64 timestamp;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	g_debug ("CdMain: Automatically DB add %s to %s",
 		 cd_profile_get_id (profile),
@@ -371,7 +371,7 @@ cd_main_device_auto_add_from_md (CdMainPrivate *priv,
 {
 	CdProfile *profile_tmp;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* get all the profiles, and check to see if any of them contain
 	 * MAPPING_device_id that matches the device */
@@ -396,8 +396,8 @@ cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 	const gchar *object_id_tmp;
 	guint64 timestamp;
 	guint i;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* get data */
 	array = cd_mapping_db_get_profiles (priv->mapping_db,
@@ -568,7 +568,7 @@ cd_main_create_device (CdMainPrivate *priv,
 		       CdDeviceMode mode,
 		       GError **error)
 {
-	_cleanup_free_ gchar *seat = NULL;
+	g_autofree gchar *seat = NULL;
 	_cleanup_object_unref_ CdDevice *device_tmp = NULL;
 
 	g_assert (priv->connection != NULL);
@@ -605,7 +605,7 @@ cd_main_device_array_to_variant (GPtrArray *array, guint uid)
 	CdDevice *device;
 	guint i;
 	guint length = 0;
-	_cleanup_free_ GVariant **variant_array = NULL;
+	g_autofree GVariant **variant_array = NULL;
 
 	/* copy the object paths */
 	variant_array = g_new0 (GVariant *, array->len + 1);
@@ -641,7 +641,7 @@ cd_main_profile_array_to_variant (GPtrArray *array)
 	CdProfile *profile;
 	guint i;
 	guint length = 0;
-	_cleanup_free_ GVariant **variant_array = NULL;
+	g_autofree GVariant **variant_array = NULL;
 
 	/* copy the object paths */
 	variant_array = g_new0 (GVariant *, array->len + 1);
@@ -667,7 +667,7 @@ cd_main_sensor_array_to_variant (GPtrArray *array)
 	CdSensor *sensor;
 	guint i;
 	guint length = 0;
-	_cleanup_free_ GVariant **variant_array = NULL;
+	g_autofree GVariant **variant_array = NULL;
 
 	/* copy the object paths */
 	variant_array = g_new0 (GVariant *, array->len + 1);
@@ -692,8 +692,8 @@ cd_main_profile_auto_add_from_db (CdMainPrivate *priv,
 				  CdProfile *profile)
 {
 	guint i;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* get data */
 	array = cd_mapping_db_get_devices (priv->mapping_db,
@@ -819,7 +819,7 @@ cd_main_get_standard_space_metadata (CdMainPrivate *priv,
 	guint i;
 	guint score_best = 0;
 	guint score_tmp;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* get all the profiles with this metadata */
 	array = cd_profile_array_get_by_metadata (priv->profiles_array,
@@ -877,8 +877,8 @@ cd_main_get_cmdline_for_pid (guint pid)
 	gchar *cmdline = NULL;
 	gsize len = 0;
 	guint i;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *proc_path = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *proc_path = NULL;
 
 	/* just read the link */
 	proc_path = g_strdup_printf ("/proc/%i/cmdline", pid);
@@ -927,15 +927,15 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	guint i;
 	guint pid;
 	guint uid;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *cmdline = NULL;
-	_cleanup_free_ gchar *device_id_fallback = NULL;
-	_cleanup_free_ gchar *filename = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *cmdline = NULL;
+	g_autofree gchar *device_id_fallback = NULL;
+	g_autofree gchar *filename = NULL;
 	_cleanup_object_unref_ CdDevice *device = NULL;
 	_cleanup_object_unref_ CdProfile *profile = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
-	_cleanup_variant_iter_free_ GVariantIter *iter = NULL;
-	_cleanup_variant_unref_ GVariant *dict = NULL;
+	g_autoptr(GPtrArray) array = NULL;
+	g_autoptr(GVariantIter) iter = NULL;
+	g_autoptr(GVariant) dict = NULL;
 
 	/* get the owner of the message */
 	uid = cd_main_get_sender_uid (connection, sender, &error);
@@ -1712,8 +1712,8 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 	const gchar *checksum;
 	const gchar *filename;
 	gboolean ret;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *profile_id = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *profile_id = NULL;
 	_cleanup_object_unref_ CdProfile *profile = NULL;
 
 	/* create profile */
@@ -1790,9 +1790,9 @@ cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 	const gchar *property;
 	gboolean ret;
 	guint i;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array_properties = NULL;
+	g_autoptr(GPtrArray) array_properties = NULL;
 
 	device = cd_main_create_device (priv,
 					NULL,
@@ -1821,7 +1821,7 @@ cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 		return;
 	}
 	for (i = 0; i < array_properties->len; i++) {
-		_cleanup_free_ gchar *value = NULL;
+		g_autofree gchar *value = NULL;
 		property = g_ptr_array_index (array_properties, i);
 		value = cd_device_db_get_property (priv->device_db,
 						   device_id,
@@ -1893,7 +1893,7 @@ cd_main_add_sensor (CdMainPrivate *priv, CdSensor *sensor)
 {
 	const gchar *id;
 	gboolean ret;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	id = cd_sensor_get_id (sensor);
 	if (id == NULL) {
@@ -1973,9 +1973,9 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	const gchar *device_id;
 	gboolean ret;
 	guint i;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	_cleanup_object_unref_ CdSensor *sensor = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array_devices = NULL;
+	g_autoptr(GPtrArray) array_devices = NULL;
 
 	g_debug ("CdMain: acquired name: %s", name);
 
@@ -2117,8 +2117,8 @@ cd_main_timed_exit_cb (gpointer user_data)
 static GDBusNodeInfo *
 cd_main_load_introspection (const gchar *filename, GError **error)
 {
-	_cleanup_bytes_unref_ GBytes *data = NULL;
-	_cleanup_free_ gchar *path = NULL;
+	g_autoptr(GBytes) data = NULL;
+	g_autofree gchar *path = NULL;
 
 	/* lookup data */
 	path = g_build_filename ("/org/freedesktop/colord", filename, NULL);
@@ -2154,7 +2154,7 @@ cd_main_plugin_device_added_cb (CdPlugin *plugin,
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	gboolean ret;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	cd_device_set_mode (device, CD_DEVICE_MODE_PHYSICAL);
 	ret = cd_main_device_add (priv, device, NULL, &error);
@@ -2260,9 +2260,9 @@ cd_main_load_plugins (CdMainPrivate *priv)
 {
 	const gchar *filename_tmp;
 	gboolean ret;
-	_cleanup_dir_close_ GDir *dir = NULL;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *path = NULL;
+	g_autoptr(GDir) dir = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *path = NULL;
 
 	/* search in the plugin directory for plugins */
 	path = g_build_filename (LIBDIR, "colord-plugins", NULL);
@@ -2276,7 +2276,7 @@ cd_main_load_plugins (CdMainPrivate *priv)
 	/* try to open each plugin */
 	g_debug ("searching for plugins in %s", path);
 	do {
-		_cleanup_free_ gchar *filename_plugin = NULL;
+		g_autofree gchar *filename_plugin = NULL;
 		filename_tmp = g_dir_read_name (dir);
 		if (filename_tmp == NULL)
 			break;
@@ -2311,12 +2311,12 @@ cd_main_get_edid_for_output (const gchar *output_name)
 {
 	gboolean ret;
 	gsize len = 0;
-	_cleanup_bytes_unref_ GBytes *data = NULL;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *edid_data = NULL;
-	_cleanup_free_ gchar *edid_fn = NULL;
-	_cleanup_free_ gchar *enabled_data = NULL;
-	_cleanup_free_ gchar *enabled_fn = NULL;
+	g_autoptr(GBytes) data = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *edid_data = NULL;
+	g_autofree gchar *edid_fn = NULL;
+	g_autofree gchar *enabled_data = NULL;
+	g_autofree gchar *enabled_fn = NULL;
 	_cleanup_object_unref_ CdEdid *edid = NULL;
 
 	/* check output is actually an output */
@@ -2385,8 +2385,8 @@ cd_main_check_duplicate_edids (void)
 {
 	const gchar *fn;
 	gboolean use_xrandr_mode = FALSE;
-	_cleanup_dir_close_ GDir *dir = NULL;
-	_cleanup_hashtable_unref_ GHashTable *hash = NULL;
+	g_autoptr(GDir) dir = NULL;
+	g_autoptr(GHashTable) hash = NULL;
 
 	dir = g_dir_open ("/sys/class/drm", 0, NULL);
 	if (dir == NULL)
@@ -2423,7 +2423,7 @@ cd_main_dmi_get_from_filename (const gchar *filename)
 {
 	gboolean ret;
 	gchar *data = NULL;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* get the contents */
 	ret = g_file_get_contents (filename, &data, NULL, &error);
@@ -2479,7 +2479,7 @@ cd_main_dmi_get_vendor (void)
 		"/sys/class/dmi/id/chassis_vendor",
 		"/sys/class/dmi/id/board_vendor",
 		NULL};
-	_cleanup_free_ gchar *tmp = NULL;
+	g_autofree gchar *tmp = NULL;
 
 	/* get vendor name */
 	tmp = cd_main_dmi_get_from_filenames (sysfs_vendor);
@@ -2498,7 +2498,7 @@ cd_main_dmi_get_model (void)
 		"/sys/class/dmi/id/board_name",
 		NULL};
 	gchar *model;
-	_cleanup_free_ gchar *tmp = NULL;
+	g_autofree gchar *tmp = NULL;
 
 	/* thinkpad puts the common name in the version field, urgh */
 	tmp = cd_main_dmi_get_from_filename ("/sys/class/dmi/id/product_version");
@@ -2548,7 +2548,7 @@ main (int argc, char *argv[])
 		  _("Create a dummy sensor for testing"), NULL },
 		{ NULL}
 	};
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	setlocale (LC_ALL, "");
 

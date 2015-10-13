@@ -69,9 +69,9 @@ cd_interp_akima_prepare (CdInterp *interp, GError **error)
 	gint n;
 	GArray *array_x;
 	GArray *array_y;
-	_cleanup_free_ gdouble *dx = NULL;
-	_cleanup_free_ gdouble *dy = NULL;
-	_cleanup_free_ gdouble *slope_m = NULL;
+	g_autofree gdouble *dx = NULL;
+	g_autofree gdouble *dy = NULL;
+	g_autofree gdouble *slope_m = NULL;
 
 	/* only add the points if they are going to be used */
 	if (cd_interp_get_size (interp) <= 2)

@@ -79,7 +79,7 @@ cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUt
 {
 	CdUtilItem *item;
 	guint i;
-	_cleanup_strv_free_ gchar **names = NULL;
+	g_auto(GStrv) names = NULL;
 
 	/* add each one */
 	names = g_strsplit (name, ",", -1);
@@ -151,7 +151,7 @@ cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError *
 {
 	CdUtilItem *item;
 	guint i;
-	_cleanup_string_free_ GString *string = NULL;
+	g_autoptr(GString) string = NULL;
 
 	/* find command */
 	for (i = 0; i < priv->cmd_array->len; i++) {
@@ -258,7 +258,7 @@ cd_util_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_clear_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_hashtable_unref_ GHashTable *md = NULL;
+	g_autoptr(GHashTable) md = NULL;
 	md = cd_icc_get_metadata (priv->icc);
 	if (md == NULL)
 		return TRUE;
@@ -413,8 +413,8 @@ static gboolean
 cd_util_export_tag_data (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	gboolean ret;
-	_cleanup_bytes_unref_ GBytes *data = NULL;
-	_cleanup_free_ gchar *out_fn = NULL;
+	g_autoptr(GBytes) data = NULL;
+	g_autofree gchar *out_fn = NULL;
 
 	/* check arguments */
 	if (g_strv_length (values) != 2) {
@@ -637,10 +637,10 @@ main (int argc, char *argv[])
 	gboolean ret = TRUE;
 	gboolean verbose = FALSE;
 	guint retval = 1;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *cmd_descriptions = NULL;
-	_cleanup_free_ gchar *locale = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *cmd_descriptions = NULL;
+	g_autofree gchar *locale = NULL;
+	g_autoptr(GFile) file = NULL;
 	const GOptionEntry options[] = {
 		{ "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
 			/* TRANSLATORS: command line option */

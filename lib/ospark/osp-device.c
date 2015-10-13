@@ -93,9 +93,9 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 	gsize offset_rd = 0;
 	gsize offset_wr = 0;
 	guint i;
-	_cleanup_checksum_free_ GChecksum *csum = NULL;
-	_cleanup_free_ guint8 *buffer_in = NULL;
-	_cleanup_free_ guint8 *buffer_out = NULL;
+	g_autoptr(GChecksum) csum = NULL;
+	g_autofree guint8 *buffer_in = NULL;
+	g_autofree guint8 *buffer_out = NULL;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -237,7 +237,7 @@ gchar *
 osp_device_get_serial (GUsbDevice *device, GError **error)
 {
 	gsize data_len;
-	_cleanup_free_ guint8 *data = NULL;
+	g_autofree guint8 *data = NULL;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -269,7 +269,7 @@ gchar *
 osp_device_get_fw_version (GUsbDevice *device, GError **error)
 {
 	gsize data_len;
-	_cleanup_free_ guint8 *data = NULL;
+	g_autofree guint8 *data = NULL;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -306,7 +306,7 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 	guint32 sample_duration = 100000; /* us */
 	guint8 bin_factor = 0;
 	guint i;
-	_cleanup_free_ guint8 *data = NULL;
+	g_autofree guint8 *data = NULL;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);

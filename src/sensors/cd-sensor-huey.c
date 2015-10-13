@@ -125,7 +125,7 @@ cd_sensor_huey_sample_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* measure */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
@@ -216,8 +216,8 @@ cd_sensor_huey_lock_thread_cb (GSimpleAsyncResult *res,
 	const guint8 spin_leds[] = { 0x0, 0x1, 0x2, 0x4, 0x8, 0x4, 0x2, 0x1, 0x0, 0xff };
 	gboolean ret = FALSE;
 	guint i;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *serial_number_tmp = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *serial_number_tmp = NULL;
 
 	/* try to find the USB device */
 	priv->device = cd_sensor_open_usb_device (sensor,
@@ -318,7 +318,7 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	gboolean ret = FALSE;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* close */
 	if (priv->device != NULL) {

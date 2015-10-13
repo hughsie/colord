@@ -214,7 +214,7 @@ ch_device_queue_process_write_command_cb (GObject *source,
 	guint pending_commands;
 	ChError last_error_code = 0;
 	GUsbDevice *device = G_USB_DEVICE (source);
-	_cleanup_free_ gchar *error_msg = NULL;
+	g_autofree gchar *error_msg = NULL;
 
 	/* mark it as not in use */
 	device_id = g_usb_device_get_platform_id (device);

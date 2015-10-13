@@ -83,7 +83,7 @@ cd_util_add (GPtrArray *array,
 {
 	guint i;
 	CdUtilItem *item;
-	_cleanup_strv_free_ gchar **names = NULL;
+	g_auto(GStrv) names = NULL;
 
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (description != NULL);
@@ -161,7 +161,7 @@ cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError *
 {
 	guint i;
 	CdUtilItem *item;
-	_cleanup_string_free_ GString *string = NULL;
+	g_autoptr(GString) string = NULL;
 
 	/* find command */
 	for (i = 0; i < priv->cmd_array->len; i++) {
@@ -213,12 +213,12 @@ cd_util_create_cmf (CdUtilPrivate *priv,
 	gchar *dot;
 	guint i;
 	gdouble norm;
-	_cleanup_free_ gchar *data = NULL;
-	_cleanup_free_ gchar *title = NULL;
+	g_autofree gchar *data = NULL;
+	g_autofree gchar *title = NULL;
 	_cleanup_object_unref_ CdIt8 *cmf = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
-	_cleanup_strv_free_ gchar **lines = NULL;
+	g_autoptr(GFile) file = NULL;
+	g_autoptr(GPtrArray) array = NULL;
+	g_auto(GStrv) lines = NULL;
 
 	if (g_strv_length (values) != 3) {
 		g_set_error_literal (error,
@@ -238,7 +238,7 @@ cd_util_create_cmf (CdUtilPrivate *priv,
 	array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_csv2cmf_data_free);
 	lines = g_strsplit (data, "\n", -1);
 	for (i = 0; lines[i] != NULL; i++) {
-		_cleanup_strv_free_ gchar **split = NULL;
+		g_auto(GStrv) split = NULL;
 		if (lines[i][0] == '\0')
 			continue;
 		if (lines[i][0] == '#')
@@ -328,13 +328,13 @@ cd_util_calculate_ccmx (CdUtilPrivate *priv,
 			GError **error)
 {
 	gchar *tmp;
-	_cleanup_free_ gchar *basename = NULL;
+	g_autofree gchar *basename = NULL;
 	_cleanup_object_unref_ CdIt8 *it8_ccmx = NULL;
 	_cleanup_object_unref_ CdIt8 *it8_meas = NULL;
 	_cleanup_object_unref_ CdIt8 *it8_ref = NULL;
-	_cleanup_object_unref_ GFile *file_ccmx = NULL;
-	_cleanup_object_unref_ GFile *file_meas = NULL;
-	_cleanup_object_unref_ GFile *file_ref = NULL;
+	g_autoptr(GFile) file_ccmx = NULL;
+	g_autoptr(GFile) file_meas = NULL;
+	g_autoptr(GFile) file_ref = NULL;
 
 	/* check args */
 	if (g_strv_length (values) != 3) {
@@ -389,12 +389,12 @@ cd_util_create_sp (CdUtilPrivate *priv,
 	gchar *dot;
 	gdouble norm;
 	guint i;
-	_cleanup_free_ gchar *data = NULL;
-	_cleanup_free_ gchar *title = NULL;
+	g_autofree gchar *data = NULL;
+	g_autofree gchar *title = NULL;
 	_cleanup_object_unref_ CdIt8 *cmf = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
-	_cleanup_strv_free_ gchar **lines = NULL;
+	g_autoptr(GFile) file = NULL;
+	g_autoptr(GPtrArray) array = NULL;
+	g_auto(GStrv) lines = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -413,7 +413,7 @@ cd_util_create_sp (CdUtilPrivate *priv,
 	lines = g_strsplit (data, "\n", -1);
 	norm = g_strtod (values[2], NULL);
 	for (i = 0; lines[i] != NULL; i++) {
-		_cleanup_strv_free_ gchar **split = NULL;
+		g_auto(GStrv) split = NULL;
 		if (lines[i][0] == '\0')
 			continue;
 		if (lines[i][0] == '#')
@@ -498,8 +498,8 @@ main (int argc, char *argv[])
 	gboolean ret;
 	gboolean verbose = FALSE;
 	guint retval = 1;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *cmd_descriptions = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *cmd_descriptions = NULL;
 	const GOptionEntry options[] = {
 		{ "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
 			/* TRANSLATORS: command line option */

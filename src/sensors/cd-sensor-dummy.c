@@ -93,7 +93,7 @@ static gboolean
 cd_sensor_get_sample_wait_cb (CdSensorAsyncState *state)
 {
 	CdSensorDummyPrivate *priv = cd_sensor_dummy_get_private (state->sensor);
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* never setup */
 	if (priv->transform_fake == NULL) {
@@ -202,7 +202,7 @@ cd_sensor_set_options_async (CdSensor *sensor,
 	gboolean ret = TRUE;
 	const gchar *key_name;
 	GVariant *value;
-	_cleanup_list_free_ GList *keys = NULL;
+	g_autoptr(GList) keys = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 

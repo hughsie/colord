@@ -161,7 +161,7 @@ cd_inhibit_name_vanished_cb (GDBusConnection *connection,
 			     gpointer user_data)
 {
 	CdInhibit *inhibit = CD_INHIBIT (user_data);
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* just remove */
 	if (!cd_inhibit_remove (inhibit, name, &error)) {

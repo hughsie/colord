@@ -470,7 +470,7 @@ cd_state_show_profile (CdState *state)
 	gdouble total_time = 0.0f;
 	guint i;
 	guint uncumalitive = 0;
-	_cleanup_string_free_ GString *result = NULL;
+	g_autoptr(GString) result = NULL;
 
 	/* get the total time so we can work out the divisor */
 	for (i = 0; i < state->priv->steps; i++)

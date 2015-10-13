@@ -286,7 +286,7 @@ cd_it8_get_kind (CdIt8 *it8)
 static gboolean
 cd_it8_parse_luminance (const gchar *text, CdColorXYZ *xyz, GError **error)
 {
-	_cleanup_strv_free_ gchar **split = NULL;
+	g_auto(GStrv) split = NULL;
 
 	split = g_strsplit (text, " ", -1);
 	if (g_strv_length (split) != 3) {
@@ -687,7 +687,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			cd_spectrum_set_id (spectrum,
 					    cmsIT8GetDataRowCol(it8_lcms, j, 0));
 		} else {
-			_cleanup_free_ gchar *label = NULL;
+			g_autofree gchar *label = NULL;
 			label = g_strdup_printf ("%i", j + 1);
 			cd_spectrum_set_id (spectrum, label);
 		}
@@ -861,7 +861,7 @@ cd_it8_load_from_data (CdIt8 *it8,
 	gboolean ret = TRUE;
 	gchar **props = NULL;
 	guint i;
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GError) error_local = NULL;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 	g_return_val_if_fail (data != NULL, FALSE);
@@ -983,7 +983,7 @@ gboolean
 cd_it8_load_from_file (CdIt8 *it8, GFile *file, GError **error)
 {
 	gsize size = 0;
-	_cleanup_free_ gchar *data = NULL;
+	g_autofree gchar *data = NULL;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);
@@ -1039,7 +1039,7 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	gdouble normalize = 0.0f;
 	guint i;
 	guint luminance_samples = 0;
-	_cleanup_free_ gchar *lumi_str = NULL;
+	g_autofree gchar *lumi_str = NULL;
 
 	/* calculate the absolute XYZ in candelas per meter squared */
 	cd_color_xyz_clear (&lumi_xyz);
@@ -1253,7 +1253,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	for (i = 0; i < spectral_bands; i++) {
-		_cleanup_free_ gchar *label = NULL;
+		g_autofree gchar *label = NULL;
 		label = g_strdup_printf ("SPEC_%.0f",
 					 cd_spectrum_get_wavelength (spectrum, i));
 		cmsIT8SetDataFormat (it8_lcms, i, label);
@@ -1336,7 +1336,7 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cmsIT8SetDataFormat (it8_lcms, 0, "SAMPLE_ID");
 	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
 	for (i = 0; i < spectral_bands; i++) {
-		_cleanup_free_ gchar *label = NULL;
+		g_autofree gchar *label = NULL;
 		/* there are more spectral bands than integers between the
 		 * start and stop wavelengths */
 		if ((cd_spectrum_get_end (spectrum) -
@@ -1396,8 +1396,8 @@ cd_it8_save_to_data (CdIt8 *it8,
 	GDateTime *datetime = NULL;
 	cmsUInt32Number size_tmp = 0;
 	guint i;
-	_cleanup_free_ gchar *data_tmp = NULL;
-	_cleanup_free_ gchar *date_str = NULL;
+	g_autofree gchar *data_tmp = NULL;
+	g_autofree gchar *date_str = NULL;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 
@@ -1501,7 +1501,7 @@ gboolean
 cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
 {
 	gsize size = 0;
-	_cleanup_free_ gchar *data = NULL;
+	g_autofree gchar *data = NULL;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 	g_return_val_if_fail (G_IS_FILE (file), FALSE);

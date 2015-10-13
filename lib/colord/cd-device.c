@@ -496,7 +496,7 @@ cd_device_set_profiles_array_from_variant (CdDevice *device,
 		return;
 	len = g_variant_n_children (profiles);
 	for (i = 0; i < len; i++) {
-		_cleanup_free_ gchar *object_path_tmp = NULL;
+		g_autofree gchar *object_path_tmp = NULL;
 		g_variant_get_child (profiles, i,
 				     "o", &object_path_tmp);
 		profile_tmp = cd_profile_new_with_object_path (object_path_tmp);
@@ -720,26 +720,26 @@ cd_device_connect_cb (GObject *source_object,
 		      gpointer user_data)
 {
 	CdDevice *device;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *colorspace = NULL;
-	_cleanup_variant_unref_ GVariant *created = NULL;
-	_cleanup_variant_unref_ GVariant *embedded = NULL;
-	_cleanup_variant_unref_ GVariant *enabled = NULL;
-	_cleanup_variant_unref_ GVariant *format = NULL;
-	_cleanup_variant_unref_ GVariant *id = NULL;
-	_cleanup_variant_unref_ GVariant *kind = NULL;
-	_cleanup_variant_unref_ GVariant *metadata = NULL;
-	_cleanup_variant_unref_ GVariant *model = NULL;
-	_cleanup_variant_unref_ GVariant *mode = NULL;
-	_cleanup_variant_unref_ GVariant *modified = NULL;
-	_cleanup_variant_unref_ GVariant *owner = NULL;
-	_cleanup_variant_unref_ GVariant *profiles = NULL;
-	_cleanup_variant_unref_ GVariant *profiling_inhibitors = NULL;
-	_cleanup_variant_unref_ GVariant *scope = NULL;
-	_cleanup_variant_unref_ GVariant *seat = NULL;
-	_cleanup_variant_unref_ GVariant *serial = NULL;
-	_cleanup_variant_unref_ GVariant *vendor = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) colorspace = NULL;
+	g_autoptr(GVariant) created = NULL;
+	g_autoptr(GVariant) embedded = NULL;
+	g_autoptr(GVariant) enabled = NULL;
+	g_autoptr(GVariant) format = NULL;
+	g_autoptr(GVariant) id = NULL;
+	g_autoptr(GVariant) kind = NULL;
+	g_autoptr(GVariant) metadata = NULL;
+	g_autoptr(GVariant) model = NULL;
+	g_autoptr(GVariant) mode = NULL;
+	g_autoptr(GVariant) modified = NULL;
+	g_autoptr(GVariant) owner = NULL;
+	g_autoptr(GVariant) profiles = NULL;
+	g_autoptr(GVariant) profiling_inhibitors = NULL;
+	g_autoptr(GVariant) scope = NULL;
+	g_autoptr(GVariant) seat = NULL;
+	g_autoptr(GVariant) serial = NULL;
+	g_autoptr(GVariant) vendor = NULL;
 
 	device = CD_DEVICE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
 	device->priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
@@ -977,7 +977,7 @@ cd_device_set_property_finish (CdDevice *device,
 static void
 cd_device_fixup_dbus_error (GError *error)
 {
-	_cleanup_free_ gchar *name = NULL;
+	g_autofree gchar *name = NULL;
 
 	g_return_if_fail (error != NULL);
 
@@ -997,9 +997,9 @@ cd_device_set_property_cb (GObject *source_object,
 			    GAsyncResult *res,
 			    gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1097,9 +1097,9 @@ cd_device_add_profile_cb (GObject *source_object,
 			    GAsyncResult *res,
 			    gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1197,9 +1197,9 @@ cd_device_remove_profile_cb (GObject *source_object,
 			     GAsyncResult *res,
 			     gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1294,9 +1294,9 @@ cd_device_make_profile_default_cb (GObject *source_object,
 				   GAsyncResult *res,
 				   gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1391,9 +1391,9 @@ cd_device_profiling_inhibit_cb (GObject *source_object,
 				GAsyncResult *res,
 				gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1485,9 +1485,9 @@ cd_device_profiling_uninhibit_cb (GObject *source_object,
 				  GAsyncResult *res,
 				  gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_variant_unref_ GVariant *result = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GVariant) result = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1579,11 +1579,11 @@ cd_device_get_profile_for_qualifiers_cb (GObject *source_object,
 					 GAsyncResult *res,
 					 gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GVariant) result = NULL;
 	CdProfile *profile;
 	gchar *object_path = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1694,10 +1694,10 @@ cd_device_get_profile_relation_cb (GObject *source_object,
 				   gpointer user_data)
 {
 	CdDeviceRelation relation;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_free_ gchar *relation_string = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *relation_string = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1796,9 +1796,9 @@ cd_device_set_enabled_cb (GObject *source_object,
 				   GAsyncResult *res,
 				   gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,

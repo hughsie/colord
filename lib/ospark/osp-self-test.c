@@ -36,7 +36,7 @@ static GUsbDevice *
 osp_client_get_default (GError **error)
 {
 	_cleanup_object_unref_ GUsbContext *usb_ctx = NULL;
-	_cleanup_object_unref_ GUsbDevice *device = NULL;
+	g_autoptr(GUsbDevice) device = NULL;
 
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
@@ -70,9 +70,9 @@ osp_test_protocol_func (void)
 	guint8 cmd[4];
 	guint i;
 	guint j;
-	_cleanup_strv_free_ gchar **lines = NULL;
-	_cleanup_free_ gchar *data = NULL;
-	_cleanup_error_free_ GError *error = NULL;
+	g_auto(GStrv) lines = NULL;
+	g_autofree gchar *data = NULL;
+	g_autoptr(GError) error = NULL;
 
 	if (!g_file_test ("protocol-dump.csv", G_FILE_TEST_EXISTS))
 		return;
@@ -81,7 +81,7 @@ osp_test_protocol_func (void)
 
 	lines = g_strsplit (data, "\n", -1);
 	for (i = 0; lines[i] != NULL; i++) {
-		_cleanup_strv_free_ gchar **tokens = NULL;
+		g_auto(GStrv) tokens = NULL;
 		tmp = g_strstr_len (lines[i], -1, "OUT txn");
 		if (tmp == NULL)
 			continue;
@@ -98,10 +98,10 @@ osp_test_reading_xyz_func (void)
 {
 	CdSpectrum *sp;
 	guint i, j;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GUsbDevice *device = NULL;
-	_cleanup_free_ gchar *serial = NULL;
-	_cleanup_free_ gchar *fwver = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GUsbDevice) device = NULL;
+	g_autofree gchar *serial = NULL;
+	g_autofree gchar *fwver = NULL;
 
 	/* load the device */
 	device = osp_client_get_default (&error);

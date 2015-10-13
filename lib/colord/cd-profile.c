@@ -620,7 +620,7 @@ cd_profile_connect_finish (CdProfile *profile,
 static void
 cd_profile_fixup_dbus_error (GError *error)
 {
-	_cleanup_free_ gchar *name = NULL;
+	g_autofree gchar *name = NULL;
 
 	g_return_if_fail (error != NULL);
 
@@ -641,22 +641,22 @@ cd_profile_connect_cb (GObject *source_object,
 		       gpointer user_data)
 {
 	CdProfile *profile;
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *colorspace = NULL;
-	_cleanup_variant_unref_ GVariant *created = NULL;
-	_cleanup_variant_unref_ GVariant *filename = NULL;
-	_cleanup_variant_unref_ GVariant *format = NULL;
-	_cleanup_variant_unref_ GVariant *has_vcgt = NULL;
-	_cleanup_variant_unref_ GVariant *id = NULL;
-	_cleanup_variant_unref_ GVariant *is_system_wide = NULL;
-	_cleanup_variant_unref_ GVariant *kind = NULL;
-	_cleanup_variant_unref_ GVariant *metadata = NULL;
-	_cleanup_variant_unref_ GVariant *owner = NULL;
-	_cleanup_variant_unref_ GVariant *qualifier = NULL;
-	_cleanup_variant_unref_ GVariant *scope = NULL;
-	_cleanup_variant_unref_ GVariant *title = NULL;
-	_cleanup_variant_unref_ GVariant *warnings = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) colorspace = NULL;
+	g_autoptr(GVariant) created = NULL;
+	g_autoptr(GVariant) filename = NULL;
+	g_autoptr(GVariant) format = NULL;
+	g_autoptr(GVariant) has_vcgt = NULL;
+	g_autoptr(GVariant) id = NULL;
+	g_autoptr(GVariant) is_system_wide = NULL;
+	g_autoptr(GVariant) kind = NULL;
+	g_autoptr(GVariant) metadata = NULL;
+	g_autoptr(GVariant) owner = NULL;
+	g_autoptr(GVariant) qualifier = NULL;
+	g_autoptr(GVariant) scope = NULL;
+	g_autoptr(GVariant) title = NULL;
+	g_autoptr(GVariant) warnings = NULL;
 
 	profile = CD_PROFILE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
 	profile->priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
@@ -866,9 +866,9 @@ cd_profile_set_property_cb (GObject *source_object,
 			    GAsyncResult *res,
 			    gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -970,9 +970,9 @@ cd_profile_install_system_wide_cb (GObject *source_object,
 				   GAsyncResult *res,
 				   gpointer user_data)
 {
-	_cleanup_error_free_ GError *error = NULL;
-	_cleanup_object_unref_ GSimpleAsyncResult *res_source = G_SIMPLE_ASYNC_RESULT (user_data);
-	_cleanup_variant_unref_ GVariant *result = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
@@ -1128,7 +1128,7 @@ cd_profile_load_icc (CdProfile *profile,
 		     GError **error)
 {
 	_cleanup_object_unref_ CdIcc *icc = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 

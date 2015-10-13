@@ -459,7 +459,7 @@ cd_transform_setup (CdTransform *transform, GError **error)
 	gboolean ret = TRUE;
 	gint lcms_intent = -1;
 	guint i;
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GError) error_local = NULL;
 
 	/* find native rendering intent */
 	for (i = 0; map_rendering_intent[i].colord != CD_RENDERING_INTENT_LAST; i++) {
@@ -592,7 +592,7 @@ static gboolean
 cd_transform_set_max_threads_default (CdTransform *transform, GError **error)
 {
 	gchar *tmp;
-	_cleanup_free_ gchar *data = NULL;
+	g_autofree gchar *data = NULL;
 
 	/* use "cpu cores" to work out best number of threads */
 	if (!g_file_get_contents ("/proc/cpuinfo", &data, NULL, error))

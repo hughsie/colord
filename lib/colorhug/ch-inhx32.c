@@ -82,7 +82,7 @@ ch_inhx32_to_bin_full (const gchar *in_buffer,
 	guint j;
 	guint len_tmp;
 	guint type;
-	_cleanup_string_free_ GString *string = NULL;
+	g_autoptr(GString) string = NULL;
 
 	g_return_val_if_fail (in_buffer != NULL, FALSE);
 	g_return_val_if_fail (runcode_addr > 0, FALSE);

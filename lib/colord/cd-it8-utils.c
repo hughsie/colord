@@ -194,7 +194,7 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	gdouble m_lumi = 0.0f;
 	gdouble n_lumi = 0.0f;
 	guint i;
-	_cleanup_free_ gchar *tmp = NULL;
+	g_autofree gchar *tmp = NULL;
 
 	/* read reference matrix */
 	if (!ch_it8_utils_4color_decompose (it8_reference, &n_rgb, &n_lumi, error))
@@ -494,7 +494,7 @@ cd_it8_utils_calculate_gamma (CdIt8 *it8, gdouble *gamma_y, GError **error)
 	guint cnt = 0;
 	guint i;
 	gdouble gamma_tmp = 0.f;
-	_cleanup_free_ cmsFloat32Number *data_y = NULL;
+	g_autofree cmsFloat32Number *data_y = NULL;
 
 	/* find the grey gamma ramp */
 	len = cd_it8_get_data_size (it8);
@@ -537,7 +537,7 @@ cd_it8_utils_calculate_gamma (CdIt8 *it8, gdouble *gamma_y, GError **error)
 	curve = cmsBuildTabulatedToneCurveFloat (NULL, cnt, data_y);
 	gamma_tmp = cmsEstimateGamma (curve, 0.1);
 	if (gamma_tmp < 0) {
-		_cleanup_string_free_ GString *str = NULL;
+		g_autoptr(GString) str = NULL;
 		str = g_string_new ("Unable to calculate gamma from: ");
 		for (i = 0; i < cnt; i++)
 			g_string_append_printf (str, "%f, ", data_y[i]);

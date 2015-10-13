@@ -203,8 +203,8 @@ cd_profile_set_object_path (CdProfile *profile)
 #ifdef HAVE_PWD_H
 	struct passwd *pw;
 #endif
-	_cleanup_free_ gchar *path_tmp = NULL;
-	_cleanup_free_ gchar *path_owner = NULL;
+	g_autofree gchar *path_tmp = NULL;
+	g_autofree gchar *path_owner = NULL;
 
 	/* append the uid to the object path */
 #ifdef HAVE_PWD_H
@@ -406,11 +406,11 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 {
 	CdProfilePrivate *priv = profile->priv;
 	gboolean ret = TRUE;
-	_cleanup_error_free_ GError *error_local = NULL;
-	_cleanup_free_ gchar *basename = NULL;
-	_cleanup_free_ gchar *filename = NULL;
-	_cleanup_object_unref_ GFile *file_dest = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GError) error_local = NULL;
+	g_autofree gchar *basename = NULL;
+	g_autofree gchar *filename = NULL;
+	g_autoptr(GFile) file_dest = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	/* is icc filename set? */
 	if (priv->filename == NULL) {
@@ -495,7 +495,7 @@ cd_profile_get_metadata_as_variant (CdProfile *profile)
 {
 	GList *l;
 	GVariantBuilder builder;
-	_cleanup_list_free_ GList *list = NULL;
+	g_autoptr(GList) list = NULL;
 
 	/* do not try to build an empty array */
 	if (g_hash_table_size (profile->priv->metadata) == 0)
@@ -633,7 +633,7 @@ cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	guint uid;
 	const gchar *property_name = NULL;
 	const gchar *property_value = NULL;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* return '' */
 	if (g_strcmp0 (method_name, "SetProperty") == 0) {
@@ -738,7 +738,7 @@ cd_profile_dbus_get_property (GDBusConnection *connection, const gchar *sender,
 
 	if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_TITLE) == 0) {
 		guint uid;
-		_cleanup_free_ gchar *title_db = NULL;
+		g_autofree gchar *title_db = NULL;
 
 		uid = cd_main_get_sender_uid (connection, sender, error);
 		if (uid == G_MAXUINT)
@@ -802,7 +802,7 @@ cd_profile_register_object (CdProfile *profile,
 			    GDBusInterfaceInfo *info,
 			    GError **error)
 {
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GError) error_local = NULL;
 
 	static const GDBusInterfaceVTable interface_vtable = {
 		cd_profile_dbus_method_call,
@@ -884,9 +884,9 @@ cd_profile_set_from_profile (CdProfile *profile, CdIcc *icc, GError **error)
 	gboolean ret = FALSE;
 	guint i;
 	struct tm created;
-	_cleanup_array_unref_ GArray *flags = NULL;
-	_cleanup_hashtable_unref_ GHashTable *metadata = NULL;
-	_cleanup_list_free_ GList *keys = NULL;
+	g_autoptr(GArray) flags = NULL;
+	g_autoptr(GHashTable) metadata = NULL;
+	g_autoptr(GList) keys = NULL;
 
 	/* get the description as the title */
 	value = cd_icc_get_description (icc, NULL, error);
@@ -1034,7 +1034,7 @@ cd_profile_load_from_fd (CdProfile *profile,
 {
 	CdProfilePrivate *priv = profile->priv;
 	gboolean ret;
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GError) error_local = NULL;
 	_cleanup_object_unref_ CdIcc *icc = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
@@ -1090,9 +1090,9 @@ cd_profile_load_from_filename (CdProfile *profile, const gchar *filename, GError
 {
 	CdProfilePrivate *priv = profile->priv;
 	gboolean ret = FALSE;
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GError) error_local = NULL;
 	_cleanup_object_unref_ CdIcc *icc = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
 

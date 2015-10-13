@@ -158,7 +158,7 @@ cd_main_emit_update_sample (CdMainPrivate *priv,
 			    CdColorRGB *color,
 			    GError **error)
 {
-	_cleanup_hashtable_unref_ GHashTable *hash = NULL;
+	g_autoptr(GHashTable) hash = NULL;
 
 	/* emit signal */
 	g_debug ("CdMain: Emitting UpdateSample(%f,%f,%f)",
@@ -616,7 +616,7 @@ cd_main_calib_interpolate_up (CdMainPrivate *priv,
 	gboolean ret = TRUE;
 	gdouble mix;
 	guint i;
-	_cleanup_ptrarray_unref_ GPtrArray *old_array = NULL;
+	g_autoptr(GPtrArray) old_array = NULL;
 
 	/* make a deep copy */
 	old_array = g_ptr_array_new_with_free_func (g_free);
@@ -667,9 +667,9 @@ cd_main_calib_process (CdMainPrivate *priv,
 	gdouble temp;
 	guint i;
 	guint precision_steps = 0;
-	_cleanup_string_free_ GString *error_str = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *gamma_data = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *vcgt_smoothed = NULL;
+	g_autoptr(GString) error_str = NULL;
+	g_autoptr(GPtrArray) gamma_data = NULL;
+	g_autoptr(GPtrArray) vcgt_smoothed = NULL;
 
 	/* reset the state */
 	ret = cd_state_set_steps (state,
@@ -859,8 +859,8 @@ static gboolean
 cd_main_load_samples (CdMainPrivate *priv, GError **error)
 {
 	const gchar *filename;
-	_cleanup_free_ gchar *path = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autofree gchar *path = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	filename = cd_main_get_display_ti1 (priv->quality);
 	path = g_build_filename (DATADIR,
@@ -881,11 +881,11 @@ static gboolean
 cd_main_write_colprof_files (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret = TRUE;
-	_cleanup_free_ gchar *data_cal = NULL;
-	_cleanup_free_ gchar *data = NULL;
-	_cleanup_free_ gchar *data_ti3 = NULL;
-	_cleanup_free_ gchar *filename_ti3 = NULL;
-	_cleanup_free_ gchar *path_ti3 = NULL;
+	g_autofree gchar *data_cal = NULL;
+	g_autofree gchar *data = NULL;
+	g_autofree gchar *data_ti3 = NULL;
+	g_autofree gchar *filename_ti3 = NULL;
+	g_autofree gchar *path_ti3 = NULL;
 
 	/* build temp path */
 	priv->working_path = g_dir_make_tmp ("colord-session-XXXXXX", error);
@@ -976,9 +976,9 @@ static gboolean
 cd_main_import_profile (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret = TRUE;
-	_cleanup_free_ gchar *filename = NULL;
-	_cleanup_free_ gchar *path = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autofree gchar *filename = NULL;
+	g_autofree gchar *path = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	filename = g_strdup_printf ("%s.icc", priv->basename);
 	path = g_build_filename (priv->working_path,
@@ -1026,11 +1026,11 @@ static gboolean
 cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret;
-	_cleanup_error_free_ GError *error_local = NULL;
-	_cleanup_free_ gchar *profile_fn = NULL;
-	_cleanup_free_ gchar *profile_path = NULL;
+	g_autoptr(GError) error_local = NULL;
+	g_autofree gchar *profile_fn = NULL;
+	g_autofree gchar *profile_path = NULL;
 	_cleanup_object_unref_ CdIcc *icc = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	/* get profile */
 	profile_fn = g_strdup_printf ("%s.icc", priv->basename);
@@ -1075,7 +1075,7 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 			     CD_PROFILE_METADATA_MEASUREMENT_DEVICE,
 			     cd_sensor_kind_to_string (cd_sensor_get_kind (priv->sensor)));
 	if (priv->screen_brightness > 0) {
-		_cleanup_free_ gchar *brightness_str = NULL;
+		g_autofree gchar *brightness_str = NULL;
 		brightness_str = g_strdup_printf ("%u", priv->screen_brightness);
 		cd_icc_add_metadata (icc,
 				     CD_PROFILE_METADATA_SCREEN_BRIGHTNESS,
@@ -1107,10 +1107,10 @@ cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 {
 	gboolean ret;
 	gint exit_status = 0;
-	_cleanup_free_ gchar *cmd_debug = NULL;
-	_cleanup_free_ gchar *command = NULL;
-	_cleanup_free_ gchar *stderr_data = NULL;
-	_cleanup_ptrarray_unref_ GPtrArray *array = NULL;
+	g_autofree gchar *cmd_debug = NULL;
+	g_autofree gchar *command = NULL;
+	g_autofree gchar *stderr_data = NULL;
+	g_autoptr(GPtrArray) array = NULL;
 
 	/* get correct name of the command */
 	command = cd_main_find_argyll_tool ("colprof", error);
@@ -1278,7 +1278,7 @@ cd_main_remove_temp_file (const gchar *filename,
 			  GCancellable *cancellable,
 			  GError **error)
 {
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	g_debug ("removing %s", filename);
 	file = g_file_new_for_path (filename);
@@ -1294,7 +1294,7 @@ cd_main_remove_temp_files (CdMainPrivate *priv, GError **error)
 	const gchar *filename;
 	gboolean ret;
 	gchar *src;
-	_cleanup_dir_close_ GDir *dir = NULL;
+	g_autoptr(GDir) dir = NULL;
 
 	/* try to open */
 	dir = g_dir_open (priv->working_path, 0, error);
@@ -1330,7 +1330,7 @@ cd_main_start_calibration (CdMainPrivate *priv,
 {
 	CdState *state_local;
 	gboolean ret;
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GError) error_local = NULL;
 
 	/* reset the state */
 	ret = cd_state_set_steps (state,
@@ -1395,7 +1395,7 @@ static gboolean
 cd_main_start_calibration_cb (gpointer user_data)
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* reset the state */
 	cd_state_reset (priv->state);
@@ -1464,7 +1464,7 @@ cd_main_find_device (CdMainPrivate *priv,
 		     GError **error)
 {
 	gboolean ret;
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GError) error_local = NULL;
 	_cleanup_object_unref_ CdDevice *device_tmp = NULL;
 
 	device_tmp = cd_client_find_device_sync (priv->client,
@@ -1514,7 +1514,7 @@ cd_main_find_sensor (CdMainPrivate *priv,
 		     GError **error)
 {
 	gboolean ret;
-	_cleanup_error_free_ GError *error_local = NULL;
+	g_autoptr(GError) error_local = NULL;
 	_cleanup_object_unref_ CdSensor *sensor_tmp = NULL;
 
 	sensor_tmp = cd_client_find_sensor_sync (priv->client,
@@ -1564,7 +1564,7 @@ cd_main_set_basename (CdMainPrivate *priv)
 	const gchar *tmp;
 	GDateTime *datetime;
 	GString *str;
-	_cleanup_free_ gchar *date_str = NULL;
+	g_autofree gchar *date_str = NULL;
 
 	str = g_string_new ("");
 
@@ -1635,7 +1635,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 	const gchar *sensor_id;
 	GVariantIter *iter = NULL;
 	GVariant *prop_value;
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* should be impossible */
 	if (g_strcmp0 (interface_name, "org.freedesktop.ColorHelper.Display") != 0) {
@@ -1922,8 +1922,8 @@ cd_main_timed_exit_cb (gpointer user_data)
 static GDBusNodeInfo *
 cd_main_load_introspection (const gchar *filename, GError **error)
 {
-	_cleanup_free_ gchar *data = NULL;
-	_cleanup_object_unref_ GFile *file = NULL;
+	g_autofree gchar *data = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	/* load file */
 	file = g_file_new_for_path (filename);
@@ -1995,7 +1995,7 @@ main (int argc, char *argv[])
 		  "Exit after a small delay", NULL },
 		{ NULL}
 	};
-	_cleanup_error_free_ GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	setlocale (LC_ALL, "");
 

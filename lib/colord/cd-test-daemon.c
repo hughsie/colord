@@ -1653,7 +1653,7 @@ colord_device_async_func (void)
 	GHashTable *device_props;
 	const gchar *device_name = "device_async_dave";
 	struct passwd *user_details;
-	_cleanup_free_ gchar *device_path = NULL;
+	g_autofree gchar *device_path = NULL;
 	_cleanup_object_unref_ CdClient *client = NULL;
 
 	/* no running colord to use */
