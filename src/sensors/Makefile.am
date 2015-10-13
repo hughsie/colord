@@ -81,9 +81,20 @@ libcolord_sensor_dummy_la_CFLAGS = $(WARNINGFLAGS_C)
 
 if HAVE_GUSB
 plugin_LTLIBRARIES +=					\
+	libcolord_sensor_spark.la			\
 	libcolord_sensor_colorhug.la			\
 	libcolord_sensor_dtp94.la			\
 	libcolord_sensor_huey.la
+
+libcolord_sensor_spark_la_SOURCES =			\
+	cd-sensor-spark.c				\
+	cd-sensor-spark.h
+libcolord_sensor_spark_la_LIBADD =			\
+	$(GLIB_LIBS)					\
+	$(GUSB_LIBS)					\
+	$(top_builddir)/lib/ospark/libospark-private.la
+libcolord_sensor_spark_la_LDFLAGS = -module -avoid-version
+libcolord_sensor_spark_la_CFLAGS =  -Wno-deprecated-declarations $(WARNINGFLAGS_C)
 
 libcolord_sensor_huey_la_SOURCES =			\
 	cd-sensor-huey.c				\
