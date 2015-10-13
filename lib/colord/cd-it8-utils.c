@@ -493,6 +493,7 @@ cd_it8_utils_calculate_gamma (CdIt8 *it8, gdouble *gamma_y, GError **error)
 	gdouble max = 0.f;
 	guint cnt = 0;
 	guint i;
+	gdouble gamma_tmp = 0.f;
 	_cleanup_free_ cmsFloat32Number *data_y = NULL;
 
 	/* find the grey gamma ramp */
@@ -534,8 +535,21 @@ cd_it8_utils_calculate_gamma (CdIt8 *it8, gdouble *gamma_y, GError **error)
 
 	/* use lcms2 to calculate the gamma */
 	curve = cmsBuildTabulatedToneCurveFloat (NULL, cnt, data_y);
+	gamma_tmp = cmsEstimateGamma (curve, 0.1);
+	if (gamma_tmp < 0) {
+		_cleanup_string_free_ GString *str = NULL;
+		str = g_string_new ("Unable to calculate gamma from: ");
+		for (i = 0; i < cnt; i++)
+			g_string_append_printf (str, "%f, ", data_y[i]);
+		g_string_truncate (str, str->len - 2);
+		g_set_error_literal (error,
+				     CD_IT8_ERROR,
+				     CD_IT8_ERROR_FAILED,
+				     str->str);
+		return FALSE;
+	}
 	if (gamma_y != NULL)
-		*gamma_y = cmsEstimateGamma (curve, 0.1);
+		*gamma_y = gamma_tmp;
 	cmsFreeToneCurve (curve);
 	return TRUE;
 }
