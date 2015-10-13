@@ -187,6 +187,49 @@ colord_spectrum_planckian_func (void)
 }
 
 static void
+colord_spectrum_subtract_func (void)
+{
+	CdSpectrum *s;
+	CdSpectrum *s1;
+	CdSpectrum *s2;
+
+	/* source data */
+	s1 = cd_spectrum_new ();
+	cd_spectrum_set_id (s1, "Source");
+	cd_spectrum_set_start (s1, 360);
+	cd_spectrum_set_end (s1, 780);
+	cd_spectrum_add_value (s1, 11);
+	cd_spectrum_add_value (s1, 12);
+	cd_spectrum_add_value (s1, 13);
+	cd_spectrum_add_value (s1, 14);
+
+	/* background */
+	s2 = cd_spectrum_new ();
+	cd_spectrum_set_id (s2, "DarkCalibration");
+	cd_spectrum_set_start (s2, 360);
+	cd_spectrum_set_end (s2, 780);
+	cd_spectrum_add_value (s2, 10);
+	cd_spectrum_add_value (s2, 10);
+	cd_spectrum_add_value (s2, 10);
+	cd_spectrum_add_value (s2, 15);
+
+	/* subtract */
+	s = cd_spectrum_subtract (s1, s2);
+	g_assert_cmpstr (cd_spectrum_get_id (s), ==, "Source-DarkCalibration");
+	g_assert_cmpint (cd_spectrum_get_size (s), ==, 4);
+
+	/* verify */
+	g_assert_cmpint (cd_spectrum_get_value_raw (s, 0), ==, 1);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s, 1), ==, 2);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s, 2), ==, 3);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s, 3), ==, 0);
+
+	cd_spectrum_free (s);
+	cd_spectrum_free (s1);
+	cd_spectrum_free (s2);
+}
+
+static void
 colord_spectrum_func (void)
 {
 	CdSpectrum *s;
@@ -2164,6 +2207,7 @@ main (int argc, char **argv)
 	/* tests go here */
 	g_test_add_func ("/colord/spectrum", colord_spectrum_func);
 	g_test_add_func ("/colord/spectrum{planckian}", colord_spectrum_planckian_func);
+	g_test_add_func ("/colord/spectrum{subtract}", colord_spectrum_subtract_func);
 	g_test_add_func ("/colord/edid", colord_edid_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);

@@ -45,6 +45,8 @@ void		 cd_spectrum_normalize		(CdSpectrum		*spectrum,
 						 gdouble		 value);
 void		 cd_spectrum_normalize_max	(CdSpectrum		*spectrum,
 						 gdouble		 value);
+CdSpectrum	*cd_spectrum_subtract		(CdSpectrum		*s1,
+						 CdSpectrum		*s2);
 
 const gchar	*cd_spectrum_get_id		(const CdSpectrum	*spectrum);
 GArray		*cd_spectrum_get_data		(const CdSpectrum	*spectrum);
