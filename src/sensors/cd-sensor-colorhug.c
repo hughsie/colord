@@ -39,19 +39,13 @@ typedef struct
 	ChDeviceQueue			*device_queue;
 } CdSensorColorhugPrivate;
 
-/* async state for the sensor readings */
+/* async task for the sensor readings */
 typedef struct {
-	CdColorXYZ			*sample;
 	CdSensor			*sensor;
 	CdColorXYZ			 xyz;
-	gboolean			 ret;
-	GCancellable			*cancellable;
-	GSimpleAsyncResult		*res;
 	guint32				 serial_number;
-	gulong				 cancellable_id;
-	GHashTable			*options;
 	ChSha1				 sha1;
-} CdSensorAsyncState;
+} CdSensorTaskData;
 
 static CdSensorColorhugPrivate *
 cd_sensor_colorhug_get_private (CdSensor *sensor)
@@ -60,59 +54,39 @@ cd_sensor_colorhug_get_private (CdSensor *sensor)
 }
 
 static void
-cd_sensor_colorhug_get_sample_state_finish (CdSensorAsyncState *state,
-					const GError *error)
+cd_sensor_task_data_free (CdSensorTaskData *data)
 {
-	/* set result to temp memory location */
-	if (state->ret) {
-		g_simple_async_result_set_op_res_gpointer (state->res,
-							   state->sample,
-							   (GDestroyNotify) cd_color_xyz_free);
-	} else {
-		g_simple_async_result_set_from_error (state->res, error);
-	}
-
-	/* deallocate */
-	if (state->cancellable != NULL) {
-		g_cancellable_disconnect (state->cancellable, state->cancellable_id);
-		g_object_unref (state->cancellable);
-	}
-
-	/* set state */
-	cd_sensor_set_state (state->sensor, CD_SENSOR_STATE_IDLE);
-
-	/* complete */
-	g_simple_async_result_complete_in_idle (state->res);
-
-	g_object_unref (state->res);
-	g_object_unref (state->sensor);
-	g_slice_free (CdSensorAsyncState, state);
+	if (data == NULL)
+		return;
+	g_object_unref (data->sensor);
+	g_free (data);
 }
-
 
 static void
 cd_sensor_colorhug_get_sample_cb (GObject *object,
 				  GAsyncResult *res,
 				  gpointer user_data)
 {
-	gboolean ret = FALSE;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
-	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+	GTask *task = G_TASK (user_data);
+	CdSensorTaskData *data = g_task_get_task_data (task);
 	g_autoptr(GError) error = NULL;
 
 	/* get data */
-	ret = ch_device_queue_process_finish (device_queue, res, &error);
-	if (!ret) {
-		cd_sensor_colorhug_get_sample_state_finish (state, error);
+	if (!ch_device_queue_process_finish (device_queue, res, &error)) {
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		return;
 	}
 	g_debug ("finished values: red=%0.6lf, green=%0.6lf, blue=%0.6lf",
-		 state->xyz.X, state->xyz.Y, state->xyz.Z);
+		 data->xyz.X, data->xyz.Y, data->xyz.Z);
 
 	/* save result */
-	state->ret = TRUE;
-	state->sample = cd_color_xyz_dup (&state->xyz);
-	cd_sensor_colorhug_get_sample_state_finish (state, NULL);
+	g_task_return_pointer (task,
+			       cd_color_xyz_dup (&data->xyz),
+			       (GDestroyNotify) cd_color_xyz_free);
 }
 
 
@@ -123,14 +97,16 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 			    GAsyncReadyCallback callback,
 			    gpointer user_data)
 {
-	guint16 calibration_index;
-	CdSensorAsyncState *state;
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
+	CdSensorTaskData *data;
+	guint16 calibration_index;
 	g_autoptr(GError) error = NULL;
+	g_autoptr(GTask) task = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
 	/* no hardware support */
+	task = g_task_new (sensor, cancellable, callback, user_data);
 	switch (cap) {
 	case CD_SENSOR_CAP_CALIBRATION:
 		calibration_index = CH_CALIBRATION_INDEX_FACTORY_ONLY;
@@ -149,89 +125,36 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 		calibration_index = CH_CALIBRATION_INDEX_PROJECTOR;
 		break;
 	default:
-		g_set_error_literal (&error, CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_NO_SUPPORT,
-				     "ColorHug cannot measure in this mode");
-		g_simple_async_report_gerror_in_idle (G_OBJECT (sensor),
-						      callback,
-						      user_data,
-						      error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_NO_SUPPORT,
+					 "ColorHug cannot measure in this mode");
 		return;
 	}
 
 	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_STARTING);
-
-	/* save state */
-	state = g_slice_new0 (CdSensorAsyncState);
-	if (cancellable != NULL)
-		state->cancellable = g_object_ref (cancellable);
-	state->res = g_simple_async_result_new (G_OBJECT (sensor),
-						callback,
-						user_data,
-						cd_sensor_get_sample_async);
-	state->sensor = g_object_ref (sensor);
+	data = g_new0 (CdSensorTaskData, 1);
+	data->sensor = g_object_ref (sensor);
+	g_task_set_task_data (task, data, (GDestroyNotify) cd_sensor_task_data_free);
 
 	/* request */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_STARTING);
 	ch_device_queue_take_readings_xyz (priv->device_queue,
 					   priv->device,
 					   calibration_index,
-					   &state->xyz);
+					   &data->xyz);
 	ch_device_queue_process_async (priv->device_queue,
 				       CH_DEVICE_QUEUE_PROCESS_FLAGS_NONE,
-				       state->cancellable,
+				       g_task_get_cancellable (task),
 				       cd_sensor_colorhug_get_sample_cb,
-				       state);
+				       g_object_ref (task));
 }
 
 CdColorXYZ *
-cd_sensor_get_sample_finish (CdSensor *sensor,
-			     GAsyncResult *res,
-			     GError **error)
+cd_sensor_get_sample_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	/* failed */
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	/* grab detail */
-	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
-}
-
-static void
-cd_sensor_colorhug_lock_state_finish (CdSensorAsyncState *state,
-				      const GError *error)
-{
-	/* set result to temp memory location */
-	if (state->ret) {
-		g_simple_async_result_set_op_res_gboolean (state->res,
-							   TRUE);
-	} else {
-		g_simple_async_result_set_from_error (state->res, error);
-	}
-
-	/* set state */
-	cd_sensor_set_state (state->sensor, CD_SENSOR_STATE_IDLE);
-
-	/* deallocate */
-	if (state->cancellable != NULL) {
-		g_cancellable_disconnect (state->cancellable,
-					  state->cancellable_id);
-		g_object_unref (state->cancellable);
-	}
-
-	/* complete */
-	g_simple_async_result_complete_in_idle (state->res);
-
-	g_object_unref (state->res);
-	g_object_unref (state->sensor);
-	g_slice_free (CdSensorAsyncState, state);
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
 static void
@@ -239,27 +162,22 @@ cd_sensor_colorhug_get_remote_hash_cb (GObject *object,
 				       GAsyncResult *res,
 				       gpointer user_data)
 {
-	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
-	gboolean ret;
-	gchar *sha1;
+	GTask *task = G_TASK (user_data);
+	CdSensorTaskData *data = g_task_get_task_data (task);
+	CdSensor *sensor = data->sensor;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
 	g_autoptr(GError) error = NULL;
 
 	/* get data, although don't fail if it does not exist */
-	ret = ch_device_queue_process_finish (device_queue, res, &error);
-	if (!ret) {
+	if (!ch_device_queue_process_finish (device_queue, res, &error)) {
 		g_warning ("ignoring error: %s", error->message);
 	} else {
-		sha1 = ch_sha1_to_string (&state->sha1);
-		cd_sensor_add_option (state->sensor,
+		g_autofree gchar *sha1 = ch_sha1_to_string (&data->sha1);
+		cd_sensor_add_option (sensor,
 				      "remote-profile-hash",
 				      g_variant_new_string (sha1));
-		g_free (sha1);
 	}
-
-	/* save result */
-	state->ret = TRUE;
-	cd_sensor_colorhug_lock_state_finish (state, NULL);
+	g_task_return_boolean (task, TRUE);
 }
 
 static void
@@ -267,35 +185,40 @@ cd_sensor_colorhug_startup_cb (GObject *object,
 			       GAsyncResult *res,
 			       gpointer user_data)
 {
-	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
-	gboolean ret;
+	GTask *task = G_TASK (user_data);
+	CdSensorTaskData *data = g_task_get_task_data (task);
+	CdSensor *sensor = data->sensor;
+	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
-	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (state->sensor);
+	gboolean ret;
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *serial_number_tmp = NULL;
 
 	/* get data */
 	ret = ch_device_queue_process_finish (device_queue, res, &error);
 	if (!ret) {
-		cd_sensor_colorhug_lock_state_finish (state, error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		return;
 	}
 
 	/* set this */
 	serial_number_tmp = g_strdup_printf ("%" G_GUINT32_FORMAT,
-					     state->serial_number);
-	cd_sensor_set_serial (state->sensor, serial_number_tmp);
+					     data->serial_number);
+	cd_sensor_set_serial (sensor, serial_number_tmp);
 	g_debug ("Serial number: %s", serial_number_tmp);
 
 	/* get the optional remote hash */
 	ch_device_queue_get_remote_hash (priv->device_queue,
 				         priv->device,
-				         &state->sha1);
+				         &data->sha1);
 	ch_device_queue_process_async (priv->device_queue,
 				       CH_DEVICE_QUEUE_PROCESS_FLAGS_NONE,
-				       state->cancellable,
+				       g_task_get_cancellable (task),
 				       cd_sensor_colorhug_get_remote_hash_cb,
-				       state);
+				       task);
 }
 
 /**
@@ -316,23 +239,24 @@ cd_sensor_lock_async (CdSensor *sensor,
 		      GAsyncReadyCallback callback,
 		      gpointer user_data)
 {
-	CdSensorAsyncState *state;
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
 	g_autoptr(GError) error = NULL;
+	g_autoptr(GTask) task = NULL;
+	CdSensorTaskData *data;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
 	/* try to find the USB device */
+	task = g_task_new (sensor, cancellable, callback, user_data);
 	priv->device = cd_sensor_open_usb_device (sensor,
 						  CH_USB_CONFIG,
 						  CH_USB_INTERFACE,
 						  &error);
 	if (priv->device == NULL) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_report_gerror_in_idle (G_OBJECT (sensor),
-						      callback,
-						      user_data,
-						      error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		return;
 	}
 
@@ -340,14 +264,9 @@ cd_sensor_lock_async (CdSensor *sensor,
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_STARTING);
 
 	/* save state */
-	state = g_slice_new0 (CdSensorAsyncState);
-	if (cancellable != NULL)
-		state->cancellable = g_object_ref (cancellable);
-	state->res = g_simple_async_result_new (G_OBJECT (sensor),
-						callback,
-						user_data,
-						cd_sensor_lock_async);
-	state->sensor = g_object_ref (sensor);
+	data = g_new0 (CdSensorTaskData, 1);
+	data->sensor = g_object_ref (sensor);
+	g_task_set_task_data (task, data, (GDestroyNotify) cd_sensor_task_data_free);
 
 	/* start the color sensor */
 	ch_device_queue_set_leds (priv->device_queue,
@@ -355,7 +274,7 @@ cd_sensor_lock_async (CdSensor *sensor,
 				  0x01, 0x03, 0x10, 0x20);
 	ch_device_queue_get_serial_number (priv->device_queue,
 					   priv->device,
-					   &state->serial_number);
+					   &data->serial_number);
 	if (cd_sensor_get_kind (sensor) == CD_SENSOR_KIND_COLORHUG) {
 		ch_device_queue_set_integral_time (priv->device_queue,
 						   priv->device,
@@ -366,50 +285,42 @@ cd_sensor_lock_async (CdSensor *sensor,
 	}
 	ch_device_queue_process_async (priv->device_queue,
 				       CH_DEVICE_QUEUE_PROCESS_FLAGS_NONE,
-				       state->cancellable,
+				       g_task_get_cancellable (task),
 				       cd_sensor_colorhug_startup_cb,
-				       state);
+				       g_object_ref (task));
 }
 
 gboolean
-cd_sensor_lock_finish (CdSensor *sensor,
-		       GAsyncResult *res,
-		       GError **error)
+cd_sensor_lock_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-	return TRUE;
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
-cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
-			    GObject *object,
+cd_sensor_unlock_thread_cb (GTask *task,
+			    gpointer source_object,
+			    gpointer task_data,
 			    GCancellable *cancellable)
 {
-	CdSensor *sensor = CD_SENSOR (object);
+	CdSensor *sensor = CD_SENSOR (source_object);
 	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
-	gboolean ret = FALSE;
 	g_autoptr(GError) error = NULL;
 
 	/* close */
 	if (priv->device != NULL) {
-		ret = g_usb_device_close (priv->device, &error);
-		if (!ret) {
-			g_simple_async_result_set_from_error (res, error);
+		if (!g_usb_device_close (priv->device, &error)) {
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_INTERNAL,
+						 "%s", error->message);
 			return;
 		}
-
-		/* clear */
-		g_object_unref (priv->device);
-		priv->device = NULL;
+		g_clear_object (&priv->device);
 	}
+
+	/* success */
+	g_task_return_boolean (task, TRUE);
 }
 
 void
@@ -418,91 +329,43 @@ cd_sensor_unlock_async (CdSensor *sensor,
 			GAsyncReadyCallback callback,
 			gpointer user_data)
 {
-	GSimpleAsyncResult *res;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* run in a thread */
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_unlock_async);
-	g_simple_async_result_run_in_thread (res,
-					     cd_sensor_unlock_thread_cb,
-					     0,
-					     cancellable);
-	g_object_unref (res);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_run_in_thread (task, cd_sensor_unlock_thread_cb);
 }
 
 gboolean
-cd_sensor_unlock_finish (CdSensor *sensor,
-			 GAsyncResult *res,
-			 GError **error)
+cd_sensor_unlock_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-	return TRUE;
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 /**********************************************************************/
 
-static void cd_sensor_set_next_option (CdSensorAsyncState *state);
-
-static void
-cd_sensor_colorhug_set_options_state_finish (CdSensorAsyncState *state,
-					     const GError *error)
-{
-	/* set result to temp memory location */
-	if (state->ret) {
-		g_simple_async_result_set_op_res_gboolean(state->res, TRUE);
-	} else {
-		g_simple_async_result_set_from_error (state->res, error);
-	}
-
-	/* deallocate */
-	if (state->cancellable != NULL) {
-		g_cancellable_disconnect (state->cancellable, state->cancellable_id);
-		g_object_unref (state->cancellable);
-	}
-
-	/* set state */
-	cd_sensor_set_state (state->sensor, CD_SENSOR_STATE_IDLE);
-
-	/* complete */
-	g_simple_async_result_complete_in_idle (state->res);
-
-	g_object_unref (state->res);
-	g_object_unref (state->sensor);
-	g_hash_table_unref (state->options);
-	g_slice_free (CdSensorAsyncState, state);
-}
+static void cd_sensor_set_next_option (GTask *task);
 
 static void
 cd_sensor_colorhug_set_options_cb (GObject *object,
-				  GAsyncResult *res,
-				  gpointer user_data)
+				   GAsyncResult *res,
+				   gpointer user_data)
 {
-	gboolean ret = FALSE;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
-	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+	GTask *task = G_TASK (user_data);
 	g_autoptr(GError) error = NULL;
 
 	/* get data */
-	ret = ch_device_queue_process_finish (device_queue, res, &error);
-	if (!ret) {
-		cd_sensor_colorhug_set_options_state_finish (state, error);
+	if (!ch_device_queue_process_finish (device_queue, res, &error)) {
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		return;
 	}
 
 	/* do next option */
-	cd_sensor_set_next_option (state);
+	cd_sensor_set_next_option (task);
 }
 
 static void
@@ -512,25 +375,29 @@ cd_sensor_colorhug_write_eeprom_cb (GObject *object,
 {
 	gboolean ret = FALSE;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
-	CdSensorAsyncState *state = (CdSensorAsyncState *) user_data;
+	GTask *task = G_TASK (user_data);
 	g_autoptr(GError) error = NULL;
 
 	/* get data */
 	ret = ch_device_queue_process_finish (device_queue, res, &error);
 	if (!ret) {
-		cd_sensor_colorhug_set_options_state_finish (state, error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		return;
 	}
 
 	/* all done */
-	state->ret = TRUE;
-	cd_sensor_colorhug_set_options_state_finish (state, NULL);
+	g_task_return_boolean (task, TRUE);
 }
 
 static void
-cd_sensor_set_next_option (CdSensorAsyncState *state)
+cd_sensor_set_next_option (GTask *task)
 {
-	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (state->sensor);
+	CdSensor *sensor = CD_SENSOR (g_task_get_source_object (task));
+	CdSensorColorhugPrivate *priv = cd_sensor_colorhug_get_private (sensor);
+	GHashTable *options = g_task_get_task_data (task);
 	ChSha1 sha1;
 	const gchar *key = NULL;
 	const gchar *magic = "Un1c0rn2";
@@ -540,23 +407,23 @@ cd_sensor_set_next_option (CdSensorAsyncState *state)
 	g_autoptr(GList) keys = NULL;
 
 	/* write eeprom to preserve settings */
-	keys = g_hash_table_get_keys (state->options);
+	keys = g_hash_table_get_keys (options);
 	if (keys == NULL) {
 		ch_device_queue_write_eeprom (priv->device_queue,
-					       priv->device,
-					       magic);
+					      priv->device,
+					      magic);
 		ch_device_queue_process_async (priv->device_queue,
 					       CH_DEVICE_QUEUE_PROCESS_FLAGS_NONE,
-					       state->cancellable,
+					       g_task_get_cancellable (task),
 					       cd_sensor_colorhug_write_eeprom_cb,
-					       state);
+					       task);
 		return;
 	}
 
 	/* request */
 	key = (const gchar *) keys->data;
 	g_debug ("trying to set key %s", key);
-	value = g_hash_table_lookup (state->options, key);
+	value = g_hash_table_lookup (options, key);
 	if (g_strcmp0 (key, "remote-profile-hash") == 0) {
 
 		/* parse the hash */
@@ -564,31 +431,34 @@ cd_sensor_set_next_option (CdSensorAsyncState *state)
 				     &sha1,
 				     &error);
 		if (!ret) {
-			cd_sensor_colorhug_set_options_state_finish (state, error);
-			g_hash_table_remove (state->options, key);
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_INTERNAL,
+						 "%s", error->message);
+			g_hash_table_remove (options, key);
 			return;
 		}
 
 		/* set the remote hash */
 		g_debug ("setting remote hash value %s",
 			 g_variant_get_string (value, NULL));
-		cd_sensor_add_option (state->sensor, key, value);
+		cd_sensor_add_option (sensor, key, value);
 		ch_device_queue_set_remote_hash (priv->device_queue,
 						 priv->device,
 						 &sha1);
 		ch_device_queue_process_async (priv->device_queue,
 					       CH_DEVICE_QUEUE_PROCESS_FLAGS_NONE,
-					       state->cancellable,
+					       g_task_get_cancellable (task),
 					       cd_sensor_colorhug_set_options_cb,
-					       state);
+					       task);
 	} else {
-		g_set_error (&error,
-			     CD_SENSOR_ERROR,
-			     CD_SENSOR_ERROR_NO_SUPPORT,
-			     "Sensor option %s is not supported",
-			     key);
-		cd_sensor_colorhug_set_options_state_finish (state, error);
-		g_hash_table_remove (state->options, key);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_NO_SUPPORT,
+					 "Sensor option %s is not supported",
+					 key);
+		g_hash_table_remove (options, key);
+		return;
 	}
 }
 
@@ -599,44 +469,21 @@ cd_sensor_set_options_async (CdSensor *sensor,
 			     GAsyncReadyCallback callback,
 			     gpointer user_data)
 {
-	CdSensorAsyncState *state;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* set state */
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_set_task_data (task,
+			      g_hash_table_ref (options),
+			      (GDestroyNotify) g_hash_table_unref);
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_BUSY);
-
-	/* save state */
-	state = g_slice_new0 (CdSensorAsyncState);
-	if (cancellable != NULL)
-		state->cancellable = g_object_ref (cancellable);
-	state->res = g_simple_async_result_new (G_OBJECT (sensor),
-						callback,
-						user_data,
-						cd_sensor_set_options_async);
-	state->sensor = g_object_ref (sensor);
-	state->options = g_hash_table_ref (options);
-	cd_sensor_set_next_option (state);
+	cd_sensor_set_next_option (task);
 }
 
 gboolean
-cd_sensor_set_options_finish (CdSensor *sensor,
-			      GAsyncResult *res,
-			      GError **error)
+cd_sensor_set_options_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	/* failed */
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	/* grab detail */
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void

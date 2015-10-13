@@ -37,52 +37,10 @@ typedef struct
 	CdSpectrum			*dark_calibration;
 } CdSensorSparkPrivate;
 
-/* async state for the sensor readings */
-typedef struct {
-	gboolean			 ret;
-	CdColorXYZ			*sample;
-	gulong				 cancellable_id;
-	GCancellable			*cancellable;
-	GSimpleAsyncResult		*res;
-	CdSensor			*sensor;
-	CdSensorCap			 cap;
-} CdSensorAsyncState;
-
 static CdSensorSparkPrivate *
 cd_sensor_spark_get_private (CdSensor *sensor)
 {
 	return g_object_get_data (G_OBJECT (sensor), "priv");
-}
-
-static void
-cd_sensor_spark_get_sample_state_finish (CdSensorAsyncState *state,
-					const GError *error)
-{
-	/* set result to temp memory location */
-	if (state->ret) {
-		g_simple_async_result_set_op_res_gpointer (state->res,
-							   state->sample,
-							   (GDestroyNotify) cd_color_xyz_free);
-	} else {
-		g_simple_async_result_set_from_error (state->res, error);
-	}
-
-	/* deallocate */
-	if (state->cancellable != NULL) {
-		g_cancellable_disconnect (state->cancellable, state->cancellable_id);
-		g_object_unref (state->cancellable);
-	}
-
-	g_object_unref (state->res);
-	g_object_unref (state->sensor);
-	g_slice_free (CdSensorAsyncState, state);
-}
-
-static void
-cd_sensor_spark_cancellable_cancel_cb (GCancellable *cancellable,
-				      CdSensorAsyncState *state)
-{
-	g_warning ("cancelled spark");
 }
 
 static void
@@ -98,31 +56,36 @@ _print_spectra (CdSpectrum *sp)
 }
 
 static void
-cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
-				 GObject *object,
-				 GCancellable *cancellable)
+cd_sensor_spark_sample_thread_cb (GTask *task,
+				  gpointer source_object,
+				  gpointer task_data,
+				  GCancellable *cancellable)
 {
-	CdSensor *sensor = CD_SENSOR (object);
-	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
+	CdSensor *sensor = CD_SENSOR (source_object);
 	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
+	CdSensorCap cap = GPOINTER_TO_UINT (task_data);
+	CdSpectrum *illuminant = NULL;
+	g_autoptr(CdColorXYZ) sample = NULL;
 	g_autoptr(CdIt8) it8_cmf = NULL;
 	g_autoptr(CdIt8) it8_d65 = NULL;
 	g_autoptr(CdSpectrum) sp_new = NULL;
 	g_autoptr(CdSpectrum) sp = NULL;
-	g_autoptr(CdSpectrum) illuminant = NULL;
 	g_autoptr(GError) error = NULL;
 	g_autoptr(GFile) file_cmf = NULL;
 	g_autoptr(GFile) file_illuminant = NULL;
 
 	/* measure */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_MEASURING);
 
 	/* perform dark calibration */
-	if (state->cap == CD_SENSOR_CAP_CALIBRATION) {
+	if (cap == CD_SENSOR_CAP_CALIBRATION) {
 		sp = osp_device_take_spectrum (priv->device, &error);
 		if (sp == NULL) {
-			cd_sensor_spark_get_sample_state_finish (state, error);
-			goto out;
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_NO_DATA,
+						 "%s", error->message);
+			return;
 		}
 		_print_spectra (sp);
 		if (priv->dark_calibration != NULL)
@@ -131,20 +94,19 @@ cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
 		cd_spectrum_set_id (priv->dark_calibration, "DarkCalibration");
 
 		/* success */
-		state->ret = TRUE;
-		state->sample = cd_color_xyz_new ();
-		cd_sensor_spark_get_sample_state_finish (state, NULL);
-		goto out;
+		sample = cd_color_xyz_new ();
+		g_task_return_pointer (task, sample, NULL);
+		sample = NULL;
+		return;
 	}
 
 	/* we have no dark calibration */
 	if (priv->dark_calibration == NULL) {
-		g_set_error_literal (&error,
-				     CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION,
-				     "no dark calibration provided");
-		cd_sensor_spark_get_sample_state_finish (state, error);
-		goto out;
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION,
+					 "no dark calibration provided");
+		return;
 	}
 
 	/* get the color */
@@ -159,36 +121,41 @@ cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
 	it8_cmf = cd_it8_new ();
 	file_cmf = g_file_new_for_path ("/usr/share/colord/cmf/CIE1931-2deg-XYZ.cmf");
 	if (!cd_it8_load_from_file (it8_cmf, file_cmf, &error)) {
-		cd_sensor_spark_get_sample_state_finish (state, error);
-		goto out;
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_NO_SUPPORT,
+					 "%s", error->message);
+		return;
 	}
 
 	/* load D65 */
 	it8_d65 = cd_it8_new ();
 	file_illuminant = g_file_new_for_path ("/usr/share/colord/illuminant/CIE-D65.sp");
 	if (!cd_it8_load_from_file (it8_d65, file_illuminant, &error)) {
-		cd_sensor_spark_get_sample_state_finish (state, error);
-		goto out;
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_NO_SUPPORT,
+					 "%s", error->message);
+		return;
 	}
 	illuminant = cd_it8_get_spectrum_by_id (it8_d65, "1");
 	g_assert (illuminant != NULL);
 
 	/* convert to XYZ */
-	state->sample = cd_color_xyz_new ();
+	sample = cd_color_xyz_new ();
 	if (!cd_it8_utils_calculate_xyz_from_cmf (it8_cmf, illuminant,
-						  sp_new, state->sample,
+						  sp_new, sample,
 						  1.f, &error)) {
-		cd_sensor_spark_get_sample_state_finish (state, error);
-		goto out;
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
+		return;
 	}
 
 	/* success */
-	state->ret = TRUE;
-	cd_sensor_spark_get_sample_state_finish (state, NULL);
-out:
-
-	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+	g_task_return_pointer (task, sample, NULL);
+	sample = NULL;
 }
 
 void
@@ -198,60 +165,27 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 			    GAsyncReadyCallback callback,
 			    gpointer user_data)
 {
-	CdSensorAsyncState *state;
-	GCancellable *tmp;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* save state */
-	state = g_slice_new0 (CdSensorAsyncState);
-	state->res = g_simple_async_result_new (G_OBJECT (sensor),
-						callback,
-						user_data,
-						cd_sensor_get_sample_async);
-	state->sensor = g_object_ref (sensor);
-	state->cap = cap;
-	if (cancellable != NULL) {
-		state->cancellable = g_object_ref (cancellable);
-		state->cancellable_id = g_cancellable_connect (cancellable, G_CALLBACK (cd_sensor_spark_cancellable_cancel_cb), state, NULL);
-	}
-
-	/* run in a thread */
-	tmp = g_cancellable_new ();
-	g_object_set_data (G_OBJECT (tmp), "state", state);
-	g_simple_async_result_run_in_thread (G_SIMPLE_ASYNC_RESULT (state->res),
-					     cd_sensor_spark_sample_thread_cb,
-					     0,
-					     (GCancellable*) tmp);
-	g_object_unref (tmp);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_set_task_data (task, GUINT_TO_POINTER (cap), NULL);
+	g_task_run_in_thread (task, cd_sensor_spark_sample_thread_cb);
 }
 
 CdColorXYZ *
-cd_sensor_get_sample_finish (CdSensor *sensor,
-			     GAsyncResult *res,
-			     GError **error)
+cd_sensor_get_sample_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	/* failed */
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	/* grab detail */
-	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
 static void
-cd_sensor_spark_lock_thread_cb (GSimpleAsyncResult *res,
-			       GObject *object,
-			       GCancellable *cancellable)
+cd_sensor_spark_lock_thread_cb (GTask *task,
+				gpointer source_object,
+				gpointer task_data,
+				GCancellable *cancellable)
 {
-	CdSensor *sensor = CD_SENSOR (object);
+	CdSensor *sensor = CD_SENSOR (source_object);
 	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *serial_number_tmp = NULL;
@@ -262,25 +196,30 @@ cd_sensor_spark_lock_thread_cb (GSimpleAsyncResult *res,
 						  0x00, /* interface */
 						  &error);
 	if (priv->device == NULL) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_result_set_from_error (res, error);
-		goto out;
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
+		return;
 	}
 
 	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_STARTING);
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_STARTING);
 
 	/* get serial number */
 	serial_number_tmp = osp_device_get_serial (priv->device, &error);
 	if (serial_number_tmp == NULL) {
-		g_simple_async_result_set_from_error (res, error);
-		goto out;
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_NO_DATA,
+					 "%s", error->message);
+		return;
 	}
 	cd_sensor_set_serial (sensor, serial_number_tmp);
 	g_debug ("Serial number: %s", serial_number_tmp);
-out:
-	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+
+	/* success */
+	g_task_return_boolean (task, TRUE);
 }
 
 void
@@ -289,20 +228,10 @@ cd_sensor_lock_async (CdSensor *sensor,
 		      GAsyncReadyCallback callback,
 		      gpointer user_data)
 {
-	GSimpleAsyncResult *res;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* run in a thread */
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_lock_async);
-	g_simple_async_result_run_in_thread (res,
-					     cd_sensor_spark_lock_thread_cb,
-					     0,
-					     cancellable);
-	g_object_unref (res);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_run_in_thread (task, cd_sensor_spark_lock_thread_cb);
 }
 
 gboolean
@@ -310,40 +239,34 @@ cd_sensor_lock_finish (CdSensor *sensor,
 		       GAsyncResult *res,
 		       GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-	return TRUE;
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
-cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
-			    GObject *object,
+cd_sensor_unlock_thread_cb (GTask *task,
+			    gpointer source_object,
+			    gpointer task_data,
 			    GCancellable *cancellable)
 {
-	CdSensor *sensor = CD_SENSOR (object);
+	CdSensor *sensor = CD_SENSOR (source_object);
 	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
-	gboolean ret = FALSE;
 	g_autoptr(GError) error = NULL;
 
 	/* close */
 	if (priv->device != NULL) {
-		ret = g_usb_device_close (priv->device, &error);
-		if (!ret) {
-			g_simple_async_result_set_from_error (res, error);
+		if (!g_usb_device_close (priv->device, &error)) {
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_INTERNAL,
+						 "%s", error->message);
 			return;
 		}
-
-		/* clear */
-		g_object_unref (priv->device);
-		priv->device = NULL;
+		g_clear_object (&priv->device);
 	}
+
+	/* success */
+	g_task_return_boolean (task, TRUE);
 }
 
 void
@@ -352,37 +275,17 @@ cd_sensor_unlock_async (CdSensor *sensor,
 			GAsyncReadyCallback callback,
 			gpointer user_data)
 {
-	GSimpleAsyncResult *res;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* run in a thread */
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_unlock_async);
-	g_simple_async_result_run_in_thread (res,
-					     cd_sensor_unlock_thread_cb,
-					     0,
-					     cancellable);
-	g_object_unref (res);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_run_in_thread (task, cd_sensor_unlock_thread_cb);
 }
 
 gboolean
-cd_sensor_unlock_finish (CdSensor *sensor,
-			 GAsyncResult *res,
-			 GError **error)
+cd_sensor_unlock_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-	return TRUE;
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
@@ -415,4 +318,3 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 				(GDestroyNotify) cd_sensor_unref_private);
 	return TRUE;
 }
-

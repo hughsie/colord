@@ -93,7 +93,7 @@ libcolord_sensor_spark_la_LIBADD =			\
 	$(GUSB_LIBS)					\
 	$(top_builddir)/lib/ospark/libospark-private.la
 libcolord_sensor_spark_la_LDFLAGS = -module -avoid-version
-libcolord_sensor_spark_la_CFLAGS =  -Wno-deprecated-declarations $(WARNINGFLAGS_C)
+libcolord_sensor_spark_la_CFLAGS = $(WARNINGFLAGS_C)
 
 libcolord_sensor_huey_la_SOURCES =			\
 	cd-sensor-huey.c

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2011 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -47,17 +47,6 @@ typedef struct
 	guint32				 eeprom_blocksize;
 } CdSensorMunkiPrivate;
 
-/* async state for the sensor readings */
-typedef struct {
-	gboolean			 ret;
-	CdColorXYZ			*sample;
-	gulong				 cancellable_id;
-	GCancellable			*cancellable;
-	GSimpleAsyncResult		*res;
-	CdSensor			*sensor;
-	CdSensorCap			 current_cap;
-} CdSensorAsyncState;
-
 #define CD_SENSOR_MUNKI_VENDOR_ID				0x0971
 #define CD_SENSOR_MUNKI_PRODUCT_ID				0x2007
 
@@ -84,7 +73,7 @@ cd_sensor_munki_refresh_state_transfer_cb (struct libusb_transfer *transfer)
 		goto out;
 	}
 
-	/* sensor position and button state */
+	/* sensor position and button task */
 	switch (reply[0]) {
 	case MUNKI_DIAL_POSITION_PROJECTOR:
 		cd_sensor_set_mode (sensor, CD_SENSOR_CAP_PROJECTOR);
@@ -131,7 +120,7 @@ cd_sensor_munki_refresh_state (CdSensor *sensor, GError **error)
 	/* do sync request */
 	handle = cd_usb_get_device_handle (priv->usb);
 
-	/* request new button state */
+	/* request new button task */
 	request = g_new0 (guint8, LIBUSB_CONTROL_SETUP_SIZE + 2);
 	libusb_fill_control_setup (request,
 				   LIBUSB_ENDPOINT_IN | LIBUSB_REQUEST_TYPE_VENDOR | LIBUSB_RECIPIENT_DEVICE,
@@ -188,7 +177,7 @@ cd_sensor_munki_transfer_cb (struct libusb_transfer *transfer)
 		cd_sensor_button_pressed (sensor);
 	}
 
-	/* get the device state */
+	/* get the device task */
 	cd_sensor_munki_refresh_state (sensor, NULL);
 
 out:
@@ -302,32 +291,32 @@ out:
 }
 
 static void
-cd_sensor_munki_get_sample_state_finish (CdSensorAsyncState *state,
+g_task_return_error (GTask *task,
 					 const GError *error)
 {
 	/* set result to temp memory location */
-	if (state->ret) {
-		g_simple_async_result_set_op_res_gpointer (state->res,
-							   state->sample,
+	if (task->ret) {
+		g_simple_async_result_set_op_res_gpointer (task->res,
+							   task->sample,
 							   (GDestroyNotify) cd_color_xyz_free);
 	} else {
-		g_simple_async_result_set_from_error (state->res, error);
+		g_simple_async_result_set_from_error (task->res, error);
 	}
 
 	/* deallocate */
-	if (state->cancellable != NULL) {
-		g_cancellable_disconnect (state->cancellable, state->cancellable_id);
-		g_object_unref (state->cancellable);
+	if (g_task_get_cancellable (task) != NULL) {
+		g_cancellable_disconnect (g_task_get_cancellable (task), g_task_get_cancellable (task)_id);
+		g_object_unref (g_task_get_cancellable (task));
 	}
 
-	g_object_unref (state->res);
-	g_object_unref (state->sensor);
-	g_slice_free (CdSensorAsyncState, state);
+	g_object_unref (task->res);
+	g_object_unref (sensor);
+	g_slice_free (CdSensorTaskData, task);
 }
 
 static void
 cd_sensor_munki_cancellable_cancel_cb (GCancellable *cancellable,
-				      CdSensorAsyncState *state)
+				      GTask *task)
 {
 	g_warning ("cancelled munki");
 }
@@ -340,14 +329,16 @@ cd_sensor_munki_get_ambient_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	g_autoptr(GError) error = NULL;
 //	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
-	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 
 	/* no hardware support */
 	if (cd_sensor_get_mode (sensor) != CD_SENSOR_CAP_AMBIENT) {
 		g_set_error_literal (&error, CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_NO_SUPPORT,
 				     "Cannot measure ambient light in this mode (turn dial!)");
-		cd_sensor_munki_get_sample_state_finish (state, error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		goto out;
 	}
 
@@ -364,14 +355,13 @@ cd_sensor_munki_get_ambient_thread_cb (GSimpleAsyncResult *res,
  */
 
 	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_MEASURING);
 
 	/* save result */
-	state->ret = TRUE;
-	cd_sensor_munki_get_sample_state_finish (state, NULL);
+	g_task_return_error (task, NULL);
 out:
 	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_IDLE);
 }
 
 static void
@@ -382,27 +372,28 @@ cd_sensor_munki_sample_thread_cb (GSimpleAsyncResult *res,
 	g_autoptr(GError) error = NULL;
 	CdSensor *sensor = CD_SENSOR (object);
 //	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
-	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 
 	/* no hardware support */
-	if (state->current_cap == CD_SENSOR_CAP_PROJECTOR) {
+	if (task->current_cap == CD_SENSOR_CAP_PROJECTOR) {
 		g_set_error_literal (&error, CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_NO_SUPPORT,
 				     "MUNKI cannot measure in projector mode");
-		cd_sensor_munki_get_sample_state_finish (state, error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		goto out;
 	}
 
 	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_MEASURING);
 
 	/* save result */
-	state->ret = TRUE;
-	state->sample = cd_color_xyz_new ();
-	cd_sensor_munki_get_sample_state_finish (state, NULL);
+	task->sample = cd_color_xyz_new ();
+	g_task_return_error (task, NULL);
 out:
 	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_IDLE);
 }
 
 void
@@ -412,60 +403,23 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 			    GAsyncReadyCallback callback,
 			    gpointer user_data)
 {
-	CdSensorAsyncState *state;
-	GCancellable *tmp;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* save state */
-	state = g_slice_new0 (CdSensorAsyncState);
-	state->res = g_simple_async_result_new (G_OBJECT (sensor),
-						callback,
-						user_data,
-						cd_sensor_get_sample_async);
-	state->sensor = g_object_ref (sensor);
-	if (cancellable != NULL) {
-		state->cancellable = g_object_ref (cancellable);
-		state->cancellable_id = g_cancellable_connect (cancellable, G_CALLBACK (cd_sensor_munki_cancellable_cancel_cb), state, NULL);
-	}
-
-	/* run in a thread */
-	tmp = g_cancellable_new ();
-	g_object_set_data (G_OBJECT (tmp), "state", state);
+	task = g_task_new (sensor, cancellable, callback, user_data);
 	if (cap == CD_SENSOR_CAP_AMBIENT) {
-		g_simple_async_result_run_in_thread (G_SIMPLE_ASYNC_RESULT (state->res),
-						     cd_sensor_munki_get_ambient_thread_cb,
-						     0,
-						     (GCancellable*) tmp);
+		g_task_run_in_thread (task, cd_sensor_munki_get_ambient_thread_cb);
 	} else if (cap == CD_SENSOR_CAP_LCD ||
 		   cap == CD_SENSOR_CAP_LED ||
 		   cap == CD_SENSOR_CAP_CRT) {
-		g_simple_async_result_run_in_thread (G_SIMPLE_ASYNC_RESULT (state->res),
-						     cd_sensor_munki_sample_thread_cb,
-						     0,
-						     (GCancellable*) tmp);
+		g_task_run_in_thread (task, cd_sensor_munki_sample_thread_cb);
 	}
-	g_object_unref (tmp);
 }
 
 CdColorXYZ *
-cd_sensor_get_sample_finish (CdSensor *sensor,
-			     GAsyncResult *res,
-			     GError **error)
+cd_sensor_get_sample_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	/* failed */
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	/* grab detail */
-	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
 static void
@@ -487,14 +441,17 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 						  0x00, /* interface */
 						  &error);
 	if (priv->device == NULL) {
-		g_simple_async_result_set_from_error (res, error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		goto out;
 	}
 
 	/* attach to the default mainloop */
 	ret = cd_usb_attach_to_context (priv->usb, NULL, &error);
 	if (!ret) {
-		g_simple_async_result_set_error (res, CD_SENSOR_ERROR,
+		g_task_return_new_error (task, CD_SENSOR_ERROR,
 						 CD_SENSOR_ERROR_NO_SUPPORT,
 						 "failed to attach to mainloop: %s",
 						 error->message);
@@ -508,7 +465,7 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 					  MUNKI_REQUEST_FIRMWARE_PARAMS,
 					  0, 0, buffer, 24, 2000);
 	if (retval < 0) {
-		g_simple_async_result_set_error (res, CD_SENSOR_ERROR,
+		g_task_return_new_error (task, CD_SENSOR_ERROR,
 						 CD_SENSOR_ERROR_NO_SUPPORT,
 						 "failed to get firmware parameters: %s",
 						 libusb_strerror (retval));
@@ -528,7 +485,7 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 					  MUNKI_REQUEST_CHIP_ID,
 					  0, 0, buffer, 8, 2000);
 	if (retval < 0) {
-		g_simple_async_result_set_error (res, CD_SENSOR_ERROR,
+		g_task_return_new_error (task, CD_SENSOR_ERROR,
 						 CD_SENSOR_ERROR_NO_SUPPORT,
 						 "failed to get chip id parameters: %s",
 						 libusb_strerror (retval));
@@ -545,7 +502,7 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 					  MUNKI_REQUEST_VERSION_STRING,
 					  0, 0, (guint8*) priv->version_string, 36, 2000);
 	if (retval < 0) {
-		g_simple_async_result_set_error (res, CD_SENSOR_ERROR,
+		g_task_return_new_error (task, CD_SENSOR_ERROR,
 						 CD_SENSOR_ERROR_NO_SUPPORT,
 						 "failed to get version string: %s",
 						 libusb_strerror (retval));
@@ -557,7 +514,10 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 					       COLORMUNKI_EEPROM_OFFSET_SERIAL_NUMBER,
 					       buffer, 10, &error);
 	if (!ret) {
-		g_simple_async_result_set_from_error (res, error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		goto out;
 	}
 	cd_sensor_set_serial (sensor, (const gchar*) buffer);
@@ -573,12 +533,15 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 	ret = cd_sensor_munki_random (sensor, &error);
 	if (!ret) {
 g_assert (error != NULL);
-		g_simple_async_result_set_from_error (res, error);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
 		goto out;
 	}
 out:
 	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_IDLE);
 }
 
 void
@@ -587,20 +550,10 @@ cd_sensor_lock_async (CdSensor *sensor,
 		      GAsyncReadyCallback callback,
 		      gpointer user_data)
 {
-	GSimpleAsyncResult *res;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* run in a thread */
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_lock_async);
-	g_simple_async_result_run_in_thread (res,
-					     cd_sensor_munki_lock_thread_cb,
-					     0,
-					     cancellable);
-	g_object_unref (res);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_run_in_thread (task, cd_sensor_munki_lock_thread_cb);
 }
 
 gboolean
@@ -625,8 +578,9 @@ out:
 }
 
 static void
-cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
-			    GObject *object,
+cd_sensor_unlock_thread_cb (GTask *task,
+			    gpointer source_object,
+			    gpointer task_data,
 			    GCancellable *cancellable)
 {
 	CdSensor *sensor = CD_SENSOR (object);
@@ -640,18 +594,18 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 
 	/* close */
 	if (priv->device != NULL) {
-		ret = g_usb_device_close (priv->device, &error);
-		if (!ret) {
-			g_simple_async_result_set_from_error (res, error);
-			goto out;
+		if (!g_usb_device_close (priv->device, &error)) {
+			g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
+			return;
 		}
-
-		/* clear */
-		g_object_unref (priv->device);
-		priv->device = NULL;
+		g_clear_object (&priv->device);
 	}
-out:
-	return;
+
+	/* success */
+	g_task_return_boolean (task, TRUE);
 }
 
 void
@@ -660,26 +614,14 @@ cd_sensor_unlock_async (CdSensor *sensor,
 			GAsyncReadyCallback callback,
 			gpointer user_data)
 {
-	GSimpleAsyncResult *res;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* run in a thread */
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_unlock_async);
-	g_simple_async_result_run_in_thread (res,
-					     cd_sensor_unlock_thread_cb,
-					     0,
-					     cancellable);
-	g_object_unref (res);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_run_in_thread (task, cd_sensor_unlock_thread_cb);
 }
 
 gboolean
-cd_sensor_unlock_finish (CdSensor *sensor,
-			 GAsyncResult *res,
-			 GError **error)
+cd_sensor_unlock_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
 	GSimpleAsyncResult *simple;
 	gboolean ret = TRUE;

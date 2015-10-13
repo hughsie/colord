@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2013 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2013-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -38,17 +38,6 @@ typedef struct
 	GUsbDevice			*device;
 } CdSensorDtp94Private;
 
-/* async state for the sensor readings */
-typedef struct {
-	gboolean			 ret;
-	CdColorXYZ			*sample;
-	gulong				 cancellable_id;
-	GCancellable			*cancellable;
-	GSimpleAsyncResult		*res;
-	CdSensor			*sensor;
-	CdSensorCap			 current_cap;
-} CdSensorAsyncState;
-
 #define DTP94_CONTROL_MESSAGE_TIMEOUT	50000 /* ms */
 
 static CdSensorDtp94Private *
@@ -58,60 +47,28 @@ cd_sensor_dtp94_get_private (CdSensor *sensor)
 }
 
 static void
-cd_sensor_dtp94_get_sample_state_finish (CdSensorAsyncState *state,
-					 const GError *error)
+cd_sensor_dtp94_sample_thread_cb (GTask *task,
+				  gpointer source_object,
+				  gpointer task_data,
+				  GCancellable *cancellable)
 {
-	/* set result to temp memory location */
-	if (state->ret) {
-		g_simple_async_result_set_op_res_gpointer (state->res,
-							   state->sample,
-							   (GDestroyNotify) cd_color_xyz_free);
-	} else {
-		g_simple_async_result_set_from_error (state->res, error);
-	}
-
-	/* deallocate */
-	if (state->cancellable != NULL) {
-		g_cancellable_disconnect (state->cancellable, state->cancellable_id);
-		g_object_unref (state->cancellable);
-	}
-
-	g_object_unref (state->res);
-	g_object_unref (state->sensor);
-	g_slice_free (CdSensorAsyncState, state);
-}
-
-static void
-cd_sensor_dtp94_cancellable_cancel_cb (GCancellable *cancellable,
-				      CdSensorAsyncState *state)
-{
-	g_warning ("cancelled dtp94");
-}
-
-static void
-cd_sensor_dtp94_sample_thread_cb (GSimpleAsyncResult *res,
-				 GObject *object,
-				 GCancellable *cancellable)
-{
-	CdSensor *sensor = CD_SENSOR (object);
-	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
+	CdSensor *sensor = CD_SENSOR (source_object);
+	CdSensorCap cap = GPOINTER_TO_UINT (task_data);
 	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
+	CdColorXYZ *sample;
 	g_autoptr(GError) error = NULL;
 
 	/* take a measurement from the sensor */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
-	state->sample = dtp94_device_take_sample (priv->device,
-					   state->current_cap,
-					   &error);
-	if (state->sample == NULL) {
-		cd_sensor_dtp94_get_sample_state_finish (state, error);
-		goto out;
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_MEASURING);
+	sample = dtp94_device_take_sample (priv->device, cap, &error);
+	if (sample == NULL) {
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_NO_DATA,
+					 "%s", error->message);
+		return;
 	}
-	state->ret = TRUE;
-	cd_sensor_dtp94_get_sample_state_finish (state, NULL);
-out:
-	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+	g_task_return_pointer (task, sample, NULL);
 }
 
 void
@@ -121,62 +78,28 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 			    GAsyncReadyCallback callback,
 			    gpointer user_data)
 {
-	CdSensorAsyncState *state;
-	GCancellable *tmp;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* save state */
-	state = g_slice_new0 (CdSensorAsyncState);
-	state->res = g_simple_async_result_new (G_OBJECT (sensor),
-						callback,
-						user_data,
-						cd_sensor_get_sample_async);
-	state->sensor = g_object_ref (sensor);
-	state->current_cap = cap;
-	if (cancellable != NULL) {
-		state->cancellable = g_object_ref (cancellable);
-		state->cancellable_id = g_cancellable_connect (cancellable, G_CALLBACK (cd_sensor_dtp94_cancellable_cancel_cb), state, NULL);
-	}
-
-	/* run in a thread */
-	tmp = g_cancellable_new ();
-	g_object_set_data (G_OBJECT (tmp), "state", state);
-	g_simple_async_result_run_in_thread (G_SIMPLE_ASYNC_RESULT (state->res),
-					     cd_sensor_dtp94_sample_thread_cb,
-					     0,
-					     (GCancellable*) tmp);
-	g_object_unref (tmp);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_set_task_data (task, GUINT_TO_POINTER (cap), NULL);
+	g_task_run_in_thread (task, cd_sensor_dtp94_sample_thread_cb);
 }
 
 CdColorXYZ *
-cd_sensor_get_sample_finish (CdSensor *sensor,
-			     GAsyncResult *res,
-			     GError **error)
+cd_sensor_get_sample_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	/* failed */
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	/* grab detail */
-	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
 static void
-cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
-			        GObject *object,
-			        GCancellable *cancellable)
+cd_sensor_dtp94_lock_thread_cb (GTask *task,
+				gpointer source_object,
+				gpointer task_data,
+				GCancellable *cancellable)
 {
-	CdSensor *sensor = CD_SENSOR (object);
+	CdSensor *sensor = CD_SENSOR (source_object);
 	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
-	gboolean ret = FALSE;
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *serial = NULL;
 
@@ -186,33 +109,38 @@ cd_sensor_dtp94_lock_thread_cb (GSimpleAsyncResult *res,
 						  0x00, /* interface */
 						  &error);
 	if (priv->device == NULL) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_result_set_from_error (res, error);
-		goto out;
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
+		return;
 	}
 
 	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_STARTING);
+	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_STARTING);
 
 	/* do startup sequence */
-	ret = dtp94_device_setup (priv->device, &error);
-	if (!ret) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_result_set_from_error (res, error);
-		goto out;
+	if (!dtp94_device_setup (priv->device, &error)) {
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "%s", error->message);
+		return;
 	}
 
 	/* get serial */
 	serial = dtp94_device_get_serial (priv->device, &error);
 	if (serial == NULL) {
-		cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
-		g_simple_async_result_set_from_error (res, error);
-		goto out;
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_NO_DATA,
+					 "%s", error->message);
+		return;
 	}
 	cd_sensor_set_serial (sensor, serial);
-out:
-	/* set state */
-	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+
+	/* success */
+	g_task_return_boolean (task, TRUE);
 }
 
 void
@@ -221,61 +149,43 @@ cd_sensor_lock_async (CdSensor *sensor,
 		      GAsyncReadyCallback callback,
 		      gpointer user_data)
 {
-	GSimpleAsyncResult *res;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* run in a thread */
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_lock_async);
-	g_simple_async_result_run_in_thread (res,
-					     cd_sensor_dtp94_lock_thread_cb,
-					     0,
-					     cancellable);
-	g_object_unref (res);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_run_in_thread (task, cd_sensor_dtp94_lock_thread_cb);
 }
 
 gboolean
-cd_sensor_lock_finish (CdSensor *sensor,
-		       GAsyncResult *res,
-		       GError **error)
+cd_sensor_lock_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-	return TRUE;
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
-cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
-			    GObject *object,
+cd_sensor_unlock_thread_cb (GTask *task,
+			    gpointer source_object,
+			    gpointer task_data,
 			    GCancellable *cancellable)
 {
-	CdSensor *sensor = CD_SENSOR (object);
+	CdSensor *sensor = CD_SENSOR (source_object);
 	CdSensorDtp94Private *priv = cd_sensor_dtp94_get_private (sensor);
-	gboolean ret = FALSE;
 	g_autoptr(GError) error = NULL;
 
 	/* close */
 	if (priv->device != NULL) {
-		ret = g_usb_device_close (priv->device, &error);
-		if (!ret) {
-			g_simple_async_result_set_from_error (res, error);
+		if (!g_usb_device_close (priv->device, &error)) {
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_INTERNAL,
+						 "%s", error->message);
 			return;
 		}
-
-		/* clear */
-		g_object_unref (priv->device);
-		priv->device = NULL;
+		g_clear_object (&priv->device);
 	}
+
+	/* success */
+	g_task_return_boolean (task, TRUE);
 }
 
 void
@@ -284,37 +194,17 @@ cd_sensor_unlock_async (CdSensor *sensor,
 			GAsyncReadyCallback callback,
 			gpointer user_data)
 {
-	GSimpleAsyncResult *res;
-
+	g_autoptr(GTask) task = NULL;
 	g_return_if_fail (CD_IS_SENSOR (sensor));
-
-	/* run in a thread */
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_unlock_async);
-	g_simple_async_result_run_in_thread (res,
-					     cd_sensor_unlock_thread_cb,
-					     0,
-					     cancellable);
-	g_object_unref (res);
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_task_run_in_thread (task, cd_sensor_unlock_thread_cb);
 }
 
 gboolean
-cd_sensor_unlock_finish (CdSensor *sensor,
-			 GAsyncResult *res,
-			 GError **error)
+cd_sensor_unlock_finish (CdSensor *sensor, GAsyncResult *res, GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-	return TRUE;
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 gboolean
