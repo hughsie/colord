@@ -1070,6 +1070,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	CdColorXYZ *xyz;
 	CdSensorCap cap;
+	CdSensorCap cap_tmp = CD_SENSOR_CAP_UNKNOWN;
 	CdSensor *sensor;
 	GError *error_local = NULL;
 	guint i;
@@ -1115,7 +1116,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 		/* get 3 samples sync */
 		for (j = 1; j < 4; j++) {
 			xyz = cd_sensor_get_sample_sync (sensor,
-							 cap,
+							 cap_tmp ? cap_tmp : cap,
 							 NULL,
 							 &error_local);
 			if (xyz == NULL) {
@@ -1137,11 +1138,28 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 					j--;
 					g_clear_error (&error_local);
 					continue;
+				} else if (g_error_matches (error_local,
+							    CD_SENSOR_ERROR,
+							    CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION)) {
+					/* TRANSLATORS: the user needs to change something on the device */
+					g_print ("%s\n", _("Put the device in a dark place and press enter."));
+					getchar ();
+					j--;
+					g_clear_error (&error_local);
+					cap_tmp = CD_SENSOR_CAP_CALIBRATION;
+					continue;
 				} else {
 					g_propagate_error (error,
 							   error_local);
 					return FALSE;
 				}
+			}
+
+			/* reset back */
+			if (cap_tmp == CD_SENSOR_CAP_CALIBRATION) {
+				cap_tmp = CD_SENSOR_CAP_UNKNOWN;
+				g_print ("%s\n", _("Put the device on the color to be measured and press enter."));
+				getchar ();
 			}
 
 			/* TRANSLATORS: this is the XYZ color value */

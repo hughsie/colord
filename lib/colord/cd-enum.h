@@ -318,6 +318,7 @@ typedef enum {
  * @CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE:	Authentication failed
  * @CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE:	The sensor needs to be in the calibrate position
  * @CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE:		The sensor needs to be in the surface position
+ * @CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION:		The sensor needs dark calibration
  *
  * The sensor error code.
  *
@@ -333,6 +334,7 @@ typedef enum {
 	CD_SENSOR_ERROR_FAILED_TO_AUTHENTICATE,		/* Since: 0.1.26 */
 	CD_SENSOR_ERROR_REQUIRED_POSITION_CALIBRATE,	/* Since: 0.1.26 */
 	CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE,	/* Since: 0.1.26 */
+	CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION,	/* Since: 1.2.13 */
 	/*< private >*/
 	CD_SENSOR_ERROR_LAST
 } CdSensorError;
