@@ -21,7 +21,6 @@ $(dbusservicemain_DATA): $(dbusservicemain_in_files) Makefile
 
 systemdservicemain_in_files = colord.service.in
 
-tmpfilesdir = $(libdir)/tmpfiles.d/colord.conf
 dist_tmpfiles_DATA = colord.conf
 
 endif

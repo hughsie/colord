@@ -255,6 +255,17 @@ if test "x$with_systemdsystemunitdir" != "xno"; then
 fi
 AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$systemdsystemunitdir"])
 
+dnl ---------------------------------------------------------------------------
+dnl - Where to install tmpfiles.d snippet rules
+dnl ---------------------------------------------------------------------------
+AC_ARG_WITH([tmpfilesdir],
+            AS_HELP_STRING([--with-tmpfilesdir=DIR], [Directory for tmpfiles.d snippet files]),
+            [],
+            [with_tmpfilesdir=$($PKG_CONFIG --variable=tmpfilesdir systemd)])
+if test "x$with_tmpfilesdir" != "xno"; then
+	AC_SUBST([tmpfilesdir], [$with_tmpfilesdir])
+fi
+
 dnl **** Check if we should build libcolordcompat ****
 AC_ARG_ENABLE(libcolordcompat, AS_HELP_STRING([--enable-libcolordcompat],
 					      [Enable libcolordcompat.so which is used by ArgyllCMS]),
@@ -509,6 +520,7 @@ echo "
         udev rules.d dir:          ${with_udevrulesdir}
         systemd-login support:     ${enable_systemd_login}
         systemd service dir:       ${with_systemdsystemunitdir}
+        tmpfiles.d dir:            ${with_tmpfilesdir}
         Unix support:              ${enable_unix}
 "
 
