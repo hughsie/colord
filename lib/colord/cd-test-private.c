@@ -966,7 +966,7 @@ static void
 colord_color_func (void)
 {
 	CdColorUVW uvw;
-	CdColorXYZ *xyz;
+	g_autoptr(CdColorXYZ) xyz = NULL;
 	CdColorXYZ xyz_src;
 	CdColorYxy yxy;
 
@@ -996,8 +996,6 @@ colord_color_func (void)
 	g_assert_cmpfloat (ABS (xyz->X - 2.0), <, 0.01);
 	g_assert_cmpfloat (ABS (xyz->Y - 1.0), <, 0.01);
 	g_assert_cmpfloat (ABS (xyz->Z - 0.5), <, 0.01);
-
-	cd_color_xyz_free (xyz);
 }
 
 

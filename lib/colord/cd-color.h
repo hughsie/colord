@@ -100,6 +100,13 @@ void		 cd_color_yxy_free			(CdColorYxy		*src);
 void		 cd_color_uvw_free			(CdColorUVW		*src);
 void		 cd_color_swatch_free			(CdColorSwatch		*src);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdColorXYZ, cd_color_xyz_free)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdColorRGB, cd_color_rgb_free)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdColorLab, cd_color_lab_free)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdColorYxy, cd_color_yxy_free)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdColorUVW, cd_color_uvw_free)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdColorSwatch, cd_color_swatch_free)
+
 CdColorXYZ	*cd_color_xyz_dup			(const CdColorXYZ	*src);
 CdColorLab	*cd_color_lab_dup			(const CdColorLab	*src);
 CdColorRGB	*cd_color_rgb_dup			(const CdColorRGB	*src);

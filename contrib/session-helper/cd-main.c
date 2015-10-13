@@ -355,7 +355,7 @@ cd_main_calib_get_sample (CdMainPrivate *priv,
 			  CdColorXYZ *xyz,
 			  GError **error)
 {
-	CdColorXYZ *xyz_tmp;
+	g_autoptr(CdColorXYZ) xyz_tmp = NULL;
 
 	xyz_tmp = cd_sensor_get_sample_sync (priv->sensor,
 					     priv->device_kind,
@@ -364,7 +364,6 @@ cd_main_calib_get_sample (CdMainPrivate *priv,
 	if (xyz_tmp == NULL)
 		return FALSE;
 	cd_color_xyz_copy (xyz_tmp, xyz);
-	cd_color_xyz_free (xyz_tmp);
 	return TRUE;
 }
 

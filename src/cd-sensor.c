@@ -535,7 +535,7 @@ cd_sensor_get_sample_cb (GObject *source_object,
 			 gpointer user_data)
 {
 	GVariant *result = NULL;
-	CdColorXYZ *sample;
+	g_autoptr(CdColorXYZ) sample = NULL;
 	CdSensor *sensor = CD_SENSOR (source_object);
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
@@ -546,22 +546,13 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	if (sample == NULL) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_error_free (error);
-		goto out;
+		return;
 	}
 
 	/* return value */
-	g_debug ("returning value %f, %f, %f",
-		 sample->X,
-		 sample->Y,
-		 sample->Z);
-	result = g_variant_new ("(ddd)",
-				sample->X,
-				sample->Y,
-				sample->Z);
+	g_debug ("returning value %f, %f, %f", sample->X, sample->Y, sample->Z);
+	result = g_variant_new ("(ddd)", sample->X, sample->Y, sample->Z);
 	g_dbus_method_invocation_return_value (invocation, result);
-out:
-	if (sample != NULL)
-		cd_color_xyz_free (sample);
 }
 
 /**

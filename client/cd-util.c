@@ -1066,7 +1066,6 @@ cd_util_sensor_lock (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	CdColorXYZ *xyz;
 	CdSensorCap cap;
 	CdSensorCap cap_tmp = CD_SENSOR_CAP_UNKNOWN;
 	CdSensor *sensor;
@@ -1097,6 +1096,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 	}
 	cap = cd_sensor_cap_from_string (values[0]);
 	for (i = 0; i < array->len; i++) {
+		g_autoptr(CdColorXYZ) xyz = NULL;
 		sensor = g_ptr_array_index (array, i);
 
 		if (!cd_sensor_connect_sync (sensor, NULL, error))
@@ -1164,7 +1164,6 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 			g_print ("%s XYZ : %f, %f, %f\n",
 				 _("Color"),
 				 xyz->X, xyz->Y, xyz->Z);
-			cd_color_xyz_free (xyz);
 		}
 
 		/* unlock */
