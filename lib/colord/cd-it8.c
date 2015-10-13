@@ -609,7 +609,6 @@ cd_it8_load_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 static gboolean
 cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
-	CdSpectrum *spectrum;
 	const gchar *tmp;
 	gboolean has_index;
 	gdouble spectral_end;
@@ -695,6 +694,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		return FALSE;
 	}
 	for (j = 0; j < (guint) number_of_sets; j++) {
+		g_autoptr(CdSpectrum) spectrum = NULL;
 		spectrum = cd_spectrum_sized_new (spectral_bands);
 		if (has_index) {
 			cd_spectrum_set_id (spectrum,
@@ -712,7 +712,6 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cd_spectrum_set_end (spectrum, spectral_end);
 		cd_spectrum_set_norm (spectrum, spectral_norm);
 		cd_it8_add_spectrum (it8, spectrum);
-		cd_spectrum_free (spectrum);
 	}
 	return TRUE;
 }
@@ -723,7 +722,6 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 static gboolean
 cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
-	CdSpectrum *spectrum;
 	gdouble spectral_end;
 	gdouble spectral_norm;
 	gdouble spectral_start;
@@ -802,6 +800,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		return FALSE;
 	}
 	for (j = 0; j < (guint) number_of_sets; j++) {
+		g_autoptr(CdSpectrum) spectrum = NULL;
 		spectrum = cd_spectrum_sized_new (spectral_bands);
 		if (j == 0)
 			cd_spectrum_set_id (spectrum, "X");
@@ -817,7 +816,6 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		cd_spectrum_set_end (spectrum, spectral_end);
 		cd_spectrum_set_norm (spectrum, spectral_norm);
 		cd_it8_add_spectrum (it8, spectrum);
-		cd_spectrum_free (spectrum);
 	}
 	return TRUE;
 }

@@ -96,12 +96,12 @@ cd_sensor_get_sample_state_finish (CdSensorAsyncState *state,
 static gboolean
 cd_sensor_get_sample_timeout_cb (CdSensorAsyncState *state)
 {
-	GError *error;
-	error = g_error_new (CD_SENSOR_ERROR,
+	g_autoptr(GError) error = NULL;
+	g_set_error_literal (&error,
+			     CD_SENSOR_ERROR,
 			     CD_SENSOR_ERROR_INTERNAL,
 			     "spotread timed out");
 	cd_sensor_get_sample_state_finish (state, error);
-	g_error_free (error);
 	return G_SOURCE_REMOVE;
 }
 
@@ -110,12 +110,12 @@ cd_sensor_get_sample_exit_cb (CdSpawn *spawn,
 			      CdSpawnExitType exit_type,
 			      CdSensorAsyncState *state)
 {
-	GError *error;
-	error = g_error_new (CD_SENSOR_ERROR,
+	g_autoptr(GError) error = NULL;
+	g_set_error_literal (&error,
+			     CD_SENSOR_ERROR,
 			     CD_SENSOR_ERROR_INTERNAL,
 			     "spotread exited unexpectedly");
 	cd_sensor_get_sample_state_finish (state, error);
-	g_error_free (error);
 }
 
 static void

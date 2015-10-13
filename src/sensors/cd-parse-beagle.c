@@ -275,7 +275,7 @@ main (gint argc, gchar *argv[])
 	gchar **split = NULL;
 	gchar **sections = NULL;
 	GString *output = NULL;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	guint i;
 	CdParseEntry entry;
 	gchar *part;
@@ -298,7 +298,6 @@ main (gint argc, gchar *argv[])
 	ret = g_file_get_contents (argv[2], &data, NULL, &error);
 	if (!ret) {
 		g_print ("failed to read: %s\n", error->message);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -338,7 +337,6 @@ main (gint argc, gchar *argv[])
 	ret = g_file_set_contents (argv[3], output->str, -1, &error);
 	if (!ret) {
 		g_print ("failed to read: %s\n", error->message);
-		g_error_free (error);
 		goto out;
 	}
 

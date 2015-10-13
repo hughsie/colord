@@ -83,6 +83,8 @@ CdSpectrum	*cd_spectrum_multiply		(CdSpectrum		*s1,
 						 CdSpectrum		*s2,
 						 gdouble		 resolution);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdSpectrum, cd_spectrum_free)
+
 G_END_DECLS
 
 #endif /* __CD_SPECTRUM_H__ */

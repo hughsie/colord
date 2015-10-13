@@ -26,7 +26,6 @@
 #include "config.h"
 
 #include <glib-object.h>
-//#include <gusb.h>
 #include <colord-private.h>
 #include <ospark/ospark.h>
 
@@ -106,12 +105,11 @@ cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
-	CdSpectrum *sp_new = NULL;
-	CdSpectrum *sp = NULL;
-	CdSpectrum *unity = NULL;
-	gboolean ret;
-	g_autoptr(GError) error = NULL;
 	g_autoptr(CdIt8) cmf = NULL;
+	g_autoptr(CdSpectrum) sp_new = NULL;
+	g_autoptr(CdSpectrum) sp = NULL;
+	g_autoptr(CdSpectrum) unity = NULL;
+	g_autoptr(GError) error = NULL;
 	g_autoptr(GFile) file = NULL;
 
 	/* measure */
@@ -173,9 +171,6 @@ cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
 	state->ret = TRUE;
 	cd_sensor_spark_get_sample_state_finish (state, NULL);
 out:
-	cd_spectrum_free (unity);
-	cd_spectrum_free (sp);
-	cd_spectrum_free (sp_new);
 
 	/* set state */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);

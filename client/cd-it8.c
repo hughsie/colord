@@ -381,18 +381,17 @@ cd_util_create_sp (CdUtilPrivate *priv,
 		   gchar **values,
 		   GError **error)
 {
-	CdSpectrum *spectrum = NULL;
 	CdSpectrumData *tmp;
-	gboolean ret = TRUE;
 	gchar *dot;
 	gdouble norm;
 	guint i;
 	g_autofree gchar *data = NULL;
 	g_autofree gchar *title = NULL;
+	g_auto(GStrv) lines = NULL;
 	g_autoptr(CdIt8) cmf = NULL;
+	g_autoptr(CdSpectrum) spectrum = NULL;
 	g_autoptr(GFile) file = NULL;
 	g_autoptr(GPtrArray) array = NULL;
-	g_auto(GStrv) lines = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -468,13 +467,7 @@ cd_util_create_sp (CdUtilPrivate *priv,
 
 	/* save */
 	file = g_file_new_for_path (values[0]);
-	ret = cd_it8_save_to_file (cmf, file, error);
-	if (!ret)
-		goto out;
-out:
-	if (spectrum != NULL)
-		cd_spectrum_free (spectrum);
-	return ret;
+	return cd_it8_save_to_file (cmf, file, error);
 }
 
 /**

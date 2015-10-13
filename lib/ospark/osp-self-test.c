@@ -94,12 +94,12 @@ osp_test_protocol_func (void)
 static void
 osp_test_reading_xyz_func (void)
 {
-	CdSpectrum *sp;
 	guint i, j;
+	g_autofree gchar *fwver = NULL;
+	g_autofree gchar *serial = NULL;
+	g_autoptr(CdSpectrum) sp = NULL;
 	g_autoptr(GError) error = NULL;
 	g_autoptr(GUsbDevice) device = NULL;
-	g_autofree gchar *serial = NULL;
-	g_autofree gchar *fwver = NULL;
 
 	/* load the device */
 	device = osp_client_get_default (&error);
@@ -129,7 +129,6 @@ osp_test_reading_xyz_func (void)
 			g_print ("*");
 		g_print ("\n");
 	}
-	cd_spectrum_free (sp);
 }
 
 int

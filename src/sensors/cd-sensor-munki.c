@@ -338,7 +338,7 @@ cd_sensor_munki_get_ambient_thread_cb (GSimpleAsyncResult *res,
 				      GCancellable *cancellable)
 {
 	CdSensor *sensor = CD_SENSOR (object);
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 //	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 
@@ -348,7 +348,6 @@ cd_sensor_munki_get_ambient_thread_cb (GSimpleAsyncResult *res,
 				     CD_SENSOR_ERROR_NO_SUPPORT,
 				     "Cannot measure ambient light in this mode (turn dial!)");
 		cd_sensor_munki_get_sample_state_finish (state, error);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -380,7 +379,7 @@ cd_sensor_munki_sample_thread_cb (GSimpleAsyncResult *res,
 				 GObject *object,
 				 GCancellable *cancellable)
 {
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	CdSensor *sensor = CD_SENSOR (object);
 //	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
@@ -391,7 +390,6 @@ cd_sensor_munki_sample_thread_cb (GSimpleAsyncResult *res,
 				     CD_SENSOR_ERROR_NO_SUPPORT,
 				     "MUNKI cannot measure in projector mode");
 		cd_sensor_munki_get_sample_state_finish (state, error);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -478,7 +476,7 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
 	gboolean ret = FALSE;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gint retval;
 	guint8 buffer[36];
 	libusb_device_handle *handle;
@@ -490,7 +488,6 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 						  &error);
 	if (priv->device == NULL) {
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -501,7 +498,6 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 						 CD_SENSOR_ERROR_NO_SUPPORT,
 						 "failed to attach to mainloop: %s",
 						 error->message);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -562,7 +558,6 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 					       buffer, 10, &error);
 	if (!ret) {
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 	cd_sensor_set_serial (sensor, (const gchar*) buffer);
@@ -579,7 +574,6 @@ cd_sensor_munki_lock_thread_cb (GSimpleAsyncResult *res,
 	if (!ret) {
 g_assert (error != NULL);
 		g_simple_async_result_set_from_error (res, error);
-		g_error_free (error);
 		goto out;
 	}
 out:
@@ -638,7 +632,7 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorMunkiPrivate *priv = cd_sensor_munki_get_private (sensor);
 	gboolean ret = FALSE;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* stop watching the dial */
 	libusb_cancel_transfer (priv->transfer_interrupt);
@@ -649,7 +643,6 @@ cd_sensor_unlock_thread_cb (GSimpleAsyncResult *res,
 		ret = g_usb_device_close (priv->device, &error);
 		if (!ret) {
 			g_simple_async_result_set_from_error (res, error);
-			g_error_free (error);
 			goto out;
 		}
 

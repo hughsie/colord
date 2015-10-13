@@ -39,7 +39,7 @@ ch_test_hash_func (void)
 	ChSha1 sha1;
 	gboolean ret;
 	gchar *str;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* parse into structure */
 	ret = ch_sha1_parse ("f18973b4ebaeab527dc15d5dd246debfbff20324",
@@ -85,7 +85,7 @@ ch_test_device_queue_func (void)
 {
 	ChDeviceQueue *device_queue;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GPtrArray *devices;
 	guint i;
 	guint valid_devices = 0;
@@ -205,7 +205,6 @@ ch_test_device_queue_func (void)
 	g_assert_error (error, 1, 0);
 	g_debug ("error was: %s", error->message);
 	g_assert (!ret);
-	g_error_free (error);
 out:
 	g_ptr_array_unref (devices);
 	g_object_unref (device_queue);
@@ -489,7 +488,7 @@ ch_test_state_func (void)
 	ChFreqScale multiplier = 0;
 	gboolean ret;
 	gdouble elapsed;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GTimer *timer;
 	guint16 integral_time = 0;
 	guint8 leds = 0;
@@ -502,7 +501,6 @@ ch_test_state_func (void)
 					       G_USB_DEVICE_ERROR,
 					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
 		g_debug ("no device, skipping tests");
-		g_error_free (error);
 		return;
 	}
 	g_assert_no_error (error);
@@ -654,7 +652,7 @@ static void
 ch_test_eeprom_func (void)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	guint16 major = 0;
 	guint16 micro = 0;
 	guint16 minor = 0;
@@ -684,7 +682,6 @@ ch_test_eeprom_func (void)
 					       G_USB_DEVICE_ERROR,
 					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
 		g_debug ("no device, skipping tests");
-		g_error_free (error);
 		return;
 	}
 	g_assert_no_error (error);
@@ -928,7 +925,7 @@ static void
 ch_test_reading_func (void)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	guint32 take_reading = 0;
 	GUsbDevice *device;
 	ChDeviceQueue *device_queue;
@@ -939,7 +936,6 @@ ch_test_reading_func (void)
 					       G_USB_DEVICE_ERROR,
 					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
 		g_debug ("no device, skipping tests");
-		g_error_free (error);
 		return;
 	}
 	g_assert_no_error (error);
@@ -1002,7 +998,7 @@ ch_test_reading_xyz_func (void)
 	CdColorXYZ reading1;
 	CdColorXYZ reading2;
 	gdouble scaling_factor_actual;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	guint16 calibration_map[6];
 	guint16 post_scale;
 	guint i;
@@ -1023,7 +1019,6 @@ ch_test_reading_xyz_func (void)
 					       G_USB_DEVICE_ERROR,
 					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
 		g_debug ("no device, skipping tests");
-		g_error_free (error);
 		return;
 	}
 	g_assert_no_error (error);
@@ -1153,7 +1148,7 @@ static void
 ch_test_incomplete_request_func (void)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	guint8 buffer[CH_USB_HID_EP_SIZE];
 	GUsbDevice *device = NULL;
 
@@ -1171,7 +1166,6 @@ ch_test_incomplete_request_func (void)
 					       G_USB_DEVICE_ERROR,
 					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
 		g_debug ("no device, skipping tests");
-		g_error_free (error);
 		return;
 	}
 	g_assert_no_error (error);
@@ -1190,7 +1184,6 @@ ch_test_incomplete_request_func (void)
 					       &error);
 	if (!ret) {
 		g_warning ("Error: %s", error->message);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -1210,7 +1203,6 @@ ch_test_incomplete_request_func (void)
 					       &error);
 	if (!ret) {
 		g_warning ("Error: %s", error->message);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -1226,7 +1218,6 @@ ch_test_incomplete_request_func (void)
 					       &error);
 	if (!ret) {
 		g_warning ("Error: %s", error->message);
-		g_error_free (error);
 		goto out;
 	}
 	g_assert_cmpint (buffer[0], ==, CH_ERROR_INCOMPLETE_REQUEST);

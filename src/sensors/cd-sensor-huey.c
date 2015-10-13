@@ -91,7 +91,7 @@ cd_sensor_huey_get_ambient_thread_cb (GSimpleAsyncResult *res,
 				      GObject *object,
 				      GCancellable *cancellable)
 {
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorHueyPrivate *priv = cd_sensor_huey_get_private (sensor);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
@@ -103,7 +103,6 @@ cd_sensor_huey_get_ambient_thread_cb (GSimpleAsyncResult *res,
 	state->sample->X = huey_device_get_ambient (priv->device, &error);
 	if (state->sample->X < 0) {
 		cd_sensor_huey_get_sample_state_finish (state, error);
-		g_error_free (error);
 		goto out;
 	}
 

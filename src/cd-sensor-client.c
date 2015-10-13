@@ -86,7 +86,7 @@ cd_sensor_client_add (CdSensorClient *sensor_client,
 	const gchar *device_file;
 	const gchar *tmp;
 	gboolean ret = FALSE;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* interesting device? */
 	tmp = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
@@ -110,7 +110,6 @@ cd_sensor_client_add (CdSensorClient *sensor_client,
 	if (!ret) {
 		g_warning ("CdSensorClient: failed to set CM sensor: %s",
 			   error->message);
-		g_error_free (error);
 		goto out;
 	}
 

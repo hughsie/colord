@@ -46,7 +46,7 @@ colord_client_get_devices_cb (GObject *object,
 			      gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (object);
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GPtrArray *devices;
 
 	/* get the result */
@@ -82,7 +82,7 @@ colord_device_qualifiers_func (void)
 	gchar *profile2_path;
 	gchar *profile_id;
 	gchar *profile_path;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	GHashTable *profile_props;
 	GPtrArray *array;
@@ -369,7 +369,7 @@ colord_profile_file_func (void)
 	gchar *basename;
 	gchar *filename;
 	gchar *profile_id;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *profile_props;
 	guint32 key;
 	struct tm profile_created_time =
@@ -498,7 +498,7 @@ colord_device_id_mapping_pd_func (void)
 	gboolean ret;
 	gchar *device_id;
 	gchar *filename;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	GHashTable *profile_props;
 
@@ -661,7 +661,7 @@ colord_device_id_mapping_edid_func (void)
 	CdProfile *profile_on_device;
 	gboolean ret;
 	gchar *device_id;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	GHashTable *profile_props;
 
@@ -793,7 +793,7 @@ colord_device_id_mapping_dp_func (void)
 	CdProfile *profile_on_device;
 	gboolean ret;
 	gchar *device_id;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	GHashTable *profile_props;
 
@@ -893,7 +893,7 @@ colord_icc_meta_dict_func (void)
 {
 	gchar *filename;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *metadata;
 	GHashTable *profile_props;
 	CdProfile *profile;
@@ -966,7 +966,7 @@ colord_sensor_get_sample_cb (GObject *object,
 			     gpointer user_data)
 {
 	CdSensor *sensor = CD_SENSOR (object);
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gboolean ret;
 
 	/* get the result */
@@ -996,7 +996,7 @@ colord_sensor_func (void)
 	CdColorXYZ *values;
 	CdSensor *sensor;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *hash;
 	GPtrArray *array;
 
@@ -1152,7 +1152,7 @@ colord_client_func (void)
 	CdClient *client;
 	const gchar *version;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* no running colord to use */
 	client = cd_client_new ();
@@ -1195,7 +1195,7 @@ colord_device_mapping_func (void)
 	gboolean ret;
 	gchar *profile_id1;
 	gchar *profile_id2;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	gint32 key;
 
@@ -1391,7 +1391,7 @@ colord_client_fd_pass_func (void)
 	CdProfile *profile;
 	GHashTable *profile_props;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gchar *filename;
 
 	/* no running colord to use */
@@ -1463,7 +1463,7 @@ colord_client_import_func (void)
 	GFile *file;
 	GFile *invalid_file;
 	GFile *dest;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gchar *dest_path;
 	gchar *filename;
 
@@ -1555,7 +1555,7 @@ static void
 colord_delete_profile_good_cb (GObject *object, GAsyncResult *res, gpointer user_data)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	CdClient *client = CD_CLIENT (object);
 
 	ret = cd_client_delete_profile_finish (client, res, &error);
@@ -1569,7 +1569,7 @@ static void
 colord_delete_profile_bad_cb (GObject *object, GAsyncResult *res, gpointer user_data)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	CdClient *client = CD_CLIENT (object);
 
 	ret = cd_client_delete_profile_finish (client, res, &error);
@@ -1583,7 +1583,7 @@ static void
 colord_client_async_func (void)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	CdClient *client;
 	CdProfile *profile;
 
@@ -1632,7 +1632,7 @@ static void
 colord_device_connect_cb (GObject *object, GAsyncResult *res, gpointer user_data)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	CdDevice *device = CD_DEVICE (object);
 
 	ret = cd_device_connect_finish (device, res, &error);
@@ -1648,7 +1648,7 @@ colord_device_async_func (void)
 	CdDevice *device;
 	CdDevice *device_tmp;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	const gchar *device_name = "device_async_dave";
 	struct passwd *user_details;
@@ -1734,7 +1734,7 @@ colord_client_systemwide_func (void)
 	CdProfile *profile;
 	GHashTable *profile_props;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gchar *filename;
 
 	/* no running colord to use */
@@ -1792,7 +1792,7 @@ colord_device_invalid_func (void)
 {
 	CdDevice *device;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -1821,7 +1821,7 @@ colord_device_func (void)
 	gboolean ret;
 	gchar *device_id;
 	gchar *device_path;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	GPtrArray *array;
 	GPtrArray *devices;
@@ -1977,7 +1977,7 @@ colord_device_embedded_func (void)
 	CdClient *client;
 	CdDevice *device;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 
 	/* no running colord to use */
@@ -2028,7 +2028,7 @@ colord_device_invalid_kind_func (void)
 	CdClient *client;
 	CdDevice *device;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 
 	/* no running colord to use */
@@ -2056,7 +2056,6 @@ colord_device_invalid_kind_func (void)
 					       &error);
 	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_INPUT_INVALID);
 	g_assert (device == NULL);
-	g_error_free (error);
 
 	g_hash_table_unref (device_props);
 	g_object_unref (client);
@@ -2068,7 +2067,7 @@ colord_client_standard_space_func (void)
 	CdClient *client;
 	CdProfile *profile;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -2108,7 +2107,7 @@ colord_device_modified_func (void)
 	CdDevice *device;
 	CdProfile *profile;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	GHashTable *profile_props;
 	GPtrArray *array;
@@ -2224,7 +2223,7 @@ colord_device_seat_func (void)
 	const gchar *tmp;
 #endif
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 
 	/* no running colord to use */
@@ -2283,7 +2282,7 @@ colord_device_enabled_func (void)
 	CdClient *client;
 	CdDevice *device;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 
 	/* no running colord to use */
@@ -2392,7 +2391,7 @@ colord_profile_ordering_func (void)
 	CdProfile *profile_tmp;
 	gboolean ret;
 	gchar *device_id;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 	GPtrArray *array;
 
@@ -2577,7 +2576,7 @@ colord_profile_duplicate_func (void)
 	CdProfile *profile2;
 	gboolean ret;
 	gchar *filename;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *profile_props;
 
 	/* no running colord to use */
@@ -2642,7 +2641,7 @@ colord_device_duplicate_func (void)
 	CdDevice *device1;
 	CdDevice *device2;
 	gchar *device_id;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 
 	/* no running colord to use */

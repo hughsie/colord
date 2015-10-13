@@ -391,7 +391,6 @@ cd_main_device_auto_add_from_md (CdMainPrivate *priv,
 static void
 cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 {
-	CdProfile *profile_tmp;
 	const gchar *object_id_tmp;
 	guint64 timestamp;
 	guint i;
@@ -410,6 +409,7 @@ cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 
 	/* try to add them */
 	for (i = 0; i < array->len; i++) {
+		g_autoptr(CdProfile) profile_tmp = NULL;
 		object_id_tmp = g_ptr_array_index (array, i);
 
 		/* ensure timestamp is still valid */
@@ -441,7 +441,6 @@ cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 
 		/* does the profile have the correct device metadata */
 		cd_main_auto_add_from_db (priv, device, profile_tmp);
-		g_object_unref (profile_tmp);
 	}
 }
 
@@ -713,7 +712,7 @@ cd_main_profile_auto_add_from_db (CdMainPrivate *priv,
 
 	/* try to add them */
 	for (i = 0; i < array->len; i++) {
-		CdDevice *device_tmp;
+		g_autoptr(CdDevice) device_tmp = NULL;
 		const gchar *device_id_tmp;
 
 		device_id_tmp = g_ptr_array_index (array, i);
@@ -726,7 +725,6 @@ cd_main_profile_auto_add_from_db (CdMainPrivate *priv,
 
 		/* hard add */
 		cd_main_auto_add_from_db (priv, device_tmp, profile);
-		g_object_unref (device_tmp);
 	}
 }
 

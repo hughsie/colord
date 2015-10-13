@@ -539,13 +539,12 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	CdSensor *sensor = CD_SENSOR (source_object);
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* get the result */
 	sample = priv->desc->get_sample_finish (sensor, res, &error);
 	if (sample == NULL) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
-		g_error_free (error);
 		return;
 	}
 

@@ -33,7 +33,7 @@ cd_sensor_dump_lock_cb (GObject *source_object,
 			gpointer user_data)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	CdSensor *sensor = CD_SENSOR (source_object);
 	GMainLoop *loop = (GMainLoop *) user_data;
 
@@ -53,7 +53,7 @@ main (int argc, char **argv)
 {
 	guint retval = 0;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GString *data = NULL;
 	GOptionContext *context;
 	CdSensor *sensor;
@@ -78,7 +78,6 @@ main (int argc, char **argv)
 	if (!ret) {
 		g_print ("FAILED: Failed to load sensor: %s\n",
 			 error->message);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -94,7 +93,6 @@ main (int argc, char **argv)
 	ret = cd_sensor_dump (sensor, data, &error);
 	if (!ret) {
 		g_print ("FAILED: Failed to dump sensor: %s\n", error->message);
-		g_error_free (error);
 		goto out;
 	}
 
@@ -102,7 +100,6 @@ main (int argc, char **argv)
 	ret = g_file_set_contents (filename, data->str, data->len, &error);
 	if (!ret) {
 		g_print ("FAILED: Failed to write file: %s\n", error->message);
-		g_error_free (error);
 		goto out;
 	}
 

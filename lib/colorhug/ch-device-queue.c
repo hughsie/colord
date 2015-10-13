@@ -211,7 +211,7 @@ ch_device_queue_process_write_command_cb (GObject *source,
 	const gchar *device_id;
 	const gchar *tmp;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	guint i;
 	guint pending_commands;
 	ChError last_error_code = 0;

@@ -254,7 +254,7 @@ cd_example_signal_cb (GDBusProxy *proxy,
 	const gchar *profile_path = NULL;
 	const gchar *str = NULL;
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GPtrArray *array = NULL;
 	GtkImage *img;
 	GtkLabel *label;
@@ -327,7 +327,6 @@ cd_example_signal_cb (GDBusProxy *proxy,
 		if (!ret) {
 			g_warning ("failed to update gamma: %s",
 				   error->message);
-			g_error_free (error);
 			goto out;
 		}
 		goto out;
@@ -402,7 +401,7 @@ cd_example_window_state_cb (GtkWidget *widget,
 			    CdExamplePrivate *priv)
 {
 	gboolean ret;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	GdkEventWindowState *event_state = (GdkEventWindowState *) event;
 	GtkWindow *window = GTK_WINDOW (widget);
 
@@ -417,10 +416,8 @@ cd_example_window_state_cb (GtkWidget *widget,
 						 priv->device,
 						 &error);
 
-	if (!ret) {
+	if (!ret)
 		g_warning ("Failed to resize window: %s", error->message);
-		g_error_free (error);
-	}
 	return TRUE;
 }
 
@@ -431,7 +428,7 @@ static void
 cd_example_button_start_cb (GtkWidget *widget, CdExamplePrivate *priv)
 {
 	GVariant *retval;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 
 	/* continue */
 	retval = g_dbus_proxy_call_sync (priv->proxy,
@@ -475,7 +472,7 @@ main (int argc, char **argv)
 	gchar *title = NULL;
 	GDBusConnection *connection = NULL;
 	gdouble gamma = 2.2f;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gint retval = EXIT_FAILURE;
 	GOptionContext *context;
 	GtkBox *box;
@@ -698,7 +695,6 @@ out:
 		g_print ("%s: %s\n",
 			 "Failed to calibrate",
 			 error->message);
-		g_error_free (error);
 	}
 	g_option_context_free (context);
 	if (priv != NULL) {
