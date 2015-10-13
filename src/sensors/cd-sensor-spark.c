@@ -105,12 +105,14 @@ cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
 	CdSensor *sensor = CD_SENSOR (object);
 	CdSensorAsyncState *state = (CdSensorAsyncState *) g_object_get_data (G_OBJECT (cancellable), "state");
 	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
-	g_autoptr(CdIt8) cmf = NULL;
+	g_autoptr(CdIt8) it8_cmf = NULL;
+	g_autoptr(CdIt8) it8_d65 = NULL;
 	g_autoptr(CdSpectrum) sp_new = NULL;
 	g_autoptr(CdSpectrum) sp = NULL;
-	g_autoptr(CdSpectrum) unity = NULL;
+	g_autoptr(CdSpectrum) illuminant = NULL;
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GFile) file = NULL;
+	g_autoptr(GFile) file_cmf = NULL;
+	g_autoptr(GFile) file_illuminant = NULL;
 
 	/* measure */
 	cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
@@ -153,16 +155,29 @@ cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
 	sp_new = cd_spectrum_subtract (sp, priv->dark_calibration);
 	_print_spectra (sp_new);
 
-	/* convert to XYZ */
-	cmf = cd_it8_new ();
-	file = g_file_new_for_path ("/usr/share/colord/cmf/CIE1931-2deg-XYZ.cmf");
-	if (!cd_it8_load_from_file (cmf, file, &error)) {
+	/* load CIE1931 */
+	it8_cmf = cd_it8_new ();
+	file_cmf = g_file_new_for_path ("/usr/share/colord/cmf/CIE1931-2deg-XYZ.cmf");
+	if (!cd_it8_load_from_file (it8_cmf, file_cmf, &error)) {
 		cd_sensor_spark_get_sample_state_finish (state, error);
 		goto out;
 	}
-	unity = cd_spectrum_new ();
+
+	/* load D65 */
+	it8_d65 = cd_it8_new ();
+	file_illuminant = g_file_new_for_path ("/usr/share/colord/illuminant/CIE-D65.sp");
+	if (!cd_it8_load_from_file (it8_d65, file_illuminant, &error)) {
+		cd_sensor_spark_get_sample_state_finish (state, error);
+		goto out;
+	}
+	illuminant = cd_it8_get_spectrum_by_id (it8_d65, "1");
+	g_assert (illuminant != NULL);
+
+	/* convert to XYZ */
 	state->sample = cd_color_xyz_new ();
-	if (!cd_it8_utils_calculate_xyz_from_cmf (cmf, unity, sp_new, state->sample, 1.f, &error)) {
+	if (!cd_it8_utils_calculate_xyz_from_cmf (it8_cmf, illuminant,
+						  sp_new, state->sample,
+						  1.f, &error)) {
 		cd_sensor_spark_get_sample_state_finish (state, error);
 		goto out;
 	}
