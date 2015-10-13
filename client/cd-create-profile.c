@@ -29,8 +29,6 @@
 #include <math.h>
 #include <colord-private.h>
 
-#include "cd-cleanup.h"
-
 #define LCMS_CURVE_PLUGIN_TYPE_REC709	1024
 
 typedef struct {
@@ -665,7 +663,7 @@ cd_util_icc_set_metadata_coverage (CdIcc *icc, GError **error)
 	const gchar *tmp;
 	gdouble coverage = 0.0f;
 	g_autofree gchar *coverage_tmp = NULL;
-	_cleanup_object_unref_ CdIcc *icc_srgb = NULL;
+	g_autoptr(CdIcc) icc_srgb = NULL;
 
 	/* is sRGB? */
 	tmp = cd_icc_get_metadata_item (icc, CD_PROFILE_METADATA_STANDARD_SPACE);
@@ -701,7 +699,7 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 	GHashTable *hash;
 	gssize data_len = -1;
 	g_autofree gchar *data = NULL;
-	_cleanup_object_unref_ CdDom *dom = NULL;
+	g_autoptr(CdDom) dom = NULL;
 
 	/* parse the XML into DOM */
 	if (!g_file_get_contents (filename, &data, (gsize *) &data_len, error))

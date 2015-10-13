@@ -31,8 +31,6 @@
 
 #include "../src/cd-sensor.h"
 
-#include "cd-cleanup.h"
-
 #include <dtp94/dtp94.h>
 
 typedef struct

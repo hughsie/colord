@@ -35,24 +35,13 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_CLIENT		(cd_client_get_type ())
-#define CD_CLIENT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_CLIENT, CdClient))
-#define CD_CLIENT_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_CLIENT, CdClientClass))
-#define CD_IS_CLIENT(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_CLIENT))
-#define CD_IS_CLIENT_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_CLIENT))
-#define CD_CLIENT_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_CLIENT, CdClientClass))
 #define CD_CLIENT_ERROR		(cd_client_error_quark ())
 #define CD_CLIENT_TYPE_ERROR	(cd_client_error_get_type ())
 
-typedef struct _CdClientPrivate CdClientPrivate;
+#define CD_TYPE_CLIENT (cd_client_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdClient, cd_client, CD, CLIENT, GObject)
 
-typedef struct
-{
-	 GObject		 parent;
-	 CdClientPrivate	*priv;
-} CdClient;
-
-typedef struct
+struct _CdClientClass
 {
 	GObjectClass		 parent_class;
 	void			(*device_added)		(CdClient		*client,
@@ -84,9 +73,8 @@ typedef struct
 	void (*_cd_client_reserved6) (void);
 	void (*_cd_client_reserved7) (void);
 	void (*_cd_client_reserved8) (void);
-} CdClientClass;
+};
 
-GType		 cd_client_get_type			(void);
 GQuark		 cd_client_error_quark			(void);
 CdClient	*cd_client_new				(void);
 

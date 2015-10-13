@@ -28,29 +28,14 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_PROFILE_ARRAY		(cd_profile_array_get_type ())
-#define CD_PROFILE_ARRAY(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_PROFILE_ARRAY, CdProfileArray))
-#define CD_PROFILE_ARRAY_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_PROFILE_ARRAY, CdProfileArrayClass))
-#define CD_IS_PROFILE_ARRAY(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_PROFILE_ARRAY))
-#define CD_IS_PROFILE_ARRAY_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_PROFILE_ARRAY))
-#define CD_PROFILE_ARRAY_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_PROFILE_ARRAY, CdProfileArrayClass))
-
-typedef struct _CdProfileArrayPrivate	CdProfileArrayPrivate;
-typedef struct _CdProfileArray		CdProfileArray;
-typedef struct _CdProfileArrayClass	CdProfileArrayClass;
-
-struct _CdProfileArray
-{
-	 GObject		 parent;
-	 CdProfileArrayPrivate	*priv;
-};
+#define CD_TYPE_PROFILE_ARRAY (cd_profile_array_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdProfileArray, cd_profile_array, CD, PROFILE_ARRAY, GObject)
 
 struct _CdProfileArrayClass
 {
 	GObjectClass		 parent_class;
 };
 
-GType		 cd_profile_array_get_type		(void);
 CdProfileArray	*cd_profile_array_new			(void);
 
 void		 cd_profile_array_add			(CdProfileArray	*profile_array,

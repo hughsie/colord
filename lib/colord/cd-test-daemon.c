@@ -27,7 +27,6 @@
 #include <glib-object.h>
 #include <pwd.h>
 
-#include "cd-cleanup.h"
 #include "cd-client.h"
 #include "cd-client-sync.h"
 #include "cd-device.h"
@@ -1654,7 +1653,7 @@ colord_device_async_func (void)
 	const gchar *device_name = "device_async_dave";
 	struct passwd *user_details;
 	g_autofree gchar *device_path = NULL;
-	_cleanup_object_unref_ CdClient *client = NULL;
+	g_autoptr(CdClient) client = NULL;
 
 	/* no running colord to use */
 	if (!has_colord_process) {

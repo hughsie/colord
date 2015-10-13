@@ -25,22 +25,21 @@
 #include <glib-object.h>
 #include <sqlite3.h>
 
-#include "cd-cleanup.h"
 #include "cd-common.h"
 #include "cd-profile-db.h"
 
 static void cd_profile_db_finalize	(GObject *object);
 
-#define CD_PROFILE_DB_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_PROFILE_DB, CdProfileDbPrivate))
+#define GET_PRIVATE(o) (cd_profile_db_get_instance_private (o))
 
-struct CdProfileDbPrivate
+typedef struct
 {
 	sqlite3			*db;
-};
+} CdProfileDbPrivate;
 
 static gpointer cd_profile_db_object = NULL;
 
-G_DEFINE_TYPE (CdProfileDb, cd_profile_db, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdProfileDb, cd_profile_db, G_TYPE_OBJECT)
 
 /**
  * cd_profile_db_load:
@@ -50,13 +49,14 @@ cd_profile_db_load (CdProfileDb *pdb,
 		    const gchar *filename,
 		    GError  **error)
 {
+	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
-	g_return_val_if_fail (pdb->priv->db == NULL, FALSE);
+	g_return_val_if_fail (priv->db == NULL, FALSE);
 
 	/* ensure the path exists */
 	path = g_path_get_dirname (filename);
@@ -65,23 +65,23 @@ cd_profile_db_load (CdProfileDb *pdb,
 
 	g_debug ("CdProfileDb: trying to open database '%s'", filename);
 	g_info ("Using profile database file %s", filename);
-	rc = sqlite3_open (filename, &pdb->priv->db);
+	rc = sqlite3_open (filename, &priv->db);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "Can't open database: %s\n",
-			     sqlite3_errmsg (pdb->priv->db));
-		sqlite3_close (pdb->priv->db);
+			     sqlite3_errmsg (priv->db));
+		sqlite3_close (priv->db);
 		return FALSE;
 	}
 
 	/* we don't need to keep doing fsync */
-	sqlite3_exec (pdb->priv->db, "PRAGMA synchronous=OFF",
+	sqlite3_exec (priv->db, "PRAGMA synchronous=OFF",
 		      NULL, NULL, NULL);
 
 	/* check schema */
-	rc = sqlite3_exec (pdb->priv->db, "SELECT * FROM properties_pu LIMIT 1",
+	rc = sqlite3_exec (priv->db, "SELECT * FROM properties_pu LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		statement = "CREATE TABLE properties_pu ("
@@ -90,7 +90,7 @@ cd_profile_db_load (CdProfileDb *pdb,
 			    "uid INTEGER,"
 			    "value TEXT,"
 			    "PRIMARY KEY (profile_id, property, uid));";
-		sqlite3_exec (pdb->priv->db, statement, NULL, NULL, NULL);
+		sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	}
 	return TRUE;
 }
@@ -101,15 +101,16 @@ cd_profile_db_load (CdProfileDb *pdb,
 gboolean
 cd_profile_db_empty (CdProfileDb *pdb, GError **error)
 {
+	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
-	g_return_val_if_fail (pdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	statement = "DELETE FROM properties_pu;";
-	rc = sqlite3_exec (pdb->priv->db, statement,
+	rc = sqlite3_exec (priv->db, statement,
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
@@ -134,13 +135,14 @@ cd_profile_db_set_property (CdProfileDb *pdb,
 			    const gchar *value,
 			    GError  **error)
 {
+	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
-	g_return_val_if_fail (pdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	g_debug ("CdProfileDb: add profile property %s [%s=%s]",
 		 profile_id, property, value);
@@ -150,7 +152,7 @@ cd_profile_db_set_property (CdProfileDb *pdb,
 				     profile_id, property, uid, value);
 
 	/* insert the entry */
-	rc = sqlite3_exec (pdb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -176,13 +178,14 @@ cd_profile_db_remove (CdProfileDb *pdb,
 		      guint uid,
 		      GError  **error)
 {
+	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
-	g_return_val_if_fail (pdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	/* remove the entry */
 	g_debug ("CdProfileDb: remove profile %s", profile_id);
@@ -191,7 +194,7 @@ cd_profile_db_remove (CdProfileDb *pdb,
 				     "uid = '%i' AND "
 				     "property = '%q' LIMIT 1;",
 				     profile_id, uid, property);
-	rc = sqlite3_exec (pdb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -235,13 +238,14 @@ cd_profile_db_get_property (CdProfileDb *pdb,
 			   gchar **value,
 			   GError  **error)
 {
+	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
-	g_return_val_if_fail (pdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	g_debug ("CdProfileDb: get property %s for %s", property, profile_id);
 	statement = sqlite3_mprintf ("SELECT value FROM properties_pu WHERE "
@@ -251,7 +255,7 @@ cd_profile_db_get_property (CdProfileDb *pdb,
 				     profile_id, uid, property);
 
 	/* retrieve the entry */
-	rc = sqlite3_exec (pdb->priv->db,
+	rc = sqlite3_exec (priv->db,
 			   statement,
 			   cd_profile_db_sqlite_cb,
 			   value,
@@ -279,7 +283,6 @@ cd_profile_db_class_init (CdProfileDbClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_profile_db_finalize;
-	g_type_class_add_private (klass, sizeof (CdProfileDbPrivate));
 }
 
 /**
@@ -288,7 +291,6 @@ cd_profile_db_class_init (CdProfileDbClass *klass)
 static void
 cd_profile_db_init (CdProfileDb *pdb)
 {
-	pdb->priv = CD_PROFILE_DB_GET_PRIVATE (pdb);
 }
 
 /**
@@ -297,13 +299,11 @@ cd_profile_db_init (CdProfileDb *pdb)
 static void
 cd_profile_db_finalize (GObject *object)
 {
-	CdProfileDb *pdb;
-	g_return_if_fail (CD_IS_PROFILE_DB (object));
-	pdb = CD_PROFILE_DB (object);
-	g_return_if_fail (pdb->priv != NULL);
+	CdProfileDb *pdb = CD_PROFILE_DB (object);
+	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 
 	/* close the database */
-	sqlite3_close (pdb->priv->db);
+	sqlite3_close (priv->db);
 
 	G_OBJECT_CLASS (cd_profile_db_parent_class)->finalize (object);
 }

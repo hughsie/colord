@@ -32,7 +32,6 @@
 #include <math.h>
 #include <lcms2.h>
 
-#include "cd-cleanup.h"
 #include "cd-color.h"
 #include "cd-it8-utils.h"
 #include "cd-math.h"

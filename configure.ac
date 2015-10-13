@@ -102,6 +102,7 @@ if test "$GCC" = "yes"; then
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wdeclaration-after-statement"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wshadow"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wno-strict-aliasing"
+	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wno-deprecated-declarations"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Winline"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wmissing-parameter-type"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Woverride-init"
@@ -150,7 +151,7 @@ dnl ---------------------------------------------------------------------------
 dnl - Check library dependencies
 dnl ---------------------------------------------------------------------------
 COLORD_REQUIRES_PRIVATE="lcms2"
-PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.36.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gmodule-2.0)
+PKG_CHECK_MODULES(GLIB, glib-2.0 >= 2.44.0 gobject-2.0 gthread-2.0 gio-2.0 >= 2.25.9 gmodule-2.0)
 
 dnl ---------------------------------------------------------------------------
 dnl - Check Linux-specific dependencies
@@ -191,7 +192,7 @@ AM_CONDITIONAL(HAVE_UNIX, test x$enable_unix = xyes)
 AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
 	      enable_gusb=$enableval, enable_gusb=yes)
 if test x$enable_gusb != xno; then
-	PKG_CHECK_MODULES(GUSB, gusb >= 0.2.2)
+	PKG_CHECK_MODULES(GUSB, gusb >= 0.2.7)
 	AC_DEFINE(HAVE_GUSB,1,[whether gusb is available])
 fi
 AM_CONDITIONAL(HAVE_GUSB, test x$enable_gusb = xyes)

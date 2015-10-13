@@ -26,7 +26,6 @@
 
 #include <glib.h>
 
-#include "cd-cleanup.h"
 #include "cd-test-shared.h"
 
 /**

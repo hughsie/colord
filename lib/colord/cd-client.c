@@ -45,7 +45,6 @@
 #include <glib.h>
 
 #include "cd-enum.h"
-#include "cd-cleanup.h"
 #include "cd-client.h"
 #include "cd-client-sync.h"
 #include "cd-device.h"
@@ -57,7 +56,7 @@ static void	cd_client_class_init	(CdClientClass	*klass);
 static void	cd_client_init		(CdClient	*client);
 static void	cd_client_finalize	(GObject	*object);
 
-#define CD_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_CLIENT, CdClientPrivate))
+#define GET_PRIVATE(o) (cd_client_get_instance_private (o))
 
 #define CD_CLIENT_MESSAGE_TIMEOUT	15000 /* ms */
 #define CD_CLIENT_IMPORT_DAEMON_TIMEOUT	5000 /* ms */
@@ -70,13 +69,13 @@ static void	cd_client_finalize	(GObject	*object);
  *
  * Private #CdClient data
  **/
-struct _CdClientPrivate
+typedef struct
 {
 	GDBusProxy		*proxy;
 	gchar			*daemon_version;
 	gchar			*system_vendor;
 	gchar			*system_model;
-};
+} CdClientPrivate;
 
 enum {
 	SIGNAL_CHANGED,
@@ -104,7 +103,7 @@ enum {
 static guint signals [SIGNAL_LAST] = { 0 };
 static gpointer cd_client_object = NULL;
 
-G_DEFINE_TYPE (CdClient, cd_client, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdClient, cd_client, G_TYPE_OBJECT)
 
 /**
  * cd_client_error_quark:
@@ -142,9 +141,10 @@ cd_client_error_quark (void)
 const gchar *
 cd_client_get_daemon_version (CdClient *client)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
-	return client->priv->daemon_version;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->daemon_version;
 }
 
 /**
@@ -160,9 +160,10 @@ cd_client_get_daemon_version (CdClient *client)
 const gchar *
 cd_client_get_system_vendor (CdClient *client)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
-	return client->priv->system_vendor;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->system_vendor;
 }
 
 /**
@@ -178,9 +179,10 @@ cd_client_get_system_vendor (CdClient *client)
 const gchar *
 cd_client_get_system_model (CdClient *client)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	g_return_val_if_fail (CD_IS_CLIENT (client), NULL);
-	g_return_val_if_fail (client->priv->proxy != NULL, NULL);
-	return client->priv->system_model;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->system_model;
 }
 
 /**
@@ -196,8 +198,9 @@ cd_client_get_system_model (CdClient *client)
 gboolean
 cd_client_get_connected (CdClient *client)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	g_return_val_if_fail (CD_IS_CLIENT (client), FALSE);
-	return client->priv->proxy != NULL;
+	return priv->proxy != NULL;
 }
 
 /**
@@ -252,9 +255,9 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			  CdClient   *client)
 {
 	g_autofree gchar *object_path_tmp = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
-	_cleanup_object_unref_ CdSensor *sensor = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
+	g_autoptr(CdSensor) sensor = NULL;
 
 	if (g_strcmp0 (signal_name, "Changed") == 0) {
 		g_warning ("changed");
@@ -357,6 +360,7 @@ cd_client_connect_cb (GObject *source_object,
 		      gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	g_autoptr(GError) error = NULL;
 	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 	g_autoptr(GVariant) daemon_version = NULL;
@@ -364,8 +368,8 @@ cd_client_connect_cb (GObject *source_object,
 	g_autoptr(GVariant) system_vendor = NULL;
 
 	/* get result */
-	client->priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
-	if (client->priv->proxy == NULL) {
+	priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
+	if (priv->proxy == NULL) {
 		g_simple_async_result_set_error (G_SIMPLE_ASYNC_RESULT (res_source),
 						 CD_CLIENT_ERROR,
 						 CD_CLIENT_ERROR_INTERNAL,
@@ -376,37 +380,37 @@ cd_client_connect_cb (GObject *source_object,
 	}
 
 	/* get daemon version */
-	daemon_version = g_dbus_proxy_get_cached_property (client->priv->proxy,
+	daemon_version = g_dbus_proxy_get_cached_property (priv->proxy,
 							   CD_CLIENT_PROPERTY_DAEMON_VERSION);
 	if (daemon_version != NULL) {
-		g_free (client->priv->daemon_version);
-		client->priv->daemon_version = g_variant_dup_string (daemon_version, NULL);
+		g_free (priv->daemon_version);
+		priv->daemon_version = g_variant_dup_string (daemon_version, NULL);
 	}
 
 	/* get system info */
-	system_vendor = g_dbus_proxy_get_cached_property (client->priv->proxy,
+	system_vendor = g_dbus_proxy_get_cached_property (priv->proxy,
 							  CD_CLIENT_PROPERTY_SYSTEM_VENDOR);
 	if (system_vendor != NULL) {
-		g_free (client->priv->system_vendor);
-		client->priv->system_vendor = g_variant_dup_string (system_vendor, NULL);
+		g_free (priv->system_vendor);
+		priv->system_vendor = g_variant_dup_string (system_vendor, NULL);
 	}
 
 	/* get system model */
-	system_model = g_dbus_proxy_get_cached_property (client->priv->proxy,
+	system_model = g_dbus_proxy_get_cached_property (priv->proxy,
 							 CD_CLIENT_PROPERTY_SYSTEM_MODEL);
 	if (system_model != NULL) {
-		g_free (client->priv->system_model);
-		client->priv->system_model = g_variant_dup_string (system_model, NULL);
+		g_free (priv->system_model);
+		priv->system_model = g_variant_dup_string (system_model, NULL);
 	}
 
 	/* get signals from DBus */
-	g_signal_connect (client->priv->proxy,
+	g_signal_connect (priv->proxy,
 			  "g-signal",
 			  G_CALLBACK (cd_client_dbus_signal_cb),
 			  client);
 
 	/* watch to see if it's fallen off the bus */
-	g_signal_connect (client->priv->proxy,
+	g_signal_connect (priv->proxy,
 			 "notify::g-name-owner",
 			 G_CALLBACK (cd_client_owner_notify_cb),
 			 client);
@@ -433,6 +437,7 @@ cd_client_connect (CdClient *client,
 		   GAsyncReadyCallback callback,
 		   gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
@@ -444,7 +449,7 @@ cd_client_connect (CdClient *client,
 					 cd_client_connect);
 
 	/* already connected */
-	if (client->priv->proxy != NULL) {
+	if (priv->proxy != NULL) {
 		g_simple_async_result_set_op_res_gboolean (res, TRUE);
 		g_simple_async_result_complete_in_idle (res);
 		return;
@@ -573,6 +578,7 @@ cd_client_create_device (CdClient *client,
 			 GAsyncReadyCallback callback,
 			 gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	const gchar *value;
 	GSimpleAsyncResult *res;
 	GVariantBuilder builder;
@@ -580,7 +586,7 @@ cd_client_create_device (CdClient *client,
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
@@ -607,7 +613,7 @@ cd_client_create_device (CdClient *client,
 				       "unknown");
 	}
 
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "CreateDevice",
 			   g_variant_new ("(ssa{ss})",
 					  id,
@@ -719,6 +725,7 @@ cd_client_create_profile (CdClient *client,
 			  GAsyncReadyCallback callback,
 			  gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GDBusConnection *connection;
 	gint fd = -1;
 	GList *list, *l;
@@ -804,7 +811,7 @@ cd_client_create_profile (CdClient *client,
 	g_dbus_message_set_body (request, body);
 
 	/* send sync message to the bus */
-	connection = g_dbus_proxy_get_connection (client->priv->proxy);
+	connection = g_dbus_proxy_get_connection (priv->proxy);
 	g_dbus_connection_send_message_with_reply (connection,
 						   request,
 						   G_DBUS_SEND_MESSAGE_FLAGS_NONE,
@@ -1029,7 +1036,7 @@ cd_client_import_profile_find_filename_cb (GObject *source_object,
 	CdClientImportHelper *helper = (CdClientImportHelper *) user_data;
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	/* does the profile already exist */
 	profile = cd_client_find_profile_by_filename_finish (CD_CLIENT (source_object),
@@ -1258,18 +1265,19 @@ cd_client_delete_device (CdClient *client,
 			 GAsyncReadyCallback callback,
 			 gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (CD_IS_DEVICE (device));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_delete_device);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "DeleteDevice",
 			   g_variant_new ("(o)",
 			   		  cd_device_get_object_path (device)),
@@ -1355,18 +1363,19 @@ cd_client_delete_profile (CdClient *client,
 			  GAsyncReadyCallback callback,
 			  gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_delete_profile);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "DeleteProfile",
 			   g_variant_new ("(o)",
 			   		  cd_profile_get_object_path (profile)),
@@ -1462,18 +1471,19 @@ cd_client_find_device (CdClient *client,
 		       GAsyncReadyCallback callback,
 		       gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (id != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_find_device);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "FindDeviceById",
 			   g_variant_new ("(s)", id),
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -1570,18 +1580,19 @@ cd_client_find_device_by_property (CdClient *client,
 				   GAsyncReadyCallback callback,
 				   gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_find_device_by_property);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "FindDeviceByProperty",
 			   g_variant_new ("(ss)", key, value),
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -1676,18 +1687,19 @@ cd_client_find_profile (CdClient *client,
 			GAsyncReadyCallback callback,
 			gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (id != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_find_profile);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "FindProfileById",
 			   g_variant_new ("(s)", id),
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -1782,18 +1794,19 @@ cd_client_find_profile_by_filename (CdClient *client,
 				    GAsyncReadyCallback callback,
 				    gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (filename != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_find_profile_by_filename);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "FindProfileByFilename",
 			   g_variant_new ("(s)", filename),
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -1888,17 +1901,18 @@ cd_client_get_standard_space (CdClient *client,
 			      GAsyncReadyCallback callback,
 			      gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_get_standard_space);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "GetStandardSpace",
 			   g_variant_new ("(s)",
 			   		  cd_standard_space_to_string (standard_space)),
@@ -2019,17 +2033,18 @@ cd_client_get_devices (CdClient *client,
 		       GAsyncReadyCallback callback,
 		       gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_get_devices);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "GetDevices",
 			   NULL,
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -2123,17 +2138,18 @@ cd_client_get_devices_by_kind (CdClient *client,
 			       GAsyncReadyCallback callback,
 			       gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_get_devices_by_kind);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "GetDevicesByKind",
 			   g_variant_new ("(s)",
 			   		  cd_device_kind_to_string (kind)),
@@ -2254,17 +2270,18 @@ cd_client_get_profiles (CdClient *client,
 			GAsyncReadyCallback callback,
 			gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_get_profiles);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "GetProfiles",
 			   NULL,
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -2384,17 +2401,18 @@ cd_client_get_sensors (CdClient *client,
 		       GAsyncReadyCallback callback,
 		       gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_get_sensors);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "GetSensors",
 			   NULL,
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -2491,18 +2509,19 @@ cd_client_find_profile_by_property (CdClient *client,
 				    GAsyncReadyCallback callback,
 				    gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_find_profile_by_property);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "FindProfileByProperty",
 			   g_variant_new ("(ss)", key, value),
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -2597,18 +2616,19 @@ cd_client_find_sensor (CdClient *client,
 		       GAsyncReadyCallback callback,
 		       gpointer user_data)
 {
+	CdClientPrivate *priv = GET_PRIVATE (client);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_CLIENT (client));
 	g_return_if_fail (id != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (client->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (client),
 					 callback,
 					 user_data,
 					 cd_client_find_sensor);
-	g_dbus_proxy_call (client->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "FindSensorById",
 			   g_variant_new ("(s)", id),
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -2630,19 +2650,20 @@ cd_client_get_property (GObject *object,
 			 GParamSpec *pspec)
 {
 	CdClient *client = CD_CLIENT (object);
+	CdClientPrivate *priv = GET_PRIVATE (client);
 
 	switch (prop_id) {
 	case PROP_DAEMON_VERSION:
-		g_value_set_string (value, client->priv->daemon_version);
+		g_value_set_string (value, priv->daemon_version);
 		break;
 	case PROP_SYSTEM_VENDOR:
-		g_value_set_string (value, client->priv->system_vendor);
+		g_value_set_string (value, priv->system_vendor);
 		break;
 	case PROP_SYSTEM_MODEL:
-		g_value_set_string (value, client->priv->system_model);
+		g_value_set_string (value, priv->system_model);
 		break;
 	case PROP_CONNECTED:
-		g_value_set_boolean (value, client->priv->proxy != NULL);
+		g_value_set_boolean (value, priv->proxy != NULL);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2871,8 +2892,6 @@ cd_client_class_init (CdClientClass *klass)
 			      G_STRUCT_OFFSET (CdClientClass, changed),
 			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-
-	g_type_class_add_private (klass, sizeof (CdClientPrivate));
 }
 
 /*
@@ -2881,8 +2900,6 @@ cd_client_class_init (CdClientClass *klass)
 static void
 cd_client_init (CdClient *client)
 {
-	client->priv = CD_CLIENT_GET_PRIVATE (client);
-
 	/* ensure the remote errors are registered */
 	cd_client_error_quark ();
 }
@@ -2894,14 +2911,15 @@ static void
 cd_client_finalize (GObject *object)
 {
 	CdClient *client = CD_CLIENT (object);
+	CdClientPrivate *priv = GET_PRIVATE (client);
 
 	g_return_if_fail (CD_IS_CLIENT (object));
 
-	g_free (client->priv->daemon_version);
-	g_free (client->priv->system_vendor);
-	g_free (client->priv->system_model);
-	if (client->priv->proxy != NULL)
-		g_object_unref (client->priv->proxy);
+	g_free (priv->daemon_version);
+	g_free (priv->system_vendor);
+	g_free (priv->system_model);
+	if (priv->proxy != NULL)
+		g_object_unref (priv->proxy);
 
 	G_OBJECT_CLASS (cd_client_parent_class)->finalize (object);
 }

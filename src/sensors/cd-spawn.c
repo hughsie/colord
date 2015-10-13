@@ -40,7 +40,6 @@
 
 #include <glib/gi18n.h>
 
-#include "cd-cleanup.h"
 #include "cd-spawn.h"
 
 static void     cd_spawn_finalize	(GObject       *object);

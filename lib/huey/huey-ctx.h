@@ -33,24 +33,13 @@
 
 G_BEGIN_DECLS
 
-#define HUEY_TYPE_CTX		(huey_ctx_get_type ())
-#define HUEY_CTX(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), HUEY_TYPE_CTX, HueyCtx))
-#define HUEY_CTX_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), HUEY_TYPE_CTX, HueyCtxClass))
-#define HUEY_IS_CTX(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), HUEY_TYPE_CTX))
-#define HUEY_IS_CTX_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), HUEY_TYPE_CTX))
-#define HUEY_CTX_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), HUEY_TYPE_CTX, HueyCtxClass))
 #define HUEY_CTX_ERROR		(huey_ctx_error_quark ())
 #define HUEY_CTX_TYPE_ERROR	(huey_ctx_error_get_type ())
 
-typedef struct _HueyCtxPrivate HueyCtxPrivate;
+#define HUEY_TYPE_CTX (huey_ctx_get_type ())
+G_DECLARE_DERIVABLE_TYPE (HueyCtx, huey_ctx, HUEY, CTX, GObject)
 
-typedef struct
-{
-	 GObject		 parent;
-	 HueyCtxPrivate		*priv;
-} HueyCtx;
-
-typedef struct
+struct _HueyCtxClass
 {
 	GObjectClass		 parent_class;
 	/*< private >*/
@@ -63,7 +52,7 @@ typedef struct
 	void (*_huey_ctx_reserved6) (void);
 	void (*_huey_ctx_reserved7) (void);
 	void (*_huey_ctx_reserved8) (void);
-} HueyCtxClass;
+};
 
 /**
  * HueyCtxError:
@@ -78,7 +67,6 @@ typedef enum
 	HUEY_CTX_ERROR_LAST
 } HueyCtxError;
 
-GType		 huey_ctx_get_type		(void);
 GQuark		 huey_ctx_error_quark		(void);
 HueyCtx		*huey_ctx_new			(void);
 

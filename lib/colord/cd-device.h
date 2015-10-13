@@ -34,24 +34,13 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_DEVICE		(cd_device_get_type ())
-#define CD_DEVICE(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_DEVICE, CdDevice))
-#define CD_DEVICE_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_DEVICE, CdDeviceClass))
-#define CD_IS_DEVICE(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_DEVICE))
-#define CD_IS_DEVICE_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_DEVICE))
-#define CD_DEVICE_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_DEVICE, CdDeviceClass))
 #define CD_DEVICE_ERROR		(cd_device_error_quark ())
 #define CD_DEVICE_TYPE_ERROR	(cd_device_error_get_type ())
 
-typedef struct _CdDevicePrivate CdDevicePrivate;
+#define CD_TYPE_DEVICE (cd_device_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdDevice, cd_device, CD, DEVICE, GObject)
 
-typedef struct
-{
-	 GObject		 parent;
-	 CdDevicePrivate	*priv;
-} CdDevice;
-
-typedef struct
+struct _CdDeviceClass
 {
 	GObjectClass		 parent_class;
 	void			(*changed)		(CdDevice		*device);
@@ -65,9 +54,8 @@ typedef struct
 	void (*_cd_device_reserved6) (void);
 	void (*_cd_device_reserved7) (void);
 	void (*_cd_device_reserved8) (void);
-} CdDeviceClass;
+};
 
-GType		 cd_device_get_type			(void);
 GQuark		 cd_device_error_quark			(void);
 CdDevice	*cd_device_new				(void);
 CdDevice	*cd_device_new_with_object_path		(const gchar	*object_path);

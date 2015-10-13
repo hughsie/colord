@@ -36,21 +36,21 @@ static void	cd_interp_class_init	(CdInterpClass	*klass);
 static void	cd_interp_init		(CdInterp	*interp);
 static void	cd_interp_finalize	(GObject	*object);
 
-#define CD_INTERP_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_INTERP, CdInterpPrivate))
+#define GET_PRIVATE(o) (cd_interp_get_instance_private (o))
 
 /**
  * CdInterpPrivate:
  *
  * Private #CdInterp data
  **/
-struct _CdInterpPrivate
+typedef struct
 {
 	CdInterpKind		 kind;
 	GArray			*x;
 	GArray			*y;
 	gboolean		 prepared;
 	guint			 size;
-};
+} CdInterpPrivate;
 
 enum {
 	PROP_0,
@@ -58,7 +58,7 @@ enum {
 	PROP_LAST
 };
 
-G_DEFINE_TYPE (CdInterp, cd_interp, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdInterp, cd_interp, G_TYPE_OBJECT)
 
 /**
  * cd_interp_error_quark:
@@ -95,8 +95,9 @@ cd_interp_error_quark (void)
 GArray *
 cd_interp_get_x (CdInterp *interp)
 {
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 	g_return_val_if_fail (CD_IS_INTERP (interp), NULL);
-	return interp->priv->x;
+	return priv->x;
 }
 
 /**
@@ -118,8 +119,9 @@ cd_interp_get_x (CdInterp *interp)
 GArray *
 cd_interp_get_y (CdInterp *interp)
 {
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 	g_return_val_if_fail (CD_IS_INTERP (interp), NULL);
-	return interp->priv->y;
+	return priv->y;
 }
 
 /**
@@ -140,8 +142,9 @@ cd_interp_get_y (CdInterp *interp)
 guint
 cd_interp_get_size (CdInterp *interp)
 {
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 	g_return_val_if_fail (CD_IS_INTERP (interp), 0);
-	return interp->priv->size;
+	return priv->size;
 }
 
 /**
@@ -157,10 +160,11 @@ cd_interp_get_size (CdInterp *interp)
 void
 cd_interp_insert (CdInterp *interp, gdouble x, gdouble y)
 {
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 	g_return_if_fail (CD_IS_INTERP (interp));
-	g_return_if_fail (!interp->priv->prepared);
-	g_array_append_val (interp->priv->x, x);
-	g_array_append_val (interp->priv->y, y);
+	g_return_if_fail (!priv->prepared);
+	g_array_append_val (priv->x, x);
+	g_array_append_val (priv->y, y);
 }
 
 /**
@@ -176,15 +180,16 @@ cd_interp_insert (CdInterp *interp, gdouble x, gdouble y)
 gboolean
 cd_interp_prepare (CdInterp *interp, GError **error)
 {
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 	CdInterpClass *klass = CD_INTERP_GET_CLASS (interp);
 
 	g_return_val_if_fail (CD_IS_INTERP (interp), FALSE);
-	g_return_val_if_fail (!interp->priv->prepared, FALSE);
+	g_return_val_if_fail (!priv->prepared, FALSE);
 
 	/* save number of data points before the klass method messes around
 	 * with them */
-	interp->priv->size = interp->priv->x->len;
-	if (interp->priv->size == 0) {
+	priv->size = priv->x->len;
+	if (priv->size == 0) {
 		g_set_error_literal (error,
 				     CD_INTERP_ERROR,
 				     CD_INTERP_ERROR_FAILED,
@@ -199,7 +204,7 @@ cd_interp_prepare (CdInterp *interp, GError **error)
 	}
 
 	/* success */
-	interp->priv->prepared = TRUE;
+	priv->prepared = TRUE;
 	return TRUE;
 }
 
@@ -221,7 +226,7 @@ gdouble
 cd_interp_eval (CdInterp *interp, gdouble value, GError **error)
 {
 	CdInterpClass *klass = CD_INTERP_GET_CLASS (interp);
-	CdInterpPrivate *priv = interp->priv;
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 	const gdouble *x;
 	const gdouble *y;
 
@@ -273,8 +278,9 @@ cd_interp_eval (CdInterp *interp, gdouble value, GError **error)
 CdInterpKind
 cd_interp_get_kind (CdInterp *interp)
 {
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 	g_return_val_if_fail (CD_IS_INTERP (interp), CD_INTERP_KIND_LAST);
-	return interp->priv->kind;
+	return priv->kind;
 }
 
 /**
@@ -300,10 +306,11 @@ cd_interp_get_property (GObject *object,
 			GParamSpec *pspec)
 {
 	CdInterp *interp = CD_INTERP (object);
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 
 	switch (prop_id) {
 	case PROP_KIND:
-		g_value_set_uint (value, interp->priv->kind);
+		g_value_set_uint (value, priv->kind);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -322,10 +329,11 @@ cd_interp_set_property (GObject *object,
 			GParamSpec *pspec)
 {
 	CdInterp *interp = CD_INTERP (object);
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 
 	switch (prop_id) {
 	case PROP_KIND:
-		interp->priv->kind = g_value_get_uint (value);
+		priv->kind = g_value_get_uint (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -358,8 +366,6 @@ cd_interp_class_init (CdInterpClass *klass)
 							    NULL, NULL,
 							    0, G_MAXUINT, 0,
 							    G_PARAM_READWRITE));
-
-	g_type_class_add_private (klass, sizeof (CdInterpPrivate));
 }
 
 /**
@@ -368,9 +374,9 @@ cd_interp_class_init (CdInterpClass *klass)
 static void
 cd_interp_init (CdInterp *interp)
 {
-	interp->priv = CD_INTERP_GET_PRIVATE (interp);
-	interp->priv->x = g_array_new (FALSE, TRUE, sizeof (gdouble));
-	interp->priv->y = g_array_new (FALSE, TRUE, sizeof (gdouble));
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
+	priv->x = g_array_new (FALSE, TRUE, sizeof (gdouble));
+	priv->y = g_array_new (FALSE, TRUE, sizeof (gdouble));
 }
 
 /**
@@ -380,11 +386,12 @@ static void
 cd_interp_finalize (GObject *object)
 {
 	CdInterp *interp = CD_INTERP (object);
+	CdInterpPrivate *priv = GET_PRIVATE (interp);
 
 	g_return_if_fail (CD_IS_INTERP (object));
 
-	g_array_unref (interp->priv->x);
-	g_array_unref (interp->priv->y);
+	g_array_unref (priv->x);
+	g_array_unref (priv->y);
 
 	G_OBJECT_CLASS (cd_interp_parent_class)->finalize (object);
 }

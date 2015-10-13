@@ -31,7 +31,6 @@
 #include <math.h>
 #include <glib-object.h>
 
-#include "cd-cleanup.h"
 #include "cd-color.h"
 #include "cd-interp-linear.h"
 #include "cd-spectrum.h"
@@ -517,7 +516,7 @@ cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 {
 	guint i;
 	guint size;
-	_cleanup_object_unref_ CdInterp *interp = NULL;
+	g_autoptr(CdInterp) interp = NULL;
 
 	g_return_val_if_fail (spectrum != NULL, -1.f);
 

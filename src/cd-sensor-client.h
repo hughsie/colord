@@ -30,21 +30,7 @@
 G_BEGIN_DECLS
 
 #define CD_TYPE_SENSOR_CLIENT		(cd_sensor_client_get_type ())
-#define CD_SENSOR_CLIENT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_SENSOR_CLIENT, CdSensorClient))
-#define CD_SENSOR_CLIENT_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_SENSOR_CLIENT, CdSensorClientClass))
-#define CD_IS_SENSOR_CLIENT(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_SENSOR_CLIENT))
-#define CD_IS_SENSOR_CLIENT_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_SENSOR_CLIENT))
-#define CD_SENSOR_CLIENT_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_SENSOR_CLIENT, CdSensorClientClass))
-
-typedef struct _CdSensorClientPrivate	CdSensorClientPrivate;
-typedef struct _CdSensorClient		CdSensorClient;
-typedef struct _CdSensorClientClass	CdSensorClientClass;
-
-struct _CdSensorClient
-{
-	 GObject			 parent;
-	 CdSensorClientPrivate		*priv;
-};
+G_DECLARE_DERIVABLE_TYPE (CdSensorClient, cd_sensor_client, CD, SENSOR_CLIENT, GObject)
 
 struct _CdSensorClientClass
 {

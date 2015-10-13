@@ -33,7 +33,6 @@
 #include <systemd/sd-login.h>
 #endif
 
-#include "cd-cleanup.h"
 #include "cd-common.h"
 #include "cd-debug.h"
 #include "cd-device-array.h"
@@ -218,7 +217,7 @@ cd_main_create_profile (CdMainPrivate *priv,
 			CdObjectScope scope,
 			GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile_tmp = NULL;
+	g_autoptr(CdProfile) profile_tmp = NULL;
 
 	g_assert (priv->connection != NULL);
 
@@ -569,7 +568,7 @@ cd_main_create_device (CdMainPrivate *priv,
 		       GError **error)
 {
 	g_autofree gchar *seat = NULL;
-	_cleanup_object_unref_ CdDevice *device_tmp = NULL;
+	g_autoptr(CdDevice) device_tmp = NULL;
 
 	g_assert (priv->connection != NULL);
 
@@ -738,7 +737,7 @@ static void
 cd_main_profile_auto_add_from_md (CdMainPrivate *priv,
 				  CdProfile *profile)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 	const gchar *device_id;
 
 	/* does the device exists that matches the md */
@@ -931,8 +930,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	g_autofree gchar *cmdline = NULL;
 	g_autofree gchar *device_id_fallback = NULL;
 	g_autofree gchar *filename = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 	g_autoptr(GPtrArray) array = NULL;
 	g_autoptr(GVariantIter) iter = NULL;
 	g_autoptr(GVariant) dict = NULL;
@@ -1714,7 +1713,7 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *profile_id = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	/* create profile */
 	profile = cd_profile_new ();
@@ -1791,7 +1790,7 @@ cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 	gboolean ret;
 	guint i;
 	g_autoptr(GError) error = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 	g_autoptr(GPtrArray) array_properties = NULL;
 
 	device = cd_main_create_device (priv,
@@ -1974,7 +1973,7 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	gboolean ret;
 	guint i;
 	g_autoptr(GError) error = NULL;
-	_cleanup_object_unref_ CdSensor *sensor = NULL;
+	g_autoptr(CdSensor) sensor = NULL;
 	g_autoptr(GPtrArray) array_devices = NULL;
 
 	g_debug ("CdMain: acquired name: %s", name);
@@ -2317,7 +2316,7 @@ cd_main_get_edid_for_output (const gchar *output_name)
 	g_autofree gchar *edid_fn = NULL;
 	g_autofree gchar *enabled_data = NULL;
 	g_autofree gchar *enabled_fn = NULL;
-	_cleanup_object_unref_ CdEdid *edid = NULL;
+	g_autoptr(CdEdid) edid = NULL;
 
 	/* check output is actually an output */
 	enabled_fn = g_build_filename ("/sys/class/drm",
@@ -2396,7 +2395,7 @@ cd_main_check_duplicate_edids (void)
 	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	while (!use_xrandr_mode && (fn = g_dir_read_name (dir)) != NULL) {
 		gpointer old_output;
-		_cleanup_object_unref_ CdEdid *edid = NULL;
+		g_autoptr(CdEdid) edid = NULL;
 		edid = cd_main_get_edid_for_output (fn);
 		if (edid == NULL)
 			continue;

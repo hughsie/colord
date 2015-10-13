@@ -29,7 +29,6 @@
 #include <pwd.h>
 #endif
 
-#include "cd-cleanup.h"
 #include "cd-common.h"
 #include "cd-device.h"
 #include "cd-mapping-db.h"
@@ -44,14 +43,14 @@ static void cd_device_dbus_emit_property_changed (CdDevice *device,
 						  GVariant *property_value);
 static void cd_device_dbus_emit_device_changed	 (CdDevice *device);
 
-#define CD_DEVICE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_DEVICE, CdDevicePrivate))
+#define GET_PRIVATE(o) (cd_device_get_instance_private (o))
 
 /**
  * CdDevicePrivate:
  *
  * Private #CdDevice data
  **/
-struct _CdDevicePrivate
+typedef struct
 {
 	CdObjectScope			 object_scope;
 	CdProfileArray			*profile_array;
@@ -80,7 +79,7 @@ struct _CdDevicePrivate
 	GHashTable			*metadata;
 	guint				 owner;
 	gchar				*seat;
-};
+} CdDevicePrivate;
 
 enum {
 	SIGNAL_INVALIDATE,
@@ -101,7 +100,7 @@ typedef struct {
 } CdDeviceProfileItem;
 
 static guint signals[SIGNAL_LAST] = { 0 };
-G_DEFINE_TYPE (CdDevice, cd_device, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdDevice, cd_device, G_TYPE_OBJECT)
 
 /**
  * cd_device_error_quark:
@@ -128,8 +127,9 @@ cd_device_error_quark (void)
 CdObjectScope
 cd_device_get_scope (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), 0);
-	return device->priv->object_scope;
+	return priv->object_scope;
 }
 
 /**
@@ -138,8 +138,9 @@ cd_device_get_scope (CdDevice *device)
 void
 cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_if_fail (CD_IS_DEVICE (device));
-	device->priv->object_scope = object_scope;
+	priv->object_scope = object_scope;
 }
 
 /**
@@ -148,8 +149,9 @@ cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
 guint
 cd_device_get_owner (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), G_MAXUINT);
-	return device->priv->owner;
+	return priv->owner;
 }
 
 /**
@@ -158,8 +160,9 @@ cd_device_get_owner (CdDevice *device)
 void
 cd_device_set_owner (CdDevice *device, guint owner)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_if_fail (CD_IS_DEVICE (device));
-	device->priv->owner = owner;
+	priv->owner = owner;
 }
 
 /**
@@ -168,8 +171,9 @@ cd_device_set_owner (CdDevice *device, guint owner)
 const gchar *
 cd_device_get_seat (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
-	return device->priv->seat;
+	return priv->seat;
 }
 
 /**
@@ -178,8 +182,9 @@ cd_device_get_seat (CdDevice *device)
 void
 cd_device_set_seat (CdDevice *device, const gchar *seat)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_if_fail (CD_IS_DEVICE (device));
-	device->priv->seat = g_strdup (seat);
+	priv->seat = g_strdup (seat);
 }
 
 /**
@@ -214,9 +219,10 @@ _cd_device_mode_from_string (const gchar *device_mode)
 void
 cd_device_set_mode (CdDevice *device, CdDeviceMode mode)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_if_fail (CD_IS_DEVICE (device));
-	g_free (device->priv->mode);
-	device->priv->mode = g_strdup (_cd_device_mode_to_string (mode));
+	g_free (priv->mode);
+	priv->mode = g_strdup (_cd_device_mode_to_string (mode));
 }
 
 /**
@@ -225,8 +231,9 @@ cd_device_set_mode (CdDevice *device, CdDeviceMode mode)
 CdDeviceMode
 cd_device_get_mode (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_MODE_UNKNOWN);
-	return _cd_device_mode_from_string (device->priv->mode);
+	return _cd_device_mode_from_string (priv->mode);
 }
 
 /**
@@ -235,8 +242,9 @@ cd_device_get_mode (CdDevice *device)
 const gchar *
 cd_device_get_object_path (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
-	return device->priv->object_path;
+	return priv->object_path;
 }
 
 /**
@@ -245,8 +253,9 @@ cd_device_get_object_path (CdDevice *device)
 const gchar *
 cd_device_get_id (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
-	return device->priv->id;
+	return priv->id;
 }
 
 /**
@@ -255,8 +264,9 @@ cd_device_get_id (CdDevice *device)
 const gchar *
 cd_device_get_model (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
-	return device->priv->model;
+	return priv->model;
 }
 
 /**
@@ -265,8 +275,9 @@ cd_device_get_model (CdDevice *device)
 CdDeviceKind
 cd_device_get_kind (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), CD_DEVICE_KIND_UNKNOWN);
-	return device->priv->kind;
+	return priv->kind;
 }
 
 /**
@@ -275,9 +286,10 @@ cd_device_get_kind (CdDevice *device)
 void
 cd_device_set_kind (CdDevice *device, CdDeviceKind kind)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_if_fail (CD_IS_DEVICE (device));
 	g_return_if_fail (kind != CD_DEVICE_KIND_UNKNOWN);
-	device->priv->kind = kind;
+	priv->kind = kind;
 }
 
 /**
@@ -286,6 +298,7 @@ cd_device_set_kind (CdDevice *device, CdDeviceKind kind)
 static void
 cd_device_set_object_path (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 #ifdef HAVE_PWD_H
 	struct passwd *pw;
 #endif
@@ -294,29 +307,29 @@ cd_device_set_object_path (CdDevice *device)
 
 	/* append the uid to the object path */
 #ifdef HAVE_PWD_H
-	pw = getpwuid (device->priv->owner);
-	if (device->priv->owner == 0 ||
+	pw = getpwuid (priv->owner);
+	if (priv->owner == 0 ||
 	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
-		path_tmp = g_strdup (device->priv->id);
+		path_tmp = g_strdup (priv->id);
 	} else {
 		path_tmp = g_strdup_printf ("%s_%s_%d",
-					    device->priv->id,
+					    priv->id,
 					    pw->pw_name,
-					    device->priv->owner);
+					    priv->owner);
 	}
 #else
-	if (device->priv->owner == 0) {
-		path_tmp = g_strdup (device->priv->id);
+	if (priv->owner == 0) {
+		path_tmp = g_strdup (priv->id);
 	} else {
 		path_tmp = g_strdup_printf ("%s_%d",
-					    device->priv->id,
-					    device->priv->owner);
+					    priv->id,
+					    priv->owner);
 	}
 #endif
 
 	/* make sure object path is sane */
 	path_owner = cd_main_ensure_dbus_path (path_tmp);
-	device->priv->object_path = g_build_filename (COLORD_DBUS_PATH,
+	priv->object_path = g_build_filename (COLORD_DBUS_PATH,
 						      "devices",
 						      path_owner,
 						      NULL);
@@ -328,26 +341,27 @@ cd_device_set_object_path (CdDevice *device)
 void
 cd_device_set_id (CdDevice *device, const gchar *id)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_autofree gchar *enabled_str = NULL;
 
 	g_return_if_fail (CD_IS_DEVICE (device));
 
-	g_free (device->priv->id);
-	device->priv->id = g_strdup (id);
+	g_free (priv->id);
+	priv->id = g_strdup (id);
 
 	/* now calculate this again */
 	cd_device_set_object_path (device);
 
 	/* find initial enabled state */
-	enabled_str = cd_device_db_get_property (device->priv->device_db,
-						 device->priv->id,
+	enabled_str = cd_device_db_get_property (priv->device_db,
+						 priv->id,
 						 "Enabled",
 						 NULL);
 	if (g_strcmp0 (enabled_str, "False") == 0) {
 		g_debug ("%s disabled by db at load", id);
-		device->priv->enabled = FALSE;
+		priv->enabled = FALSE;
 	} else {
-		device->priv->enabled = TRUE;
+		priv->enabled = TRUE;
 	}
 }
 
@@ -357,9 +371,10 @@ cd_device_set_id (CdDevice *device, const gchar *id)
 static void
 cd_device_reset_modified (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_debug ("CdDevice: set device Modified");
-	device->priv->modified = g_get_real_time ();
-	device->priv->require_modified_signal = TRUE;
+	priv->modified = g_get_real_time ();
+	priv->require_modified_signal = TRUE;
 }
 
 /**
@@ -370,11 +385,12 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 				      const gchar *property_name,
 				      GVariant *property_value)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	GVariantBuilder builder;
 	GVariantBuilder invalidated_builder;
 
 	/* not yet connected */
-	if (device->priv->connection == NULL)
+	if (priv->connection == NULL)
 		return;
 
 	/* build the dict */
@@ -384,16 +400,16 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 			       "{sv}",
 			       property_name,
 			       property_value);
-	if (device->priv->require_modified_signal) {
+	if (priv->require_modified_signal) {
 		g_variant_builder_add (&builder,
 				       "{sv}",
 				       CD_DEVICE_PROPERTY_MODIFIED,
-				       g_variant_new_uint64 (device->priv->modified));
-		device->priv->require_modified_signal = FALSE;
+				       g_variant_new_uint64 (priv->modified));
+		priv->require_modified_signal = FALSE;
 	}
-	g_dbus_connection_emit_signal (device->priv->connection,
+	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
-				       device->priv->object_path,
+				       priv->object_path,
 				       "org.freedesktop.DBus.Properties",
 				       "PropertiesChanged",
 				       g_variant_new ("(sa{sv}as)",
@@ -411,14 +427,16 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 static void
 cd_device_dbus_emit_device_changed (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
+
 	/* not yet connected */
-	if (device->priv->connection == NULL)
+	if (priv->connection == NULL)
 		return;
 
 	/* emit signal */
 	g_debug ("CdDevice: emit Changed on %s",
 		 cd_device_get_object_path (device));
-	g_dbus_connection_emit_signal (device->priv->connection,
+	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       cd_device_get_object_path (device),
 				       COLORD_DBUS_INTERFACE_DEVICE,
@@ -428,7 +446,7 @@ cd_device_dbus_emit_device_changed (CdDevice *device)
 
 	/* emit signal */
 	g_debug ("CdDevice: emit Changed");
-	g_dbus_connection_emit_signal (device->priv->connection,
+	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
 				       COLORD_DBUS_PATH,
 				       COLORD_DBUS_INTERFACE,
@@ -547,6 +565,7 @@ cd_device_find_profile_by_object_path (GPtrArray *array, const gchar *object_pat
 static GVariant *
 cd_device_get_profiles_as_variant (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	CdDeviceProfileItem *item;
 	const gchar *tmp;
 	guint i;
@@ -559,16 +578,16 @@ cd_device_get_profiles_as_variant (CdDevice *device)
 	 *  2. Soft mapped profiles of DATA_source != EDID
 	 *  2. Soft mapped profiles of DATA_source == EDID
 	 */
-	profiles = g_new0 (GVariant *, device->priv->profiles->len + 1);
-	for (i = 0; i < device->priv->profiles->len; i++) {
-		item = g_ptr_array_index (device->priv->profiles, i);
+	profiles = g_new0 (GVariant *, priv->profiles->len + 1);
+	for (i = 0; i < priv->profiles->len; i++) {
+		item = g_ptr_array_index (priv->profiles, i);
 		if (item->relation != CD_DEVICE_RELATION_HARD)
 			continue;
 		tmp = cd_profile_get_object_path (item->profile);
 		profiles[idx++] = g_variant_new_object_path (tmp);
 	}
-	for (i = 0; i < device->priv->profiles->len; i++) {
-		item = g_ptr_array_index (device->priv->profiles, i);
+	for (i = 0; i < priv->profiles->len; i++) {
+		item = g_ptr_array_index (priv->profiles, i);
 		if (item->relation != CD_DEVICE_RELATION_SOFT)
 			continue;
 		tmp = cd_profile_get_metadata_item (item->profile,
@@ -578,8 +597,8 @@ cd_device_get_profiles_as_variant (CdDevice *device)
 		tmp = cd_profile_get_object_path (item->profile);
 		profiles[idx++] = g_variant_new_object_path (tmp);
 	}
-	for (i = 0; i < device->priv->profiles->len; i++) {
-		item = g_ptr_array_index (device->priv->profiles, i);
+	for (i = 0; i < priv->profiles->len; i++) {
+		item = g_ptr_array_index (priv->profiles, i);
 		if (item->relation != CD_DEVICE_RELATION_SOFT)
 			continue;
 		tmp = cd_profile_get_metadata_item (item->profile,
@@ -593,7 +612,7 @@ cd_device_get_profiles_as_variant (CdDevice *device)
 	/* format the value */
 	return g_variant_new_array (G_VARIANT_TYPE_OBJECT_PATH,
 				    profiles,
-				    device->priv->profiles->len);
+				    priv->profiles->len);
 }
 
 /**
@@ -604,7 +623,7 @@ cd_device_remove_profile (CdDevice *device,
 			  const gchar *profile_object_path,
 			  GError **error)
 {
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	CdDeviceProfileItem *item;
 	gboolean ret = FALSE;
 	guint i;
@@ -652,7 +671,7 @@ static CdDeviceRelation
 cd_device_find_profile_relation (CdDevice *device,
 				 const gchar *profile_object_path)
 {
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	CdDeviceProfileItem *item;
 	guint i;
 
@@ -708,11 +727,11 @@ cd_device_add_profile (CdDevice *device,
 		       guint64 timestamp,
 		       GError **error)
 {
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	CdDeviceProfileItem *item;
 	gboolean create_item = TRUE;
 	guint i;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	/* is it available */
 	profile = cd_profile_array_get_by_object_path (priv->profile_array,
@@ -757,7 +776,7 @@ cd_device_add_profile (CdDevice *device,
 		g_debug ("Adding %s [%s] to %s",
 			 cd_profile_get_id (profile),
 			 _cd_device_relation_to_string (relation),
-			 device->priv->id);
+			 priv->id);
 		item = g_new0 (CdDeviceProfileItem, 1);
 		item->profile = g_object_ref (profile);
 		item->relation = relation;
@@ -788,14 +807,15 @@ cd_device_set_property_to_db (CdDevice *device,
 			      const gchar *property,
 			      const gchar *value)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
 
-	if (device->priv->object_scope != CD_OBJECT_SCOPE_DISK)
+	if (priv->object_scope != CD_OBJECT_SCOPE_DISK)
 		return;
 
-	ret = cd_device_db_set_property (device->priv->device_db,
-					 device->priv->id,
+	ret = cd_device_db_set_property (priv->device_db,
+					 priv->id,
 					 property,
 					 value,
 					 &error);
@@ -811,22 +831,23 @@ cd_device_set_property_to_db (CdDevice *device,
 static GVariant *
 cd_device_get_metadata_as_variant (CdDevice *device)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	GList *l;
 	GVariantBuilder builder;
 	g_autoptr(GList) list = NULL;
 
 	/* do not try to build an empty array */
-	if (g_hash_table_size (device->priv->metadata) == 0)
+	if (g_hash_table_size (priv->metadata) == 0)
 		return g_variant_new_array (G_VARIANT_TYPE ("{ss}"), NULL, 0);
 
 	/* add all the keys in the dictionary to the variant builder */
-	list = g_hash_table_get_keys (device->priv->metadata);
+	list = g_hash_table_get_keys (priv->metadata);
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
 	for (l = list; l != NULL; l = l->next) {
 		g_variant_builder_add (&builder,
 				       "{ss}",
 				       l->data,
-				       g_hash_table_lookup (device->priv->metadata,
+				       g_hash_table_lookup (priv->metadata,
 							    l->data));
 	}
 	return g_variant_builder_end (&builder);
@@ -854,8 +875,9 @@ cd_device_string_remove_suffix (gchar *vendor, const gchar *suffix)
 static void
 cd_device_set_vendor (CdDevice *device, const gchar *vendor)
 {
-	g_free (device->priv->vendor);
-	device->priv->vendor = cd_quirk_vendor_name (vendor);
+	CdDevicePrivate *priv = GET_PRIVATE (device);
+	g_free (priv->vendor);
+	priv->vendor = cd_quirk_vendor_name (vendor);
 }
 
 /**
@@ -864,8 +886,8 @@ cd_device_set_vendor (CdDevice *device, const gchar *vendor)
 static void
 cd_device_set_model (CdDevice *device, const gchar *model)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	GString *tmp;
-	CdDevicePrivate *priv = device->priv;
 
 	/* remove insanities */
 	tmp = g_string_new (model);
@@ -900,7 +922,7 @@ cd_device_get_nullable_for_string (const gchar *value)
 static void
 cd_device_set_serial (CdDevice *device, const gchar *value)
 {
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	gchar *tmp;
 
 	/* CUPS likes to hand us a serial with a URI prepended */
@@ -924,7 +946,7 @@ cd_device_set_property_internal (CdDevice *device,
 				 GError **error)
 {
 	gboolean is_metadata = FALSE;
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 
 	/* sanity check the length of the key and value */
 	if (strlen (property) > CD_DBUS_METADATA_KEY_LEN_MAX) {
@@ -943,7 +965,7 @@ cd_device_set_property_internal (CdDevice *device,
 	}
 
 	g_debug ("CdDevice: Attempting to set %s to %s on %s",
-		 property, value, device->priv->id);
+		 property, value, priv->id);
 	if (g_strcmp0 (property, CD_DEVICE_PROPERTY_MODEL) == 0) {
 		cd_device_set_model (device, value);
 	} else if (g_strcmp0 (property, CD_DEVICE_PROPERTY_KIND) == 0) {
@@ -969,7 +991,7 @@ cd_device_set_property_internal (CdDevice *device,
 	} else {
 		/* add to metadata */
 		is_metadata = TRUE;
-		g_hash_table_insert (device->priv->metadata,
+		g_hash_table_insert (priv->metadata,
 				     g_strdup (property),
 				     g_strdup (value));
 		cd_device_dbus_emit_property_changed (device,
@@ -1000,13 +1022,14 @@ cd_device_set_property_internal (CdDevice *device,
 const gchar *
 cd_device_get_metadata (CdDevice *device, const gchar *key)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	if (g_strcmp0 (key, CD_DEVICE_PROPERTY_MODEL) == 0)
-		return device->priv->model;
+		return priv->model;
 	if (g_strcmp0 (key, CD_DEVICE_PROPERTY_VENDOR) == 0)
-		return device->priv->vendor;
+		return priv->vendor;
 	if (g_strcmp0 (key, CD_DEVICE_PROPERTY_SERIAL) == 0)
-		return device->priv->serial;
-	return g_hash_table_lookup (device->priv->metadata, key);
+		return priv->serial;
+	return g_hash_table_lookup (priv->metadata, key);
 }
 
 /**
@@ -1017,7 +1040,7 @@ cd_device_make_default (CdDevice *device,
 		        const gchar *profile_object_path,
 		        GError **error)
 {
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	CdDeviceProfileItem *item;
 	CdProfile *profile;
 	guint i;
@@ -1067,7 +1090,7 @@ cd_device_set_enabled (CdDevice *device,
 		       gboolean enabled,
 		       GError **error)
 {
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	gboolean ret;
 	g_autoptr(GError) error_local = NULL;
 
@@ -1076,8 +1099,8 @@ cd_device_set_enabled (CdDevice *device,
 		return TRUE;
 
 	/* update database */
-	ret = cd_device_db_set_property (device->priv->device_db,
-					 device->priv->id,
+	ret = cd_device_db_set_property (priv->device_db,
+					 priv->id,
 					 "Enabled",
 					 enabled ? "True" : "False",
 					 &error_local);
@@ -1115,7 +1138,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    GDBusMethodInvocation *invocation, gpointer user_data)
 {
 	CdDevice *device = CD_DEVICE (user_data);
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	CdDeviceRelation relation = CD_DEVICE_RELATION_UNKNOWN;
 	CdProfile *profile = NULL;
 	GVariant *tuple = NULL;
@@ -1536,7 +1559,7 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 			     gpointer user_data)
 {
 	CdDevice *device = CD_DEVICE (user_data);
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_auto(GStrv) bus_names = NULL;
 
 	if (g_strcmp0 (property_name, CD_DEVICE_PROPERTY_CREATED) == 0)
@@ -1596,6 +1619,7 @@ cd_device_register_object (CdDevice *device,
 			   GDBusInterfaceInfo *info,
 			   GError **error)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_autoptr(GError) error_local = NULL;
 
 	static const GDBusInterfaceVTable interface_vtable = {
@@ -1604,16 +1628,16 @@ cd_device_register_object (CdDevice *device,
 		NULL
 	};
 
-	device->priv->connection = connection;
-	device->priv->registration_id = g_dbus_connection_register_object (
+	priv->connection = connection;
+	priv->registration_id = g_dbus_connection_register_object (
 		connection,
-		device->priv->object_path,
+		priv->object_path,
 		info,
 		&interface_vtable,
 		device,  /* user_data */
 		NULL,  /* user_data_free_func */
 		&error_local); /* GError** */
-	if (device->priv->registration_id == 0) {
+	if (priv->registration_id == 0) {
 		g_set_error (error,
 			     CD_DEVICE_ERROR,
 			     CD_DEVICE_ERROR_INTERNAL,
@@ -1622,8 +1646,8 @@ cd_device_register_object (CdDevice *device,
 		return FALSE;
 	}
 	g_debug ("CdDevice: Register interface %i on %s",
-		 device->priv->registration_id,
-		 device->priv->object_path);
+		 priv->registration_id,
+		 priv->object_path);
 	return TRUE;
 }
 
@@ -1646,9 +1670,10 @@ cd_device_name_vanished_cb (GDBusConnection *connection,
 void
 cd_device_watch_sender (CdDevice *device, const gchar *sender)
 {
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_if_fail (CD_IS_DEVICE (device));
 	g_return_if_fail (sender != NULL);
-	device->priv->watcher_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
+	priv->watcher_id = g_bus_watch_name (G_BUS_TYPE_SYSTEM,
 						     sender,
 						     G_BUS_NAME_WATCHER_FLAGS_NONE,
 						     NULL,
@@ -1664,7 +1689,7 @@ static void
 cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
 	CdDevice *device = CD_DEVICE (object);
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 
 	switch (prop_id) {
 	case PROP_OBJECT_PATH:
@@ -1686,7 +1711,7 @@ static void
 cd_device_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	CdDevice *device = CD_DEVICE (object);
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 
 	switch (prop_id) {
 	case PROP_OBJECT_PATH:
@@ -1740,8 +1765,6 @@ cd_device_class_init (CdDeviceClass *klass)
 			      G_STRUCT_OFFSET (CdDeviceClass, invalidate),
 			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-
-	g_type_class_add_private (klass, sizeof (CdDevicePrivate));
 }
 
 /**
@@ -1760,19 +1783,19 @@ cd_device_profiles_item_free (CdDeviceProfileItem *item)
 static void
 cd_device_init (CdDevice *device)
 {
-	device->priv = CD_DEVICE_GET_PRIVATE (device);
-	device->priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_device_profiles_item_free);
-	device->priv->profile_array = cd_profile_array_new ();
-	device->priv->created = g_get_real_time ();
-	device->priv->modified = g_get_real_time ();
-	device->priv->mapping_db = cd_mapping_db_new ();
-	device->priv->device_db = cd_device_db_new ();
-	device->priv->inhibit = cd_inhibit_new ();
-	g_signal_connect (device->priv->inhibit,
+	CdDevicePrivate *priv = GET_PRIVATE (device);
+	priv->profiles = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_device_profiles_item_free);
+	priv->profile_array = cd_profile_array_new ();
+	priv->created = g_get_real_time ();
+	priv->modified = g_get_real_time ();
+	priv->mapping_db = cd_mapping_db_new ();
+	priv->device_db = cd_device_db_new ();
+	priv->inhibit = cd_inhibit_new ();
+	g_signal_connect (priv->inhibit,
 			  "changed",
 			  G_CALLBACK (cd_device_inhibit_changed_cb),
 			  device);
-	device->priv->metadata = g_hash_table_new_full (g_str_hash,
+	priv->metadata = g_hash_table_new_full (g_str_hash,
 							 g_str_equal,
 							 g_free,
 							 g_free);
@@ -1785,7 +1808,7 @@ static void
 cd_device_finalize (GObject *object)
 {
 	CdDevice *device = CD_DEVICE (object);
-	CdDevicePrivate *priv = device->priv;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
 
 	if (priv->watcher_id > 0)
 		g_bus_unwatch_name (priv->watcher_id);

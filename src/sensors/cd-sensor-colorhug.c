@@ -31,7 +31,6 @@
 #include <string.h>
 #include <colorhug/colorhug.h>
 
-#include "cd-cleanup.h"
 #include "cd-sensor.h"
 
 typedef struct

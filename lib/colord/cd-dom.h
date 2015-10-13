@@ -32,24 +32,13 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_DOM		(cd_dom_get_type ())
-#define CD_DOM(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_DOM, CdDom))
-#define CD_DOM_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_DOM, CdDomClass))
-#define CD_IS_DOM(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_DOM))
-#define CD_IS_DOM_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_DOM))
-#define CD_DOM_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_DOM, CdDomClass))
 #define CD_DOM_ERROR		(cd_dom_error_quark ())
 #define CD_DOM_TYPE_ERROR	(cd_dom_error_get_type ())
 
-typedef struct _CdDomPrivate CdDomPrivate;
+#define CD_TYPE_DOM (cd_dom_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdDom, cd_dom, CD, DOM, GObject)
 
-typedef struct
-{
-	 GObject		 parent;
-	 CdDomPrivate		*priv;
-} CdDom;
-
-typedef struct
+struct _CdDomClass
 {
 	GObjectClass		 parent_class;
 	/*< private >*/
@@ -62,9 +51,8 @@ typedef struct
 	void (*_cd_dom_reserved6) (void);
 	void (*_cd_dom_reserved7) (void);
 	void (*_cd_dom_reserved8) (void);
-} CdDomClass;
+};
 
-GType		 cd_dom_get_type			(void);
 GQuark		 cd_dom_error_quark			(void);
 CdDom		*cd_dom_new				(void);
 gchar		*cd_dom_to_string			(CdDom		*dom);

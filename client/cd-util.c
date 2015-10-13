@@ -31,8 +31,6 @@
 #include <stdio.h>
 #include <colord/colord.h>
 
-#include "cd-cleanup.h"
-
 #define CD_ERROR			1
 #define CD_ERROR_INVALID_ARGUMENTS	0
 #define CD_ERROR_NO_SUCH_CMD		1
@@ -1258,7 +1256,7 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	guint mask;
 	g_autoptr(GHashTable) device_props = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 3) {
 		g_set_error_literal (error,
@@ -1297,7 +1295,7 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_find_device (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -1326,7 +1324,7 @@ cd_util_find_device (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_find_device_by_property (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1358,7 +1356,7 @@ cd_util_find_device_by_property (CdUtilPrivate *priv, gchar **values, GError **e
 static gboolean
 cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -1387,7 +1385,7 @@ cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_find_profile_by_filename (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -1416,7 +1414,7 @@ cd_util_find_profile_by_filename (CdUtilPrivate *priv, gchar **values, GError **
 static gboolean
 cd_util_get_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -1447,7 +1445,7 @@ cd_util_get_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 	guint mask;
 
 	if (g_strv_length (values) < 2) {
@@ -1479,8 +1477,8 @@ cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1526,8 +1524,8 @@ cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_device_make_profile_default (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1569,7 +1567,7 @@ cd_util_device_make_profile_default (CdUtilPrivate *priv, gchar **values, GError
 static gboolean
 cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -1599,7 +1597,7 @@ cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -1629,7 +1627,7 @@ cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_profile_set_property (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 3) {
 		g_set_error_literal (error,
@@ -1665,7 +1663,7 @@ cd_util_profile_set_property (CdUtilPrivate *priv, gchar **values, GError **erro
 static gboolean
 cd_util_device_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1697,7 +1695,7 @@ cd_util_device_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_device_set_enabled (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1733,8 +1731,8 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 				    gchar **values,
 				    GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 1) {
 		g_set_error_literal (error,
@@ -1777,7 +1775,7 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 static gboolean
 cd_util_device_set_vendor (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1809,7 +1807,7 @@ cd_util_device_set_vendor (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_device_set_serial (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1841,7 +1839,7 @@ cd_util_device_set_serial (CdUtilPrivate *priv, gchar **values, GError **error)
 static gboolean
 cd_util_device_set_kind (CdUtilPrivate *priv, gchar **values, GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1875,7 +1873,7 @@ cd_util_device_inhibit (CdUtilPrivate *priv, gchar **values, GError **error)
 {
 	GMainLoop *loop = NULL;
 	gint timeout;
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1932,8 +1930,8 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 					   gchar **values,
 					   GError **error)
 {
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	if (g_strv_length (values) < 2) {
 		g_set_error_literal (error,
@@ -1976,7 +1974,7 @@ cd_util_import_profile (CdUtilPrivate *priv,
 			gchar **values,
 			GError **error)
 {
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 	g_autoptr(GFile) file = NULL;
 
 	if (g_strv_length (values) < 1) {

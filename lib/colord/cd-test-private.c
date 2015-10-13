@@ -48,7 +48,6 @@
 #include "cd-transform.h"
 #include "cd-version.h"
 
-#include "cd-cleanup.h"
 #include "cd-test-shared.h"
 
 static void
@@ -2156,7 +2155,7 @@ colord_it8_gamma_func (void)
 	gboolean ret;
 	gdouble gamma_est;
 	guint i;
-	_cleanup_object_unref_ CdIt8 *it8 = NULL;
+	g_autoptr(CdIt8) it8 = NULL;
 
 	/* add some dummy primary data  */
 	it8 = cd_it8_new_with_kind (CD_IT8_KIND_TI3);

@@ -28,23 +28,10 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_PROFILE		(cd_profile_get_type ())
-#define CD_PROFILE(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_PROFILE, CdProfile))
-#define CD_PROFILE_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_PROFILE, CdProfileClass))
-#define CD_IS_PROFILE(o)	(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_PROFILE))
-#define CD_IS_PROFILE_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_PROFILE))
-#define CD_PROFILE_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_PROFILE, CdProfileClass))
 #define CD_PROFILE_ERROR	cd_profile_error_quark()
 
-typedef struct _CdProfilePrivate	CdProfilePrivate;
-typedef struct _CdProfile		CdProfile;
-typedef struct _CdProfileClass		CdProfileClass;
-
-struct _CdProfile
-{
-	 GObject		 parent;
-	 CdProfilePrivate	*priv;
-};
+#define CD_TYPE_PROFILE (cd_profile_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdProfile, cd_profile, CD, PROFILE, GObject)
 
 struct _CdProfileClass
 {
@@ -52,7 +39,6 @@ struct _CdProfileClass
 	void			(* invalidate)		(CdProfile	*profile);
 };
 
-GType		 cd_profile_get_type			(void);
 CdProfile	*cd_profile_new				(void);
 GQuark		 cd_profile_error_quark			(void);
 

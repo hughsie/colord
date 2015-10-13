@@ -32,22 +32,8 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_ICC_STORE		(cd_icc_store_get_type ())
-#define CD_ICC_STORE(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_ICC_STORE, CdIccStore))
-#define CD_ICC_STORE_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_ICC_STORE, CdIccStoreClass))
-#define CD_IS_ICC_STORE(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_ICC_STORE))
-#define CD_IS_ICC_STORE_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_ICC_STORE))
-#define CD_ICC_STORE_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_ICC_STORE, CdIccStoreClass))
-
-typedef struct _CdIccStorePrivate	CdIccStorePrivate;
-typedef struct _CdIccStore		CdIccStore;
-typedef struct _CdIccStoreClass		CdIccStoreClass;
-
-struct _CdIccStore
-{
-	 GObject		 parent;
-	 CdIccStorePrivate	*priv;
-};
+#define CD_TYPE_ICC_STORE (cd_icc_store_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdIccStore, cd_icc_store, CD, ICC_STORE, GObject)
 
 struct _CdIccStoreClass
 {
@@ -90,7 +76,6 @@ typedef enum {
 	CD_ICC_STORE_SEARCH_KIND_LAST
 } CdIccStoreSearchKind;
 
-GType		 cd_icc_store_get_type		(void);
 CdIccStore	*cd_icc_store_new		(void);
 gboolean	 cd_icc_store_search_location	(CdIccStore	*store,
 						 const gchar	*location,

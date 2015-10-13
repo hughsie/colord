@@ -28,7 +28,6 @@
 #include <glib-object.h>
 #include <stdlib.h>
 
-#include "cd-cleanup.h"
 #include "cd-sensor.h"
 #include "cd-spawn.h"
 

@@ -35,22 +35,11 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_ICC		(cd_icc_get_type ())
-#define CD_ICC(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_ICC, CdIcc))
-#define CD_ICC_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_ICC, CdIccClass))
-#define CD_IS_ICC(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_ICC))
-#define CD_IS_ICC_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_ICC))
-#define CD_ICC_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_ICC, CdIccClass))
 #define CD_ICC_ERROR		(cd_icc_error_quark ())
 #define CD_ICC_TYPE_ERROR	(cd_icc_error_get_type ())
 
-typedef struct _CdIccPrivate CdIccPrivate;
-
-typedef struct
-{
-	 GObject		 parent;
-	 CdIccPrivate		*priv;
-} CdIcc;
+#define CD_TYPE_ICC (cd_icc_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdIcc, cd_icc, CD, ICC, GObject)
 
 /**
  * CdIccError:
@@ -80,7 +69,7 @@ typedef enum {
 	CD_ICC_ERROR_LAST
 } CdIccError;
 
-typedef struct
+struct _CdIccClass
 {
 	GObjectClass		 parent_class;
 	/*< private >*/
@@ -93,7 +82,7 @@ typedef struct
 	void (*_cd_icc_reserved6) (void);
 	void (*_cd_icc_reserved7) (void);
 	void (*_cd_icc_reserved8) (void);
-} CdIccClass;
+};
 
 /**
  * CdIccLoadFlags:
@@ -138,7 +127,6 @@ typedef enum {
 	CD_ICC_SAVE_FLAGS_LAST
 } CdIccSaveFlags;
 
-GType		 cd_icc_get_type			(void);
 GQuark		 cd_icc_error_quark			(void);
 CdIcc		*cd_icc_new				(void);
 

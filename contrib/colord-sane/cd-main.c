@@ -30,8 +30,6 @@
 #include <dbus/dbus.h>
 #include <colord/colord.h>
 
-#include "cd-cleanup.h"
-
 typedef struct {
 	gchar		*argv0;
 	CdClient	*client;
@@ -101,7 +99,7 @@ cd_main_colord_create_device_cb (GObject *source_object,
 {
 	CdClient *client = CD_CLIENT (source_object);
 	g_autoptr(GError) error = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	/* get result */
 	device = cd_client_create_device_finish (client, res, &error);

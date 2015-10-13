@@ -26,27 +26,14 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_MAPPING_DB		(cd_mapping_db_get_type ())
-#define CD_MAPPING_DB(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_MAPPING_DB, CdMappingDb))
-#define CD_MAPPING_DB_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_MAPPING_DB, CdMappingDbClass))
-#define CD_IS_MAPPING_DB(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_MAPPING_DB))
-#define CD_IS_MAPPING_DB_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_MAPPING_DB))
-#define CD_MAPPING_DB_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_MAPPING_DB, CdMappingDbClass))
+#define CD_TYPE_MAPPING_DB (cd_mapping_db_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdMappingDb, cd_mapping_db, CD, MAPPING_DB, GObject)
 
-typedef struct CdMappingDbPrivate CdMappingDbPrivate;
-
-typedef struct
-{
-	 GObject		 parent;
-	 CdMappingDbPrivate	*priv;
-} CdMappingDb;
-
-typedef struct
+struct _CdMappingDbClass
 {
 	GObjectClass	parent_class;
-} CdMappingDbClass;
+};
 
-GType		 cd_mapping_db_get_type		(void);
 CdMappingDb	*cd_mapping_db_new		(void);
 
 gboolean	 cd_mapping_db_load		(CdMappingDb	*mdb,

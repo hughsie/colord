@@ -29,15 +29,14 @@
   #include <libudev.h>
 #endif
 
-#include "cd-cleanup.h"
 #include "cd-edid.h"
 #include "cd-quirk.h"
 
 static void	cd_edid_finalize	(GObject	*object);
 
-#define CD_EDID_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_EDID, CdEdidPrivate))
+#define GET_PRIVATE(o) (cd_edid_get_instance_private (o))
 
-struct _CdEdidPrivate
+typedef struct
 {
 	CdColorYxy		*red;
 	CdColorYxy		*green;
@@ -52,9 +51,9 @@ struct _CdEdidPrivate
 	gdouble			 gamma;
 	guint			 height;
 	guint			 width;
-};
+} CdEdidPrivate;
 
-G_DEFINE_TYPE (CdEdid, cd_edid, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdEdid, cd_edid, G_TYPE_OBJECT)
 
 #define CD_EDID_OFFSET_PNPID				0x08
 #define CD_EDID_OFFSET_SERIAL				0x0c
@@ -101,8 +100,9 @@ cd_edid_error_quark (void)
 const gchar *
 cd_edid_get_monitor_name (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->monitor_name;
+	return priv->monitor_name;
 }
 
 /**
@@ -196,7 +196,7 @@ out:
 const gchar *
 cd_edid_get_vendor_name (CdEdid *edid)
 {
-	CdEdidPrivate *priv = edid->priv;
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
 	if (priv->vendor_name == NULL)
 		priv->vendor_name = cd_edid_convert_pnp_id_to_string (priv->pnp_id);
@@ -216,8 +216,9 @@ cd_edid_get_vendor_name (CdEdid *edid)
 const gchar *
 cd_edid_get_serial_number (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->serial_number;
+	return priv->serial_number;
 }
 
 /**
@@ -233,8 +234,9 @@ cd_edid_get_serial_number (CdEdid *edid)
 const gchar *
 cd_edid_get_eisa_id (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->eisa_id;
+	return priv->eisa_id;
 }
 
 /**
@@ -250,8 +252,9 @@ cd_edid_get_eisa_id (CdEdid *edid)
 const gchar *
 cd_edid_get_checksum (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->checksum;
+	return priv->checksum;
 }
 
 /**
@@ -267,8 +270,9 @@ cd_edid_get_checksum (CdEdid *edid)
 const gchar *
 cd_edid_get_pnp_id (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->pnp_id;
+	return priv->pnp_id;
 }
 
 /**
@@ -284,8 +288,9 @@ cd_edid_get_pnp_id (CdEdid *edid)
 guint
 cd_edid_get_width (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), 0);
-	return edid->priv->width;
+	return priv->width;
 }
 
 /**
@@ -301,8 +306,9 @@ cd_edid_get_width (CdEdid *edid)
 guint
 cd_edid_get_height (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), 0);
-	return edid->priv->height;
+	return priv->height;
 }
 
 /**
@@ -318,8 +324,9 @@ cd_edid_get_height (CdEdid *edid)
 gdouble
 cd_edid_get_gamma (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), 0.0f);
-	return edid->priv->gamma;
+	return priv->gamma;
 }
 
 /**
@@ -335,8 +342,9 @@ cd_edid_get_gamma (CdEdid *edid)
 const CdColorYxy *
 cd_edid_get_red (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->red;
+	return priv->red;
 }
 
 /**
@@ -352,8 +360,9 @@ cd_edid_get_red (CdEdid *edid)
 const CdColorYxy *
 cd_edid_get_green (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->green;
+	return priv->green;
 }
 
 /**
@@ -369,8 +378,9 @@ cd_edid_get_green (CdEdid *edid)
 const CdColorYxy *
 cd_edid_get_blue (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->blue;
+	return priv->blue;
 }
 
 /**
@@ -386,8 +396,9 @@ cd_edid_get_blue (CdEdid *edid)
 const CdColorYxy *
 cd_edid_get_white (CdEdid *edid)
 {
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	g_return_val_if_fail (CD_IS_EDID (edid), NULL);
-	return edid->priv->white;
+	return priv->white;
 }
 
 /**
@@ -401,7 +412,7 @@ cd_edid_get_white (CdEdid *edid)
 void
 cd_edid_reset (CdEdid *edid)
 {
-	CdEdidPrivate *priv = edid->priv;
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 
 	g_return_if_fail (CD_IS_EDID (edid));
 
@@ -524,7 +535,7 @@ cd_edid_parse_string (const guint8 *data)
 gboolean
 cd_edid_parse (CdEdid *edid, GBytes *edid_data, GError **error)
 {
-	CdEdidPrivate *priv = edid->priv;
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 	const guint8 *data;
 	gchar *tmp;
 	gsize length;
@@ -659,7 +670,6 @@ cd_edid_class_init (CdEdidClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_edid_finalize;
-	g_type_class_add_private (klass, sizeof (CdEdidPrivate));
 }
 
 /**
@@ -668,12 +678,12 @@ cd_edid_class_init (CdEdidClass *klass)
 static void
 cd_edid_init (CdEdid *edid)
 {
-	edid->priv = CD_EDID_GET_PRIVATE (edid);
-	edid->priv->pnp_id = g_new0 (gchar, 4);
-	edid->priv->red = cd_color_yxy_new ();
-	edid->priv->green = cd_color_yxy_new ();
-	edid->priv->blue = cd_color_yxy_new ();
-	edid->priv->white = cd_color_yxy_new ();
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
+	priv->pnp_id = g_new0 (gchar, 4);
+	priv->red = cd_color_yxy_new ();
+	priv->green = cd_color_yxy_new ();
+	priv->blue = cd_color_yxy_new ();
+	priv->white = cd_color_yxy_new ();
 }
 
 /**
@@ -683,7 +693,7 @@ static void
 cd_edid_finalize (GObject *object)
 {
 	CdEdid *edid = CD_EDID (object);
-	CdEdidPrivate *priv = edid->priv;
+	CdEdidPrivate *priv = GET_PRIVATE (edid);
 
 	g_free (priv->monitor_name);
 	g_free (priv->vendor_name);

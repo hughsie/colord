@@ -25,8 +25,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "cd-cleanup.h"
-
 #include "ch-inhx32.h"
 
 #define	CH_RECORD_TYPE_DATA		0

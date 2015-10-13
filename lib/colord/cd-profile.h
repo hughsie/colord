@@ -34,24 +34,13 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_PROFILE		(cd_profile_get_type ())
-#define CD_PROFILE(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_PROFILE, CdProfile))
-#define CD_PROFILE_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_PROFILE, CdProfileClass))
-#define CD_IS_PROFILE(o)	(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_PROFILE))
-#define CD_IS_PROFILE_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_PROFILE))
-#define CD_PROFILE_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_PROFILE, CdProfileClass))
 #define CD_PROFILE_ERROR	(cd_profile_error_quark ())
 #define CD_PROFILE_TYPE_ERROR	(cd_profile_error_get_type ())
 
-typedef struct _CdProfilePrivate CdProfilePrivate;
+#define CD_TYPE_PROFILE (cd_profile_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdProfile, cd_profile, CD, PROFILE, GObject)
 
-typedef struct
-{
-	 GObject		 parent;
-	 CdProfilePrivate	*priv;
-} CdProfile;
-
-typedef struct
+struct _CdProfileClass
 {
 	GObjectClass		 parent_class;
 	void			(*changed)		(CdProfile		*profile);
@@ -65,9 +54,8 @@ typedef struct
 	void (*_cd_profile_reserved6) (void);
 	void (*_cd_profile_reserved7) (void);
 	void (*_cd_profile_reserved8) (void);
-} CdProfileClass;
+};
 
-GType		 cd_profile_get_type			(void);
 GQuark		 cd_profile_error_quark			(void);
 CdProfile	*cd_profile_new				(void);
 CdProfile	*cd_profile_new_with_object_path	(const gchar	*object_path);

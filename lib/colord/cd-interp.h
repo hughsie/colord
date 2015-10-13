@@ -30,24 +30,13 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_INTERP		(cd_interp_get_type ())
-#define CD_INTERP(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_INTERP, CdInterp))
-#define CD_INTERP_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_INTERP, CdInterpClass))
-#define CD_IS_INTERP(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_INTERP))
-#define CD_IS_INTERP_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_INTERP))
-#define CD_INTERP_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_INTERP, CdInterpClass))
 #define CD_INTERP_ERROR		(cd_interp_error_quark ())
 #define CD_INTERP_TYPE_ERROR	(cd_interp_error_get_type ())
 
-typedef struct _CdInterpPrivate CdInterpPrivate;
+#define CD_TYPE_INTERP (cd_interp_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdInterp, cd_interp, CD, INTERP, GObject)
 
-typedef struct
-{
-	 GObject		 parent;
-	 CdInterpPrivate	*priv;
-} CdInterp;
-
-typedef struct
+struct _CdInterpClass
 {
 	GObjectClass		 parent_class;
 	/*< private >*/
@@ -67,7 +56,7 @@ typedef struct
 	void (*_cd_interp_reserved6) (void);
 	void (*_cd_interp_reserved7) (void);
 	void (*_cd_interp_reserved8) (void);
-} CdInterpClass;
+};
 
 /**
  * CdInterpError:
@@ -94,7 +83,6 @@ typedef enum {
 	CD_INTERP_KIND_LAST
 } CdInterpKind;
 
-GType		 cd_interp_get_type		(void);
 GQuark		 cd_interp_error_quark		(void);
 
 CdInterpKind	 cd_interp_get_kind		(CdInterp	*interp);

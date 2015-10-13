@@ -25,22 +25,21 @@
 #include <glib-object.h>
 #include <sqlite3.h>
 
-#include "cd-cleanup.h"
 #include "cd-common.h"
 #include "cd-mapping-db.h"
 
 static void     cd_mapping_db_finalize	(GObject        *object);
 
-#define CD_MAPPING_DB_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_MAPPING_DB, CdMappingDbPrivate))
+#define GET_PRIVATE(o) (cd_mapping_db_get_instance_private (o))
 
-struct CdMappingDbPrivate
+typedef struct
 {
 	sqlite3			*db;
-};
+} CdMappingDbPrivate;
 
 static gpointer cd_mapping_db_object = NULL;
 
-G_DEFINE_TYPE (CdMappingDb, cd_mapping_db, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdMappingDb, cd_mapping_db, G_TYPE_OBJECT)
 
 /**
  * cd_mapping_db_convert_cb:
@@ -49,13 +48,14 @@ static gint
 cd_mapping_db_convert_cb (void *data, gint argc, gchar **argv, gchar **col_name)
 {
 	CdMappingDb *mdb = (CdMappingDb *) data;
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gchar *statement;
 	gint rc;
 
 	statement = sqlite3_mprintf ("INSERT INTO mappings_v2 (device, profile, timestamp) "
 				     "VALUES ('%q', '%q', '%q')",
 				     argv[0], argv[1], argv[2]);
-	rc = sqlite3_exec (mdb->priv->db, statement,
+	rc = sqlite3_exec (priv->db, statement,
 			   NULL, NULL, NULL);
 	sqlite3_free (statement);
 	return rc;
@@ -69,13 +69,14 @@ cd_mapping_db_load (CdMappingDb *mdb,
 		    const gchar *filename,
 		    GError  **error)
 {
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db == NULL, FALSE);
+	g_return_val_if_fail (priv->db == NULL, FALSE);
 
 	/* ensure the path exists */
 	path = g_path_get_dirname (filename);
@@ -84,23 +85,23 @@ cd_mapping_db_load (CdMappingDb *mdb,
 
 	g_debug ("CdMappingDb: trying to open database '%s'", filename);
 	g_info ("Using mapping database file %s", filename);
-	rc = sqlite3_open (filename, &mdb->priv->db);
+	rc = sqlite3_open (filename, &priv->db);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "Can't open database: %s\n",
-			     sqlite3_errmsg (mdb->priv->db));
-		sqlite3_close (mdb->priv->db);
+			     sqlite3_errmsg (priv->db));
+		sqlite3_close (priv->db);
 		return FALSE;
 	}
 
 	/* we don't need to keep doing fsync */
-	sqlite3_exec (mdb->priv->db, "PRAGMA synchronous=OFF",
+	sqlite3_exec (priv->db, "PRAGMA synchronous=OFF",
 		      NULL, NULL, NULL);
 
 	/* check mappings */
-	rc = sqlite3_exec (mdb->priv->db, "SELECT * FROM mappings LIMIT 1",
+	rc = sqlite3_exec (priv->db, "SELECT * FROM mappings LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_debug ("CdMappingDb: creating table to repair: %s", error_msg);
@@ -109,22 +110,22 @@ cd_mapping_db_load (CdMappingDb *mdb,
 			    "timestamp INTEGER DEFAULT 0,"
 			    "device TEXT,"
 			    "profile TEXT);";
-		sqlite3_exec (mdb->priv->db, statement, NULL, NULL, NULL);
+		sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	}
 
 	/* check mappings has timestamp (since 0.1.8) */
-	rc = sqlite3_exec (mdb->priv->db,
+	rc = sqlite3_exec (priv->db,
 			   "SELECT timestamp FROM mappings LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_debug ("CdMappingDb: altering table to repair: %s", error_msg);
 		sqlite3_free (error_msg);
 		statement = "ALTER TABLE mappings ADD COLUMN timestamp INTEGER DEFAULT 0;";
-		sqlite3_exec (mdb->priv->db, statement, NULL, NULL, NULL);
+		sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	}
 
 	/* check mappings version 2 exists (since 0.1.29) */
-	rc = sqlite3_exec (mdb->priv->db, "SELECT * FROM mappings_v2 LIMIT 1",
+	rc = sqlite3_exec (priv->db, "SELECT * FROM mappings_v2 LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_debug ("CdMappingDb: altering table to convert: %s", error_msg);
@@ -134,11 +135,11 @@ cd_mapping_db_load (CdMappingDb *mdb,
 			    "device TEXT,"
 			    "profile TEXT,"
 			    "PRIMARY KEY (device, profile));";
-		sqlite3_exec (mdb->priv->db, statement, NULL, NULL, NULL);
+		sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 
 		/* copy all the mapping data from v1 to v2 */
 		statement = "SELECT device, profile, timestamp FROM mappings;";
-		rc = sqlite3_exec (mdb->priv->db,
+		rc = sqlite3_exec (priv->db,
 				   statement,
 				   cd_mapping_db_convert_cb,
 				   mdb,
@@ -155,7 +156,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 
 		/* remove old table data */
 		statement = "DELETE FROM mappings;";
-		rc = sqlite3_exec (mdb->priv->db, statement,
+		rc = sqlite3_exec (priv->db, statement,
 				   NULL, NULL, &error_msg);
 		if (rc != SQLITE_OK) {
 			g_set_error (error,
@@ -177,15 +178,16 @@ gboolean
 cd_mapping_db_empty (CdMappingDb *mdb,
 		     GError  **error)
 {
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	statement = "DELETE FROM mappings_v2;";
-	rc = sqlite3_exec (mdb->priv->db, statement,
+	rc = sqlite3_exec (priv->db, statement,
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
@@ -208,6 +210,7 @@ cd_mapping_db_add (CdMappingDb *mdb,
 		   const gchar *profile_id,
 		   GError  **error)
 {
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement;
@@ -215,7 +218,7 @@ cd_mapping_db_add (CdMappingDb *mdb,
 	gint64 timestamp;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	g_debug ("CdMappingDb: add %s<=>%s",
 		 device_id, profile_id);
@@ -225,7 +228,7 @@ cd_mapping_db_add (CdMappingDb *mdb,
 				     device_id, profile_id, timestamp);
 
 	/* insert the entry */
-	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -255,13 +258,14 @@ cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
 			       const gchar *profile_id,
 			       GError  **error)
 {
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	g_debug ("CdMappingDb: clearing timestamp %s<=>%s",
 		 device_id, profile_id);
@@ -270,7 +274,7 @@ cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
 				     device_id, profile_id);
 
 	/* update the entry */
-	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -298,13 +302,14 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 		      const gchar *profile_id,
 		      GError  **error)
 {
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
-	g_return_val_if_fail (mdb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	g_debug ("CdMappingDb: remove %s<=>%s", device_id, profile_id);
 	statement = sqlite3_mprintf ("DELETE FROM mappings_v2 WHERE "
@@ -312,7 +317,7 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 				     device_id, profile_id);
 
 	/* remove the entry */
-	rc = sqlite3_exec (mdb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -356,6 +361,7 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 			    const gchar *device_id,
 			    GError  **error)
 {
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
@@ -363,7 +369,7 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 	g_autoptr(GPtrArray) array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), NULL);
-	g_return_val_if_fail (mdb->priv->db != NULL, NULL);
+	g_return_val_if_fail (priv->db != NULL, NULL);
 
 	g_debug ("CdMappingDb: get profiles for %s", device_id);
 	statement = sqlite3_mprintf ("SELECT profile FROM mappings_v2 WHERE "
@@ -372,7 +378,7 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
-	rc = sqlite3_exec (mdb->priv->db,
+	rc = sqlite3_exec (priv->db,
 			   statement,
 			   cd_mapping_db_sqlite_cb,
 			   array_tmp,
@@ -405,6 +411,7 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 			   const gchar *profile_id,
 			   GError  **error)
 {
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
@@ -412,7 +419,7 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 	g_autoptr(GPtrArray) array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), NULL);
-	g_return_val_if_fail (mdb->priv->db != NULL, NULL);
+	g_return_val_if_fail (priv->db != NULL, NULL);
 
 	g_debug ("CdMappingDb: get devices for %s", profile_id);
 	statement = sqlite3_mprintf ("SELECT device FROM mappings_v2 WHERE "
@@ -421,7 +428,7 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
-	rc = sqlite3_exec (mdb->priv->db,
+	rc = sqlite3_exec (priv->db,
 			   statement,
 			   cd_mapping_db_sqlite_cb,
 			   array_tmp,
@@ -473,13 +480,14 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 			     const gchar *profile_id,
 			     GError  **error)
 {
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	guint64 timestamp = G_MAXUINT64;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), G_MAXUINT64);
-	g_return_val_if_fail (mdb->priv->db != NULL, G_MAXUINT64);
+	g_return_val_if_fail (priv->db != NULL, G_MAXUINT64);
 
 	g_debug ("CdMappingDb: get checksum for %s<->%s",
 		 device_id, profile_id);
@@ -488,7 +496,7 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 				     "LIMIT 1;", device_id, profile_id);
 
 	/* query the checksum */
-	rc = sqlite3_exec (mdb->priv->db,
+	rc = sqlite3_exec (priv->db,
 			   statement,
 			   cd_mapping_db_sqlite_timestamp_cb,
 			   &timestamp,
@@ -526,7 +534,6 @@ cd_mapping_db_class_init (CdMappingDbClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_mapping_db_finalize;
-	g_type_class_add_private (klass, sizeof (CdMappingDbPrivate));
 }
 
 /**
@@ -535,7 +542,6 @@ cd_mapping_db_class_init (CdMappingDbClass *klass)
 static void
 cd_mapping_db_init (CdMappingDb *mdb)
 {
-	mdb->priv = CD_MAPPING_DB_GET_PRIVATE (mdb);
 }
 
 /**
@@ -545,13 +551,11 @@ cd_mapping_db_init (CdMappingDb *mdb)
 static void
 cd_mapping_db_finalize (GObject *object)
 {
-	CdMappingDb *mdb;
-	g_return_if_fail (CD_IS_MAPPING_DB (object));
-	mdb = CD_MAPPING_DB (object);
-	g_return_if_fail (mdb->priv != NULL);
+	CdMappingDb *mdb = CD_MAPPING_DB (object);
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 
 	/* close the database */
-	sqlite3_close (mdb->priv->db);
+	sqlite3_close (priv->db);
 
 	G_OBJECT_CLASS (cd_mapping_db_parent_class)->finalize (object);
 }

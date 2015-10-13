@@ -32,8 +32,6 @@
 #include <string.h>
 #include <colord-private.h>
 
-#include "cd-cleanup.h"
-
 #include "osp-device.h"
 #include "osp-enum.h"
 

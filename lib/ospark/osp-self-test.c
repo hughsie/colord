@@ -24,8 +24,6 @@
 #include <glib-object.h>
 #include <colord.h>
 
-#include "cd-cleanup.h"
-
 #include "osp-device.h"
 #include "osp-enum.h"
 
@@ -35,7 +33,7 @@
 static GUsbDevice *
 osp_client_get_default (GError **error)
 {
-	_cleanup_object_unref_ GUsbContext *usb_ctx = NULL;
+	g_autoptr(GUsbContext) usb_ctx = NULL;
 	g_autoptr(GUsbDevice) device = NULL;
 
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);

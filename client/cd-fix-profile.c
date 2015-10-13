@@ -28,8 +28,6 @@
 #include <stdlib.h>
 #include <colord/colord.h>
 
-#include "cd-cleanup.h"
-
 #define CD_PROFILE_DEFAULT_COPYRIGHT_STRING	"This profile is free of known copyright restrictions."
 
 typedef struct {
@@ -275,7 +273,7 @@ cd_util_get_standard_space_filename (CdUtilPrivate *priv,
 				     GError **error)
 {
 	gchar *filename = NULL;
-	_cleanup_object_unref_ CdProfile *profile_tmp = NULL;
+	g_autoptr(CdProfile) profile_tmp = NULL;
 
 	/* try to find */
 	if (!cd_client_connect_sync (priv->client, NULL, error))

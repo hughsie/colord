@@ -35,7 +35,6 @@
 #include <string.h>
 
 #include "cd-it8.h"
-#include "cd-cleanup.h"
 #include "cd-color.h"
 #include "cd-context-lcms.h"
 
@@ -43,14 +42,14 @@ static void	cd_it8_class_init	(CdIt8Class	*klass);
 static void	cd_it8_init		(CdIt8		*it8);
 static void	cd_it8_finalize		(GObject	*object);
 
-#define CD_IT8_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_IT8, CdIt8Private))
+#define GET_PRIVATE(o) (cd_it8_get_instance_private (o))
 
 /**
  * CdIt8Private:
  *
  * Private #CdIt8 data
  **/
-struct _CdIt8Private
+typedef struct
 {
 	CdIt8Kind		 kind;
 	cmsContext		 context_lcms;
@@ -66,7 +65,7 @@ struct _CdIt8Private
 	GPtrArray		*array_rgb;
 	GPtrArray		*array_xyz;
 	GPtrArray		*options;
-};
+} CdIt8Private;
 
 enum {
 	PROP_0,
@@ -80,7 +79,7 @@ enum {
 	PROP_LAST
 };
 
-G_DEFINE_TYPE (CdIt8, cd_it8, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdIt8, cd_it8, G_TYPE_OBJECT)
 
 /**
  * cd_it8_error_quark:
@@ -226,8 +225,9 @@ _cmsIT8SetDataRowColDbl (cmsHANDLE it8_lcms, gint row, gint col, gdouble value)
 void
 cd_it8_set_matrix (CdIt8 *it8, const CdMat3x3 *matrix)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
-	cd_mat33_copy (matrix, &it8->priv->matrix);
+	cd_mat33_copy (matrix, &priv->matrix);
 }
 
 /**
@@ -243,8 +243,9 @@ cd_it8_set_matrix (CdIt8 *it8, const CdMat3x3 *matrix)
 const CdMat3x3 *
 cd_it8_get_matrix (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
-	return &it8->priv->matrix;
+	return &priv->matrix;
 }
 
 /**
@@ -259,8 +260,9 @@ cd_it8_get_matrix (CdIt8 *it8)
 void
 cd_it8_set_kind (CdIt8 *it8, CdIt8Kind kind)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
-	it8->priv->kind = kind;
+	priv->kind = kind;
 }
 
 /**
@@ -276,8 +278,9 @@ cd_it8_set_kind (CdIt8 *it8, CdIt8Kind kind)
 CdIt8Kind
 cd_it8_get_kind (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), 0);
-	return it8->priv->kind;
+	return priv->kind;
 }
 
 /**
@@ -317,8 +320,9 @@ cd_it8_parse_luminance (const gchar *text, CdColorXYZ *xyz, GError **error)
 const gchar *
 cd_it8_get_originator (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
-	return it8->priv->originator;
+	return priv->originator;
 }
 
 /**
@@ -334,8 +338,9 @@ cd_it8_get_originator (CdIt8 *it8)
 const gchar *
 cd_it8_get_title (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
-	return it8->priv->title;
+	return priv->title;
 }
 
 /**
@@ -351,8 +356,9 @@ cd_it8_get_title (CdIt8 *it8)
 const gchar *
 cd_it8_get_instrument (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
-	return it8->priv->instrument;
+	return priv->instrument;
 }
 
 /**
@@ -368,8 +374,9 @@ cd_it8_get_instrument (CdIt8 *it8)
 const gchar *
 cd_it8_get_reference (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
-	return it8->priv->reference;
+	return priv->reference;
 }
 
 /**
@@ -386,8 +393,9 @@ cd_it8_get_reference (CdIt8 *it8)
 gboolean
 cd_it8_get_enable_created (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
-	return it8->priv->enable_created;
+	return priv->enable_created;
 }
 
 /**
@@ -403,8 +411,9 @@ cd_it8_get_enable_created (CdIt8 *it8)
 gboolean
 cd_it8_get_normalized (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
-	return it8->priv->normalized;
+	return priv->normalized;
 }
 
 /**
@@ -420,8 +429,9 @@ cd_it8_get_normalized (CdIt8 *it8)
 gboolean
 cd_it8_get_spectral (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
-	return it8->priv->spectral;
+	return priv->spectral;
 }
 
 /**
@@ -430,6 +440,7 @@ cd_it8_get_spectral (CdIt8 *it8)
 static gboolean
 cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdColorRGB *rgb;
 	CdColorXYZ *xyz;
 	const gchar *tmp;
@@ -464,16 +475,16 @@ cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		/* ti1 files don't have NORMALIZED_TO_Y_100 so guess on
 		 * the asumption the first patch isn't black */
 		if (rgb->R > 1.0 || rgb->G > 1.0 || rgb->B > 1.0)
-			it8->priv->normalized = TRUE;
-		if (it8->priv->normalized) {
+			priv->normalized = TRUE;
+		if (priv->normalized) {
 			rgb->R /= 100.0f;
 			rgb->G /= 100.0f;
 			rgb->B /= 100.0f;
 		}
-		g_ptr_array_add (it8->priv->array_rgb, rgb);
+		g_ptr_array_add (priv->array_rgb, rgb);
 		xyz = cd_color_xyz_new ();
 		cd_color_xyz_set (xyz, 0.0, 0.0, 0.0);
-		g_ptr_array_add (it8->priv->array_xyz, xyz);
+		g_ptr_array_add (priv->array_xyz, xyz);
 	}
 	return TRUE;
 }
@@ -484,6 +495,7 @@ cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 static gboolean
 cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdColorRGB *rgb;
 	CdColorXYZ luminance;
 	CdColorXYZ *xyz;
@@ -538,7 +550,7 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			rgb->G /= 100.0f;
 			rgb->B /= 100.0f;
 		}
-		g_ptr_array_add (it8->priv->array_rgb, rgb);
+		g_ptr_array_add (priv->array_rgb, rgb);
 		xyz = cd_color_xyz_new ();
 		xyz->X = _cmsIT8GetDataRowColDbl (it8_lcms, i, 4);
 		xyz->Y = _cmsIT8GetDataRowColDbl (it8_lcms, i, 5);
@@ -551,7 +563,7 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			xyz->Y *= luminance.Y;
 			xyz->Z *= luminance.Z;
 		}
-		g_ptr_array_add (it8->priv->array_xyz, xyz);
+		g_ptr_array_add (priv->array_xyz, xyz);
 	}
 	return TRUE;
 }
@@ -562,6 +574,7 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 static gboolean
 cd_it8_load_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	const gchar *tmp;
 
 	/* check color format */
@@ -578,15 +591,15 @@ cd_it8_load_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	cd_it8_set_instrument (it8, cmsIT8GetProperty (it8_lcms, "INSTRUMENT"));
 
 	/* just load the matrix */
-	it8->priv->matrix.m00 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 0);
-	it8->priv->matrix.m01 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 1);
-	it8->priv->matrix.m02 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 2);
-	it8->priv->matrix.m10 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 0);
-	it8->priv->matrix.m11 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 1);
-	it8->priv->matrix.m12 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 2);
-	it8->priv->matrix.m20 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 0);
-	it8->priv->matrix.m21 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 1);
-	it8->priv->matrix.m22 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 2);
+	priv->matrix.m00 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 0);
+	priv->matrix.m01 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 1);
+	priv->matrix.m02 = _cmsIT8GetDataRowColDbl (it8_lcms, 0, 2);
+	priv->matrix.m10 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 0);
+	priv->matrix.m11 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 1);
+	priv->matrix.m12 = _cmsIT8GetDataRowColDbl (it8_lcms, 1, 2);
+	priv->matrix.m20 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 0);
+	priv->matrix.m21 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 1);
+	priv->matrix.m22 = _cmsIT8GetDataRowColDbl (it8_lcms, 2, 2);
 	return TRUE;
 }
 
@@ -823,14 +836,15 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 gboolean
 cd_it8_has_option (CdIt8 *it8, const gchar *option)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	const gchar *tmp;
 	guint i;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 	g_return_val_if_fail (option != NULL, FALSE);
 
-	for (i = 0; i < it8->priv->options->len; i++) {
-		tmp = g_ptr_array_index (it8->priv->options, i);
+	for (i = 0; i < priv->options->len; i++) {
+		tmp = g_ptr_array_index (priv->options, i);
 		if (g_strcmp0 (tmp, option) == 0)
 			return TRUE;
 	}
@@ -856,6 +870,7 @@ cd_it8_load_from_data (CdIt8 *it8,
 		       gsize size,
 		       GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	cmsHANDLE it8_lcms = NULL;
 	const gchar *tmp;
 	gboolean ret = TRUE;
@@ -868,15 +883,15 @@ cd_it8_load_from_data (CdIt8 *it8,
 	g_return_val_if_fail (size > 0, FALSE);
 
 	/* clear old data */
-	g_ptr_array_set_size (it8->priv->array_rgb, 0);
-	g_ptr_array_set_size (it8->priv->array_xyz, 0);
-	g_ptr_array_set_size (it8->priv->options, 0);
-	cd_mat33_clear (&it8->priv->matrix);
+	g_ptr_array_set_size (priv->array_rgb, 0);
+	g_ptr_array_set_size (priv->array_xyz, 0);
+	g_ptr_array_set_size (priv->options, 0);
+	cd_mat33_clear (&priv->matrix);
 
 	/* load the it8 data */
-	it8_lcms = cmsIT8LoadFromMem (it8->priv->context_lcms, (void *) data, size);
+	it8_lcms = cmsIT8LoadFromMem (priv->context_lcms, (void *) data, size);
 	if (it8_lcms == NULL) {
-		ret = cd_context_lcms_error_check (it8->priv->context_lcms, &error_local);
+		ret = cd_context_lcms_error_check (priv->context_lcms, &error_local);
 		if (!ret) {
 			g_set_error_literal (error,
 					     CD_IT8_ERROR,
@@ -925,7 +940,7 @@ cd_it8_load_from_data (CdIt8 *it8,
 	}
 
 	/* get ti1 and ti3 specific data */
-	switch (it8->priv->kind) {
+	switch (priv->kind) {
 	case CD_IT8_KIND_TI1:
 	case CD_IT8_KIND_CAL:
 		ret = cd_it8_load_ti1_cal (it8, it8_lcms, error);
@@ -1032,6 +1047,7 @@ cd_it8_convert_xyz_to_string (CdColorXYZ *src)
 static gboolean
 cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdColorRGB *rgb_tmp;
 	CdColorXYZ lumi_xyz;
 	CdColorXYZ *xyz_tmp;
@@ -1043,16 +1059,16 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 
 	/* calculate the absolute XYZ in candelas per meter squared */
 	cd_color_xyz_clear (&lumi_xyz);
-	if (it8->priv->normalized) {
-		for (i = 0; i < it8->priv->array_rgb->len; i++) {
-			rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, i);
+	if (priv->normalized) {
+		for (i = 0; i < priv->array_rgb->len; i++) {
+			rgb_tmp = g_ptr_array_index (priv->array_rgb, i);
 
 			/* is this 100% white? */
 			is_white = cd_it8_color_match (rgb_tmp, 1.0f, 1.0f, 1.0f);
 			if (!is_white)
 				continue;
 			luminance_samples++;
-			xyz_tmp = g_ptr_array_index (it8->priv->array_xyz, i);
+			xyz_tmp = g_ptr_array_index (priv->array_xyz, i);
 			lumi_xyz.X += xyz_tmp->X;
 			lumi_xyz.Y += xyz_tmp->Y;
 			lumi_xyz.Z += xyz_tmp->Z;
@@ -1076,34 +1092,34 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	lumi_str = cd_it8_convert_xyz_to_string (&lumi_xyz);
 
 	/* write data */
-	if (it8->priv->kind == CD_IT8_KIND_TI1) {
+	if (priv->kind == CD_IT8_KIND_TI1) {
 		cmsIT8SetSheetType (it8_lcms, "CTI1   ");
 		cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
 				      "Calibration Target chart information 1");
-	} else if (it8->priv->kind == CD_IT8_KIND_TI3) {
+	} else if (priv->kind == CD_IT8_KIND_TI3) {
 		cmsIT8SetSheetType (it8_lcms, "CTI3   ");
 		cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
 				      "Calibration Target chart information 3");
 	}
-	if (it8->priv->kind == CD_IT8_KIND_TI3) {
+	if (priv->kind == CD_IT8_KIND_TI3) {
 		cmsIT8SetPropertyStr (it8_lcms, "DEVICE_CLASS",
 				      "DISPLAY");
 	}
 	cmsIT8SetPropertyStr (it8_lcms, "COLOR_REP", "RGB_XYZ");
-	if (it8->priv->instrument != NULL) {
+	if (priv->instrument != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "TARGET_INSTRUMENT",
-				      it8->priv->instrument);
+				      priv->instrument);
 	}
 	cmsIT8SetPropertyStr (it8_lcms, "INSTRUMENT_TYPE_SPECTRAL",
-			      it8->priv->spectral ? "YES" : "NO");
-	if (it8->priv->normalized) {
+			      priv->spectral ? "YES" : "NO");
+	if (priv->normalized) {
 		cmsIT8SetPropertyStr (it8_lcms, "NORMALIZED_TO_Y_100", "YES");
 		cmsIT8SetPropertyStr (it8_lcms, "LUMINANCE_XYZ_CDM2", lumi_str);
 	} else {
 		cmsIT8SetPropertyStr (it8_lcms, "NORMALIZED_TO_Y_100", "NO");
 	}
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", 7);
-	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", it8->priv->array_rgb->len);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", priv->array_rgb->len);
 	cmsIT8SetDataFormat (it8_lcms, 0, "SAMPLE_ID");
 	cmsIT8SetDataFormat (it8_lcms, 1, "RGB_R");
 	cmsIT8SetDataFormat (it8_lcms, 2, "RGB_G");
@@ -1113,12 +1129,12 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	cmsIT8SetDataFormat (it8_lcms, 6, "XYZ_Z");
 
 	/* write to the it8 file */
-	for (i = 0; i < it8->priv->array_rgb->len; i++) {
-		rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, i);
-		xyz_tmp = g_ptr_array_index (it8->priv->array_xyz, i);
+	for (i = 0; i < priv->array_rgb->len; i++) {
+		rgb_tmp = g_ptr_array_index (priv->array_rgb, i);
+		xyz_tmp = g_ptr_array_index (priv->array_xyz, i);
 
 		_cmsIT8SetDataRowColDbl(it8_lcms, i, 0, i + 1);
-		if (it8->priv->normalized) {
+		if (priv->normalized) {
 			_cmsIT8SetDataRowColDbl(it8_lcms, i, 1, rgb_tmp->R * 100.0f);
 			_cmsIT8SetDataRowColDbl(it8_lcms, i, 2, rgb_tmp->G * 100.0f);
 			_cmsIT8SetDataRowColDbl(it8_lcms, i, 3, rgb_tmp->B * 100.0f);
@@ -1143,6 +1159,7 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 static gboolean
 cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdColorRGB *rgb_tmp;
 	gboolean ret = TRUE;
 	guint i;
@@ -1153,21 +1170,21 @@ cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			      "Device Calibration Curves");
 	cmsIT8SetPropertyStr (it8_lcms, "DEVICE_CLASS", "DISPLAY");
 	cmsIT8SetPropertyStr (it8_lcms, "COLOR_REP", "RGB");
-	if (it8->priv->instrument != NULL) {
+	if (priv->instrument != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "TARGET_INSTRUMENT",
-				      it8->priv->instrument);
+				      priv->instrument);
 	}
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", 4);
-	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", it8->priv->array_rgb->len);
+	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", priv->array_rgb->len);
 	cmsIT8SetDataFormat (it8_lcms, 0, "RGB_I");
 	cmsIT8SetDataFormat (it8_lcms, 1, "RGB_R");
 	cmsIT8SetDataFormat (it8_lcms, 2, "RGB_G");
 	cmsIT8SetDataFormat (it8_lcms, 3, "RGB_B");
 
 	/* write to the it8 file */
-	for (i = 0; i < it8->priv->array_rgb->len; i++) {
-		rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, i);
-		_cmsIT8SetDataRowColDbl(it8_lcms, i, 0, 1.0f / (gdouble) (it8->priv->array_rgb->len - 1) * (gdouble) i);
+	for (i = 0; i < priv->array_rgb->len; i++) {
+		rgb_tmp = g_ptr_array_index (priv->array_rgb, i);
+		_cmsIT8SetDataRowColDbl(it8_lcms, i, 0, 1.0f / (gdouble) (priv->array_rgb->len - 1) * (gdouble) i);
 		_cmsIT8SetDataRowColDbl(it8_lcms, i, 1, rgb_tmp->R);
 		_cmsIT8SetDataRowColDbl(it8_lcms, i, 2, rgb_tmp->G);
 		_cmsIT8SetDataRowColDbl(it8_lcms, i, 3, rgb_tmp->B);
@@ -1182,6 +1199,7 @@ cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 static gboolean
 cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	gboolean ret = TRUE;
 
 	cmsIT8SetSheetType (it8_lcms, "CCMX   ");
@@ -1196,21 +1214,21 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	cmsIT8SetDataFormat (it8_lcms, 2, "XYZ_Z");
 
 	/* save instrument */
-	if (it8->priv->instrument != NULL) {
+	if (priv->instrument != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "INSTRUMENT",
-				      it8->priv->instrument);
+				      priv->instrument);
 	}
 
 	/* just save the matrix */
-	_cmsIT8SetDataRowColDbl (it8_lcms, 0, 0, it8->priv->matrix.m00);
-	_cmsIT8SetDataRowColDbl (it8_lcms, 0, 1, it8->priv->matrix.m01);
-	_cmsIT8SetDataRowColDbl (it8_lcms, 0, 2, it8->priv->matrix.m02);
-	_cmsIT8SetDataRowColDbl (it8_lcms, 1, 0, it8->priv->matrix.m10);
-	_cmsIT8SetDataRowColDbl (it8_lcms, 1, 1, it8->priv->matrix.m11);
-	_cmsIT8SetDataRowColDbl (it8_lcms, 1, 2, it8->priv->matrix.m12);
-	_cmsIT8SetDataRowColDbl (it8_lcms, 2, 0, it8->priv->matrix.m20);
-	_cmsIT8SetDataRowColDbl (it8_lcms, 2, 1, it8->priv->matrix.m21);
-	_cmsIT8SetDataRowColDbl (it8_lcms, 2, 2, it8->priv->matrix.m22);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 0, 0, priv->matrix.m00);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 0, 1, priv->matrix.m01);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 0, 2, priv->matrix.m02);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 1, 0, priv->matrix.m10);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 1, 1, priv->matrix.m11);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 1, 2, priv->matrix.m12);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 2, 0, priv->matrix.m20);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 2, 1, priv->matrix.m21);
+	_cmsIT8SetDataRowColDbl (it8_lcms, 2, 2, priv->matrix.m22);
 
 	return ret;
 }
@@ -1221,6 +1239,7 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 static gboolean
 cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdSpectrum *spectrum;
 	guint i;
 	guint j;
@@ -1232,7 +1251,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			      "Color Match Function");
 
 	/* check data is valid */
-	number_of_sets = it8->priv->array_spectra->len;
+	number_of_sets = priv->array_spectra->len;
 	if (number_of_sets != 3) {
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
@@ -1242,7 +1261,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	}
 
 	/* all the arrays have to have the same length */
-	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
+	spectrum = g_ptr_array_index (priv->array_spectra, 0);
 	spectral_bands = cd_spectrum_get_size (spectrum);
 	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
 	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
@@ -1251,7 +1270,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands);
 
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */
-	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
+	spectrum = g_ptr_array_index (priv->array_spectra, 0);
 	for (i = 0; i < spectral_bands; i++) {
 		g_autofree gchar *label = NULL;
 		label = g_strdup_printf ("SPEC_%.0f",
@@ -1262,9 +1281,9 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* set DATA */
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", number_of_sets);
 	for (j = 0; j < number_of_sets; j++) {
-		spectrum = g_ptr_array_index (it8->priv->array_spectra, j);
+		spectrum = g_ptr_array_index (priv->array_spectra, j);
 		for (i = 0; i < spectral_bands; i++) {
-			if (it8->priv->normalized) {
+			if (priv->normalized) {
 				_cmsIT8SetDataRowColDbl (it8_lcms, j, i,
 							 cd_spectrum_get_value (spectrum, i));
 			} else {
@@ -1282,6 +1301,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 static gboolean
 cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdSpectrum *spectrum;
 	gboolean has_index = FALSE;
 	guint i;
@@ -1289,7 +1309,7 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	guint number_of_sets;
 	guint spectral_bands;
 
-	switch (it8->priv->kind) {
+	switch (priv->kind) {
 	case CD_IT8_KIND_CCSS:
 		cmsIT8SetSheetType (it8_lcms, "CCSS   ");
 		cmsIT8SetPropertyStr (it8_lcms, "DESCRIPTOR",
@@ -1310,7 +1330,7 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	}
 
 	/* check data is valid */
-	number_of_sets = it8->priv->array_spectra->len;
+	number_of_sets = priv->array_spectra->len;
 	if (number_of_sets == 0) {
 		g_set_error_literal (error,
 				     CD_IT8_ERROR,
@@ -1322,19 +1342,19 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		has_index = TRUE;
 
 	/* all the arrays have to have the same length */
-	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
+	spectrum = g_ptr_array_index (priv->array_spectra, 0);
 	spectral_bands = cd_spectrum_get_size (spectrum);
 	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_START_NM", cd_spectrum_get_start (spectrum));
 	_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_END_NM", cd_spectrum_get_end (spectrum));
 	_cmsIT8SetPropertyInt (it8_lcms, "SPECTRAL_BANDS", spectral_bands);
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_FIELDS", spectral_bands + has_index);
-	if (it8->priv->normalized)
+	if (priv->normalized)
 		_cmsIT8SetPropertyDbl (it8_lcms, "SPECTRAL_NORM", cd_spectrum_get_norm (spectrum));
 
 	/* set DATA_FORMAT (using an ID if there are more than one spectra */
 	if (has_index)
 		cmsIT8SetDataFormat (it8_lcms, 0, "SAMPLE_ID");
-	spectrum = g_ptr_array_index (it8->priv->array_spectra, 0);
+	spectrum = g_ptr_array_index (priv->array_spectra, 0);
 	for (i = 0; i < spectral_bands; i++) {
 		g_autofree gchar *label = NULL;
 		/* there are more spectral bands than integers between the
@@ -1353,13 +1373,13 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	/* set DATA */
 	_cmsIT8SetPropertyInt (it8_lcms, "NUMBER_OF_SETS", number_of_sets);
 	for (j = 0; j < number_of_sets; j++) {
-		spectrum = g_ptr_array_index (it8->priv->array_spectra, j);
+		spectrum = g_ptr_array_index (priv->array_spectra, j);
 		if (has_index) {
 			cmsIT8SetDataRowCol (it8_lcms, j, 0,
 					     cd_spectrum_get_id (spectrum));
 		}
 		for (i = 0; i < spectral_bands; i++) {
-			if (it8->priv->normalized) {
+			if (priv->normalized) {
 				_cmsIT8SetDataRowColDbl (it8_lcms, j, i + has_index,
 							 cd_spectrum_get_value (spectrum, i));
 			} else {
@@ -1390,6 +1410,7 @@ cd_it8_save_to_data (CdIt8 *it8,
 		     gsize *size,
 		     GError **error)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	cmsHANDLE it8_lcms = NULL;
 	const gchar *tmp;
 	gboolean ret;
@@ -1402,30 +1423,30 @@ cd_it8_save_to_data (CdIt8 *it8,
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 
 	/* set common data */
-	it8_lcms = cmsIT8Alloc (it8->priv->context_lcms);
-	if (it8->priv->title != NULL) {
+	it8_lcms = cmsIT8Alloc (priv->context_lcms);
+	if (priv->title != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "DISPLAY",
-				      it8->priv->title);
+				      priv->title);
 	}
-	if (it8->priv->originator != NULL) {
+	if (priv->originator != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "ORIGINATOR",
-				      it8->priv->originator);
+				      priv->originator);
 	}
-	if (it8->priv->reference != NULL) {
+	if (priv->reference != NULL) {
 		cmsIT8SetPropertyStr (it8_lcms, "REFERENCE",
-				      it8->priv->reference);
+				      priv->reference);
 	}
 
 	/* set time and date in crazy ArgllCMS format, e.g.
 	 * 'Wed Dec 19 18:47:57 2012' */
-	if (it8->priv->enable_created) {
+	if (priv->enable_created) {
 		datetime = g_date_time_new_now_local ();
 		date_str = g_date_time_format (datetime, "%a %b %d %H:%M:%S %Y");
 		cmsIT8SetPropertyStr (it8_lcms, "CREATED", date_str);
 	}
 
 	/* set ti1 and ti3 specific data */
-	switch (it8->priv->kind) {
+	switch (priv->kind) {
 	case CD_IT8_KIND_TI1:
 	case CD_IT8_KIND_TI3:
 		ret = cd_it8_save_to_file_ti1_ti3 (it8, it8_lcms, error);
@@ -1458,8 +1479,8 @@ cd_it8_save_to_data (CdIt8 *it8,
 	}
 
 	/* save any options */
-	for (i = 0; i < it8->priv->options->len; i++) {
-		tmp = g_ptr_array_index (it8->priv->options, i);
+	for (i = 0; i < priv->options->len; i++) {
+		tmp = g_ptr_array_index (priv->options, i);
 		cmsIT8SetPropertyStr (it8_lcms, tmp, "YES");
 	}
 
@@ -1528,8 +1549,9 @@ cd_it8_save_to_file (CdIt8 *it8, GFile *file, GError **error)
 void
 cd_it8_add_option (CdIt8 *it8, const gchar *option)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
-	g_ptr_array_add (it8->priv->options, g_strdup (option));
+	g_ptr_array_add (priv->options, g_strdup (option));
 }
 
 /**
@@ -1544,8 +1566,9 @@ cd_it8_add_option (CdIt8 *it8, const gchar *option)
 void
 cd_it8_set_normalized (CdIt8 *it8, gboolean normalized)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
-	it8->priv->normalized = normalized;
+	priv->normalized = normalized;
 }
 
 /**
@@ -1560,8 +1583,9 @@ cd_it8_set_normalized (CdIt8 *it8, gboolean normalized)
 void
 cd_it8_set_spectral (CdIt8 *it8, gboolean spectral)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
-	it8->priv->spectral = spectral;
+	priv->spectral = spectral;
 }
 
 /**
@@ -1576,10 +1600,11 @@ cd_it8_set_spectral (CdIt8 *it8, gboolean spectral)
 void
 cd_it8_set_originator (CdIt8 *it8, const gchar *originator)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
 
-	g_free (it8->priv->originator);
-	it8->priv->originator = g_strdup (originator);
+	g_free (priv->originator);
+	priv->originator = g_strdup (originator);
 }
 
 /**
@@ -1594,10 +1619,11 @@ cd_it8_set_originator (CdIt8 *it8, const gchar *originator)
 void
 cd_it8_set_title (CdIt8 *it8, const gchar *title)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
 
-	g_free (it8->priv->title);
-	it8->priv->title = g_strdup (title);
+	g_free (priv->title);
+	priv->title = g_strdup (title);
 }
 
 /**
@@ -1612,10 +1638,11 @@ cd_it8_set_title (CdIt8 *it8, const gchar *title)
 void
 cd_it8_set_instrument (CdIt8 *it8, const gchar *instrument)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
 
-	g_free (it8->priv->instrument);
-	it8->priv->instrument = g_strdup (instrument);
+	g_free (priv->instrument);
+	priv->instrument = g_strdup (instrument);
 }
 
 /**
@@ -1630,10 +1657,11 @@ cd_it8_set_instrument (CdIt8 *it8, const gchar *instrument)
 void
 cd_it8_set_reference (CdIt8 *it8, const gchar *reference)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
 
-	g_free (it8->priv->reference);
-	it8->priv->reference = g_strdup (reference);
+	g_free (priv->reference);
+	priv->reference = g_strdup (reference);
 }
 
 /**
@@ -1650,8 +1678,9 @@ cd_it8_set_reference (CdIt8 *it8, const gchar *reference)
 void
 cd_it8_set_enable_created (CdIt8 *it8, gboolean enable_created)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
-	it8->priv->enable_created = enable_created;
+	priv->enable_created = enable_created;
 }
 
 /**
@@ -1668,6 +1697,7 @@ cd_it8_set_enable_created (CdIt8 *it8, gboolean enable_created)
 void
 cd_it8_add_data (CdIt8 *it8, const CdColorRGB *rgb, const CdColorXYZ *xyz)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdColorRGB *rgb_tmp;
 	CdColorXYZ *xyz_tmp;
 
@@ -1680,7 +1710,7 @@ cd_it8_add_data (CdIt8 *it8, const CdColorRGB *rgb, const CdColorXYZ *xyz)
 		rgb_tmp = cd_color_rgb_new ();
 		cd_color_rgb_set (rgb_tmp, 0.0f, 0.0f, 0.0f);
 	}
-	g_ptr_array_add (it8->priv->array_rgb, rgb_tmp);
+	g_ptr_array_add (priv->array_rgb, rgb_tmp);
 
 	/* add XYZ */
 	if (xyz != NULL) {
@@ -1689,7 +1719,7 @@ cd_it8_add_data (CdIt8 *it8, const CdColorRGB *rgb, const CdColorXYZ *xyz)
 		xyz_tmp = cd_color_xyz_new ();
 		cd_color_xyz_set (xyz_tmp, 0.0f, 0.0f, 0.0f);
 	}
-	g_ptr_array_add (it8->priv->array_xyz, xyz_tmp);
+	g_ptr_array_add (priv->array_xyz, xyz_tmp);
 }
 
 /**
@@ -1705,8 +1735,9 @@ cd_it8_add_data (CdIt8 *it8, const CdColorRGB *rgb, const CdColorXYZ *xyz)
 guint
 cd_it8_get_data_size (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), G_MAXUINT);
-	return it8->priv->array_xyz->len;
+	return priv->array_xyz->len;
 }
 
 /**
@@ -1726,19 +1757,20 @@ cd_it8_get_data_size (CdIt8 *it8)
 gboolean
 cd_it8_get_data_item (CdIt8 *it8, guint idx, CdColorRGB *rgb, CdColorXYZ *xyz)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	const CdColorRGB *rgb_tmp;
 	const CdColorXYZ *xyz_tmp;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 
-	if (idx > it8->priv->array_xyz->len)
+	if (idx > priv->array_xyz->len)
 		return FALSE;
 	if (rgb != NULL) {
-		rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, idx);
+		rgb_tmp = g_ptr_array_index (priv->array_rgb, idx);
 		cd_color_rgb_copy (rgb_tmp, rgb);
 	}
 	if (xyz != NULL) {
-		xyz_tmp = g_ptr_array_index (it8->priv->array_xyz, idx);
+		xyz_tmp = g_ptr_array_index (priv->array_xyz, idx);
 		cd_color_xyz_copy (xyz_tmp, xyz);
 	}
 	return TRUE;
@@ -1761,21 +1793,22 @@ cd_it8_get_data_item (CdIt8 *it8, guint idx, CdColorRGB *rgb, CdColorXYZ *xyz)
 CdColorXYZ *
 cd_it8_get_xyz_for_rgb (CdIt8 *it8, gdouble R, gdouble G, gdouble B, gdouble delta)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdColorXYZ *xyz_tmp;
 	guint i;
 	const CdColorRGB *rgb_tmp;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 
-	for (i = 0; i < it8->priv->array_xyz->len; i++) {
-		rgb_tmp = g_ptr_array_index (it8->priv->array_rgb, i);
+	for (i = 0; i < priv->array_xyz->len; i++) {
+		rgb_tmp = g_ptr_array_index (priv->array_rgb, i);
 		if (ABS (rgb_tmp->R - R) > delta)
 			continue;
 		if (ABS (rgb_tmp->G - G) > delta)
 			continue;
 		if (ABS (rgb_tmp->B - B) > delta)
 			continue;
-		xyz_tmp = g_ptr_array_index (it8->priv->array_xyz, i);
+		xyz_tmp = g_ptr_array_index (priv->array_xyz, i);
 		return xyz_tmp;
 	}
 	return NULL;
@@ -1793,9 +1826,10 @@ cd_it8_get_xyz_for_rgb (CdIt8 *it8, gdouble R, gdouble G, gdouble B, gdouble del
 void
 cd_it8_set_spectrum_array (CdIt8 *it8, GPtrArray *data)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_if_fail (CD_IS_IT8 (it8));
-	g_ptr_array_unref (it8->priv->array_spectra);
-	it8->priv->array_spectra = g_ptr_array_ref (data);
+	g_ptr_array_unref (priv->array_spectra);
+	priv->array_spectra = g_ptr_array_ref (data);
 }
 
 /**
@@ -1810,6 +1844,7 @@ cd_it8_set_spectrum_array (CdIt8 *it8, GPtrArray *data)
 void
 cd_it8_add_spectrum (CdIt8 *it8, CdSpectrum *spectrum)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	const gchar *id;
 	CdSpectrum *tmp;
 
@@ -1820,11 +1855,11 @@ cd_it8_add_spectrum (CdIt8 *it8, CdSpectrum *spectrum)
 	if (id != NULL) {
 		tmp = cd_it8_get_spectrum_by_id (it8, id);
 		if (tmp != NULL)
-			g_ptr_array_remove (it8->priv->array_spectra, tmp);
+			g_ptr_array_remove (priv->array_spectra, tmp);
 	}
 
 	/* add this */
-	g_ptr_array_add (it8->priv->array_spectra, cd_spectrum_dup (spectrum));
+	g_ptr_array_add (priv->array_spectra, cd_spectrum_dup (spectrum));
 }
 
 /**
@@ -1840,8 +1875,9 @@ cd_it8_add_spectrum (CdIt8 *it8, CdSpectrum *spectrum)
 GPtrArray *
 cd_it8_get_spectrum_array (CdIt8 *it8)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
-	return g_ptr_array_ref (it8->priv->array_spectra);
+	return g_ptr_array_ref (priv->array_spectra);
 }
 
 /**
@@ -1858,14 +1894,15 @@ cd_it8_get_spectrum_array (CdIt8 *it8)
 CdSpectrum *
 cd_it8_get_spectrum_by_id (CdIt8 *it8, const gchar *id)
 {
+	CdIt8Private *priv = GET_PRIVATE (it8);
 	CdSpectrum *tmp;
 	guint i;
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
 	g_return_val_if_fail (id != NULL, NULL);
 
-	for (i = 0; i < it8->priv->array_spectra->len; i++) {
-		tmp = g_ptr_array_index (it8->priv->array_spectra, i);
+	for (i = 0; i < priv->array_spectra->len; i++) {
+		tmp = g_ptr_array_index (priv->array_spectra, i);
 		if (g_strcmp0 (cd_spectrum_get_id (tmp), id) == 0)
 			return tmp;
 	}
@@ -1884,28 +1921,29 @@ cd_it8_get_property (GObject *object,
 		     GParamSpec *pspec)
 {
 	CdIt8 *it8 = CD_IT8 (object);
+	CdIt8Private *priv = GET_PRIVATE (it8);
 
 	switch (prop_id) {
 	case PROP_KIND:
-		g_value_set_uint (value, it8->priv->kind);
+		g_value_set_uint (value, priv->kind);
 		break;
 	case PROP_NORMALIZED:
-		g_value_set_boolean (value, it8->priv->normalized);
+		g_value_set_boolean (value, priv->normalized);
 		break;
 	case PROP_ORIGINATOR:
-		g_value_set_string (value, it8->priv->originator);
+		g_value_set_string (value, priv->originator);
 		break;
 	case PROP_TITLE:
-		g_value_set_string (value, it8->priv->title);
+		g_value_set_string (value, priv->title);
 		break;
 	case PROP_INSTRUMENT:
-		g_value_set_string (value, it8->priv->instrument);
+		g_value_set_string (value, priv->instrument);
 		break;
 	case PROP_REFERENCE:
-		g_value_set_string (value, it8->priv->reference);
+		g_value_set_string (value, priv->reference);
 		break;
 	case PROP_SPECTRAL:
-		g_value_set_boolean (value, it8->priv->spectral);
+		g_value_set_boolean (value, priv->spectral);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1920,10 +1958,11 @@ static void
 cd_it8_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	CdIt8 *it8 = CD_IT8 (object);
+	CdIt8Private *priv = GET_PRIVATE (it8);
 
 	switch (prop_id) {
 	case PROP_KIND:
-		it8->priv->kind = g_value_get_uint (value);
+		priv->kind = g_value_get_uint (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2040,8 +2079,6 @@ cd_it8_class_init (CdIt8Class *klass)
 							       NULL, NULL,
 							       FALSE,
 							       G_PARAM_READABLE));
-
-	g_type_class_add_private (klass, sizeof (CdIt8Private));
 }
 
 /*
@@ -2050,15 +2087,15 @@ cd_it8_class_init (CdIt8Class *klass)
 static void
 cd_it8_init (CdIt8 *it8)
 {
-	it8->priv = CD_IT8_GET_PRIVATE (it8);
-	it8->priv->context_lcms = cd_context_lcms_new ();
+	CdIt8Private *priv = GET_PRIVATE (it8);
+	priv->context_lcms = cd_context_lcms_new ();
 
-	cd_mat33_clear (&it8->priv->matrix);
-	it8->priv->array_rgb = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
-	it8->priv->array_xyz = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_xyz_free);
-	it8->priv->array_spectra = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_spectrum_free);
-	it8->priv->options = g_ptr_array_new_with_free_func (g_free);
-	it8->priv->enable_created = TRUE;
+	cd_mat33_clear (&priv->matrix);
+	priv->array_rgb = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_rgb_free);
+	priv->array_xyz = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_color_xyz_free);
+	priv->array_spectra = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_spectrum_free);
+	priv->options = g_ptr_array_new_with_free_func (g_free);
+	priv->enable_created = TRUE;
 
 	/* ensure the remote errors are registered */
 	cd_it8_error_quark ();
@@ -2071,18 +2108,19 @@ static void
 cd_it8_finalize (GObject *object)
 {
 	CdIt8 *it8 = CD_IT8 (object);
+	CdIt8Private *priv = GET_PRIVATE (it8);
 
 	g_return_if_fail (CD_IS_IT8 (object));
 
-	cd_context_lcms_free (it8->priv->context_lcms);
-	g_ptr_array_unref (it8->priv->array_spectra);
-	g_ptr_array_unref (it8->priv->array_rgb);
-	g_ptr_array_unref (it8->priv->array_xyz);
-	g_ptr_array_unref (it8->priv->options);
-	g_free (it8->priv->originator);
-	g_free (it8->priv->title);
-	g_free (it8->priv->instrument);
-	g_free (it8->priv->reference);
+	cd_context_lcms_free (priv->context_lcms);
+	g_ptr_array_unref (priv->array_spectra);
+	g_ptr_array_unref (priv->array_rgb);
+	g_ptr_array_unref (priv->array_xyz);
+	g_ptr_array_unref (priv->options);
+	g_free (priv->originator);
+	g_free (priv->title);
+	g_free (priv->instrument);
+	g_free (priv->reference);
 
 	G_OBJECT_CLASS (cd_it8_parent_class)->finalize (object);
 }

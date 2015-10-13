@@ -27,8 +27,6 @@
 #include <string.h>
 #include <lcms2.h>
 
-#include "cd-cleanup.h"
-
 #include "ch-common.h"
 #include "ch-device.h"
 #include "ch-device-queue.h"
@@ -36,18 +34,18 @@
 
 static void	ch_device_queue_finalize	(GObject     *object);
 
-#define CH_DEVICE_QUEUE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CH_TYPE_DEVICE_QUEUE, ChDeviceQueuePrivate))
+#define GET_PRIVATE(o) (ch_device_queue_get_instance_private (o))
 
 /**
  * ChDeviceQueuePrivate:
  *
  * Private #ChDeviceQueue data
  **/
-struct _ChDeviceQueuePrivate
+typedef struct
 {
 	GPtrArray		*data_array;
 	GHashTable		*devices_in_use;
-};
+} ChDeviceQueuePrivate;
 
 enum {
 	SIGNAL_DEVICE_FAILED,
@@ -55,7 +53,7 @@ enum {
 	SIGNAL_LAST
 };
 
-G_DEFINE_TYPE (ChDeviceQueue, ch_device_queue, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (ChDeviceQueue, ch_device_queue, G_TYPE_OBJECT)
 
 typedef gboolean (*ChDeviceQueueParseFunc)	(guint8		*output_buffer,
 						 gsize		 output_buffer_size,
@@ -131,6 +129,7 @@ ch_device_queue_free_helper (ChDeviceQueueHelper *helper)
 static void
 ch_device_queue_device_force_complete (ChDeviceQueue *device_queue, GUsbDevice *device)
 {
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 	ChDeviceQueueData *data;
 	const gchar *device_id;
 	const gchar *device_id_tmp;
@@ -138,8 +137,8 @@ ch_device_queue_device_force_complete (ChDeviceQueue *device_queue, GUsbDevice *
 
 	/* go through the list of commands and cancel them all */
 	device_id = g_usb_device_get_platform_id (device);
-	for (i = 0; i < device_queue->priv->data_array->len; i++) {
-		data = g_ptr_array_index (device_queue->priv->data_array, i);
+	for (i = 0; i < priv->data_array->len; i++) {
+		data = g_ptr_array_index (priv->data_array, i);
 		device_id_tmp = g_usb_device_get_platform_id (data->device);
 		if (g_strcmp0 (device_id_tmp, device_id) == 0)
 			data->state = CH_DEVICE_QUEUE_DATA_STATE_CANCELLED;
@@ -152,25 +151,26 @@ ch_device_queue_device_force_complete (ChDeviceQueue *device_queue, GUsbDevice *
 static void
 ch_device_queue_update_progress (ChDeviceQueue *device_queue)
 {
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 	guint complete = 0;
 	guint i;
 	guint percentage;
 	ChDeviceQueueData *data;
 
 	/* no devices */
-	if (device_queue->priv->data_array->len == 0)
+	if (priv->data_array->len == 0)
 		return;
 
 	/* find out how many commands are complete */
-	for (i = 0; i < device_queue->priv->data_array->len; i++) {
-		data = g_ptr_array_index (device_queue->priv->data_array, i);
+	for (i = 0; i < priv->data_array->len; i++) {
+		data = g_ptr_array_index (priv->data_array, i);
 		if (data->state == CH_DEVICE_QUEUE_DATA_STATE_COMPLETE ||
 		    data->state == CH_DEVICE_QUEUE_DATA_STATE_CANCELLED)
 			complete++;
 	}
 
 	/* emit a signal with our progress */
-	percentage = (complete * 100) / device_queue->priv->data_array->len;
+	percentage = (complete * 100) / priv->data_array->len;
 	g_signal_emit (device_queue,
 		       signals[SIGNAL_PROGRESS_CHANGED], 0,
 		       percentage);
@@ -183,13 +183,14 @@ static guint
 ch_device_queue_count_in_state (ChDeviceQueue *device_queue,
 				ChDeviceQueueDataState state)
 {
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 	guint i;
 	guint cnt = 0;
 	ChDeviceQueueData *data;
 
 	/* find any data objects in a specific state */
-	for (i = 0; i < device_queue->priv->data_array->len; i++) {
-		data = g_ptr_array_index (device_queue->priv->data_array, i);
+	for (i = 0; i < priv->data_array->len; i++) {
+		data = g_ptr_array_index (priv->data_array, i);
 		if (data->state == state)
 			cnt++;
 	}
@@ -206,6 +207,7 @@ ch_device_queue_process_write_command_cb (GObject *source,
 {
 	ChDeviceQueueData *data;
 	ChDeviceQueueHelper *helper = (ChDeviceQueueHelper *) user_data;
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (helper->device_queue);
 	const gchar *device_id;
 	const gchar *tmp;
 	gboolean ret;
@@ -218,10 +220,8 @@ ch_device_queue_process_write_command_cb (GObject *source,
 
 	/* mark it as not in use */
 	device_id = g_usb_device_get_platform_id (device);
-	data = g_hash_table_lookup (helper->device_queue->priv->devices_in_use,
-				    device_id);
-	g_hash_table_remove (helper->device_queue->priv->devices_in_use,
-			     device_id);
+	data = g_hash_table_lookup (priv->devices_in_use, device_id);
+	g_hash_table_remove (priv->devices_in_use, device_id);
 
 	/* get data */
 	ret = ch_device_write_command_finish (device, res, &error);
@@ -261,8 +261,8 @@ ch_device_queue_process_write_command_cb (GObject *source,
 	ch_device_queue_update_progress (helper->device_queue);
 
 	/* is there another pending command for this device */
-	for (i = 0; i < helper->device_queue->priv->data_array->len; i++) {
-		data = g_ptr_array_index (helper->device_queue->priv->data_array, i);
+	for (i = 0; i < priv->data_array->len; i++) {
+		data = g_ptr_array_index (priv->data_array, i);
 		ret = ch_device_queue_process_data (helper, data);
 		if (ret)
 			break;
@@ -300,7 +300,7 @@ out:
 		}
 
 		/* remove all commands from the queue, as they are done */
-		g_ptr_array_set_size (helper->device_queue->priv->data_array, 0);
+		g_ptr_array_set_size (priv->data_array, 0);
 		g_simple_async_result_complete_in_idle (helper->res);
 		ch_device_queue_free_helper (helper);
 	}
@@ -315,6 +315,7 @@ static gboolean
 ch_device_queue_process_data (ChDeviceQueueHelper *helper,
 			      ChDeviceQueueData *data)
 {
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (helper->device_queue);
 	ChDeviceQueueData *data_tmp;
 	const gchar *device_id;
 
@@ -324,8 +325,7 @@ ch_device_queue_process_data (ChDeviceQueueHelper *helper,
 
 	/* is this device already busy? */
 	device_id = g_usb_device_get_platform_id (data->device);
-	data_tmp = g_hash_table_lookup (helper->device_queue->priv->devices_in_use,
-					device_id);
+	data_tmp = g_hash_table_lookup (priv->devices_in_use, device_id);
 	if (data_tmp != NULL)
 		return FALSE;
 
@@ -340,9 +340,7 @@ ch_device_queue_process_data (ChDeviceQueueHelper *helper,
 				       ch_device_queue_process_write_command_cb,
 				       helper);
 	/* mark this as in use */
-	g_hash_table_insert (helper->device_queue->priv->devices_in_use,
-			     g_strdup (device_id),
-			     data);
+	g_hash_table_insert (priv->devices_in_use, g_strdup (device_id), data);
 
 	/* remove this from the command queue -- TODO: retries? */
 	data->state = CH_DEVICE_QUEUE_DATA_STATE_WAITING_FOR_HW;
@@ -367,6 +365,7 @@ ch_device_queue_process_async (ChDeviceQueue		*device_queue,
 			       GAsyncReadyCallback	 callback,
 			       gpointer			 user_data)
 {
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 	ChDeviceQueueHelper *helper;
 	ChDeviceQueueData *data;
 	guint i;
@@ -387,13 +386,13 @@ ch_device_queue_process_async (ChDeviceQueue		*device_queue,
 
 	/* go through the list of commands and try to submit them all */
 	ch_device_queue_update_progress (helper->device_queue);
-	for (i = 0; i < device_queue->priv->data_array->len; i++) {
-		data = g_ptr_array_index (device_queue->priv->data_array, i);
+	for (i = 0; i < priv->data_array->len; i++) {
+		data = g_ptr_array_index (priv->data_array, i);
 		ch_device_queue_process_data (helper, data);
 	}
 
 	/* is anything pending? */
-	if (g_hash_table_size (device_queue->priv->devices_in_use) == 0) {
+	if (g_hash_table_size (priv->devices_in_use) == 0) {
 		g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
 		g_simple_async_result_complete_in_idle (helper->res);
 		ch_device_queue_free_helper (helper);
@@ -516,6 +515,7 @@ ch_device_queue_add_internal (ChDeviceQueue		*device_queue,
 			      GDestroyNotify		 user_data_destroy_func)
 {
 	ChDeviceQueueData *data;
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 
 	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
 	g_return_if_fail (G_USB_IS_DEVICE (device));
@@ -533,7 +533,7 @@ ch_device_queue_add_internal (ChDeviceQueue		*device_queue,
 	data->buffer_out = buffer_out;
 	data->buffer_out_len = buffer_out_len;
 	data->buffer_out_destroy_func = buffer_out_destroy_func;
-	g_ptr_array_add (device_queue->priv->data_array, data);
+	g_ptr_array_add (priv->data_array, data);
 }
 
 /**
@@ -3244,8 +3244,6 @@ ch_device_queue_class_init (ChDeviceQueueClass *klass)
 			      G_STRUCT_OFFSET (ChDeviceQueueClass, progress_changed),
 			      NULL, NULL, g_cclosure_marshal_generic,
 			      G_TYPE_NONE, 1, G_TYPE_UINT);
-
-	g_type_class_add_private (klass, sizeof (ChDeviceQueuePrivate));
 }
 
 /**
@@ -3254,9 +3252,9 @@ ch_device_queue_class_init (ChDeviceQueueClass *klass)
 static void
 ch_device_queue_init (ChDeviceQueue *device_queue)
 {
-	device_queue->priv = CH_DEVICE_QUEUE_GET_PRIVATE (device_queue);
-	device_queue->priv->data_array = g_ptr_array_new_with_free_func ((GDestroyNotify) ch_device_queue_data_free);
-	device_queue->priv->devices_in_use = g_hash_table_new_full (g_str_hash,
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
+	priv->data_array = g_ptr_array_new_with_free_func ((GDestroyNotify) ch_device_queue_data_free);
+	priv->devices_in_use = g_hash_table_new_full (g_str_hash,
 								    g_str_equal,
 								    g_free,
 								    NULL);
@@ -3269,7 +3267,7 @@ static void
 ch_device_queue_finalize (GObject *object)
 {
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
-	ChDeviceQueuePrivate *priv = device_queue->priv;
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 
 	g_ptr_array_unref (priv->data_array);
 	g_hash_table_unref (priv->devices_in_use);

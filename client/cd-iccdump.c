@@ -29,8 +29,6 @@
 #include <math.h>
 #include <colord-private.h>
 
-#include "cd-cleanup.h"
-
 static gint lcms_error_code = 0;
 
 /**
@@ -54,7 +52,7 @@ static gboolean
 cd_iccdump_print_file (const gchar *filename, GError **error)
 {
 	g_autofree gchar *str = NULL;
-	_cleanup_object_unref_ CdIcc *icc = NULL;
+	g_autoptr(CdIcc) icc = NULL;
 	g_autoptr(GFile) file = NULL;
 
 	/* load the profile */

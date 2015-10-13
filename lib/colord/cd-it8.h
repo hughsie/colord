@@ -35,24 +35,13 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_IT8		(cd_it8_get_type ())
-#define CD_IT8(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_IT8, CdIt8))
-#define CD_IT8_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_IT8, CdIt8Class))
-#define CD_IS_IT8(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_IT8))
-#define CD_IS_IT8_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_IT8))
-#define CD_IT8_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_IT8, CdIt8Class))
 #define CD_IT8_ERROR		(cd_it8_error_quark ())
 #define CD_IT8_TYPE_ERROR	(cd_it8_error_get_type ())
 
-typedef struct _CdIt8Private CdIt8Private;
+#define CD_TYPE_IT8 (cd_it8_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdIt8, cd_it8, CD, IT8, GObject)
 
-typedef struct
-{
-	 GObject		 parent;
-	 CdIt8Private		*priv;
-} CdIt8;
-
-typedef struct
+struct _CdIt8Class
 {
 	GObjectClass		 parent_class;
 	/*< private >*/
@@ -65,7 +54,7 @@ typedef struct
 	void (*_cd_it8_reserved6) (void);
 	void (*_cd_it8_reserved7) (void);
 	void (*_cd_it8_reserved8) (void);
-} CdIt8Class;
+};
 
 /**
  * CdIt8Error:
@@ -100,7 +89,6 @@ typedef enum {
 	CD_IT8_KIND_LAST
 } CdIt8Kind;
 
-GType		 cd_it8_get_type		(void);
 GQuark		 cd_it8_error_quark		(void);
 CdIt8		*cd_it8_new			(void);
 CdIt8		*cd_it8_new_with_kind		(CdIt8Kind	 kind);

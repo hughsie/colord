@@ -31,27 +31,14 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_INTERP_AKIMA		(cd_interp_akima_get_type ())
-#define CD_INTERP_AKIMA(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_INTERP_AKIMA, CdInterpAkima))
-#define CD_INTERP_AKIMA_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_INTERP_AKIMA, CdInterpAkimaClass))
-#define CD_IS_INTERP_AKIMA(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_INTERP_AKIMA))
-#define CD_IS_INTERP_AKIMA_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_INTERP_AKIMA))
-#define CD_INTERP_AKIMA_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_INTERP_AKIMA, CdInterpAkimaClass))
+#define CD_TYPE_INTERP_AKIMA (cd_interp_akima_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdInterpAkima, cd_interp_akima, CD, INTERP_AKIMA, CdInterp)
 
-typedef struct _CdInterpAkimaPrivate CdInterpAkimaPrivate;
-
-typedef struct
-{
-	 CdInterp		 parent;
-	 CdInterpAkimaPrivate	*priv;
-} CdInterpAkima;
-
-typedef struct
+struct _CdInterpAkimaClass
 {
 	CdInterpClass		 parent_class;
-} CdInterpAkimaClass;
+};
 
-GType		 cd_interp_akima_get_type		(void);
 CdInterp	*cd_interp_akima_new			(void);
 
 G_END_DECLS

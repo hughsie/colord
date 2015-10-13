@@ -35,7 +35,6 @@
 #include <glib.h>
 #include <lcms2.h>
 
-#include "cd-cleanup.h"
 #include "cd-context-lcms.h"
 #include "cd-transform.h"
 
@@ -43,14 +42,14 @@ static void	cd_transform_class_init		(CdTransformClass	*klass);
 static void	cd_transform_init		(CdTransform		*transform);
 static void	cd_transform_finalize		(GObject		*object);
 
-#define CD_TRANSFORM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_TRANSFORM, CdTransformPrivate))
+#define GET_PRIVATE(o) (cd_transform_get_instance_private (o))
 
 /**
  * CdTransformPrivate:
  *
  * Private #CdTransform data
  **/
-struct _CdTransformPrivate
+typedef struct
 {
 	CdIcc			*input_icc;
 	CdIcc			*output_icc;
@@ -65,9 +64,9 @@ struct _CdTransformPrivate
 	guint			 max_threads;
 	guint			 bpp_input;
 	guint			 bpp_output;
-};
+} CdTransformPrivate;
 
-G_DEFINE_TYPE (CdTransform, cd_transform, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdTransform, cd_transform, G_TYPE_OBJECT)
 
 enum {
 	PROP_0,
@@ -103,9 +102,10 @@ cd_transform_error_quark (void)
 static void
 cd_transform_invalidate (CdTransform *transform)
 {
-	if (transform->priv->lcms_transform != NULL)
-		cmsDeleteTransform (transform->priv->lcms_transform);
-	transform->priv->lcms_transform = NULL;
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+	if (priv->lcms_transform != NULL)
+		cmsDeleteTransform (priv->lcms_transform);
+	priv->lcms_transform = NULL;
 }
 
 /**
@@ -120,17 +120,19 @@ cd_transform_invalidate (CdTransform *transform)
 void
 cd_transform_set_input_icc (CdTransform *transform, CdIcc *icc)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
 
 	/* no change */
-	if (transform->priv->input_icc == icc)
+	if (priv->input_icc == icc)
 		return;
 
-	if (transform->priv->input_icc != NULL)
-		g_clear_object (&transform->priv->input_icc);
+	if (priv->input_icc != NULL)
+		g_clear_object (&priv->input_icc);
 	if (icc != NULL)
-		transform->priv->input_icc = g_object_ref (icc);
+		priv->input_icc = g_object_ref (icc);
 	cd_transform_invalidate (transform);
 }
 
@@ -147,8 +149,9 @@ cd_transform_set_input_icc (CdTransform *transform, CdIcc *icc)
 CdIcc *
 cd_transform_get_input_icc (CdTransform *transform)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), NULL);
-	return transform->priv->input_icc;
+	return priv->input_icc;
 }
 
 /**
@@ -163,17 +166,19 @@ cd_transform_get_input_icc (CdTransform *transform)
 void
 cd_transform_set_output_icc (CdTransform *transform, CdIcc *icc)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
 
 	/* no change */
-	if (transform->priv->output_icc == icc)
+	if (priv->output_icc == icc)
 		return;
 
-	if (transform->priv->output_icc != NULL)
-		g_clear_object (&transform->priv->output_icc);
+	if (priv->output_icc != NULL)
+		g_clear_object (&priv->output_icc);
 	if (icc != NULL)
-		transform->priv->output_icc = g_object_ref (icc);
+		priv->output_icc = g_object_ref (icc);
 	cd_transform_invalidate (transform);
 }
 
@@ -190,8 +195,9 @@ cd_transform_set_output_icc (CdTransform *transform, CdIcc *icc)
 CdIcc *
 cd_transform_get_output_icc (CdTransform *transform)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), NULL);
-	return transform->priv->output_icc;
+	return priv->output_icc;
 }
 
 /**
@@ -207,17 +213,19 @@ cd_transform_get_output_icc (CdTransform *transform)
 void
 cd_transform_set_abstract_icc (CdTransform *transform, CdIcc *icc)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (icc == NULL || CD_IS_ICC (icc));
 
 	/* no change */
-	if (transform->priv->abstract_icc == icc)
+	if (priv->abstract_icc == icc)
 		return;
 
-	if (transform->priv->abstract_icc != NULL)
-		g_clear_object (&transform->priv->abstract_icc);
+	if (priv->abstract_icc != NULL)
+		g_clear_object (&priv->abstract_icc);
 	if (icc != NULL)
-		transform->priv->abstract_icc = g_object_ref (icc);
+		priv->abstract_icc = g_object_ref (icc);
 	cd_transform_invalidate (transform);
 }
 
@@ -234,8 +242,9 @@ cd_transform_set_abstract_icc (CdTransform *transform, CdIcc *icc)
 CdIcc *
 cd_transform_get_abstract_icc (CdTransform *transform)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), NULL);
-	return transform->priv->abstract_icc;
+	return priv->abstract_icc;
 }
 
 /**
@@ -250,10 +259,12 @@ cd_transform_get_abstract_icc (CdTransform *transform)
 void
 cd_transform_set_input_pixel_format (CdTransform *transform, CdPixelFormat pixel_format)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (pixel_format != CD_PIXEL_FORMAT_UNKNOWN);
 
-	transform->priv->input_pixel_format = pixel_format;
+	priv->input_pixel_format = pixel_format;
 	cd_transform_invalidate (transform);
 }
 
@@ -270,8 +281,9 @@ cd_transform_set_input_pixel_format (CdTransform *transform, CdPixelFormat pixel
 CdPixelFormat
 cd_transform_get_input_pixel_format (CdTransform *transform)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), CD_PIXEL_FORMAT_UNKNOWN);
-	return transform->priv->input_pixel_format;
+	return priv->input_pixel_format;
 }
 
 /**
@@ -286,10 +298,12 @@ cd_transform_get_input_pixel_format (CdTransform *transform)
 void
 cd_transform_set_output_pixel_format (CdTransform *transform, CdPixelFormat pixel_format)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (pixel_format != CD_PIXEL_FORMAT_UNKNOWN);
 
-	transform->priv->output_pixel_format = pixel_format;
+	priv->output_pixel_format = pixel_format;
 	cd_transform_invalidate (transform);
 }
 
@@ -306,8 +320,9 @@ cd_transform_set_output_pixel_format (CdTransform *transform, CdPixelFormat pixe
 CdPixelFormat
 cd_transform_get_output_pixel_format (CdTransform *transform)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), CD_PIXEL_FORMAT_UNKNOWN);
-	return transform->priv->output_pixel_format;
+	return priv->output_pixel_format;
 }
 
 /**
@@ -322,10 +337,12 @@ cd_transform_get_output_pixel_format (CdTransform *transform)
 void
 cd_transform_set_rendering_intent (CdTransform *transform, CdRenderingIntent rendering_intent)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 	g_return_if_fail (rendering_intent != CD_RENDERING_INTENT_UNKNOWN);
 
-	transform->priv->rendering_intent = rendering_intent;
+	priv->rendering_intent = rendering_intent;
 	cd_transform_invalidate (transform);
 }
 
@@ -342,8 +359,9 @@ cd_transform_set_rendering_intent (CdTransform *transform, CdRenderingIntent ren
 CdRenderingIntent
 cd_transform_get_rendering_intent (CdTransform *transform)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), CD_RENDERING_INTENT_UNKNOWN);
-	return transform->priv->rendering_intent;
+	return priv->rendering_intent;
 }
 
 /**
@@ -358,9 +376,11 @@ cd_transform_get_rendering_intent (CdTransform *transform)
 void
 cd_transform_set_bpc (CdTransform *transform, gboolean bpc)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
 
-	transform->priv->bpc = bpc;
+	priv->bpc = bpc;
 	cd_transform_invalidate (transform);
 }
 
@@ -377,8 +397,9 @@ cd_transform_set_bpc (CdTransform *transform, gboolean bpc)
 gboolean
 cd_transform_get_bpc (CdTransform *transform)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), FALSE);
-	return transform->priv->bpc;
+	return priv->bpc;
 }
 
 /**
@@ -393,8 +414,9 @@ cd_transform_get_bpc (CdTransform *transform)
 void
 cd_transform_set_max_threads (CdTransform *transform, guint max_threads)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_if_fail (CD_IS_TRANSFORM (transform));
-	transform->priv->max_threads = max_threads;
+	priv->max_threads = max_threads;
 }
 
 /**
@@ -410,8 +432,9 @@ cd_transform_set_max_threads (CdTransform *transform, guint max_threads)
 guint
 cd_transform_get_max_threads (CdTransform *transform)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	g_return_val_if_fail (CD_IS_TRANSFORM (transform), FALSE);
-	return transform->priv->max_threads;
+	return priv->max_threads;
 }
 
 /* map lcms intent to colord type */
@@ -452,7 +475,7 @@ cd_transform_get_bpp (CdPixelFormat format)
 static gboolean
 cd_transform_setup (CdTransform *transform, GError **error)
 {
-	CdTransformPrivate *priv = transform->priv;
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	cmsHPROFILE profile_in;
 	cmsHPROFILE profile_out;
 	cmsUInt32Number lcms_flags = 0;
@@ -571,10 +594,11 @@ cd_transform_process_func (gpointer data, gpointer user_data)
 {
 	CdTransformJob *job = (CdTransformJob *) data;
 	CdTransform *transform = CD_TRANSFORM (user_data);
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	guint i;
 
 	for (i = 0; i < job->rows_to_process; i++) {
-		cmsDoTransformStride (transform->priv->lcms_transform,
+		cmsDoTransformStride (priv->lcms_transform,
 				      job->p_in,
 				      job->p_out,
 				      job->width,
@@ -591,6 +615,7 @@ cd_transform_process_func (gpointer data, gpointer user_data)
 static gboolean
 cd_transform_set_max_threads_default (CdTransform *transform, GError **error)
 {
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	gchar *tmp;
 	g_autofree gchar *data = NULL;
 
@@ -600,11 +625,11 @@ cd_transform_set_max_threads_default (CdTransform *transform, GError **error)
 	tmp = g_strstr_len (data, -1, "cpu cores\t: ");
 	if (tmp == NULL) {
 		/* some processors do not provide this info */
-		transform->priv->max_threads = 1;
+		priv->max_threads = 1;
 		return TRUE;
 	}
-	transform->priv->max_threads = g_ascii_strtoull (tmp + 12, NULL, 10);
-	if (transform->priv->max_threads == 0) {
+	priv->max_threads = g_ascii_strtoull (tmp + 12, NULL, 10);
+	if (priv->max_threads == 0) {
 		g_set_error_literal (error,
 				     CD_TRANSFORM_ERROR,
 				     CD_TRANSFORM_ERROR_LAST,
@@ -644,7 +669,7 @@ cd_transform_process (CdTransform *transform,
 		      GError **error)
 {
 	CdTransformJob *job;
-	CdTransformPrivate *priv = transform->priv;
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 	gboolean ret = TRUE;
 	GThreadPool *pool = NULL;
 	guint8 *p_in;
@@ -679,7 +704,7 @@ cd_transform_process (CdTransform *transform,
 	}
 
 	/* get the best number of threads */
-	if (transform->priv->max_threads == 0) {
+	if (priv->max_threads == 0) {
 		ret = cd_transform_set_max_threads_default (transform, error);
 		if (!ret)
 			goto out;
@@ -693,7 +718,7 @@ cd_transform_process (CdTransform *transform,
 	}
 
 	/* non-threaded conversion */
-	if (transform->priv->max_threads == 1) {
+	if (priv->max_threads == 1) {
 		p_in = data_in;
 		p_out = data_out;
 		for (i = 0; i < height; i++) {
@@ -711,7 +736,7 @@ cd_transform_process (CdTransform *transform,
 	/* create a threadpool for each line of the image */
 	pool = g_thread_pool_new (cd_transform_process_func,
 				  transform,
-				  transform->priv->max_threads,
+				  priv->max_threads,
 				  TRUE,
 				  error);
 	if (pool == NULL)
@@ -720,7 +745,7 @@ cd_transform_process (CdTransform *transform,
 	/* do conversion */
 	p_in = data_in;
 	p_out = data_out;
-	rows_to_process = height / transform->priv->max_threads;
+	rows_to_process = height / priv->max_threads;
 	for (i = 0; i < height; i += rows_to_process) {
 		job = g_slice_new (CdTransformJob);
 		job->p_in = p_in;
@@ -750,7 +775,7 @@ static void
 cd_transform_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
 	CdTransform *transform = CD_TRANSFORM (object);
-	CdTransformPrivate *priv = transform->priv;
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 
 	switch (prop_id) {
 	case PROP_INPUT_ICC:
@@ -883,8 +908,6 @@ cd_transform_class_init (CdTransformClass *klass)
 				     CD_TYPE_ICC,
 				     G_PARAM_READWRITE);
 	g_object_class_install_property (object_class, PROP_ABSTRACT_ICC, pspec);
-
-	g_type_class_add_private (klass, sizeof (CdTransformPrivate));
 }
 
 /**
@@ -893,13 +916,13 @@ cd_transform_class_init (CdTransformClass *klass)
 static void
 cd_transform_init (CdTransform *transform)
 {
-	transform->priv = CD_TRANSFORM_GET_PRIVATE (transform);
-	transform->priv->context_lcms = cd_context_lcms_new ();
-	transform->priv->rendering_intent = CD_RENDERING_INTENT_UNKNOWN;
-	transform->priv->input_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
-	transform->priv->output_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
-	transform->priv->srgb = cmsCreate_sRGBProfileTHR (transform->priv->context_lcms);
-	transform->priv->max_threads = 1;
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
+	priv->context_lcms = cd_context_lcms_new ();
+	priv->rendering_intent = CD_RENDERING_INTENT_UNKNOWN;
+	priv->input_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
+	priv->output_pixel_format = CD_PIXEL_FORMAT_UNKNOWN;
+	priv->srgb = cmsCreate_sRGBProfileTHR (priv->context_lcms);
+	priv->max_threads = 1;
 }
 
 /**
@@ -909,9 +932,9 @@ static void
 cd_transform_finalize (GObject *object)
 {
 	CdTransform *transform = CD_TRANSFORM (object);
-	CdTransformPrivate *priv = transform->priv;
+	CdTransformPrivate *priv = GET_PRIVATE (transform);
 
-	cmsCloseProfile (transform->priv->srgb);
+	cmsCloseProfile (priv->srgb);
 	if (priv->input_icc != NULL)
 		g_object_unref (priv->input_icc);
 	if (priv->output_icc != NULL)

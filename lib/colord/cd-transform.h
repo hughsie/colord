@@ -34,22 +34,11 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_TRANSFORM		(cd_transform_get_type ())
-#define CD_TRANSFORM(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_TRANSFORM, CdTransform))
-#define CD_TRANSFORM_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_TRANSFORM, CdTransformClass))
-#define CD_IS_TRANSFORM(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_TRANSFORM))
-#define CD_IS_TRANSFORM_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_TRANSFORM))
-#define CD_TRANSFORM_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_TRANSFORM, CdTransformClass))
 #define CD_TRANSFORM_ERROR		(cd_transform_error_quark ())
 #define CD_TRANSFORM_TYPE_ERROR		(cd_transform_error_get_type ())
 
-typedef struct _CdTransformPrivate CdTransformPrivate;
-
-typedef struct
-{
-	 GObject		 parent;
-	 CdTransformPrivate	*priv;
-} CdTransform;
+#define CD_TYPE_TRANSFORM (cd_transform_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdTransform, cd_transform, CD, TRANSFORM, GObject)
 
 /**
  * CdTransformError:
@@ -66,7 +55,7 @@ typedef enum {
 	CD_TRANSFORM_ERROR_LAST
 } CdTransformError;
 
-typedef struct
+struct _CdTransformClass
 {
 	GObjectClass		 parent_class;
 	/*< private >*/
@@ -79,9 +68,8 @@ typedef struct
 	void (*_cd_transform_reserved6) (void);
 	void (*_cd_transform_reserved7) (void);
 	void (*_cd_transform_reserved8) (void);
-} CdTransformClass;
+};
 
-GType		 cd_transform_get_type			(void);
 GQuark		 cd_transform_error_quark		(void);
 CdTransform	*cd_transform_new			(void);
 

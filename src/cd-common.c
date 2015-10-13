@@ -27,8 +27,13 @@
 #include <polkit/polkit.h>
 #endif
 
-#include "cd-cleanup.h"
 #include "cd-common.h"
+
+#ifndef PolkitAuthorizationResult_autoptr
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(PolkitAuthorizationResult, g_object_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(PolkitSubject, g_object_unref)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(PolkitAuthority, g_object_unref)
+#endif
 
 /**
  * cd_client_error_quark:
@@ -135,9 +140,9 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 	guint uid;
 	g_autoptr(GError) error_local = NULL;
 #ifdef USE_POLKIT
-	_cleanup_object_unref_ PolkitAuthority *authority = NULL;
-	_cleanup_object_unref_ PolkitAuthorizationResult *result = NULL;
-	_cleanup_object_unref_ PolkitSubject *subject = NULL;
+	g_autoptr(PolkitAuthority) authority = NULL;
+	g_autoptr(PolkitAuthorizationResult) result = NULL;
+	g_autoptr(PolkitSubject) subject = NULL;
 #endif
 
 	/* uid 0 is allowed to do all actions */

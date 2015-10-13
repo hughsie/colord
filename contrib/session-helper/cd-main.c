@@ -29,7 +29,6 @@
 
 #include <colord/colord.h>
 
-#include "cd-cleanup.h"
 #include "cd-debug.h"
 #include "cd-state.h"
 #include "cd-session.h"
@@ -1029,7 +1028,7 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	g_autoptr(GError) error_local = NULL;
 	g_autofree gchar *profile_fn = NULL;
 	g_autofree gchar *profile_path = NULL;
-	_cleanup_object_unref_ CdIcc *icc = NULL;
+	g_autoptr(CdIcc) icc = NULL;
 	g_autoptr(GFile) file = NULL;
 
 	/* get profile */
@@ -1465,7 +1464,7 @@ cd_main_find_device (CdMainPrivate *priv,
 {
 	gboolean ret;
 	g_autoptr(GError) error_local = NULL;
-	_cleanup_object_unref_ CdDevice *device_tmp = NULL;
+	g_autoptr(CdDevice) device_tmp = NULL;
 
 	device_tmp = cd_client_find_device_sync (priv->client,
 						 device_id,
@@ -1515,7 +1514,7 @@ cd_main_find_sensor (CdMainPrivate *priv,
 {
 	gboolean ret;
 	g_autoptr(GError) error_local = NULL;
-	_cleanup_object_unref_ CdSensor *sensor_tmp = NULL;
+	g_autoptr(CdSensor) sensor_tmp = NULL;
 
 	sensor_tmp = cd_client_find_sensor_sync (priv->client,
 						 sensor_id,

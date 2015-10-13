@@ -28,8 +28,6 @@
 #include <stdio.h>
 #include <colord/colord.h>
 
-#include "cd-cleanup.h"
-
 #define CD_ERROR			1
 #define CD_ERROR_INVALID_ARGUMENTS	0
 #define CD_ERROR_NO_SUCH_CMD		1
@@ -215,7 +213,7 @@ cd_util_create_cmf (CdUtilPrivate *priv,
 	gdouble norm;
 	g_autofree gchar *data = NULL;
 	g_autofree gchar *title = NULL;
-	_cleanup_object_unref_ CdIt8 *cmf = NULL;
+	g_autoptr(CdIt8) cmf = NULL;
 	g_autoptr(GFile) file = NULL;
 	g_autoptr(GPtrArray) array = NULL;
 	g_auto(GStrv) lines = NULL;
@@ -329,9 +327,9 @@ cd_util_calculate_ccmx (CdUtilPrivate *priv,
 {
 	gchar *tmp;
 	g_autofree gchar *basename = NULL;
-	_cleanup_object_unref_ CdIt8 *it8_ccmx = NULL;
-	_cleanup_object_unref_ CdIt8 *it8_meas = NULL;
-	_cleanup_object_unref_ CdIt8 *it8_ref = NULL;
+	g_autoptr(CdIt8) it8_ccmx = NULL;
+	g_autoptr(CdIt8) it8_meas = NULL;
+	g_autoptr(CdIt8) it8_ref = NULL;
 	g_autoptr(GFile) file_ccmx = NULL;
 	g_autoptr(GFile) file_meas = NULL;
 	g_autoptr(GFile) file_ref = NULL;
@@ -391,7 +389,7 @@ cd_util_create_sp (CdUtilPrivate *priv,
 	guint i;
 	g_autofree gchar *data = NULL;
 	g_autofree gchar *title = NULL;
-	_cleanup_object_unref_ CdIt8 *cmf = NULL;
+	g_autoptr(CdIt8) cmf = NULL;
 	g_autoptr(GFile) file = NULL;
 	g_autoptr(GPtrArray) array = NULL;
 	g_auto(GStrv) lines = NULL;

@@ -28,25 +28,24 @@
 
 #include <glib.h>
 
-#include "cd-cleanup.h"
 #include "cd-dom.h"
 
 static void	cd_dom_class_init	(CdDomClass	*klass);
 static void	cd_dom_init		(CdDom		*dom);
 static void	cd_dom_finalize		(GObject	*object);
 
-#define CD_DOM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_DOM, CdDomPrivate))
+#define GET_PRIVATE(o) (cd_dom_get_instance_private (o))
 
 /**
  * CdDomPrivate:
  *
  * Private #CdDom data
  **/
-struct _CdDomPrivate
+typedef struct
 {
 	GNode			*root;
 	GNode			*current;
-};
+} CdDomPrivate;
 
 typedef struct
 {
@@ -55,7 +54,7 @@ typedef struct
 	GHashTable	*attributes;
 } CdDomNodeData;
 
-G_DEFINE_TYPE (CdDom, cd_dom, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdDom, cd_dom, G_TYPE_OBJECT)
 
 /**
  * cd_dom_error_quark:
@@ -108,12 +107,13 @@ cd_dom_print_node_cb (GNode *node, gpointer user_data)
 gchar *
 cd_dom_to_string (CdDom *dom)
 {
+	CdDomPrivate *priv = GET_PRIVATE (dom);
 	GString *string;
 
 	g_return_val_if_fail (CD_IS_DOM (dom), NULL);
 
 	string = g_string_new (NULL);
-	g_node_traverse (dom->priv->root,
+	g_node_traverse (priv->root,
 			 G_PRE_ORDER,
 			 G_TRAVERSE_ALL,
 			 -1,
@@ -135,6 +135,7 @@ cd_dom_start_element_cb (GMarkupParseContext *context,
 			 GError             **error)
 {
 	CdDom *dom = (CdDom *) user_data;
+	CdDomPrivate *priv = GET_PRIVATE (dom);
 	CdDomNodeData *data;
 	GNode *new;
 	guint i;
@@ -155,8 +156,8 @@ cd_dom_start_element_cb (GMarkupParseContext *context,
 
 	/* add the node to the DOM */
 	new = g_node_new (data);
-	g_node_append (dom->priv->current, new);
-	dom->priv->current = new;
+	g_node_append (priv->current, new);
+	priv->current = new;
 }
 
 /**
@@ -169,7 +170,8 @@ cd_dom_end_element_cb (GMarkupParseContext *context,
 		       GError             **error)
 {
 	CdDom *dom = (CdDom *) user_data;
-	dom->priv->current = dom->priv->current->parent;
+	CdDomPrivate *priv = GET_PRIVATE (dom);
+	priv->current = priv->current->parent;
 }
 
 /**
@@ -183,6 +185,7 @@ cd_dom_text_cb (GMarkupParseContext *context,
 		GError             **error)
 {
 	CdDom *dom = (CdDom *) user_data;
+	CdDomPrivate *priv = GET_PRIVATE (dom);
 	CdDomNodeData *data;
 	guint i;
 
@@ -201,7 +204,7 @@ cd_dom_text_cb (GMarkupParseContext *context,
 		return;
 
 	/* save cdata */
-	data = dom->priv->current->data;
+	data = priv->current->data;
 	g_string_append (data->cdata, text);
 }
 
@@ -406,6 +409,7 @@ cd_dom_get_node_attribute (const GNode *node, const gchar *key)
 const GNode *
 cd_dom_get_node (CdDom *dom, const GNode *root, const gchar *path)
 {
+	CdDomPrivate *priv = GET_PRIVATE (dom);
 	const GNode *node;
 	guint i;
 	g_auto(GStrv) split = NULL;
@@ -415,7 +419,7 @@ cd_dom_get_node (CdDom *dom, const GNode *root, const gchar *path)
 
 	/* default value */
 	if (root == NULL)
-		root = dom->priv->root;
+		root = priv->root;
 
 	node = root;
 	split = g_strsplit (path, "/", -1);
@@ -628,7 +632,6 @@ cd_dom_class_init (CdDomClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_dom_finalize;
-	g_type_class_add_private (klass, sizeof (CdDomPrivate));
 }
 
 /**
@@ -637,9 +640,9 @@ cd_dom_class_init (CdDomClass *klass)
 static void
 cd_dom_init (CdDom *dom)
 {
-	dom->priv = CD_DOM_GET_PRIVATE (dom);
-	dom->priv->root = g_node_new (NULL);
-	dom->priv->current = dom->priv->root;
+	CdDomPrivate *priv = GET_PRIVATE (dom);
+	priv->root = g_node_new (NULL);
+	priv->current = priv->root;
 }
 
 /**
@@ -649,14 +652,15 @@ static void
 cd_dom_finalize (GObject *object)
 {
 	CdDom *dom = CD_DOM (object);
+	CdDomPrivate *priv = GET_PRIVATE (dom);
 
-	g_node_traverse (dom->priv->root,
+	g_node_traverse (priv->root,
 			 G_PRE_ORDER,
 			 G_TRAVERSE_ALL,
 			 -1,
 			 cd_dom_destroy_node_cb,
 			 NULL);
-	g_node_destroy (dom->priv->root);
+	g_node_destroy (priv->root);
 
 	G_OBJECT_CLASS (cd_dom_parent_class)->finalize (object);
 }
@@ -677,4 +681,3 @@ cd_dom_new (void)
 	dom = g_object_new (CD_TYPE_DOM, NULL);
 	return CD_DOM (dom);
 }
-

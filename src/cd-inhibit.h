@@ -26,22 +26,8 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_INHIBIT		(cd_inhibit_get_type ())
-#define CD_INHIBIT(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_INHIBIT, CdInhibit))
-#define CD_INHIBIT_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_INHIBIT, CdInhibitClass))
-#define CD_IS_INHIBIT(o)	(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_INHIBIT))
-#define CD_IS_INHIBIT_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_INHIBIT))
-#define CD_INHIBIT_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_INHIBIT, CdInhibitClass))
-
-typedef struct _CdInhibitPrivate	CdInhibitPrivate;
-typedef struct _CdInhibit		CdInhibit;
-typedef struct _CdInhibitClass		CdInhibitClass;
-
-struct _CdInhibit
-{
-	 GObject		 parent;
-	 CdInhibitPrivate	*priv;
-};
+#define CD_TYPE_INHIBIT (cd_inhibit_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdInhibit, cd_inhibit, CD, INHIBIT, GObject)
 
 struct _CdInhibitClass
 {

@@ -26,25 +26,13 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_PROFILE_DB		(cd_profile_db_get_type ())
-#define CD_PROFILE_DB(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_PROFILE_DB, CdProfileDb))
-#define CD_PROFILE_DB_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_PROFILE_DB, CdProfileDbClass))
-#define CD_IS_PROFILE_DB(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_PROFILE_DB))
-#define CD_IS_PROFILE_DB_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_PROFILE_DB))
-#define CD_PROFILE_DB_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_PROFILE_DB, CdProfileDbClass))
+#define CD_TYPE_PROFILE_DB (cd_profile_db_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdProfileDb, cd_profile_db, CD, PROFILE_DB, GObject)
 
-typedef struct CdProfileDbPrivate CdProfileDbPrivate;
-
-typedef struct
-{
-	 GObject		 parent;
-	 CdProfileDbPrivate	*priv;
-} CdProfileDb;
-
-typedef struct
+struct _CdProfileDbClass
 {
 	GObjectClass	parent_class;
-} CdProfileDbClass;
+};
 
 GType		 cd_profile_db_get_type		(void);
 CdProfileDb	*cd_profile_db_new		(void);

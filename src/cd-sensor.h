@@ -40,23 +40,10 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_SENSOR		(cd_sensor_get_type ())
-#define CD_SENSOR(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_SENSOR, CdSensor))
-#define CD_SENSOR_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_SENSOR, CdSensorClass))
-#define CD_IS_SENSOR(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_SENSOR))
-#define CD_IS_SENSOR_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_SENSOR))
-#define CD_SENSOR_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_SENSOR, CdSensorClass))
 #define CD_SENSOR_ERROR		cd_sensor_error_quark()
 
-typedef struct _CdSensorPrivate	CdSensorPrivate;
-typedef struct _CdSensor	CdSensor;
-typedef struct _CdSensorClass	CdSensorClass;
-
-struct _CdSensor
-{
-	 GObject		 parent;
-	 CdSensorPrivate	*priv;
-};
+#define CD_TYPE_SENSOR (cd_sensor_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdSensor, cd_sensor, CD, SENSOR, GObject)
 
 struct _CdSensorClass
 {
@@ -72,7 +59,6 @@ typedef enum {
 /* when the data is unavailable */
 #define CD_SENSOR_NO_VALUE			-1.0f
 
-GType		 cd_sensor_get_type		(void);
 CdSensor	*cd_sensor_new			(void);
 GQuark		 cd_sensor_error_quark		(void);
 

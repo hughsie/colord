@@ -28,22 +28,8 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_DEVICE_ARRAY		(cd_device_array_get_type ())
-#define CD_DEVICE_ARRAY(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_DEVICE_ARRAY, CdDeviceArray))
-#define CD_DEVICE_ARRAY_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_DEVICE_ARRAY, CdDeviceArrayClass))
-#define CD_IS_DEVICE_ARRAY(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_DEVICE_ARRAY))
-#define CD_IS_DEVICE_ARRAY_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_DEVICE_ARRAY))
-#define CD_DEVICE_ARRAY_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_DEVICE_ARRAY, CdDeviceArrayClass))
-
-typedef struct _CdDeviceArrayPrivate	CdDeviceArrayPrivate;
-typedef struct _CdDeviceArray		CdDeviceArray;
-typedef struct _CdDeviceArrayClass	CdDeviceArrayClass;
-
-struct _CdDeviceArray
-{
-	 GObject		 parent;
-	 CdDeviceArrayPrivate	*priv;
-};
+#define CD_TYPE_DEVICE_ARRAY (cd_device_array_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdDeviceArray, cd_device_array, CD, DEVICE_ARRAY, GObject)
 
 struct _CdDeviceArrayClass
 {
@@ -56,7 +42,6 @@ typedef enum {
 	CD_DEVICE_ARRAY_FLAG_LAST,
 } CdDeviceArrayFlags;
 
-GType		 cd_device_array_get_type		(void);
 CdDeviceArray	*cd_device_array_new			(void);
 
 void		 cd_device_array_add			(CdDeviceArray	*device_array,

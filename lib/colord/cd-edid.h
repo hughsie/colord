@@ -32,23 +32,10 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_EDID		(cd_edid_get_type ())
-#define CD_EDID(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_EDID, CdEdid))
-#define CD_EDID_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_EDID, CdEdidClass))
-#define CD_IS_EDID(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_EDID))
-#define CD_IS_EDID_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_EDID))
-#define CD_EDID_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_EDID, CdEdidClass))
 #define CD_EDID_ERROR		(cd_edid_error_quark ())
 
-typedef struct _CdEdidPrivate	CdEdidPrivate;
-typedef struct _CdEdid		CdEdid;
-typedef struct _CdEdidClass	CdEdidClass;
-
-struct _CdEdid
-{
-	 GObject		 parent;
-	 CdEdidPrivate		*priv;
-};
+#define CD_TYPE_EDID (cd_edid_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdEdid, cd_edid, CD, EDID, GObject)
 
 struct _CdEdidClass
 {
@@ -77,7 +64,6 @@ enum {
 	CD_EDID_ERROR_LAST
 };
 
-GType		 cd_edid_get_type			(void);
 GQuark		 cd_edid_error_quark			(void);
 
 CdEdid		*cd_edid_new				(void);

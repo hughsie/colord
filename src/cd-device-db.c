@@ -25,22 +25,21 @@
 #include <glib-object.h>
 #include <sqlite3.h>
 
-#include "cd-cleanup.h"
 #include "cd-common.h"
 #include "cd-device-db.h"
 
 static void     cd_device_db_finalize	(GObject        *object);
 
-#define CD_DEVICE_DB_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_DEVICE_DB, CdDeviceDbPrivate))
+#define GET_PRIVATE(o) (cd_device_db_get_instance_private (o))
 
-struct CdDeviceDbPrivate
+typedef struct
 {
 	sqlite3			*db;
-};
+} CdDeviceDbPrivate;
 
 static gpointer cd_device_db_object = NULL;
 
-G_DEFINE_TYPE (CdDeviceDb, cd_device_db, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdDeviceDb, cd_device_db, G_TYPE_OBJECT)
 
 /**
  * cd_device_db_load:
@@ -50,13 +49,14 @@ cd_device_db_load (CdDeviceDb *ddb,
 		    const gchar *filename,
 		    GError  **error)
 {
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
-	g_return_val_if_fail (ddb->priv->db == NULL, FALSE);
+	g_return_val_if_fail (priv->db == NULL, FALSE);
 
 	/* ensure the path exists */
 	path = g_path_get_dirname (filename);
@@ -65,23 +65,23 @@ cd_device_db_load (CdDeviceDb *ddb,
 
 	g_debug ("CdDeviceDb: trying to open database '%s'", filename);
 	g_info ("Using device database file %s", filename);
-	rc = sqlite3_open (filename, &ddb->priv->db);
+	rc = sqlite3_open (filename, &priv->db);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "Can't open database: %s\n",
-			     sqlite3_errmsg (ddb->priv->db));
-		sqlite3_close (ddb->priv->db);
+			     sqlite3_errmsg (priv->db));
+		sqlite3_close (priv->db);
 		return FALSE;
 	}
 
 	/* we don't need to keep doing fsync */
-	sqlite3_exec (ddb->priv->db, "PRAGMA synchronous=OFF",
+	sqlite3_exec (priv->db, "PRAGMA synchronous=OFF",
 		      NULL, NULL, NULL);
 
 	/* check devices */
-	rc = sqlite3_exec (ddb->priv->db, "SELECT * FROM devices LIMIT 1",
+	rc = sqlite3_exec (priv->db, "SELECT * FROM devices LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_debug ("CdDeviceDb: creating table to repair: %s", error_msg);
@@ -89,11 +89,11 @@ cd_device_db_load (CdDeviceDb *ddb,
 		statement = "CREATE TABLE devices ("
 			    "device_id TEXT PRIMARY KEY,"
 			    "device TEXT);";
-		sqlite3_exec (ddb->priv->db, statement, NULL, NULL, NULL);
+		sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	}
 
 	/* check properties version 2 */
-	rc = sqlite3_exec (ddb->priv->db, "SELECT * FROM properties_v2 LIMIT 1",
+	rc = sqlite3_exec (priv->db, "SELECT * FROM properties_v2 LIMIT 1",
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		statement = "CREATE TABLE properties_v2 ("
@@ -101,7 +101,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 			    "property TEXT,"
 			    "value TEXT,"
 			    "PRIMARY KEY (device_id, property));";
-		sqlite3_exec (ddb->priv->db, statement, NULL, NULL, NULL);
+		sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	}
 	return TRUE;
 }
@@ -113,15 +113,16 @@ gboolean
 cd_device_db_empty (CdDeviceDb *ddb,
 		     GError  **error)
 {
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
-	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	statement = "DELETE FROM devices;DELETE FROM properties_v2;";
-	rc = sqlite3_exec (ddb->priv->db, statement,
+	rc = sqlite3_exec (priv->db, statement,
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
@@ -143,13 +144,14 @@ cd_device_db_add (CdDeviceDb *ddb,
 		  const gchar *device_id,
 		  GError  **error)
 {
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
-	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	g_debug ("CdDeviceDb: add device %s", device_id);
 	statement = sqlite3_mprintf ("INSERT INTO devices (device_id) "
@@ -157,7 +159,7 @@ cd_device_db_add (CdDeviceDb *ddb,
 				     device_id);
 
 	/* insert the entry */
-	rc = sqlite3_exec (ddb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -183,13 +185,14 @@ cd_device_db_set_property (CdDeviceDb *ddb,
 			   const gchar *value,
 			   GError  **error)
 {
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
-	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	g_debug ("CdDeviceDb: add device property %s [%s=%s]",
 		 device_id, property, value);
@@ -198,7 +201,7 @@ cd_device_db_set_property (CdDeviceDb *ddb,
 				     device_id, property, value);
 
 	/* insert the entry */
-	rc = sqlite3_exec (ddb->priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -222,6 +225,7 @@ cd_device_db_remove (CdDeviceDb *ddb,
 		     const gchar *device_id,
 		     GError  **error)
 {
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gboolean ret = TRUE;
 	gchar *error_msg = NULL;
 	gchar *statement1 = NULL;
@@ -229,14 +233,14 @@ cd_device_db_remove (CdDeviceDb *ddb,
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
-	g_return_val_if_fail (ddb->priv->db != NULL, FALSE);
+	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	/* remove the entry */
 	g_debug ("CdDeviceDb: remove device %s", device_id);
 	statement1 = sqlite3_mprintf ("DELETE FROM devices WHERE "
 				     "device_id = '%q';",
 				     device_id);
-	rc = sqlite3_exec (ddb->priv->db, statement1, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement1, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -250,7 +254,7 @@ cd_device_db_remove (CdDeviceDb *ddb,
 	statement2 = sqlite3_mprintf ("DELETE FROM properties_v2 WHERE "
 				     "device_id = '%q';",
 				     device_id);
-	rc = sqlite3_exec (ddb->priv->db, statement2, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement2, NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
@@ -293,6 +297,7 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 			   const gchar *property,
 			   GError  **error)
 {
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
@@ -300,7 +305,7 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 	g_autoptr(GPtrArray) array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
-	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
+	g_return_val_if_fail (priv->db != NULL, NULL);
 
 	g_debug ("CdDeviceDb: get property %s for %s", property, device_id);
 	statement = sqlite3_mprintf ("SELECT value FROM properties_v2 WHERE "
@@ -310,7 +315,7 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 
 	/* remove the entry */
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
-	rc = sqlite3_exec (ddb->priv->db,
+	rc = sqlite3_exec (priv->db,
 			   statement,
 			   cd_device_db_sqlite_cb,
 			   array_tmp,
@@ -349,6 +354,7 @@ GPtrArray *
 cd_device_db_get_devices (CdDeviceDb *ddb,
 			  GError  **error)
 {
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
@@ -356,13 +362,13 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 	g_autoptr(GPtrArray) array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
-	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
+	g_return_val_if_fail (priv->db != NULL, NULL);
 
 	/* get all the devices */
 	g_debug ("CdDeviceDb: get devices");
 	statement = sqlite3_mprintf ("SELECT device_id FROM devices;");
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
-	rc = sqlite3_exec (ddb->priv->db,
+	rc = sqlite3_exec (priv->db,
 			   statement,
 			   cd_device_db_sqlite_cb,
 			   array_tmp,
@@ -392,6 +398,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 			     const gchar *device_id,
 			     GError  **error)
 {
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gchar *error_msg = NULL;
 	gchar *statement;
 	gint rc;
@@ -399,7 +406,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 	g_autoptr(GPtrArray) array_tmp = NULL;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), NULL);
-	g_return_val_if_fail (ddb->priv->db != NULL, NULL);
+	g_return_val_if_fail (priv->db != NULL, NULL);
 
 	/* get all the devices */
 	g_debug ("CdDeviceDb: get properties for device %s", device_id);
@@ -407,7 +414,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 				     "WHERE device_id = '%q';",
 				     device_id);
 	array_tmp = g_ptr_array_new_with_free_func (g_free);
-	rc = sqlite3_exec (ddb->priv->db,
+	rc = sqlite3_exec (priv->db,
 			   statement,
 			   cd_device_db_sqlite_cb,
 			   array_tmp,
@@ -438,7 +445,6 @@ cd_device_db_class_init (CdDeviceDbClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = cd_device_db_finalize;
-	g_type_class_add_private (klass, sizeof (CdDeviceDbPrivate));
 }
 
 /**
@@ -447,7 +453,6 @@ cd_device_db_class_init (CdDeviceDbClass *klass)
 static void
 cd_device_db_init (CdDeviceDb *ddb)
 {
-	ddb->priv = CD_DEVICE_DB_GET_PRIVATE (ddb);
 }
 
 /**
@@ -457,13 +462,11 @@ cd_device_db_init (CdDeviceDb *ddb)
 static void
 cd_device_db_finalize (GObject *object)
 {
-	CdDeviceDb *ddb;
-	g_return_if_fail (CD_IS_DEVICE_DB (object));
-	ddb = CD_DEVICE_DB (object);
-	g_return_if_fail (ddb->priv != NULL);
+	CdDeviceDb *ddb = CD_DEVICE_DB (object);
+	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 
 	/* close the database */
-	sqlite3_close (ddb->priv->db);
+	sqlite3_close (priv->db);
 
 	G_OBJECT_CLASS (cd_device_db_parent_class)->finalize (object);
 }

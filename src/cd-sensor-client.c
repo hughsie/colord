@@ -30,17 +30,17 @@
 
 static void     cd_sensor_client_finalize	(GObject	*object);
 
-#define CD_SENSOR_CLIENT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_SENSOR_CLIENT, CdSensorClientPrivate))
+#define GET_PRIVATE(o) (cd_sensor_client_get_instance_private (o))
 
 /**
  * CdSensorClientPrivate:
  **/
-struct _CdSensorClientPrivate
+typedef struct
 {
 	GUdevClient			*gudev_client;
 	GPtrArray			*array_sensors;
 	guint				 idx;
-};
+} CdSensorClientPrivate;
 
 enum {
 	SIGNAL_SENSOR_ADDED,
@@ -50,7 +50,7 @@ enum {
 
 static guint signals[SIGNAL_LAST] = { 0 };
 
-G_DEFINE_TYPE (CdSensorClient, cd_sensor_client, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdSensorClient, cd_sensor_client, G_TYPE_OBJECT)
 
 /**
  * cd_sensor_client_get_by_id:
@@ -59,7 +59,7 @@ CdSensor *
 cd_sensor_client_get_by_id (CdSensorClient *sensor_client,
 			    const gchar *sensor_id)
 {
-	CdSensorClientPrivate *priv = sensor_client->priv;
+	CdSensorClientPrivate *priv = GET_PRIVATE (sensor_client);
 	CdSensor *sensor = NULL;
 	CdSensor *sensor_tmp;
 	guint i;
@@ -81,6 +81,7 @@ static gboolean
 cd_sensor_client_add (CdSensorClient *sensor_client,
 		      GUdevDevice *device)
 {
+	CdSensorClientPrivate *priv = GET_PRIVATE (sensor_client);
 	CdSensor *sensor = NULL;
 	const gchar *device_file;
 	const gchar *tmp;
@@ -114,7 +115,7 @@ cd_sensor_client_add (CdSensorClient *sensor_client,
 	}
 
 	/* set the index */
-	cd_sensor_set_index (sensor, sensor_client->priv->idx);
+	cd_sensor_set_index (sensor, priv->idx);
 
 	/* load the sensor */
 	ret = cd_sensor_load (sensor, &error);
@@ -128,10 +129,10 @@ cd_sensor_client_add (CdSensorClient *sensor_client,
 	/* signal the addition */
 	g_debug ("emit: added");
 	g_signal_emit (sensor_client, signals[SIGNAL_SENSOR_ADDED], 0, sensor);
-	sensor_client->priv->idx++;
+	priv->idx++;
 
 	/* keep track so we can remove with the same device */
-	g_ptr_array_add (sensor_client->priv->array_sensors, g_object_ref (sensor));
+	g_ptr_array_add (priv->array_sensors, g_object_ref (sensor));
 out:
 	if (sensor != NULL)
 		g_object_unref (sensor);
@@ -145,6 +146,7 @@ static void
 cd_sensor_client_remove (CdSensorClient *sensor_client,
 			 GUdevDevice *device)
 {
+	CdSensorClientPrivate *priv = GET_PRIVATE (sensor_client);
 	CdSensor *sensor;
 	const gchar *device_file;
 	const gchar *device_path;
@@ -165,12 +167,12 @@ cd_sensor_client_remove (CdSensorClient *sensor_client,
 	device_path = g_udev_device_get_sysfs_path (device);
 	g_debug ("removing color management device: %s [%s]",
 		 device_path, device_file);
-	for (i = 0; i < sensor_client->priv->array_sensors->len; i++) {
-		sensor = g_ptr_array_index (sensor_client->priv->array_sensors, i);
+	for (i = 0; i < priv->array_sensors->len; i++) {
+		sensor = g_ptr_array_index (priv->array_sensors, i);
 		if (g_strcmp0 (cd_sensor_get_device_path (sensor), device_path) == 0) {
 			g_debug ("emit: removed");
 			g_signal_emit (sensor_client, signals[SIGNAL_SENSOR_REMOVED], 0, sensor);
-			g_ptr_array_remove_index_fast (sensor_client->priv->array_sensors, i);
+			g_ptr_array_remove_index_fast (priv->array_sensors, i);
 			goto out;
 		}
 	}
@@ -227,12 +229,13 @@ out:
 void
 cd_sensor_client_coldplug (CdSensorClient *sensor_client)
 {
+	CdSensorClientPrivate *priv = GET_PRIVATE (sensor_client);
 	GList *devices;
 	GList *l;
 	GUdevDevice *udev_device;
 
 	/* get all video4linux devices */
-	devices = g_udev_client_query_by_subsystem (sensor_client->priv->gudev_client,
+	devices = g_udev_client_query_by_subsystem (priv->gudev_client,
 						    "usb");
 	for (l = devices; l != NULL; l = l->next) {
 		udev_device = l->data;
@@ -262,8 +265,6 @@ cd_sensor_client_class_init (CdSensorClientClass *klass)
 			      G_STRUCT_OFFSET (CdSensorClientClass, sensor_removed),
 			      NULL, NULL, g_cclosure_marshal_VOID__OBJECT,
 			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
-
-	g_type_class_add_private (klass, sizeof (CdSensorClientPrivate));
 }
 
 /**
@@ -272,11 +273,11 @@ cd_sensor_client_class_init (CdSensorClientClass *klass)
 static void
 cd_sensor_client_init (CdSensorClient *sensor_client)
 {
+	CdSensorClientPrivate *priv = GET_PRIVATE (sensor_client);
 	const gchar *subsystems[] = {"usb", "video4linux", NULL};
-	sensor_client->priv = CD_SENSOR_CLIENT_GET_PRIVATE (sensor_client);
-	sensor_client->priv->array_sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
-	sensor_client->priv->gudev_client = g_udev_client_new (subsystems);
-	g_signal_connect (sensor_client->priv->gudev_client, "uevent",
+	priv->array_sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
+	priv->gudev_client = g_udev_client_new (subsystems);
+	g_signal_connect (priv->gudev_client, "uevent",
 			  G_CALLBACK (cd_sensor_client_uevent_cb), sensor_client);
 }
 
@@ -287,10 +288,10 @@ static void
 cd_sensor_client_finalize (GObject *object)
 {
 	CdSensorClient *sensor_client = CD_SENSOR_CLIENT (object);
-	CdSensorClientPrivate *priv = sensor_client->priv;
+	CdSensorClientPrivate *priv = GET_PRIVATE (sensor_client);
 
 	g_object_unref (priv->gudev_client);
-	g_ptr_array_unref (sensor_client->priv->array_sensors);
+	g_ptr_array_unref (priv->array_sensors);
 
 	G_OBJECT_CLASS (cd_sensor_client_parent_class)->finalize (object);
 }

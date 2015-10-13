@@ -24,8 +24,6 @@
 #include <gudev/gudev.h>
 #include <glib.h>
 
-#include "cd-cleanup.h"
-
 struct CdPluginPrivate {
 	GUdevClient		*udev_client;
 	gboolean		 scan_in_progress;

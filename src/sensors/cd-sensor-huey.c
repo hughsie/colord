@@ -30,8 +30,6 @@
 #include <colord-private.h>
 #include <huey/huey.h>
 
-#include "cd-cleanup.h"
-
 #include "../src/cd-sensor.h"
 
 typedef struct

@@ -33,7 +33,7 @@ static void	huey_ctx_class_init	(HueyCtxClass	*klass);
 static void	huey_ctx_init		(HueyCtx	*ctx);
 static void	huey_ctx_finalize	(GObject	*object);
 
-#define HUEY_CTX_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), HUEY_TYPE_CTX, HueyCtxPrivate))
+#define GET_PRIVATE(o) (huey_ctx_get_instance_private (o))
 
 #define HUEY_CONTROL_MESSAGE_TIMEOUT	50000 /* ms */
 #define HUEY_MAX_READ_RETRIES		5
@@ -56,7 +56,7 @@ static void	huey_ctx_finalize	(GObject	*object);
  *
  * Private #HueyCtx data
  **/
-struct _HueyCtxPrivate
+typedef struct
 {
 	CdMat3x3		 calibration_crt;
 	CdMat3x3		 calibration_lcd;
@@ -64,7 +64,7 @@ struct _HueyCtxPrivate
 	gchar			*unlock_string;
 	gfloat			 calibration_value;
 	GUsbDevice		*device;
-};
+} HueyCtxPrivate;
 
 enum {
 	PROP_0,
@@ -72,7 +72,7 @@ enum {
 	PROP_LAST
 };
 
-G_DEFINE_TYPE (HueyCtx, huey_ctx, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (HueyCtx, huey_ctx, G_TYPE_OBJECT)
 
 /**
  * huey_ctx_error_quark:
@@ -100,8 +100,9 @@ huey_ctx_error_quark (void)
 GUsbDevice *
 huey_ctx_get_device (HueyCtx *ctx)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
-	return ctx->priv->device;
+	return priv->device;
 }
 
 /**
@@ -112,8 +113,9 @@ huey_ctx_get_device (HueyCtx *ctx)
 void
 huey_ctx_set_device (HueyCtx *ctx, GUsbDevice *device)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	g_return_if_fail (HUEY_IS_CTX (ctx));
-	ctx->priv->device = g_object_ref (device);
+	priv->device = g_object_ref (device);
 }
 
 /**
@@ -125,7 +127,7 @@ gboolean
 huey_ctx_setup (HueyCtx *ctx, GError **error)
 {
 	gboolean ret;
-	HueyCtxPrivate *priv = ctx->priv;
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 
 	g_return_val_if_fail (HUEY_IS_CTX (ctx), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -178,8 +180,9 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 const CdMat3x3 *
 huey_ctx_get_calibration_lcd (HueyCtx *ctx)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
-	return &ctx->priv->calibration_lcd;
+	return &priv->calibration_lcd;
 }
 
 /**
@@ -190,8 +193,9 @@ huey_ctx_get_calibration_lcd (HueyCtx *ctx)
 const CdMat3x3 *
 huey_ctx_get_calibration_crt (HueyCtx *ctx)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
-	return &ctx->priv->calibration_crt;
+	return &priv->calibration_crt;
 }
 
 /**
@@ -202,8 +206,9 @@ huey_ctx_get_calibration_crt (HueyCtx *ctx)
 gfloat
 huey_ctx_get_calibration_value (HueyCtx *ctx)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	g_return_val_if_fail (HUEY_IS_CTX (ctx), -1);
-	return ctx->priv->calibration_value;
+	return priv->calibration_value;
 }
 
 /**
@@ -214,8 +219,9 @@ huey_ctx_get_calibration_value (HueyCtx *ctx)
 const CdVec3 *
 huey_ctx_get_dark_offset (HueyCtx *ctx)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
-	return &ctx->priv->dark_offset;
+	return &priv->dark_offset;
 }
 
 /**
@@ -226,8 +232,9 @@ huey_ctx_get_dark_offset (HueyCtx *ctx)
 const gchar *
 huey_ctx_get_unlock_string (HueyCtx *ctx)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	g_return_val_if_fail (HUEY_IS_CTX (ctx), NULL);
-	return ctx->priv->unlock_string;
+	return priv->unlock_string;
 }
 
 typedef struct {
@@ -248,6 +255,7 @@ huey_ctx_sample_for_threshold (HueyCtx *ctx,
 			       HueyCtxDeviceRaw *raw,
 			       GError **error)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	guint8 request[] = { HUEY_CMD_SENSOR_MEASURE_RGB,
 			     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	guint8 reply[8];
@@ -260,7 +268,7 @@ huey_ctx_sample_for_threshold (HueyCtx *ctx,
 	cd_buffer_write_uint16_be (request + 5, threshold->B);
 
 	/* measure, and get red */
-	ret = huey_device_send_data (ctx->priv->device,
+	ret = huey_device_send_data (priv->device,
 				     request, 8,
 				     reply, 8,
 				     &reply_read,
@@ -273,7 +281,7 @@ huey_ctx_sample_for_threshold (HueyCtx *ctx,
 
 	/* get green */
 	request[0] = HUEY_CMD_READ_GREEN;
-	ret = huey_device_send_data (ctx->priv->device,
+	ret = huey_device_send_data (priv->device,
 				     request, 8,
 				     reply, 8,
 				     &reply_read,
@@ -286,7 +294,7 @@ huey_ctx_sample_for_threshold (HueyCtx *ctx,
 
 	/* get blue */
 	request[0] = HUEY_CMD_READ_BLUE;
-	ret = huey_device_send_data (ctx->priv->device,
+	ret = huey_device_send_data (priv->device,
 				     request, 8,
 				     reply, 8,
 				     &reply_read,
@@ -334,6 +342,7 @@ huey_ctx_convert_device_RGB_to_XYZ (CdColorRGB *src,
 CdColorXYZ *
 huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 {
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 	CdColorRGB values;
 	CdColorXYZ color_result;
 	CdMat3x3 *device_calibration;
@@ -400,7 +409,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 	/* remove dark offset */
 	temp = (CdVec3*) &values;
 	cd_vec3_subtract (temp,
-			  &ctx->priv->dark_offset,
+			  &priv->dark_offset,
 			  temp);
 
 	g_debug ("dark offset values: red=%0.6lf, green=%0.6lf, blue=%0.6lf",
@@ -419,11 +428,11 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 	case CD_SENSOR_CAP_CRT:
 	case CD_SENSOR_CAP_PLASMA:
 		g_debug ("using CRT calibration matrix");
-		device_calibration = &ctx->priv->calibration_crt;
+		device_calibration = &priv->calibration_crt;
 		break;
 	default:
 		g_debug ("using LCD calibration matrix");
-		device_calibration = &ctx->priv->calibration_lcd;
+		device_calibration = &priv->calibration_lcd;
 		break;
 	}
 
@@ -449,10 +458,11 @@ huey_ctx_get_property (GObject *object,
 		       GParamSpec *pspec)
 {
 	HueyCtx *ctx = HUEY_CTX (object);
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 
 	switch (prop_id) {
 	case PROP_DEVICE:
-		g_value_set_object (value, ctx->priv->device);
+		g_value_set_object (value, priv->device);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -468,10 +478,11 @@ static void
 huey_ctx_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	HueyCtx *ctx = HUEY_CTX (object);
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 
 	switch (prop_id) {
 	case PROP_DEVICE:
-		ctx->priv->device = g_value_dup_object (value);
+		priv->device = g_value_dup_object (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -502,8 +513,6 @@ huey_ctx_class_init (HueyCtxClass *klass)
 							      NULL, NULL,
 							      G_USB_TYPE_DEVICE,
 							      G_PARAM_READWRITE));
-
-	g_type_class_add_private (klass, sizeof (HueyCtxPrivate));
 }
 
 /*
@@ -512,10 +521,10 @@ huey_ctx_class_init (HueyCtxClass *klass)
 static void
 huey_ctx_init (HueyCtx *ctx)
 {
-	ctx->priv = HUEY_CTX_GET_PRIVATE (ctx);
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 
-	cd_mat33_clear (&ctx->priv->calibration_lcd);
-	cd_mat33_clear (&ctx->priv->calibration_crt);
+	cd_mat33_clear (&priv->calibration_lcd);
+	cd_mat33_clear (&priv->calibration_crt);
 
 	/* ensure the remote errors are registered */
 	huey_ctx_error_quark ();
@@ -528,10 +537,11 @@ static void
 huey_ctx_finalize (GObject *object)
 {
 	HueyCtx *ctx = HUEY_CTX (object);
+	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
 
 	g_return_if_fail (HUEY_IS_CTX (object));
 
-	g_free (ctx->priv->unlock_string);
+	g_free (priv->unlock_string);
 
 	G_OBJECT_CLASS (huey_ctx_parent_class)->finalize (object);
 }

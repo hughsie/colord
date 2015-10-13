@@ -24,8 +24,6 @@
 #include <cd-plugin.h>
 #include <gudev/gudev.h>
 
-#include "cd-cleanup.h"
-
 #include <cd-device.h>
 
 struct CdPluginPrivate {
@@ -113,7 +111,7 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 	g_autofree gchar *id = NULL;
 	g_autofree gchar *model = NULL;
 	g_autofree gchar *vendor = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
+	g_autoptr(CdDevice) device = NULL;
 
 	/* is a proper camera and not a webcam */
 	if (!g_udev_device_has_property (udev_device, "ID_GPHOTO2"))

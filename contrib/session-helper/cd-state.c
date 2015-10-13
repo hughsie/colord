@@ -27,7 +27,6 @@
 #include <signal.h>
 #include <gio/gio.h>
 
-#include "cd-cleanup.h"
 #include "cd-state.h"
 
 #define CD_STATE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_STATE, CdStatePrivate))

@@ -33,7 +33,6 @@
 #include <colord.h>
 #include <string.h>
 
-#include "cd-cleanup.h"
 #include "cd-compat-edid.h"
 
 /**
@@ -58,9 +57,9 @@ cd_edid_install_profile (unsigned char *edid,
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *md5 = NULL;
-	_cleanup_object_unref_ CdClient *client = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdClient) client = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 	g_autoptr(GFile) file = NULL;
 
 	g_return_val_if_fail (profile_fn != NULL, CD_EDID_ERROR_RESOURCE);
@@ -194,9 +193,9 @@ cd_edid_remove_profile (unsigned char *edid,
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *md5 = NULL;
-	_cleanup_object_unref_ CdClient *client = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdClient) client = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 	g_autoptr(GFile) file = NULL;
 
 	g_return_val_if_fail (profile_fn != NULL, CD_EDID_ERROR_RESOURCE);
@@ -291,9 +290,9 @@ cd_edid_get_profile (unsigned char *edid,
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *md5 = NULL;
-	_cleanup_object_unref_ CdClient *client = NULL;
-	_cleanup_object_unref_ CdDevice *device = NULL;
-	_cleanup_object_unref_ CdProfile *profile = NULL;
+	g_autoptr(CdClient) client = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 
 	/* bad input */
 	if (edid == NULL || edid_len == 0)

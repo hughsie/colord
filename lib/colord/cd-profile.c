@@ -37,14 +37,13 @@
 #include <glib/gstdio.h>
 #include <string.h>
 
-#include "cd-cleanup.h"
 #include "cd-profile.h"
 
 static void	cd_profile_class_init	(CdProfileClass	*klass);
 static void	cd_profile_init		(CdProfile	*profile);
 static void	cd_profile_finalize	(GObject	*object);
 
-#define CD_PROFILE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_PROFILE, CdProfilePrivate))
+#define GET_PRIVATE(o) (cd_profile_get_instance_private (o))
 
 #define COLORD_DBUS_SERVICE		"org.freedesktop.ColorManager"
 #define COLORD_DBUS_INTERFACE_PROFILE	"org.freedesktop.ColorManager.Profile"
@@ -54,7 +53,7 @@ static void	cd_profile_finalize	(GObject	*object);
  *
  * Private #CdProfile data
  **/
-struct _CdProfilePrivate
+typedef struct
 {
 	gchar			*filename;
 	gchar			*id;
@@ -72,7 +71,7 @@ struct _CdProfilePrivate
 	guint			 owner;
 	gchar			**warnings;
 	GHashTable		*metadata;
-};
+} CdProfilePrivate;
 
 enum {
 	PROP_0,
@@ -101,7 +100,7 @@ enum {
 
 static guint signals [SIGNAL_LAST] = { 0 };
 
-G_DEFINE_TYPE (CdProfile, cd_profile, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdProfile, cd_profile, G_TYPE_OBJECT)
 
 /**
  * cd_profile_error_quark:
@@ -131,9 +130,10 @@ cd_profile_error_quark (void)
 void
 cd_profile_set_object_path (CdProfile *profile, const gchar *object_path)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_if_fail (CD_IS_PROFILE (profile));
-	g_return_if_fail (profile->priv->object_path == NULL);
-	profile->priv->object_path = g_strdup (object_path);
+	g_return_if_fail (priv->object_path == NULL);
+	priv->object_path = g_strdup (object_path);
 }
 
 /**
@@ -149,9 +149,10 @@ cd_profile_set_object_path (CdProfile *profile, const gchar *object_path)
 const gchar *
 cd_profile_get_id (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
-	return profile->priv->id;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->id;
 }
 
 /**
@@ -167,9 +168,10 @@ cd_profile_get_id (CdProfile *profile)
 const gchar *
 cd_profile_get_filename (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
-	return profile->priv->filename;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->filename;
 }
 
 /**
@@ -185,15 +187,17 @@ cd_profile_get_filename (CdProfile *profile)
 gboolean
 cd_profile_has_access (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
+
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (profile->priv->proxy != NULL, FALSE);
+	g_return_val_if_fail (priv->proxy != NULL, FALSE);
 
 	/* virtual profile */
-	if (profile->priv->filename == NULL)
+	if (priv->filename == NULL)
 		return TRUE;
 
 	/* profile on disk */
-	return g_access (profile->priv->filename, R_OK) == 0;
+	return g_access (priv->filename, R_OK) == 0;
 }
 
 /**
@@ -209,9 +213,10 @@ cd_profile_has_access (CdProfile *profile)
 const gchar *
 cd_profile_get_qualifier (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
-	return profile->priv->qualifier;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->qualifier;
 }
 
 /**
@@ -227,9 +232,10 @@ cd_profile_get_qualifier (CdProfile *profile)
 const gchar *
 cd_profile_get_format (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
-	return profile->priv->format;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->format;
 }
 
 /**
@@ -245,9 +251,10 @@ cd_profile_get_format (CdProfile *profile)
 const gchar *
 cd_profile_get_title (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
-	return profile->priv->title;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->title;
 }
 
 /**
@@ -263,9 +270,10 @@ cd_profile_get_title (CdProfile *profile)
 CdProfileKind
 cd_profile_get_kind (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), CD_PROFILE_KIND_UNKNOWN);
-	g_return_val_if_fail (profile->priv->proxy != NULL, CD_PROFILE_KIND_UNKNOWN);
-	return profile->priv->kind;
+	g_return_val_if_fail (priv->proxy != NULL, CD_PROFILE_KIND_UNKNOWN);
+	return priv->kind;
 }
 
 /**
@@ -281,9 +289,10 @@ cd_profile_get_kind (CdProfile *profile)
 CdObjectScope
 cd_profile_get_scope (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), CD_OBJECT_SCOPE_UNKNOWN);
-	g_return_val_if_fail (profile->priv->proxy != NULL, CD_OBJECT_SCOPE_UNKNOWN);
-	return profile->priv->scope;
+	g_return_val_if_fail (priv->proxy != NULL, CD_OBJECT_SCOPE_UNKNOWN);
+	return priv->scope;
 }
 
 /**
@@ -299,9 +308,10 @@ cd_profile_get_scope (CdProfile *profile)
 guint
 cd_profile_get_owner (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), G_MAXUINT);
-	g_return_val_if_fail (profile->priv->proxy != NULL, G_MAXUINT);
-	return profile->priv->owner;
+	g_return_val_if_fail (priv->proxy != NULL, G_MAXUINT);
+	return priv->owner;
 }
 
 /**
@@ -317,9 +327,10 @@ cd_profile_get_owner (CdProfile *profile)
 gchar **
 cd_profile_get_warnings (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
-	return profile->priv->warnings;
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return priv->warnings;
 }
 
 /**
@@ -335,9 +346,10 @@ cd_profile_get_warnings (CdProfile *profile)
 gint64
 cd_profile_get_created (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
-	g_return_val_if_fail (profile->priv->proxy != NULL, 0);
-	return profile->priv->created;
+	g_return_val_if_fail (priv->proxy != NULL, 0);
+	return priv->created;
 }
 
 /**
@@ -353,12 +365,14 @@ cd_profile_get_created (CdProfile *profile)
 gint64
 cd_profile_get_age (CdProfile *profile)
 {
-	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
-	g_return_val_if_fail (profile->priv->proxy != NULL, 0);
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 
-	if (profile->priv->created == 0)
+	g_return_val_if_fail (CD_IS_PROFILE (profile), 0);
+	g_return_val_if_fail (priv->proxy != NULL, 0);
+
+	if (priv->created == 0)
 		return 0;
-	return (g_get_real_time () / G_USEC_PER_SEC) - profile->priv->created;
+	return (g_get_real_time () / G_USEC_PER_SEC) - priv->created;
 }
 
 /**
@@ -374,9 +388,10 @@ cd_profile_get_age (CdProfile *profile)
 CdColorspace
 cd_profile_get_colorspace (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), CD_COLORSPACE_UNKNOWN);
-	g_return_val_if_fail (profile->priv->proxy != NULL, CD_COLORSPACE_UNKNOWN);
-	return profile->priv->colorspace;
+	g_return_val_if_fail (priv->proxy != NULL, CD_COLORSPACE_UNKNOWN);
+	return priv->colorspace;
 }
 
 /**
@@ -392,9 +407,10 @@ cd_profile_get_colorspace (CdProfile *profile)
 gboolean
 cd_profile_get_has_vcgt (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (profile->priv->proxy != NULL, FALSE);
-	return profile->priv->has_vcgt;
+	g_return_val_if_fail (priv->proxy != NULL, FALSE);
+	return priv->has_vcgt;
 }
 
 /**
@@ -411,9 +427,10 @@ cd_profile_get_has_vcgt (CdProfile *profile)
 gboolean
 cd_profile_get_is_system_wide (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (profile->priv->proxy != NULL, FALSE);
-	return profile->priv->is_system_wide;
+	g_return_val_if_fail (priv->proxy != NULL, FALSE);
+	return priv->is_system_wide;
 }
 
 /**
@@ -430,9 +447,10 @@ cd_profile_get_is_system_wide (CdProfile *profile)
 GHashTable *
 cd_profile_get_metadata (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
-	return g_hash_table_ref (profile->priv->metadata);
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return g_hash_table_ref (priv->metadata);
 }
 
 /**
@@ -449,9 +467,10 @@ cd_profile_get_metadata (CdProfile *profile)
 const gchar *
 cd_profile_get_metadata_item (CdProfile *profile, const gchar *key)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	g_return_val_if_fail (profile->priv->proxy != NULL, NULL);
-	return g_hash_table_lookup (profile->priv->metadata, key);
+	g_return_val_if_fail (priv->proxy != NULL, NULL);
+	return g_hash_table_lookup (priv->metadata, key);
 }
 
 /**
@@ -460,18 +479,19 @@ cd_profile_get_metadata_item (CdProfile *profile, const gchar *key)
 static void
 cd_profile_set_metadata_from_variant (CdProfile *profile, GVariant *variant)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	GVariantIter iter;
 	const gchar *prop_key;
 	const gchar *prop_value;
 
 	/* remove old entries */
-	g_hash_table_remove_all (profile->priv->metadata);
+	g_hash_table_remove_all (priv->metadata);
 
 	/* insert the new metadata */
 	g_variant_iter_init (&iter, variant);
 	while (g_variant_iter_loop (&iter, "{ss}",
 				    &prop_key, &prop_value)) {
-		g_hash_table_insert (profile->priv->metadata,
+		g_hash_table_insert (priv->metadata,
 				     g_strdup (prop_key),
 				     g_strdup (prop_value));
 
@@ -504,6 +524,7 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 				    const gchar * const *invalidated_properties,
 				    CdProfile   *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	guint i;
 	guint len;
 	GVariantIter iter;
@@ -519,37 +540,37 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 				     &property_name,
 				     &property_value);
 		if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_QUALIFIER) == 0) {
-			g_free (profile->priv->qualifier);
-			profile->priv->qualifier = cd_profile_get_nullable_str (property_value);
+			g_free (priv->qualifier);
+			priv->qualifier = cd_profile_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FORMAT) == 0) {
-			g_free (profile->priv->format);
-			profile->priv->format = cd_profile_get_nullable_str (property_value);
+			g_free (priv->format);
+			priv->format = cd_profile_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_FILENAME) == 0) {
-			g_free (profile->priv->filename);
-			profile->priv->filename = cd_profile_get_nullable_str (property_value);
+			g_free (priv->filename);
+			priv->filename = cd_profile_get_nullable_str (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_ID) == 0) {
-			g_free (profile->priv->id);
-			profile->priv->id = g_variant_dup_string (property_value, NULL);
+			g_free (priv->id);
+			priv->id = g_variant_dup_string (property_value, NULL);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_TITLE) == 0) {
-			g_free (profile->priv->title);
-			profile->priv->title = g_variant_dup_string (property_value, NULL);
+			g_free (priv->title);
+			priv->title = g_variant_dup_string (property_value, NULL);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_WARNINGS) == 0) {
-			g_strfreev(profile->priv->warnings);
-			profile->priv->warnings = g_variant_dup_strv (property_value, NULL);
+			g_strfreev(priv->warnings);
+			priv->warnings = g_variant_dup_strv (property_value, NULL);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_KIND) == 0) {
-			profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (property_value, NULL));
+			priv->kind = cd_profile_kind_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_COLORSPACE) == 0) {
-			profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
+			priv->colorspace = cd_colorspace_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_SCOPE) == 0) {
-			profile->priv->scope = cd_object_scope_from_string (g_variant_get_string (property_value, NULL));
+			priv->scope = cd_object_scope_from_string (g_variant_get_string (property_value, NULL));
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_CREATED) == 0) {
-			profile->priv->created = g_variant_get_int64 (property_value);
+			priv->created = g_variant_get_int64 (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_HAS_VCGT) == 0) {
-			profile->priv->has_vcgt = g_variant_get_boolean (property_value);
+			priv->has_vcgt = g_variant_get_boolean (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_OWNER) == 0) {
-			profile->priv->owner = g_variant_get_uint32 (property_value);
+			priv->owner = g_variant_get_uint32 (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_IS_SYSTEM_WIDE) == 0) {
-			profile->priv->is_system_wide = g_variant_get_boolean (property_value);
+			priv->is_system_wide = g_variant_get_boolean (property_value);
 		} else if (g_strcmp0 (property_name, CD_PROFILE_PROPERTY_METADATA) == 0) {
 			cd_profile_set_metadata_from_variant (profile, property_value);
 		} else {
@@ -641,6 +662,7 @@ cd_profile_connect_cb (GObject *source_object,
 		       gpointer user_data)
 {
 	CdProfile *profile;
+	CdProfilePrivate *priv;
 	g_autoptr(GError) error = NULL;
 	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
 	g_autoptr(GVariant) colorspace = NULL;
@@ -659,9 +681,10 @@ cd_profile_connect_cb (GObject *source_object,
 	g_autoptr(GVariant) warnings = NULL;
 
 	profile = CD_PROFILE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
-	profile->priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
+	priv = GET_PRIVATE (profile);
+	priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
 								&error);
-	if (profile->priv->proxy == NULL) {
+	if (priv->proxy == NULL) {
 		g_simple_async_result_set_error (res_source,
 						 CD_PROFILE_ERROR,
 						 CD_PROFILE_ERROR_INTERNAL,
@@ -673,10 +696,10 @@ cd_profile_connect_cb (GObject *source_object,
 	}
 
 	/* get profile id */
-	id = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	id = g_dbus_proxy_get_cached_property (priv->proxy,
 					       CD_PROFILE_PROPERTY_ID);
 	if (id != NULL)
-		profile->priv->id = g_variant_dup_string (id, NULL);
+		priv->id = g_variant_dup_string (id, NULL);
 
 	/* if the profile is missing, then fail */
 	if (id == NULL) {
@@ -690,91 +713,91 @@ cd_profile_connect_cb (GObject *source_object,
 	}
 
 	/* get filename */
-	filename = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	filename = g_dbus_proxy_get_cached_property (priv->proxy,
 						     CD_PROFILE_PROPERTY_FILENAME);
 	if (filename != NULL)
-		profile->priv->filename = cd_profile_get_nullable_str (filename);
+		priv->filename = cd_profile_get_nullable_str (filename);
 
 	/* get qualifier */
-	qualifier = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	qualifier = g_dbus_proxy_get_cached_property (priv->proxy,
 						      CD_PROFILE_PROPERTY_QUALIFIER);
 	if (qualifier != NULL)
-		profile->priv->qualifier = cd_profile_get_nullable_str (qualifier);
+		priv->qualifier = cd_profile_get_nullable_str (qualifier);
 
 	/* get format */
-	format = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	format = g_dbus_proxy_get_cached_property (priv->proxy,
 						   CD_PROFILE_PROPERTY_FORMAT);
 	if (format != NULL)
-		profile->priv->format = cd_profile_get_nullable_str (format);
+		priv->format = cd_profile_get_nullable_str (format);
 
 	/* get title */
-	title = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	title = g_dbus_proxy_get_cached_property (priv->proxy,
 						  CD_PROFILE_PROPERTY_TITLE);
 	if (title != NULL)
-		profile->priv->title = cd_profile_get_nullable_str (title);
+		priv->title = cd_profile_get_nullable_str (title);
 
 	/* get kind */
-	kind = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	kind = g_dbus_proxy_get_cached_property (priv->proxy,
 						 CD_PROFILE_PROPERTY_KIND);
 	if (kind != NULL)
-		profile->priv->kind = cd_profile_kind_from_string (g_variant_get_string (kind, NULL));
+		priv->kind = cd_profile_kind_from_string (g_variant_get_string (kind, NULL));
 
 	/* get colorspace */
-	colorspace = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	colorspace = g_dbus_proxy_get_cached_property (priv->proxy,
 						       CD_PROFILE_PROPERTY_COLORSPACE);
 	if (colorspace != NULL)
-		profile->priv->colorspace = cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
+		priv->colorspace = cd_colorspace_from_string (g_variant_get_string (colorspace, NULL));
 
 	/* get scope */
-	scope = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	scope = g_dbus_proxy_get_cached_property (priv->proxy,
 						  CD_PROFILE_PROPERTY_SCOPE);
 	if (scope != NULL)
-		profile->priv->scope = cd_object_scope_from_string (g_variant_get_string (scope, NULL));
+		priv->scope = cd_object_scope_from_string (g_variant_get_string (scope, NULL));
 
 	/* get owner */
-	owner = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	owner = g_dbus_proxy_get_cached_property (priv->proxy,
 						  CD_PROFILE_PROPERTY_OWNER);
 	if (owner != NULL)
-		profile->priv->owner = g_variant_get_uint32 (owner);
+		priv->owner = g_variant_get_uint32 (owner);
 
 	/* get warnings */
-	warnings = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	warnings = g_dbus_proxy_get_cached_property (priv->proxy,
 						  CD_PROFILE_PROPERTY_WARNINGS);
 	if (warnings != NULL)
-		profile->priv->warnings = g_variant_dup_strv (warnings, NULL);
+		priv->warnings = g_variant_dup_strv (warnings, NULL);
 
 	/* get created */
-	created = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	created = g_dbus_proxy_get_cached_property (priv->proxy,
 						    CD_PROFILE_PROPERTY_CREATED);
 	if (created != NULL)
-		profile->priv->created = g_variant_get_int64 (created);
+		priv->created = g_variant_get_int64 (created);
 
 	/* get VCGT */
-	has_vcgt = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	has_vcgt = g_dbus_proxy_get_cached_property (priv->proxy,
 						     CD_PROFILE_PROPERTY_HAS_VCGT);
 	if (has_vcgt != NULL)
-		profile->priv->has_vcgt = g_variant_get_boolean (has_vcgt);
+		priv->has_vcgt = g_variant_get_boolean (has_vcgt);
 
 	/* get if system wide */
-	is_system_wide = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	is_system_wide = g_dbus_proxy_get_cached_property (priv->proxy,
 							   CD_PROFILE_PROPERTY_IS_SYSTEM_WIDE);
 	if (is_system_wide != NULL)
-		profile->priv->is_system_wide = g_variant_get_boolean (is_system_wide);
+		priv->is_system_wide = g_variant_get_boolean (is_system_wide);
 
 	/* get if system wide */
-	metadata = g_dbus_proxy_get_cached_property (profile->priv->proxy,
+	metadata = g_dbus_proxy_get_cached_property (priv->proxy,
 						     CD_PROFILE_PROPERTY_METADATA);
 	if (metadata != NULL)
 		cd_profile_set_metadata_from_variant (profile, metadata);
 
 	/* get signals from DBus */
-	g_signal_connect (profile->priv->proxy,
+	g_signal_connect (priv->proxy,
 			  "g-signal",
 			  G_CALLBACK (cd_profile_dbus_signal_cb),
 			  profile);
 
 	/* watch if any remote properties change */
-	g_signal_connect (profile->priv->proxy,
+	g_signal_connect (priv->proxy,
 			  "g-properties-changed",
 			  G_CALLBACK (cd_profile_dbus_properties_changed_cb),
 			  profile);
@@ -801,6 +824,7 @@ cd_profile_connect (CdProfile *profile,
 		    GAsyncReadyCallback callback,
 		    gpointer user_data)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
@@ -812,7 +836,7 @@ cd_profile_connect (CdProfile *profile,
 					 cd_profile_connect);
 
 	/* already connected */
-	if (profile->priv->proxy != NULL) {
+	if (priv->proxy != NULL) {
 		g_simple_async_result_set_op_res_gboolean (res, TRUE);
 		g_simple_async_result_complete_in_idle (res);
 		return;
@@ -822,7 +846,7 @@ cd_profile_connect (CdProfile *profile,
 				  G_DBUS_PROXY_FLAGS_NONE,
 				  NULL,
 				  COLORD_DBUS_SERVICE,
-				  profile->priv->object_path,
+				  priv->object_path,
 				  COLORD_DBUS_INTERFACE_PROFILE,
 				  cancellable,
 				  cd_profile_connect_cb,
@@ -909,19 +933,20 @@ cd_profile_set_property (CdProfile *profile,
 			 GAsyncReadyCallback callback,
 			 gpointer user_data)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_return_if_fail (key != NULL);
 	g_return_if_fail (value != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (profile->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (profile),
 					 callback,
 					 user_data,
 					 cd_profile_set_property);
-	g_dbus_proxy_call (profile->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "SetProperty",
 			   g_variant_new ("(ss)",
 			   		  key,
@@ -1006,17 +1031,18 @@ cd_profile_install_system_wide (CdProfile *profile,
 				GAsyncReadyCallback callback,
 				gpointer user_data)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	GSimpleAsyncResult *res;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-	g_return_if_fail (profile->priv->proxy != NULL);
+	g_return_if_fail (priv->proxy != NULL);
 
 	res = g_simple_async_result_new (G_OBJECT (profile),
 					 callback,
 					 user_data,
 					 cd_profile_install_system_wide);
-	g_dbus_proxy_call (profile->priv->proxy,
+	g_dbus_proxy_call (priv->proxy,
 			   "InstallSystemWide",
 			   NULL,
 			   G_DBUS_CALL_FLAGS_NONE,
@@ -1041,8 +1067,9 @@ cd_profile_install_system_wide (CdProfile *profile,
 const gchar *
 cd_profile_get_object_path (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
-	return profile->priv->object_path;
+	return priv->object_path;
 }
 
 /**
@@ -1058,8 +1085,9 @@ cd_profile_get_object_path (CdProfile *profile)
 gboolean
 cd_profile_get_connected (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	return profile->priv->proxy != NULL;
+	return priv->proxy != NULL;
 }
 
 /**
@@ -1075,13 +1103,14 @@ cd_profile_get_connected (CdProfile *profile)
 gchar *
 cd_profile_to_string (CdProfile *profile)
 {
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 	GString *string;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 
 	string = g_string_new ("");
 	g_string_append_printf (string, "  object-path:          %s\n",
-				profile->priv->object_path);
+				priv->object_path);
 
 	return g_string_free (string, FALSE);
 }
@@ -1100,12 +1129,13 @@ cd_profile_to_string (CdProfile *profile)
 gboolean
 cd_profile_equal (CdProfile *profile1, CdProfile *profile2)
 {
+	CdProfilePrivate *priv1 = GET_PRIVATE (profile1);
+	CdProfilePrivate *priv2 = GET_PRIVATE (profile2);
 	g_return_val_if_fail (CD_IS_PROFILE (profile1), FALSE);
 	g_return_val_if_fail (CD_IS_PROFILE (profile2), FALSE);
-	if (profile1->priv->id == NULL ||
-	    profile2->priv->id == NULL)
+	if (priv1->id == NULL || priv2->id == NULL)
 		g_critical ("need to connect");
-	return g_strcmp0 (profile1->priv->id, profile2->priv->id) == 0;
+	return g_strcmp0 (priv1->id, priv2->id) == 0;
 }
 
 /**
@@ -1127,24 +1157,25 @@ cd_profile_load_icc (CdProfile *profile,
 		     GCancellable *cancellable,
 		     GError **error)
 {
-	_cleanup_object_unref_ CdIcc *icc = NULL;
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
+	g_autoptr(CdIcc) icc = NULL;
 	g_autoptr(GFile) file = NULL;
 
 	g_return_val_if_fail (CD_IS_PROFILE (profile), NULL);
 
 	/* not a local profile */
-	if (profile->priv->filename == NULL) {
+	if (priv->filename == NULL) {
 		g_set_error (error,
 			     CD_PROFILE_ERROR,
 			     CD_PROFILE_ERROR_INTERNAL,
 			     "%s has no local instance",
-			     profile->priv->id);
+			     priv->id);
 		return NULL;
 	}
 
 	/* load local instance */
 	icc = cd_icc_new ();
-	file = g_file_new_for_path (profile->priv->filename);
+	file = g_file_new_for_path (priv->filename);
 	if (!cd_icc_load_file (icc, file, flags, cancellable, error))
 		return NULL;
 
@@ -1159,11 +1190,12 @@ static void
 _cd_profile_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	CdProfile *profile = CD_PROFILE (object);
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 
 	switch (prop_id) {
 	case PROP_OBJECT_PATH:
-		g_free (profile->priv->object_path);
-		profile->priv->object_path = g_value_dup_string (value);
+		g_free (priv->object_path);
+		priv->object_path = g_value_dup_string (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1178,52 +1210,53 @@ static void
 cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
 	CdProfile *profile = CD_PROFILE (object);
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 
 	switch (prop_id) {
 	case PROP_OBJECT_PATH:
-		g_value_set_string (value, profile->priv->object_path);
+		g_value_set_string (value, priv->object_path);
 		break;
 	case PROP_CONNECTED:
-		g_value_set_boolean (value, profile->priv->proxy != NULL);
+		g_value_set_boolean (value, priv->proxy != NULL);
 		break;
 	case PROP_ID:
-		g_value_set_string (value, profile->priv->id);
+		g_value_set_string (value, priv->id);
 		break;
 	case PROP_FILENAME:
-		g_value_set_string (value, profile->priv->filename);
+		g_value_set_string (value, priv->filename);
 		break;
 	case PROP_QUALIFIER:
-		g_value_set_string (value, profile->priv->qualifier);
+		g_value_set_string (value, priv->qualifier);
 		break;
 	case PROP_FORMAT:
-		g_value_set_string (value, profile->priv->format);
+		g_value_set_string (value, priv->format);
 		break;
 	case PROP_TITLE:
-		g_value_set_string (value, profile->priv->title);
+		g_value_set_string (value, priv->title);
 		break;
 	case PROP_KIND:
-		g_value_set_uint (value, profile->priv->kind);
+		g_value_set_uint (value, priv->kind);
 		break;
 	case PROP_COLORSPACE:
-		g_value_set_uint (value, profile->priv->colorspace);
+		g_value_set_uint (value, priv->colorspace);
 		break;
 	case PROP_CREATED:
-		g_value_set_int64 (value, profile->priv->created);
+		g_value_set_int64 (value, priv->created);
 		break;
 	case PROP_HAS_VCGT:
-		g_value_set_boolean (value, profile->priv->has_vcgt);
+		g_value_set_boolean (value, priv->has_vcgt);
 		break;
 	case PROP_IS_SYSTEM_WIDE:
-		g_value_set_boolean (value, profile->priv->is_system_wide);
+		g_value_set_boolean (value, priv->is_system_wide);
 		break;
 	case PROP_SCOPE:
-		g_value_set_uint (value, profile->priv->scope);
+		g_value_set_uint (value, priv->scope);
 		break;
 	case PROP_OWNER:
-		g_value_set_uint (value, profile->priv->owner);
+		g_value_set_uint (value, priv->owner);
 		break;
 	case PROP_WARNINGS:
-		g_value_set_boxed (value, profile->priv->warnings);
+		g_value_set_boxed (value, priv->warnings);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -1466,8 +1499,6 @@ cd_profile_class_init (CdProfileClass *klass)
 							     NULL, NULL,
 							     G_TYPE_STRV,
 							     G_PARAM_READABLE));
-
-	g_type_class_add_private (klass, sizeof (CdProfilePrivate));
 }
 
 /*
@@ -1476,8 +1507,8 @@ cd_profile_class_init (CdProfileClass *klass)
 static void
 cd_profile_init (CdProfile *profile)
 {
-	profile->priv = CD_PROFILE_GET_PRIVATE (profile);
-	profile->priv->metadata = g_hash_table_new_full (g_str_hash,
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
+	priv->metadata = g_hash_table_new_full (g_str_hash,
 							 g_str_equal,
 							 g_free,
 							 g_free);
@@ -1489,28 +1520,27 @@ cd_profile_init (CdProfile *profile)
 static void
 cd_profile_finalize (GObject *object)
 {
-	CdProfile *profile;
+	CdProfile *profile = CD_PROFILE (object);
+	CdProfilePrivate *priv = GET_PRIVATE (profile);
 
 	g_return_if_fail (CD_IS_PROFILE (object));
 
-	profile = CD_PROFILE (object);
-
-	g_hash_table_unref (profile->priv->metadata);
-	g_free (profile->priv->object_path);
-	g_free (profile->priv->id);
-	g_free (profile->priv->filename);
-	g_free (profile->priv->qualifier);
-	g_free (profile->priv->format);
-	g_free (profile->priv->title);
-	g_strfreev (profile->priv->warnings);
-	if (profile->priv->proxy != NULL) {
-		g_signal_handlers_disconnect_by_func (profile->priv->proxy,
+	g_hash_table_unref (priv->metadata);
+	g_free (priv->object_path);
+	g_free (priv->id);
+	g_free (priv->filename);
+	g_free (priv->qualifier);
+	g_free (priv->format);
+	g_free (priv->title);
+	g_strfreev (priv->warnings);
+	if (priv->proxy != NULL) {
+		g_signal_handlers_disconnect_by_func (priv->proxy,
 						      G_CALLBACK (cd_profile_dbus_signal_cb),
 						      profile);
-		g_signal_handlers_disconnect_by_func (profile->priv->proxy,
+		g_signal_handlers_disconnect_by_func (priv->proxy,
 						      G_CALLBACK (cd_profile_dbus_properties_changed_cb),
 						      profile);
-		g_object_unref (profile->priv->proxy);
+		g_object_unref (priv->proxy);
 	}
 
 	G_OBJECT_CLASS (cd_profile_parent_class)->finalize (object);

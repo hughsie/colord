@@ -30,8 +30,6 @@
 #include <colord-private.h>
 #include <ospark/ospark.h>
 
-#include "cd-cleanup.h"
-
 #include "../src/cd-sensor.h"
 
 typedef struct
@@ -113,7 +111,7 @@ cd_sensor_spark_sample_thread_cb (GSimpleAsyncResult *res,
 	CdSpectrum *unity = NULL;
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
-	_cleanup_object_unref_ CdIt8 *cmf = NULL;
+	g_autoptr(CdIt8) cmf = NULL;
 	g_autoptr(GFile) file = NULL;
 
 	/* measure */

@@ -31,27 +31,14 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_INTERP_LINEAR		(cd_interp_linear_get_type ())
-#define CD_INTERP_LINEAR(o)		(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_INTERP_LINEAR, CdInterpLinear))
-#define CD_INTERP_LINEAR_CLASS(k)	(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_INTERP_LINEAR, CdInterpLinearClass))
-#define CD_IS_INTERP_LINEAR(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_INTERP_LINEAR))
-#define CD_IS_INTERP_LINEAR_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_INTERP_LINEAR))
-#define CD_INTERP_LINEAR_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_INTERP_LINEAR, CdInterpLinearClass))
+#define CD_TYPE_INTERP_LINEAR (cd_interp_linear_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdInterpLinear, cd_interp_linear, CD, INTERP_LINEAR, CdInterp)
 
-typedef struct _CdInterpLinearPrivate CdInterpLinearPrivate;
-
-typedef struct
-{
-	 CdInterp		 parent;
-	 CdInterpLinearPrivate	*priv;
-} CdInterpLinear;
-
-typedef struct
+struct _CdInterpLinearClass
 {
 	CdInterpClass		 parent_class;
-} CdInterpLinearClass;
+};
 
-GType		 cd_interp_linear_get_type		(void);
 CdInterp	*cd_interp_linear_new			(void);
 
 G_END_DECLS

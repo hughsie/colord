@@ -31,7 +31,6 @@
 #include <glib-object.h>
 #include <lcms2.h>
 
-#include "cd-cleanup.h"
 #include "cd-icc-utils.h"
 
 typedef struct {

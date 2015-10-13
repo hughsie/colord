@@ -24,22 +24,21 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-#include "cd-cleanup.h"
 #include "cd-inhibit.h"
 
 static void     cd_inhibit_finalize	(GObject     *object);
 
-#define CD_INHIBIT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_INHIBIT, CdInhibitPrivate))
+#define GET_PRIVATE(o) (cd_inhibit_get_instance_private (o))
 
 /**
  * CdInhibitPrivate:
  *
  * Private #CdInhibit data
  **/
-struct _CdInhibitPrivate
+typedef struct
 {
 	GPtrArray			*array;
-};
+} CdInhibitPrivate;
 
 typedef struct {
 	gchar				*sender;
@@ -54,7 +53,7 @@ enum {
 
 static guint signals [SIGNAL_LAST] = { 0 };
 
-G_DEFINE_TYPE (CdInhibit, cd_inhibit, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_PRIVATE (CdInhibit, cd_inhibit, G_TYPE_OBJECT)
 
 /**
  * cd_inhibit_valid:
@@ -62,8 +61,9 @@ G_DEFINE_TYPE (CdInhibit, cd_inhibit, G_TYPE_OBJECT)
 gboolean
 cd_inhibit_valid (CdInhibit *inhibit)
 {
+	CdInhibitPrivate *priv = GET_PRIVATE (inhibit);
 	g_return_val_if_fail (CD_IS_INHIBIT (inhibit), FALSE);
-	return inhibit->priv->array->len == 0;
+	return priv->array->len == 0;
 }
 
 /**
@@ -73,7 +73,7 @@ gchar **
 cd_inhibit_get_bus_names (CdInhibit *inhibit)
 {
 	CdInhibitItem *item_tmp;
-	CdInhibitPrivate *priv = inhibit->priv;
+	CdInhibitPrivate *priv = GET_PRIVATE (inhibit);
 	gchar **bus_names;
 	guint i;
 
@@ -106,7 +106,7 @@ cd_inhibit_get_by_sender (CdInhibit *inhibit,
 			  const gchar *sender)
 {
 	CdInhibitItem *item_tmp;
-	CdInhibitPrivate *priv = inhibit->priv;
+	CdInhibitPrivate *priv = GET_PRIVATE (inhibit);
 	guint i;
 
 	/* find sender */
@@ -124,6 +124,7 @@ cd_inhibit_get_by_sender (CdInhibit *inhibit,
 gboolean
 cd_inhibit_remove (CdInhibit *inhibit, const gchar *sender, GError **error)
 {
+	CdInhibitPrivate *priv = GET_PRIVATE (inhibit);
 	CdInhibitItem *item;
 
 	g_return_val_if_fail (CD_IS_INHIBIT (inhibit), FALSE);
@@ -139,7 +140,7 @@ cd_inhibit_remove (CdInhibit *inhibit, const gchar *sender, GError **error)
 	}
  
 	/* remove */
-	if (!g_ptr_array_remove (inhibit->priv->array, item)) {
+	if (!g_ptr_array_remove (priv->array, item)) {
 		g_set_error (error, 1, 0,
 			     "cannot remove inhibit item for %s",
 			     sender);
@@ -178,6 +179,7 @@ cd_inhibit_name_vanished_cb (GDBusConnection *connection,
 gboolean
 cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 {
+	CdInhibitPrivate *priv = GET_PRIVATE (inhibit);
 	CdInhibitItem *item;
 
 	g_return_val_if_fail (CD_IS_INHIBIT (inhibit), FALSE);
@@ -202,7 +204,7 @@ cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 					     cd_inhibit_name_vanished_cb,
 					     g_object_ref (inhibit),
 					     g_object_unref);
-	g_ptr_array_add (inhibit->priv->array, item);
+	g_ptr_array_add (priv->array, item);
 
 	/* emit signal */
 	g_debug ("CdInhibit: emit changed");
@@ -225,8 +227,6 @@ cd_inhibit_class_init (CdInhibitClass *klass)
 			      G_STRUCT_OFFSET (CdInhibitClass, changed),
 			      NULL, NULL, g_cclosure_marshal_VOID__VOID,
 			      G_TYPE_NONE, 0);
-
-	g_type_class_add_private (klass, sizeof (CdInhibitPrivate));
 }
 
 /**
@@ -235,8 +235,8 @@ cd_inhibit_class_init (CdInhibitClass *klass)
 static void
 cd_inhibit_init (CdInhibit *inhibit)
 {
-	inhibit->priv = CD_INHIBIT_GET_PRIVATE (inhibit);
-	inhibit->priv->array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_inhibit_item_free);
+	CdInhibitPrivate *priv = GET_PRIVATE (inhibit);
+	priv->array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_inhibit_item_free);
 }
 
 /**
@@ -246,7 +246,7 @@ static void
 cd_inhibit_finalize (GObject *object)
 {
 	CdInhibit *inhibit = CD_INHIBIT (object);
-	CdInhibitPrivate *priv = inhibit->priv;
+	CdInhibitPrivate *priv = GET_PRIVATE (inhibit);
 
 	g_ptr_array_unref (priv->array);
 

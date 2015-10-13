@@ -26,27 +26,14 @@
 
 G_BEGIN_DECLS
 
-#define CD_TYPE_DEVICE_DB		(cd_device_db_get_type ())
-#define CD_DEVICE_DB(o)			(G_TYPE_CHECK_INSTANCE_CAST ((o), CD_TYPE_DEVICE_DB, CdDeviceDb))
-#define CD_DEVICE_DB_CLASS(k)		(G_TYPE_CHECK_CLASS_CAST((k), CD_TYPE_DEVICE_DB, CdDeviceDbClass))
-#define CD_IS_DEVICE_DB(o)		(G_TYPE_CHECK_INSTANCE_TYPE ((o), CD_TYPE_DEVICE_DB))
-#define CD_IS_DEVICE_DB_CLASS(k)	(G_TYPE_CHECK_CLASS_TYPE ((k), CD_TYPE_DEVICE_DB))
-#define CD_DEVICE_DB_GET_CLASS(o)	(G_TYPE_INSTANCE_GET_CLASS ((o), CD_TYPE_DEVICE_DB, CdDeviceDbClass))
+#define CD_TYPE_DEVICE_DB (cd_device_db_get_type ())
+G_DECLARE_DERIVABLE_TYPE (CdDeviceDb, cd_device_db, CD, DEVICE_DB, GObject)
 
-typedef struct CdDeviceDbPrivate CdDeviceDbPrivate;
-
-typedef struct
-{
-	 GObject		 parent;
-	 CdDeviceDbPrivate	*priv;
-} CdDeviceDb;
-
-typedef struct
+struct _CdDeviceDbClass
 {
 	GObjectClass	parent_class;
-} CdDeviceDbClass;
+};
 
-GType		 cd_device_db_get_type		(void);
 CdDeviceDb	*cd_device_db_new		(void);
 
 gboolean	 cd_device_db_load		(CdDeviceDb	*ddb,

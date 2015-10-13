@@ -31,28 +31,27 @@
 #include <glib.h>
 #include <math.h>
 
-#include "cd-cleanup.h"
 #include "cd-interp-akima.h"
 
 static void	cd_interp_akima_class_init	(CdInterpAkimaClass	*klass);
 static void	cd_interp_akima_init		(CdInterpAkima		*interp_akima);
 static void	cd_interp_akima_finalize	(GObject		*object);
 
-#define CD_INTERP_AKIMA_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), CD_TYPE_INTERP_AKIMA, CdInterpAkimaPrivate))
+#define GET_PRIVATE(o) (cd_interp_akima_get_instance_private (o))
 
 /**
  * CdInterpAkimaPrivate:
  *
  * Private #CdInterpAkima data
  **/
-struct _CdInterpAkimaPrivate
+typedef struct
 {
 	gdouble			*slope_t;	/* slope */
 	gdouble			*polynom_c;	/* coefficient C */
 	gdouble			*polynom_d;	/* coefficient D */
-};
+} CdInterpAkimaPrivate;
 
-G_DEFINE_TYPE (CdInterpAkima, cd_interp_akima, CD_TYPE_INTERP)
+G_DEFINE_TYPE_WITH_PRIVATE (CdInterpAkima, cd_interp_akima, CD_TYPE_INTERP)
 
 /**
  * cd_interp_akima_prepare:
@@ -61,7 +60,7 @@ static gboolean
 cd_interp_akima_prepare (CdInterp *interp, GError **error)
 {
 	CdInterpAkima *interp_akima = CD_INTERP_AKIMA (interp);
-	CdInterpAkimaPrivate *priv = interp_akima->priv;
+	CdInterpAkimaPrivate *priv = GET_PRIVATE (interp_akima);
 	gdouble tmp = 0.0;
 	gdouble *x;
 	gdouble *y;
@@ -162,7 +161,7 @@ static gdouble
 cd_interp_akima_eval (CdInterp *interp, gdouble value, GError **error)
 {
 	CdInterpAkima *interp_akima = CD_INTERP_AKIMA (interp);
-	CdInterpAkimaPrivate *priv = interp_akima->priv;
+	CdInterpAkimaPrivate *priv = GET_PRIVATE (interp_akima);
 	const gdouble *x;
 	const gdouble *y;
 	gdouble result;
@@ -193,8 +192,6 @@ cd_interp_akima_class_init (CdInterpAkimaClass *klass)
 	interp_class->prepare = cd_interp_akima_prepare;
 	interp_class->eval = cd_interp_akima_eval;
 	object_class->finalize = cd_interp_akima_finalize;
-
-	g_type_class_add_private (klass, sizeof (CdInterpAkimaPrivate));
 }
 
 /**
@@ -203,7 +200,6 @@ cd_interp_akima_class_init (CdInterpAkimaClass *klass)
 static void
 cd_interp_akima_init (CdInterpAkima *interp_akima)
 {
-	interp_akima->priv = CD_INTERP_AKIMA_GET_PRIVATE (interp_akima);
 }
 
 /**
@@ -213,12 +209,13 @@ static void
 cd_interp_akima_finalize (GObject *object)
 {
 	CdInterpAkima *interp_akima = CD_INTERP_AKIMA (object);
+	CdInterpAkimaPrivate *priv = GET_PRIVATE (interp_akima);
 
 	g_return_if_fail (CD_IS_INTERP_AKIMA (object));
 
-	g_free (interp_akima->priv->slope_t);
-	g_free (interp_akima->priv->polynom_c);
-	g_free (interp_akima->priv->polynom_d);
+	g_free (priv->slope_t);
+	g_free (priv->polynom_c);
+	g_free (priv->polynom_d);
 
 	G_OBJECT_CLASS (cd_interp_akima_parent_class)->finalize (object);
 }
