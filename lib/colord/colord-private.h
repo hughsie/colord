@@ -46,6 +46,7 @@
 #include <colord/cd-interp-linear.h>
 #include <colord/cd-interp.h>
 #include <colord/cd-it8.h>
+#include <colord/cd-it8-utils.h>
 #include <colord/cd-math.h>
 #include <colord/cd-quirk.h>
 #include <colord/cd-spectrum.h>
