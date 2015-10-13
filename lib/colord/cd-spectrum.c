@@ -409,7 +409,8 @@ cd_spectrum_add_value (CdSpectrum *spectrum, gdouble data)
 void
 cd_spectrum_free (CdSpectrum *spectrum)
 {
-	g_return_if_fail (spectrum != NULL);
+	if (spectrum == NULL)
+		return;
 	g_free (spectrum->id);
 	g_array_unref (spectrum->data);
 	g_slice_free (CdSpectrum, spectrum);
