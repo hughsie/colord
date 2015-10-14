@@ -255,7 +255,7 @@ osp_device_get_serial (GUsbDevice *device, GError **error)
 	}
 
 	/* format value */
-	return g_strdup ((const gchar *) data);
+	return g_strndup ((const gchar *) data, data_len);
 }
 
 /**
