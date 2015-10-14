@@ -65,7 +65,7 @@ typedef struct {
 static void
 cd_parse_beagle_process_entry_huey (CdParseEntry *entry)
 {
-	gchar **tok;
+	g_auto(GStrv) tok = NULL;
 	guint j;
 	guint8 cmd;
 	guint8 instruction = 0;
@@ -120,7 +120,6 @@ cd_parse_beagle_process_entry_huey (CdParseEntry *entry)
 out:
 	if (output != NULL)
 		entry->summary_pretty = g_string_free (output, FALSE);
-	g_strfreev (tok);
 }
 
 /**
@@ -129,7 +128,7 @@ out:
 static void
 cd_parse_beagle_process_entry_colormunki (CdParseEntry *entry)
 {
-	gchar **tok;
+	g_auto(GStrv) tok = NULL;
 	guint j;
 	guint8 cmd;
 	guint tok_len;
@@ -194,7 +193,6 @@ cd_parse_beagle_process_entry_colormunki (CdParseEntry *entry)
 out:
 	if (output != NULL)
 		entry->summary_pretty = g_string_free (output, FALSE);
-	g_strfreev (tok);
 }
 
 /**
@@ -271,16 +269,16 @@ gint
 main (gint argc, gchar *argv[])
 {
 	gboolean ret;
-	gchar *data = NULL;
-	gchar **split = NULL;
 	gchar **sections = NULL;
-	GString *output = NULL;
-	g_autoptr(GError) error = NULL;
 	guint i;
 	CdParseEntry entry;
 	gchar *part;
 	gint retval = 1;
 	CdSensorKind kind;
+	g_autofree gchar *data = NULL;
+	g_auto(GStrv) split = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GString) output = NULL;
 
 	if (argc != 4) {
 		g_print ("need to specify [huey|colormunki] input output\n");
@@ -343,10 +341,6 @@ main (gint argc, gchar *argv[])
 	g_print ("done!\n");
 	retval = 0;
 out:
-	if (output != NULL)
-		g_string_free (output, TRUE);
-	g_free (data);
-	g_strfreev (split);
 	return retval;
 }
 
