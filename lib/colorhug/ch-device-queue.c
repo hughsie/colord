@@ -88,11 +88,11 @@ typedef struct {
 	GCancellable		*cancellable;
 	GSimpleAsyncResult	*res;
 	GPtrArray		*failures;
-} ChDeviceQueueHelper;
+} ChDeviceQueueTaskData;
 
 static guint signals[SIGNAL_LAST] = { 0 };
 
-static gboolean ch_device_queue_process_data (ChDeviceQueueHelper *helper, ChDeviceQueueData *data);
+static gboolean ch_device_queue_process_data (GTask *task, ChDeviceQueueData *data);
 
 /**
  * ch_device_queue_data_free:
@@ -110,17 +110,13 @@ ch_device_queue_data_free (ChDeviceQueueData *data)
 }
 
 /**
- * ch_device_queue_free_helper:
+ * ch_device_queue_task_data_free:
  **/
 static void
-ch_device_queue_free_helper (ChDeviceQueueHelper *helper)
+ch_device_queue_task_data_free (ChDeviceQueueTaskData *data)
 {
-	if (helper->cancellable != NULL)
-		g_object_unref (helper->cancellable);
-	g_object_unref (helper->device_queue);
-	g_object_unref (helper->res);
-	g_ptr_array_unref (helper->failures);
-	g_free (helper);
+	g_ptr_array_unref (data->failures);
+	g_free (data);
 }
 
 /**
@@ -206,8 +202,10 @@ ch_device_queue_process_write_command_cb (GObject *source,
 					  gpointer user_data)
 {
 	ChDeviceQueueData *data;
-	ChDeviceQueueHelper *helper = (ChDeviceQueueHelper *) user_data;
-	ChDeviceQueuePrivate *priv = GET_PRIVATE (helper->device_queue);
+	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (source);
+	GTask *task = G_TASK (user_data);
+	ChDeviceQueueTaskData *tdata = g_task_get_task_data (task);
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 	const gchar *device_id;
 	const gchar *tmp;
 	gboolean ret;
@@ -235,74 +233,73 @@ ch_device_queue_process_write_command_cb (GObject *source,
 	if (!ret) {
 		/* tell the client the device has failed */
 		g_debug ("emit device-failed: %s", error->message);
-		g_signal_emit (helper->device_queue,
+		g_signal_emit (device_queue,
 			       signals[SIGNAL_DEVICE_FAILED], 0,
 			       device,
 			       error->message);
 
 		/* save this so we can possibly use when we're done */
 		last_error_code = error->code;
-		g_ptr_array_add (helper->failures,
+		g_ptr_array_add (tdata->failures,
 				 g_strdup_printf ("%s: %s",
 						  g_usb_device_get_platform_id (device),
 						  error->message));
 		g_error_free (error);
 
 		/* should we mark complete other commands as complete */
-		if ((helper->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_CONTINUE_ERRORS) == 0) {
-			ch_device_queue_device_force_complete (helper->device_queue, device);
-			ch_device_queue_update_progress (helper->device_queue);
+		if ((tdata->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_CONTINUE_ERRORS) == 0) {
+			ch_device_queue_device_force_complete (device_queue, device);
+			ch_device_queue_update_progress (device_queue);
 			goto out;
 		}
 	}
 
 	/* update progress */
 	data->state = CH_DEVICE_QUEUE_DATA_STATE_COMPLETE;
-	ch_device_queue_update_progress (helper->device_queue);
+	ch_device_queue_update_progress (device_queue);
 
 	/* is there another pending command for this device */
 	for (i = 0; i < priv->data_array->len; i++) {
 		data = g_ptr_array_index (priv->data_array, i);
-		ret = ch_device_queue_process_data (helper, data);
+		ret = ch_device_queue_process_data (task, data);
 		if (ret)
 			break;
 	}
 out:
 	/* any more pending commands? */
-	pending_commands = ch_device_queue_count_in_state (helper->device_queue,
+	pending_commands = ch_device_queue_count_in_state (device_queue,
 							   CH_DEVICE_QUEUE_DATA_STATE_PENDING);
-	pending_commands += ch_device_queue_count_in_state (helper->device_queue,
+	pending_commands += ch_device_queue_count_in_state (device_queue,
 							    CH_DEVICE_QUEUE_DATA_STATE_WAITING_FOR_HW);
 	g_debug ("Pending commands: %i", pending_commands);
 	if (pending_commands == 0) {
 
 		/* should we return the process with an error, or just
 		 * rely on the signal? */
-		if (helper->failures->len == 1 &&
-		    (helper->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_NONFATAL_ERRORS) == 0) {
-			tmp = g_ptr_array_index (helper->failures, 0);
-			g_simple_async_result_set_error (helper->res,
+		if (tdata->failures->len == 1 &&
+		    (tdata->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_NONFATAL_ERRORS) == 0) {
+			tmp = g_ptr_array_index (tdata->failures, 0);
+			g_task_return_new_error (task,
 							 CH_DEVICE_ERROR,
 							 last_error_code,
 							 "%s", tmp);
-		} else if (helper->failures->len > 1 &&
-			   (helper->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_NONFATAL_ERRORS) == 0) {
-			g_ptr_array_add (helper->failures, NULL);
-			error_msg = g_strjoinv (", ", (gchar**) helper->failures->pdata);
-			g_simple_async_result_set_error (helper->res,
+		} else if (tdata->failures->len > 1 &&
+			   (tdata->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_NONFATAL_ERRORS) == 0) {
+			g_ptr_array_add (tdata->failures, NULL);
+			error_msg = g_strjoinv (", ", (gchar**) tdata->failures->pdata);
+			g_task_return_new_error (task,
 							 CH_DEVICE_ERROR,
 							 last_error_code,
 							 "There were %i failures: %s",
-							 helper->failures->len - 1,
+							 tdata->failures->len - 1,
 							 error_msg);
 		} else {
-			g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
+			g_task_return_boolean (task, TRUE);
 		}
 
 		/* remove all commands from the queue, as they are done */
 		g_ptr_array_set_size (priv->data_array, 0);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_queue_free_helper (helper);
+		g_object_unref (task);
 	}
 }
 
@@ -312,10 +309,11 @@ out:
  * Returns TRUE if the command was submitted
  **/
 static gboolean
-ch_device_queue_process_data (ChDeviceQueueHelper *helper,
-			      ChDeviceQueueData *data)
+ch_device_queue_process_data (GTask *task, ChDeviceQueueData *data)
 {
-	ChDeviceQueuePrivate *priv = GET_PRIVATE (helper->device_queue);
+	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (g_task_get_source_object (task));
+	ChDeviceQueueTaskData *tdata = g_task_get_task_data (task);
+	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 	ChDeviceQueueData *data_tmp;
 	const gchar *device_id;
 
@@ -336,9 +334,9 @@ ch_device_queue_process_data (ChDeviceQueueHelper *helper,
 				       data->buffer_in_len,
 				       data->buffer_out,
 				       data->buffer_out_len,
-				       helper->cancellable,
+				       g_task_get_cancellable (task),
 				       ch_device_queue_process_write_command_cb,
-				       helper);
+				       tdata);
 	/* mark this as in use */
 	g_hash_table_insert (priv->devices_in_use, g_strdup (device_id), data);
 
@@ -366,36 +364,31 @@ ch_device_queue_process_async (ChDeviceQueue		*device_queue,
 			       gpointer			 user_data)
 {
 	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
-	ChDeviceQueueHelper *helper;
+	ChDeviceQueueTaskData *tdata;
 	ChDeviceQueueData *data;
+	GTask *task = NULL;
 	guint i;
 
 	g_return_if_fail (CH_IS_DEVICE_QUEUE (device_queue));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
-	helper = g_new0 (ChDeviceQueueHelper, 1);
-	helper->process_flags = process_flags;
-	helper->failures = g_ptr_array_new_with_free_func (g_free);
-	helper->device_queue = g_object_ref (device_queue);
-	helper->res = g_simple_async_result_new (G_OBJECT (device_queue),
-						 callback,
-						 user_data,
-						 ch_device_queue_process_async);
-	if (cancellable != NULL)
-		helper->cancellable = g_object_ref (cancellable);
+	task = g_task_new (device_queue, cancellable, callback, user_data);
+	tdata = g_new0 (ChDeviceQueueTaskData, 1);
+	tdata->process_flags = process_flags;
+	tdata->failures = g_ptr_array_new_with_free_func (g_free);
+	g_task_set_task_data (task, tdata, (GDestroyNotify) ch_device_queue_task_data_free);
 
 	/* go through the list of commands and try to submit them all */
-	ch_device_queue_update_progress (helper->device_queue);
+	ch_device_queue_update_progress (device_queue);
 	for (i = 0; i < priv->data_array->len; i++) {
 		data = g_ptr_array_index (priv->data_array, i);
-		ch_device_queue_process_data (helper, data);
+		ch_device_queue_process_data (task, data);
 	}
 
 	/* is anything pending? */
 	if (g_hash_table_size (priv->devices_in_use) == 0) {
-		g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_queue_free_helper (helper);
+		g_task_return_boolean (task, TRUE);
+		g_object_unref (task);
 	}
 }
 
@@ -416,17 +409,8 @@ ch_device_queue_process_finish (ChDeviceQueue	*device_queue,
 				GAsyncResult	*res,
 				GError		**error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CH_DEVICE_QUEUE (device_queue), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, device_queue), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 /**********************************************************************/

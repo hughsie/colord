@@ -180,9 +180,6 @@ ch_print_data_buffer (const gchar *title,
 }
 
 typedef struct {
-	GUsbDevice		*device;
-	GCancellable		*cancellable;
-	GSimpleAsyncResult	*res;
 	guint8			*buffer;
 	guint8			*buffer_orig;
 	guint8			*buffer_out;
@@ -191,7 +188,7 @@ typedef struct {
 	guint			 retried_cnt;
 	guint8			 report_type;	/* only for Sensor HID */
 	guint			 report_length;	/* only for Sensor HID */
-} ChDeviceHelper;
+} ChDeviceTaskData;
 
 /**
  * ch_device_write_command_finish:
@@ -210,35 +207,19 @@ ch_device_write_command_finish (GUsbDevice *device,
 				GAsyncResult *res,
 				GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, device), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 /**
- * ch_device_free_helper:
+ * ch_device_task_data_free:
  **/
 static void
-ch_device_free_helper (ChDeviceHelper *helper)
+ch_device_task_data_free (ChDeviceTaskData *tdata)
 {
-	/* clear busy flag */
-	g_object_steal_data (G_OBJECT (helper->device),
-			     "ChCommonDeviceBusy");
-	if (helper->cancellable != NULL)
-		g_object_unref (helper->cancellable);
-	g_object_unref (helper->device);
-	g_object_unref (helper->res);
-	g_free (helper->buffer);
-	g_free (helper->buffer_orig);
-	g_free (helper);
+	g_free (tdata->buffer);
+	g_free (tdata->buffer_orig);
+	g_free (tdata);
 }
 
 static void ch_device_request_cb (GObject *source_object, GAsyncResult *res, gpointer user_data);
@@ -256,52 +237,55 @@ ch_device_reply_cb (GObject *source_object,
 	gsize actual_len;
 	gchar *msg = NULL;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+	GTask *task = G_TASK (user_data);
+	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
 	actual_len = g_usb_device_interrupt_transfer_finish (device,
 							     res,
 							     &error);
 	if ((gssize) actual_len < 0) {
-		g_simple_async_result_take_error (helper->res, error);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_INVALID_VALUE,
+					 "%s", error->message);
+		g_object_unref (task);
 		return;
 	}
 
 	/* parse the reply */
 	if (g_getenv ("COLORHUG_VERBOSE") != NULL) {
 		ch_print_data_buffer ("reply",
-				      helper->buffer,
+				      tdata->buffer,
 				      actual_len);
 	}
 
 	/* parse */
-	if (helper->buffer[CH_BUFFER_OUTPUT_RETVAL] != CH_ERROR_NONE ||
-	    helper->buffer[CH_BUFFER_OUTPUT_CMD] != helper->cmd ||
-	    (actual_len != helper->buffer_out_len + CH_BUFFER_OUTPUT_DATA &&
+	if (tdata->buffer[CH_BUFFER_OUTPUT_RETVAL] != CH_ERROR_NONE ||
+	    tdata->buffer[CH_BUFFER_OUTPUT_CMD] != tdata->cmd ||
+	    (actual_len != tdata->buffer_out_len + CH_BUFFER_OUTPUT_DATA &&
 	     actual_len != CH_USB_HID_EP_SIZE)) {
-		error_enum = helper->buffer[CH_BUFFER_OUTPUT_RETVAL];
+		error_enum = tdata->buffer[CH_BUFFER_OUTPUT_RETVAL];
 
 		/* handle incomplete previous request */
 		if (error_enum == CH_ERROR_INCOMPLETE_REQUEST &&
-		    helper->retried_cnt == 0) {
-			helper->retried_cnt++;
-			memcpy (helper->buffer, helper->buffer_orig, CH_USB_HID_EP_SIZE);
+		    tdata->retried_cnt == 0) {
+			tdata->retried_cnt++;
+			memcpy (tdata->buffer, tdata->buffer_orig, CH_USB_HID_EP_SIZE);
 			if (g_getenv ("COLORHUG_VERBOSE") != NULL) {
 				ch_print_data_buffer ("request",
-						      helper->buffer,
+						      tdata->buffer,
 						      CH_USB_HID_EP_SIZE);
 			}
-			g_usb_device_interrupt_transfer_async (helper->device,
+			g_usb_device_interrupt_transfer_async (device,
 							       CH_USB_HID_EP_OUT,
-							       helper->buffer,
+							       tdata->buffer,
 							       CH_USB_HID_EP_SIZE,
 							       CH_DEVICE_USB_TIMEOUT,
-							       helper->cancellable,
+							       g_task_get_cancellable (task),
 							       ch_device_request_cb,
-							       helper);
-			/* we're re-using the helper, so don't deallocate it */
+							       tdata);
+			/* we're re-using the tdata, so don't deallocate it */
 			return;
 		}
 
@@ -310,33 +294,31 @@ ch_device_reply_cb (GObject *source_object,
 				       "len=%" G_GSIZE_FORMAT " (expected %" G_GSIZE_FORMAT " or %i)",
 				       error_enum,
 				       ch_strerror (error_enum),
-				       helper->buffer[CH_BUFFER_OUTPUT_CMD],
-				       ch_command_to_string (helper->buffer[CH_BUFFER_OUTPUT_CMD]),
-				       helper->cmd,
-				       ch_command_to_string (helper->cmd),
+				       tdata->buffer[CH_BUFFER_OUTPUT_CMD],
+				       ch_command_to_string (tdata->buffer[CH_BUFFER_OUTPUT_CMD]),
+				       tdata->cmd,
+				       ch_command_to_string (tdata->cmd),
 				       actual_len,
-				       helper->buffer_out_len + CH_BUFFER_OUTPUT_DATA,
+				       tdata->buffer_out_len + CH_BUFFER_OUTPUT_DATA,
 				       CH_USB_HID_EP_SIZE);
-		g_simple_async_result_set_error (helper->res,
-						 CH_DEVICE_ERROR,
-						 error_enum,
-						 "%s", msg);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 error_enum,
+					 "%s", msg);
+		g_object_unref (task);
 		return;
 	}
 
 	/* copy */
-	if (helper->buffer_out != NULL) {
-		memcpy (helper->buffer_out,
-			helper->buffer + CH_BUFFER_OUTPUT_DATA,
-			helper->buffer_out_len);
+	if (tdata->buffer_out != NULL) {
+		memcpy (tdata->buffer_out,
+			tdata->buffer + CH_BUFFER_OUTPUT_DATA,
+			tdata->buffer_out_len);
 	}
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
-	g_simple_async_result_complete_in_idle (helper->res);
-	ch_device_free_helper (helper);
+	g_task_return_boolean (task, TRUE);
+	g_object_unref (task);
 }
 
 /**
@@ -350,28 +332,31 @@ ch_device_request_cb (GObject *source_object,
 	GError *error = NULL;
 	gssize actual_len;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+	GTask *task = G_TASK (user_data);
+	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
 	actual_len = g_usb_device_interrupt_transfer_finish (device,
 							     res,
 							     &error);
 	if (actual_len < CH_USB_HID_EP_SIZE) {
-		g_simple_async_result_take_error (helper->res, error);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_INVALID_VALUE,
+					 "%s", error->message);
+		g_object_unref (task);
 		return;
 	}
 
 	/* request the reply */
-	g_usb_device_interrupt_transfer_async (helper->device,
+	g_usb_device_interrupt_transfer_async (device,
 					       CH_USB_HID_EP_IN,
-					       helper->buffer,
+					       tdata->buffer,
 					       CH_USB_HID_EP_SIZE,
 					       CH_DEVICE_USB_TIMEOUT,
-					       helper->cancellable,
+					       g_task_get_cancellable (task),
 					       ch_device_reply_cb,
-					       helper);
+					       task);
 }
 
 /**
@@ -380,29 +365,29 @@ ch_device_request_cb (GObject *source_object,
 static gboolean
 ch_device_emulate_cb (gpointer user_data)
 {
-	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+	GTask *task = G_TASK (user_data);
+	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
-	switch (helper->cmd) {
+	switch (tdata->cmd) {
 	case CH_CMD_GET_SERIAL_NUMBER:
-		helper->buffer_out[6] = 42;
+		tdata->buffer_out[6] = 42;
 		break;
 	case CH_CMD_GET_FIRMWARE_VERSION:
-		helper->buffer_out[0] = 0x01;
-		helper->buffer_out[4] = 0x01;
+		tdata->buffer_out[0] = 0x01;
+		tdata->buffer_out[4] = 0x01;
 		break;
 	case CH_CMD_GET_HARDWARE_VERSION:
-		helper->buffer_out[0] = 0xff;
+		tdata->buffer_out[0] = 0xff;
 		break;
 	default:
 		g_debug ("Ignoring command %s",
-			 ch_command_to_string (helper->cmd));
+			 ch_command_to_string (tdata->cmd));
 		break;
 	}
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
-	g_simple_async_result_complete_in_idle (helper->res);
-	ch_device_free_helper (helper);
+	g_task_return_boolean (task, TRUE);
+	g_object_unref (task);
 
 	return G_SOURCE_REMOVE;
 }
@@ -426,24 +411,26 @@ ch_device_sensor_hid_set_cb (GObject *source_object,
 	GError *error = NULL;
 	gssize actual_len;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+	GTask *task = G_TASK (user_data);
+	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
 	actual_len = g_usb_device_control_transfer_finish (device,
 							   res,
 							   &error);
-	if (actual_len != helper->report_length) {
-		g_simple_async_result_take_error (helper->res, error);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
+	if (actual_len != tdata->report_length) {
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_INVALID_VALUE,
+					 "%s", error->message);
+		g_object_unref (task);
 		return;
 	}
-//	ch_print_data_buffer ("reply", helper->buffer, helper->report_length);
+//	ch_print_data_buffer ("reply", tdata->buffer, tdata->report_length);
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
-	g_simple_async_result_complete_in_idle (helper->res);
-	ch_device_free_helper (helper);
+	g_task_return_boolean (task, TRUE);
+	g_object_unref (task);
 }
 
 /**
@@ -457,26 +444,28 @@ ch_device_sensor_hid_report_cb (GObject *source_object,
 	GError *error = NULL;
 	gsize actual_len;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+	GTask *task = G_TASK (user_data);
+	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
 	actual_len = g_usb_device_interrupt_transfer_finish (device,
 							     res,
 							     &error);
 	if ((gssize) actual_len < 0) {
-		g_simple_async_result_take_error (helper->res, error);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_INVALID_VALUE,
+					 "%s", error->message);
+		g_object_unref (task);
 		return;
 	}
 
-	/* copy out data */
-	memcpy (helper->buffer_out, helper->buffer + 3, 4);
+	/* copy out tdata */
+	memcpy (tdata->buffer_out, tdata->buffer + 3, 4);
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
-	g_simple_async_result_complete_in_idle (helper->res);
-	ch_device_free_helper (helper);
+	g_task_return_boolean (task, TRUE);
+	g_object_unref (task);
 }
 
 /**
@@ -491,106 +480,107 @@ ch_device_sensor_hid_get_cb (GObject *source_object,
 	gssize actual_len;
 	gboolean another_request_required = FALSE;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	ChDeviceHelper *helper = (ChDeviceHelper *) user_data;
+	GTask *task = G_TASK (user_data);
+	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
 	actual_len = g_usb_device_control_transfer_finish (device,
 							   res,
 							   &error);
-	if (actual_len != helper->report_length) {
-		g_simple_async_result_take_error (helper->res, error);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
+	if (actual_len != tdata->report_length) {
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_INVALID_VALUE,
+					 "%s", error->message);
+		g_object_unref (task);
 		return;
 	}
-//	ch_print_data_buffer ("reply", helper->buffer, helper->report_length);
+//	ch_print_data_buffer ("reply", tdata->buffer, tdata->report_length);
 
-	switch (helper->cmd) {
+	switch (tdata->cmd) {
 	case CH_CMD_TAKE_READING_RAW:
-		memcpy(helper->buffer_out, helper->buffer + 3, 4);
+		memcpy(tdata->buffer_out, tdata->buffer + 3, 4);
 		break;
 	case CH_CMD_GET_COLOR_SELECT:
-		memcpy(helper->buffer_out, helper->buffer + 1, 1);
+		memcpy(tdata->buffer_out, tdata->buffer + 1, 1);
 		break;
 	case CH_CMD_GET_INTEGRAL_TIME:
-		memcpy(helper->buffer_out, helper->buffer + 4, 2);
+		memcpy(tdata->buffer_out, tdata->buffer + 4, 2);
 		break;
 	case CH_CMD_GET_LEDS:
-		memcpy(helper->buffer_out, helper->buffer + 2, 1);
+		memcpy(tdata->buffer_out, tdata->buffer + 2, 1);
 		break;
 	case CH_CMD_GET_MULTIPLIER:
-		memcpy(helper->buffer_out, helper->buffer + 3, 1);
+		memcpy(tdata->buffer_out, tdata->buffer + 3, 1);
 		break;
 	case CH_CMD_GET_FIRMWARE_VERSION:
-		memcpy(helper->buffer_out, helper->buffer + 2, 6);
+		memcpy(tdata->buffer_out, tdata->buffer + 2, 6);
 		break;
 	case CH_CMD_GET_HARDWARE_VERSION:
-		memcpy(helper->buffer_out, helper->buffer + 1, 1);
+		memcpy(tdata->buffer_out, tdata->buffer + 1, 1);
 		break;
 	case CH_CMD_GET_SERIAL_NUMBER:
-		memcpy(helper->buffer_out, helper->buffer + 8, 4);
+		memcpy(tdata->buffer_out, tdata->buffer + 8, 4);
 		break;
 	case CH_CMD_SET_COLOR_SELECT:
-		memcpy(helper->buffer + 1, helper->buffer_orig + 1, 1);
+		memcpy(tdata->buffer + 1, tdata->buffer_orig + 1, 1);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_INTEGRAL_TIME:
-		memcpy(helper->buffer + 4, helper->buffer_orig + 1, 2);
+		memcpy(tdata->buffer + 4, tdata->buffer_orig + 1, 2);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_LEDS:
-		memcpy(helper->buffer + 2, helper->buffer_orig + 1, 1);
+		memcpy(tdata->buffer + 2, tdata->buffer_orig + 1, 1);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_MULTIPLIER:
-		memcpy(helper->buffer + 3, helper->buffer_orig + 1, 1);
+		memcpy(tdata->buffer + 3, tdata->buffer_orig + 1, 1);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_FLASH_SUCCESS:
-		memcpy(helper->buffer + 13, helper->buffer_orig + 1, 1);
+		memcpy(tdata->buffer + 13, tdata->buffer_orig + 1, 1);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_RESET:
-		helper->buffer[12] = 1;
+		tdata->buffer[12] = 1;
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_SERIAL_NUMBER:
-		memcpy(helper->buffer + 8, helper->buffer_orig + 1, 4);
+		memcpy(tdata->buffer + 8, tdata->buffer_orig + 1, 4);
 		another_request_required = TRUE;
 		break;
 	default:
-		g_simple_async_result_set_error (helper->res,
-						 CH_DEVICE_ERROR,
-						 CH_ERROR_UNKNOWN_CMD,
-						 "No Sensor HID support for 0x%02x",
-						 helper->cmd);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_UNKNOWN_CMD,
+					 "No Sensor HID support for 0x%02x",
+					 tdata->cmd);
+		g_object_unref (task);
 		return;
 	}
 
 	/* getting the value was enough */
 	if (!another_request_required) {
-		g_simple_async_result_set_op_res_gboolean (helper->res, TRUE);
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
+		g_task_return_boolean (task, TRUE);
+		g_object_unref (task);
 		return;
 	}
 
-//	ch_print_data_buffer ("request", helper->buffer, helper->report_length);
+//	ch_print_data_buffer ("request", tdata->buffer, tdata->report_length);
 	g_usb_device_control_transfer_async (device,
 					     G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
 					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
 					     G_USB_DEVICE_RECIPIENT_INTERFACE,
 					     CH_SENSOR_HID_REPORT_SET,
-					     CH_SENSOR_HID_FEATURE | helper->report_type,
+					     CH_SENSOR_HID_FEATURE | tdata->report_type,
 					     0x0000,
-					     helper->buffer,
-					     helper->report_length,
+					     tdata->buffer,
+					     tdata->report_length,
 					     CH_DEVICE_USB_TIMEOUT,
-					     helper->cancellable,
+					     g_task_get_cancellable (task),
 					     ch_device_sensor_hid_set_cb,
-					     helper);
+					     task);
 }
 
 /**
@@ -620,71 +610,51 @@ ch_device_write_command_async (GUsbDevice *device,
 			       GAsyncReadyCallback callback,
 			       gpointer user_data)
 {
-	ChDeviceHelper *helper;
-	gpointer device_busy;
-
+	ChDeviceTaskData *tdata;
+	GTask *task = NULL;
 	g_return_if_fail (G_USB_IS_DEVICE (device));
 	g_return_if_fail (cmd != 0);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
-	helper = g_new0 (ChDeviceHelper, 1);
-	helper->device = g_object_ref (device);
-	helper->buffer_out = buffer_out;
-	helper->buffer_out_len = buffer_out_len;
-	helper->buffer = g_new0 (guint8, CH_USB_HID_EP_SIZE);
-	helper->res = g_simple_async_result_new (G_OBJECT (device),
-						 callback,
-						 user_data,
-						 ch_device_write_command_async);
-	if (cancellable != NULL)
-		helper->cancellable = g_object_ref (cancellable);
+	task = g_task_new (device, cancellable, callback, user_data);
 
-	/* device busy processing another command */
-	device_busy = g_object_get_data (G_OBJECT (device),
-					 "ChCommonDeviceBusy");
-	if (device_busy != NULL) {
-		g_simple_async_result_set_error (helper->res, 1, 0, "Device busy!");
-		g_simple_async_result_complete_in_idle (helper->res);
-		ch_device_free_helper (helper);
-		return;
-	}
+	tdata = g_new0 (ChDeviceTaskData, 1);
+	tdata->buffer_out = buffer_out;
+	tdata->buffer_out_len = buffer_out_len;
+	tdata->buffer = g_new0 (guint8, CH_USB_HID_EP_SIZE);
+	g_task_set_task_data (task, tdata, (GDestroyNotify) ch_device_task_data_free);
 
 	/* set command */
-	helper->cmd = cmd;
-	helper->buffer[CH_BUFFER_INPUT_CMD] = helper->cmd;
+	tdata->cmd = cmd;
+	tdata->buffer[CH_BUFFER_INPUT_CMD] = tdata->cmd;
 	if (buffer_in != NULL) {
-		memcpy (helper->buffer + CH_BUFFER_INPUT_DATA,
+		memcpy (tdata->buffer + CH_BUFFER_INPUT_DATA,
 			buffer_in,
 			buffer_in_len);
 	}
-	helper->buffer_orig = g_memdup (helper->buffer, CH_USB_HID_EP_SIZE);
+	tdata->buffer_orig = g_memdup (tdata->buffer, CH_USB_HID_EP_SIZE);
 
 	/* request */
 	if (g_getenv ("COLORHUG_VERBOSE") != NULL) {
 		ch_print_data_buffer ("request",
-				      helper->buffer,
+				      tdata->buffer,
 				      buffer_in_len + 1);
 	}
 
 	/* dummy hardware */
 	if (g_getenv ("COLORHUG_EMULATE") != NULL) {
-		g_timeout_add (20, ch_device_emulate_cb, helper);
+		g_timeout_add (20, ch_device_emulate_cb, tdata);
 		return;
 	}
-
-	/* set a private flag so we don't do reentrancy */
-	g_object_set_data (G_OBJECT (device),
-			   "ChCommonDeviceBusy",
-			   GUINT_TO_POINTER (TRUE));
 
 	/* handle ALS in sensor-hid mode differently */
 	if (g_usb_device_get_pid (device) == CH_USB_PID_FIRMWARE_ALS_SENSOR_HID) {
 
 		/* try to map the commands to Sensor HID requests */
-		switch (helper->cmd) {
+		switch (tdata->cmd) {
 		case CH_CMD_TAKE_READING_RAW:
-			helper->report_type = CH_REPORT_ALS;
-			helper->report_length = 7;
+			tdata->report_type = CH_REPORT_ALS;
+			tdata->report_length = 7;
 			break;
 		case CH_CMD_GET_COLOR_SELECT:
 		case CH_CMD_GET_INTEGRAL_TIME:
@@ -694,8 +664,8 @@ ch_device_write_command_async (GUsbDevice *device,
 		case CH_CMD_SET_INTEGRAL_TIME:
 		case CH_CMD_SET_LEDS:
 		case CH_CMD_SET_MULTIPLIER:
-			helper->report_type = CH_REPORT_SENSOR_SETTINGS;
-			helper->report_length = 6;
+			tdata->report_type = CH_REPORT_SENSOR_SETTINGS;
+			tdata->report_length = 6;
 			break;
 		case CH_CMD_GET_FIRMWARE_VERSION:
 		case CH_CMD_GET_HARDWARE_VERSION:
@@ -703,62 +673,60 @@ ch_device_write_command_async (GUsbDevice *device,
 		case CH_CMD_RESET:
 		case CH_CMD_SET_FLASH_SUCCESS:
 		case CH_CMD_SET_SERIAL_NUMBER:
-			helper->report_type = CH_REPORT_SYSTEM_SETTINGS;
-			helper->report_length = 14;
+			tdata->report_type = CH_REPORT_SYSTEM_SETTINGS;
+			tdata->report_length = 14;
 			break;
 		default:
-			g_simple_async_result_set_error (helper->res,
-							 CH_DEVICE_ERROR,
-							 CH_ERROR_UNKNOWN_CMD,
-							 "No Sensor HID support for 0x%02x",
-							 helper->cmd);
-			g_simple_async_result_complete_in_idle (helper->res);
-			ch_device_free_helper (helper);
+			g_task_return_new_error (task,
+						 CH_DEVICE_ERROR,
+						 CH_ERROR_UNKNOWN_CMD,
+						 "No Sensor HID support for 0x%02x",
+						 tdata->cmd);
+			g_object_unref (task);
 			return;
 		}
 
 		/* need to use this rather than feature control */
-		if (helper->report_type == CH_REPORT_ALS) {
-			g_usb_device_interrupt_transfer_async (helper->device,
+		if (tdata->report_type == CH_REPORT_ALS) {
+			g_usb_device_interrupt_transfer_async (device,
 							       CH_USB_HID_EP_IN,
-							       helper->buffer,
-							       helper->report_length,
+							       tdata->buffer,
+							       tdata->report_length,
 							       CH_DEVICE_USB_TIMEOUT,
-							       helper->cancellable,
+							       g_task_get_cancellable (task),
 							       ch_device_sensor_hid_report_cb,
-							       helper);
+							       task);
 			return;
 		}
 
 		/* do control transfer */
-		memset(helper->buffer, '\0', helper->report_length);
-//		ch_print_data_buffer ("request", helper->buffer, helper->report_length);
+		memset(tdata->buffer, '\0', tdata->report_length);
+//		ch_print_data_buffer ("request", tdata->buffer, tdata->report_length);
 		g_usb_device_control_transfer_async (device,
 						     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
 						     G_USB_DEVICE_REQUEST_TYPE_CLASS,
 						     G_USB_DEVICE_RECIPIENT_INTERFACE,
 						     CH_SENSOR_HID_REPORT_GET,
-						     CH_SENSOR_HID_FEATURE | helper->report_type,
+						     CH_SENSOR_HID_FEATURE | tdata->report_type,
 						     0x0000,
-						     helper->buffer,
-						     helper->report_length,
+						     tdata->buffer,
+						     tdata->report_length,
 						     CH_DEVICE_USB_TIMEOUT,
-						     helper->cancellable,
+						     g_task_get_cancellable (task),
 						     ch_device_sensor_hid_get_cb,
-						     helper);
+						     task);
 		return;
-
 	}
 
 	/* do interrupt transfer */
-	g_usb_device_interrupt_transfer_async (helper->device,
+	g_usb_device_interrupt_transfer_async (device,
 					       CH_USB_HID_EP_OUT,
-					       helper->buffer,
+					       tdata->buffer,
 					       CH_USB_HID_EP_SIZE,
 					       CH_DEVICE_USB_TIMEOUT,
-					       helper->cancellable,
+					       g_task_get_cancellable (task),
 					       ch_device_request_cb,
-					       helper);
+					       task);
 }
 
 /* tiny helper to help us do the async operation */
