@@ -747,7 +747,7 @@ cd_icc_get_tag_data (CdIcc *icc, const gchar *tag, GError **error)
 	/* return data */
 	tmp = g_new0 (gchar, tag_size);
 	cmsReadRawTag (priv->lcms_profile, sig, tmp, tag_size);
-	return g_bytes_new_with_free_func (tmp, tag_size, g_free, NULL);
+	return g_bytes_new_with_free_func (tmp, tag_size, g_free, tmp);
 }
 
 /**
