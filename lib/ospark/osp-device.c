@@ -291,17 +291,25 @@ osp_device_get_fw_version (GUsbDevice *device, GError **error)
 }
 
 /**
- * osp_device_take_spectrum:
+ * osp_device_take_spectrum_full:
+ * @device: a #GUsbDevice instance.
+ * @sample_duration: the sample duration in µs
+ * @error: A #GError or %NULL
  *
- * Since: 1.2.11
+ * Returns a spectrum for a set sample duration.
+ *
+ * Return value: A #CdSpectrum, or %NULL for error
+ *
+ * Since: 1.3.1
  **/
 CdSpectrum *
-osp_device_take_spectrum (GUsbDevice *device, GError **error)
+osp_device_take_spectrum_full (GUsbDevice *device,
+				guint64 sample_duration,
+				GError **error)
 {
 	CdSpectrum *sp;
 	gdouble val;
 	gsize data_len;
-	guint32 sample_duration = 100000; /* us */
 	guint8 bin_factor = 0;
 	guint i;
 	g_autofree guint8 *data = NULL;
@@ -343,5 +351,66 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 		val = data[i*2+1] * 256 + data[i*2+0];
 		cd_spectrum_add_value (sp, val / (gdouble) 0xffff);
 	}
+	return sp;
+}
+
+/**
+ * osp_device_take_spectrum:
+ * @device: a #GUsbDevice instance.
+ * @error: A #GError or %NULL
+ *
+ * Returns a spectrum. The optimal sample duration is calculated automatically.
+ *
+ * Return value: A #CdSpectrum, or %NULL for error
+ *
+ * Since: 1.2.11
+ **/
+CdSpectrum *
+osp_device_take_spectrum (GUsbDevice *device, GError **error)
+{
+	const guint sample_duration_max_secs = 3;
+	gdouble max;
+	gdouble scale;
+	guint64 sample_duration = 100000; /* us */
+	g_autoptr(CdSpectrum) sp_probe = NULL;
+	CdSpectrum *sp;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* take a quick measurement so we know how bright this is */
+	sp_probe = osp_device_take_spectrum_full (device,
+						  sample_duration,
+						  error);
+	if (sp_probe == NULL)
+		return NULL;
+
+	/* scale the sample_duration so it fills half way in the range */
+	max = cd_spectrum_get_value_max (sp_probe);
+	if (max < 0.00001f) {
+		g_set_error_literal (error,
+				     OSP_DEVICE_ERROR,
+				     OSP_DEVICE_ERROR_NO_DATA,
+				     "Got no valid data");
+		return FALSE;
+	}
+	scale = (gdouble) 0xffff / max;
+	sample_duration *= scale;
+	g_warning ("for max of %f, using scale=%f for duration %lums",
+		   max, scale, sample_duration / G_USEC_PER_SEC);
+
+	/* limit this to something sane */
+	if (sample_duration / G_USEC_PER_SEC > sample_duration_max_secs) {
+		g_debug ("limiting duration from %lus to %is",
+			 sample_duration / G_USEC_PER_SEC,
+			 sample_duration_max_secs);
+		sample_duration = sample_duration_max_secs * G_USEC_PER_SEC;
+	}
+
+	/* take the final reading */
+	sp = osp_device_take_spectrum_full (device, sample_duration, error);
+	if (sp == NULL)
+		return NULL;
+	cd_spectrum_set_norm (sp, scale / 1024.f);
 	return sp;
 }
