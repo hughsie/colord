@@ -338,7 +338,7 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 	cd_spectrum_set_id (sp, "raw");
 	cd_spectrum_set_start (sp, 380);
 	cd_spectrum_set_end (sp, 700);
-	cd_spectrum_set_norm (sp, FALSE);
+	cd_spectrum_set_norm (sp, 1.f);
 	for (i = 0; i < 1024; i++) {
 		val = data[i*2+1] * 256 + data[i*2+0];
 		cd_spectrum_add_value (sp, val / (gdouble) 0xffff);
