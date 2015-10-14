@@ -593,6 +593,9 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
 	g_autoptr(GError) error = NULL;
 
+	/* set here to avoid every sensor doing this */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+
 	/* get the result */
 	sample = priv->desc->get_sample_finish (sensor, res, &error);
 	if (sample == NULL) {
@@ -643,6 +646,9 @@ cd_sensor_lock_cb (GObject *source_object,
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
 
+	/* set here to avoid every sensor doing this */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+
 	/* get the result */
 	ret = priv->desc->lock_finish (sensor, res, &error);
 	if (!ret) {
@@ -670,6 +676,9 @@ cd_sensor_unlock_cb (GObject *source_object,
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
+
+	/* set here to avoid every sensor doing this */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 
 	/* get the result */
 	if (priv->desc != NULL &&
@@ -700,6 +709,9 @@ cd_sensor_unlock_quietly_cb (GObject *source_object,
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
+
+	/* set here to avoid every sensor doing this */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
 
 	/* get the result */
 	if (priv->desc != NULL &&
@@ -735,9 +747,9 @@ cd_sensor_name_vanished_cb (GDBusConnection *connection,
 
 	/* no longer valid */
 	priv->desc->unlock_async (sensor,
-					  NULL,
-					  cd_sensor_unlock_quietly_cb,
-					  NULL);
+				  NULL,
+				  cd_sensor_unlock_quietly_cb,
+				  NULL);
 out:
 	priv->watcher_id = 0;
 }
@@ -807,9 +819,9 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 
 		/* proxy */
 		priv->desc->lock_async (sensor,
-						NULL,
-						cd_sensor_lock_cb,
-						invocation);
+					NULL,
+					cd_sensor_lock_cb,
+					invocation);
 		return;
 	}
 
@@ -855,9 +867,9 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 
 		/* proxy */
 		priv->desc->unlock_async (sensor,
-				     NULL,
-				     cd_sensor_unlock_cb,
-				     invocation);
+					  NULL,
+					  cd_sensor_unlock_cb,
+					  invocation);
 		return;
 	}
 
