@@ -222,7 +222,7 @@ colord_device_qualifiers_func (void)
 							NULL,
 							&error);
 	g_assert_error (error, CD_DEVICE_ERROR, CD_DEVICE_ERROR_PROFILE_DOES_NOT_EXIST);
-	g_assert (relation == CD_DEVICE_RELATION_UNKNOWN);
+	g_assert_cmpint (relation, ==, CD_DEVICE_RELATION_UNKNOWN);
 	g_clear_error (&error);
 
 	/* assign profile to device */
@@ -2120,7 +2120,9 @@ colord_device_modified_func (void)
 
 	/* create */
 	client = cd_client_new ();
-	g_assert (client != NULL);
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 
 	/* create device */
 	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
@@ -2403,7 +2405,9 @@ colord_profile_ordering_func (void)
 
 	/* create */
 	client = cd_client_new ();
-	g_assert (client != NULL);
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 
 	/* create device */
 	device_id = colord_get_random_device_id ();
@@ -2587,7 +2591,9 @@ colord_profile_duplicate_func (void)
 
 	/* create */
 	client = cd_client_new ();
-	g_assert (client != NULL);
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 
 	/* create extra profile */
 	filename = cd_test_get_filename ("ibm-t61.icc");
@@ -2641,6 +2647,7 @@ colord_device_duplicate_func (void)
 	CdDevice *device1;
 	CdDevice *device2;
 	gchar *device_id;
+	gboolean ret;
 	g_autoptr(GError) error = NULL;
 	GHashTable *device_props;
 
@@ -2652,7 +2659,9 @@ colord_device_duplicate_func (void)
 
 	/* create */
 	client = cd_client_new ();
-	g_assert (client != NULL);
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 
 	/* create device */
 	device_id = colord_get_random_device_id ();
