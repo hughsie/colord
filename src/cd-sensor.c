@@ -100,6 +100,7 @@ typedef struct
 	guint				 watcher_id;
 	GDBusConnection			*connection;
 	guint				 registration_id;
+	guint				 set_state_id;
 	CdSensorIface			*desc;
 	GHashTable			*options;
 	GHashTable			*metadata;
@@ -452,10 +453,61 @@ void
 cd_sensor_set_state (CdSensor *sensor, CdSensorState state)
 {
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
+
+	/* invalidate */
+	if (priv->set_state_id > 0) {
+		g_source_remove (priv->set_state_id);
+		priv->set_state_id = 0;
+	}
+
 	priv->state = state;
 	cd_sensor_dbus_emit_property_changed (sensor,
 					      "State",
 					      g_variant_new_string (cd_sensor_state_to_string (state)));
+}
+
+typedef struct {
+	CdSensor	*sensor;
+	CdSensorState	 state;
+} CdSensorIdleHelper;
+
+/**
+ * cd_sensor_set_state_in_idle_cb:
+ **/
+static gboolean
+cd_sensor_set_state_in_idle_cb (gpointer user_data)
+{
+	CdSensorIdleHelper *helper = (CdSensorIdleHelper *) user_data;
+	CdSensorPrivate *priv = GET_PRIVATE (helper->sensor);
+
+	/* this is us */
+	priv->set_state_id = 0;
+
+	/* set state now */
+	cd_sensor_set_state (helper->sensor, helper->state);
+	g_object_unref (helper->sensor);
+	g_free (helper);
+	return G_SOURCE_REMOVE;
+}
+
+/**
+ * cd_sensor_set_state_in_idle:
+ * @sensor: a valid #CdSensor instance
+ * @state: the sensor state, e.g %CD_SENSOR_STATE_IDLE
+ *
+ * Sets the device state.
+ **/
+void
+cd_sensor_set_state_in_idle (CdSensor *sensor, CdSensorState state)
+{
+	CdSensorPrivate *priv = GET_PRIVATE (sensor);
+	CdSensorIdleHelper *helper = g_new0 (CdSensorIdleHelper, 1);
+	helper->sensor = g_object_ref (sensor);
+	helper->state = state;
+	if (priv->set_state_id > 0)
+		g_source_remove (priv->set_state_id);
+	priv->set_state_id =
+		g_idle_add (cd_sensor_set_state_in_idle_cb, helper);
 }
 
 /**
@@ -1555,6 +1607,8 @@ cd_sensor_finalize (GObject *object)
 	}
 	if (priv->watcher_id != 0)
 		g_bus_unwatch_name (priv->watcher_id);
+	if (priv->set_state_id > 0)
+		g_source_remove (priv->set_state_id);
 	g_free (priv->model);
 	g_free (priv->vendor);
 	g_free (priv->serial);

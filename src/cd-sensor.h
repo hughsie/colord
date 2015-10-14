@@ -95,6 +95,8 @@ gboolean	 cd_sensor_load			(CdSensor		*sensor,
 						 GError			**error);
 void		 cd_sensor_set_state		(CdSensor		*sensor,
 						 CdSensorState		 state);
+void		 cd_sensor_set_state_in_idle	(CdSensor		*sensor,
+						 CdSensorState		 state);
 void		 cd_sensor_set_mode		(CdSensor		*sensor,
 						 CdSensorCap		 mode);
 CdSensorCap	 cd_sensor_get_mode		(CdSensor		*sensor);
