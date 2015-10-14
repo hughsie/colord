@@ -102,7 +102,6 @@ if test "$GCC" = "yes"; then
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wdeclaration-after-statement"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wshadow"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wno-strict-aliasing"
-	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wno-deprecated-declarations"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Winline"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Wmissing-parameter-type"
 	WARNINGFLAGS_C="$WARNINGFLAGS_C -Woverride-init"

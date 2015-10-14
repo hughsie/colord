@@ -514,10 +514,8 @@ cd_sensor_connect_cb (GObject *source_object,
 		      GAsyncResult *res,
 		      gpointer user_data)
 {
-	CdSensor *sensor = CD_SENSOR (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
-	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GVariant) caps = NULL;
 	g_autoptr(GVariant) embedded = NULL;
 	g_autoptr(GVariant) id = NULL;
@@ -530,17 +528,18 @@ cd_sensor_connect_cb (GObject *source_object,
 	g_autoptr(GVariant) serial = NULL;
 	g_autoptr(GVariant) state = NULL;
 	g_autoptr(GVariant) vendor = NULL;
+	CdSensor *sensor = CD_SENSOR (g_task_get_source_object (task));
+	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 
 	/* get result */
 	priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 	if (priv->proxy == NULL) {
-		g_simple_async_result_set_error (res_source,
-						 CD_SENSOR_ERROR,
-						 CD_SENSOR_ERROR_INTERNAL,
-						 "Failed to connect to sensor %s: %s",
-						 cd_sensor_get_object_path (sensor),
-						 error->message);
-		g_simple_async_result_complete (res_source);
+		g_task_return_new_error (task,
+					 CD_SENSOR_ERROR,
+					 CD_SENSOR_ERROR_INTERNAL,
+					 "Failed to connect to sensor %s: %s",
+					 cd_sensor_get_object_path (sensor),
+					 error->message);
 		return;
 	}
 
@@ -629,7 +628,7 @@ cd_sensor_connect_cb (GObject *source_object,
 			  sensor);
 
 	/* we're done */
-	g_simple_async_result_complete (res_source);
+	g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -650,21 +649,17 @@ cd_sensor_connect (CdSensor *sensor,
 		   gpointer user_data)
 {
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
-	GSimpleAsyncResult *res;
+	GTask *task = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 	g_return_if_fail (callback != NULL);
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_connect);
+	task = g_task_new (sensor, cancellable, callback, user_data);
 
 	/* already connected */
 	if (priv->proxy != NULL) {
-		g_simple_async_result_set_op_res_gboolean (res, TRUE);
-		g_simple_async_result_complete_in_idle (res);
+		g_task_return_boolean (task, TRUE);
 		return;
 	}
 
@@ -677,7 +672,7 @@ cd_sensor_connect (CdSensor *sensor,
 				  COLORD_DBUS_INTERFACE_SENSOR,
 				  cancellable,
 				  cd_sensor_connect_cb,
-				  res);
+				  task);
 }
 
 /**
@@ -697,22 +692,8 @@ cd_sensor_connect_finish (CdSensor *sensor,
 			  GAsyncResult *res,
 			  GError **error)
 {
-	gpointer source_tag;
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	source_tag = g_simple_async_result_get_source_tag (simple);
-
-	g_return_val_if_fail (source_tag == cd_sensor_connect, FALSE);
-
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return TRUE;
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 /**********************************************************************/
@@ -734,17 +715,8 @@ cd_sensor_lock_finish (CdSensor *sensor,
 				GAsyncResult *res,
 				GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 /**
@@ -774,7 +746,7 @@ cd_sensor_lock_cb (GObject *source_object,
 		   gpointer user_data)
 {
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
@@ -782,14 +754,13 @@ cd_sensor_lock_cb (GObject *source_object,
 					   &error);
 	if (result == NULL) {
 		cd_sensor_fixup_dbus_error (error);
-		g_simple_async_result_set_from_error (res_source, error);
-		g_simple_async_result_complete_in_idle (res_source);
+		g_task_return_error (task, error);
+		error = NULL;
 		return;
 	}
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_simple_async_result_complete_in_idle (res_source);
+	g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -810,16 +781,13 @@ cd_sensor_lock (CdSensor *sensor,
 		gpointer user_data)
 {
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
-	GSimpleAsyncResult *res;
+	GTask *task = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (priv->proxy != NULL);
 
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_lock);
+	task = g_task_new (sensor, cancellable, callback, user_data);
 	g_dbus_proxy_call (priv->proxy,
 			   "Lock",
 			   NULL,
@@ -827,7 +795,7 @@ cd_sensor_lock (CdSensor *sensor,
 			   -1,
 			   cancellable,
 			   cd_sensor_lock_cb,
-			   res);
+			   task);
 }
 
 /**********************************************************************/
@@ -849,17 +817,8 @@ cd_sensor_unlock_finish (CdSensor *sensor,
 			 GAsyncResult *res,
 			 GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
@@ -868,7 +827,7 @@ cd_sensor_unlock_cb (GObject *source_object,
 		     gpointer user_data)
 {
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
@@ -876,14 +835,13 @@ cd_sensor_unlock_cb (GObject *source_object,
 					   &error);
 	if (result == NULL) {
 		cd_sensor_fixup_dbus_error (error);
-		g_simple_async_result_set_from_error (res_source, error);
-		g_simple_async_result_complete_in_idle (res_source);
+		g_task_return_error (task, error);
+		error = NULL;
 		return;
 	}
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_simple_async_result_complete_in_idle (res_source);
+	g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -904,16 +862,13 @@ cd_sensor_unlock (CdSensor *sensor,
 		  gpointer user_data)
 {
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
-	GSimpleAsyncResult *res;
+	GTask *task = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (priv->proxy != NULL);
 
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_unlock);
+	task = g_task_new (sensor, cancellable, callback, user_data);
 	g_dbus_proxy_call (priv->proxy,
 			   "Unlock",
 			   NULL,
@@ -921,7 +876,7 @@ cd_sensor_unlock (CdSensor *sensor,
 			   -1,
 			   cancellable,
 			   cd_sensor_unlock_cb,
-			   res);
+			   task);
 }
 
 /**********************************************************************/
@@ -943,17 +898,8 @@ cd_sensor_set_options_finish (CdSensor *sensor,
 			      GAsyncResult *res,
 			      GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
@@ -962,7 +908,7 @@ cd_sensor_set_options_cb (GObject *source_object,
 			  gpointer user_data)
 {
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
@@ -970,14 +916,13 @@ cd_sensor_set_options_cb (GObject *source_object,
 					   &error);
 	if (result == NULL) {
 		cd_sensor_fixup_dbus_error (error);
-		g_simple_async_result_set_from_error (res_source, error);
-		g_simple_async_result_complete_in_idle (res_source);
+		g_task_return_error (task, error);
+		error = NULL;
 		return;
 	}
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_simple_async_result_complete_in_idle (res_source);
+	g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -1001,17 +946,13 @@ cd_sensor_set_options (CdSensor *sensor,
 {
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 	GList *list, *l;
-	GSimpleAsyncResult *res;
-	GVariantBuilder builder;
+	GTask *task = NULL;	GVariantBuilder builder;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (priv->proxy != NULL);
 
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_set_options);
+	task = g_task_new (sensor, cancellable, callback, user_data);
 
 	/* convert the hash table to an array of {sv} */
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_ARRAY);
@@ -1033,7 +974,7 @@ cd_sensor_set_options (CdSensor *sensor,
 			   -1,
 			   cancellable,
 			   cd_sensor_set_options_cb,
-			   res);
+			   task);
 }
 
 /**********************************************************************/
@@ -1055,17 +996,8 @@ cd_sensor_get_sample_finish (CdSensor *sensor,
 			     GAsyncResult *res,
 			     GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_SENSOR (sensor), NULL);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return NULL;
-
-	return cd_color_xyz_dup (g_simple_async_result_get_op_res_gpointer (simple));
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
 static void
@@ -1075,7 +1007,7 @@ cd_sensor_get_sample_cb (GObject *source_object,
 {
 	CdColorXYZ *xyz;
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
@@ -1083,8 +1015,8 @@ cd_sensor_get_sample_cb (GObject *source_object,
 					   &error);
 	if (result == NULL) {
 		cd_sensor_fixup_dbus_error (error);
-		g_simple_async_result_set_from_error (res_source, error);
-		g_simple_async_result_complete_in_idle (res_source);
+		g_task_return_error (task, error);
+		error = NULL;
 		return;
 	}
 
@@ -1096,10 +1028,7 @@ cd_sensor_get_sample_cb (GObject *source_object,
 		       &xyz->Y,
 		       &xyz->Z);
 
-	g_simple_async_result_set_op_res_gpointer (res_source,
-						   xyz,
-						   (GDestroyNotify) cd_color_xyz_free);
-	g_simple_async_result_complete_in_idle (res_source);
+	g_task_return_pointer (task, xyz, (GDestroyNotify) cd_color_xyz_free);
 }
 
 /**
@@ -1122,16 +1051,13 @@ cd_sensor_get_sample (CdSensor *sensor,
 		      gpointer user_data)
 {
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
-	GSimpleAsyncResult *res;
+	GTask *task = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (priv->proxy != NULL);
 
-	res = g_simple_async_result_new (G_OBJECT (sensor),
-					 callback,
-					 user_data,
-					 cd_sensor_get_sample);
+	task = g_task_new (sensor, cancellable, callback, user_data);
 	g_dbus_proxy_call (priv->proxy,
 			   "GetSample",
 			   g_variant_new ("(s)",
@@ -1140,7 +1066,7 @@ cd_sensor_get_sample (CdSensor *sensor,
 			   -1,
 			   cancellable,
 			   cd_sensor_get_sample_cb,
-			   res);
+			   task);
 }
 
 /**********************************************************************/

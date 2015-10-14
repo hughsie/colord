@@ -622,17 +622,8 @@ cd_profile_connect_finish (CdProfile *profile,
 			   GAsyncResult *res,
 			   GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, profile), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 /**
@@ -664,7 +655,7 @@ cd_profile_connect_cb (GObject *source_object,
 	CdProfile *profile;
 	CdProfilePrivate *priv;
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GVariant) colorspace = NULL;
 	g_autoptr(GVariant) created = NULL;
 	g_autoptr(GVariant) filename = NULL;
@@ -680,18 +671,16 @@ cd_profile_connect_cb (GObject *source_object,
 	g_autoptr(GVariant) title = NULL;
 	g_autoptr(GVariant) warnings = NULL;
 
-	profile = CD_PROFILE (g_async_result_get_source_object (G_ASYNC_RESULT (user_data)));
+	profile = CD_PROFILE (g_task_get_source_object (task));
 	priv = GET_PRIVATE (profile);
-	priv->proxy = g_dbus_proxy_new_for_bus_finish (res,
-								&error);
+	priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 	if (priv->proxy == NULL) {
-		g_simple_async_result_set_error (res_source,
+		g_task_return_new_error (task,
 						 CD_PROFILE_ERROR,
 						 CD_PROFILE_ERROR_INTERNAL,
 						 "Failed to connect to profile %s: %s",
 						 cd_profile_get_object_path (profile),
 						 error->message);
-		g_simple_async_result_complete_in_idle (res_source);
 		return;
 	}
 
@@ -703,12 +692,11 @@ cd_profile_connect_cb (GObject *source_object,
 
 	/* if the profile is missing, then fail */
 	if (id == NULL) {
-		g_simple_async_result_set_error (res_source,
+		g_task_return_new_error (task,
 						 CD_PROFILE_ERROR,
 						 CD_PROFILE_ERROR_INTERNAL,
 						 "Failed to connect to missing profile %s",
 						 cd_profile_get_object_path (profile));
-		g_simple_async_result_complete_in_idle (res_source);
 		return;
 	}
 
@@ -803,8 +791,7 @@ cd_profile_connect_cb (GObject *source_object,
 			  profile);
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_simple_async_result_complete_in_idle (res_source);
+	g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -825,20 +812,16 @@ cd_profile_connect (CdProfile *profile,
 		    gpointer user_data)
 {
 	CdProfilePrivate *priv = GET_PRIVATE (profile);
-	GSimpleAsyncResult *res;
+	GTask *task = NULL;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 
-	res = g_simple_async_result_new (G_OBJECT (profile),
-					 callback,
-					 user_data,
-					 cd_profile_connect);
+	task = g_task_new (profile, cancellable, callback, user_data);
 
 	/* already connected */
 	if (priv->proxy != NULL) {
-		g_simple_async_result_set_op_res_gboolean (res, TRUE);
-		g_simple_async_result_complete_in_idle (res);
+		g_task_return_boolean (task, TRUE);
 		return;
 	}
 
@@ -850,7 +833,7 @@ cd_profile_connect (CdProfile *profile,
 				  COLORD_DBUS_INTERFACE_PROFILE,
 				  cancellable,
 				  cd_profile_connect_cb,
-				  res);
+				  task);
 }
 
 /**********************************************************************/
@@ -872,17 +855,8 @@ cd_profile_set_property_finish (CdProfile *profile,
 				GAsyncResult *res,
 				GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, profile), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
@@ -891,25 +865,23 @@ cd_profile_set_property_cb (GObject *source_object,
 			    gpointer user_data)
 {
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
 					   res,
 					   &error);
 	if (result == NULL) {
-		g_simple_async_result_set_error (res_source,
+		g_task_return_new_error (task,
 						 CD_PROFILE_ERROR,
 						 CD_PROFILE_ERROR_INTERNAL,
 						 "Failed to SetProperty: %s",
 						 error->message);
-		g_simple_async_result_complete_in_idle (res_source);
 		return;
 	}
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_simple_async_result_complete_in_idle (res_source);
+	g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -934,7 +906,7 @@ cd_profile_set_property (CdProfile *profile,
 			 gpointer user_data)
 {
 	CdProfilePrivate *priv = GET_PRIVATE (profile);
-	GSimpleAsyncResult *res;
+	GTask *task = NULL;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_return_if_fail (key != NULL);
@@ -942,10 +914,7 @@ cd_profile_set_property (CdProfile *profile,
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (priv->proxy != NULL);
 
-	res = g_simple_async_result_new (G_OBJECT (profile),
-					 callback,
-					 user_data,
-					 cd_profile_set_property);
+	task = g_task_new (profile, cancellable, callback, user_data);
 	g_dbus_proxy_call (priv->proxy,
 			   "SetProperty",
 			   g_variant_new ("(ss)",
@@ -955,7 +924,7 @@ cd_profile_set_property (CdProfile *profile,
 			   -1,
 			   cancellable,
 			   cd_profile_set_property_cb,
-			   res);
+			   task);
 }
 
 /**********************************************************************/
@@ -977,17 +946,8 @@ cd_profile_install_system_wide_finish (CdProfile *profile,
 				       GAsyncResult *res,
 				       GError **error)
 {
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (CD_IS_PROFILE (profile), FALSE);
-	g_return_val_if_fail (G_IS_SIMPLE_ASYNC_RESULT (res), FALSE);
-	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (res);
-	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
-
-	return g_simple_async_result_get_op_res_gboolean (simple);
+	g_return_val_if_fail (g_task_is_valid (res, profile), FALSE);
+	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
 static void
@@ -996,7 +956,7 @@ cd_profile_install_system_wide_cb (GObject *source_object,
 				   gpointer user_data)
 {
 	g_autoptr(GError) error = NULL;
-	g_autoptr(GSimpleAsyncResult) res_source = G_SIMPLE_ASYNC_RESULT (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GVariant) result = NULL;
 
 	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
@@ -1004,14 +964,13 @@ cd_profile_install_system_wide_cb (GObject *source_object,
 					   &error);
 	if (result == NULL) {
 		cd_profile_fixup_dbus_error (error);
-		g_simple_async_result_set_from_error (res_source, error);
-		g_simple_async_result_complete_in_idle (res_source);
+		g_task_return_error (task, error);
+		error = NULL;
 		return;
 	}
 
 	/* success */
-	g_simple_async_result_set_op_res_gboolean (res_source, TRUE);
-	g_simple_async_result_complete_in_idle (res_source);
+	g_task_return_boolean (task, TRUE);
 }
 
 /**
@@ -1032,16 +991,13 @@ cd_profile_install_system_wide (CdProfile *profile,
 				gpointer user_data)
 {
 	CdProfilePrivate *priv = GET_PRIVATE (profile);
-	GSimpleAsyncResult *res;
+	GTask *task = NULL;
 
 	g_return_if_fail (CD_IS_PROFILE (profile));
 	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
 	g_return_if_fail (priv->proxy != NULL);
 
-	res = g_simple_async_result_new (G_OBJECT (profile),
-					 callback,
-					 user_data,
-					 cd_profile_install_system_wide);
+	task = g_task_new (profile, cancellable, callback, user_data);
 	g_dbus_proxy_call (priv->proxy,
 			   "InstallSystemWide",
 			   NULL,
@@ -1049,7 +1005,7 @@ cd_profile_install_system_wide (CdProfile *profile,
 			   -1,
 			   cancellable,
 			   cd_profile_install_system_wide_cb,
-			   res);
+			   task);
 }
 
 /**********************************************************************/
