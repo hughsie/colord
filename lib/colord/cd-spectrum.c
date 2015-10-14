@@ -109,6 +109,42 @@ cd_spectrum_get_value (const CdSpectrum *spectrum, guint idx)
 }
 
 /**
+ * cd_spectrum_get_value_max:
+ * @spectrum: a #CdSpectrum instance.
+ *
+ * Gets the largest normalised value in the spectrum.
+ *
+ * Since: 1.3.1
+ **/
+gdouble
+cd_spectrum_get_value_max (const CdSpectrum *spectrum)
+{
+	gdouble max = 0.f;
+	guint i;
+	for (i = 0; i < cd_spectrum_get_size (spectrum); i++)
+		max = MAX (max, cd_spectrum_get_value (spectrum, i));
+	return max;
+}
+
+/**
+ * cd_spectrum_get_value_min:
+ * @spectrum: a #CdSpectrum instance.
+ *
+ * Gets the smallest normalised value in the spectrum.
+ *
+ * Since: 1.3.1
+ **/
+gdouble
+cd_spectrum_get_value_min (const CdSpectrum *spectrum)
+{
+	gdouble min = G_MAXDOUBLE;
+	guint i;
+	for (i = 0; i < cd_spectrum_get_size (spectrum); i++)
+		min = MIN (min, cd_spectrum_get_value (spectrum, i));
+	return min;
+}
+
+/**
  * cd_spectrum_set_value:
  * @spectrum: a #CdSpectrum instance.
  * @idx: an index into the data

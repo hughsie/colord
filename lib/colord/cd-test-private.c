@@ -238,6 +238,8 @@ colord_spectrum_func (void)
 	cd_spectrum_add_value (s, 0.75f);
 	cd_spectrum_add_value (s, 1.00f);
 
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value_max (s) - 1.f), <, 0.0001f);
+	g_assert_cmpfloat (ABS (cd_spectrum_get_value_min (s) - 0.5f), <, 0.0001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_start (s) - 100.f), <, 0.0001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_end (s) - 300.f), <, 0.0001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (s, 0) - 0.50f), <, 0.0001f);
