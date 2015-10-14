@@ -47,9 +47,10 @@ static void
 _print_spectra (CdSpectrum *sp)
 {
 	guint i, j;
+	gdouble scale = 180.f / cd_spectrum_get_value_max (sp);
 	for (i = 0; i < 1024; i+=5) {
 		g_print ("%.1fnm: ", cd_spectrum_get_wavelength (sp, i));
-		for (j = 0; j < cd_spectrum_get_value_raw (sp, i) * 1000.f; j++)
+		for (j = 0; j < cd_spectrum_get_value (sp, i) * scale; j++)
 			g_print ("*");
 		g_print ("\n");
 	}
