@@ -34,7 +34,8 @@
 typedef struct
 {
 	GUsbDevice			*device;
-	CdSpectrum			*dark_calibration;
+	GFile				*dark_cal_file;
+	CdSpectrum			*dark_cal;
 } CdSensorSparkPrivate;
 
 static CdSensorSparkPrivate *
@@ -89,10 +90,22 @@ cd_sensor_spark_sample_thread_cb (GTask *task,
 			return;
 		}
 		_print_spectra (sp);
-		if (priv->dark_calibration != NULL)
-			cd_spectrum_free (priv->dark_calibration);
-		priv->dark_calibration = cd_spectrum_dup (sp);
-		cd_spectrum_set_id (priv->dark_calibration, "DarkCalibration");
+		if (priv->dark_cal != NULL)
+			cd_spectrum_free (priv->dark_cal);
+		priv->dark_cal = cd_spectrum_dup (sp);
+		cd_spectrum_set_id (priv->dark_cal, "1");
+
+		/* save to file */
+		it8_cmf = cd_it8_new ();
+		if (!cd_it8_save_to_file (it8_cmf,
+					  priv->dark_cal_file,
+					  &error)) {
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_INTERNAL,
+						 "%s", error->message);
+			return;
+		}
 
 		/* success */
 		sample = cd_color_xyz_new ();
@@ -102,7 +115,7 @@ cd_sensor_spark_sample_thread_cb (GTask *task,
 	}
 
 	/* we have no dark calibration */
-	if (priv->dark_calibration == NULL) {
+	if (priv->dark_cal == NULL) {
 		g_task_return_new_error (task,
 					 CD_SENSOR_ERROR,
 					 CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION,
@@ -115,7 +128,7 @@ cd_sensor_spark_sample_thread_cb (GTask *task,
 	_print_spectra (sp);
 
 	/* subtract the dark calibration */
-	sp_new = cd_spectrum_subtract (sp, priv->dark_calibration);
+	sp_new = cd_spectrum_subtract (sp, priv->dark_cal);
 	_print_spectra (sp_new);
 
 	/* load CIE1931 */
@@ -190,6 +203,7 @@ cd_sensor_spark_lock_thread_cb (GTask *task,
 	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *serial_number_tmp = NULL;
+	g_autofree gchar *fn = NULL;
 
 	/* try to find the USB device */
 	priv->device = cd_sensor_open_usb_device (sensor,
@@ -218,6 +232,25 @@ cd_sensor_spark_lock_thread_cb (GTask *task,
 	}
 	cd_sensor_set_serial (sensor, serial_number_tmp);
 	g_debug ("Serial number: %s", serial_number_tmp);
+
+	/* can we load a dark calibration? */
+	fn = g_strdup_printf ("/var/lib/colord/sensor-%s-dark-cal-%s.sp",
+			      cd_sensor_kind_to_string (cd_sensor_get_kind (sensor)),
+			      serial_number_tmp);
+	priv->dark_cal_file = g_file_new_for_path (fn);
+	if (g_file_query_exists (priv->dark_cal_file, NULL)) {
+		g_autoptr(CdIt8) it8 = cd_it8_new ();
+		if (!cd_it8_load_from_file (it8,
+					    priv->dark_cal_file,
+					    &error)) {
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_NO_DATA,
+						 "%s", error->message);
+			return;
+		}
+		priv->dark_cal = cd_it8_get_spectrum_by_id (it8, "1");
+	}
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
@@ -294,8 +327,8 @@ cd_sensor_unref_private (CdSensorSparkPrivate *priv)
 {
 	if (priv->device != NULL)
 		g_object_unref (priv->device);
-	if (priv->dark_calibration != NULL)
-		cd_spectrum_free (priv->dark_calibration);
+	if (priv->dark_cal != NULL)
+		cd_spectrum_free (priv->dark_cal);
 	g_free (priv);
 }
 
