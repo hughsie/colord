@@ -653,8 +653,8 @@ cd_spectrum_multiply (CdSpectrum *s1, CdSpectrum *s2, gdouble resolution)
 
 /**
  * cd_spectrum_subtract:
- * @s1: a #CdSpectrum instance, possibly an sample.
- * @s2: a #CdSpectrum instance, possibly an dark calibration.
+ * @s1: a #CdSpectrum instance, e.g. a sample
+ * @s2: a #CdSpectrum instance, e.g. a dark calibration
  *
  * Subtracts one spectral plot from another.
  *
@@ -681,8 +681,7 @@ cd_spectrum_subtract (CdSpectrum *s1, CdSpectrum *s2)
 	s->end = s1->end;
 	for (i = 0; i < s1->data->len; i++) {
 		gdouble tmp;
-		tmp = cd_spectrum_get_value_raw (s1, i) -
-		      cd_spectrum_get_value_raw (s2, i);
+		tmp = cd_spectrum_get_value (s1, i) - cd_spectrum_get_value (s2, i);
 		if (tmp < 0.f)
 			tmp = 0.f;
 		cd_spectrum_add_value (s, tmp);
