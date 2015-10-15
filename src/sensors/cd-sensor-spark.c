@@ -340,6 +340,7 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 					       CD_SENSOR_CAP_CRT,
 					       CD_SENSOR_CAP_CALIBRATION,
 					       CD_SENSOR_CAP_PLASMA,
+					       CD_SENSOR_CAP_SPECTRAL,
 					       -1);
 	g_object_set (sensor,
 		      "native", TRUE,

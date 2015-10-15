@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2014 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -221,6 +221,7 @@ typedef enum {
 	CD_SENSOR_CAP_LCD_WHITE_LED,		/* Since: 0.1.31 */
 	CD_SENSOR_CAP_WIDE_GAMUT_LCD_CCFL,	/* Since: 0.1.31 */
 	CD_SENSOR_CAP_WIDE_GAMUT_LCD_RGB_LED,	/* Since: 0.1.31 */
+	CD_SENSOR_CAP_SPECTRAL,			/* Since: 1.3.1 */
 	/*< private >*/
 	CD_SENSOR_CAP_LAST
 } CdSensorCap;

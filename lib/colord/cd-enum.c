@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2014 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -177,6 +177,7 @@ static const CdEnumMatch enum_sensor_cap[] = {
 	{CD_SENSOR_CAP_SPOT,				"spot"},
 	{CD_SENSOR_CAP_WIDE_GAMUT_LCD_CCFL,		"wide-gamut-lcd-ccfl"},
 	{CD_SENSOR_CAP_WIDE_GAMUT_LCD_RGB_LED,		"wide-gamut-lcd-rgb-led"},
+	{CD_SENSOR_CAP_SPECTRAL,			"spectral"},
 	{0, NULL}
 };
 
