@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -31,6 +31,7 @@
 
 #include "cd-enum.h"
 #include "cd-color.h"
+#include "cd-spectrum.h"
 
 G_BEGIN_DECLS
 
@@ -100,6 +101,15 @@ void		 cd_sensor_get_sample			(CdSensor	*sensor,
 							 GAsyncReadyCallback callback,
 							 gpointer	 user_data);
 CdColorXYZ	*cd_sensor_get_sample_finish		(CdSensor	*sensor,
+							 GAsyncResult	*res,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
+void		 cd_sensor_get_spectrum			(CdSensor	*sensor,
+							 CdSensorCap	 cap,
+							 GCancellable	*cancellable,
+							 GAsyncReadyCallback callback,
+							 gpointer	 user_data);
+CdSpectrum	*cd_sensor_get_spectrum_finish		(CdSensor	*sensor,
 							 GAsyncResult	*res,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;

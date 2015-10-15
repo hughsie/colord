@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -1066,6 +1066,107 @@ cd_sensor_get_sample (CdSensor *sensor,
 			   -1,
 			   cancellable,
 			   cd_sensor_get_sample_cb,
+			   task);
+}
+
+/**********************************************************************/
+
+/**
+ * cd_sensor_get_spectrum_finish:
+ * @sensor: a #CdSensor instance.
+ * @res: the #GAsyncResult
+ * @error: A #GError or %NULL
+ *
+ * Gets the result from the asynchronous function.
+ *
+ * Return value: the XYZ reading, or %NULL
+ *
+ * Since: 1.3.1
+ **/
+CdSpectrum *
+cd_sensor_get_spectrum_finish (CdSensor *sensor,
+			       GAsyncResult *res,
+			       GError **error)
+{
+	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	return g_task_propagate_pointer (G_TASK (res), error);
+}
+
+static void
+cd_sensor_get_spectrum_cb (GObject *source_object,
+			   GAsyncResult *res,
+			   gpointer user_data)
+{
+	CdSpectrum *sp;
+	GVariantIter iter;
+	gdouble sp_start = 0.f;
+	gdouble sp_end = 0.f;
+	gdouble tmp;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GTask) task = G_TASK (user_data);
+	g_autoptr(GVariant) result = NULL;
+	g_autoptr(GVariant) data = NULL;
+
+	result = g_dbus_proxy_call_finish (G_DBUS_PROXY (source_object),
+					   res,
+					   &error);
+	if (result == NULL) {
+		cd_sensor_fixup_dbus_error (error);
+		g_task_return_error (task, error);
+		error = NULL;
+		return;
+	}
+
+	/* create object from data */
+	sp = cd_spectrum_new ();
+	g_variant_get_child (result, 0, "d", &sp_start);
+	g_variant_get_child (result, 1, "d", &sp_end);
+	cd_spectrum_set_start (sp, sp_start);
+	cd_spectrum_set_end (sp, sp_end);
+	data = g_variant_get_child_value (result, 2);
+	g_variant_iter_init (&iter, data);
+	while (g_variant_iter_loop (&iter, "d", &tmp))
+		cd_spectrum_add_value (sp, tmp);
+
+	/* success */
+	g_task_return_pointer (task, sp, (GDestroyNotify) cd_spectrum_free);
+}
+
+/**
+ * cd_sensor_get_spectrum:
+ * @sensor: a #CdSensor instance.
+ * @cap: a #CdSensorCap
+ * @cancellable: a #GCancellable, or %NULL
+ * @callback: the function to run on completion
+ * @user_data: the data to pass to @callback
+ *
+ * Gets a color spectrum from a sensor
+ *
+ * Since: 1.3.1
+ **/
+void
+cd_sensor_get_spectrum (CdSensor *sensor,
+			CdSensorCap cap,
+			GCancellable *cancellable,
+			GAsyncReadyCallback callback,
+			gpointer user_data)
+{
+	CdSensorPrivate *priv = GET_PRIVATE (sensor);
+	GTask *task = NULL;
+
+	g_return_if_fail (CD_IS_SENSOR (sensor));
+	g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+	g_return_if_fail (priv->proxy != NULL);
+
+	task = g_task_new (sensor, cancellable, callback, user_data);
+	g_dbus_proxy_call (priv->proxy,
+			   "GetSpectrum",
+			   g_variant_new ("(s)",
+					  cd_sensor_cap_to_string (cap)),
+			   G_DBUS_CALL_FLAGS_NONE,
+			   -1,
+			   cancellable,
+			   cd_sensor_get_spectrum_cb,
 			   task);
 }
 

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2011-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -44,6 +44,7 @@ typedef struct {
 	GMainLoop	*loop;
 	gboolean	 ret;
 	CdColorXYZ	*sample;
+	CdSpectrum	*spectrum;
 } CdSensorHelper;
 
 static void
@@ -306,6 +307,60 @@ cd_sensor_get_sample_sync (CdSensor *sensor,
 	g_main_loop_unref (helper.loop);
 
 	return helper.sample;
+}
+
+/**********************************************************************/
+
+static void
+cd_sensor_get_spectrum_finish_sync (CdSensor *sensor,
+				    GAsyncResult *res,
+				    CdSensorHelper *helper)
+{
+	helper->spectrum = cd_sensor_get_spectrum_finish (sensor,
+							  res,
+							  helper->error);
+	g_main_loop_quit (helper->loop);
+}
+
+/**
+ * cd_sensor_get_spectrum_sync:
+ * @sensor: a #CdSensor instance.
+ * @cap: The device capability, e.g. %CD_SENSOR_CAP_AMBIENT.
+ * @cancellable: a #GCancellable or %NULL
+ * @error: a #GError, or %NULL.
+ *
+ * Gets a spectrum from the sensor.
+ *
+ * WARNING: This function is synchronous, and may block.
+ * Do not use it in GUI applications.
+ *
+ * Return value: the XYZ reading, with ambient levels in Lux encoded in X, or %NULL for error.
+ *
+ * Since: 1.3.1
+ **/
+CdSpectrum *
+cd_sensor_get_spectrum_sync (CdSensor *sensor,
+			   CdSensorCap cap,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	CdSensorHelper helper;
+
+	/* create temp object */
+	memset (&helper, 0, sizeof (CdSensorHelper));
+	helper.loop = g_main_loop_new (NULL, FALSE);
+	helper.error = error;
+
+	/* run async method */
+	cd_sensor_get_spectrum (sensor, cap, cancellable,
+				(GAsyncReadyCallback) cd_sensor_get_spectrum_finish_sync,
+				&helper);
+	g_main_loop_run (helper.loop);
+
+	/* free temp object */
+	g_main_loop_unref (helper.loop);
+
+	return helper.spectrum;
 }
 
 /**********************************************************************/
