@@ -338,7 +338,7 @@ osp_device_take_spectrum_full (GUsbDevice *device,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
 			     "Expected %i bytes, got %li", 2048, data_len);
-		return FALSE;
+		return NULL;
 	}
 
 	/* export */
@@ -351,6 +351,20 @@ osp_device_take_spectrum_full (GUsbDevice *device,
 		val = data[i*2+1] * 256 + data[i*2+0];
 		cd_spectrum_add_value (sp, val / (gdouble) 0xffff);
 	}
+
+	/* the maximum value the hardware can return is 0x3fff */
+	cd_spectrum_set_norm (sp, 4);
+	val = cd_spectrum_get_value_max (sp);
+	if (val > 1.f) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "spectral max should be <= 1.f, was %f",
+			     val);
+		cd_spectrum_free (sp);
+		return NULL;
+	}
+
 	return sp;
 }
 
@@ -394,16 +408,16 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 				     "Got no valid data");
 		return FALSE;
 	}
-	scale = (gdouble) 0xffff / max;
+	scale = (gdouble) 0.5 / max;
 	sample_duration *= scale;
-	g_warning ("for max of %f, using scale=%f for duration %lums",
-		   max, scale, sample_duration / G_USEC_PER_SEC);
+	g_debug ("for max of %f, using scale=%f for duration %lums",
+		 max, scale, sample_duration / 1000);
 
 	/* limit this to something sane */
 	if (sample_duration / G_USEC_PER_SEC > sample_duration_max_secs) {
-		g_debug ("limiting duration from %lus to %is",
-			 sample_duration / G_USEC_PER_SEC,
-			 sample_duration_max_secs);
+		g_warning ("limiting duration from %lus to %is",
+			   sample_duration / G_USEC_PER_SEC,
+			   sample_duration_max_secs);
 		sample_duration = sample_duration_max_secs * G_USEC_PER_SEC;
 	}
 
@@ -411,6 +425,12 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 	sp = osp_device_take_spectrum_full (device, sample_duration, error);
 	if (sp == NULL)
 		return NULL;
-	cd_spectrum_set_norm (sp, scale / 1024.f);
+	g_debug ("full spectral max is %f", cd_spectrum_get_value_max (sp));
+
+	/* scale with the new integral time */
+	cd_spectrum_set_norm (sp, cd_spectrum_get_norm (sp) / scale);
+	g_debug ("normalised spectral max is %f", cd_spectrum_get_value_max (sp));
+
+	/* success */
 	return sp;
 }
