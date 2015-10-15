@@ -256,6 +256,55 @@
     </method>
 
     <!--***********************************************************-->
+    <method name='GetSpectrum'>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Gets a color spectrum using the sensor.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type='s' name='capability' direction='in'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The capability we are using, e.g. <doc:tt>crt</doc:tt>,
+              <doc:tt>ambient</doc:tt>, <doc:tt>lcd</doc:tt>,
+              <doc:tt>led</doc:tt> or <doc:tt>projector</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='d' name='start_nm' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The start of the wavelength range in nm.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='d' name='end_nm' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The end of the wavelength range in nm.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type='ad' name='data' direction='out'>
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The non-normalised data array.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--***********************************************************-->
     <method name='SetOptions'>
       <doc:doc>
         <doc:description>

@@ -46,6 +46,14 @@ typedef struct {
 	CdColorXYZ	*(*get_sample_finish)	(CdSensor		*sensor,
 						 GAsyncResult		*res,
 						 GError			**error);
+	void		 (*get_spectrum_async)	(CdSensor		*sensor,
+						 CdSensorCap		 cap,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+	CdSpectrum	*(*get_spectrum_finish)	(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
 	gboolean	 (*coldplug)		(CdSensor		*sensor,
 						 GError			**error);
 	gboolean	 (*dump_device)		(CdSensor		*sensor,
@@ -361,6 +369,8 @@ cd_sensor_load (CdSensor *sensor, GError **error)
 	/* connect up exported methods */
 	g_module_symbol (handle, "cd_sensor_get_sample_async", (gpointer *)&desc->get_sample_async);
 	g_module_symbol (handle, "cd_sensor_get_sample_finish", (gpointer *)&desc->get_sample_finish);
+	g_module_symbol (handle, "cd_sensor_get_spectrum_async", (gpointer *)&desc->get_spectrum_async);
+	g_module_symbol (handle, "cd_sensor_get_spectrum_finish", (gpointer *)&desc->get_spectrum_finish);
 	g_module_symbol (handle, "cd_sensor_set_options_async", (gpointer *)&desc->set_options_async);
 	g_module_symbol (handle, "cd_sensor_set_options_finish", (gpointer *)&desc->set_options_finish);
 	g_module_symbol (handle, "cd_sensor_coldplug", (gpointer *)&desc->coldplug);
@@ -606,6 +616,52 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	/* return value */
 	g_debug ("returning value %f, %f, %f", sample->X, sample->Y, sample->Z);
 	result = g_variant_new ("(ddd)", sample->X, sample->Y, sample->Z);
+	g_dbus_method_invocation_return_value (invocation, result);
+}
+
+/**
+ * cd_sensor_get_spectrum_cb:
+ **/
+static void
+cd_sensor_get_spectrum_cb (GObject *source_object,
+			   GAsyncResult *res,
+			   gpointer user_data)
+{
+	CdSensor *sensor = CD_SENSOR (source_object);
+	CdSensorPrivate *priv = GET_PRIVATE (sensor);
+	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
+	GVariant *result = NULL;
+	GVariantBuilder data;
+	guint i;
+	g_autoptr(CdSpectrum) sp = NULL;
+	g_autoptr(GError) error = NULL;
+
+	/* set here to avoid every sensor doing this */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+
+	/* get the result */
+	sp = priv->desc->get_spectrum_finish (sensor, res, &error);
+	if (sp == NULL) {
+		g_dbus_method_invocation_return_gerror (invocation, error);
+		return;
+	}
+
+	/* build data array */
+	g_variant_builder_init (&data, G_VARIANT_TYPE ("ad"));
+	for (i = 0; i < cd_spectrum_get_size (sp); i++) {
+		g_variant_builder_add (&data, "d",
+				       cd_spectrum_get_value (sp, i));
+	}
+
+	/* return value */
+	g_debug ("returning value %f, %f, [%u]",
+		 cd_spectrum_get_start (sp),
+		 cd_spectrum_get_end (sp),
+		 cd_spectrum_get_size (sp));
+	result = g_variant_new ("(ddad)",
+				cd_spectrum_get_start (sp),
+				cd_spectrum_get_end (sp),
+				&data);
 	g_dbus_method_invocation_return_value (invocation, result);
 }
 
@@ -919,12 +975,87 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 
+		/* check type */
+		if (cap == CD_SENSOR_CAP_SPECTRAL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_INTERNAL,
+							       "cannot return spectral");
+			return;
+		}
+
 		/* proxy */
 		priv->desc->get_sample_async (sensor,
-						      cap,
-						      NULL,
-						      cd_sensor_get_sample_cb,
-						      invocation);
+					      cap,
+					      NULL,
+					      cd_sensor_get_sample_cb,
+					      invocation);
+		return;
+	}
+
+	/* return 'ddad' */
+	if (g_strcmp0 (method_name, "GetSpectrum") == 0) {
+
+		g_debug ("CdSensor %s:GetSpectrum()", sender);
+
+		/* check locked */
+		if (!priv->locked) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NOT_LOCKED,
+							       "sensor is not yet locked");
+			return;
+		}
+
+		/*  check idle */
+		if (priv->state != CD_SENSOR_STATE_IDLE) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_IN_USE,
+							       "sensor not idle: %s",
+							       cd_sensor_state_to_string (priv->state));
+			return;
+		}
+
+		/* no support */
+		if (priv->desc == NULL ||
+		    priv->desc->get_spectrum_async == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NO_SUPPORT,
+							       "no sensor->get_sample");
+			return;
+		}
+
+		/* get the type */
+		g_variant_get (parameters, "(&s)", &cap_tmp);
+		cap = cd_sensor_cap_from_string (cap_tmp);
+		if (cap == CD_SENSOR_CAP_UNKNOWN) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_INTERNAL,
+							       "cap '%s' unknown",
+							       cap_tmp);
+			return;
+		}
+
+		/* check type */
+		if (cap != CD_SENSOR_CAP_SPECTRAL &&
+		    cap != CD_SENSOR_CAP_CALIBRATION) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_INTERNAL,
+							       "invalid cap, only spectral "
+							       "or calibration supported");
+			return;
+		}
+
+		/* proxy */
+		priv->desc->get_spectrum_async (sensor,
+						cap,
+						NULL,
+						cd_sensor_get_spectrum_cb,
+						invocation);
 		return;
 	}
 

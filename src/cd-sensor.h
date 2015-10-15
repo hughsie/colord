@@ -117,6 +117,14 @@ void		 cd_sensor_get_sample_async	(CdSensor		*sensor,
 CdColorXYZ	*cd_sensor_get_sample_finish	(CdSensor		*sensor,
 						 GAsyncResult		*res,
 						 GError			**error);
+void		 cd_sensor_get_spectrum_async	(CdSensor		*sensor,
+						 CdSensorCap		 cap,
+						 GCancellable		*cancellable,
+						 GAsyncReadyCallback	 callback,
+						 gpointer		 user_data);
+CdSpectrum	*cd_sensor_get_spectrum_finish	(CdSensor		*sensor,
+						 GAsyncResult		*res,
+						 GError			**error);
 gboolean	 cd_sensor_coldplug		(CdSensor		*sensor,
 						 GError			**error);
 gboolean	 cd_sensor_dump_device		(CdSensor		*sensor,
