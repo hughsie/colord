@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2014 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -1174,6 +1174,92 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 }
 
 /**
+ * cd_util_get_spectral_reading:
+ **/
+static gboolean
+cd_util_get_spectral_reading (CdUtilPrivate *priv, gchar **values, GError **error)
+{
+	CdSensorCap cap;
+	CdSensor *sensor;
+	GError *error_local = NULL;
+	guint i;
+	g_autoptr(GPtrArray) array = NULL;
+
+	if (g_strv_length (values) < 1) {
+		g_set_error_literal (error,
+				     CD_ERROR,
+				     CD_ERROR_INVALID_ARGUMENTS,
+				     "Not enough arguments, "
+				     "expected device type "
+				     "e.g. 'calibration' or 'spectral'");
+		return FALSE;
+	}
+
+	/* execute sync method */
+	array = cd_client_get_sensors_sync (priv->client, NULL, error);
+	if (array == NULL)
+		return FALSE;
+	if (array->len == 0) {
+		/* TRANSLATORS: the user does not have a colorimeter attached */
+		g_set_error_literal (error, CD_ERROR, CD_ERROR_INVALID_ARGUMENTS,
+				     _("There are no supported sensors attached"));
+		return FALSE;
+	}
+	cap = cd_sensor_cap_from_string (values[0]);
+	for (i = 0; i < array->len; i++) {
+		g_autofree gchar *txt = NULL;
+		g_autoptr(CdSpectrum) sp = NULL;
+
+		sensor = g_ptr_array_index (array, i);
+
+		if (!cd_sensor_connect_sync (sensor, NULL, error))
+			return FALSE;
+
+		/* can we do spectral */
+		if (!cd_sensor_has_cap (sensor, CD_SENSOR_CAP_SPECTRAL)) {
+			/* TRANSLATORS: sensor can't do this */
+			g_print ("%s\n", _("No spectral capability"));
+			continue;
+		}
+
+		/* TRANSLATORS: this is the sensor title */
+		g_print ("%s: %s - %s\n", _("Sensor"),
+			 cd_sensor_get_vendor (sensor),
+			 cd_sensor_get_model (sensor));
+
+		/* lock */
+		if (!cd_sensor_lock_sync (sensor, NULL, error))
+			return FALSE;
+
+		/* get data */
+		sp = cd_sensor_get_spectrum_sync (sensor, cap, NULL, &error_local);
+		if (sp == NULL) {
+			if (g_error_matches (error_local,
+					     CD_SENSOR_ERROR,
+					     CD_SENSOR_ERROR_NO_SUPPORT)) {
+				/* TRANSLATORS: sensor can't do this */
+				g_print ("%s: %s\n", _("No spectral capability"),
+					 error_local->message);
+				g_clear_error (&error_local);
+				continue;
+			}
+			g_propagate_error (error, error_local);
+			error_local = NULL;
+			return FALSE;
+		}
+
+		/* print to console */
+		txt = cd_spectrum_to_string (sp, 130, 30);
+		g_print ("%s", txt);
+
+		/* unlock */
+		if (!cd_sensor_unlock_sync (sensor, NULL, error))
+			return FALSE;
+	}
+	return TRUE;
+}
+
+/**
  * cd_util_sensor_set_options:
  **/
 static gboolean
@@ -2079,6 +2165,12 @@ main (int argc, char *argv[])
 		     /* TRANSLATORS: command description */
 		     _("Gets all the available color sensors"),
 		     cd_util_get_sensors);
+	cd_util_add (priv->cmd_array,
+		     "get-spectral-reading",
+		     "[KIND]",
+		     /* TRANSLATORS: command description */
+		     _("Gets a spectral reading from a sensor"),
+		     cd_util_get_spectral_reading);
 	cd_util_add (priv->cmd_array,
 		     "get-sensor-reading",
 		     "[KIND]",
