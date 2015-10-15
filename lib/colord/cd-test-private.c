@@ -221,6 +221,7 @@ static void
 colord_spectrum_func (void)
 {
 	g_autoptr(CdSpectrum) s = NULL;
+	g_autofree gchar *txt = NULL;
 	gdouble val;
 
 	s = cd_spectrum_new ();
@@ -237,6 +238,10 @@ colord_spectrum_func (void)
 	cd_spectrum_add_value (s, 0.50f);
 	cd_spectrum_add_value (s, 0.75f);
 	cd_spectrum_add_value (s, 1.00f);
+
+	/* check printable */
+	txt = cd_spectrum_to_string (s, 100, 15);
+	g_print ("\n%s\n", txt);
 
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value_max (s) - 1.f), <, 0.0001f);
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value_min (s) - 0.5f), <, 0.0001f);

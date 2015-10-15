@@ -688,3 +688,69 @@ cd_spectrum_subtract (CdSpectrum *s1, CdSpectrum *s2)
 	}
 	return s;
 }
+
+/**
+ * cd_spectrum_to_string:
+ * @spectrum: a #CdSpectrum instance
+ * @max_width: the terminal width
+ * @max_height: the terminal height
+ *
+ * Returns a graphical representation of the spectrum.
+ *
+ * Return value: a printable ASCII string
+ *
+ * Since: 1.3.1
+ **/
+gchar *
+cd_spectrum_to_string (CdSpectrum *spectrum, guint max_width, guint max_height)
+{
+	GString *str = g_string_new ("");
+	guint i, j;
+	gdouble val_max;
+	gdouble nm_scale;
+
+	/* make space for the axes */
+	max_width -= 9;
+	max_height -= 2;
+
+	/* find value maximum */
+	val_max = cd_spectrum_get_value_max (spectrum);
+	if (val_max < 0.001)
+		val_max = 0.001;
+	nm_scale = (cd_spectrum_get_end (spectrum) -
+		    cd_spectrum_get_start (spectrum)) / (gdouble) (max_width - 1);
+
+	/* draw grid */
+	for (i = 0; i < max_height; i++) {
+		gdouble val;
+		val = val_max / (gdouble) max_height * (max_height - i);
+		g_string_append_printf (str, "%7.3f |", val);
+		for (j = 0; j < max_width; j++) {
+			gdouble nm;
+			nm = ((gdouble) j * nm_scale) + cd_spectrum_get_start (spectrum);
+			if (cd_spectrum_get_value_for_nm (spectrum, nm) >= val)
+				g_string_append (str, "#");
+			else
+				g_string_append (str, "_");
+		}
+		g_string_append (str, "\n");
+	}
+
+	/* draw x axis */
+	g_string_append_printf (str, "%7.3f  ", 0.f);
+	for (j = 0; j < max_width; j++)
+		g_string_append (str, "-");
+	g_string_append (str, "\n");
+
+	/* draw X labels */
+	g_string_append_printf (str, "         %.0fnm",
+				cd_spectrum_get_start (spectrum));
+	for (j = 0; j < max_width - 10; j++)
+		g_string_append (str, " ");
+	g_string_append_printf (str, "%.0fnm",
+				cd_spectrum_get_end (spectrum));
+	g_string_append (str, "\n");
+
+	/* success */
+	return g_string_free (str, FALSE);
+}
