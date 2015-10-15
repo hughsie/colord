@@ -29,6 +29,9 @@ G_BEGIN_DECLS
 gchar		*cd_test_get_filename		(const gchar	*filename);
 void		 cd_test_loop_quit		(void);
 void		 cd_test_loop_run_with_timeout	(guint		 timeout_ms);
+gboolean	 cd_test_compare_lines		(const gchar	*txt1,
+						 const gchar	*txt2,
+						 GError		**error);
 
 G_END_DECLS
 

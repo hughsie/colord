@@ -327,11 +327,57 @@ colord_it8_spect_func (void)
 	g_assert_cmpfloat (ABS (cd_spectrum_get_value (spectrum, 1) - 1.00f), <, 0.01f);
 	g_ptr_array_unref (spectral_data);
 
-	/* save to file */
+	/* normalize this */
+	cd_spectrum_set_norm (spectrum, 100);
+
+	/* save to non-normalised file */
+	cd_it8_set_normalized (it8, FALSE);
+	cd_it8_set_enable_created (it8, FALSE);
 	ret = cd_it8_save_to_data (it8, &data, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 	g_assert (data != NULL);
+	ret = cd_test_compare_lines (data,
+		"SPECT  \n"
+		"DESCRIPTOR	\"Spectral Power\"\n"
+		"SPECTRAL_START_NM	350.0\n"
+		"SPECTRAL_END_NM	740.0\n"
+		"SPECTRAL_BANDS	2\n"
+		"NUMBER_OF_FIELDS	2\n"
+		"NUMBER_OF_SETS	1\n"
+		"BEGIN_DATA_FORMAT\n"
+		" SPEC_350	SPEC_740\n"
+		"END_DATA_FORMAT\n"
+		"BEGIN_DATA\n"
+		" 1.0	100.0\n"
+		"END_DATA\n", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_free (data);
+
+	/* save to normalised file */
+	cd_it8_set_normalized (it8, TRUE);
+	ret = cd_it8_save_to_data (it8, &data, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	g_assert (data != NULL);
+	ret = cd_test_compare_lines (data,
+		"SPECT  \n"
+		"DESCRIPTOR	\"Spectral Power\"\n"
+		"SPECTRAL_START_NM	350.0\n"
+		"SPECTRAL_END_NM	740.0\n"
+		"SPECTRAL_BANDS	2\n"
+		"NUMBER_OF_FIELDS	2\n"
+		"SPECTRAL_NORM	100.0\n"
+		"NUMBER_OF_SETS	1\n"
+		"BEGIN_DATA_FORMAT\n"
+		" SPEC_350	SPEC_740\n"
+		"END_DATA_FORMAT\n"
+		"BEGIN_DATA\n"
+		" 0.01	1.0\n"
+		"END_DATA\n", &error);
+	g_assert_no_error (error);
+	g_assert (ret);
 	g_free (data);
 
 	g_free (filename);

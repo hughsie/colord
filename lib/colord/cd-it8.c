@@ -1281,7 +1281,7 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	for (j = 0; j < number_of_sets; j++) {
 		spectrum = g_ptr_array_index (priv->array_spectra, j);
 		for (i = 0; i < spectral_bands; i++) {
-			if (priv->normalized) {
+			if (!priv->normalized) {
 				_cmsIT8SetDataRowColDbl (it8_lcms, j, i,
 							 cd_spectrum_get_value (spectrum, i));
 			} else {
@@ -1377,7 +1377,7 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 					     cd_spectrum_get_id (spectrum));
 		}
 		for (i = 0; i < spectral_bands; i++) {
-			if (priv->normalized) {
+			if (!priv->normalized) {
 				_cmsIT8SetDataRowColDbl (it8_lcms, j, i + has_index,
 							 cd_spectrum_get_value (spectrum, i));
 			} else {
