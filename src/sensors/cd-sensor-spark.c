@@ -112,6 +112,7 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 	CdSpectrum *sp;
 	g_autoptr(CdSpectrum) sp_tmp = NULL;
 	g_autoptr(CdSpectrum) sp_biased = NULL;
+	g_autoptr(CdSpectrum) sp_resampled = NULL;
 	g_autoptr(GError) error_local = NULL;
 
 	/* measure */
@@ -186,8 +187,21 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 		g_print ("BIASED\n%s", txt);
 	}
 
+	/* resample to a linear data space */
+	sp_resampled = cd_spectrum_resample (sp_biased,
+					     cd_spectrum_get_start (sp_biased),
+					     cd_spectrum_get_end (sp_biased),
+					     5);
+
+	/* print something for debugging */
+	if (g_getenv ("SPARK_DEBUG") != NULL) {
+		g_autofree gchar *txt = NULL;
+		txt = cd_spectrum_to_string (sp_resampled, 180, 20);
+		g_print ("RESAMPLED\n%s", txt);
+	}
+
 	/* multiply the spectrum with the correction curve */
-	sp = cd_spectrum_multiply (sp_biased, priv->sensitivity_cal, 1);
+	sp = cd_spectrum_multiply (sp_resampled, priv->sensitivity_cal, 1);
 
 	/* print something for debugging */
 	if (g_getenv ("SPARK_DEBUG") != NULL) {

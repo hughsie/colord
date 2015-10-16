@@ -99,6 +99,10 @@ void		 cd_spectrum_get_wavelength_cal	(CdSpectrum		*spectrum,
 CdSpectrum	*cd_spectrum_multiply		(CdSpectrum		*s1,
 						 CdSpectrum		*s2,
 						 gdouble		 resolution);
+CdSpectrum	*cd_spectrum_resample		(CdSpectrum		*s1,
+						 gdouble		 start,
+						 gdouble		 end,
+						 gdouble		 resolution);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdSpectrum, cd_spectrum_free)
 

@@ -307,6 +307,7 @@ colord_spect_cx_func (void)
 {
 	gdouble tmp;
 	g_autoptr(CdSpectrum) sp = NULL;
+	g_autoptr(CdSpectrum) sp_resampled = NULL;
 
 	/* create test spectrum */
 	sp = cd_spectrum_new ();
@@ -344,6 +345,16 @@ colord_spect_cx_func (void)
 	g_assert_cmpfloat (fabs (tmp - 201.2999), <, 0.01);
 	tmp = cd_spectrum_get_wavelength (sp, 2);
 	g_assert_cmpfloat (fabs (tmp - 305.3999), <, 0.01);
+
+	/* resample to linear data space */
+	cd_spectrum_set_wavelength_cal (sp, 50.1f, 50.1f, 0.0f);
+	sp_resampled = cd_spectrum_resample (sp, 100, 300, 100);
+	tmp = cd_spectrum_get_value_for_nm (sp_resampled, 100.f);
+	g_assert_cmpfloat (fabs (tmp - 1.f), <, 0.001);
+	tmp = cd_spectrum_get_value_for_nm (sp_resampled, 200.f);
+	g_assert_cmpfloat (fabs (tmp - 1.998f), <, 0.001);
+	tmp = cd_spectrum_get_value_for_nm (sp_resampled, 300.f);
+	g_assert_cmpfloat (fabs (tmp - 2.498f), <, 0.001);
 }
 
 static void

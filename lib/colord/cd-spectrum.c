@@ -875,3 +875,36 @@ cd_spectrum_get_wavelength_cal (CdSpectrum *spectrum,
 	if (c3 != NULL)
 		*c3 = spectrum->wavelength_cal[2];
 }
+
+/**
+ * cd_spectrum_resample:
+ * @spectrum: a #CdSpectrum instance
+ * @start: the new spectrum start
+ * @end: the new spectrum end
+ * @resolution: the resolution to use when resampling
+ *
+ * Resample a new spectrum with linear index to wavelength coefficients.
+ *
+ * Return value: a #CdSpectrum instance
+ *
+ * Since: 1.3.1
+ **/
+CdSpectrum *
+cd_spectrum_resample (CdSpectrum *spectrum,
+		      gdouble start,
+		      gdouble end,
+		      gdouble resolution)
+{
+	gdouble nm;
+	CdSpectrum *sp;
+
+	sp = cd_spectrum_new ();
+	cd_spectrum_set_start (sp, start);
+	for (nm = start; nm <= end; nm += resolution) {
+		gdouble tmp;
+		tmp = cd_spectrum_get_value_for_nm (spectrum, nm);
+		cd_spectrum_add_value (sp, tmp);
+	}
+	cd_spectrum_set_end (sp, end);
+	return sp;
+}
