@@ -215,6 +215,14 @@ colord_spectrum_subtract_func (void)
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 1), ==, 2);
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 2), ==, 3);
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 3), ==, 0);
+
+	/* limit this */
+	cd_spectrum_limit_min (s, 0.f);
+	cd_spectrum_limit_max (s, 2.f);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s, 0), ==, 1);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s, 1), ==, 2);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s, 2), ==, 2);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s, 3), ==, 0);
 }
 
 static void

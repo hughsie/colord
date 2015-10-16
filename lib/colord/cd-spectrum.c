@@ -580,6 +580,50 @@ cd_spectrum_get_value_for_nm (const CdSpectrum *spectrum, gdouble wavelength)
 }
 
 /**
+ * cd_spectrum_limit_min:
+ * @spectrum: a #CdSpectrum instance
+ * @value: the threshold value to limit the spectrum
+ *
+ * Ensures no values in the spectrum fall below a set limit. If they
+ * are found, set them to @value.
+ *
+ * Since: 1.3.1
+ **/
+void
+cd_spectrum_limit_min (CdSpectrum *spectrum, gdouble value)
+{
+	gdouble tmp;
+	guint i;
+	for (i = 0; i < spectrum->data->len; i++) {
+		tmp = cd_spectrum_get_value (spectrum, i);
+		if (tmp < value)
+			cd_spectrum_set_value (spectrum, i, value);
+	}
+}
+
+/**
+ * cd_spectrum_limit_max:
+ * @spectrum: a #CdSpectrum instance
+ * @value: the threshold value to limit the spectrum
+ *
+ * Ensures no values in the spectrum fall above a set limit. If they
+ * are found, set them to @value.
+ *
+ * Since: 1.3.1
+ **/
+void
+cd_spectrum_limit_max (CdSpectrum *spectrum, gdouble value)
+{
+	gdouble tmp;
+	guint i;
+	for (i = 0; i < spectrum->data->len; i++) {
+		tmp = cd_spectrum_get_value (spectrum, i);
+		if (tmp > value)
+			cd_spectrum_set_value (spectrum, i, value);
+	}
+}
+
+/**
  * cd_spectrum_normalize:
  * @spectrum: a #CdSpectrum instance
  * @wavelength: the wavelength in nm

@@ -40,6 +40,10 @@ CdSpectrum	*cd_spectrum_sized_new		(guint			 reserved_size);
 CdSpectrum	*cd_spectrum_planckian_new	(gdouble		 temperature);
 void		 cd_spectrum_free		(CdSpectrum		*spectrum);
 CdSpectrum	*cd_spectrum_dup		(const CdSpectrum	*spectrum);
+void		 cd_spectrum_limit_min		(CdSpectrum		*spectrum,
+						 gdouble		 value);
+void		 cd_spectrum_limit_max		(CdSpectrum		*spectrum,
+						 gdouble		 value);
 void		 cd_spectrum_normalize		(CdSpectrum		*spectrum,
 						 gdouble		 wavelength,
 						 gdouble		 value);
