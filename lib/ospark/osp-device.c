@@ -291,6 +291,133 @@ osp_device_get_fw_version (GUsbDevice *device, GError **error)
 }
 
 /**
+ * osp_device_get_wavelength_cal_for_idx:
+ *
+ * Since: 1.3.1
+ **/
+static gboolean
+osp_device_get_wavelength_cal_for_idx (GUsbDevice *device,
+				       guint idx,
+				       gfloat *cal,
+				       GError **error)
+{
+	gsize data_len;
+	guint8 idx_buf[1] = { idx };
+	g_autofree guint8 *data = NULL;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* query hardware */
+	if (!osp_device_query (device, OSP_CMD_GET_WAVELENGTH_COEFFICIENT,
+			       idx_buf, 1, &data, &data_len, error))
+		return NULL;
+
+	/* check values */
+	if (data_len != 4) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "Expected %i bytes, got %li", 4, data_len);
+		return FALSE;
+	}
+
+	/* convert to floating point */
+	if (cal != NULL)
+		*cal = *((gfloat *) data);
+
+	/* format value */
+	return TRUE;
+}
+
+/**
+ * osp_device_get_wavelength_start:
+ *
+ * Since: 1.3.1
+ **/
+gdouble
+osp_device_get_wavelength_start (GUsbDevice *device, GError **error)
+{
+	gfloat tmp = -1.f;
+
+	/* get from hardware */
+	if (!osp_device_get_wavelength_cal_for_idx (device, 0, &tmp, error))
+		return -1.f;
+
+	/* check values */
+	if (tmp < 0) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "Not a valid start, got %f", tmp);
+		return -1.f;
+	}
+
+	return (gdouble) tmp;
+}
+
+/**
+ * osp_device_get_wavelength_cal:
+ *
+ * Since: 1.3.1
+ **/
+gdouble *
+osp_device_get_wavelength_cal (GUsbDevice *device, guint *length, GError **error)
+{
+	gboolean ret;
+	gdouble *coefs = NULL;
+	gfloat cx;
+	gsize data_len;
+	guint i;
+	g_autofree guint8 *data = NULL;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* query hardware */
+	if (!osp_device_query (device, OSP_CMD_GET_WAVELENGTH_COEFFICIENT_COUNT,
+			       NULL, 0, &data, &data_len, error))
+		return NULL;
+
+	/* check values */
+	if (data_len != 1) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "Expected 1 bytes, got %li", data_len);
+		return FALSE;
+	}
+
+	/* check sanity */
+	if (data_len != 1) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "Expected 3 coefs, got %li", data_len);
+		return FALSE;
+	}
+
+	/* get the coefs */
+	coefs = g_new0 (gdouble, 3);
+	for (i = 0; i < 3; i++) {
+		ret = osp_device_get_wavelength_cal_for_idx (device,
+							     i + 1,
+							     &cx,
+							     error);
+		if (!ret)
+			return FALSE;
+		coefs[i] = cx;
+	}
+
+	/* this is optional */
+	if (length != NULL)
+		*length = 3;
+
+	/* success */
+	return coefs;
+}
+
+/**
  * osp_device_take_spectrum_full:
  * @device: a #GUsbDevice instance.
  * @sample_duration: the sample duration in µs
@@ -308,14 +435,26 @@ osp_device_take_spectrum_full (GUsbDevice *device,
 				GError **error)
 {
 	CdSpectrum *sp;
+	gdouble start;
 	gdouble val;
 	gsize data_len;
 	guint8 bin_factor = 0;
 	guint i;
+	g_autofree gdouble *cx = NULL;
 	g_autofree guint8 *data = NULL;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* get coefficients */
+	cx = osp_device_get_wavelength_cal (device, NULL, error);
+	if (cx == NULL)
+		return NULL;
+
+	/* get start */
+	start = osp_device_get_wavelength_start (device, error);
+	if (start < 0)
+		return NULL;
 
 	/* return every pixel */
 	if (!osp_device_send_command (device, OSP_CMD_SET_PIXEL_BINNING_FACTOR,
@@ -344,13 +483,13 @@ osp_device_take_spectrum_full (GUsbDevice *device,
 	/* export */
 	sp = cd_spectrum_sized_new (1024);
 	cd_spectrum_set_id (sp, "raw");
-	cd_spectrum_set_start (sp, 380);
-	cd_spectrum_set_end (sp, 700);
+	cd_spectrum_set_start (sp, start);
 	cd_spectrum_set_norm (sp, 1.f);
 	for (i = 0; i < 1024; i++) {
 		val = data[i*2+1] * 256 + data[i*2+0];
 		cd_spectrum_add_value (sp, val / (gdouble) 0xffff);
 	}
+	cd_spectrum_set_wavelength_cal (sp, cx[0], cx[1], cx[2]);
 
 	/* the maximum value the hardware can return is 0x3fff */
 	cd_spectrum_set_norm (sp, 4);

@@ -131,6 +131,40 @@ osp_test_reading_xyz_func (void)
 	}
 }
 
+static void
+osp_test_wavelength_cal_func (void)
+{
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GUsbDevice) device = NULL;
+	g_autofree gdouble *coefficients = NULL;
+	gdouble start;
+
+	/* load the device */
+	device = osp_client_get_default (&error);
+	if (device == NULL && g_error_matches (error,
+					       G_USB_DEVICE_ERROR,
+					       G_USB_DEVICE_ERROR_NO_DEVICE)) {
+		g_debug ("skipping tests: %s", error->message);
+		return;
+	}
+	g_assert_no_error (error);
+	g_assert (device != NULL);
+
+	/* get coefficients */
+	coefficients = osp_device_get_wavelength_cal (device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (coefficients != NULL);
+	g_assert_cmpfloat (ABS (coefficients[0] - 0.37f), <, 0.1f);
+	g_assert_cmpfloat (ABS (coefficients[1] - 0.00f), <, 0.1f);
+	g_assert_cmpfloat (ABS (coefficients[2] - 0.00f), <, 0.1f);
+
+	/* get start */
+	start = osp_device_get_wavelength_start (device, &error);
+	g_assert_no_error (error);
+	g_assert (start > 0);
+	g_assert_cmpfloat (ABS (start - 355), <, 5);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -141,6 +175,7 @@ main (int argc, char **argv)
 
 	/* tests go here */
 	g_test_add_func ("/Spark/protocol", osp_test_protocol_func);
+	g_test_add_func ("/Spark/wavelength-cal", osp_test_wavelength_cal_func);
 	g_test_add_func ("/Spark/reading-xyz", osp_test_reading_xyz_func);
 
 	return g_test_run ();

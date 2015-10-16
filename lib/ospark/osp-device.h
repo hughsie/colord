@@ -55,6 +55,13 @@ gchar		*osp_device_get_serial		(GUsbDevice	*device,
 gchar		*osp_device_get_fw_version	(GUsbDevice	*device,
 						 GError		**error)
 						 G_GNUC_WARN_UNUSED_RESULT;
+gdouble		*osp_device_get_wavelength_cal	(GUsbDevice	*device,
+						 guint		*length,
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
+gdouble		 osp_device_get_wavelength_start (GUsbDevice	*device,
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gboolean	 osp_device_open		(GUsbDevice	*device,
 						 GError		**error)
 						 G_GNUC_WARN_UNUSED_RESULT;
