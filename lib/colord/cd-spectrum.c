@@ -710,12 +710,12 @@ CdSpectrum *
 cd_spectrum_subtract (CdSpectrum *s1, CdSpectrum *s2)
 {
 	CdSpectrum *s;
-	gdouble i;
+	guint i;
 
 	g_return_val_if_fail (s1 != NULL, NULL);
 	g_return_val_if_fail (s2 != NULL, NULL);
-	g_return_val_if_fail ((s1->start - s2->start) < 0.01f, NULL);
-	g_return_val_if_fail ((s1->end - s2->end) < 0.01f, NULL);
+	g_return_val_if_fail (fabs (s1->start - s2->start) < 0.01f, NULL);
+	g_return_val_if_fail (fabs (s1->end - s2->end) < 0.01f, NULL);
 	g_return_val_if_fail (s1->data->len == s2->data->len, NULL);
 
 	/* take one away from the other and return the result */
@@ -726,8 +726,6 @@ cd_spectrum_subtract (CdSpectrum *s1, CdSpectrum *s2)
 	for (i = 0; i < s1->data->len; i++) {
 		gdouble tmp;
 		tmp = cd_spectrum_get_value (s1, i) - cd_spectrum_get_value (s2, i);
-		if (tmp < 0.f)
-			tmp = 0.f;
 		cd_spectrum_add_value (s, tmp);
 	}
 	return s;

@@ -176,6 +176,9 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 		return NULL;
 	}
 
+	/* ensure we never have negative readings */
+	cd_spectrum_limit_min (sp_biased, 0.f);
+
 	/* print something for debugging */
 	if (g_getenv ("SPARK_DEBUG") != NULL) {
 		g_autofree gchar *txt = NULL;
