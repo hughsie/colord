@@ -303,6 +303,50 @@ colord_spectrum_func (void)
 }
 
 static void
+colord_spect_cx_func (void)
+{
+	gdouble tmp;
+	g_autoptr(CdSpectrum) sp = NULL;
+
+	/* create test spectrum */
+	sp = cd_spectrum_new ();
+	cd_spectrum_set_start (sp, 100);
+	cd_spectrum_set_end (sp, 200);
+	g_assert_cmpfloat (fabs (cd_spectrum_get_end (sp) - 200.f), <, 0.001);
+
+	/* we don't calculate the coefficients with no data */
+	cd_spectrum_get_wavelength_cal (sp, &tmp, NULL, NULL);
+	g_assert_cmpfloat (fabs (tmp - -1.f), <, 0.001);
+
+	/* try again, this time with data added first */
+	cd_spectrum_add_value (sp, 1.f);
+	cd_spectrum_add_value (sp, 2.f);
+	cd_spectrum_add_value (sp, 3.f);
+	cd_spectrum_set_end (sp, 200);
+	cd_spectrum_get_wavelength_cal (sp, &tmp, NULL, NULL);
+	g_assert_cmpfloat (fabs (tmp - 50.f), <, 0.001);
+
+	/* test with linear polynomials */
+	g_assert_cmpfloat (fabs (cd_spectrum_get_end (sp) - 200.f), <, 0.001);
+	tmp = cd_spectrum_get_wavelength (sp, 0);
+	g_assert_cmpfloat (fabs (tmp - 100), <, 0.001);
+	tmp = cd_spectrum_get_wavelength (sp, 1);
+	g_assert_cmpfloat (fabs (tmp - 150), <, 0.001);
+	tmp = cd_spectrum_get_wavelength (sp, 2);
+	g_assert_cmpfloat (fabs (tmp - 200), <, 0.001);
+
+	/* test with 3rd order polynomials */
+	cd_spectrum_set_wavelength_cal (sp, 100.1f, 1.1f, 0.1f);
+	g_assert_cmpfloat (fabs (cd_spectrum_get_end (sp) - 305.3999f), <, 0.01);
+	tmp = cd_spectrum_get_wavelength (sp, 0);
+	g_assert_cmpfloat (fabs (tmp - 100), <, 0.001);
+	tmp = cd_spectrum_get_wavelength (sp, 1);
+	g_assert_cmpfloat (fabs (tmp - 201.2999), <, 0.01);
+	tmp = cd_spectrum_get_wavelength (sp, 2);
+	g_assert_cmpfloat (fabs (tmp - 305.3999), <, 0.01);
+}
+
+static void
 colord_it8_spect_func (void)
 {
 	CdIt8 *it8;
@@ -2251,6 +2295,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/spectrum", colord_spectrum_func);
 	g_test_add_func ("/colord/spectrum{planckian}", colord_spectrum_planckian_func);
 	g_test_add_func ("/colord/spectrum{subtract}", colord_spectrum_subtract_func);
+	g_test_add_func ("/colord/spectrum{cx}", colord_spect_cx_func);
 	g_test_add_func ("/colord/edid", colord_edid_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);

@@ -88,6 +88,14 @@ void		 cd_spectrum_set_value		(CdSpectrum		*spectrum,
 						 gdouble		 data);
 void		 cd_spectrum_add_value		(CdSpectrum		*spectrum,
 						 gdouble		 data);
+void		 cd_spectrum_set_wavelength_cal	(CdSpectrum		*spectrum,
+						 gdouble		 c1,
+						 gdouble		 c2,
+						 gdouble		 c3);
+void		 cd_spectrum_get_wavelength_cal	(CdSpectrum		*spectrum,
+						 gdouble		 *c1,
+						 gdouble		 *c2,
+						 gdouble		 *c3);
 CdSpectrum	*cd_spectrum_multiply		(CdSpectrum		*s1,
 						 CdSpectrum		*s2,
 						 gdouble		 resolution);

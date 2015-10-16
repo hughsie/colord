@@ -42,6 +42,7 @@ struct _CdSpectrum {
 	gdouble			 start;
 	gdouble			 end;
 	gdouble			 norm;
+	gdouble			 wavelength_cal[3];
 	GArray			*data;
 };
 
@@ -69,6 +70,8 @@ cd_spectrum_dup (const CdSpectrum *spectrum)
 		tmp = cd_spectrum_get_value_raw (spectrum, i);
 		cd_spectrum_add_value (dest, tmp);
 	}
+	for (i = 0; i < 3; i++)
+		dest->wavelength_cal[i] = spectrum->wavelength_cal[i];
 	return dest;
 }
 
@@ -196,20 +199,27 @@ cd_spectrum_get_value_raw (const CdSpectrum *spectrum, guint idx)
 gdouble
 cd_spectrum_get_wavelength (const CdSpectrum *spectrum, guint idx)
 {
-	gdouble step;
-	guint number_points;
-
 	g_return_val_if_fail (spectrum != NULL, -1.0f);
 
-	/* if we used cd_spectrum_size_new() and there is no data we can infer
-	 * the wavelenth based on the declared initial size */
-	if (spectrum->reserved_size > 0)
-		number_points = spectrum->reserved_size;
-	else
-		number_points = spectrum->data->len;
+	/* fall back to the old method */
+	if (spectrum->wavelength_cal[0] < 0) {
+		gdouble step;
+		guint number_points;
+		/* if we used cd_spectrum_size_new() and there is no data we can infer
+		 * the wavelenth based on the declared initial size */
+		if (spectrum->reserved_size > 0)
+			number_points = spectrum->reserved_size;
+		else
+			number_points = spectrum->data->len;
+		step = (spectrum->end - spectrum->start) / (number_points - 1);
+		return spectrum->start + (step * (gdouble) idx);
+	}
 
-	step = (spectrum->end - spectrum->start) / (number_points - 1);
-	return spectrum->start + (step * (gdouble) idx);
+	/* use wavelength_cal to work out wavelength */
+	return spectrum->start +
+		spectrum->wavelength_cal[0] * (gdouble) idx +
+		spectrum->wavelength_cal[1] * pow (idx, 2) +
+		spectrum->wavelength_cal[2] * pow (idx, 3);
 }
 
 /**
@@ -352,6 +362,7 @@ cd_spectrum_new (void)
 	spectrum = g_slice_new0 (CdSpectrum);
 	spectrum->norm = 1.f;
 	spectrum->data = g_array_new (FALSE, FALSE, sizeof (gdouble));
+	spectrum->wavelength_cal[0] = -1.f;
 	return spectrum;
 }
 
@@ -373,6 +384,7 @@ cd_spectrum_sized_new (guint reserved_size)
 	spectrum->norm = 1.f;
 	spectrum->reserved_size = reserved_size;
 	spectrum->data = g_array_sized_new (FALSE, FALSE, sizeof (gdouble), reserved_size);
+	spectrum->wavelength_cal[0] = -1.f;
 	return spectrum;
 }
 
@@ -510,12 +522,25 @@ cd_spectrum_set_start (CdSpectrum *spectrum, gdouble start)
  *
  * Set the end value of the spectal data in nm.
  *
+ * If there is already spectral data, the wavelength calibration will
+ * also be set automatically.
+ *
  * Since: 1.1.6
  **/
 void
 cd_spectrum_set_end (CdSpectrum *spectrum, gdouble end)
 {
 	g_return_if_fail (spectrum != NULL);
+
+	/* calculate the calibration co-efficients */
+	if (spectrum->data->len > 1) {
+		spectrum->wavelength_cal[0] = (end - spectrum->start) /
+						(spectrum->data->len - 1);
+		spectrum->wavelength_cal[1] = 0.f;
+		spectrum->wavelength_cal[2] = 0.f;
+	}
+
+	/* set this for later */
 	spectrum->end = end;
 }
 
@@ -723,6 +748,8 @@ cd_spectrum_subtract (CdSpectrum *s1, CdSpectrum *s2)
 	s->id = g_strdup_printf ("%s-%s", s1->id, s2->id);
 	s->start = s1->start;
 	s->end = s1->end;
+	for (i = 0; i < 3; i++)
+		s->wavelength_cal[i] = s1->wavelength_cal[i];
 	for (i = 0; i < s1->data->len; i++) {
 		gdouble tmp;
 		tmp = cd_spectrum_get_value (s1, i) - cd_spectrum_get_value (s2, i);
@@ -795,4 +822,56 @@ cd_spectrum_to_string (CdSpectrum *spectrum, guint max_width, guint max_height)
 
 	/* success */
 	return g_string_free (str, FALSE);
+}
+
+/**
+ * cd_spectrum_set_wavelength_cal:
+ * @spectrum: a #CdSpectrum instance
+ * @c1: the 1st coefficient
+ * @c2: the 2nd coefficient
+ * @c3: the 3rd coefficient
+ *
+ * Sets the calibration coefficients used to map pixel indexes to
+ * wavelengths.
+ *
+ * This function will set the 'end' wavelength automatically,
+ * potentially overwriting the value set by cd_spectrum_set_end().
+ *
+ * Since: 1.3.1
+ **/
+void
+cd_spectrum_set_wavelength_cal (CdSpectrum *spectrum,
+				gdouble c1, gdouble c2, gdouble c3)
+{
+	spectrum->wavelength_cal[0] = c1;
+	spectrum->wavelength_cal[1] = c2;
+	spectrum->wavelength_cal[2] = c3;
+
+	/* recalculate the end wavelength */
+	spectrum->end = cd_spectrum_get_wavelength (spectrum,
+						    cd_spectrum_get_size (spectrum) - 1);
+}
+
+/**
+ * cd_spectrum_get_wavelength_cal:
+ * @spectrum: a #CdSpectrum instance
+ * @c1: the 1st coefficient
+ * @c2: the 2nd coefficient
+ * @c3: the 3rd coefficient
+ *
+ * Gets the calibration coefficients used to map pixel indexes to
+ * wavelengths.
+ *
+ * Since: 1.3.1
+ **/
+void
+cd_spectrum_get_wavelength_cal (CdSpectrum *spectrum,
+				gdouble *c1, gdouble *c2, gdouble *c3)
+{
+	if (c1 != NULL)
+		*c1 = spectrum->wavelength_cal[0];
+	if (c2 != NULL)
+		*c2 = spectrum->wavelength_cal[1];
+	if (c3 != NULL)
+		*c3 = spectrum->wavelength_cal[2];
 }
