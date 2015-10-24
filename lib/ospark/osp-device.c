@@ -155,7 +155,28 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 
 	/* check the error code */
 	hdr = (OspProtocolHeader *) buffer_out;
-	if (hdr->error_code != OSP_ERROR_CODE_SUCCESS) {
+	switch (hdr->error_code) {
+	case OSP_ERROR_CODE_SUCCESS:
+		break;
+	case OSP_ERROR_CODE_MESSAGE_TOO_LARGE:
+	case OSP_ERROR_CODE_UNKNOWN_CHECKSUM_TYPE:
+	case OSP_ERROR_CODE_UNSUPPORTED_PROTOCOL:
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_NO_SUPPORT,
+			     "Failed to %s",
+			     osp_cmd_to_string (cmd));
+		return FALSE;
+		break;
+	case OSP_ERROR_CODE_COMMAND_DATA_MISSING:
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_NO_DATA,
+			     "Failed to %s",
+			     osp_cmd_to_string (cmd));
+		return FALSE;
+		break;
+	default:
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
@@ -163,6 +184,7 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 			     osp_cmd_to_string (cmd),
 			     osp_error_code_to_string (hdr->error_code));
 		return FALSE;
+		break;
 	}
 
 	/* copy out the data */
@@ -305,8 +327,8 @@ osp_device_get_wavelength_cal_for_idx (GUsbDevice *device,
 	guint8 idx_buf[1] = { idx };
 	g_autofree guint8 *data = NULL;
 
-	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* query hardware */
 	if (!osp_device_query (device, OSP_CMD_GET_WAVELENGTH_COEFFICIENT,
@@ -389,17 +411,17 @@ osp_device_get_wavelength_cal (GUsbDevice *device, guint *length, GError **error
 	}
 
 	/* check sanity */
-	if (data_len != 1) {
+	if (data[0] != 4) {
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected 3 coefs, got %li", data_len);
+			     "Expected 4 coefs, got %i", data[0]);
 		return FALSE;
 	}
 
 	/* get the coefs */
-	coefs = g_new0 (gdouble, 3);
-	for (i = 0; i < 3; i++) {
+	coefs = g_new0 (gdouble, data[0] - 1);
+	for (i = 0; i < (guint) data[0] - 1; i++) {
 		ret = osp_device_get_wavelength_cal_for_idx (device,
 							     i + 1,
 							     &cx,
@@ -411,7 +433,151 @@ osp_device_get_wavelength_cal (GUsbDevice *device, guint *length, GError **error
 
 	/* this is optional */
 	if (length != NULL)
-		*length = 3;
+		*length = data[0] - 1;
+
+	/* success */
+	return coefs;
+}
+
+/**
+ * osp_device_get_nonlinearity_cal_for_idx:
+ *
+ * Since: 1.3.1
+ **/
+static gboolean
+osp_device_get_nonlinearity_cal_for_idx (GUsbDevice *device,
+					 guint idx,
+					 gfloat *cal,
+					 GError **error)
+{
+	gsize data_len;
+	guint8 idx_buf[1] = { idx };
+	g_autofree guint8 *data = NULL;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* query hardware */
+	if (!osp_device_query (device, OSP_CMD_GET_NONLINEARITY_COEFFICIENT,
+			       idx_buf, 1, &data, &data_len, error))
+		return NULL;
+
+	/* check values */
+	if (data_len != 4) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "Expected %i bytes, got %li", 4, data_len);
+		return FALSE;
+	}
+
+	/* convert to floating point */
+	if (cal != NULL)
+		*cal = *((gfloat *) data);
+
+	/* format value */
+	return TRUE;
+}
+
+/**
+ * osp_device_get_nonlinearity_cal:
+ *
+ * Since: 1.3.1
+ **/
+gdouble *
+osp_device_get_nonlinearity_cal (GUsbDevice *device, guint *length, GError **error)
+{
+	gboolean ret;
+	gdouble *coefs = NULL;
+	gfloat cx;
+	gsize data_len;
+	guint i;
+	g_autofree guint8 *data = NULL;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* query hardware */
+	if (!osp_device_query (device, OSP_CMD_GET_NONLINEARITY_COEFFICIENT_COUNT,
+			       NULL, 0, &data, &data_len, error))
+		return NULL;
+
+	/* check values */
+	if (data_len != 1) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "Expected 1 bytes, got %li", data_len);
+		return FALSE;
+	}
+
+	/* check sanity */
+	if (data[0] != 8) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "Expected 8 coefs, got %i", data[0]);
+		return FALSE;
+	}
+
+	/* get the coefs */
+	coefs = g_new0 (gdouble, data[0]);
+	for (i = 0; i < data[0]; i++) {
+		ret = osp_device_get_nonlinearity_cal_for_idx (device,
+							       i,
+							       &cx,
+							       error);
+		if (!ret)
+			return FALSE;
+		coefs[i] = cx;
+	}
+
+	/* this is optional */
+	if (length != NULL)
+		*length = data[0];
+
+	/* success */
+	return coefs;
+}
+
+/**
+ * osp_device_get_irradiance_cal:
+ *
+ * Since: 1.3.1
+ **/
+gdouble *
+osp_device_get_irradiance_cal (GUsbDevice *device, guint *length, GError **error)
+{
+	gdouble *coefs = NULL;
+	gsize data_len;
+	guint i;
+	g_autofree guint8 *data = NULL;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* query hardware */
+	if (!osp_device_query (device, OSP_CMD_GET_IRRADIANCE_CALIBRATION,
+			       NULL, 0, &data, &data_len, error))
+		return NULL;
+
+	/* check values */
+	if (data_len != 4096 * 4) {
+		g_set_error (error,
+			     OSP_DEVICE_ERROR,
+			     OSP_DEVICE_ERROR_INTERNAL,
+			     "Expected %i bytes, got %li", 4096 * 4, data_len);
+		return FALSE;
+	}
+
+	/* copy out the coefs */
+	coefs = g_new0 (gdouble, 4096);
+	for (i = 0; i < 4096; i++)
+		coefs[i] = *((gfloat *) &data[i*4]);
+
+	/* this is optional */
+	if (length != NULL)
+		*length = 4096;
 
 	/* success */
 	return coefs;

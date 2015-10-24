@@ -43,7 +43,7 @@ osp_client_get_default (GError **error)
 	if (usb_ctx == NULL) {
 		g_set_error (error,
 			     G_USB_DEVICE_ERROR,
-			     G_USB_DEVICE_ERROR_NO_DEVICE,
+			     G_USB_DEVICE_ERROR_NOT_SUPPORTED,
 			     "No device found; USB initialisation failed");
 		return NULL;
 	}
@@ -163,6 +163,16 @@ osp_test_wavelength_cal_func (void)
 	g_assert_no_error (error);
 	g_assert (start > 0);
 	g_assert_cmpfloat (ABS (start - 355), <, 5);
+
+	/* get irradiance coefficients */
+	coefficients = osp_device_get_irradiance_cal (device, NULL, &error);
+	g_assert_error (error, OSP_DEVICE_ERROR, OSP_DEVICE_ERROR_NO_DATA);
+	g_clear_error (&error);
+
+	/* get nonlinearity coefficients */
+	coefficients = osp_device_get_nonlinearity_cal (device, NULL, &error);
+	g_assert_error (error, OSP_DEVICE_ERROR, OSP_DEVICE_ERROR_NO_DATA);
+	g_clear_error (&error);
 }
 
 int
