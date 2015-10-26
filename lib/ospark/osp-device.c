@@ -137,7 +137,8 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 	offset_wr += sizeof(OspProtocolFooter);
 
 	/* send data */
-	cd_buffer_debug (CD_BUFFER_KIND_REQUEST, buffer_in, offset_wr);
+	if (g_getenv ("SPARK_PROTOCOL_DEBUG") != NULL)
+		cd_buffer_debug (CD_BUFFER_KIND_REQUEST, buffer_in, offset_wr);
 	if (!g_usb_device_bulk_transfer (device, 0x01,
 					 buffer_in, offset_wr,
 					 &actual_length,
@@ -151,7 +152,8 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 					 &actual_length,
 					 OSP_USB_TIMEOUT_MS, NULL, error))
 		return NULL;
-	cd_buffer_debug (CD_BUFFER_KIND_RESPONSE, buffer_out, actual_length);
+	if (g_getenv ("SPARK_PROTOCOL_DEBUG") != NULL)
+		cd_buffer_debug (CD_BUFFER_KIND_RESPONSE, buffer_out, actual_length);
 
 	/* check the error code */
 	hdr = (OspProtocolHeader *) buffer_out;
@@ -215,7 +217,8 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 						 OSP_USB_TIMEOUT_MS, NULL, error))
 			return NULL;
 		memcpy (*data_out + offset_wr, buffer_out, OSP_DEVICE_EP_SIZE);
-		cd_buffer_debug (CD_BUFFER_KIND_RESPONSE, buffer_out, OSP_DEVICE_EP_SIZE);
+		if (g_getenv ("SPARK_PROTOCOL_DEBUG") != NULL)
+			cd_buffer_debug (CD_BUFFER_KIND_RESPONSE, buffer_out, OSP_DEVICE_EP_SIZE);
 		offset_wr += 64;
 	}
 	offset_rd += payload_length;
