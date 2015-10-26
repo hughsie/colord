@@ -611,6 +611,7 @@ osp_device_take_spectrum_full (GUsbDevice *device,
 	guint i;
 	g_autofree gdouble *cx = NULL;
 	g_autofree guint8 *data = NULL;
+	g_autoptr(GTimer) t = NULL;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -636,9 +637,12 @@ osp_device_take_spectrum_full (GUsbDevice *device,
 		return NULL;
 
 	/* get spectrum */
+	t = g_timer_new ();
 	if (!osp_device_query (device, OSP_CMD_GET_AND_SEND_RAW_SPECTRUM,
 			       NULL, 0, &data, &data_len, error))
 		return NULL;
+	g_debug ("For integration of %.0fms, sensor took %.0fms",
+		 sample_duration / 1000.f, g_timer_elapsed (t, NULL) * 1000.f);
 
 	/* check values */
 	if (data_len != 2048) {
