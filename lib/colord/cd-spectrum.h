@@ -54,7 +54,8 @@ void		 cd_spectrum_normalize		(CdSpectrum		*spectrum,
 void		 cd_spectrum_normalize_max	(CdSpectrum		*spectrum,
 						 gdouble		 value);
 CdSpectrum	*cd_spectrum_subtract		(CdSpectrum		*s1,
-						 CdSpectrum		*s2);
+						 CdSpectrum		*s2,
+						 gdouble		 resolution);
 gchar		*cd_spectrum_to_string		(CdSpectrum		*spectrum,
 						 guint			 max_width,
 						 guint			 max_height);

@@ -168,7 +168,7 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 	}
 
 	/* subtract the dark calibration */
-	sp_biased = cd_spectrum_subtract (sp_tmp, priv->dark_cal);
+	sp_biased = cd_spectrum_subtract (sp_tmp, priv->dark_cal, 5);
 	if (sp_biased == NULL) {
 		g_set_error_literal (error,
 				     CD_SENSOR_ERROR,

@@ -746,35 +746,56 @@ cd_spectrum_multiply (CdSpectrum *s1, CdSpectrum *s2, gdouble resolution)
  * cd_spectrum_subtract:
  * @s1: a #CdSpectrum instance, e.g. a sample
  * @s2: a #CdSpectrum instance, e.g. a dark calibration
+ * @resolution: the resolution to use when resampling
  *
- * Subtracts one spectral plot from another.
+ * Subtracts one spectral plot from another. If the spectra have the same start,
+ * end and the same number of data points they are not resampled.
  *
  * Return value: a #CdSpectrum instance
  *
- * Since: 1.2.13
+ * Since: 1.3.1
  **/
 CdSpectrum *
-cd_spectrum_subtract (CdSpectrum *s1, CdSpectrum *s2)
+cd_spectrum_subtract (CdSpectrum *s1, CdSpectrum *s2, gdouble resolution)
 {
 	CdSpectrum *s;
+	gdouble max;
+	gdouble min;
+	gdouble nm;
 	guint i;
 
 	g_return_val_if_fail (s1 != NULL, NULL);
 	g_return_val_if_fail (s2 != NULL, NULL);
-	g_return_val_if_fail (fabs (s1->start - s2->start) < 0.01f, NULL);
-	g_return_val_if_fail (fabs (s1->end - s2->end) < 0.01f, NULL);
-	g_return_val_if_fail (s1->data->len == s2->data->len, NULL);
 
-	/* take one away from the other and return the result */
-	s = cd_spectrum_sized_new (s1->data->len);
+	/* we can do this without resampling */
+	if (fabs (s1->start - s2->start) < 0.01f &&
+	    fabs (s1->end - s2->end) < 0.01f &&
+	    s1->data->len == s2->data->len) {
+		s = cd_spectrum_sized_new (s1->data->len);
+		s->id = g_strdup_printf ("%s-%s", s1->id, s2->id);
+		s->start = s1->start;
+		s->end = s1->end;
+		for (i = 0; i < 3; i++)
+			s->wavelength_cal[i] = s1->wavelength_cal[i];
+		for (i = 0; i < s1->data->len; i++) {
+			gdouble tmp;
+			tmp = cd_spectrum_get_value (s1, i) - cd_spectrum_get_value (s2, i);
+			cd_spectrum_add_value (s, tmp);
+		}
+		return s;
+	}
+
+	/* resample */
+	min = MIN (cd_spectrum_get_start (s1), cd_spectrum_get_start (s2));
+	max = MAX (cd_spectrum_get_end (s1), cd_spectrum_get_end (s2));
+	s = cd_spectrum_new ();
 	s->id = g_strdup_printf ("%s-%s", s1->id, s2->id);
-	s->start = s1->start;
-	s->end = s1->end;
-	for (i = 0; i < 3; i++)
-		s->wavelength_cal[i] = s1->wavelength_cal[i];
-	for (i = 0; i < s1->data->len; i++) {
+	s->start = min;
+	s->end = max;
+	for (nm = min; nm <= max; nm += resolution) {
 		gdouble tmp;
-		tmp = cd_spectrum_get_value (s1, i) - cd_spectrum_get_value (s2, i);
+		tmp = cd_spectrum_get_value_for_nm (s1, nm) -
+			cd_spectrum_get_value_for_nm (s2, nm);
 		cd_spectrum_add_value (s, tmp);
 	}
 	return s;

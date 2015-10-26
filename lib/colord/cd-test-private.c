@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2010-2013 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2010-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -184,6 +184,8 @@ colord_spectrum_subtract_func (void)
 	g_autoptr(CdSpectrum) s = NULL;
 	g_autoptr(CdSpectrum) s1 = NULL;
 	g_autoptr(CdSpectrum) s2 = NULL;
+	g_autoptr(CdSpectrum) s3 = NULL;
+	g_autoptr(CdSpectrum) s4 = NULL;
 
 	/* source data */
 	s1 = cd_spectrum_new ();
@@ -206,11 +208,9 @@ colord_spectrum_subtract_func (void)
 	cd_spectrum_add_value (s2, 15);
 
 	/* subtract */
-	s = cd_spectrum_subtract (s1, s2);
+	s = cd_spectrum_subtract (s1, s2, 5);
 	g_assert_cmpstr (cd_spectrum_get_id (s), ==, "Source-DarkCalibration");
 	g_assert_cmpint (cd_spectrum_get_size (s), ==, 4);
-
-	/* verify */
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 0), ==, 1);
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 1), ==, 2);
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 2), ==, 3);
@@ -223,6 +223,18 @@ colord_spectrum_subtract_func (void)
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 1), ==, 2);
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 2), ==, 2);
 	g_assert_cmpint (cd_spectrum_get_value_raw (s, 3), ==, 0);
+
+	/* require resampling */
+	s3 = cd_spectrum_new ();
+	cd_spectrum_set_id (s3, "DC");
+	cd_spectrum_set_start (s3, 360);
+	cd_spectrum_set_end (s3, 780);
+	cd_spectrum_add_value (s3, 10);
+	s4 = cd_spectrum_subtract (s1, s3, 84);
+	g_assert_cmpstr (cd_spectrum_get_id (s4), ==, "Source-DC");
+	g_assert_cmpint (cd_spectrum_get_size (s4), ==, 6);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s4, 0), ==, 1);
+	g_assert_cmpint (cd_spectrum_get_value_raw (s4, 5), ==, 4);
 }
 
 static void
