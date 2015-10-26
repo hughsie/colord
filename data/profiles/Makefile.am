@@ -31,7 +31,7 @@ noinst_DATA =					\
 	NTSC-RGB.xml				\
 	PAL-RGB.xml				\
 	ProPhotoRGB.xml				\
-	Rec709.xml.in				\
+	Rec709.xml				\
 	SMPTE-C-RGB.xml				\
 	SNAP_TR002_newsprint.xml		\
 	sRGB.xml				\
