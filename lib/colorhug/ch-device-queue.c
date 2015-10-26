@@ -115,6 +115,7 @@ ch_device_queue_data_free (ChDeviceQueueData *data)
 static void
 ch_device_queue_task_data_free (ChDeviceQueueTaskData *data)
 {
+	g_object_unref (data->device_queue);
 	g_ptr_array_unref (data->failures);
 	g_free (data);
 }
@@ -202,9 +203,9 @@ ch_device_queue_process_write_command_cb (GObject *source,
 					  gpointer user_data)
 {
 	ChDeviceQueueData *data;
-	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (source);
 	GTask *task = G_TASK (user_data);
 	ChDeviceQueueTaskData *tdata = g_task_get_task_data (task);
+	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (tdata->device_queue);
 	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 	const gchar *device_id;
 	const gchar *tmp;
@@ -312,7 +313,6 @@ static gboolean
 ch_device_queue_process_data (GTask *task, ChDeviceQueueData *data)
 {
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (g_task_get_source_object (task));
-	ChDeviceQueueTaskData *tdata = g_task_get_task_data (task);
 	ChDeviceQueuePrivate *priv = GET_PRIVATE (device_queue);
 	ChDeviceQueueData *data_tmp;
 	const gchar *device_id;
@@ -336,7 +336,7 @@ ch_device_queue_process_data (GTask *task, ChDeviceQueueData *data)
 				       data->buffer_out_len,
 				       g_task_get_cancellable (task),
 				       ch_device_queue_process_write_command_cb,
-				       tdata);
+				       task);
 	/* mark this as in use */
 	g_hash_table_insert (priv->devices_in_use, g_strdup (device_id), data);
 
@@ -375,6 +375,7 @@ ch_device_queue_process_async (ChDeviceQueue		*device_queue,
 	task = g_task_new (device_queue, cancellable, callback, user_data);
 	tdata = g_new0 (ChDeviceQueueTaskData, 1);
 	tdata->process_flags = process_flags;
+	tdata->device_queue = g_object_ref (device_queue);
 	tdata->failures = g_ptr_array_new_with_free_func (g_free);
 	g_task_set_task_data (task, tdata, (GDestroyNotify) ch_device_queue_task_data_free);
 
