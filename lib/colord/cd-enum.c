@@ -666,6 +666,8 @@ cd_sensor_error_to_string (CdSensorError error_enum)
 		return CD_DBUS_INTERFACE_SENSOR ".RequiredPositionSurface";
 	if (error_enum == CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION)
 		return CD_DBUS_INTERFACE_SENSOR ".RequiredDarkCalibration";
+	if (error_enum == CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION)
+		return CD_DBUS_INTERFACE_SENSOR ".RequiredIrradianceCalibration";
 	return NULL;
 }
 
@@ -701,6 +703,8 @@ cd_sensor_error_from_string (const gchar *error_desc)
 		return CD_SENSOR_ERROR_REQUIRED_POSITION_SURFACE;
 	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".RequiredDarkCalibration") == 0)
 		return CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION;
+	if (g_strcmp0 (error_desc, CD_DBUS_INTERFACE_SENSOR ".RequiredIrradianceCalibration") == 0)
+		return CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION;
 	return CD_SENSOR_ERROR_LAST;
 }
 

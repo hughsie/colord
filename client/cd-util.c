@@ -1148,6 +1148,16 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 					g_clear_error (&error_local);
 					cap_tmp = CD_SENSOR_CAP_CALIBRATION;
 					continue;
+				} else if (g_error_matches (error_local,
+							    CD_SENSOR_ERROR,
+							    CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION)) {
+					/* TRANSLATORS: the user needs to change something on the device */
+					g_print ("%s\n", _("Calibrate with a 3200K light source."));
+					getchar ();
+					j--;
+					g_clear_error (&error_local);
+					cap_tmp = CD_SENSOR_CAP_CALIBRATION;
+					continue;
 				} else {
 					g_propagate_error (error,
 							   error_local);
