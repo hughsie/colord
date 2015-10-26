@@ -29,6 +29,8 @@
 #endif
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #include <colord/colord.h>
 
 #define CD_ERROR			1
@@ -1183,6 +1185,9 @@ cd_util_get_spectral_reading (CdUtilPrivate *priv, gchar **values, GError **erro
 	CdSensor *sensor;
 	GError *error_local = NULL;
 	guint i;
+	guint width = 130;
+	guint height = 30;
+	struct winsize w;
 	g_autoptr(GPtrArray) array = NULL;
 
 	if (g_strv_length (values) < 1) {
@@ -1193,6 +1198,12 @@ cd_util_get_spectral_reading (CdUtilPrivate *priv, gchar **values, GError **erro
 				     "expected device type "
 				     "e.g. 'calibration' or 'spectral'");
 		return FALSE;
+	}
+
+	/* get window size */
+	if (ioctl (STDOUT_FILENO, TIOCGWINSZ, &w) == 0) {
+		width = w.ws_col - 1;
+		height = w.ws_row * 3 / 4;
 	}
 
 	/* execute sync method */
@@ -1249,7 +1260,7 @@ cd_util_get_spectral_reading (CdUtilPrivate *priv, gchar **values, GError **erro
 		}
 
 		/* print to console */
-		txt = cd_spectrum_to_string (sp, 130, 30);
+		txt = cd_spectrum_to_string (sp, width, height);
 		g_print ("%s", txt);
 
 		/* unlock */
