@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2014 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2014-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -389,17 +389,23 @@ cd_spectrum_sized_new (guint reserved_size)
 }
 
 /**
- * cd_spectrum_planckian_new:
+ * cd_spectrum_planckian_new_full:
  * @temperature: the temperature in Kelvin
+ * @start: the new spectrum start
+ * @end: the new spectrum end
+ * @resolution: the resolution to use when resampling
  *
  * Allocates a Planckian spectrum at a specific temperature.
  *
  * Return value: A newly allocated #CdSpectrum object
  *
- * Since: 1.1.6
+ * Since: 1.3.1
  **/
 CdSpectrum *
-cd_spectrum_planckian_new (gdouble temperature)
+cd_spectrum_planckian_new_full (gdouble temperature,
+				gdouble start,
+				gdouble end,
+				gdouble resolution)
 {
 	CdSpectrum *s = NULL;
 	const gdouble c1 = 3.74183e-16;	/* 2pi * h * c^2 */
@@ -416,8 +422,8 @@ cd_spectrum_planckian_new (gdouble temperature)
 	/* create spectrum with 1nm resolution */
 	s = cd_spectrum_sized_new (531);
 	s->id = g_strdup_printf ("Planckian@%.0fK", temperature);
-	cd_spectrum_set_start (s, 300);
-	cd_spectrum_set_end (s, 830);
+	cd_spectrum_set_start (s, start);
+	cd_spectrum_set_end (s, end);
 
 	/* see http://www.create.uwe.ac.uk/ardtalks/Schanda_paper.pdf, page 42 */
 	wl = 560 * 1e-9;
@@ -428,6 +434,22 @@ cd_spectrum_planckian_new (gdouble temperature)
 		cd_spectrum_add_value (s, tmp / norm);
 	}
 	return s;
+}
+
+/**
+ * cd_spectrum_planckian_new:
+ * @temperature: the temperature in Kelvin
+ *
+ * Allocates a Planckian spectrum at a specific temperature.
+ *
+ * Return value: A newly allocated #CdSpectrum object
+ *
+ * Since: 1.1.6
+ **/
+CdSpectrum *
+cd_spectrum_planckian_new (gdouble temperature)
+{
+	return cd_spectrum_planckian_new_full (temperature, 300, 830, 1);
 }
 
 /**

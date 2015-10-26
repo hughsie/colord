@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2014 Richard Hughes <richard@hughsie.com>
+ * Copyright (C) 2014-2015 Richard Hughes <richard@hughsie.com>
  *
  * Licensed under the GNU Lesser General Public License Version 2.1
  *
@@ -38,6 +38,10 @@ GType		 cd_spectrum_get_type		(void);
 CdSpectrum	*cd_spectrum_new		(void);
 CdSpectrum	*cd_spectrum_sized_new		(guint			 reserved_size);
 CdSpectrum	*cd_spectrum_planckian_new	(gdouble		 temperature);
+CdSpectrum	*cd_spectrum_planckian_new_full	(gdouble		 temperature,
+						 gdouble		 start,
+						 gdouble		 end,
+						 gdouble		 resolution);
 void		 cd_spectrum_free		(CdSpectrum		*spectrum);
 CdSpectrum	*cd_spectrum_dup		(const CdSpectrum	*spectrum);
 void		 cd_spectrum_limit_min		(CdSpectrum		*spectrum,
