@@ -34,9 +34,12 @@
 typedef struct
 {
 	GUsbDevice			*device;
-	GFile				*dark_cal_file;
 	CdSpectrum			*dark_cal;
+	CdSpectrum			*irradiance_cal;
+	GFile				*dark_cal_file;
+	GFile				*irradiance_cal_file;
 	CdSpectrum			*sensitivity_cal;
+	CdSensorError			 last_error;
 } CdSensorSparkPrivate;
 
 static CdSensorSparkPrivate *
@@ -104,6 +107,92 @@ cd_sensor_spark_get_dark_calibration (CdSensor *sensor, GError **error)
 }
 
 static CdSpectrum *
+cd_sensor_spark_get_irradiance_calibration (CdSensor *sensor, CdSpectrum *sp_in, GError **error)
+{
+	CdSensorSparkPrivate *priv = cd_sensor_spark_get_private (sensor);
+	CdSpectrum *sp;
+	const gchar *kind;
+	guint i;
+	g_autoptr(CdIt8) it8 = NULL;
+	g_autoptr(CdSpectrum) sp_black_body = NULL;
+	g_autoptr(GError) error_local = NULL;
+
+	/* create reference spectra for a halogen bulb */
+	sp_black_body = cd_spectrum_planckian_new_full (3200,
+							cd_spectrum_get_start (sp_in),
+							cd_spectrum_get_end (sp_in),
+							1);
+	cd_spectrum_normalize_max (sp_black_body, 1.f);
+	if (g_getenv ("SPARK_DEBUG") != NULL) {
+		g_autofree gchar *txt = NULL;
+		txt = cd_spectrum_to_string (sp_black_body, 180, 20);
+		g_print ("BLACKBODY@3200K\n%s", txt);
+	}
+
+	/* normalize the sensor result too */
+	cd_spectrum_normalize_max (sp_in, 1.f);
+	if (g_getenv ("SPARK_DEBUG") != NULL) {
+		g_autofree gchar *txt = NULL;
+		txt = cd_spectrum_to_string (sp_in, 180, 20);
+		g_print ("NORMALIZED-SENSOR-RESPONSE\n%s", txt);
+	}
+
+	/* resample, calculating the correction curve */
+	sp = cd_spectrum_new ();
+	cd_spectrum_set_start (sp, cd_spectrum_get_start (sp_in));
+	cd_spectrum_set_end (sp, cd_spectrum_get_end (sp_in));
+	for (i = cd_spectrum_get_start (sp); i < cd_spectrum_get_end (sp); i += 5) {
+		gdouble ref;
+		gdouble val;
+		ref = cd_spectrum_get_value_for_nm (sp_black_body, i);
+		val = cd_spectrum_get_value_for_nm (sp_in, i);
+		cd_spectrum_add_value (sp, ref / val);
+	}
+	cd_spectrum_normalize_max (sp, 1.f);
+
+	/* try to use this to recreate the black body model */
+	if (g_getenv ("SPARK_DEBUG") != NULL) {
+		g_autofree gchar *txt = NULL;
+		g_autoptr(CdSpectrum) sp_test = NULL;
+		sp_test = cd_spectrum_multiply (sp, sp_in, 5);
+		cd_spectrum_normalize_max (sp_test, 1.f);
+		txt = cd_spectrum_to_string (sp_test, 180, 20);
+		g_print ("CALIBRATED-RESPONSE\n%s", txt);
+	}
+
+	/* save locally */
+	if (priv->irradiance_cal != NULL)
+		cd_spectrum_free (priv->irradiance_cal);
+	priv->irradiance_cal = cd_spectrum_dup (sp);
+	cd_spectrum_set_id (priv->irradiance_cal, "1");
+
+	/* save to file */
+	it8 = cd_it8_new ();
+	kind = cd_sensor_kind_to_string (cd_sensor_get_kind (sensor));
+	cd_it8_set_instrument (it8, kind);
+	cd_it8_set_kind (it8, CD_IT8_KIND_SPECT);
+	cd_it8_set_originator (it8, "colord");
+	cd_it8_set_normalized (it8, FALSE);
+	cd_it8_set_spectral (it8, TRUE);
+	cd_it8_set_enable_created (it8, TRUE);
+	cd_it8_set_title (it8, "Dark Calibration");
+	cd_it8_add_spectrum (it8, sp);
+	if (!cd_it8_save_to_file (it8,
+				  priv->irradiance_cal_file,
+				  &error_local)) {
+		g_set_error (error,
+			     CD_SENSOR_ERROR,
+			     CD_SENSOR_ERROR_INTERNAL,
+			     "failed to save irradiance calibration: %s",
+			     error_local->message);
+		return NULL;
+	}
+
+
+	return sp;
+}
+
+static CdSpectrum *
 cd_sensor_spark_get_spectrum (CdSensor *sensor,
 			      CdSensorCap cap,
 			      GError **error)
@@ -112,19 +201,20 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 	CdSpectrum *sp;
 	g_autoptr(CdSpectrum) sp_tmp = NULL;
 	g_autoptr(CdSpectrum) sp_biased = NULL;
-	g_autoptr(CdSpectrum) sp_resampled = NULL;
 	g_autoptr(GError) error_local = NULL;
 
 	/* measure */
 	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_MEASURING);
 
 	/* perform dark calibration */
-	if (cap == CD_SENSOR_CAP_CALIBRATION)
+	if (cap == CD_SENSOR_CAP_CALIBRATION &&
+	    priv->last_error == CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION)
 		return cd_sensor_spark_get_dark_calibration (sensor, error);
 
 	/* we have no dark calibration */
 	if (priv->dark_cal == NULL ||
 	    cd_spectrum_get_size (priv->dark_cal) == 0) {
+		priv->last_error = CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION;
 		g_set_error_literal (error,
 				     CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION,
@@ -184,30 +274,55 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 	if (g_getenv ("SPARK_DEBUG") != NULL) {
 		g_autofree gchar *txt = NULL;
 		txt = cd_spectrum_to_string (sp_biased, 180, 20);
-		g_print ("BIASED\n%s", txt);
+		g_print ("RAW-DARKCAL\n%s", txt);
 	}
 
-	/* resample to a linear data space */
-	sp_resampled = cd_spectrum_resample (sp_biased,
-					     cd_spectrum_get_start (sp_biased),
-					     cd_spectrum_get_end (sp_biased),
-					     5);
+	/* perform irradiance calibration */
+	if (cap == CD_SENSOR_CAP_CALIBRATION &&
+	    priv->last_error == CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION) {
+		sp = cd_sensor_spark_get_irradiance_calibration (sensor, sp_biased, error);
+		if (sp == NULL)
+			return NULL;
+	} else {
+		g_autoptr(CdSpectrum) sp_resampled = NULL;
+		g_autoptr(CdSpectrum) sp_irradiance = NULL;
 
-	/* print something for debugging */
-	if (g_getenv ("SPARK_DEBUG") != NULL) {
-		g_autofree gchar *txt = NULL;
-		txt = cd_spectrum_to_string (sp_resampled, 180, 20);
-		g_print ("RESAMPLED\n%s", txt);
+		/* we have no irradiance calibration */
+		if (priv->irradiance_cal == NULL ||
+		    cd_spectrum_get_size (priv->irradiance_cal) == 0) {
+			priv->last_error = CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION;
+			g_set_error_literal (error,
+					     CD_SENSOR_ERROR,
+					     CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION,
+					     "no irradiance calibration provided");
+			return NULL;
+		}
+
+		/* resample to a linear data space */
+		sp_resampled = cd_spectrum_resample (sp_biased,
+						     cd_spectrum_get_start (sp_biased),
+						     cd_spectrum_get_end (sp_biased),
+						     5);
+
+		/* print something for debugging */
+		if (g_getenv ("SPARK_DEBUG") != NULL) {
+			g_autofree gchar *txt = NULL;
+			txt = cd_spectrum_to_string (sp_resampled, 180, 20);
+			g_print ("RESAMPLED\n%s", txt);
+		}
+
+		/* multiply with the irradiance calibration */
+		sp_irradiance = cd_spectrum_multiply (sp_resampled, priv->irradiance_cal, 1);
+
+		/* multiply the spectrum with the sensitivity factor */
+		sp = cd_spectrum_multiply (sp_irradiance, priv->sensitivity_cal, 1);
 	}
-
-	/* multiply the spectrum with the correction curve */
-	sp = cd_spectrum_multiply (sp_resampled, priv->sensitivity_cal, 1);
 
 	/* print something for debugging */
 	if (g_getenv ("SPARK_DEBUG") != NULL) {
 		g_autofree gchar *txt = NULL;
 		txt = cd_spectrum_to_string (sp, 180, 20);
-		g_print ("POSTMULT\n%s", txt);
+		g_print ("FINAL\n%s", txt);
 	}
 	return sp;
 }
@@ -418,11 +533,39 @@ cd_sensor_spark_lock_thread_cb (GTask *task,
 		}
 	}
 
+	/* can we load a irradiance calibration? */
+	fn = g_strdup_printf ("/var/lib/colord/sensor-%s-irradiance-cal-%s.sp",
+			      cd_sensor_kind_to_string (cd_sensor_get_kind (sensor)),
+			      serial_number_tmp);
+	priv->irradiance_cal_file = g_file_new_for_path (fn);
+	if (g_file_query_exists (priv->irradiance_cal_file, NULL)) {
+		g_autoptr(CdIt8) it8 = cd_it8_new ();
+		if (!cd_it8_load_from_file (it8,
+					    priv->irradiance_cal_file,
+					    &error)) {
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_NO_DATA,
+						 "%s", error->message);
+			return;
+		}
+		priv->irradiance_cal = cd_spectrum_dup (cd_it8_get_spectrum_by_id (it8, "1"));
+		g_debug ("loaded irradiance calibration with %i elements",
+			 cd_spectrum_get_size (priv->irradiance_cal));
+
+		/* print something for debugging */
+		if (g_getenv ("SPARK_DEBUG") != NULL) {
+			g_autofree gchar *txt = NULL;
+			txt = cd_spectrum_to_string (priv->irradiance_cal, 180, 20);
+			g_print ("IRRADIANCECAL:\n%s", txt);
+		}
+	}
+
 	/* load the sensor sensitivity from a file */
 	priv->sensitivity_cal = cd_spectrum_new ();
 	cd_spectrum_set_start (priv->sensitivity_cal, 0);
 	cd_spectrum_set_end (priv->sensitivity_cal, 1000);
-	cd_spectrum_add_value (priv->sensitivity_cal, 150); // <- FIXME: this needs to come from the device itself
+	cd_spectrum_add_value (priv->sensitivity_cal, 3421); // <- FIXME: this needs to come from the device itself
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
@@ -481,6 +624,15 @@ cd_sensor_unlock_thread_cb (GTask *task,
 		cd_spectrum_free (priv->dark_cal);
 		priv->dark_cal = NULL;
 	}
+	g_clear_object (&priv->irradiance_cal_file);
+	if (priv->sensitivity_cal != NULL) {
+		cd_spectrum_free (priv->sensitivity_cal);
+		priv->sensitivity_cal = NULL;
+	}
+	if (priv->irradiance_cal != NULL) {
+		cd_spectrum_free (priv->irradiance_cal);
+		priv->irradiance_cal = NULL;
+	}
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
@@ -512,6 +664,8 @@ cd_sensor_unref_private (CdSensorSparkPrivate *priv)
 		g_object_unref (priv->device);
 	if (priv->dark_cal != NULL)
 		cd_spectrum_free (priv->dark_cal);
+	if (priv->irradiance_cal != NULL)
+		cd_spectrum_free (priv->irradiance_cal);
 	g_free (priv);
 }
 

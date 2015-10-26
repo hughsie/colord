@@ -696,53 +696,82 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 {
 	const guint sample_duration_max_secs = 3;
 	gdouble max;
-	gdouble scale;
-	guint64 sample_duration = 100000; /* us */
-	g_autoptr(CdSpectrum) sp_probe = NULL;
-	CdSpectrum *sp;
+	gdouble scale = 0.f;
+	guint64 sample_duration = 10000; /* us */
+	CdSpectrum *sp = NULL;
+	guint i;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
-	/* take a quick measurement so we know how bright this is */
-	sp_probe = osp_device_take_spectrum_full (device,
-						  sample_duration,
-						  error);
-	if (sp_probe == NULL)
-		return NULL;
+	/* loop until we're in 1/4 to 3/4 FSD */
+	for (i = 0; i < 5; i++) {
+		g_autoptr(CdSpectrum) sp_probe = NULL;
 
-	/* scale the sample_duration so it fills half way in the range */
-	max = cd_spectrum_get_value_max (sp_probe);
-	if (max < 0.00001f) {
+		/* take a measurement */
+		sp_probe = osp_device_take_spectrum_full (device,
+							  sample_duration,
+							  error);
+		if (sp_probe == NULL)
+			return NULL;
+
+		/* scale the sample_duration so it fills half way in the range */
+		max = cd_spectrum_get_value_max (sp_probe);
+		if (max < 0.001f) {
+			g_set_error_literal (error,
+					     OSP_DEVICE_ERROR,
+					     OSP_DEVICE_ERROR_NO_DATA,
+					     "Got no valid data");
+			return NULL;
+		}
+
+		/* sensor is saturated, take drastic action */
+		if (max > 0.99f) {
+			sample_duration /= 100.f;
+			g_warning ("sensor saturated, setting duration to %luus",
+				   sample_duration);
+			continue;
+		}
+
+		/* break out if we got valid readings */
+		if (max > 0.25f && max < 0.75f) {
+			sp = cd_spectrum_dup (sp_probe);
+			break;
+		}
+
+		/* for the last try, relax what we deem acceptable so we can
+		 * measure very black things with a long integration time */
+		if (i == 4 && max > 0.01f) {
+			sp = cd_spectrum_dup (sp_probe);
+			break;
+		}
+
+		/* aim for FSD / 2 */
+		scale = (gdouble) 0.5 / max;
+		sample_duration *= scale;
+		g_debug ("for max of %f, using scale=%f for duration %luus",
+			 max, scale, sample_duration);
+
+		/* limit this to something sane */
+		if (sample_duration / G_USEC_PER_SEC > sample_duration_max_secs) {
+			g_debug ("limiting duration from %lus to %is",
+				 sample_duration / G_USEC_PER_SEC,
+				 sample_duration_max_secs);
+			sample_duration = sample_duration_max_secs * G_USEC_PER_SEC;
+		}
+	}
+
+	/* no suitable readings */
+	if (sp == NULL) {
 		g_set_error_literal (error,
 				     OSP_DEVICE_ERROR,
 				     OSP_DEVICE_ERROR_NO_DATA,
 				     "Got no valid data");
-		return FALSE;
-	}
-	scale = (gdouble) 0.5 / max;
-	sample_duration *= scale;
-	g_debug ("for max of %f, using scale=%f for duration %lums",
-		 max, scale, sample_duration / 1000);
-
-	/* limit this to something sane */
-	if (sample_duration / G_USEC_PER_SEC > sample_duration_max_secs) {
-		g_warning ("limiting duration from %lus to %is",
-			   sample_duration / G_USEC_PER_SEC,
-			   sample_duration_max_secs);
-		sample_duration = sample_duration_max_secs * G_USEC_PER_SEC;
-	}
-
-	/* take the final reading */
-	sp = osp_device_take_spectrum_full (device, sample_duration, error);
-	if (sp == NULL)
 		return NULL;
-	g_debug ("full spectral max is %f", cd_spectrum_get_value_max (sp));
+	}
 
 	/* scale with the new integral time */
 	cd_spectrum_set_norm (sp, cd_spectrum_get_norm (sp) / scale);
 	g_debug ("normalised spectral max is %f", cd_spectrum_get_value_max (sp));
-
-	/* success */
 	return sp;
 }
