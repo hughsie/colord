@@ -203,7 +203,7 @@ typedef enum {
 /**
  * CdSensorCap:
  *
- * The sensor capabilities.
+ * The sensor capabilities, i.e. things the sensor can do.
  **/
 typedef enum {
 	CD_SENSOR_CAP_UNKNOWN,			/* Since: 0.1.6 */
@@ -213,7 +213,7 @@ typedef enum {
 	CD_SENSOR_CAP_SPOT,			/* Since: 0.1.6 */
 	CD_SENSOR_CAP_PROJECTOR,		/* Since: 0.1.6 */
 	CD_SENSOR_CAP_AMBIENT,			/* Since: 0.1.6 */
-	CD_SENSOR_CAP_CALIBRATION,		/* Since: 0.1.6 */
+	CD_SENSOR_CAP_CALIBRATION,		/* Since: 0.1.6 (hint: raw measurement) */
 	CD_SENSOR_CAP_LED,			/* Since: 0.1.17 */
 	CD_SENSOR_CAP_PLASMA,			/* Since: 0.1.29 */
 	CD_SENSOR_CAP_LCD_CCFL,			/* Since: 0.1.31 */
@@ -222,6 +222,8 @@ typedef enum {
 	CD_SENSOR_CAP_WIDE_GAMUT_LCD_CCFL,	/* Since: 0.1.31 */
 	CD_SENSOR_CAP_WIDE_GAMUT_LCD_RGB_LED,	/* Since: 0.1.31 */
 	CD_SENSOR_CAP_SPECTRAL,			/* Since: 1.3.1 */
+	CD_SENSOR_CAP_CALIBRATION_DARK,		/* Since: 1.3.1 */
+	CD_SENSOR_CAP_CALIBRATION_IRRADIANCE,	/* Since: 1.3.1 */
 	/*< private >*/
 	CD_SENSOR_CAP_LAST
 } CdSensorCap;

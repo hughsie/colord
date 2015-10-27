@@ -178,6 +178,8 @@ static const CdEnumMatch enum_sensor_cap[] = {
 	{CD_SENSOR_CAP_WIDE_GAMUT_LCD_CCFL,		"wide-gamut-lcd-ccfl"},
 	{CD_SENSOR_CAP_WIDE_GAMUT_LCD_RGB_LED,		"wide-gamut-lcd-rgb-led"},
 	{CD_SENSOR_CAP_SPECTRAL,			"spectral"},
+	{CD_SENSOR_CAP_CALIBRATION_DARK,		"calibration-dark"},
+	{CD_SENSOR_CAP_CALIBRATION_IRRADIANCE,		"calibration-irradiance"},
 	{0, NULL}
 };
 

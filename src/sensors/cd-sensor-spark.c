@@ -39,7 +39,6 @@ typedef struct
 	GFile				*dark_cal_file;
 	GFile				*irradiance_cal_file;
 	CdSpectrum			*sensitivity_cal;
-	CdSensorError			 last_error;
 } CdSensorSparkPrivate;
 
 static CdSensorSparkPrivate *
@@ -207,14 +206,12 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 	cd_sensor_set_state_in_idle (sensor, CD_SENSOR_STATE_MEASURING);
 
 	/* perform dark calibration */
-	if (cap == CD_SENSOR_CAP_CALIBRATION &&
-	    priv->last_error == CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION)
+	if (cap == CD_SENSOR_CAP_CALIBRATION_DARK)
 		return cd_sensor_spark_get_dark_calibration (sensor, error);
 
 	/* we have no dark calibration */
 	if (priv->dark_cal == NULL ||
 	    cd_spectrum_get_size (priv->dark_cal) == 0) {
-		priv->last_error = CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION;
 		g_set_error_literal (error,
 				     CD_SENSOR_ERROR,
 				     CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION,
@@ -278,8 +275,7 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 	}
 
 	/* perform irradiance calibration */
-	if (cap == CD_SENSOR_CAP_CALIBRATION &&
-	    priv->last_error == CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION) {
+	if (cap == CD_SENSOR_CAP_CALIBRATION_IRRADIANCE) {
 		sp = cd_sensor_spark_get_irradiance_calibration (sensor, sp_biased, error);
 		if (sp == NULL)
 			return NULL;
@@ -290,7 +286,6 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 		/* we have no irradiance calibration */
 		if (priv->irradiance_cal == NULL ||
 		    cd_spectrum_get_size (priv->irradiance_cal) == 0) {
-			priv->last_error = CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION;
 			g_set_error_literal (error,
 					     CD_SENSOR_ERROR,
 					     CD_SENSOR_ERROR_REQUIRED_IRRADIANCE_CALIBRATION,
@@ -675,7 +670,8 @@ cd_sensor_coldplug (CdSensor *sensor, GError **error)
 	CdSensorSparkPrivate *priv;
 	guint64 caps = cd_bitfield_from_enums (CD_SENSOR_CAP_LCD,
 					       CD_SENSOR_CAP_CRT,
-					       CD_SENSOR_CAP_CALIBRATION,
+					       CD_SENSOR_CAP_CALIBRATION_DARK,
+					       CD_SENSOR_CAP_CALIBRATION_IRRADIANCE,
 					       CD_SENSOR_CAP_PLASMA,
 					       CD_SENSOR_CAP_SPECTRAL,
 					       -1);

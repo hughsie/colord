@@ -1041,12 +1041,13 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 
 		/* check type */
 		if (cap != CD_SENSOR_CAP_SPECTRAL &&
-		    cap != CD_SENSOR_CAP_CALIBRATION) {
+		    cap != CD_SENSOR_CAP_CALIBRATION_DARK &&
+		    cap != CD_SENSOR_CAP_CALIBRATION_IRRADIANCE) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_SENSOR_ERROR,
 							       CD_SENSOR_ERROR_INTERNAL,
 							       "invalid cap, only spectral "
-							       "or calibration supported");
+							       "or calibration type supported");
 			return;
 		}
 

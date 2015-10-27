@@ -449,6 +449,18 @@ cd_util_sensor_cap_to_string (CdSensorCap sensor_cap)
 		/* TRANSLATORS: this is the display technology */
 		return _("Calibration");
 	}
+	if (sensor_cap == CD_SENSOR_CAP_CALIBRATION_DARK) {
+		/* TRANSLATORS: this is the display calibration type */
+		return _("Dark Calibration");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_CALIBRATION_IRRADIANCE) {
+		/* TRANSLATORS: this is the display calibration type */
+		return _("Irradiance Calibration");
+	}
+	if (sensor_cap == CD_SENSOR_CAP_SPECTRAL) {
+		/* TRANSLATORS: this is the sensor capability */
+		return _("Spectral");
+	}
 	if (sensor_cap == CD_SENSOR_CAP_LCD) {
 		/* TRANSLATORS: this is the display technology,
 		 * where LCD stands for 'Liquid Crystal Display' */
@@ -1146,7 +1158,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 					getchar ();
 					j--;
 					g_clear_error (&error_local);
-					cap_tmp = CD_SENSOR_CAP_CALIBRATION;
+					cap_tmp = CD_SENSOR_CAP_CALIBRATION_DARK;
 					continue;
 				} else if (g_error_matches (error_local,
 							    CD_SENSOR_ERROR,
@@ -1156,7 +1168,7 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 					getchar ();
 					j--;
 					g_clear_error (&error_local);
-					cap_tmp = CD_SENSOR_CAP_CALIBRATION;
+					cap_tmp = CD_SENSOR_CAP_CALIBRATION_IRRADIANCE;
 					continue;
 				} else {
 					g_propagate_error (error,
@@ -1166,7 +1178,8 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 			}
 
 			/* reset back */
-			if (cap_tmp == CD_SENSOR_CAP_CALIBRATION) {
+			if (cap_tmp == CD_SENSOR_CAP_CALIBRATION_DARK ||
+			    cap_tmp == CD_SENSOR_CAP_CALIBRATION_IRRADIANCE) {
 				cap_tmp = CD_SENSOR_CAP_UNKNOWN;
 				g_print ("%s\n", _("Put the device on the color to be measured and press enter."));
 				getchar ();
