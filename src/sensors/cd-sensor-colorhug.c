@@ -68,7 +68,7 @@ cd_sensor_colorhug_get_sample_cb (GObject *object,
 				  gpointer user_data)
 {
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	CdSensorTaskData *data = g_task_get_task_data (task);
 	g_autoptr(GError) error = NULL;
 

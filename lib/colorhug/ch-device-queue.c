@@ -245,7 +245,6 @@ ch_device_queue_process_write_command_cb (GObject *source,
 				 g_strdup_printf ("%s: %s",
 						  g_usb_device_get_platform_id (device),
 						  error->message));
-		g_error_free (error);
 
 		/* should we mark complete other commands as complete */
 		if ((tdata->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_CONTINUE_ERRORS) == 0) {
@@ -281,19 +280,19 @@ out:
 		    (tdata->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_NONFATAL_ERRORS) == 0) {
 			tmp = g_ptr_array_index (tdata->failures, 0);
 			g_task_return_new_error (task,
-							 CH_DEVICE_ERROR,
-							 last_error_code,
-							 "%s", tmp);
+						 CH_DEVICE_ERROR,
+						 last_error_code,
+						 "%s", tmp);
 		} else if (tdata->failures->len > 1 &&
 			   (tdata->process_flags & CH_DEVICE_QUEUE_PROCESS_FLAGS_NONFATAL_ERRORS) == 0) {
 			g_ptr_array_add (tdata->failures, NULL);
 			error_msg = g_strjoinv (", ", (gchar**) tdata->failures->pdata);
 			g_task_return_new_error (task,
-							 CH_DEVICE_ERROR,
-							 last_error_code,
-							 "There were %i failures: %s",
-							 tdata->failures->len - 1,
-							 error_msg);
+						 CH_DEVICE_ERROR,
+						 last_error_code,
+						 "There were %i failures: %s",
+						 tdata->failures->len - 1,
+						 error_msg);
 		} else {
 			g_task_return_boolean (task, TRUE);
 		}
