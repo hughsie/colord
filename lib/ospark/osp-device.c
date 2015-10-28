@@ -53,6 +53,12 @@ osp_device_error_quark (void)
 
 /**
  * osp_device_open:
+ * @device: a #GUsbDevice instance
+ * @error: A #GError or %NULL
+ *
+ * Opens the device and claims the interface
+ *
+ * Return value: %TRUE for success
  *
  * Since: 1.2.11
  **/
@@ -253,6 +259,12 @@ osp_device_send_command (GUsbDevice *device, OspCmd cmd,
 
 /**
  * osp_device_get_serial:
+ * @device: a #GUsbDevice instance
+ * @error: A #GError or %NULL
+ *
+ * Gets the device serial number.
+ *
+ * Return value: A string, or %NULL for failure
  *
  * Since: 1.2.11
  **/
@@ -285,6 +297,12 @@ osp_device_get_serial (GUsbDevice *device, GError **error)
 
 /**
  * osp_device_get_fw_version:
+ * @device: a #GUsbDevice instance
+ * @error: A #GError or %NULL
+ *
+ * Opens the device and claims the interface
+ *
+ * Return value: The firmware version, or %NULL for error
  *
  * Since: 1.2.11
  **/
@@ -357,6 +375,12 @@ osp_device_get_wavelength_cal_for_idx (GUsbDevice *device,
 
 /**
  * osp_device_get_wavelength_start:
+ * @device: a #GUsbDevice instance
+ * @error: A #GError or %NULL
+ *
+ * Gets the starting wavelength for the sensor.
+ *
+ * Return value: A value in nm, or -1 for error
  *
  * Since: 1.3.1
  **/
@@ -383,6 +407,13 @@ osp_device_get_wavelength_start (GUsbDevice *device, GError **error)
 
 /**
  * osp_device_get_wavelength_cal:
+ * @device: a #GUsbDevice instance
+ * @length: the size of the returned array
+ * @error: A #GError or %NULL
+ *
+ * Gets the wavelength coefficients for the sensor.
+ *
+ * Return value: An array of coefficients
  *
  * Since: 1.3.1
  **/
@@ -484,6 +515,13 @@ osp_device_get_nonlinearity_cal_for_idx (GUsbDevice *device,
 
 /**
  * osp_device_get_nonlinearity_cal:
+ * @device: a #GUsbDevice instance
+ * @length: the size of the returned array
+ * @error: A #GError or %NULL
+ *
+ * Gets the nonlinearity values for the sensor.
+ *
+ * Return value: An array of coefficients
  *
  * Since: 1.3.1
  **/
@@ -545,6 +583,13 @@ osp_device_get_nonlinearity_cal (GUsbDevice *device, guint *length, GError **err
 
 /**
  * osp_device_get_irradiance_cal:
+ * @device: a #GUsbDevice instance
+ * @length: the size of the returned array
+ * @error: A #GError or %NULL
+ *
+ * Gets the irradiance spectrum for the sensor.
+ *
+ * Return value: An array of coefficients
  *
  * Since: 1.3.1
  **/
