@@ -632,49 +632,19 @@ osp_device_get_irradiance_cal (GUsbDevice *device, guint *length, GError **error
 }
 
 /**
- * osp_device_take_spectrum_full:
- * @device: a #GUsbDevice instance.
- * @sample_duration: the sample duration in µs
- * @error: A #GError or %NULL
- *
- * Returns a spectrum for a set sample duration.
- *
- * Return value: A #CdSpectrum, or %NULL for error
- *
- * Since: 1.3.1
+ * osp_device_take_spectrum_internal:
  **/
-CdSpectrum *
-osp_device_take_spectrum_full (GUsbDevice *device,
-				guint64 sample_duration,
-				GError **error)
+static CdSpectrum *
+osp_device_take_spectrum_internal (GUsbDevice *device,
+				   guint64 sample_duration,
+				   GError **error)
 {
 	CdSpectrum *sp;
-	gdouble start;
 	gdouble val;
 	gsize data_len;
-	guint8 bin_factor = 0;
 	guint i;
-	g_autofree gdouble *cx = NULL;
 	g_autofree guint8 *data = NULL;
 	g_autoptr(GTimer) t = NULL;
-
-	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
-
-	/* get coefficients */
-	cx = osp_device_get_wavelength_cal (device, NULL, error);
-	if (cx == NULL)
-		return NULL;
-
-	/* get start */
-	start = osp_device_get_wavelength_start (device, error);
-	if (start < 0)
-		return NULL;
-
-	/* return every pixel */
-	if (!osp_device_send_command (device, OSP_CMD_SET_PIXEL_BINNING_FACTOR,
-				      &bin_factor, 1, error))
-		return NULL;
 
 	/* set integral time in us */
 	if (!osp_device_send_command (device, OSP_CMD_SET_INTEGRATION_TIME,
@@ -700,28 +670,86 @@ osp_device_take_spectrum_full (GUsbDevice *device,
 
 	/* export */
 	sp = cd_spectrum_sized_new (1024);
-	cd_spectrum_set_id (sp, "raw");
-	cd_spectrum_set_start (sp, start);
-	cd_spectrum_set_norm (sp, 1.f);
 	for (i = 0; i < 1024; i++) {
 		val = data[i*2+1] * 256 + data[i*2+0];
 		cd_spectrum_add_value (sp, val / (gdouble) 0xffff);
 	}
-	cd_spectrum_set_wavelength_cal (sp, cx[0], cx[1], cx[2]);
 
 	/* the maximum value the hardware can return is 0x3fff */
-	cd_spectrum_set_norm (sp, 4);
 	val = cd_spectrum_get_value_max (sp);
-	if (val > 1.f) {
+	if (val > 0.25) {
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "spectral max should be <= 1.f, was %f",
+			     "spectral max should be <= 0.25f, was %f",
 			     val);
 		cd_spectrum_free (sp);
 		return NULL;
 	}
 
+	return sp;
+}
+
+/**
+ * osp_device_take_spectrum_full:
+ * @device: a #GUsbDevice instance
+ * @sample_duration: the sample duration in µs
+ * @error: A #GError or %NULL
+ *
+ * Returns a spectrum for a set sample duration.
+ *
+ * Return value: A #CdSpectrum, or %NULL for error
+ *
+ * Since: 1.3.1
+ **/
+CdSpectrum *
+osp_device_take_spectrum_full (GUsbDevice *device,
+			       guint64 sample_duration,
+			       GError **error)
+{
+	CdSpectrum *sp;
+	gdouble start;
+	guint8 bin_factor = 0;
+	g_autofree gdouble *cx = NULL;
+	g_autoptr(CdSpectrum) sp_dc = NULL;
+	g_autoptr(CdSpectrum) sp_raw = NULL;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	/* return every pixel */
+	if (!osp_device_send_command (device, OSP_CMD_SET_PIXEL_BINNING_FACTOR,
+				      &bin_factor, 1, error))
+		return NULL;
+
+	/* get spectrum */
+	sp_raw = osp_device_take_spectrum_internal (device, sample_duration, error);
+	if (sp_raw == NULL)
+		return NULL;
+	cd_spectrum_set_id (sp_raw, "raw");
+
+	/* remove any DC offset from the sensor by doing a 10us reading --
+	 * ideally this would be 0us, but we have to use what we have */
+	sp_dc = osp_device_take_spectrum_internal (device, 10, error);
+	if (sp_dc == NULL)
+		return NULL;
+	cd_spectrum_set_id (sp_dc, "dc");
+
+	/* get coefficients */
+	cx = osp_device_get_wavelength_cal (device, NULL, error);
+	if (cx == NULL)
+		return NULL;
+
+	/* get start */
+	start = osp_device_get_wavelength_start (device, error);
+	if (start < 0)
+		return NULL;
+
+	/* return the reading without a DC component */
+	sp = cd_spectrum_subtract (sp_raw, sp_dc, 5);
+	cd_spectrum_set_start (sp, start);
+	cd_spectrum_set_norm (sp, 4);
+	cd_spectrum_set_wavelength_cal (sp, cx[0], cx[1], cx[2]);
 	return sp;
 }
 
@@ -740,6 +768,7 @@ CdSpectrum *
 osp_device_take_spectrum (GUsbDevice *device, GError **error)
 {
 	const guint sample_duration_max_secs = 3;
+	gboolean relax_requirements = FALSE;
 	gdouble max;
 	gdouble scale = 0.f;
 	guint64 sample_duration = 10000; /* us */
@@ -753,6 +782,11 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 	for (i = 0; i < 5; i++) {
 		g_autoptr(CdSpectrum) sp_probe = NULL;
 
+		/* for the last try, relax what we deem acceptable so we can
+		 * measure very black things with a long integration time */
+		if (i == 4)
+			relax_requirements = TRUE;
+
 		/* take a measurement */
 		sp_probe = osp_device_take_spectrum_full (device,
 							  sample_duration,
@@ -760,21 +794,20 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 		if (sp_probe == NULL)
 			return NULL;
 
-		/* scale the sample_duration so it fills half way in the range */
+		/* sensor picked up nothing, take action */
 		max = cd_spectrum_get_value_max (sp_probe);
 		if (max < 0.001f) {
-			g_set_error_literal (error,
-					     OSP_DEVICE_ERROR,
-					     OSP_DEVICE_ERROR_NO_DATA,
-					     "Got no valid data");
-			return NULL;
+			sample_duration *= 100.f;
+			g_debug ("sensor read no data, setting duration to %luus",
+				 sample_duration);
+			continue;
 		}
 
-		/* sensor is saturated, take drastic action */
+		/* sensor is saturated, take action */
 		if (max > 0.99f) {
 			sample_duration /= 100.f;
-			g_warning ("sensor saturated, setting duration to %luus",
-				   sample_duration);
+			g_debug ("sensor saturated, setting duration to %luus",
+				 sample_duration);
 			continue;
 		}
 
@@ -784,9 +817,8 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 			break;
 		}
 
-		/* for the last try, relax what we deem acceptable so we can
-		 * measure very black things with a long integration time */
-		if (i == 4 && max > 0.01f) {
+		/* be more accepting */
+		if (relax_requirements && max > 0.01f) {
 			sp = cd_spectrum_dup (sp_probe);
 			break;
 		}
@@ -803,6 +835,7 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 				 sample_duration / G_USEC_PER_SEC,
 				 sample_duration_max_secs);
 			sample_duration = sample_duration_max_secs * G_USEC_PER_SEC;
+			relax_requirements = TRUE;
 		}
 	}
 

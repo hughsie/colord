@@ -237,42 +237,47 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 		g_print ("RAW\n%s", txt);
 	}
 
-	/* we have an invalid dark calibration */
-	if (cd_spectrum_get_size (sp_tmp) !=
-	    cd_spectrum_get_size (priv->dark_cal)) {
-		g_set_error_literal (error,
-				     CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION,
-				     "dark calibration was invalid");
-		return NULL;
-	}
+	/* we don't have a method for getting this accurately yet */
+	if (FALSE) {
+		/* we have an invalid dark calibration */
+		if (cd_spectrum_get_size (sp_tmp) !=
+		    cd_spectrum_get_size (priv->dark_cal)) {
+			g_set_error_literal (error,
+					     CD_SENSOR_ERROR,
+					     CD_SENSOR_ERROR_REQUIRED_DARK_CALIBRATION,
+					     "dark calibration was invalid");
+			return NULL;
+		}
 
-	/* print something for debugging */
-	if (g_getenv ("SPARK_DEBUG") != NULL) {
-		g_autofree gchar *txt = NULL;
-		txt = cd_spectrum_to_string (priv->dark_cal, 180, 20);
-		g_print ("DARKCAL\n%s", txt);
-	}
+		/* print something for debugging */
+		if (g_getenv ("SPARK_DEBUG") != NULL) {
+			g_autofree gchar *txt = NULL;
+			txt = cd_spectrum_to_string (priv->dark_cal, 180, 20);
+			g_print ("DARKCAL\n%s", txt);
+		}
 
-	/* subtract the dark calibration */
-	sp_biased = cd_spectrum_subtract (sp_tmp, priv->dark_cal, 5);
-	if (sp_biased == NULL) {
-		g_set_error_literal (error,
-				     CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_NO_DATA,
-				     "failed to get subtract spectra");
-		return NULL;
+		/* subtract the dark calibration */
+		sp_biased = cd_spectrum_subtract (sp_tmp, priv->dark_cal, 5);
+		if (sp_biased == NULL) {
+			g_set_error_literal (error,
+					     CD_SENSOR_ERROR,
+					     CD_SENSOR_ERROR_NO_DATA,
+					     "failed to get subtract spectra");
+			return NULL;
+		}
+
+		/* print something for debugging */
+		if (g_getenv ("SPARK_DEBUG") != NULL) {
+			g_autofree gchar *txt = NULL;
+			txt = cd_spectrum_to_string (sp_biased, 180, 20);
+			g_print ("RAW-DARKCAL\n%s", txt);
+		}
+	} else {
+		sp_biased = cd_spectrum_dup (sp_tmp);
 	}
 
 	/* ensure we never have negative readings */
 	cd_spectrum_limit_min (sp_biased, 0.f);
-
-	/* print something for debugging */
-	if (g_getenv ("SPARK_DEBUG") != NULL) {
-		g_autofree gchar *txt = NULL;
-		txt = cd_spectrum_to_string (sp_biased, 180, 20);
-		g_print ("RAW-DARKCAL\n%s", txt);
-	}
 
 	/* perform irradiance calibration */
 	if (cap == CD_SENSOR_CAP_CALIBRATION_IRRADIANCE) {
@@ -308,6 +313,13 @@ cd_sensor_spark_get_spectrum (CdSensor *sensor,
 
 		/* multiply with the irradiance calibration */
 		sp_irradiance = cd_spectrum_multiply (sp_resampled, priv->irradiance_cal, 1);
+
+		/* print something for debugging */
+		if (g_getenv ("SPARK_DEBUG") != NULL) {
+			g_autofree gchar *txt = NULL;
+			txt = cd_spectrum_to_string (priv->irradiance_cal, 180, 20);
+			g_print ("IRRADIANCECAL\n%s", txt);
+		}
 
 		/* multiply the spectrum with the sensitivity factor */
 		sp = cd_spectrum_multiply (sp_irradiance, priv->sensitivity_cal, 1);
@@ -560,7 +572,7 @@ cd_sensor_spark_lock_thread_cb (GTask *task,
 	priv->sensitivity_cal = cd_spectrum_new ();
 	cd_spectrum_set_start (priv->sensitivity_cal, 0);
 	cd_spectrum_set_end (priv->sensitivity_cal, 1000);
-	cd_spectrum_add_value (priv->sensitivity_cal, 3421); // <- FIXME: this needs to come from the device itself
+	cd_spectrum_add_value (priv->sensitivity_cal, 34210); // <- FIXME: this needs to come from the device itself
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
