@@ -86,7 +86,6 @@ ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1001", ENV{COLORD_SENSOR_KIND}="colo
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1004", ENV{COLORD_SENSOR_KIND}="colorhug2", ENV{COLORD_SENSOR_CAPS}="lcd"
 
 # ColorHug Plus
-ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1003", ENV{COLORD_SENSOR_KIND}="colorhug-plus", ENV{COLORD_IGNORE}="1"
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1002", ENV{COLORD_SENSOR_KIND}="colorhug-plus", ENV{COLORD_SENSOR_CAPS}="lcd"
 
 # ColorHug ALS
