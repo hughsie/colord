@@ -215,7 +215,7 @@ ch_multiplier_to_string (ChFreqScale multiplier)
  * Since: 0.1.29
  **/
 const gchar *
-ch_command_to_string (guint8 cmd)
+ch_command_to_string (ChCmd cmd)
 {
 	const char *str = NULL;
 	switch (cmd) {
@@ -344,6 +344,27 @@ ch_command_to_string (guint8 cmd)
 		break;
 	case CH_CMD_GET_TEMPERATURE:
 		str = "get-temperature";
+		break;
+	case CH_CMD_GET_ERROR:
+		str = "get-error";
+		break;
+	case CH_CMD_CLEAR_ERROR:
+		str = "clear-error";
+		break;
+	case CH_CMD_TAKE_READING_SPECTRAL:
+		str = "take-reading-spectral";
+		break;
+	case CH_CMD_GET_ADC_CALIBRATION_POS:
+		str = "get-adc-calibration-pos";
+		break;
+	case CH_CMD_GET_ADC_CALIBRATION_NEG:
+		str = "get-adc-calibration-neg";
+		break;
+	case CH_CMD_GET_CCD_CALIBRATION:
+		str = "get-ccd-calibration";
+		break;
+	case CH_CMD_SET_CCD_CALIBRATION:
+		str = "set-ccd-calibration";
 		break;
 	default:
 		str = "unknown-command";

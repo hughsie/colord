@@ -1165,8 +1165,17 @@ G_BEGIN_DECLS
  *
  * Read in raw data from the SRAM memory.
  *
+ * PROTOCOLv1:
  * IN:  [1:cmd][2:address][1:length]
  * OUT: [1:retval][1:cmd][1-60:data]
+ *
+ * PROTOCOLv2:
+ * bRequest:   [cmd]
+ * wValue:     [address-index/64]
+ * wIndex:     interface
+ * wLength:    0x64
+ * Direction:  DEVICE->HOST
+ * Data:       [64:DATA]
  *
  * This command is available under these conditions:
  *
@@ -1286,6 +1295,87 @@ G_BEGIN_DECLS
  * Since: 0.1.29
  **/
 #define	CH_CMD_SELF_TEST			0x40
+
+/**
+ * CH_CMD_GET_ERROR:
+ *
+ * Gets any recorded error from the device.
+ *
+ * PROTOCOLv2:
+ * bRequest:   [cmd]
+ * wValue:     0x00
+ * wIndex:     interface
+ * wLength:    0x00
+ * Direction:  DEVICE->HOST
+ * Data:       [1:error][1:cmd]
+ *
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
+ *
+ * Since: 1.3.1
+ **/
+#define	CH_CMD_GET_ERROR			0x60
+
+/**
+ * CH_CMD_CLEAR_ERROR:
+ *
+ * Clears any recorded error on the device.
+ *
+ * PROTOCOLv2:
+ * bRequest:   [cmd]
+ * wValue:     0x00
+ * wIndex:     interface
+ * wLength:    0x00
+ * Direction:  DEVICE->HOST
+ * Data:       []
+ *
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
+ *
+ * Since: 1.3.1
+ **/
+#define	CH_CMD_CLEAR_ERROR			0x61
+
+/**
+ * CH_CMD_SET_CRYPTO_KEY:
+ *
+ * Sets the 128 bit encyption key for the device.
+ *
+ * PROTOCOLv2:
+ * bRequest:   [cmd]
+ * wValue:     0x00
+ * wIndex:     interface
+ * wLength:    0x00
+ * Direction:  DEVICE->HOST
+ * Data:       [4:key0][4:key1][4:key2][4:key3]
+ *
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
+ *
+ * Since: 1.3.1
+ **/
+#define	CH_CMD_SET_CRYPTO_KEY			0x70
+
+/* these are not yet in the API */
+#define	CH_EP0_TRANSFER_SIZE			64
 
 /* secret code */
 #define	CH_WRITE_EEPROM_MAGIC			"Un1c0rn2"
@@ -1442,9 +1532,11 @@ typedef enum {
 	CH_DEVICE_MODE_LAST
 } ChDeviceMode;
 
+typedef guint8 ChCmd;
+
 /* prototypes */
 const gchar	*ch_strerror			(ChError	 error_enum);
-const gchar	*ch_command_to_string		(guint8		 cmd);
+const gchar	*ch_command_to_string		(ChCmd		 cmd);
 const gchar	*ch_multiplier_to_string	(ChFreqScale	 multiplier);
 const gchar	*ch_color_select_to_string	(ChColorSelect	 color_select);
 const gchar	*ch_measure_mode_to_string	(ChMeasureMode	 measure_mode);
