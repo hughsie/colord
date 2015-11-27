@@ -4,17 +4,17 @@
 # 
 # Translators:
 # Fran Dieguez <frandieguez@gnome.org>, 2011
-# Fran Diéguez <frandieguez@ubuntu.com>, 2011-2012
+# Fran Diéguez <frandieguez@ubuntu.com>, 2011-2012,2015
 # Miguel Anxo Bouzada <mbouzada@gmail.com>, 2011
 # Miguel Anxo Bouzada <mbouzada@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:30+0100\n"
-"PO-Revision-Date: 2015-03-21 06:54+0000\n"
+"POT-Creation-Date: 2015-11-27 15:21+0000\n"
+"PO-Revision-Date: 2015-11-27 15:21+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Galician (http://www.transifex.com/projects/p/colord/language/gl/)\n"
+"Language-Team: Galician (http://www.transifex.com/hughsie/colord/language/gl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -51,7 +51,7 @@ msgstr "Mostrar información de depuración adicional"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "O locale a usar ao configurar o texto localizado"
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
@@ -99,7 +99,7 @@ msgstr "Estabelecer a versión do perfíl ICC"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "Exportar os datos da etiqueta"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -107,19 +107,19 @@ msgstr "Xestión de cor"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "Programa de volcado de perfíl ICC"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Crear un CMF desde datos CSV"
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "Crear un espectro desde datos CSV"
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "Crear un CCMX desde os datos de referencia e medida"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -207,7 +207,7 @@ msgstr "Activado"
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 msgid "Embedded"
-msgstr ""
+msgstr "Incrustado"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -268,55 +268,67 @@ msgstr "Ambiente"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
+msgstr "Calibrado"
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Dark Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Irradiance Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the sensor capability
+msgid "Spectral"
 msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD xenérica"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 msgid "LED Generic"
-msgstr ""
+msgstr "LED xenérica"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 msgid "Plasma"
-msgstr ""
+msgstr "Plasma"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL Gamut ancha"
 
 #. TRANSLATORS: this is the display technology
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED Gamut ancha"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD LED branca"
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
-msgstr ""
+msgstr "Descoñecido"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 msgid "State"
@@ -345,7 +357,7 @@ msgstr "Bloqueado"
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 msgid "Capabilities"
-msgstr ""
+msgstr "Capacidades"
 
 msgid "There are no supported sensors attached"
 msgstr "Non hai sensores compatíbeis conectados"
@@ -362,24 +374,39 @@ msgstr "Estabeleza o dispositivo á posicion de calibración e prema intro."
 msgid "Set the device to the surface position and press enter."
 msgstr "Estabeleza o dispositivo á posición da superficie e prema intro."
 
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Put the device in a dark place and press enter."
+msgstr ""
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Calibrate with a 3200K light source."
+msgstr ""
+
+msgid "Put the device on the color to be measured and press enter."
+msgstr ""
+
 msgid "Color"
 msgstr "Cor"
 
+#. TRANSLATORS: sensor can't do this
+msgid "No spectral capability"
+msgstr ""
+
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "Mostrar versións do cliente e daemon"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Mostrar o valor sen ningunha cabeceira"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Filtrar propiedades do obxecto ao mostralo"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "Volcar todos os datos de depuración a un ficheiro"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -396,6 +423,10 @@ msgstr "Obtén tódolos perfiles de cor dispoñíbeis"
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
 msgstr "Obtén tódolos sensores de cor dispoñíbeis"
+
+#. TRANSLATORS: command description
+msgid "Gets a spectral reading from a sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"
@@ -415,15 +446,15 @@ msgstr "Crear un perfíl"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Buscar un dispositivo desde o ID de dispositivo"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Buscar un dispositivo con un valor de propiedade fornecido"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Buscar un perfíl desde o ID de perfíl"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -439,7 +470,7 @@ msgstr "Crea un perfíl"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Engadir un perfíl a un dispositivo que xa existe"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -455,7 +486,7 @@ msgstr "Elimina u perfíl"
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "Estabelece propiedades adicionais no perfíl"
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
@@ -491,34 +522,34 @@ msgstr "Devolve tódolos perfiles que coinciden con un cualificador"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Importar un perfil e instalao polo usuario"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr "Non hai conexión a colord:"
 
 msgid "Client version:"
-msgstr ""
+msgstr "Versión do cliente:"
 
 msgid "Daemon version:"
-msgstr ""
+msgstr "Versión do daemon:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Fabricante do sistema:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Modelo do sistema:"
 
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "Gamma predefinido para a pantalla"
 
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr ""
+msgstr "O valor de gamma de destino predeterminado para a pantalla. Os valores comúns son 1.8, 2.2 e 2.4"
 
 msgid "Default display target whitepoint"
-msgstr ""
+msgstr "Punto de branco obxectivo predeterminado para a pantalla"
 
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
@@ -526,7 +557,7 @@ msgid ""
 msgstr ""
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Retraso entre os intervalos de mostra"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
@@ -535,7 +566,7 @@ msgid ""
 msgstr ""
 
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "URI de subida do perfíl do servizo web"
 
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
@@ -543,10 +574,10 @@ msgid ""
 msgstr ""
 
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Compatíbel con Adobe RGB (1998)"
 
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Este perfíl é libre de resricións de copyright coñecidas"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -585,7 +616,7 @@ msgid ""
 msgstr ""
 
 msgid "Blue"
-msgstr ""
+msgstr "Azul"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
@@ -618,7 +649,7 @@ msgid ""
 msgstr ""
 
 msgid "Crayon Colors"
-msgstr ""
+msgstr "Cores Crayon"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -848,7 +879,7 @@ msgid ""
 msgstr ""
 
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "RGB Gamut ancho"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 msgid ""
@@ -860,7 +891,7 @@ msgid ""
 msgstr ""
 
 msgid "X11 Colors"
-msgstr ""
+msgstr "Cores X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -968,7 +999,7 @@ msgstr "Saír despois de que o motor estea cargado"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Crear un sensor falso para probas"
 
 msgid "Color Management D-Bus Service"
 msgstr "Servizo de xestión de cor D-Bus"

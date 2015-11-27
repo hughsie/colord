@@ -1,3 +1,36 @@
+Version 1.3.1
+~~~~~~~~~~~~~
+Released: 2015-11-27
+
+New Features:
+ - Add a sensor error for missing dark calibration (Richard Hughes)
+ - Add g_autoptr() defines for cd_color* (Richard Hughes)
+ - Add get-spectral-reading command to colormgr (Richard Hughes)
+ - Add the GetSpectrum() sensor D-Bus method (Richard Hughes)
+ - Allow returning spectral readings from the Spark sensor (Richard Hughes)
+ - libcolord: Add an error enum for missing irradiance calibration (Richard Hughes)
+ - libcolord: Add a spectral sensor capability (Richard Hughes)
+ - libcolord: Add cd_sensor_get_spectrum() (Richard Hughes)
+ - libcolord: Add cd_spectrum_get_value_max() (Richard Hughes)
+ - libcolord: Add cd_spectrum_limit_min() (Richard Hughes)
+ - libcolord: Add cd_spectrum_planckian_new_full() (Richard Hughes)
+ - libcolord: Add cd_spectrum_resample() (Richard Hughes)
+ - libcolord: Add cd_spectrum_set_wavelength_cal() (Richard Hughes)
+ - libcolord: Add cd_spectrum_subtract() (Richard Hughes)
+ - libcolord: Add cd_spectrum_to_string() (Richard Hughes)
+
+Bugfixes:
+ - Add a systemd user service corresponding to the D-Bus session service (Simon McVittie)
+ - Add a tmpfiles.d snippet to fix stateless systems (Tobias Hunger)
+ - data: Build Rec709 correctly (Richard Hughes)
+ - Ignore the ColorHug+ in DFU mode (Richard Hughes)
+ - Install the tmpfiles.d snippet in the right place (Richard Hughes)
+ - Reset the sensor back to idle after each action (Richard Hughes)
+ - libcolord: Fix a tiny memory leak in cd_icc_get_tag_data() (Richard Hughes)
+ - libcolord: Fix saving non-normalized spectra (Richard Hughes)
+ - libcolord: Make cd_spectrum_free() NULL-safe (Richard Hughes)
+ - libcolord: Return an error when we fail to estimate the gamma value (Richard Hughes)
+
 Version 1.2.12
 ~~~~~~~~~~~~~~
 Released: 2015-08-19

@@ -10,10 +10,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-08 14:24+0100\n"
-"PO-Revision-Date: 2015-05-01 15:33+0000\n"
+"POT-Creation-Date: 2015-11-27 15:21+0000\n"
+"PO-Revision-Date: 2015-11-27 15:21+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Greek (http://www.transifex.com/projects/p/colord/language/el/)\n"
+"Language-Team: Greek (http://www.transifex.com/hughsie/colord/language/el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -118,7 +118,7 @@ msgstr "Δημιουργήστε ένα φάσμα από τα δεδομένα 
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "Δημιουργία ενός CCMX από δεδομένα αναφοράς και μετρήσεων"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -269,6 +269,18 @@ msgstr "Περιβάλλοντος"
 msgid "Calibration"
 msgstr "Βαθμονόμηση "
 
+#. TRANSLATORS: this is the display calibration type
+msgid "Dark Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Irradiance Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the sensor capability
+msgid "Spectral"
+msgstr ""
+
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
@@ -361,8 +373,23 @@ msgstr "Ρυθμίστε τη συσκευή στη θέση βαθμονόμη�
 msgid "Set the device to the surface position and press enter."
 msgstr "Ρυθμίστε τη συσκευή στη θέση της επιφάνειας και πατήστε enter."
 
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Put the device in a dark place and press enter."
+msgstr ""
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Calibrate with a 3200K light source."
+msgstr ""
+
+msgid "Put the device on the color to be measured and press enter."
+msgstr ""
+
 msgid "Color"
 msgstr "Χρώμα"
+
+#. TRANSLATORS: sensor can't do this
+msgid "No spectral capability"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
@@ -395,6 +422,10 @@ msgstr "Εμφανίζει όλα τα διαθέσιμα προφίλ χρωμ�
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
 msgstr "Εμφανίζει όλους τους διαθέσιμους αισθητήρες χρωμάτων"
+
+#. TRANSLATORS: command description
+msgid "Gets a spectral reading from a sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"

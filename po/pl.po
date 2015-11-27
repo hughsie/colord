@@ -4,16 +4,16 @@
 # 
 # Translators:
 # POPularMAN, 2013
-# Piotr Drąg <piotrdrag@gmail.com>, 2011-2014
+# Piotr Drąg <piotrdrag@gmail.com>, 2011-2015
 # POPularMAN, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:30+0100\n"
-"PO-Revision-Date: 2015-03-21 06:54+0000\n"
+"POT-Creation-Date: 2015-11-27 15:21+0000\n"
+"PO-Revision-Date: 2015-11-27 15:21+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Polish (http://www.transifex.com/projects/p/colord/language/pl/)\n"
+"Language-Team: Polish (http://www.transifex.com/hughsie/colord/language/pl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -39,7 +39,7 @@ msgstr "Nie podano nazwy pliku wyjściowego"
 #. TRANSLATORS: this is a command alias
 #, c-format
 msgid "Alias to %s"
-msgstr "Alias do %s"
+msgstr "Alias do „%s”"
 
 msgid "Command not found, valid commands are:"
 msgstr "Nie odnaleziono polecenia, prawidłowe polecenia to:"
@@ -122,7 +122,7 @@ msgstr "Tworzy CCMX z referencji i danych pomiaru"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr "%e %B %Y, %H:%M:%S"
+msgstr "%e %B %Y, %H∶%M∶%S"
 
 #. TRANSLATORS: profile owner
 #. TRANSLATORS: profile UID
@@ -269,6 +269,18 @@ msgstr "Otaczający"
 msgid "Calibration"
 msgstr "Kalibracja"
 
+#. TRANSLATORS: this is the display calibration type
+msgid "Dark Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Irradiance Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the sensor capability
+msgid "Spectral"
+msgstr ""
+
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
@@ -361,8 +373,23 @@ msgstr "Proszę ustawić urządzenie w pozycji kalibracji i nacisnąć klawisz E
 msgid "Set the device to the surface position and press enter."
 msgstr "Proszę ustawić urządzenie w pozycji powierzchni i nacisnąć klawisz Enter."
 
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Put the device in a dark place and press enter."
+msgstr ""
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Calibrate with a 3200K light source."
+msgstr ""
+
+msgid "Put the device on the color to be measured and press enter."
+msgstr ""
+
 msgid "Color"
 msgstr "Kolor"
+
+#. TRANSLATORS: sensor can't do this
+msgid "No spectral capability"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
@@ -395,6 +422,10 @@ msgstr "Uzyskuje wszystkie dostępne profile kolorów"
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
 msgstr "Uzyskuje wszystkie dostępne czujniki kolorów"
+
+#. TRANSLATORS: command description
+msgid "Gets a spectral reading from a sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"

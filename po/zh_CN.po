@@ -3,15 +3,18 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Mingye Wang <arthur200126@gmail.com>, 2015
+# Tiansworld <tiansworld@fedoraproject.org>, 2014
+# Tiansworld <tiansworld@fedoraproject.org>, 2014
 # Tommy He <lovenemesis@gmail.com>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:30+0100\n"
-"PO-Revision-Date: 2015-03-21 06:54+0000\n"
+"POT-Creation-Date: 2015-11-27 15:21+0000\n"
+"PO-Revision-Date: 2015-11-27 15:21+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/colord/language/zh_CN/)\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/hughsie/colord/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -48,11 +51,11 @@ msgstr "显示额外的除错信息"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "设置本地化内容时要使用的区域设置"
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
-msgstr ""
+msgstr "生成给定尺寸的 VCGT 校正"
 
 #. TRANSLATORS: command description
 msgid "Clear any metadata in the profile"
@@ -92,11 +95,11 @@ msgstr "自动修复配置文件中的元数据"
 
 #. TRANSLATORS: command description
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "设置 ICC 配置文件版本"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "导出标记数据"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -104,19 +107,19 @@ msgstr "色彩管理"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "ICC 文件转储程序"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "从 CSV 数据中创建 CMF"
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "从 CSV 数据创建色谱"
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "根据参考数据与测量结果制作 CCMX"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -168,7 +171,7 @@ msgstr "Gamma 表"
 
 #. TRANSLATORS: if the profile is installed for all users
 msgid "System Wide"
-msgstr ""
+msgstr "系统范围"
 
 #. TRANSLATORS: profile filename
 msgid "Filename"
@@ -184,7 +187,7 @@ msgid "Metadata"
 msgstr "元数据"
 
 msgid "Warning"
-msgstr ""
+msgstr "警告"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -199,12 +202,12 @@ msgstr "修改于"
 
 #. TRANSLATORS: the device enabled state
 msgid "Enabled"
-msgstr ""
+msgstr "已启用"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 msgid "Embedded"
-msgstr ""
+msgstr "已嵌入"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -217,7 +220,7 @@ msgid "Vendor"
 msgstr "厂商"
 
 msgid "Inhibitors"
-msgstr ""
+msgstr "抑制剂"
 
 #. TRANSLATORS: the device serial number
 msgid "Serial"
@@ -265,55 +268,67 @@ msgstr "环境光"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
+msgstr "校正"
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Dark Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Irradiance Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the sensor capability
+msgid "Spectral"
 msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
-msgstr ""
+msgstr "通用 LCD"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 msgid "LED Generic"
-msgstr ""
+msgstr "通用 LED"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 msgid "Plasma"
-msgstr ""
+msgstr "等离子屏幕"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "宽 Gamut LCD CCFL"
 
 #. TRANSLATORS: this is the display technology
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "宽 Gamut LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD 白背光 LED"
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 msgid "State"
@@ -325,7 +340,7 @@ msgstr "序列号"
 
 #. TRANSLATORS: sensor identifier
 msgid "Sensor ID"
-msgstr ""
+msgstr "传感器 ID"
 
 #. TRANSLATORS: the options for the sensor
 msgid "Options"
@@ -342,7 +357,7 @@ msgstr "锁定"
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 msgid "Capabilities"
-msgstr ""
+msgstr "支持的功能"
 
 msgid "There are no supported sensors attached"
 msgstr "未连结任何支持的传感器"
@@ -353,30 +368,45 @@ msgstr "传感器"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "将设备放置于校正位置然后按回车键"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the surface position and press enter."
+msgstr "将设备放置至表面位置然后按回车键。"
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Put the device in a dark place and press enter."
+msgstr ""
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Calibrate with a 3200K light source."
+msgstr ""
+
+msgid "Put the device on the color to be measured and press enter."
 msgstr ""
 
 msgid "Color"
 msgstr "色彩"
 
+#. TRANSLATORS: sensor can't do this
+msgid "No spectral capability"
+msgstr ""
+
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "显示客户端及守护进程版本信息"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "不带任何标头地显示数值"
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "显示时过滤对象属性"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "将所有调试文件转储到文件"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -393,6 +423,10 @@ msgstr "获取所有可用的色彩配置文件"
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
 msgstr "获取所有可用的色彩传感器"
+
+#. TRANSLATORS: command description
+msgid "Gets a spectral reading from a sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"
@@ -412,15 +446,15 @@ msgstr "创建设备"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "在设备 ID 中查找设备"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "根据属性值查找设备"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "在配置文件 ID 中查找配置文件"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -436,7 +470,7 @@ msgstr "创建配置文件"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "向已存在的设备添加配置文件"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -452,7 +486,7 @@ msgstr "删除配置文件"
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "为配置文件设置额外属性"
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
@@ -460,7 +494,7 @@ msgstr "设定设备型号"
 
 #. TRANSLATORS: command description
 msgid "Enables or disables the device"
-msgstr ""
+msgstr "启用或禁用设备"
 
 #. TRANSLATORS: command description
 msgid "Gets the default profile for a device"
@@ -480,7 +514,7 @@ msgstr "设定设备类型"
 
 #. TRANSLATORS: command description
 msgid "Inhibits color profiles for this device"
-msgstr ""
+msgstr "该设备禁用色彩配置文件"
 
 #. TRANSLATORS: command description
 msgid "Returns all the profiles that match a qualifier"
@@ -488,62 +522,62 @@ msgstr "返回所有符合限定符的配置文件"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "导入配置文件并为用户安装"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr "未连结到 colord："
 
 msgid "Client version:"
-msgstr ""
+msgstr "客户端版本："
 
 msgid "Daemon version:"
-msgstr ""
+msgstr "守护进程版本："
 
 msgid "System vendor:"
-msgstr ""
+msgstr "计算机制造商："
 
 msgid "System model:"
-msgstr ""
+msgstr "计算机型号："
 
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "用于显示的默认伽马值"
 
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr ""
+msgstr "用于显示对象的默认伽马值。常用值为 1.8，2.2 和 2.4。"
 
 msgid "Default display target whitepoint"
-msgstr ""
+msgstr "默认显示对象白点"
 
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr ""
+msgstr "显示器校准时的默认白色色温目标，按开氏度（热力学温标）计算，0 代表显示器原生色温。常用的数值是 6500K（D65）和 5000K（D50）。"
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "在采样间隔中设置延迟"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "该延迟发生在设置样点颜色和要求测量设备采样的动作之间。由于图形驱动程序和显示器本身都会产生延迟，因此这是必须的。"
 
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "配置文件上传网络服务 URI"
 
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr ""
+msgstr "网络服务 URI 可让校正工具向互联网上传特定的配置文件。"
 
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "与 Adobe RGB (1998) 兼容"
 
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "该配置文件免于已知的版权限制"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -562,7 +596,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr ""
+msgstr "该老式配置文件是 Adobe 公司最初创建用于 Photosohp 和 Illustrator 的。由于它基于原有的苹果 13\" RGB 显示器，并且与 sRGB 相近，因此它不应当用作显示器配置文件或用于现在较新的图像中。"
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -571,7 +605,7 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "该色彩空间可显示比 Adobe RGB 更多的饱和色，适合常用于广告中的高饱和颜色图像。它与 DonRGB4 非常相近，但它能显示有时在富士 Fujichrome Velvia 反转片中出现的那种超饱和红色。"
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 msgid ""
@@ -579,17 +613,17 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "该色彩空间可显示比 Adobe RGB 更多的饱和色。尽管会保留更多的阴影区细节，但与 Prohoto RGB 相比，它不易产生量化误差。在大多数情况下，Prophoto RGB 还是更好的选择。"
 
 msgid "Blue"
-msgstr ""
+msgstr "蓝"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "该测试配置文件通过变更视频卡查询表，可让显示器上显示的所有颜色都轻微发蓝。这可让用户检查校正是否已正确应用。"
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 msgid ""
@@ -603,7 +637,7 @@ msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "此纯理论配置文件用于色彩实验。您肯定不会用它作为编辑用色彩空间或显示器配置文件的。"
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -612,10 +646,10 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr ""
+msgstr "该配置文件由 Radius 设计用于 PressView 显示器。该文件仅用于显示器配置文件；如果该配置文件与 sRGB 区别不大的话，也会用于编辑时的色彩空间。您只有在浏览用 PressView 显示器创建的图像时，才会用到该配置文件。"
 
 msgid "Crayon Colors"
-msgstr ""
+msgstr "蜡笔色彩"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -623,14 +657,14 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "该色彩配置文件包含了所有常用的 Crayola 蜡笔颜色。该文件用于测试将命名了的颜色嵌入文档。"
 
 #. TRANSLATORS: saturated means vivid bright colors
 msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "该色彩空间可显示比 Adobe RGB 更多的饱和色，适合常用于广告中的高饱和色图像。"
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 msgid ""
@@ -737,7 +771,7 @@ msgid ""
 msgstr ""
 
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "GRACoL TR006 铜版纸"
 
 #. TRANSLATORS: coated = smooth and expensive
 msgid ""
@@ -746,7 +780,7 @@ msgid ""
 msgstr ""
 
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 新闻纸"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -792,10 +826,10 @@ msgstr ""
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "这是目前北美和日本工作室视频录制时时用的标准。该配置文件仅用于视频的编解码。"
 
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 新闻纸"
 
 #. TRANSLATORS: CGATS is a trademark
 #, no-c-format
@@ -812,20 +846,20 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr ""
+msgstr "该配置文件由惠普和微软设计，用于未标记的 RGB 颜色和高清电视中，它一直是互联网上的默认配置文件。尽管该配置文件用于打印往往是个糟糕的选择，但多数未校正的显示器都可以显示出 sRGB 中的大多数颜色。"
 
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "红绿色互换"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "该配置文件将红绿通道互换，在检查配置文件是否正确应用时非常有用。如果该配置文件应用了两次，那么图像外观不会发生变化。"
 
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "SWOP TR003 铜版纸"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
@@ -835,7 +869,7 @@ msgid ""
 msgstr ""
 
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "SWOP TR005 铜版纸"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
@@ -845,7 +879,7 @@ msgid ""
 msgstr ""
 
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "宽 Gamut RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 msgid ""
@@ -857,14 +891,14 @@ msgid ""
 msgstr ""
 
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 色彩空间"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr ""
+msgstr "该色彩空间包含了 X11 定义的所有颜色，它假定来源颜色空间是 sRGB。"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -965,7 +999,7 @@ msgstr "引擎载入后退出"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "创建用于测试的假感应器"
 
 msgid "Color Management D-Bus Service"
 msgstr "色彩管理 D-Bus 服务"

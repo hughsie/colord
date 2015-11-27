@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Seong-ho Cho <darkcircle.0426@gmail.com>, 2012
+# Seong-ho Cho <darkcircle.0426@gmail.com>, 2012,2015
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:30+0100\n"
-"PO-Revision-Date: 2015-03-21 06:54+0000\n"
+"POT-Creation-Date: 2015-11-27 15:21+0000\n"
+"PO-Revision-Date: 2015-11-27 15:21+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Korean (http://www.transifex.com/projects/p/colord/language/ko/)\n"
+"Language-Team: Korean (http://www.transifex.com/hughsie/colord/language/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -48,11 +48,11 @@ msgstr "추가 디버깅 정보를 보입니다"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "지역화 텍스트를 설정할 때 사용할 로캘입니다"
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
-msgstr ""
+msgstr "주어진 크기의 VCGT 보정 설정을 만듭니다"
 
 #. TRANSLATORS: command description
 msgid "Clear any metadata in the profile"
@@ -92,11 +92,11 @@ msgstr "프로파일의 메타데이터를 자동으로 고칩니다"
 
 #. TRANSLATORS: command description
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "ICC 프로파일 버전을 설정합니다"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr ""
+msgstr "태그 데이터를 내보냅니다"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
@@ -104,19 +104,19 @@ msgstr "색상 관리자"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "ICC 프로파일 덤프 프로그램"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "CSV 데이터로 CMF를 만듭니다"
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "CSV 데이터로 스펙트럼을 만듭니다"
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "참조 측정 데이터로 CCMX를 만듭니다"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -168,7 +168,7 @@ msgstr "감마 표"
 
 #. TRANSLATORS: if the profile is installed for all users
 msgid "System Wide"
-msgstr ""
+msgstr "시스템 범위"
 
 #. TRANSLATORS: profile filename
 msgid "Filename"
@@ -184,13 +184,13 @@ msgid "Metadata"
 msgstr "메타데이터"
 
 msgid "Warning"
-msgstr ""
+msgstr "경고"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 msgid "Created"
-msgstr "만든일시"
+msgstr "만든 일시"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
@@ -199,12 +199,12 @@ msgstr "수정일시"
 
 #. TRANSLATORS: the device enabled state
 msgid "Enabled"
-msgstr ""
+msgstr "활성"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 msgid "Embedded"
-msgstr ""
+msgstr "포함"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -230,7 +230,7 @@ msgstr "시리얼"
 #. * systemd these can be setup as three independant seats with
 #. * different sessions running on them
 msgid "Seat"
-msgstr ""
+msgstr "시트"
 
 #. TRANSLATORS: the device identifier
 msgid "Device ID"
@@ -265,55 +265,67 @@ msgstr "은은한 빛"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
+msgstr "보정"
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Dark Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Irradiance Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the sensor capability
+msgid "Spectral"
 msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
-msgstr ""
+msgstr "일반 LCD"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 msgid "LED Generic"
-msgstr ""
+msgstr "일반 LED"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 msgid "Plasma"
-msgstr ""
+msgstr "플라즈마"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB RED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "광색역 LCD CCFL"
 
 #. TRANSLATORS: this is the display technology
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "광색역 LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD 백색 LED"
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
-msgstr ""
+msgstr "알 수 없음"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 msgid "State"
@@ -325,7 +337,7 @@ msgstr "시리얼 번호"
 
 #. TRANSLATORS: sensor identifier
 msgid "Sensor ID"
-msgstr ""
+msgstr "센서 ID"
 
 #. TRANSLATORS: the options for the sensor
 msgid "Options"
@@ -342,7 +354,7 @@ msgstr "잠김"
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 msgid "Capabilities"
-msgstr ""
+msgstr "기능"
 
 msgid "There are no supported sensors attached"
 msgstr "연결된 지원 센서가 없습니다"
@@ -353,30 +365,45 @@ msgstr "센서"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "보정 위치로 장치를 설정하고 엔터 키를 누르십시오."
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the surface position and press enter."
+msgstr "표면 위치로 장치를 설정하고 엔터 키를 누르십시오."
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Put the device in a dark place and press enter."
+msgstr ""
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Calibrate with a 3200K light source."
+msgstr ""
+
+msgid "Put the device on the color to be measured and press enter."
 msgstr ""
 
 msgid "Color"
 msgstr "색상"
 
+#. TRANSLATORS: sensor can't do this
+msgid "No spectral capability"
+msgstr ""
+
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "클라이언트 및 데몬 버전을 나타냅니다"
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr ""
+msgstr "헤더를 뺀 값을 보여줍니다."
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "데이터를 보여줄 때 객체 속성을 따로 보여줍니다"
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "모든 디버깅 데이터를 파일로 내보냅니다"
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
@@ -393,6 +420,10 @@ msgstr "사용할 수 있는 모든 색상 프로파일을 가져옵니다"
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
 msgstr "사용할 수 있는 모든 색상 센서를 가져옵니다"
+
+#. TRANSLATORS: command description
+msgid "Gets a spectral reading from a sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"
@@ -412,15 +443,15 @@ msgstr "장치를 만듭니다"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "장치 ID로 장치를 찾습니다"
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "주어진 속성 값으로 장치를 찾습니다"
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "프로파일 ID로 프로파일을 찾습니다"
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
@@ -436,7 +467,7 @@ msgstr "프로파일을 만듭니다"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "이미 존재하는 장치에 프로파일을 추가합니다"
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
@@ -452,7 +483,7 @@ msgstr "프로파일을 지웁니다"
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "프로파일에 추가 속성을 설정합니다"
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
@@ -460,7 +491,7 @@ msgstr "장치 모델을 설정합니다."
 
 #. TRANSLATORS: command description
 msgid "Enables or disables the device"
-msgstr ""
+msgstr "장치를 활성화하거나 비활성화합니다"
 
 #. TRANSLATORS: command description
 msgid "Gets the default profile for a device"
@@ -488,62 +519,62 @@ msgstr "식별자 문구에 일치하는 모든 프로파일을 반환합니다"
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "개별 사용자용 프로파일을 가져오고 설치합니다"
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
 msgstr "colord가 없습니다:"
 
 msgid "Client version:"
-msgstr ""
+msgstr "클라이언트 버전:"
 
 msgid "Daemon version:"
-msgstr ""
+msgstr "데몬 버전:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "시스템 제조사:"
 
 msgid "System model:"
-msgstr ""
+msgstr "시스템 모델:"
 
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "디스플레이 기본 감마 값"
 
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr ""
+msgstr "디스플레이 장치에 사용할 기본 대상 감마 값입니다. 보통 사용하는 값은 1.8, 2.2, 2.4 입니다."
 
 msgid "Default display target whitepoint"
-msgstr ""
+msgstr "기본 디스플레이 대상 화이트포인트"
 
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr ""
+msgstr "디스플레이 장치를 보정할 때 사용할 켈빈단위의 기본 대상 화이트포인트 값이며 0 값은 장치 고유 값을 의미합니다. 보통 사용하는 값은 D65에서 6500, D50에서 5000입니다."
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "샘플 간격 지연"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "샘플 색상을 설정하고 측정 장치에서 샘플을 채취하도록 요청하는데 걸리는 지연 시간입니다. 그래픽 드라이버와 디스플레이 장치 자체에 레이턴시가 있기 때문에 이 설정값이 필요합니다."
 
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "프로파일 업로드용 웹 서비스 URI"
 
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr ""
+msgstr "보정 도구에서 인터넷에 개별 프로파일을 업로드할 수 있는 웹 서비스의 URI입니다."
 
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Adobe RGB (1998) 호환"
 
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "이 프로파일은 저작권 제한으로부터 자유롭습니다"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -552,7 +583,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr ""
+msgstr "이 편집 영역은 SMPTE-240M과 유사하게 설계했으며, CMYK 컬러 프린터로 재현 가능한 모든 색상을 아우릅니다. 사진 편집, 모든 SWOP 색상을 재현할 수 있는 인쇄 용도로 널리 알려진 선택수단 입니다."
 
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
@@ -562,7 +593,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr ""
+msgstr "이 오래된 기존 프로파일은 원래 Adobe에서 Photoshop과 Illustrator에서 사용하려고 만들었습니다. 기존 Apple 13\" RGB 모니터를 기반으로 하며 sRGB와 유사하므로, 디스플레이 프로파일로 사용하거나 새 이미지를 편집할 용도로 사용하면 안됩니다."
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -571,7 +602,7 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "이 편집 영역은 Adobe RGB보다 채도가 높은 색상을 표시할 수 있으며, 광고에 주로 사용하는 고채도 색상으로 표현한 이미지에 적합합니다. DonRGB4와 매우 유사하지만, Fujichrome Velvia에서 초고채도 적색 색상을 보여줄 수 있습니다."
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 msgid ""
@@ -579,31 +610,31 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "이 편집 영역은 Adobe RGB 보다 채도가 높은 색상을 표시할 수 있습니다. 세부 음영 정보를 보존할 수 있지만, ProPhoto RGB에 비하면 양자화 오류에 덜 취약합니다. 대부분의 경우 ProPhoto RGB는 아마 더 나은 선택일지도 모릅니다."
 
 msgid "Blue"
-msgstr ""
+msgstr "Blue"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "이 시험 프로파일은 비디오 카드 검색 테이블을 대체할 때 화면에 나타난 모든 색상을 거의 시퍼런색으로 만들 때 활용합니다. 사용자는 이 프로파일을 통해 보정 설정을 제대로 적용했는지 확인할 수 있습니다."
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr ""
+msgstr "이 RGB 편집 영역은 Adobe Photoshop 5.0 이상 전용입니다. ColorMatch RGB 와 Adobe RGB 간의 출력 중심 프로파일의 절충안으로 설계했으며 사진 인쇄 서비스에서 종종 선호합니다."
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "이 이론적 프로파일은 색상 경험에 있어 활용 용도로 설계했습니다. 사용자 여러분은 색상 영역을 편집한다거나 디스플레이 프로파일로서 이 프로파일을 선호하지 않을 것입니다."
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -612,10 +643,10 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr ""
+msgstr "이 프로파일은 PressView 모니터용으로 Radius에서 설계했습니다. 이 프로파일을 디스플레이 프로파일 전용으로 활용하거나 프로파일로 활용할 편집 영역 전용으로 활용할 경우 sRGB랑 눈에 띄게 달라지는 건 없습니다. PressView 모니터에서 만든 이미지를 볼 경우에만 이 프로파일 활용이 필요합니다."
 
 msgid "Crayon Colors"
-msgstr ""
+msgstr "크레용 색상"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -623,14 +654,14 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "이 명칭이 붙은 색상 프로파일에는 널리 사용하는 모든 크라욜라 크레용 색상이 들어있습니다. 문서에 이름을 붙인 색상을 넣을 때 시험해볼 목적으로 시험 프로파일을 설계했습니다."
 
 #. TRANSLATORS: saturated means vivid bright colors
 msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "이 편집 영역은 Adobe RGB보다 채도가 높은 색상을 표시할 수 있으며, 광고에 주로 사용하는 고채도 색상으로 표현한 이미지에 적합합니다."
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 msgid ""
@@ -638,14 +669,14 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr ""
+msgstr "이 프로파일은 ECI(유럽 색상 협회)에서 색상 편집 영역으로 추천하며, 인쇄 프레스에서 인쇄할 수 있는 모든 색상취급을 목표로 합니다. 간혹 서적 저자와 인쇄소가 색상 정보를 주고 받을때 사용하는 데이터 형식으로 사용하기도 합니다."
 
 #. TRANSLATORS: lightness is a technical word for brightness
 msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr ""
+msgstr "이 프로파일은 밝기 감마 커브와 함께 설계했는데, 모니터 장치를 동일한 방식으로 보정하겠다는 의미입니다. 이 프로파일은 고급 사용자에게만 적합하며, 일반적인 목적의 사용을 추천하지 않습니다."
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -653,20 +684,20 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr ""
+msgstr "이 프로파일은 스캔 투명 필름 아카이브를 보관할 목적으로 설계했습니다. 최근에는 ProPhoto RGB 프로파일을 보관 용도로 더 많이 사용하지만 반전 색상 형식으로 이미지를 저장하는데 적합합니다."
 
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "FOGRA27L Coated"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "이 프로파일은 양극판 제판, 용지 형식 1, 2(광택 또는 무광택), 삽지 옵셋에 인쇄할 때 활용합니다. 제조 공정에서 이 프로파일을 더 이상 활용하지 마시고, FOGRA39L를 활용하십시오."
 
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "FOGRA28L Web Coated"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -674,10 +705,10 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "이 프로파일은 양극판 제판, 용지 형식 3(LW), 윤전 인쇄 옵셋 인쇄 용도로 활용합니다. 제조 공정에서 이 프로파일을 더 이상 활용하지 마시고, FOGRA45를 활용하십시오."
 
 msgid "FOGRA29L Uncoated"
-msgstr ""
+msgstr "FOGRA29L Uncoated"
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -685,19 +716,19 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr ""
+msgstr "이 프로파일은 양극판 제판, 용지 형식 4(무광택 백색), 삽지 옵셋 인쇄시 활용합니다. 제조 공정에서 이 프로파일을 더 이상 활용하지 마시고, FOGRA47을 활용하십시오."
 
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr ""
+msgstr "FOGRA30L Uncoated Yellowish"
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr ""
+msgstr "이 프로파일은 양극판 제판, 용지 형식 5(무광택 황색), 삽지 옵셋 인쇄시 활용합니다."
 
 msgid "FOGRA39L Coated"
-msgstr ""
+msgstr "FOGRA39L Coated"
 
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
@@ -706,47 +737,47 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr ""
+msgstr "이 프로파일은 용지 형식 1, 2(광택 또는 무광택), 삽지 옵셋에 인쇄할 때 활용합니다. 이 프로파일은 U.S. GRACoL 2006 (TR 006)과 큰 차이가 없습니다."
 
 msgid "FOGRA40L SC Paper"
-msgstr ""
+msgstr "FOGRA40L SC Paper"
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr ""
+msgstr "이 프로파일은 SC(강광택) 용지, 윤전 옵셋에서 인쇄할 때 활용합니다. 알려진 미국 색상 프로파일 중 동일한 프로파일은 없습니다."
 
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L Lightweight Coated"
 
 #. TRANSLATORS: ISO is a trademark
 msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr ""
+msgstr "ISO 12647-2:2004 규격 준수 프로파일은 60 l/cm 히트셋 윤전 인쇄용 개선 경량 광택(LWC) 용지 인쇄시 활용합니다. FOGRA28L을 대체합니다."
 
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "FOGRA47L Uncoated"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr ""
+msgstr "ISO 12647-2 규격 준수 프로파일은 60 l/cm 삽지 옵셋 인쇄시 115 gsm 무광 백색 용지(용지 형식 4)에 인쇄할 때 활용합니다."
 
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "GRACoL TR006 Coated"
 
 #. TRANSLATORS: coated = smooth and expensive
 msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
-msgstr ""
+msgstr "이 프로파일은 U.S. 1,2 등급 광택 용지, 삽지 옵셋, 그라비어 인쇄시 활용합니다. FOGRA39 미국 색상 표준과 일치합니다."
 
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 Newsprint"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -756,7 +787,7 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr ""
+msgstr "이 프로파일은 신문 인쇄시 활용하며, 인쇄 공정상 26% TVI(도트 게인)을 나타내는 ISO12647-3:2005 규약 준수 프로파일입니다. 전세계에서 신문을 인쇄할 때 콜드셋 인쇄를 목적으로 WAN-IFRA에서 추천합니다."
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -764,14 +795,14 @@ msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
-msgstr ""
+msgstr "이 프로파일은 NTSC 비디오 표준에서 사용하는 색상 범위를 정의합니다.  SMTE-C로 대체되어 오래된채로 방치된 표준입니다. 동영상 기록물을 디코딩할 때만 이 프로파일을 활용해야합니다."
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr ""
+msgstr "이 프로파일에서는 PAL 과 SECAM 비디오 표준에서 활용하는 색상 범위를 정의하며 sRGB와 거의 유사합니다. 이 프로파일은 동영상을 인코딩 또는 디코딩할 경우에만 활용해야 합니다."
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 msgid ""
@@ -779,30 +810,30 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr ""
+msgstr "애초에 Eastman Kodak에서 설계했고 ROMM RGB라고도 하는 이 프로파일은 상당히 넓은 영역의 색상을 표현할 수 있으며 대부분의 사진사들이 RAW 이미지를 표현하고 편집하고 저장하는데 활용합니다. 16비트 채널 정밀도로 작업하지 않는 이상, 이미지를 편집할 때 색 띠 현상을 관찰할 수 있습니다."
 
 #. TRANSLATORS: ITU-R is a standards body
 msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "ITU-R 권고안 BT.709는 1990년 처음 상정한 고해상도 텔레비전  표준입니다. Rec. 709 프로파일은 sRGB와 휘도 커브가 다르지만 동일한 영역의 색상을 활용합니다."
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "이는 북아메리카, 일본에서 스튜디오 녹화시 활용하는 표준안입니다. 동영상을 인코딩하거나 디코딩할 경우에만 이 프로파일을 활용해야합니다."
 
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 Newsprint"
 
 #. TRANSLATORS: CGATS is a trademark
 #, no-c-format
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr ""
+msgstr "미국에서 콜드셋 옵셋으로 신문을 인쇄할 때 활용하는 ANSI CGATS/SNAP TR 002-2007 기반 프로파일입니다. TVI(도트 게인)은 26%입니다."
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -812,40 +843,40 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr ""
+msgstr "이 범용 프로파일은 휴렛 팩커드와 마이크로소프트에서 설계했으며 태깅하지 않은 인터넷 RGB 색상용 기본 프로파일로 존재하고, HDTV에서 활용합니다. 대부분의 보정하지 않은 디스플레이 장치에서는 이 프로파일이 간혹 인쇄에 적합하지 않은 선택이겠지만, sRGB 영역의 대부분의 색상을 표현할 수 있습니다."
 
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Swapped Red and Green"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "이 시험 프로파일은 적, 녹 채널을 서로 도치하며, 프로파일을 올바로 적용했는지 눈으로 확인할 때 유용합니다. 이 프로파일을 두번 적용하면 이미지 형태는 원 상태로 보입니다."
 
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "SWOP TR003 Coated"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr ""
+msgstr "이 프로파일은 미 3등급 광택용지, 삽지 옵셋, 그라비어 용지에 인쇄할 때 사용합니다. 백지에 고급 잡지 인쇄를 할 때 활용합니다."
 
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "SWOP TR005 Coated"
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr ""
+msgstr "이 프로파일은 미 5등급 광택용지, 삽지 옵셋, 그라비어 용지에 인쇄할 때 사용합니다. 누런 종이에 표준 잡지 인쇄를 할 때 활용합니다."
 
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "광색역 RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 msgid ""
@@ -854,17 +885,17 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr ""
+msgstr "이 편집 영역은 Adobe RGB보다 더 많은 색상을 잡을 수 있도록 Adobe Systems에서 설계했습니다. 이 프로파일은 동영상 녹화 장치와 같은 장치에서 출력할 때 사용하며, 컴퓨터 화면에 나타낼 수 없는 더 많은 색상을 정의할 수 있습니다. 채널 정밀도를 16 비트로 설정하여 작업하는 이상 이미지를 편집할 때 색 띠 현상을 관찰할 수 있습니다."
 
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 색상"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr ""
+msgstr "이 이름이 붙은 색상 프로파일에는 X11에서 원본 색상을 sRGB로 가정하여 정의한 모든 색상이 들어있습니다."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -965,7 +996,7 @@ msgstr "엔진을 불러온 후 끝내기"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "시험용 모형 센서 만들기"
 
 msgid "Color Management D-Bus Service"
 msgstr "색상 관리 D-Bus 서비스"

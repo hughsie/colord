@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Dušan Kazik <prescott66@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:30+0100\n"
-"PO-Revision-Date: 2015-03-21 06:54+0000\n"
+"POT-Creation-Date: 2015-11-27 15:21+0000\n"
+"PO-Revision-Date: 2015-11-27 15:21+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Slovak (http://www.transifex.com/projects/p/colord/language/sk/)\n"
+"Language-Team: Slovak (http://www.transifex.com/hughsie/colord/language/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -124,7 +125,7 @@ msgstr ""
 #. TRANSLATORS: profile owner
 #. TRANSLATORS: profile UID
 msgid "Owner"
-msgstr ""
+msgstr "Vlastník"
 
 #. TRANSLATORS: the internal DBus path
 msgid "Object Path"
@@ -135,12 +136,12 @@ msgstr "Cesta k objektu"
 #. TRANSLATORS: the device format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
 msgid "Format"
-msgstr ""
+msgstr "Formát"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 msgid "Title"
-msgstr ""
+msgstr "Názov"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 msgid "Qualifier"
@@ -150,7 +151,7 @@ msgstr "Kvalifikátor"
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -163,7 +164,7 @@ msgstr ""
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 msgid "Gamma Table"
-msgstr ""
+msgstr "Tabuľka gama"
 
 #. TRANSLATORS: if the profile is installed for all users
 msgid "System Wide"
@@ -183,7 +184,7 @@ msgid "Metadata"
 msgstr "Metaúdaje"
 
 msgid "Warning"
-msgstr ""
+msgstr "Upozornenie"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -264,6 +265,18 @@ msgstr "Okolie"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
+msgstr "Kalibrácia"
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Dark Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Irradiance Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the sensor capability
+msgid "Spectral"
 msgstr ""
 
 #. TRANSLATORS: this is the display technology,
@@ -358,8 +371,23 @@ msgstr ""
 msgid "Set the device to the surface position and press enter."
 msgstr ""
 
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Put the device in a dark place and press enter."
+msgstr ""
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Calibrate with a 3200K light source."
+msgstr ""
+
+msgid "Put the device on the color to be measured and press enter."
+msgstr ""
+
 msgid "Color"
 msgstr "Farba"
+
+#. TRANSLATORS: sensor can't do this
+msgid "No spectral capability"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
@@ -392,6 +420,10 @@ msgstr "Získa všetky dostupné profily farieb"
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
 msgstr "Získa všetky dostupné farebné senzory"
+
+#. TRANSLATORS: command description
+msgid "Gets a spectral reading from a sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"
@@ -494,19 +526,19 @@ msgid "No connection to colord:"
 msgstr "Nie je spojenie s colord:"
 
 msgid "Client version:"
-msgstr ""
+msgstr "Verzia klienta:"
 
 msgid "Daemon version:"
-msgstr ""
+msgstr "Verzia démona:"
 
 msgid "System vendor:"
-msgstr ""
+msgstr "Výrobca systému:"
 
 msgid "System model:"
-msgstr ""
+msgstr "Model systému:"
 
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "Predvolená gama pre displej"
 
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
@@ -542,7 +574,7 @@ msgid "Compatible with Adobe RGB (1998)"
 msgstr ""
 
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Tento profil neobsahuje žiadne obmedzenia autorských práv"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -614,7 +646,7 @@ msgid ""
 msgstr ""
 
 msgid "Crayon Colors"
-msgstr ""
+msgstr "Pastelové farby"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'

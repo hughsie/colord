@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-08 20:30+0100\n"
-"PO-Revision-Date: 2015-03-21 06:54+0000\n"
+"POT-Creation-Date: 2015-11-27 15:21+0000\n"
+"PO-Revision-Date: 2015-11-27 15:21+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Indonesian (http://www.transifex.com/projects/p/colord/language/id/)\n"
+"Language-Team: Indonesian (http://www.transifex.com/hughsie/colord/language/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -267,6 +267,18 @@ msgstr "Sekeliling"
 msgid "Calibration"
 msgstr "Kalibrasi"
 
+#. TRANSLATORS: this is the display calibration type
+msgid "Dark Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Irradiance Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the sensor capability
+msgid "Spectral"
+msgstr ""
+
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
@@ -359,8 +371,23 @@ msgstr "Atur perangkat ke posisi kalibrasi dan tekan enter."
 msgid "Set the device to the surface position and press enter."
 msgstr "Atur perangkat ke posisi permukaan dan tekan enter."
 
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Put the device in a dark place and press enter."
+msgstr ""
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Calibrate with a 3200K light source."
+msgstr ""
+
+msgid "Put the device on the color to be measured and press enter."
+msgstr ""
+
 msgid "Color"
 msgstr "Warna"
+
+#. TRANSLATORS: sensor can't do this
+msgid "No spectral capability"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
@@ -393,6 +420,10 @@ msgstr "Dapatkan semua profil warna yang tersedia"
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
 msgstr "Dapatkan semua sensor warna yang tersedia"
+
+#. TRANSLATORS: command description
+msgid "Gets a spectral reading from a sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"

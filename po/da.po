@@ -3,16 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# Joe Hansen <joedalton2@yahoo.dk>, 2015
 # Kris Thomsen <lakristho@gmail.com>, 2009-2011
 # Richard Hughes <richard@hughsie.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-08 14:24+0100\n"
-"PO-Revision-Date: 2015-05-01 15:33+0000\n"
+"POT-Creation-Date: 2015-11-27 15:21+0000\n"
+"PO-Revision-Date: 2015-11-27 15:21+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/colord/language/da/)\n"
+"Language-Team: Danish (http://www.transifex.com/hughsie/colord/language/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -117,7 +118,7 @@ msgstr "Opret et spektrum fra CSV-data"
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "Opret en CCMX fra reference- og måledata"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
@@ -268,6 +269,18 @@ msgstr "Ambient"
 msgid "Calibration"
 msgstr "Kalibrering"
 
+#. TRANSLATORS: this is the display calibration type
+msgid "Dark Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the display calibration type
+msgid "Irradiance Calibration"
+msgstr ""
+
+#. TRANSLATORS: this is the sensor capability
+msgid "Spectral"
+msgstr ""
+
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
@@ -360,8 +373,23 @@ msgstr "Sæt enheden på kalibreringspositionen og tryk retur."
 msgid "Set the device to the surface position and press enter."
 msgstr "Sæt enheden på overfladepositionen og tryk retur."
 
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Put the device in a dark place and press enter."
+msgstr ""
+
+#. TRANSLATORS: the user needs to change something on the device
+msgid "Calibrate with a 3200K light source."
+msgstr ""
+
+msgid "Put the device on the color to be measured and press enter."
+msgstr ""
+
 msgid "Color"
 msgstr "Color"
+
+#. TRANSLATORS: sensor can't do this
+msgid "No spectral capability"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
@@ -394,6 +422,10 @@ msgstr "Henter alle tilgængelige color-profiler"
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
 msgstr "Henter alle tilgængelige color-sensorer"
+
+#. TRANSLATORS: command description
+msgid "Gets a spectral reading from a sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"
@@ -524,13 +556,13 @@ msgid ""
 msgstr "Standardmålets hvidpunkt i Kelvin for skærmkalibrering, hvor 0 er standardskærm. Gængse værdier er 6500 for D65 og 5000 for D50."
 
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Forsinkelse mellem prøveintervaller"
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "Dette er forsinkelsen mellem angivelse af prøvefarven og anmodningen om at måleinstrumentet skal tage en prøve. Den er krævet da både grafikdriveren og skærmen i sig selv introducerer forsinkelse af svartider."
 
 msgid "Web service profile upload URI"
 msgstr ""
