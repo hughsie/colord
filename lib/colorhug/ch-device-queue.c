@@ -298,7 +298,12 @@ out:
 		}
 
 		/* remove all commands from the queue, as they are done */
+#if 0
+/* FIXME: some sort of race uncovered in the port to GTask means that we try
+ * to remove data objects before they are marked complete; for now disable */
+
 		g_ptr_array_set_size (priv->data_array, 0);
+#endif
 		g_object_unref (task);
 	}
 }
