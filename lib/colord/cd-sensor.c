@@ -1633,7 +1633,6 @@ cd_sensor_finalize (GObject *object)
 							    sensor);
 		g_assert (ret > 0);
 		g_object_unref (priv->proxy);
-		g_assert (!G_IS_DBUS_PROXY (priv->proxy));
 	}
 
 	G_OBJECT_CLASS (cd_sensor_parent_class)->finalize (object);
