@@ -104,7 +104,7 @@ void		 cd_spectrum_get_wavelength_cal	(CdSpectrum		*spectrum,
 CdSpectrum	*cd_spectrum_multiply		(CdSpectrum		*s1,
 						 CdSpectrum		*s2,
 						 gdouble		 resolution);
-CdSpectrum	*cd_spectrum_resample		(CdSpectrum		*s1,
+CdSpectrum	*cd_spectrum_resample		(CdSpectrum		*spectrum,
 						 gdouble		 start,
 						 gdouble		 end,
 						 gdouble		 resolution);
