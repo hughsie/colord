@@ -499,47 +499,47 @@ ch_device_sensor_hid_get_cb (GObject *source_object,
 
 	switch (tdata->cmd) {
 	case CH_CMD_TAKE_READING_RAW:
-		memcpy(tdata->buffer_out, tdata->buffer + 3, 4);
+		memcpy (tdata->buffer_out, tdata->buffer + 3, 4);
 		break;
 	case CH_CMD_GET_COLOR_SELECT:
-		memcpy(tdata->buffer_out, tdata->buffer + 1, 1);
+		memcpy (tdata->buffer_out, tdata->buffer + 1, 1);
 		break;
 	case CH_CMD_GET_INTEGRAL_TIME:
-		memcpy(tdata->buffer_out, tdata->buffer + 4, 2);
+		memcpy (tdata->buffer_out, tdata->buffer + 4, 2);
 		break;
 	case CH_CMD_GET_LEDS:
-		memcpy(tdata->buffer_out, tdata->buffer + 2, 1);
+		memcpy (tdata->buffer_out, tdata->buffer + 2, 1);
 		break;
 	case CH_CMD_GET_MULTIPLIER:
-		memcpy(tdata->buffer_out, tdata->buffer + 3, 1);
+		memcpy (tdata->buffer_out, tdata->buffer + 3, 1);
 		break;
 	case CH_CMD_GET_FIRMWARE_VERSION:
-		memcpy(tdata->buffer_out, tdata->buffer + 2, 6);
+		memcpy (tdata->buffer_out, tdata->buffer + 2, 6);
 		break;
 	case CH_CMD_GET_HARDWARE_VERSION:
-		memcpy(tdata->buffer_out, tdata->buffer + 1, 1);
+		memcpy (tdata->buffer_out, tdata->buffer + 1, 1);
 		break;
 	case CH_CMD_GET_SERIAL_NUMBER:
-		memcpy(tdata->buffer_out, tdata->buffer + 8, 4);
+		memcpy (tdata->buffer_out, tdata->buffer + 8, 4);
 		break;
 	case CH_CMD_SET_COLOR_SELECT:
-		memcpy(tdata->buffer + 1, tdata->buffer_orig + 1, 1);
+		memcpy (tdata->buffer + 1, tdata->buffer_orig + 1, 1);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_INTEGRAL_TIME:
-		memcpy(tdata->buffer + 4, tdata->buffer_orig + 1, 2);
+		memcpy (tdata->buffer + 4, tdata->buffer_orig + 1, 2);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_LEDS:
-		memcpy(tdata->buffer + 2, tdata->buffer_orig + 1, 1);
+		memcpy (tdata->buffer + 2, tdata->buffer_orig + 1, 1);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_MULTIPLIER:
-		memcpy(tdata->buffer + 3, tdata->buffer_orig + 1, 1);
+		memcpy (tdata->buffer + 3, tdata->buffer_orig + 1, 1);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_FLASH_SUCCESS:
-		memcpy(tdata->buffer + 13, tdata->buffer_orig + 1, 1);
+		memcpy (tdata->buffer + 13, tdata->buffer_orig + 1, 1);
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_RESET:
@@ -547,7 +547,7 @@ ch_device_sensor_hid_get_cb (GObject *source_object,
 		another_request_required = TRUE;
 		break;
 	case CH_CMD_SET_SERIAL_NUMBER:
-		memcpy(tdata->buffer + 8, tdata->buffer_orig + 1, 4);
+		memcpy (tdata->buffer + 8, tdata->buffer_orig + 1, 4);
 		another_request_required = TRUE;
 		break;
 	default:
