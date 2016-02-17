@@ -188,6 +188,11 @@ AC_SUBST([CD_IT8])
 AC_SUBST([CD_CREATE_PROFILE])
 AM_CONDITIONAL(HAVE_UNIX, test x$enable_unix = xyes)
 
+# optional
+AC_ARG_ENABLE(session_helper, AS_HELP_STRING([--enable-session-helper],[Enable Session Helper]),
+	      enable_session_helper=$enableval, enable_session_helper=$enable_unix)
+AM_CONDITIONAL(HAVE_SESSION_HELPER, test x$enable_session_helper = xyes)
+
 AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
 	      enable_gusb=$enableval, enable_gusb=yes)
 if test x$enable_gusb != xno; then
@@ -520,6 +525,7 @@ echo "
         systemd-login support:     ${enable_systemd_login}
         systemd service dir:       ${with_systemdsystemunitdir}
         tmpfiles.d dir:            ${with_tmpfilesdir}
+        Session helper support:    ${enable_session_helper}
         Unix support:              ${enable_unix}
 "
 

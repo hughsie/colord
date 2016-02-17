@@ -1,6 +1,6 @@
 SUBDIRS =
 
-if HAVE_UNIX
+if HAVE_SESSION_HELPER
 SUBDIRS +=						\
 	session-helper
 endif
