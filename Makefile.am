@@ -20,7 +20,7 @@ SUBDIRS += 						\
 	data
 
 # this needs data/profiles/*.icc
-if HAVE_UNIX
+if HAVE_DAEMON
 SUBDIRS += 						\
 	man						\
 	policy						\

@@ -8,7 +8,7 @@ SUBDIRS = 						\
 	tests						\
 	ti1
 
-if HAVE_UNIX
+if HAVE_DAEMON
 dbusdir = $(sysconfdir)/dbus-1/system.d
 dist_dbus_DATA = org.freedesktop.ColorManager.conf
 

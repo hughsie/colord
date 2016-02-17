@@ -25,7 +25,7 @@ bin_PROGRAMS =						\
 	cd-it8						\
 	cd-fix-profile
 
-if HAVE_UNIX
+if HAVE_DAEMON
 bin_PROGRAMS +=						\
 	colormgr
 endif
