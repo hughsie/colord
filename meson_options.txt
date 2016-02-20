@@ -12,3 +12,4 @@ option('enable-installed-tests', type : 'boolean', value : false, description : 
 option('with-daemon-user', type : 'string', value : 'root', description : 'User for running the colord daemon')
 option('enable-man', type : 'boolean', value : true, description : 'Generate man pages')
 option('enable-docs', type : 'boolean', value : true, description : 'Generate documentation')
+option('enable-embedded-timestamps', type : 'boolean', value : true, description : 'Embed creation time stamp in it8 files')
