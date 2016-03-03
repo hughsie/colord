@@ -1611,7 +1611,7 @@ cd_icc_save_data (CdIcc *icc,
 	guint i;
 	g_autoptr(GList) md_keys = NULL;
 
-	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
 	/* convert profile kind */
 	for (i = 0; map_profile_kind[i].colord != CD_PROFILE_KIND_LAST; i++) {

@@ -472,7 +472,7 @@ cd_client_create_device_finish (CdClient *client,
 				GAsyncResult *res,
 				GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -615,7 +615,7 @@ cd_client_create_profile_finish (CdClient *client,
 				 GAsyncResult *res,
 				 GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -922,7 +922,7 @@ cd_client_import_profile_finish (CdClient *client,
 				 GAsyncResult *res,
 				 GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1306,7 +1306,7 @@ cd_client_find_device_finish (CdClient *client,
 			      GAsyncResult *res,
 			      GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1397,7 +1397,7 @@ cd_client_find_device_by_property_finish (CdClient *client,
 					  GAsyncResult *res,
 					  GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1490,7 +1490,7 @@ cd_client_find_profile_finish (CdClient *client,
 			       GAsyncResult *res,
 			       GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1581,7 +1581,7 @@ cd_client_find_profile_by_filename_finish (CdClient *client,
 					   GAsyncResult *res,
 					   GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1672,7 +1672,7 @@ cd_client_get_standard_space_finish (CdClient *client,
 				     GAsyncResult *res,
 				     GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1791,7 +1791,7 @@ cd_client_get_devices_finish (CdClient *client,
 			      GAsyncResult *res,
 			      GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1879,7 +1879,7 @@ cd_client_get_devices_by_kind_finish (CdClient *client,
 				      GAsyncResult *res,
 				      GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1998,7 +1998,7 @@ cd_client_get_profiles_finish (CdClient *client,
 			       GAsyncResult *res,
 			       GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -2114,7 +2114,7 @@ cd_client_get_sensors_finish (CdClient *client,
 			      GAsyncResult *res,
 			      GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -2202,7 +2202,7 @@ cd_client_find_profile_by_property_finish (CdClient *client,
 					   GAsyncResult *res,
 					   GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -2295,7 +2295,7 @@ cd_client_find_sensor_finish (CdClient *client,
 			      GAsyncResult *res,
 			      GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, client), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 

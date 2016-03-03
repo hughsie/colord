@@ -1796,7 +1796,7 @@ cd_it8_get_xyz_for_rgb (CdIt8 *it8, gdouble R, gdouble G, gdouble B, gdouble del
 	guint i;
 	const CdColorRGB *rgb_tmp;
 
-	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
+	g_return_val_if_fail (CD_IS_IT8 (it8), NULL);
 
 	for (i = 0; i < priv->array_xyz->len; i++) {
 		rgb_tmp = g_ptr_array_index (priv->array_rgb, i);

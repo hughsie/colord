@@ -229,7 +229,7 @@ cd_main_create_profile (CdMainPrivate *priv,
 
 	/* add the profile */
 	if (!cd_main_add_profile (priv, profile_tmp, error))
-		return FALSE;
+		return NULL;
 
 	/* different persistent scope */
 	switch (scope) {
@@ -247,14 +247,14 @@ cd_main_create_profile (CdMainPrivate *priv,
 				     CD_CLIENT_ERROR,
 				     CD_CLIENT_ERROR_NOT_SUPPORTED,
 				     "persistent profiles are no yet supported");
-		return FALSE;
+		return NULL;
 	default:
 		g_warning ("CdMain: Unsupported scope kind: %i", scope);
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_NOT_SUPPORTED,
 			     "Unsupported scope kind: %i", scope);
-		return FALSE;
+		return NULL;
 	}
 
 	/* success */

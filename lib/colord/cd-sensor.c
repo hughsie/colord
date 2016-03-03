@@ -996,7 +996,7 @@ cd_sensor_get_sample_finish (CdSensor *sensor,
 			     GAsyncResult *res,
 			     GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, sensor), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
@@ -1088,7 +1088,7 @@ cd_sensor_get_spectrum_finish (CdSensor *sensor,
 			       GAsyncResult *res,
 			       GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, sensor), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, sensor), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 

@@ -1498,7 +1498,7 @@ cd_device_get_profile_for_qualifiers_finish (CdDevice *device,
 					     GAsyncResult *res,
 					     GError **error)
 {
-	g_return_val_if_fail (g_task_is_valid (res, device), FALSE);
+	g_return_val_if_fail (g_task_is_valid (res, device), NULL);
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 

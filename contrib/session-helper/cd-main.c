@@ -1474,7 +1474,7 @@ cd_main_find_device (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_DEVICE,
 			     "%s", error_local->message);
-		return FALSE;
+		return NULL;
 	}
 	ret = cd_device_connect_sync (device_tmp,
 				      NULL,
@@ -1484,7 +1484,7 @@ cd_main_find_device (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_DEVICE,
 			     "%s", error_local->message);
-		return FALSE;
+		return NULL;
 	}
 
 	/* mark device to be profiled in colord */
@@ -1496,7 +1496,7 @@ cd_main_find_device (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_INTERNAL,
 			     "%s", error_local->message);
-		return FALSE;
+		return NULL;
 	}
 
 	/* success */
@@ -1524,7 +1524,7 @@ cd_main_find_sensor (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
-		return FALSE;
+		return NULL;
 	}
 	ret = cd_sensor_connect_sync (sensor_tmp,
 				      NULL,
@@ -1534,7 +1534,7 @@ cd_main_find_sensor (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
-		return FALSE;
+		return NULL;
 	}
 
 	/* lock the sensor */
@@ -1546,7 +1546,7 @@ cd_main_find_sensor (CdMainPrivate *priv,
 			     CD_SESSION_ERROR,
 			     CD_SESSION_ERROR_FAILED_TO_FIND_SENSOR,
 			     "%s", error_local->message);
-		return FALSE;
+		return NULL;
 	}
 
 	/* success */

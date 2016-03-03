@@ -69,7 +69,7 @@ osp_device_open (GUsbDevice *device, GError **error)
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	if (!g_usb_device_open (device, error))
-		return NULL;
+		return FALSE;
 	if (!g_usb_device_claim_interface (device, 0x00, 0, error)) {
 		g_prefix_error (error, "Failed to claim interface: ");
 		return FALSE;
@@ -149,7 +149,7 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 					 buffer_in, offset_wr,
 					 &actual_length,
 					 OSP_USB_TIMEOUT_MS, NULL, error))
-		return NULL;
+		return FALSE;
 
 	/* get reply */
 	buffer_out = g_new0 (guint8, 64);
@@ -157,7 +157,7 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 					 buffer_out, OSP_DEVICE_EP_SIZE,
 					 &actual_length,
 					 OSP_USB_TIMEOUT_MS, NULL, error))
-		return NULL;
+		return FALSE;
 	if (g_getenv ("SPARK_PROTOCOL_DEBUG") != NULL)
 		cd_buffer_debug (CD_BUFFER_KIND_RESPONSE, buffer_out, actual_length);
 
@@ -221,7 +221,7 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 						 buffer_out, OSP_DEVICE_EP_SIZE,
 						 &actual_length,
 						 OSP_USB_TIMEOUT_MS, NULL, error))
-			return NULL;
+			return FALSE;
 		memcpy (*data_out + offset_wr, buffer_out, OSP_DEVICE_EP_SIZE);
 		if (g_getenv ("SPARK_PROTOCOL_DEBUG") != NULL)
 			cd_buffer_debug (CD_BUFFER_KIND_RESPONSE, buffer_out, OSP_DEVICE_EP_SIZE);
@@ -288,7 +288,7 @@ osp_device_get_serial (GUsbDevice *device, GError **error)
 				     OSP_DEVICE_ERROR,
 				     OSP_DEVICE_ERROR_INTERNAL,
 				     "Expected serial number, got nothing");
-		return FALSE;
+		return NULL;
 	}
 
 	/* format value */
@@ -326,7 +326,7 @@ osp_device_get_fw_version (GUsbDevice *device, GError **error)
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
 			     "Expected %i bytes, got %li", 2, data_len);
-		return FALSE;
+		return NULL;
 	}
 
 	/* format value */
@@ -354,7 +354,7 @@ osp_device_get_wavelength_cal_for_idx (GUsbDevice *device,
 	/* query hardware */
 	if (!osp_device_query (device, OSP_CMD_GET_WAVELENGTH_COEFFICIENT,
 			       idx_buf, 1, &data, &data_len, error))
-		return NULL;
+		return FALSE;
 
 	/* check values */
 	if (data_len != 4) {
@@ -441,7 +441,7 @@ osp_device_get_wavelength_cal (GUsbDevice *device, guint *length, GError **error
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
 			     "Expected 1 bytes, got %li", data_len);
-		return FALSE;
+		return NULL;
 	}
 
 	/* check sanity */
@@ -450,7 +450,7 @@ osp_device_get_wavelength_cal (GUsbDevice *device, guint *length, GError **error
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
 			     "Expected 4 coefs, got %i", data[0]);
-		return FALSE;
+		return NULL;
 	}
 
 	/* get the coefs */
@@ -461,7 +461,7 @@ osp_device_get_wavelength_cal (GUsbDevice *device, guint *length, GError **error
 							     &cx,
 							     error);
 		if (!ret)
-			return FALSE;
+			return NULL;
 		coefs[i] = cx;
 	}
 
@@ -488,13 +488,13 @@ osp_device_get_nonlinearity_cal_for_idx (GUsbDevice *device,
 	guint8 idx_buf[1] = { idx };
 	g_autofree guint8 *data = NULL;
 
-	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
-	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	/* query hardware */
 	if (!osp_device_query (device, OSP_CMD_GET_NONLINEARITY_COEFFICIENT,
 			       idx_buf, 1, &data, &data_len, error))
-		return NULL;
+		return FALSE;
 
 	/* check values */
 	if (data_len != 4) {
@@ -549,7 +549,7 @@ osp_device_get_nonlinearity_cal (GUsbDevice *device, guint *length, GError **err
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
 			     "Expected 1 bytes, got %li", data_len);
-		return FALSE;
+		return NULL;
 	}
 
 	/* check sanity */
@@ -558,7 +558,7 @@ osp_device_get_nonlinearity_cal (GUsbDevice *device, guint *length, GError **err
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
 			     "Expected 8 coefs, got %i", data[0]);
-		return FALSE;
+		return NULL;
 	}
 
 	/* get the coefs */
@@ -569,7 +569,7 @@ osp_device_get_nonlinearity_cal (GUsbDevice *device, guint *length, GError **err
 							       &cx,
 							       error);
 		if (!ret)
-			return FALSE;
+			return NULL;
 		coefs[i] = cx;
 	}
 
@@ -615,7 +615,7 @@ osp_device_get_irradiance_cal (GUsbDevice *device, guint *length, GError **error
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
 			     "Expected %i bytes, got %li", 4096 * 4, data_len);
-		return FALSE;
+		return NULL;
 	}
 
 	/* copy out the coefs */

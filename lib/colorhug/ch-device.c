@@ -2123,7 +2123,7 @@ ch_device_take_reading_xyz (GUsbDevice *device, guint16 calibration_idx,
 			     CH_DEVICE_ERROR,
 			     CH_ERROR_NOT_IMPLEMENTED,
 			     "Getting an XYZ value is not supported");
-	return FALSE;
+	return NULL;
 }
 
 /**
@@ -2165,7 +2165,7 @@ ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **
 				     CH_DEVICE_ERROR,
 				     CH_ERROR_NOT_IMPLEMENTED,
 				     "Getting a spectrum is not supported");
-		return FALSE;
+		return NULL;
 	}
 	for (i = 0; i < 1024 * sizeof(gint32) / CH_EP0_TRANSFER_SIZE; i++) {
 		ret = g_usb_device_control_transfer (device,

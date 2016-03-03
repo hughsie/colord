@@ -360,7 +360,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 				     HUEY_CTX_ERROR,
 				     HUEY_CTX_ERROR_NO_SUPPORT,
 				     "Huey cannot measure in projector mode");
-		return FALSE;
+		return NULL;
 	}
 
 	/* set this to one value for a quick approximate value */
@@ -372,7 +372,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 					     &color_native,
 					     error);
 	if (!ret)
-		return FALSE;
+		return NULL;
 	g_debug ("initial values: red=%i, green=%i, blue=%i",
 		 color_native.R, color_native.G, color_native.B);
 
@@ -395,7 +395,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 					     &color_native,
 					     error);
 	if (!ret)
-		return FALSE;
+		return NULL;
 	g_debug ("raw values: red=%i, green=%i, blue=%i",
 		 color_native.R, color_native.G, color_native.B);
 
