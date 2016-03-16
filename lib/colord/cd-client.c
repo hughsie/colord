@@ -394,16 +394,16 @@ cd_client_connect_cb (GObject *source_object,
 	}
 
 	/* get signals from DBus */
-	g_signal_connect (priv->proxy,
-			  "g-signal",
-			  G_CALLBACK (cd_client_dbus_signal_cb),
-			  client);
+	g_signal_connect_object (priv->proxy,
+				 "g-signal",
+				 G_CALLBACK (cd_client_dbus_signal_cb),
+				 client, 0);
 
 	/* watch to see if it's fallen off the bus */
-	g_signal_connect (priv->proxy,
-			 "notify::g-name-owner",
-			 G_CALLBACK (cd_client_owner_notify_cb),
-			 client);
+	g_signal_connect_object (priv->proxy,
+				 "notify::g-name-owner",
+				 G_CALLBACK (cd_client_owner_notify_cb),
+				 client, 0);
 
 	/* success */
 	g_task_return_boolean (task, TRUE);

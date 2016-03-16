@@ -779,16 +779,16 @@ cd_profile_connect_cb (GObject *source_object,
 		cd_profile_set_metadata_from_variant (profile, metadata);
 
 	/* get signals from DBus */
-	g_signal_connect (priv->proxy,
-			  "g-signal",
-			  G_CALLBACK (cd_profile_dbus_signal_cb),
-			  profile);
+	g_signal_connect_object (priv->proxy,
+				 "g-signal",
+				 G_CALLBACK (cd_profile_dbus_signal_cb),
+				 profile, 0);
 
 	/* watch if any remote properties change */
-	g_signal_connect (priv->proxy,
-			  "g-properties-changed",
-			  G_CALLBACK (cd_profile_dbus_properties_changed_cb),
-			  profile);
+	g_signal_connect_object (priv->proxy,
+				 "g-properties-changed",
+				 G_CALLBACK (cd_profile_dbus_properties_changed_cb),
+				 profile, 0);
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
