@@ -1599,7 +1599,7 @@ cd_main_set_basename (CdMainPrivate *priv)
 	g_string_set_size (str, str->len - 1);
 
 	/* make suitable filename */
-	g_strdelimit (str->str, "\"*?", '_');
+	g_strdelimit (str->str, "/\"*?", '_');
 	priv->basename = g_string_free (str, FALSE);
 }
 
