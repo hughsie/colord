@@ -2235,7 +2235,6 @@ cd_device_finalize (GObject *object)
 {
 	CdDevice *device = CD_DEVICE (object);
 	CdDevicePrivate *priv = GET_PRIVATE (device);
-	guint ret;
 
 	g_return_if_fail (CD_IS_DEVICE (object));
 
@@ -2249,17 +2248,8 @@ cd_device_finalize (GObject *object)
 	g_free (priv->vendor);
 	g_strfreev (priv->profiling_inhibitors);
 	g_ptr_array_unref (priv->profiles);
-	if (priv->proxy != NULL) {
-		ret = g_signal_handlers_disconnect_by_func (priv->proxy,
-							    G_CALLBACK (cd_device_dbus_signal_cb),
-							    device);
-//		g_assert (ret > 0);
-		ret = g_signal_handlers_disconnect_by_func (priv->proxy,
-							    G_CALLBACK (cd_device_dbus_properties_changed_cb),
-							    device);
-//		g_assert (ret > 0);
+	if (priv->proxy != NULL)
 		g_object_unref (priv->proxy);
-	}
 
 	G_OBJECT_CLASS (cd_device_parent_class)->finalize (object);
 }

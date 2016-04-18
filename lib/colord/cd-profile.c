@@ -1489,15 +1489,8 @@ cd_profile_finalize (GObject *object)
 	g_free (priv->format);
 	g_free (priv->title);
 	g_strfreev (priv->warnings);
-	if (priv->proxy != NULL) {
-		g_signal_handlers_disconnect_by_func (priv->proxy,
-						      G_CALLBACK (cd_profile_dbus_signal_cb),
-						      profile);
-		g_signal_handlers_disconnect_by_func (priv->proxy,
-						      G_CALLBACK (cd_profile_dbus_properties_changed_cb),
-						      profile);
+	if (priv->proxy != NULL)
 		g_object_unref (priv->proxy);
-	}
 
 	G_OBJECT_CLASS (cd_profile_parent_class)->finalize (object);
 }
