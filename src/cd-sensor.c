@@ -105,6 +105,7 @@ typedef struct
 	gboolean			 locked;
 	guint64				 caps;
 	gchar				*object_path;
+	gchar				*usb_path;
 	guint				 watcher_id;
 	GDBusConnection			*connection;
 	guint				 registration_id;
@@ -1307,6 +1308,16 @@ cd_sensor_get_device_path (CdSensor *sensor)
 #endif
 }
 
+/**
+ * cd_sensor_get_usb_path:
+ **/
+const gchar *
+cd_sensor_get_usb_path (CdSensor *sensor)
+{
+	CdSensorPrivate *priv = GET_PRIVATE (sensor);
+	return priv->usb_path;
+}
+
 #ifdef HAVE_GUSB
 /**
  * cd_sensor_open_usb_device:
@@ -1409,6 +1420,8 @@ cd_sensor_set_from_device (CdSensor *sensor,
 	gboolean use_database;
 	gchar *tmp;
 	guint i;
+	guint8 busnum;
+	guint8 devnum;
 
 	/* only use the database if we found both the VID and the PID */
 	use_database = g_udev_device_has_property (device, "ID_VENDOR_FROM_DATABASE") &&
@@ -1489,6 +1502,12 @@ cd_sensor_set_from_device (CdSensor *sensor,
 	/* some properties might not be valid in the GUdevDevice if the
 	 * device changes as this is only a snapshot */
 	priv->device = g_object_ref (device);
+
+	/* create USB path */
+	busnum = g_udev_device_get_sysfs_attr_as_int (priv->device, "busnum");
+	devnum = g_udev_device_get_sysfs_attr_as_int (priv->device, "devnum");
+	priv->usb_path = g_strdup_printf ("/dev/bus/usb/%03i/%03i",
+					  busnum, devnum);
 
 	/* success */
 	return TRUE;
@@ -1758,6 +1777,7 @@ cd_sensor_finalize (GObject *object)
 	g_free (priv->serial);
 	g_free (priv->id);
 	g_free (priv->object_path);
+	g_free (priv->usb_path);
 	g_hash_table_unref (priv->options);
 	g_hash_table_unref (priv->metadata);
 #ifdef HAVE_GUSB

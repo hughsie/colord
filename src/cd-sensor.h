@@ -66,6 +66,7 @@ GQuark		 cd_sensor_error_quark		(void);
 const gchar	*cd_sensor_get_id		(CdSensor		*sensor);
 const gchar	*cd_sensor_get_object_path	(CdSensor		*sensor);
 const gchar	*cd_sensor_get_device_path	(CdSensor		*sensor);
+const gchar	*cd_sensor_get_usb_path		(CdSensor		*sensor);
 gboolean	 cd_sensor_register_object	(CdSensor		*sensor,
 						 GDBusConnection	*connection,
 						 GDBusInterfaceInfo	*info,

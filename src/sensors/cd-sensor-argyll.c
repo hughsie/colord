@@ -358,6 +358,7 @@ cd_sensor_find_device_details (CdSensor *sensor, GError **error)
 	const gchar *argv[] = { "spotread", "--help", NULL };
 	const gchar *argyll_name;
 	const gchar *envp[] = { "ARGYLL_NOT_INTERACTIVE=1", NULL };
+	const gchar *usb_path;
 	gboolean ret;
 	guint i;
 	guint listno = 0;
@@ -378,23 +379,23 @@ cd_sensor_find_device_details (CdSensor *sensor, GError **error)
 	if (!ret)
 		return FALSE;
 
-	/* split into lines and search */
-	lines = g_strsplit (stdout, "\n", -1);
+	/* look for the usb /dev/bus/usb/002/003 path first */
+	usb_path = cd_sensor_get_usb_path (sensor);
 	argyll_name = cd_sensor_to_argyll_name (sensor);
-	if (argyll_name == NULL) {
-		g_set_error_literal (error,
-				     CD_SENSOR_ERROR,
-				     CD_SENSOR_ERROR_INTERNAL,
-				     "Failed to find sensor");
-		return FALSE;
-	}
+	lines = g_strsplit (stdout, "\n", -1);
 	for (i = 0; lines[i] != NULL; i++) {
 
 		/* look for the communication port listing of the
 		 * device type we have plugged in */
 		if (g_strstr_len (lines[i], -1, " = ") != NULL) {
 			listno++;
-			if (g_strstr_len (lines[i], -1, argyll_name) != NULL) {
+			if (usb_path != NULL &&
+			    g_strstr_len (lines[i], -1, usb_path) != NULL) {
+				priv->communication_port = listno;
+				break;
+			}
+			if (argyll_name != NULL &&
+			    g_strstr_len (lines[i], -1, argyll_name) != NULL) {
 				priv->communication_port = listno;
 				break;
 			}
