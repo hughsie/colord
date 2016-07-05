@@ -31,7 +31,7 @@
 #include "cd-sensor.h"
 #include "cd-spawn.h"
 
-#define CD_SENSOR_ARGYLL_MAX_SAMPLE_TIME	10000 /* ms */
+#define CD_SENSOR_ARGYLL_MAX_SAMPLE_TIME	60000 /* ms */
 
 typedef enum {
 	CD_SENSOR_ARGYLL_POS_UNKNOWN,
