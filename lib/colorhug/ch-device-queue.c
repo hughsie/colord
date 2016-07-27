@@ -271,7 +271,7 @@ out:
 							   CH_DEVICE_QUEUE_DATA_STATE_PENDING);
 	pending_commands += ch_device_queue_count_in_state (device_queue,
 							    CH_DEVICE_QUEUE_DATA_STATE_WAITING_FOR_HW);
-	g_debug ("Pending commands: %i", pending_commands);
+	g_debug ("Pending commands: %u", pending_commands);
 	if (pending_commands == 0) {
 
 		/* should we return the process with an error, or just
@@ -290,7 +290,7 @@ out:
 			g_task_return_new_error (task,
 						 CH_DEVICE_ERROR,
 						 last_error_code,
-						 "There were %i failures: %s",
+						 "There were %u failures: %s",
 						 tdata->failures->len - 1,
 						 error_msg);
 		} else {
@@ -1168,7 +1168,7 @@ ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
 		if (calibration_tmp[i] < -100.0f ||
 		    calibration_tmp[i] > 100.0f) {
 			g_set_error (error, 1, 0,
-				     "Matrix value %i out of range %f",
+				     "Matrix value %u out of range %f",
 				     i, calibration_tmp[i]);
 			return FALSE;
 		}
@@ -2610,7 +2610,7 @@ ch_device_queue_buffer_verify_flash_cb (guint8 *output_buffer,
 		}
 		g_set_error (error, 1, 0,
 			     "Failed to verify at @0x%04x",
-			     helper->address + i);
+			     (guint) (helper->address + i));
 		return FALSE;
 	}
 	return TRUE;

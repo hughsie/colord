@@ -371,7 +371,7 @@ cd_util_show_device (CdUtilPrivate *priv, CdDevice *device)
 	for (i = 0; i < profiles->len; i++) {
 		profile_tmp = g_ptr_array_index (profiles, i);
 		/* TRANSLATORS: the profile for the device */
-		str_tmp = g_strdup_printf ("%s %i", _("Profile"), i+1);
+		str_tmp = g_strdup_printf ("%s %u", _("Profile"), i+1);
 		ret = cd_profile_connect_sync (profile_tmp, NULL, &error);
 		if (!ret) {
 			cd_util_print_field (str_tmp,
@@ -847,19 +847,19 @@ cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = FALSE;
 		goto out;
 	}
-	g_string_append_printf (str, "no-profile\t%i\n", profiles->len);
+	g_string_append_printf (str, "no-profile\t%u\n", profiles->len);
 	for (i = 0; i < profiles->len; i++) {
 		profile = g_ptr_array_index (profiles, i);
 		ret = cd_profile_connect_sync (profile, NULL, &error_local);
 		if (!ret) {
-			g_string_append_printf (str, "profile-%02i\t%s\tERROR: %s\n",
-						i,
+			g_string_append_printf (str, "profile-%02u\t%s\tERROR: %s\n",
+						(guint) i,
 						cd_profile_get_object_path (profile),
 						error_local->message);
 			g_clear_error (&error_local);
 		}
-		g_string_append_printf (str, "profile-%02i\t%s\t%s\n",
-					i,
+		g_string_append_printf (str, "profile-%02u\t%s\t%s\n",
+					(guint) i,
 					cd_profile_get_id (profile),
 					cd_profile_get_filename (profile));
 	}
@@ -870,13 +870,13 @@ cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 		ret = FALSE;
 		goto out;
 	}
-	g_string_append_printf (str, "no-devices\t%i\n", devices->len);
+	g_string_append_printf (str, "no-devices\t%u\n", devices->len);
 	for (i = 0; i < devices->len; i++) {
 		device = g_ptr_array_index (devices, i);
 		ret = cd_device_connect_sync (device, NULL, &error_local);
 		if (!ret) {
-			g_string_append_printf (str, "device-%02i\t%s\tERROR: %s\n",
-						i,
+			g_string_append_printf (str, "device-%02u\t%s\tERROR: %s\n",
+						(guint) i,
 						cd_device_get_object_path (device),
 						error_local->message);
 			g_clear_error (&error_local);
@@ -887,8 +887,8 @@ cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 			if (!ret)
 				goto out;
 		}
-		g_string_append_printf (str, "device-%02i\t%s\t%s\n",
-					i,
+		g_string_append_printf (str, "device-%02u\t%s\t%s\n",
+					(guint) i,
 					profile != NULL ?
 					 cd_profile_get_id (profile) :
 					 "                                    ",

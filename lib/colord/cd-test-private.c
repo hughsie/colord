@@ -825,7 +825,7 @@ colord_enum_func (void)
 	for (i = CD_SENSOR_KIND_UNKNOWN + 1; i < CD_SENSOR_KIND_LAST; i++) {
 		tmp = cd_sensor_kind_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_sensor_kind_from_string (tmp);
 		if (enum_tmp == CD_SENSOR_KIND_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -836,7 +836,7 @@ colord_enum_func (void)
 	for (i = CD_DEVICE_KIND_UNKNOWN + 1; i < CD_DEVICE_KIND_LAST; i++) {
 		tmp = cd_device_kind_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_device_kind_from_string (tmp);
 		if (enum_tmp == CD_DEVICE_KIND_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -847,7 +847,7 @@ colord_enum_func (void)
 	for (i = CD_PROFILE_KIND_UNKNOWN + 1; i < CD_PROFILE_KIND_LAST; i++) {
 		tmp = cd_profile_kind_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_profile_kind_from_string (tmp);
 		if (enum_tmp == CD_PROFILE_KIND_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -858,7 +858,7 @@ colord_enum_func (void)
 	for (i = CD_RENDERING_INTENT_UNKNOWN + 1; i < CD_RENDERING_INTENT_LAST; i++) {
 		tmp = cd_rendering_intent_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_rendering_intent_from_string (tmp);
 		if (enum_tmp == CD_RENDERING_INTENT_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -869,7 +869,7 @@ colord_enum_func (void)
 	for (i = CD_COLORSPACE_UNKNOWN + 1; i < CD_COLORSPACE_LAST; i++) {
 		tmp = cd_colorspace_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_colorspace_from_string (tmp);
 		if (enum_tmp == CD_COLORSPACE_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -880,7 +880,7 @@ colord_enum_func (void)
 	for (i = CD_DEVICE_RELATION_UNKNOWN + 1; i < CD_DEVICE_RELATION_LAST; i++) {
 		tmp = cd_device_relation_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_device_relation_from_string (tmp);
 		if (enum_tmp == CD_DEVICE_RELATION_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -891,7 +891,7 @@ colord_enum_func (void)
 	for (i = CD_OBJECT_SCOPE_UNKNOWN + 1; i < CD_OBJECT_SCOPE_LAST; i++) {
 		tmp = cd_object_scope_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_object_scope_from_string (tmp);
 		if (enum_tmp == CD_OBJECT_SCOPE_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -902,7 +902,7 @@ colord_enum_func (void)
 	for (i = CD_SENSOR_STATE_UNKNOWN + 1; i < CD_SENSOR_STATE_LAST; i++) {
 		tmp = cd_sensor_state_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_sensor_state_from_string (tmp);
 		if (enum_tmp == CD_SENSOR_STATE_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -913,7 +913,7 @@ colord_enum_func (void)
 	for (i = CD_SENSOR_CAP_UNKNOWN + 1; i < CD_SENSOR_CAP_LAST; i++) {
 		tmp = cd_sensor_cap_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_sensor_cap_from_string (tmp);
 		if (enum_tmp == CD_SENSOR_CAP_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -924,7 +924,7 @@ colord_enum_func (void)
 	for (i = CD_STANDARD_SPACE_UNKNOWN + 1; i < CD_STANDARD_SPACE_LAST; i++) {
 		tmp = cd_standard_space_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_standard_space_from_string (tmp);
 		if (enum_tmp == CD_STANDARD_SPACE_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -935,7 +935,7 @@ colord_enum_func (void)
 	for (i = CD_PROFILE_WARNING_UNKNOWN + 1; i < CD_PROFILE_WARNING_LAST; i++) {
 		tmp = cd_standard_space_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_standard_space_from_string (tmp);
 		if (enum_tmp == CD_PROFILE_WARNING_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -946,7 +946,7 @@ colord_enum_func (void)
 	for (i = CD_PROFILE_QUALITY_UNKNOWN + 1; i < CD_PROFILE_QUALITY_LAST; i++) {
 		tmp = cd_profile_quality_to_string (i);
 		if (g_strcmp0 (tmp, "unknown") == 0)
-			g_warning ("no enum for %i", i);
+			g_warning ("no enum for %u", i);
 		enum_tmp = cd_profile_quality_from_string (tmp);
 		if (enum_tmp == CD_PROFILE_QUALITY_UNKNOWN)
 			g_warning ("no enum for %s", tmp);
@@ -1890,7 +1890,7 @@ colord_transform_func (void)
 		g_assert_cmpint (memcmp (img_data_out,
 					 img_data_check,
 					 height * width * 3), ==, 0);
-		g_print ("%i threads = %.2fms\n", i,
+		g_print ("%u threads = %.2fms\n", i,
 			 g_timer_elapsed (timer, NULL) * 1000 / repeats);
 	}
 	g_timer_destroy (timer);

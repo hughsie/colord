@@ -53,7 +53,7 @@ colord_session_LDFLAGS =				\
 	$(PIE_LDFLAGS)
 
 colord_session_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 dbusservicemaindir = $(datadir)/dbus-1/services
 dbusservicemain_in_files = org.freedesktop.ColorHelper.service.in
@@ -80,7 +80,7 @@ colord_session_example_LDADD =				\
 	$(GNOME_DESKTOP_LIBS)				\
 	$(LCMS_LIBS) -lm
 colord_session_example_CFLAGS =				\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 test: colord-session-example
 	./colord-session-example			\

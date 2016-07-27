@@ -249,11 +249,11 @@ cd_main_create_profile (CdMainPrivate *priv,
 				     "persistent profiles are no yet supported");
 		return NULL;
 	default:
-		g_warning ("CdMain: Unsupported scope kind: %i", scope);
+		g_warning ("CdMain: Unsupported scope kind: %u", scope);
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_NOT_SUPPORTED,
-			     "Unsupported scope kind: %i", scope);
+			     "Unsupported scope kind: %u", scope);
 		return NULL;
 	}
 
@@ -434,7 +434,7 @@ cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 								object_id_tmp,
 								cd_device_get_owner (device));
 		if (profile_tmp == NULL) {
-			g_debug ("CdMain: profile %s with owner %i is not (yet) available",
+			g_debug ("CdMain: profile %s with owner %u is not (yet) available",
 				 object_id_tmp, cd_device_get_owner (device));
 			continue;
 		}
@@ -533,7 +533,7 @@ cd_main_get_seat_for_process (guint pid)
 	/* get session the process belongs to */
 	rc = sd_pid_get_session (pid, &sd_session);
 	if (rc != 0) {
-		g_warning ("failed to get session [pid %i]: %s",
+		g_warning ("failed to get session [pid %u]: %s",
 			   pid, strerror (-rc));
 		goto out;
 	}
@@ -541,7 +541,7 @@ cd_main_get_seat_for_process (guint pid)
 	/* get the seat the session is on */
 	rc = sd_session_get_seat (sd_session, &sd_seat);
 	if (rc != 0) {
-		g_warning ("failed to get seat for session %s [pid %i]: %s",
+		g_warning ("failed to get seat for session %s [pid %u]: %s",
 			   sd_session, pid, strerror (-rc));
 		goto out;
 	}
@@ -878,7 +878,7 @@ cd_main_get_cmdline_for_pid (guint pid)
 	g_autofree gchar *proc_path = NULL;
 
 	/* just read the link */
-	proc_path = g_strdup_printf ("/proc/%i/cmdline", pid);
+	proc_path = g_strdup_printf ("/proc/%u/cmdline", pid);
 	ret = g_file_get_contents (proc_path, &cmdline, &len, &error);
 	if (!ret) {
 		g_warning ("CdMain: failed to read %s: %s",

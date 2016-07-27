@@ -76,7 +76,7 @@ ch_test_device_queue_progress_changed_cb (ChDeviceQueue	*device_queue,
 					  gpointer	 user_data)
 {
 	progress_changed_cnt++;
-	g_debug ("queue complete %i%%",
+	g_debug ("queue complete %u%%",
 		 percentage);
 }
 
@@ -1084,7 +1084,7 @@ ch_test_reading_xyz_func (void)
 
 	/* set post scale much higher */
 	for (post_scale = 1; post_scale < 2000; post_scale *= 2) {
-		g_debug ("Setting post-scale %i", post_scale);
+		g_debug ("Setting post-scale %" G_GUINT16_FORMAT, post_scale);
 		ch_device_queue_set_post_scale (device_queue,
 						device,
 						post_scale);

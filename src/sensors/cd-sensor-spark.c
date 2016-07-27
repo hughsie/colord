@@ -529,7 +529,7 @@ cd_sensor_spark_lock_thread_cb (GTask *task,
 			return;
 		}
 		priv->dark_cal = cd_spectrum_dup (cd_it8_get_spectrum_by_id (it8, "1"));
-		g_debug ("loaded dark calibration with %i elements",
+		g_debug ("loaded dark calibration with %u elements",
 			 cd_spectrum_get_size (priv->dark_cal));
 
 		/* print something for debugging */
@@ -557,7 +557,7 @@ cd_sensor_spark_lock_thread_cb (GTask *task,
 			return;
 		}
 		priv->irradiance_cal = cd_spectrum_dup (cd_it8_get_spectrum_by_id (it8, "1"));
-		g_debug ("loaded irradiance calibration with %i elements",
+		g_debug ("loaded irradiance calibration with %u elements",
 			 cd_spectrum_get_size (priv->irradiance_cal));
 
 		/* print something for debugging */

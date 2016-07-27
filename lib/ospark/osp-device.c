@@ -325,12 +325,13 @@ osp_device_get_fw_version (GUsbDevice *device, GError **error)
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected %i bytes, got %li", 2, data_len);
+			     "Expected %i bytes, got %" G_GSIZE_FORMAT,
+			     2, data_len);
 		return NULL;
 	}
 
 	/* format value */
-	return g_strdup_printf ("%i.%i", data[1], data[0]);
+	return g_strdup_printf ("%u.%u", data[1], data[0]);
 }
 
 /**
@@ -361,7 +362,8 @@ osp_device_get_wavelength_cal_for_idx (GUsbDevice *device,
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected %i bytes, got %li", 4, data_len);
+			     "Expected %i bytes, got %" G_GSIZE_FORMAT,
+			     4, data_len);
 		return FALSE;
 	}
 
@@ -440,7 +442,8 @@ osp_device_get_wavelength_cal (GUsbDevice *device, guint *length, GError **error
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected 1 bytes, got %li", data_len);
+			     "Expected 1 bytes, got %" G_GSIZE_FORMAT,
+			     data_len);
 		return NULL;
 	}
 
@@ -449,7 +452,7 @@ osp_device_get_wavelength_cal (GUsbDevice *device, guint *length, GError **error
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected 4 coefs, got %i", data[0]);
+			     "Expected 4 coefs, got %u", data[0]);
 		return NULL;
 	}
 
@@ -501,7 +504,8 @@ osp_device_get_nonlinearity_cal_for_idx (GUsbDevice *device,
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected %i bytes, got %li", 4, data_len);
+			     "Expected %i bytes, got %" G_GSIZE_FORMAT,
+			     4, data_len);
 		return FALSE;
 	}
 
@@ -548,7 +552,8 @@ osp_device_get_nonlinearity_cal (GUsbDevice *device, guint *length, GError **err
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected 1 bytes, got %li", data_len);
+			     "Expected 1 bytes, got %" G_GSIZE_FORMAT,
+			     data_len);
 		return NULL;
 	}
 
@@ -614,7 +619,8 @@ osp_device_get_irradiance_cal (GUsbDevice *device, guint *length, GError **error
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected %i bytes, got %li", 4096 * 4, data_len);
+			     "Expected %i bytes, got %" G_GSIZE_FORMAT,
+			     4096 * 4, data_len);
 		return NULL;
 	}
 
@@ -664,7 +670,8 @@ osp_device_take_spectrum_internal (GUsbDevice *device,
 		g_set_error (error,
 			     OSP_DEVICE_ERROR,
 			     OSP_DEVICE_ERROR_INTERNAL,
-			     "Expected %i bytes, got %li", 2048, data_len);
+			     "Expected %i bytes, got %" G_GSIZE_FORMAT,
+			     2048, data_len);
 		return NULL;
 	}
 
@@ -831,9 +838,9 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 
 		/* limit this to something sane */
 		if (sample_duration / G_USEC_PER_SEC > sample_duration_max_secs) {
-			g_debug ("limiting duration from %lus to %is",
-				 sample_duration / G_USEC_PER_SEC,
-				 sample_duration_max_secs);
+			g_debug ("limiting duration from %us to %us",
+				 (guint) (sample_duration / G_USEC_PER_SEC),
+				 (guint) (sample_duration_max_secs));
 			sample_duration = sample_duration_max_secs * G_USEC_PER_SEC;
 			relax_requirements = TRUE;
 		}

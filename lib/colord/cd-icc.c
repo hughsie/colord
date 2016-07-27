@@ -260,7 +260,7 @@ cd_icc_to_string (CdIcc *icc)
 	/* print size */
 	tmp = cd_icc_get_size (icc);
 	if (tmp > 0)
-		g_string_append_printf (str, "  Size\t\t= %i bytes\n", tmp);
+		g_string_append_printf (str, "  Size\t\t= %" G_GUINT32_FORMAT " bytes\n", tmp);
 
 	/* version */
 	g_string_append_printf (str, "  Version\t= %.1f\n",
@@ -360,8 +360,9 @@ cd_icc_to_string (CdIcc *icc)
 		cd_icc_uint32_to_str (GUINT32_FROM_BE (sig), tag_str);
 
 		/* print header */
-		g_string_append_printf (str, "tag %02i:\n", i);
-		g_string_append_printf (str, "  sig\t'%s' [0x%x]\n", tag_str, sig);
+		g_string_append_printf (str, "tag %02u:\n", (guint) i);
+		g_string_append_printf (str, "  sig\t'%s' [0x%x]\n",
+					tag_str, (guint) sig);
 
 		/* is this linked to another data area? */
 		sig_link = cmsTagLinkedTo (priv->lcms_profile, sig);
@@ -440,7 +441,7 @@ cd_icc_to_string (CdIcc *icc)
 								error->message);
 					continue;
 				}
-				g_string_append_printf (str, "  %s_%s:\t%s [%i bytes]\n",
+				g_string_append_printf (str, "  %s_%s:\t%s [%" G_GUINT32_FORMAT " bytes]\n",
 							language_code[0] != '\0' ? language_code : "**",
 							country_code[0] != '\0' ? country_code : "**",
 							text_buffer,
@@ -573,7 +574,7 @@ cd_icc_to_string (CdIcc *icc)
 				break;
 			}
 			g_string_append_printf (str, "  channels\t = %i\n", 3);
-			g_string_append_printf (str, "  entries\t = %i\n",
+			g_string_append_printf (str, "  entries\t = %" G_GUINT32_FORMAT "\n",
 						cmsGetToneCurveEstimatedTableEntries (vcgt[0]));
 			break;
 		}
@@ -614,7 +615,7 @@ cd_icc_to_string (CdIcc *icc)
 							 (cmsUInt16Number *)&pcs,
 							 NULL);
 				if (!ret) {
-					g_string_append_printf (str, "  Info:\t\tFailed to get NC #%i", j);
+					g_string_append_printf (str, "  Info:\t\tFailed to get NC #%" G_GUINT32_FORMAT, j);
 					continue;
 				}
 				if (prefix[0] != '\0')
@@ -636,8 +637,8 @@ cd_icc_to_string (CdIcc *icc)
 
 				/* get color */
 				cmsLabEncoded2Float ((cmsCIELab *) &lab, pcs);
-				g_string_append_printf (str, "  %03i:\t %s\tL:%.2f a:%.3f b:%.3f\n",
-							j,
+				g_string_append_printf (str, "  %03u:\t %s\tL:%.2f a:%.3f b:%.3f\n",
+							(guint) j,
 							string->str,
 							lab.L, lab.a, lab.b);
 			}

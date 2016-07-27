@@ -15,7 +15,7 @@ cd_dbus_create_device_LDADD =				\
 	$(DBUS_LIBS)
 
 cd_dbus_create_device_CFLAGS =				\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 cd_dbus_use_qualifier_SOURCES =				\
 	cd-dbus-use-qualifier.c
@@ -24,7 +24,7 @@ cd_dbus_use_qualifier_LDADD =				\
 	$(DBUS_LIBS)
 
 cd_dbus_use_qualifier_CFLAGS =				\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 endif
 
 -include $(top_srcdir)/git.mk

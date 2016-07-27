@@ -652,7 +652,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
-			     "Invalid CCSS spectral size: %i", spectral_bands);
+			     "Invalid CCSS spectral size: %u", spectral_bands);
 		return FALSE;
 	}
 
@@ -679,7 +679,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
-			     "Invalid CCSS: bands = %i, fields = %i",
+			     "Invalid CCSS: bands = %u, fields = %u",
 			     spectral_bands, number_of_fields);
 		return FALSE;
 	}
@@ -701,7 +701,7 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 					    cmsIT8GetDataRowCol(it8_lcms, j, 0));
 		} else {
 			g_autofree gchar *label = NULL;
-			label = g_strdup_printf ("%i", j + 1);
+			label = g_strdup_printf ("%u", j + 1);
 			cd_spectrum_set_id (spectrum, label);
 		}
 		for (i = has_index; i < number_of_fields; i++) {
@@ -762,7 +762,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
-			     "Invalid CCSS spectral size: %i", spectral_bands);
+			     "Invalid CCSS spectral size: %u", spectral_bands);
 		return FALSE;
 	}
 
@@ -784,7 +784,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
-			     "Invalid CMF: bands != fields (%i, %i)",
+			     "Invalid CMF: bands != fields (%u, %u)",
 			     spectral_bands, number_of_fields);
 		return FALSE;
 	}
@@ -795,7 +795,7 @@ cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		g_set_error (error,
 			     CD_IT8_ERROR,
 			     CD_IT8_ERROR_INVALID_FORMAT,
-			     "Invalid CMF: sets != 3 (%i)",
+			     "Invalid CMF: sets != 3 (%u)",
 			     number_of_sets);
 		return FALSE;
 	}

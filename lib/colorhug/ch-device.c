@@ -1159,7 +1159,8 @@ ch_device_get_serial_number (GUsbDevice *device, guint32 *value,
 			g_set_error (error,
 				     G_USB_DEVICE_ERROR,
 				     G_USB_DEVICE_ERROR_IO,
-				     "Invalid size, got %li", actual_length);
+				     "Invalid size, got %" G_GSIZE_FORMAT,
+				     actual_length);
 			return FALSE;
 		}
 		if (value != NULL)
@@ -1282,7 +1283,8 @@ ch_device_get_leds (GUsbDevice *device, ChStatusLed *value,
 			g_set_error (error,
 				     G_USB_DEVICE_ERROR,
 				     G_USB_DEVICE_ERROR_IO,
-				     "Invalid size, got %li", actual_length);
+				     "Invalid size, got %" G_GSIZE_FORMAT,
+				     actual_length);
 			return FALSE;
 		}
 		if (value != NULL)
@@ -1418,7 +1420,8 @@ ch_device_get_pcb_errata (GUsbDevice *device, ChPcbErrata *value,
 			g_set_error (error,
 				     G_USB_DEVICE_ERROR,
 				     G_USB_DEVICE_ERROR_IO,
-				     "Invalid size, got %li", actual_length);
+				     "Invalid size, got %" G_GSIZE_FORMAT,
+				     actual_length);
 			return FALSE;
 		}
 		if (value != NULL)
@@ -1610,7 +1613,8 @@ ch_device_get_ccd_calibration (GUsbDevice *device,
 		g_set_error (error,
 			     G_USB_DEVICE_ERROR,
 			     G_USB_DEVICE_ERROR_IO,
-			     "Invalid size, got %li", actual_length);
+			     "Invalid size, got %" G_GSIZE_FORMAT,
+				     actual_length);
 		return FALSE;
 	}
 	if (start_nm != NULL) {
@@ -1737,7 +1741,8 @@ ch_device_get_integral_time (GUsbDevice *device, guint16 *value,
 			g_set_error (error,
 				     G_USB_DEVICE_ERROR,
 				     G_USB_DEVICE_ERROR_IO,
-				     "Invalid size, got %li", actual_length);
+				     "Invalid size, got %" G_GSIZE_FORMAT,
+				     actual_length);
 			return FALSE;
 		}
 		if (value != NULL)
@@ -1813,7 +1818,8 @@ ch_device_get_temperature (GUsbDevice *device, gdouble *value,
 			g_set_error (error,
 				     G_USB_DEVICE_ERROR,
 				     G_USB_DEVICE_ERROR_IO,
-				     "Invalid size, got %li", actual_length);
+				     "Invalid size, got %" G_GSIZE_FORMAT,
+				     actual_length);
 			return FALSE;
 		}
 		if (value != NULL)
@@ -1881,7 +1887,8 @@ ch_device_get_error (GUsbDevice *device, ChError *status, ChCmd *cmd,
 		g_set_error (error,
 			     G_USB_DEVICE_ERROR,
 			     G_USB_DEVICE_ERROR_IO,
-			     "Invalid size, got %li", actual_length);
+			     "Invalid size, got %" G_GSIZE_FORMAT,
+				     actual_length);
 		return FALSE;
 	}
 	if (status != NULL)
@@ -2104,7 +2111,8 @@ ch_device_take_reading_xyz (GUsbDevice *device, guint16 calibration_idx,
 			g_set_error (error,
 				     G_USB_DEVICE_ERROR,
 				     G_USB_DEVICE_ERROR_IO,
-				     "Invalid size, got %li", actual_length);
+				     "Invalid size, got %" G_GSIZE_FORMAT,
+				     actual_length);
 			return NULL;
 		}
 
@@ -2187,7 +2195,7 @@ ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **
 			g_set_error (error,
 				     G_USB_DEVICE_ERROR,
 				     G_USB_DEVICE_ERROR_IO,
-				     "Failed to get spectrum data, got %li",
+				     "Failed to get spectrum data, got %" G_GSIZE_FORMAT,
 				     actual_length);
 			return NULL;
 		}

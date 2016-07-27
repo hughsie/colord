@@ -37,7 +37,7 @@ libhuey_private_la_LDFLAGS =					\
 	-export-symbols-regex '^huey_.*'
 
 libhuey_private_la_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES)
 

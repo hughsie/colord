@@ -35,7 +35,7 @@ libospark_private_la_LDFLAGS =					\
 	-export-symbols-regex '^osp_.*'
 
 libospark_private_la_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 TESTS_ENVIRONMENT =						\
 	libtool --mode=execute valgrind				\
@@ -57,7 +57,7 @@ osp_self_test_LDADD =						\
 	$(privlib_LTLIBRARIES)					\
 	$(GUSB_LIBS)
 
-osp_self_test_CFLAGS = -DEGG_TEST $(AM_CFLAGS) $(WARNINGFLAGS_C)
+osp_self_test_CFLAGS = -DEGG_TEST $(AM_CFLAGS) $(WARN_CFLAGS)
 
 TESTS = osp-self-test
 

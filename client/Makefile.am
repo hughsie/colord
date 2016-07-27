@@ -41,7 +41,7 @@ colormgr_LDFLAGS =					\
 	$(PIE_LDFLAGS)
 
 colormgr_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 cd_fix_profile_SOURCES =				\
 	cd-fix-profile.c
@@ -53,7 +53,7 @@ cd_fix_profile_LDADD =					\
 	-lm
 
 cd_fix_profile_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 cd_fix_profile_LDFLAGS =				\
 	$(PIE_LDFLAGS)
@@ -71,7 +71,7 @@ cd_iccdump_LDFLAGS =					\
 	$(PIE_LDFLAGS)
 
 cd_iccdump_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 cd_it8_SOURCES =					\
 	cd-it8.c
@@ -86,7 +86,7 @@ cd_it8_LDFLAGS =					\
 	$(PIE_LDFLAGS)
 
 cd_it8_CFLAGS =						\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 cd_create_profile_SOURCES =				\
 	cd-create-profile.c
@@ -101,7 +101,7 @@ cd_create_profile_LDFLAGS =				\
 	$(PIE_LDFLAGS)
 
 cd_create_profile_CFLAGS =				\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 MAINTAINERCLEANFILES = *.a
 

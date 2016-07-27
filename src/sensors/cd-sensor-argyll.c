@@ -256,7 +256,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 		argv = g_ptr_array_new_with_free_func (g_free);
 		g_ptr_array_add (argv, g_strdup ("/usr/bin/spotread"));
 		g_ptr_array_add (argv, g_strdup ("-d"));
-		g_ptr_array_add (argv, g_strdup_printf ("-c%i", priv->communication_port));
+		g_ptr_array_add (argv, g_strdup_printf ("-c%u", priv->communication_port));
 		g_ptr_array_add (argv, g_strdup ("-N")); //no autocal
 		g_ptr_array_add (argv, g_strdup (cd_sensor_get_y_arg_for_cap (cap)));
 		g_ptr_array_add (argv, NULL);

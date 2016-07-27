@@ -39,7 +39,7 @@ colord_sane_LDFLAGS =					\
 	$(PIE_LDFLAGS)
 
 colord_sane_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 DISTCLEANFILES =					\
 	$(dist_profile_DATA)

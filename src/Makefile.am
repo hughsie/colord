@@ -114,7 +114,7 @@ colord_LDFLAGS =					\
 	$(RELRO_LDFLAGS)
 
 colord_CFLAGS =						\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 TESTS_ENVIRONMENT =					\
 	libtool --mode=execute valgrind			\
@@ -157,7 +157,7 @@ cd_self_test_LDADD =					\
 	$(GLIB_LIBS)					\
 	$(GLIB_UNIX_LIBS)
 
-cd_self_test_CFLAGS = $(WARNINGFLAGS_C)
+cd_self_test_CFLAGS = $(WARN_CFLAGS)
 
 install-data-hook:
 	if test -w $(DESTDIR)$(prefix)/; then \

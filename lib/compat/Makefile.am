@@ -33,7 +33,7 @@ libcolordcompat_la_LDFLAGS =					\
 	-export-symbols-regex '^cd_.*'
 
 libcolordcompat_la_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 clean-local:
 	rm -f *~

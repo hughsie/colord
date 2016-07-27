@@ -42,7 +42,7 @@ cd_parse_beagle_LDADD =					\
 	$(top_builddir)/lib/munki/libmunki-private.la
 
 cd_parse_beagle_CFLAGS =				\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 cd_sensor_dump_SOURCES =				\
 	../cd-common.c					\
@@ -63,7 +63,7 @@ cd_sensor_dump_LDADD =					\
 	-lm
 
 cd_sensor_dump_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 CLEANFILES = $(noinst_PROGRAMS)
 
@@ -77,7 +77,7 @@ plugin_LTLIBRARIES =					\
 libcolord_sensor_dummy_la_SOURCES = cd-sensor-dummy.c
 libcolord_sensor_dummy_la_LIBADD = $(GLIB_LIBS)
 libcolord_sensor_dummy_la_LDFLAGS = -module -avoid-version
-libcolord_sensor_dummy_la_CFLAGS = $(WARNINGFLAGS_C)
+libcolord_sensor_dummy_la_CFLAGS = $(WARN_CFLAGS)
 
 if HAVE_GUSB
 plugin_LTLIBRARIES +=					\
@@ -93,7 +93,7 @@ libcolord_sensor_spark_la_LIBADD =			\
 	$(GUSB_LIBS)					\
 	$(top_builddir)/lib/ospark/libospark-private.la
 libcolord_sensor_spark_la_LDFLAGS = -module -avoid-version
-libcolord_sensor_spark_la_CFLAGS = $(WARNINGFLAGS_C)
+libcolord_sensor_spark_la_CFLAGS = $(WARN_CFLAGS)
 
 libcolord_sensor_huey_la_SOURCES =			\
 	cd-sensor-huey.c
@@ -102,7 +102,7 @@ libcolord_sensor_huey_la_LIBADD =			\
 	$(GUSB_LIBS)					\
 	$(top_builddir)/lib/huey/libhuey-private.la
 libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
-libcolord_sensor_huey_la_CFLAGS = $(WARNINGFLAGS_C)
+libcolord_sensor_huey_la_CFLAGS = $(WARN_CFLAGS)
 
 libcolord_sensor_dtp94_la_SOURCES =			\
 	cd-sensor-dtp94.c
@@ -111,7 +111,7 @@ libcolord_sensor_dtp94_la_LIBADD =			\
 	$(GUSB_LIBS)					\
 	$(top_builddir)/lib/dtp94/libdtp94-private.la
 libcolord_sensor_dtp94_la_LDFLAGS = -module -avoid-version
-libcolord_sensor_dtp94_la_CFLAGS = $(WARNINGFLAGS_C)
+libcolord_sensor_dtp94_la_CFLAGS = $(WARN_CFLAGS)
 
 libcolord_sensor_colorhug_la_SOURCES =			\
 	cd-sensor-colorhug.c
@@ -120,7 +120,7 @@ libcolord_sensor_colorhug_la_LIBADD =			\
 	$(GUSB_LIBS)					\
 	$(top_builddir)/lib/colorhug/libcolorhug.la
 libcolord_sensor_colorhug_la_LDFLAGS = -module -avoid-version
-libcolord_sensor_colorhug_la_CFLAGS = $(WARNINGFLAGS_C)
+libcolord_sensor_colorhug_la_CFLAGS = $(WARN_CFLAGS)
 endif
 
 if HAVE_ARGYLLCMS_SENSOR
@@ -132,14 +132,14 @@ libcolord_sensor_argyll_la_SOURCES =			\
 	cd-sensor-argyll.c
 libcolord_sensor_argyll_la_LIBADD = $(GLIB_LIBS) $(GUSB_LIBS)
 libcolord_sensor_argyll_la_LDFLAGS = -module -avoid-version
-libcolord_sensor_argyll_la_CFLAGS = $(WARNINGFLAGS_C)
+libcolord_sensor_argyll_la_CFLAGS = $(WARN_CFLAGS)
 endif
 
 if FALSE
 libcolord_sensor_munki_la_SOURCES = cd-sensor-munki.c
 libcolord_sensor_munki_la_LIBADD = $(GLIB_LIBS)
 libcolord_sensor_munki_la_LDFLAGS = -module -avoid-version
-libcolord_sensor_munki_la_CFLAGS = $(WARNINGFLAGS_C)
+libcolord_sensor_munki_la_CFLAGS = $(WARN_CFLAGS)
 endif
 
 -include $(top_srcdir)/git.mk

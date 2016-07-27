@@ -1815,7 +1815,7 @@ cd_device_to_string (CdDevice *device)
 	/* get a human readable time */
 	t = (time_t) priv->created;
 	time_tm = localtime (&t);
-	strftime (time_buf, sizeof time_buf, "%c", time_tm);
+	strftime (time_buf, sizeof time_buf, "%F %T", time_tm);
 
 	string = g_string_new ("");
 	g_string_append_printf (string, "  object-path:          %s\n",

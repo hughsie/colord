@@ -1288,7 +1288,7 @@ cd_sensor_register_object (CdSensor *sensor,
 			     error_local->message);
 		return FALSE;
 	}
-	g_debug ("CdSensor: Register interface %i on %s",
+	g_debug ("CdSensor: Register interface %u on %s",
 		 priv->registration_id,
 		 priv->object_path);
 	return TRUE;
@@ -1523,7 +1523,7 @@ cd_sensor_set_index (CdSensor *sensor,
 {
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 	g_autofree gchar *id = NULL;
-	id = g_strdup_printf ("%s-%02i",
+	id = g_strdup_printf ("%s-%02u",
 			      cd_sensor_kind_to_string (priv->kind),
 			      idx);
 	cd_sensor_set_id (sensor, id);
@@ -1762,7 +1762,7 @@ cd_sensor_finalize (GObject *object)
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 
 	if (priv->registration_id > 0) {
-		g_debug ("CdSensor: Unregister interface %i on %s",
+		g_debug ("CdSensor: Unregister interface %u on %s",
 			  priv->registration_id,
 			  priv->object_path);
 		g_dbus_connection_unregister_object (priv->connection,

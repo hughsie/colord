@@ -227,7 +227,7 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	for (i = 0; i < 9; i++) {
 		if (fpclassify (data[i]) != FP_NORMAL) {
 			g_set_error (error, 1, 0,
-				     "Matrix value %i non-normal: %f", i, data[i]);
+				     "Matrix value %u non-normal: %f", i, data[i]);
 			return FALSE;
 		}
 	}

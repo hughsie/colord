@@ -113,7 +113,7 @@ cd_state_print_parent_chain (CdState *state, guint level)
 {
 	if (state->priv->parent != NULL)
 		cd_state_print_parent_chain (state->priv->parent, level + 1);
-	g_print ("%i) %s (%i/%i)\n",
+	g_print ("%u) %s (%u/%u)\n",
 		 level, state->priv->id, state->priv->current, state->priv->steps);
 }
 
@@ -130,7 +130,7 @@ cd_state_set_percentage (CdState *state, guint percentage)
 	/* is it invalid */
 	if (percentage > 100) {
 		cd_state_print_parent_chain (state, 0);
-		g_warning ("percentage %i%% is invalid on %p!",
+		g_warning ("percentage %u%% is invalid on %p!",
 			   percentage, state);
 		return FALSE;
 	}
@@ -139,7 +139,7 @@ cd_state_set_percentage (CdState *state, guint percentage)
 	if (percentage < state->priv->last_percentage) {
 		if (state->priv->enable_profile) {
 			cd_state_print_parent_chain (state, 0);
-			g_critical ("percentage should not go down from %i to %i on %p!",
+			g_critical ("percentage should not go down from %u to %u on %p!",
 				    state->priv->last_percentage, percentage, state);
 		}
 		return FALSE;
@@ -207,7 +207,7 @@ cd_state_child_percentage_changed_cb (CdState *child, guint percentage, CdState 
 
 	/* already at >= 100% */
 	if (state->priv->current >= state->priv->steps) {
-		g_warning ("already at %i/%i steps on %p", state->priv->current, state->priv->steps, state);
+		g_warning ("already at %u/%u steps on %p", state->priv->current, state->priv->steps, state);
 		return;
 	}
 
@@ -230,7 +230,7 @@ cd_state_child_percentage_changed_cb (CdState *child, guint percentage, CdState 
 	/* get the range between the parent step and the next parent step */
 	range = cd_state_discrete_to_percent (state->priv->current+1, state->priv->steps) - offset;
 	if (range < 0.01) {
-		g_warning ("range=%f (from %i to %i), should be impossible", range, state->priv->current+1, state->priv->steps);
+		g_warning ("range=%f (from %u to %u), should be impossible", range, state->priv->current+1, state->priv->steps);
 		return;
 	}
 
@@ -368,7 +368,7 @@ cd_state_set_number_steps_real (CdState *state, guint steps, const gchar *strloc
 
 	/* did we call done on a state that did not have a size set? */
 	if (state->priv->steps != 0) {
-		g_warning ("steps already set to %i, can't set %i! [%s]",
+		g_warning ("steps already set to %u, can't set %u! [%s]",
 			     state->priv->steps, steps, strloc);
 		cd_state_print_parent_chain (state, 0);
 		return FALSE;
@@ -425,7 +425,7 @@ cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gi
 		g_set_error (error,
 			     CD_STATE_ERROR,
 			     CD_STATE_ERROR_INVALID,
-			     "percentage not 100: %i",
+			     "percentage not 100: %u",
 			     total);
 		return FALSE;
 	}
@@ -435,7 +435,7 @@ cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gi
 		g_set_error (error,
 			     CD_STATE_ERROR,
 			     CD_STATE_ERROR_INVALID,
-			     "failed to set number steps: %i",
+			     "failed to set number steps: %u",
 			     i+1);
 		return FALSE;
 	}
@@ -479,7 +479,7 @@ cd_state_show_profile (CdState *state)
 	/* what we set */
 	result = g_string_new ("steps were set as [ ");
 	for (i = 0; i < state->priv->steps; i++) {
-		g_string_append_printf (result, "%i, ",
+		g_string_append_printf (result, "%u, ",
 					state->priv->step_data[i] - uncumalitive);
 		uncumalitive = state->priv->step_data[i];
 	}
@@ -535,7 +535,7 @@ cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 	if (state->priv->child != NULL) {
 		CdStatePrivate *child_priv = state->priv->child->priv;
 		if (child_priv->current != child_priv->steps) {
-			g_print ("child is at %i/%i steps and parent done [%s]\n",
+			g_print ("child is at %u/%u steps and parent done [%s]\n",
 				 child_priv->current, child_priv->steps, strloc);
 			cd_state_print_parent_chain (state->priv->child, 0);
 			/* do not abort, as we want to clean this up */

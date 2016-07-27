@@ -271,7 +271,7 @@ cd_example_signal_cb (GDBusProxy *proxy,
 			g_debug ("calibration succeeded with profile %s created at %s",
 				 profile_id, profile_path);
 		} else {
-			g_warning ("calibration failed with code %i: %s",
+			g_warning ("calibration failed with code %u: %s",
 				   code, str);
 		}
 		g_main_loop_quit (priv->loop);
@@ -299,7 +299,7 @@ cd_example_signal_cb (GDBusProxy *proxy,
 			       &code,
 			       &message,
 			       &image);
-		g_print ("Interaction required type %i: %s\n",
+		g_print ("Interaction required type %u: %s\n",
 			 code, message);
 		cd_example_interaction_required (priv,
 						 code,

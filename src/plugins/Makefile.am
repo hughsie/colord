@@ -25,7 +25,7 @@ noinst_LTLIBRARIES =					\
 libcd_plugin_example_la_SOURCES = cd-plugin-example.c
 libcd_plugin_example_la_LIBADD = $(CD_PLUGIN_LIBS)
 libcd_plugin_example_la_LDFLAGS = -module -avoid-version
-libcd_plugin_example_la_CFLAGS = $(CD_PLUGIN_CFLAGS) $(WARNINGFLAGS_C)
+libcd_plugin_example_la_CFLAGS = $(CD_PLUGIN_CFLAGS) $(WARN_CFLAGS)
 
 if HAVE_UDEV
 
@@ -36,12 +36,12 @@ plugin_LTLIBRARIES =					\
 libcd_plugin_camera_la_SOURCES = cd-plugin-camera.c
 libcd_plugin_camera_la_LIBADD = $(GUDEV_LIBS)
 libcd_plugin_camera_la_LDFLAGS = -module -avoid-version
-libcd_plugin_camera_la_CFLAGS = $(GUDEV_CFLAGS) $(WARNINGFLAGS_C)
+libcd_plugin_camera_la_CFLAGS = $(GUDEV_CFLAGS) $(WARN_CFLAGS)
 
 libcd_plugin_scanner_la_SOURCES = cd-plugin-scanner.c
 libcd_plugin_scanner_la_LIBADD = $(GUDEV_LIBS)
 libcd_plugin_scanner_la_LDFLAGS = -module -avoid-version
-libcd_plugin_scanner_la_CFLAGS = $(GUDEV_CFLAGS) $(WARNINGFLAGS_C)
+libcd_plugin_scanner_la_CFLAGS = $(GUDEV_CFLAGS) $(WARN_CFLAGS)
 
 if HAVE_SANE
 
@@ -51,7 +51,7 @@ plugin_LTLIBRARIES +=					\
 libcd_plugin_sane_la_SOURCES = cd-plugin-sane.c
 libcd_plugin_sane_la_LIBADD = $(GUDEV_LIBS)
 libcd_plugin_sane_la_LDFLAGS = -module -avoid-version
-libcd_plugin_sane_la_CFLAGS = $(GUDEV_CFLAGS) $(WARNINGFLAGS_C)
+libcd_plugin_sane_la_CFLAGS = $(GUDEV_CFLAGS) $(WARN_CFLAGS)
 
 endif # HAVE_SANE
 endif # HAVE_UDEV

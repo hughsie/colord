@@ -76,7 +76,7 @@ libcolorhug_la_LDFLAGS =					\
 	-export-symbols-regex '^ch_.*'
 
 libcolorhug_la_CFLAGS =						\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 TESTS_ENVIRONMENT =						\
 	libtool --mode=execute valgrind				\
@@ -98,7 +98,7 @@ ch_self_test_LDADD =						\
 	$(lib_LTLIBRARIES)					\
 	$(GUSB_LIBS)
 
-ch_self_test_CFLAGS = -DEGG_TEST $(AM_CFLAGS) $(WARNINGFLAGS_C)
+ch_self_test_CFLAGS = -DEGG_TEST $(AM_CFLAGS) $(WARN_CFLAGS)
 
 TESTS = ch-self-test
 

@@ -39,7 +39,7 @@ cd_fix_profile_error_cb (cmsContext ContextID,
 			 cmsUInt32Number errorcode,
 			 const char *text)
 {
-	g_warning ("LCMS error %i: %s", errorcode, text);
+	g_warning ("LCMS error %" G_GUINT32_FORMAT ": %s", errorcode, text);
 
 	/* copy this sytemwide */
 	lcms_error_code = errorcode;

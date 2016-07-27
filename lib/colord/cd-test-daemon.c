@@ -1206,9 +1206,9 @@ colord_device_mapping_func (void)
 	}
 
 	key = g_random_int_range (0x00, 0xffff);
-	g_debug ("using random key %04x", key);
-	profile_id1 = g_strdup_printf ("profile-mapping-%04x_1", key);
-	profile_id2 = g_strdup_printf ("profile-mapping-%04x_2", key);
+	g_debug ("using random key %04x", (guint) key);
+	profile_id1 = g_strdup_printf ("profile-mapping-%04x_1", (guint) key);
+	profile_id2 = g_strdup_printf ("profile-mapping-%04x_2", (guint) key);
 
 	client = cd_client_new ();
 
@@ -1662,7 +1662,7 @@ colord_device_async_func (void)
 	}
 
 	user_details = getpwuid(getuid());
-	device_path = g_strdup_printf("/org/freedesktop/ColorManager/devices/%s_%s_%d",
+	device_path = g_strdup_printf("/org/freedesktop/ColorManager/devices/%s_%s_%u",
 				      device_name,
 				      user_details->pw_name,
 				      user_details->pw_uid);

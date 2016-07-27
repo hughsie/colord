@@ -594,7 +594,7 @@ cd_util_extract_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
 	g_print ("idx,red,green,blue\n");
 	for (i = 0; i < size; i++) {
 		in = (gdouble) i / (gdouble) (size - 1);
-		g_print ("%i,", i);
+		g_print ("%u,", i);
 		g_print ("%f,", cmsEvalToneCurveFloat(vcgt[0], in));
 		g_print ("%f,", cmsEvalToneCurveFloat(vcgt[1], in));
 		g_print ("%f\n", cmsEvalToneCurveFloat(vcgt[2], in));
@@ -622,7 +622,7 @@ cd_util_lcms_error_cb (cmsContext ContextID,
 		       cmsUInt32Number errorcode,
 		       const char *text)
 {
-	g_warning ("LCMS error %i: %s", errorcode, text);
+	g_warning ("LCMS error %" G_GUINT32_FORMAT ": %s", errorcode, text);
 }
 
 /**

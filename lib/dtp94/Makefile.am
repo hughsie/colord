@@ -35,7 +35,7 @@ libdtp94_private_la_LDFLAGS =					\
 	-export-symbols-regex '^dtp94_.*'
 
 libdtp94_private_la_CFLAGS =					\
-	$(WARNINGFLAGS_C)
+	$(WARN_CFLAGS)
 
 CLEANFILES = $(BUILT_SOURCES)
 

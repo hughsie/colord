@@ -312,7 +312,7 @@ cd_device_set_object_path (CdDevice *device)
 	    g_strcmp0 (pw->pw_name, DAEMON_USER) == 0) {
 		path_tmp = g_strdup (priv->id);
 	} else {
-		path_tmp = g_strdup_printf ("%s_%s_%d",
+		path_tmp = g_strdup_printf ("%s_%s_%u",
 					    priv->id,
 					    pw->pw_name,
 					    priv->owner);
@@ -1645,7 +1645,7 @@ cd_device_register_object (CdDevice *device,
 			     error_local->message);
 		return FALSE;
 	}
-	g_debug ("CdDevice: Register interface %i on %s",
+	g_debug ("CdDevice: Register interface %u on %s",
 		 priv->registration_id,
 		 priv->object_path);
 	return TRUE;
@@ -1813,7 +1813,7 @@ cd_device_finalize (GObject *object)
 	if (priv->watcher_id > 0)
 		g_bus_unwatch_name (priv->watcher_id);
 	if (priv->registration_id > 0) {
-		g_debug ("CdDevice: Unregister interface %i on %s",
+		g_debug ("CdDevice: Unregister interface %u on %s",
 			  priv->registration_id,
 			  priv->object_path);
 		g_dbus_connection_unregister_object (priv->connection,

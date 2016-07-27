@@ -373,7 +373,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 					     error);
 	if (!ret)
 		return NULL;
-	g_debug ("initial values: red=%i, green=%i, blue=%i",
+	g_debug ("initial values: red=%u, green=%u, blue=%u",
 		 color_native.R, color_native.G, color_native.B);
 
 	/* try to fill the 16 bit register for accuracy */
@@ -396,7 +396,7 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 					     error);
 	if (!ret)
 		return NULL;
-	g_debug ("raw values: red=%i, green=%i, blue=%i",
+	g_debug ("raw values: red=%u, green=%u, blue=%u",
 		 color_native.R, color_native.G, color_native.B);
 
 	/* get DeviceRGB values */

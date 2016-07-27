@@ -215,7 +215,7 @@ huey_device_get_serial_number (GUsbDevice *device, GError **error)
 					      error);
 	if (!ret)
 		return NULL;
-	return g_strdup_printf ("%i", tmp);
+	return g_strdup_printf ("%" G_GUINT32_FORMAT, tmp);
 }
 
 /**

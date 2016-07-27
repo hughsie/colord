@@ -254,7 +254,7 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 		message = "";
 		break;
 	}
-	g_debug ("CdMain: Emitting InteractionRequired(%i,%s,%s)",
+	g_debug ("CdMain: Emitting InteractionRequired(%u,%s,%s)",
 		 code, message, image);
 	g_dbus_connection_emit_signal (priv->connection,
 				       NULL,
@@ -280,7 +280,7 @@ cd_main_emit_update_gamma (CdMainPrivate *priv,
 	CdColorRGB *color;
 
 	/* emit signal */
-	g_debug ("CdMain: Emitting UpdateGamma(%i elements)",
+	g_debug ("CdMain: Emitting UpdateGamma(%u elements)",
 		 array->len);
 
 	/* build the dict */
@@ -1667,7 +1667,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 					 cd_profile_quality_to_string (priv->quality));
 			} else if (g_strcmp0 (prop_key, "Whitepoint") == 0) {
 				priv->target_whitepoint = g_variant_get_uint32 (prop_value);
-				g_debug ("Whitepoint: %iK",
+				g_debug ("Whitepoint: %uK",
 					 priv->target_whitepoint);
 			} else if (g_strcmp0 (prop_key, "Title") == 0) {
 				priv->title = g_variant_dup_string (prop_value, NULL);
@@ -1678,7 +1678,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 					 cd_sensor_cap_to_string (priv->device_kind));
 			} else if (g_strcmp0 (prop_key, "Brightness") == 0) {
 				priv->screen_brightness = g_variant_get_uint32 (prop_value);
-				g_debug ("Device brightness: %i", priv->screen_brightness);
+				g_debug ("Device brightness: %u", priv->screen_brightness);
 			} else if (g_strcmp0 (prop_key, "Gamma") == 0) {
 				priv->target_gamma = g_variant_get_double (prop_value);
 				g_debug ("Gamma: %.2f", priv->target_gamma);
@@ -1706,7 +1706,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_SESSION_ERROR,
 							       CD_SESSION_ERROR_INVALID_VALUE,
-							       "invalid quality value %i",
+							       "invalid quality value %u",
 							       priv->quality);
 			return;
 		}
@@ -1728,7 +1728,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_SESSION_ERROR,
 							       CD_SESSION_ERROR_INVALID_VALUE,
-							       "invalid target whitepoint value %i",
+							       "invalid target whitepoint value %u",
 							       priv->target_whitepoint);
 			return;
 		}
@@ -1970,7 +1970,7 @@ cd_main_percentage_changed_cb (CdState *state,
 			       guint value,
 			       CdMainPrivate *priv)
 {
-	g_debug ("CdMain: Emitting PropertiesChanged(Progress) %i", value);
+	g_debug ("CdMain: Emitting PropertiesChanged(Progress) %u", value);
 	cd_main_emit_property_changed (priv,
 				       "Progress",
 				       g_variant_new_uint32 (value));

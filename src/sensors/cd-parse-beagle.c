@@ -311,7 +311,7 @@ main (gint argc, gchar *argv[])
 		    split[i][0] == '\0')
 			continue;
 
-		g_print ("@@%i:%s\n", i, split[i]);
+		g_print ("@@%u:%s\n", i, split[i]);
 
 		/* populate a CdParseEntry */
 		sections = g_strsplit (split[i], ",", -1);
