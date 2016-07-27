@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Seong-ho Cho <darkcircle.0426@gmail.com>, 2012,2015
+# Seong-ho Cho <darkcircle.0426@gmail.com>, 2012,2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-27 15:21+0000\n"
-"PO-Revision-Date: 2015-11-27 15:21+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2016-07-27 14:03+0100\n"
+"PO-Revision-Date: 2016-04-07 10:10+0000\n"
+"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
 "Language-Team: Korean (http://www.transifex.com/hughsie/colord/language/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -373,21 +373,21 @@ msgstr "표면 위치로 장치를 설정하고 엔터 키를 누르십시오."
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Put the device in a dark place and press enter."
-msgstr ""
+msgstr "어두운 색 영역에 장치를 올려둔 후 엔터 키를 누르십시오."
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Calibrate with a 3200K light source."
-msgstr ""
+msgstr "3200K 광원으로 보정합니다."
 
 msgid "Put the device on the color to be measured and press enter."
-msgstr ""
+msgstr "측정할 색상에 장치를 올려둔 후 엔터 키를 누르십시오."
 
 msgid "Color"
 msgstr "색상"
 
 #. TRANSLATORS: sensor can't do this
 msgid "No spectral capability"
-msgstr ""
+msgstr "스펙트럼 기능 없음"
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
@@ -423,7 +423,7 @@ msgstr "사용할 수 있는 모든 색상 센서를 가져옵니다"
 
 #. TRANSLATORS: command description
 msgid "Gets a spectral reading from a sensor"
-msgstr ""
+msgstr "센서에서 스펙트럼 정보를 가져옵니다"
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"

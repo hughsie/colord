@@ -3,233 +3,226 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Balázs Meskó <meskobalazs@gmail.com>, 2016
-# Balázs Úr <urbalazs@gmail.com>, 2014-2015
-# Gabor Kelemen <kelemeng at gnome dot hu>, 2012
-# kelemeng <kelemeng@ubuntu.com>, 2012
-# kelemeng <kelemeng@ubuntu.com>, 2012
-# Peter Borsa <peter.borsa@gmail.com>, 2013
-# Serge Vylekzhanin <vylekzhanin@mail.ru>, 2013
-# Zoltan Hoppár <zoltanh721@fedoraproject.org>, 2013
-# Zoltan Hoppár <zoltanh721@fedoraproject.org>, 2013-2014
+# Cédric Valmary <cvalmary@yahoo.fr>, 2016
+# Cédric Valmary <cvalmary@yahoo.fr>, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-07-27 14:03+0100\n"
-"PO-Revision-Date: 2016-03-25 12:59+0000\n"
-"Last-Translator: Balázs Meskó <meskobalazs@gmail.com>\n"
-"Language-Team: Hungarian (http://www.transifex.com/hughsie/colord/language/hu/)\n"
+"PO-Revision-Date: 2016-06-12 17:33+0000\n"
+"Last-Translator: Cédric Valmary <cvalmary@yahoo.fr>\n"
+"Language-Team: Occitan (post 1500) (http://www.transifex.com/hughsie/colord/language/oc/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hu\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: oc\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. TRANSLATORS: command line option
 msgid "Profile to create"
-msgstr "Létrehozandó profil"
+msgstr "Perfil de crear"
 
 #. TRANSLATORS: program name
 msgid "ICC profile creation program"
-msgstr "ICC-profil készítő program"
+msgstr "Programa de creacion de perfil ICC"
 
 #. TRANSLATORS: the user didn't read the man page
 msgid "Failed to parse arguments"
-msgstr "A paraméterek feldolgozása meghiúsult"
+msgstr "L’analisi dels arguments a fracassat"
 
 #. TRANSLATORS: the user forgot to use -o
 msgid "No output filename specified"
-msgstr "Nincs megadva kimeneti fájlnév"
+msgstr "Pas cap de fichièr de sortida d'especificat"
 
 #. TRANSLATORS: this is a command alias
 #, c-format
 msgid "Alias to %s"
-msgstr "%s álneve"
+msgstr "Aliàs de %s"
 
 msgid "Command not found, valid commands are:"
-msgstr "A parancs nem található, az érvényes parancsok:"
+msgstr "Comanda introbabla. Las comandas validas son :"
 
 #. TRANSLATORS: command line option
 msgid "Show extra debugging information"
-msgstr "Extra hibakeresési információk megjelenítése"
+msgstr "Aficha las informacions de desbugatge"
 
 #. TRANSLATORS: command line option
 msgid "The locale to use when setting localized text"
-msgstr "Felhasznált nyelv a lokalizált szöveghez"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Generate the VCGT calibration of a given size"
-msgstr "Állítson elő VCGT kalibrációt a megadott méretben"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Clear any metadata in the profile"
-msgstr "A profil metaadatainak törlése"
+msgstr "Escafar totas las metadonadas del perfil"
 
 #. TRANSLATORS: command description
 msgid "Initialize any metadata for the profile"
-msgstr "A profil metaadatainak előkészítése"
+msgstr "Inicializar totas las metadonadas pel perfil"
 
 #. TRANSLATORS: command description
 msgid "Add a metadata item to the profile"
-msgstr "Metaadat-elem hozzáadása a profilhoz"
+msgstr "Apondre una metadonada al perfil"
 
 #. TRANSLATORS: command description
 msgid "Remove a metadata item from the profile"
-msgstr "Metaadat-elem eltávolítása a profilból"
+msgstr "Levar una metadonada al perfil"
 
 #. TRANSLATORS: command description
 msgid "Sets the copyright string"
-msgstr "Szerzői jogi szöveg beállítása"
+msgstr "Definir lo copyright"
 
 #. TRANSLATORS: command description
 msgid "Sets the description string"
-msgstr "Leírás beállítása"
+msgstr "Definir la descripcion"
 
 #. TRANSLATORS: command description
 msgid "Sets the manufacturer string"
-msgstr "Gyártó beállítása"
+msgstr "Definir lo fabricant"
 
 #. TRANSLATORS: command description
 msgid "Sets the model string"
-msgstr "Típus beállítása"
+msgstr "Definir lo modèl"
 
 #. TRANSLATORS: command description
 msgid "Automatically fix metadata in the profile"
-msgstr "A profil metaadatainak automatikus javítása"
+msgstr "Reparar automaticament las metadonadas del perfil"
 
 #. TRANSLATORS: command description
 msgid "Set the ICC profile version"
-msgstr "Állítsa be az ICC profil verzióját"
+msgstr "Definir la version del perfil ICC"
 
 #. TRANSLATORS: command description
 msgid "Export the tag data"
-msgstr "A címkeadat exportálása"
+msgstr "Exportar lo tag"
 
 #. TRANSLATORS: program name
 msgid "Color Management"
-msgstr "Színkezelés"
+msgstr "Gestion de las colors"
 
 #. TRANSLATORS: program name
 msgid "ICC profile dump program"
-msgstr "ICC-profil dump program"
+msgstr "Programa d'expòrt del perfil ICC"
 
 #. TRANSLATORS: command description
 msgid "Create a CMF from CSV data"
-msgstr "CMF létrehozása CSV adatokból"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a spectrum from CSV data"
-msgstr "Spektrum létrehozása CSV adatokból"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a CCMX from reference and measurement data"
-msgstr "CCMX létrehozása a hivatkozásból és a mérési adatokból"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr "%Y. %B %d., %k.%M.%S"
+msgstr "%B %e %Y, %I:%M:%S %p"
 
 #. TRANSLATORS: profile owner
 #. TRANSLATORS: profile UID
 msgid "Owner"
-msgstr "Tulajdonos"
+msgstr "Proprietari"
 
 #. TRANSLATORS: the internal DBus path
 msgid "Object Path"
-msgstr "Objektumútvonal"
+msgstr "Camin de l'objècte"
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
 #. TRANSLATORS: the device format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
 msgid "Format"
-msgstr "Formátum"
+msgstr "Formatar"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 msgid "Title"
-msgstr "Név"
+msgstr "Títol"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 msgid "Qualifier"
-msgstr "Minősítő"
+msgstr "Qualificar"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 msgid "Type"
-msgstr "Típus"
+msgstr "Tipe"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 msgid "Colorspace"
-msgstr "Színtér"
+msgstr "Espaci de colors"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 msgid "Scope"
-msgstr "Hatáskör"
+msgstr "Espandida"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 msgid "Gamma Table"
-msgstr "Gamma táblázat"
+msgstr "Taula Gamma"
 
 #. TRANSLATORS: if the profile is installed for all users
 msgid "System Wide"
-msgstr "Rendszerszintű"
+msgstr "A tot lo sistèma"
 
 #. TRANSLATORS: profile filename
 msgid "Filename"
-msgstr "Fájlnév"
+msgstr "Nom del fichièr"
 
 #. TRANSLATORS: profile identifier
 msgid "Profile ID"
-msgstr "Profilazonosító"
+msgstr "Identificant del perfil"
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 msgid "Metadata"
-msgstr "Metaadatok"
+msgstr "Metadonadas"
 
 msgid "Warning"
-msgstr "Figyelmeztetés"
+msgstr "Atencion"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 msgid "Created"
-msgstr "Létrehozva"
+msgstr "Creat"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 msgid "Modified"
-msgstr "Módosítva"
+msgstr "Modificat"
 
 #. TRANSLATORS: the device enabled state
 msgid "Enabled"
-msgstr "Engedélyezve"
+msgstr "Activat"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 msgid "Embedded"
-msgstr "Beépített"
+msgstr "Embarcat"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 msgid "Model"
-msgstr "Típus"
+msgstr "Modèl"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 msgid "Vendor"
-msgstr "Gyártó"
+msgstr "Vendeire"
 
 msgid "Inhibitors"
-msgstr "Korlátozók"
+msgstr "Inibitors"
 
 #. TRANSLATORS: the device serial number
 msgid "Serial"
-msgstr "Sorozatszám"
+msgstr "Numèro de seria"
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
@@ -238,70 +231,70 @@ msgstr "Sorozatszám"
 #. * systemd these can be setup as three independant seats with
 #. * different sessions running on them
 msgid "Seat"
-msgstr "Ülés"
+msgstr "Pòste"
 
 #. TRANSLATORS: the device identifier
 msgid "Device ID"
-msgstr "Eszközazonosító"
+msgstr "ID del periferic"
 
 #. TRANSLATORS: the profile for the device
 msgid "Profile"
-msgstr "Profil"
+msgstr "Perfil"
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
 msgid "CRT"
-msgstr "CRT"
+msgstr "Tub catodic"
 
 #. TRANSLATORS: this is a desktop printer
 msgid "Printer"
-msgstr "Nyomtató"
+msgstr "Imprimenta"
 
 #. TRANSLATORS: a beamer used for presentations
 msgid "Projector"
-msgstr "Projektor"
+msgstr "Projector"
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
 msgid "Spot"
-msgstr "Direktszínek"
+msgstr "Spot"
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 msgid "Ambient"
-msgstr "Környezeti"
+msgstr "Ambient"
 
 #. TRANSLATORS: this is the display technology
 msgid "Calibration"
-msgstr "Kalibráció"
+msgstr "Calibratge"
 
 #. TRANSLATORS: this is the display calibration type
 msgid "Dark Calibration"
-msgstr "Sötét kalibráció"
+msgstr ""
 
 #. TRANSLATORS: this is the display calibration type
 msgid "Irradiance Calibration"
-msgstr "Besugárzás kalibráció"
+msgstr ""
 
 #. TRANSLATORS: this is the sensor capability
 msgid "Spectral"
-msgstr "Spektrális"
+msgstr "Espectral"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 msgid "LCD Generic"
-msgstr "LCD általános"
+msgstr "LCD generic"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 msgid "LED Generic"
-msgstr "LED általános"
+msgstr "LED Generic"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 msgid "Plasma"
-msgstr "Plazma"
+msgstr "Plasma"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -313,256 +306,256 @@ msgstr "LCD CCFL"
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 msgid "LCD RGB LED"
-msgstr "LCD RGB LED"
+msgstr "LCD RVB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 msgid "Wide Gamut LCD CCFL"
-msgstr "Wide Gamut LCD CCFL"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology
 msgid "Wide Gamut LCD RGB LED"
-msgstr "Wide Gamut LCD RGB LED"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 msgid "LCD White LED"
-msgstr "LCD Fehér LED"
+msgstr ""
 
 #. TRANSLATORS: this an unknown display technology
 msgid "Unknown"
-msgstr "Ismeretlen"
+msgstr "Desconegut"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 msgid "State"
-msgstr "Állapot"
+msgstr "Estat"
 
 #. TRANSLATORS: sensor serial
 msgid "Serial number"
-msgstr "Sorozatszám"
+msgstr "Numèro de seria"
 
 #. TRANSLATORS: sensor identifier
 msgid "Sensor ID"
-msgstr "Érzékelő ID"
+msgstr "Identificant del captador"
 
 #. TRANSLATORS: the options for the sensor
 msgid "Options"
-msgstr "Beállítások"
+msgstr "Opcions"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 msgid "Native"
-msgstr "Natív"
+msgstr "Natiu"
 
 #. TRANSLATORS: if the sensor is locked
 msgid "Locked"
-msgstr "Zárolva"
+msgstr "Verrolhat"
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 msgid "Capabilities"
-msgstr "Képességek"
+msgstr "Possibilitats"
 
 msgid "There are no supported sensors attached"
-msgstr "Nincsenek csatlakoztatva támogatott érzékelők"
+msgstr "Cap de captador pres en carga es pas religat"
 
 #. TRANSLATORS: this is the sensor title
 msgid "Sensor"
-msgstr "Érzékelő"
+msgstr "Captador"
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the calibrate position and press enter."
-msgstr "Állítsa be az eszközt a kalibrálási pozícióba és nyomjon entert."
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Set the device to the surface position and press enter."
-msgstr "Állítsa be az eszközt a felszíni pozícióba és nyomjon entert."
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Put the device in a dark place and press enter."
-msgstr "Tegye az eszköz egy sötét helyre és nyomjon entert."
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 msgid "Calibrate with a 3200K light source."
-msgstr "Kalibrálás egy 3200k fényforrással."
+msgstr ""
 
 msgid "Put the device on the color to be measured and press enter."
-msgstr "Tegye az eszközt a kimérendő színre és nyomjon entert."
+msgstr ""
 
 msgid "Color"
-msgstr "Szín"
+msgstr "Color"
 
 #. TRANSLATORS: sensor can't do this
 msgid "No spectral capability"
-msgstr "Nincs spektrális képesség"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show client and daemon versions"
-msgstr "Jelenítse meg a kliens és a daemon verzióját is"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Show the value without any header"
-msgstr "Az érték megjelenítése mindenféle fejléc nélkül"
+msgstr ""
 
 #. TRANSLATORS: command line option
 msgid "Filter object properties when displaying"
-msgstr "Objektumtulajdonságok szűrése megjelenítéskor"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Dump all debug data to a file"
-msgstr "Minden hibakeresési adat kiírása fájlba"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices"
-msgstr "Az összes színkezelt eszköz lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets all the color managed devices of a specific kind"
-msgstr "Adott típusú összes színkezelt eszköz lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets all the available color profiles"
-msgstr "Az összes elérhető színprofil lekérése"
+msgstr "Recuperar totes los perfils de color disponibles"
 
 #. TRANSLATORS: command description
 msgid "Gets all the available color sensors"
-msgstr "Az összes elérhető színérzékelő lekérése"
+msgstr "Obten totes los captadors de color disponibles"
 
 #. TRANSLATORS: command description
 msgid "Gets a spectral reading from a sensor"
-msgstr "Spektrális adatok lekérése egy érzékelőtől"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets a reading from a sensor"
-msgstr "Adatok lekérése egy érzékelőtől"
+msgstr "Obten una lectura d'un captador"
 
 #. TRANSLATORS: command description
 msgid "Locks the color sensor"
-msgstr "Színérzékelő zárolása"
+msgstr "Blòca lo captador de color"
 
 #. TRANSLATORS: command description
 msgid "Sets one or more sensor options"
-msgstr "Válasszon legalább egy érzékelőbeállítást"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a device"
-msgstr "Eszköz létrehozása"
+msgstr "Crèa un aparelh"
 
 #. TRANSLATORS: command description
 msgid "Find a device from the device ID"
-msgstr "Eszköz keresése az eszközazonosítóból"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a device with a given property value"
-msgstr "Eszköz keresése egy megadott tulajdonságértékkel"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a profile from the profile ID"
-msgstr "Profil keresése a profilazonosítóból"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Find a profile by filename"
-msgstr "Profil keresése fájlnév szerint"
+msgstr "Cercar un perfil per nom del fichièr"
 
 #. TRANSLATORS: command description
 msgid "Get a standard colorspace"
-msgstr "Szabványos színtér lekérése"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Create a profile"
-msgstr "Profil létrehozása"
+msgstr "Crear un perfil"
 
 #. TRANSLATORS: command description
 msgid "Add a profile to a device that already exists"
-msgstr "Profil hozzáadása létező eszközhöz"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Makes a profile default for a device"
-msgstr "Profil alapértelmezetté tétele egy eszközhöz"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Deletes a device"
-msgstr "Eszköz törlése"
+msgstr "Suprimís un aparelh"
 
 #. TRANSLATORS: command description
 msgid "Deletes a profile"
-msgstr "Profil törlése"
+msgstr "Suprimís un perfil"
 
 #. TRANSLATORS: command description
 msgid "Sets extra properties on the profile"
-msgstr "További tulajdonságokat állít be a profilon"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Sets the device model"
-msgstr "Eszköz típusának beállítása"
+msgstr "Definís lo modèl del periferic"
 
 #. TRANSLATORS: command description
 msgid "Enables or disables the device"
-msgstr "Engedélyezi vagy letiltja az eszközt"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Gets the default profile for a device"
-msgstr "Eszköz alapértelmezett profiljának lekérése"
+msgstr "Recupèra lo perfil per defaut per un periferic"
 
 #. TRANSLATORS: command description
 msgid "Sets the device vendor"
-msgstr "Eszköz gyártójának beállítása"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Sets the device serial"
-msgstr "Eszköz sorozatszámának beállítása"
+msgstr "Definís lo numèro de seria del periferic"
 
 #. TRANSLATORS: command description
 msgid "Sets the device kind"
-msgstr "Eszköz fajtájának beállítása"
+msgstr "Definís lo tipe de periferic"
 
 #. TRANSLATORS: command description
 msgid "Inhibits color profiles for this device"
-msgstr "Letiltja a színprofilokat ehhez az eszközhöz"
+msgstr "Desactiva los perfils de color per aqueste aparelh"
 
 #. TRANSLATORS: command description
 msgid "Returns all the profiles that match a qualifier"
-msgstr "Visszaadja a minősítőnek megfelelő összes profilt"
+msgstr ""
 
 #. TRANSLATORS: command description
 msgid "Import a profile and install it for the user"
-msgstr "Profil importálása és telepítése a felhasználó számára"
+msgstr ""
 
 #. TRANSLATORS: no colord available
 msgid "No connection to colord:"
-msgstr "Nincs kapcsolat a colord-hez:"
+msgstr "Pas cap de connexion a colord :"
 
 msgid "Client version:"
-msgstr "Kliens verziója:"
+msgstr "Version del client :"
 
 msgid "Daemon version:"
-msgstr "Daemon verziója"
+msgstr "Version del demòni :"
 
 msgid "System vendor:"
-msgstr "Rendszergyártó:"
+msgstr ""
 
 msgid "System model:"
-msgstr "Rendszermodell:"
+msgstr ""
 
 msgid "Default gamma for the display"
-msgstr "Alapértelmezett gamma érték a kijelzőhöz"
+msgstr ""
 
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr "Az alapértelmezett gamma értékek a kijelzőhöz. Gyakori értékek az 1.8, 2.2 és a 2.4."
+msgstr ""
 
 msgid "Default display target whitepoint"
-msgstr "Alapértelmezett kijező célzott fehérpontja"
+msgstr ""
 
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr "Alapértelmezett kijező célzott fehérpontja Kelvinben a kijelző beállításánál, ahol a 0 jelenti a kijelző natív alapállását. Gyakori értékek a 6500 a D65-nél és 5000 a D50-nél."
+msgstr ""
 
 msgid "Delay between sample intervals"
-msgstr "Késleltetés minták közt"
+msgstr ""
 
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
@@ -571,7 +564,7 @@ msgid ""
 msgstr ""
 
 msgid "Web service profile upload URI"
-msgstr "Web szolgáltatás profil - feltöltési URI"
+msgstr ""
 
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
@@ -579,10 +572,10 @@ msgid ""
 msgstr ""
 
 msgid "Compatible with Adobe RGB (1998)"
-msgstr "Kompatibilis az Adobe RGB (1998)-cal"
+msgstr ""
 
 msgid "This profile is free of known copyright restrictions"
-msgstr "Ez a profil mentes az ismert szerzői jogi megkötésektől"
+msgstr ""
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -621,7 +614,7 @@ msgid ""
 msgstr ""
 
 msgid "Blue"
-msgstr "Kék"
+msgstr "Blava"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 msgid ""
@@ -654,7 +647,7 @@ msgid ""
 msgstr ""
 
 msgid "Crayon Colors"
-msgstr "Kréta színek"
+msgstr ""
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -695,17 +688,17 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA27L Coated"
-msgstr "FOGRA27L fedett"
+msgstr ""
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr "This profile is used for positive plate making, printing on paper types 1 and 2 (coated or matte), sheetfed offset. This profile set should no longer be used for production, use FOGRA39L instead."
+msgstr ""
 
 msgid "FOGRA28L Web Coated"
-msgstr "FOGRA28L Web fedett"
+msgstr ""
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -716,7 +709,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA29L Uncoated"
-msgstr "FOGRA29L fedetlen"
+msgstr ""
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -727,7 +720,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr "FOGRA30L fedetlen sárgás"
+msgstr ""
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 msgid ""
@@ -736,7 +729,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA39L Coated"
-msgstr "FOGRA39L fedett"
+msgstr ""
 
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
@@ -748,7 +741,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA40L SC Paper"
-msgstr "FOGRA40L SC Paper"
+msgstr ""
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 msgid ""
@@ -757,7 +750,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA45L Lightweight Coated"
-msgstr "FOGRA45L Lightweight Coated"
+msgstr ""
 
 #. TRANSLATORS: ISO is a trademark
 msgid ""
@@ -767,7 +760,7 @@ msgid ""
 msgstr ""
 
 msgid "FOGRA47L Uncoated"
-msgstr "FOGRA47L Uncoated"
+msgstr ""
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 msgid ""
@@ -776,7 +769,7 @@ msgid ""
 msgstr ""
 
 msgid "GRACoL TR006 Coated"
-msgstr "GRACoL TR006 Coated"
+msgstr ""
 
 #. TRANSLATORS: coated = smooth and expensive
 msgid ""
@@ -785,7 +778,7 @@ msgid ""
 msgstr ""
 
 msgid "IFRA26S 2004 Newsprint"
-msgstr "IFRA26S 2004 Newsprint"
+msgstr ""
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -834,7 +827,7 @@ msgid ""
 msgstr ""
 
 msgid "SNAP TR002 Newsprint"
-msgstr "SNAP TR002 Newsprint"
+msgstr ""
 
 #. TRANSLATORS: CGATS is a trademark
 #, no-c-format
@@ -854,7 +847,7 @@ msgid ""
 msgstr ""
 
 msgid "Swapped Red and Green"
-msgstr "Felcserélt piros és zöld"
+msgstr "Roge e verd inversats"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 msgid ""
@@ -864,7 +857,7 @@ msgid ""
 msgstr ""
 
 msgid "SWOP TR003 Coated"
-msgstr "SWOP TR003 Coated"
+msgstr ""
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
@@ -874,7 +867,7 @@ msgid ""
 msgstr ""
 
 msgid "SWOP TR005 Coated"
-msgstr "SWOP TR005 Coated"
+msgstr ""
 
 #. TRANSLATORS: FOGRA is a trademark
 msgid ""
@@ -884,7 +877,7 @@ msgid ""
 msgstr ""
 
 msgid "Wide Gamut RGB"
-msgstr "Wide Gamut RGB"
+msgstr ""
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 msgid ""
@@ -896,7 +889,7 @@ msgid ""
 msgstr ""
 
 msgid "X11 Colors"
-msgstr "X11 Színek"
+msgstr "Colors X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -908,50 +901,50 @@ msgstr ""
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 msgid "Create a color managed device"
-msgstr "Színkezelt eszköz létrehozása"
+msgstr ""
 
 msgid "Authentication is required to create a color managed device"
-msgstr "Hitelesítés szükséges egy színkezelt eszköz létrehozásához"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 msgid "Create a color profile"
-msgstr "Színprofil létrehozása"
+msgstr "Crear un perfil de color"
 
 msgid "Authentication is required to create a color profile"
-msgstr "Hitelesítés szükséges egy színprofil létrehozásához"
+msgstr "Es necessari de s’autentificar per crear un perfil de color"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 msgid "Remove a color managed device"
-msgstr "Színkezelt eszköz eltávolítása"
+msgstr ""
 
 msgid "Authentication is required to remove a color managed device"
-msgstr "Hitelesítés szükséges egy színkezelt eszköz eltávolításához"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
 msgid "Remove a color profile"
-msgstr "Színprofil eltávolítása"
+msgstr "Suprimir un perfil de color"
 
 msgid "Authentication is required to remove a color profile"
-msgstr "Hitelesítés szükséges egy színprofil eltávolításához"
+msgstr "Es necessari de s’autentificar per suprimir un perfil de color"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 msgid "Modify color settings for a device"
-msgstr "Eszköz színbeállításainak módosítása"
+msgstr "Modificar los paramètres de color d’un aparelh"
 
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Hitelesítés szükséges egy eszköz színbeállításainak módosításához"
+msgstr "Es necessari de s’autentificar per modificar los paramètres de color d’un aparelh"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 msgid "Modify a color profile"
-msgstr "Színprofil módosítása"
+msgstr "Modificar un perfil de color"
 
 msgid "Authentication is required to modify a color profile"
-msgstr "Hitelesítés szükséges egy színprofil módosításához"
+msgstr "Es necessari de s’autentificar per modificar un perfil de color"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -961,50 +954,50 @@ msgstr "Hitelesítés szükséges egy színprofil módosításához"
 #. set a profile set to all-white or all-black and thus make the
 #. other sessions unusable.
 msgid "Install system color profiles"
-msgstr "Rendszerszintű színprofilok telepítése"
+msgstr "Installar lo perfil de color del sistèma"
 
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Hitelesítés szükséges a színprofil telepítéséhez minden felhasználó számára"
+msgstr "Es necessari de s’autentificar per installar lo perfil de color en çò de totes los utilizaires"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
 msgid "Inhibit color profile selection"
-msgstr "Színprofilválasztás letiltása"
+msgstr "Empachar la seleccion del perfil de color"
 
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Hitelesítés szükséges a profilkezelés letiltásához egy eszközhöz"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
 msgid "Use color sensor"
-msgstr "Színérzékelő használata"
+msgstr "Utilizar lo captador de color"
 
 msgid "Authentication is required to use the color sensor"
-msgstr "Hitelesítés szükséges a színérzékelő használatához"
+msgstr ""
 
 #. TRANSLATORS: turn on all debugging
 msgid "Show debugging information for all files"
-msgstr "Hibakeresési információk megjelenítése az összes fájlhoz"
+msgstr "Aficha d'informacions de desbugatge per totes los fichièrs"
 
 msgid "Debugging Options"
-msgstr "Hibakeresési lehetőségek"
+msgstr "Opcions de desbugatge"
 
 msgid "Show debugging options"
-msgstr "Hibakeresési lehetőségek megjelenítése"
+msgstr "Afichar las opcions de desbugatge"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 msgid "Exit after a small delay"
-msgstr "Kilépés rövid késleltetés után"
+msgstr "Quita aprèp un momenton"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Exit after the engine has loaded"
-msgstr "Kilépés az alrendszer betöltése után"
+msgstr "Quita immediatament aprèp cargament del gestionari"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 msgid "Create a dummy sensor for testing"
-msgstr "Próba szenzor létrehozása teszteléshez"
+msgstr ""
 
 msgid "Color Management D-Bus Service"
-msgstr "Színkezelési D-Bus szolgáltatás"
+msgstr "Servici D-Bus de gestion de las colors"

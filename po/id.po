@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Andika Triwidada <andika@gmail.com>, 2011-2012,2014-2015
+# Andika Triwidada <andika@gmail.com>, 2011-2012,2014-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-21 11:47+0000\n"
-"PO-Revision-Date: 2015-12-10 07:07+0000\n"
+"POT-Creation-Date: 2016-07-27 14:03+0100\n"
+"PO-Revision-Date: 2016-07-25 10:16+0000\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/hughsie/colord/language/id/)\n"
 "MIME-Version: 1.0\n"
@@ -168,7 +168,7 @@ msgstr "Tabel Gamma"
 
 #. TRANSLATORS: if the profile is installed for all users
 msgid "System Wide"
-msgstr ""
+msgstr "Seluruh Sistem"
 
 #. TRANSLATORS: profile filename
 msgid "Filename"

@@ -1,3 +1,14 @@
+Version 1.3.3
+~~~~~~~~~~~~~
+Released: 2016-07-27
+
+Bugfixes:
+ - Check polkit version before defining g_autoptr macros (Emmanuele Bassi)
+ - Fix an assert failure when connecting to sensors (Richard Hughes)
+ - Fix gtk-doc build when srcdir != builddir (Ting-Wei Lan)
+ - Increase timeout to 60s for argyll spotread sampling (Kjell Irgens)
+ - Use the USB path to match the ArgyllCMS port (Richard Hughes)
+
 Version 1.3.2
 ~~~~~~~~~~~~~
 Released: 2016-03-21
