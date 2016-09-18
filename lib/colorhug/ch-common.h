@@ -347,6 +347,48 @@ G_BEGIN_DECLS
 #define	CH_CMD_SET_LEDS				0x0e
 
 /**
+ * CH_CMD_GET_ILLUMINANTS:
+ *
+ * Get the illuminant state.
+ *
+ * IN:  [1:cmd]
+ * OUT: [1:retval][1:cmd][1:illuminants]
+ *
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
+ *
+ * Since: 1.3.4
+ **/
+#define	CH_CMD_GET_ILLUMINANTS			0x15
+
+/**
+ * CH_CMD_SET_ILLUMINANTS:
+ *
+ * Set the illuminants.
+ *
+ * IN:  [1:cmd][1:illuminant]
+ * OUT: [1:retval][1:cmd]
+ *
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
+ *
+ * Since: 1.3.4
+ **/
+#define	CH_CMD_SET_ILLUMINANTS			0x16
+
+/**
  * CH_CMD_GET_DARK_OFFSETS:
  *
  * Get the dark offsets.
@@ -1451,6 +1493,15 @@ typedef enum {
 	CH_STATUS_LED_RED	= 1 << 1,
 	CH_STATUS_LED_BLUE	= 1 << 2	/* Since: 0.1.29 */
 } ChStatusLed;
+
+/* Illuminants: possible bitfield values */
+typedef enum {
+	CH_ILLUMINANT_NONE	= 0,		/* Since: 1.3.4 */
+	CH_ILLUMINANT_A		= 1 << 0,	/* Since: 1.3.4 */
+	CH_ILLUMINANT_UV	= 1 << 1,	/* Since: 1.3.4 */
+	/*< private >*/
+	CH_ILLUMINANT_LAST
+} ChIlluminant;
 
 /* what frequency divider to use */
 typedef enum {

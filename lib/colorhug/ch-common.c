@@ -366,6 +366,12 @@ ch_command_to_string (ChCmd cmd)
 	case CH_CMD_SET_CCD_CALIBRATION:
 		str = "set-ccd-calibration";
 		break;
+	case CH_CMD_GET_ILLUMINANTS:
+		str = "get-illuminants";
+		break;
+	case CH_CMD_SET_ILLUMINANTS:
+		str = "set-illuminants";
+		break;
 	default:
 		str = "unknown-command";
 		break;

@@ -1299,6 +1299,106 @@ ch_device_get_leds (GUsbDevice *device, ChStatusLed *value,
 }
 
 /**
+ * ch_device_set_illuminants:
+ * @device: A #GUsbDevice
+ * @value: serial number
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Sets the illuminants on the device
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+gboolean
+ch_device_set_illuminants (GUsbDevice *device, ChIlluminant value,
+			   GCancellable *cancellable, GError **error)
+{
+	if (ch_device_get_protocol_ver (device) != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "Setting the illuminants is not supported");
+		return FALSE;
+	}
+	return g_usb_device_control_transfer (device,
+					      G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
+					      G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					      G_USB_DEVICE_RECIPIENT_INTERFACE,
+					      CH_CMD_SET_ILLUMINANTS,
+					      value,		/* wValue */
+					      CH_USB_INTERFACE,	/* idx */
+					      NULL,		/* data */
+					      0,		/* length */
+					      NULL,		/* actual_length */
+					      CH_DEVICE_USB_TIMEOUT,
+					      cancellable,
+					      error);
+}
+
+/**
+ * ch_device_get_illuminants:
+ * @device: A #GUsbDevice
+ * @value: (out): serial number
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Gets the illuminants from the device.
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+gboolean
+ch_device_get_illuminants (GUsbDevice *device, ChIlluminant *value,
+			   GCancellable *cancellable, GError **error)
+{
+	guint8 buf[1];
+	gsize actual_length;
+	gboolean ret;
+
+	g_return_val_if_fail (G_USB_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	if (ch_device_get_protocol_ver (device) != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "Getting the illuminants is not supported");
+		return FALSE;
+	}
+	ret = g_usb_device_control_transfer (device,
+					     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     CH_CMD_GET_ILLUMINANTS,
+					     0x00,		/* wValue */
+					     CH_USB_INTERFACE,	/* idx */
+					     buf,		/* data */
+					     sizeof(buf),	/* length */
+					     &actual_length,
+					     CH_DEVICE_USB_TIMEOUT,
+					     cancellable,
+					     error);
+	if (!ret)
+		return FALSE;
+
+	/* return result */
+	if (actual_length != sizeof(buf)) {
+		g_set_error (error,
+			     G_USB_DEVICE_ERROR,
+			     G_USB_DEVICE_ERROR_IO,
+			     "Invalid size, got %" G_GSIZE_FORMAT,
+			     actual_length);
+		return FALSE;
+	}
+	if (value != NULL)
+		memcpy (value, buf, sizeof(buf));
+	return TRUE;
+}
+
+/**
  * ch_device_set_pcb_errata:
  * @device: A #GUsbDevice
  * @value: #ChPcbErrata, e.g. %CH_PCB_ERRATA_SWAPPED_LEDS

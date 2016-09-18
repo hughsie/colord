@@ -106,6 +106,14 @@ gboolean	 ch_device_get_leds		(GUsbDevice	*device,
 						 ChStatusLed	*value,
 						 GCancellable	*cancellable,
 						 GError		**error);
+gboolean	 ch_device_set_illuminants	(GUsbDevice	*device,
+						 ChIlluminant	 value,
+						 GCancellable	*cancellable,
+						 GError		**error);
+gboolean	 ch_device_get_illuminants	(GUsbDevice	*device,
+						 ChIlluminant	*value,
+						 GCancellable	*cancellable,
+						 GError		**error);
 gboolean	 ch_device_set_pcb_errata	(GUsbDevice	*device,
 						 ChPcbErrata	 value,
 						 GCancellable	*cancellable,
