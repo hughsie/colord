@@ -2251,7 +2251,7 @@ CdSpectrum *
 ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **error)
 {
 	gboolean ret;
-	gint32 buf[CH_EP0_TRANSFER_SIZE / sizeof(gint32)];
+	guint16 buf[CH_EP0_TRANSFER_SIZE / sizeof(guint16)];
 	gsize actual_length;
 	guint16 i;
 	guint16 j;
@@ -2271,7 +2271,7 @@ ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **
 				     "Getting a spectrum is not supported");
 		return NULL;
 	}
-	for (i = 0; i < 1024 * sizeof(gint32) / CH_EP0_TRANSFER_SIZE; i++) {
+	for (i = 0; i < 1024 * sizeof(guint16) / CH_EP0_TRANSFER_SIZE; i++) {
 		ret = g_usb_device_control_transfer (device,
 						     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
 						     G_USB_DEVICE_REQUEST_TYPE_CLASS,
@@ -2297,8 +2297,8 @@ ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **
 		}
 
 		/* add data */
-		for (j = 0; j < CH_EP0_TRANSFER_SIZE / sizeof(gint32); j++) {
-			gdouble tmp = ch_offset_float_to_double (buf[j]);
+		for (j = 0; j < CH_EP0_TRANSFER_SIZE / sizeof(guint16); j++) {
+			gdouble tmp = (gdouble) buf[j] / (gdouble) 0xffff;
 			cd_spectrum_add_value (sp, tmp);
 		}
 	}
