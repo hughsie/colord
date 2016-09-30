@@ -2243,9 +2243,6 @@ ch_device_take_reading_xyz (GUsbDevice *device, guint16 calibration_idx,
  * Gets the spectrum from the device. This queries the device multiple times
  * until the spectrum has been populated.
  *
- * The spectrum is also set up with the correct start and wavelength
- * calibration coefficients.
- *
  * Returns: a #CdSpectrum, or %NULL for error
  *
  * Since: 1.3.1
@@ -2254,7 +2251,6 @@ CdSpectrum *
 ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **error)
 {
 	gboolean ret;
-	gdouble cal[4];
 	gint32 buf[CH_EP0_TRANSFER_SIZE / sizeof(gint32)];
 	gsize actual_length;
 	guint16 i;
@@ -2310,14 +2306,6 @@ ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **
 	/* check status */
 	if (!ch_device_check_status (device, cancellable, error))
 		return NULL;
-
-	/* add the coefficients */
-	if (!ch_device_get_ccd_calibration (device,
-					    &cal[0], &cal[1], &cal[2], &cal[3],
-					    cancellable, error))
-		return NULL;
-	cd_spectrum_set_start (sp, cal[0]);
-	cd_spectrum_set_wavelength_cal (sp, cal[1], cal[2], cal[3]);
 
 	/* return copy */
 	return cd_spectrum_dup (sp);
