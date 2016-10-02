@@ -175,6 +175,8 @@ void		 cd_color_rgb_interpolate		(const CdColorRGB	*p1,
 							 const CdColorRGB	*p2,
 							 gdouble		 index,
 							 CdColorRGB		*result);
+void		 cd_color_rgb_from_wavelength		(CdColorRGB		*dest,
+							 gdouble		 wavelength);
 gdouble		 cd_color_xyz_to_cct			(const CdColorXYZ	*src);
 void		 cd_color_xyz_normalize			(const CdColorXYZ	*src,
 							 gdouble		 max,

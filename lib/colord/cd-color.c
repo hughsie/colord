@@ -1124,6 +1124,77 @@ cd_color_rgb_interpolate (const CdColorRGB *p1,
 }
 
 /**
+ * cd_color_rgb_from_wavelength:
+ * @dest: a #CdColorRGB for the RGB result
+ * @wavelength: the wavelength roughly between 380nm and 780nm
+ *
+ * Set an RGB color which is roughly representative to the wavelength.
+ *
+ * Since: 1.3.4
+ **/
+void
+cd_color_rgb_from_wavelength (CdColorRGB *dest, gdouble wavelength)
+{
+	const gdouble gamma = 0.80;
+	gdouble factor;
+
+	/* use the colors specified in
+	 * http://www.efg2.com/Lab/ScienceAndEngineering/Spectra.htm */
+	if (wavelength < 380) {
+		dest->R = 0.0;
+		dest->G = 0.0;
+		dest->B = 0.0;
+	} else if (wavelength < 440) {
+		dest->R = -(wavelength - 440.f) / (440.f - 380.f);
+		dest->G = 0.0;
+		dest->B = 1.0;
+	} else if (wavelength < 490) {
+		dest->R = 0.0;
+		dest->G = (wavelength - 440) / (490 - 440);
+		dest->B = 1.0;
+	} else if (wavelength < 510) {
+		dest->R = 0.0;
+		dest->G = 1.0;
+		dest->B = -(wavelength - 510) / (510 - 490);
+	} else if (wavelength < 580) {
+		dest->R = (wavelength - 510) / (580 - 510);
+		dest->G = 1.0;
+		dest->B = 0.0;
+	} else if (wavelength < 645) {
+		dest->R = 1.0;
+		dest->G = -(wavelength - 645) / (645 - 580);
+		dest->B = 0.0;
+	} else if (wavelength < 781) {
+		dest->R = 1.0;
+		dest->G = 0.0;
+		dest->B = 0.0;
+	} else {
+		dest->R = 0.0;
+		dest->G = 0.0;
+		dest->B = 0.0;
+	}
+
+	/* intensity should fall off near the vision limits */
+	if (wavelength >= 380 && wavelength < 420) {
+		factor = 0.3 + 0.7 * (wavelength - 380) / (420 - 380);
+	} else if (wavelength >= 420 && wavelength < 701) {
+		factor = 1.0;
+	} else if (wavelength >= 701 && wavelength < 781) {
+		factor = 0.3 + 0.7 * (780 - wavelength) / (780 - 700);
+	} else {
+		factor = 0.0;
+	};
+
+	/* scale by factor and then apply gamma */
+	if (dest->R > 0.f)
+		dest->R = pow (dest->R * factor, gamma);
+	if (dest->G > 0.f)
+		dest->G = pow (dest->G * factor, gamma);
+	if (dest->B > 0.f)
+		dest->B = pow (dest->B * factor, gamma);
+}
+
+/**
  * cd_color_rgb_array_is_monotonic:
  * @array: (element-type CdColorRGB): Input array
  *
