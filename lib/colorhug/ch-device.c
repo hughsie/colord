@@ -1934,6 +1934,128 @@ ch_device_get_temperature (GUsbDevice *device, gdouble *value,
 }
 
 /**
+ * ch_device_get_adc_calibration_pos:
+ * @device: A #GUsbDevice
+ * @value: (out): offset value
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Gets the ADC positive calibration value.
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+gboolean
+ch_device_get_adc_calibration_pos (GUsbDevice *device, gdouble *value,
+				   GCancellable *cancellable, GError **error)
+{
+	gboolean ret;
+	gint32 buf[1];
+	gsize actual_length;
+
+	g_return_val_if_fail (G_USB_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	if (ch_device_get_protocol_ver (device) != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "Getting the ADC calibration is not supported");
+		return FALSE;
+	}
+	ret = g_usb_device_control_transfer (device,
+					     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     CH_CMD_GET_ADC_CALIBRATION_POS,
+					     0x00,		/* wValue */
+					     CH_USB_INTERFACE,	/* idx */
+					     (guint8 *) buf,	/* data */
+					     sizeof(buf),	/* length */
+					     &actual_length,
+					     CH_DEVICE_USB_TIMEOUT,
+					     cancellable,
+					     error);
+	if (!ret)
+		return FALSE;
+
+	/* return result */
+	if (actual_length != sizeof(buf)) {
+		g_set_error (error,
+			     G_USB_DEVICE_ERROR,
+			     G_USB_DEVICE_ERROR_IO,
+			     "Invalid size, got %" G_GSIZE_FORMAT,
+			     actual_length);
+		return FALSE;
+	}
+	if (value != NULL)
+		*value = ch_offset_float_to_double (buf[0]);
+	return TRUE;
+}
+
+/**
+ * ch_device_get_adc_calibration_neg:
+ * @device: A #GUsbDevice
+ * @value: (out): offset value
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Gets the ADC positive calibration value.
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+gboolean
+ch_device_get_adc_calibration_neg (GUsbDevice *device, gdouble *value,
+				   GCancellable *cancellable, GError **error)
+{
+	gboolean ret;
+	gint32 buf[1];
+	gsize actual_length;
+
+	g_return_val_if_fail (G_USB_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	if (ch_device_get_protocol_ver (device) != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "Getting the ADC calibration is not supported");
+		return FALSE;
+	}
+	ret = g_usb_device_control_transfer (device,
+					     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     CH_CMD_GET_ADC_CALIBRATION_NEG,
+					     0x00,		/* wValue */
+					     CH_USB_INTERFACE,	/* idx */
+					     (guint8 *) buf,	/* data */
+					     sizeof(buf),	/* length */
+					     &actual_length,
+					     CH_DEVICE_USB_TIMEOUT,
+					     cancellable,
+					     error);
+	if (!ret)
+		return FALSE;
+
+	/* return result */
+	if (actual_length != sizeof(buf)) {
+		g_set_error (error,
+			     G_USB_DEVICE_ERROR,
+			     G_USB_DEVICE_ERROR_IO,
+			     "Invalid size, got %" G_GSIZE_FORMAT,
+			     actual_length);
+		return FALSE;
+	}
+	if (value != NULL)
+		*value = ch_offset_float_to_double (buf[0]);
+	return TRUE;
+}
+
+/**
  * ch_device_get_error:
  * @device: A #GUsbDevice
  * @status: (out): a #ChError, e.g. %CH_ERROR_INVALID_ADDRESS

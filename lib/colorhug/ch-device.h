@@ -152,6 +152,14 @@ gboolean	 ch_device_get_temperature	(GUsbDevice	*device,
 						 gdouble	*value,
 						 GCancellable	*cancellable,
 						 GError		**error);
+gboolean	 ch_device_get_adc_calibration_pos (GUsbDevice	*device,
+						 gdouble	*value,
+						 GCancellable	*cancellable,
+						 GError		**error);
+gboolean	 ch_device_get_adc_calibration_neg (GUsbDevice	*device,
+						 gdouble	*value,
+						 GCancellable	*cancellable,
+						 GError		**error);
 gboolean	 ch_device_get_error		(GUsbDevice	*device,
 						 ChError	*status,
 						 ChCmd		*cmd,
