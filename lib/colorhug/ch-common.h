@@ -1416,8 +1416,9 @@ G_BEGIN_DECLS
  **/
 #define	CH_CMD_SET_CRYPTO_KEY			0x70
 
-/* these are not yet in the API */
+/* the values here are not really API */
 #define	CH_EP0_TRANSFER_SIZE			64
+#define	CH_EP0_TRANSFER_SIZE_V2			0x400	/* since 1.3.4 */
 
 /* secret code */
 #define	CH_WRITE_EEPROM_MAGIC			"Un1c0rn2"
