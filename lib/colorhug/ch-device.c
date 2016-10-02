@@ -2242,8 +2242,7 @@ ch_device_take_reading_spectral (GUsbDevice *device, ChSpectrumKind value,
 						     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
 						     G_USB_DEVICE_REQUEST_TYPE_CLASS,
 						     G_USB_DEVICE_RECIPIENT_INTERFACE,
-						     0x51,		//FIXME: I have no idea
-						     //CH_CMD_TAKE_READING_SPECTRAL,
+						     CH_CMD_TAKE_READING_SPECTRAL,
 						     value,		/* wValue */
 						     CH_USB_INTERFACE,	/* idx */
 						     NULL,		/* data */
