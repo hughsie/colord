@@ -1444,7 +1444,7 @@ G_BEGIN_DECLS
 #define CH_EEPROM_ADDR_RUNCODE_ALS		0x2000		/* since 1.2.9 */
 
 /* the number of useful samples from the the CCD */
-#define CH_CCD_SPECTRAL_RESOLUTION		3648
+#define CH_CCD_SPECTRAL_RESOLUTION		1024
 
 /* although each calibration can be stored in 60 bytes,
  * we use a full 64 byte block */
