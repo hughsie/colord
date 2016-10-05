@@ -372,6 +372,12 @@ ch_command_to_string (ChCmd cmd)
 	case CH_CMD_SET_ILLUMINANTS:
 		str = "set-illuminants";
 		break;
+	case CH_CMD_LOAD_SRAM:
+		str = "load-sram";
+		break;
+	case CH_CMD_SAVE_SRAM:
+		str = "save-sram";
+		break;
 	default:
 		str = "unknown-command";
 		break;

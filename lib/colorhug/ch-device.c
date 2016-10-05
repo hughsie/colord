@@ -2431,3 +2431,127 @@ ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **
 	/* return copy */
 	return cd_spectrum_dup (sp);
 }
+
+/**
+ * ch_device_get_spectrum:
+ * @device: A #GUsbDevice
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Gets the spectrum from the device. This queries the device multiple times
+ * until the spectrum has been populated.
+ *
+ * Returns: a #CdSpectrum, or %NULL for error
+ *
+ * Since: 1.3.1
+ **/
+CdSpectrum *
+ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **error)
+{
+	return ch_device_get_spectrum_full (device, CH_SPECTRUM_KIND_RAW,
+					    cancellable, error);
+}
+
+/**
+ * ch_device_save_sram:
+ * @device: A #GUsbDevice
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Saves the entire SRAM space into the device EEPROM.
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+gboolean
+ch_device_save_sram (GUsbDevice *device,
+		     GCancellable *cancellable,
+		     GError **error)
+{
+	gboolean ret;
+
+	if (ch_device_get_protocol_ver (device) != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "saving SRAM not supported");
+		return FALSE;
+	}
+
+	/* save SRAM */
+	ret = g_usb_device_control_transfer (device,
+					     G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     CH_CMD_SAVE_SRAM,
+					     0,			/* wValue */
+					     CH_USB_INTERFACE,	/* idx */
+					     NULL,		/* data */
+					     0,			/* length */
+					     NULL,		/* actual_length */
+					     CH_DEVICE_USB_TIMEOUT,
+					     cancellable,
+					     error);
+	if (!ret)
+		return FALSE;
+
+	/* check status */
+	if (!ch_device_check_status (device, cancellable, error))
+		return FALSE;
+
+	/* success */
+	return TRUE;
+}
+
+/**
+ * ch_device_load_sram:
+ * @device: A #GUsbDevice
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Loads the entire SRAM from the device EEPROM.
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+gboolean
+ch_device_load_sram (GUsbDevice *device,
+		     GCancellable *cancellable,
+		     GError **error)
+{
+	gboolean ret;
+
+	if (ch_device_get_protocol_ver (device) != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "saving SRAM not supported");
+		return FALSE;
+	}
+
+	/* save SRAM */
+	ret = g_usb_device_control_transfer (device,
+					     G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     CH_CMD_LOAD_SRAM,
+					     0,			/* wValue */
+					     CH_USB_INTERFACE,	/* idx */
+					     NULL,		/* data */
+					     0,			/* length */
+					     NULL,		/* actual_length */
+					     CH_DEVICE_USB_TIMEOUT,
+					     cancellable,
+					     error);
+	if (!ret)
+		return FALSE;
+
+	/* check status */
+	if (!ch_device_check_status (device, cancellable, error))
+		return FALSE;
+
+	/* success */
+	return TRUE;
+}

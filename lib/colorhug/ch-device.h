@@ -176,6 +176,12 @@ CdColorXYZ	*ch_device_take_reading_xyz	(GUsbDevice	*device,
 CdSpectrum	*ch_device_get_spectrum		(GUsbDevice	*device,
 						 GCancellable	*cancellable,
 						 GError		**error);
+gboolean	 ch_device_load_sram		(GUsbDevice	*device,
+						 GCancellable	*cancellable,
+						 GError		**error);
+gboolean	 ch_device_save_sram		(GUsbDevice	*device,
+						 GCancellable	*cancellable,
+						 GError		**error);
 
 G_END_DECLS
 

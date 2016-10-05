@@ -1339,6 +1339,58 @@ G_BEGIN_DECLS
 #define	CH_CMD_SELF_TEST			0x40
 
 /**
+ * CH_CMD_LOAD_SRAM:
+ *
+ * Load the SRAM from the EEPROM.
+ *
+ * PROTOCOLv2:
+ * bRequest:   [cmd]
+ * wValue:     0x00
+ * wIndex:     interface
+ * wLength:    0x00
+ * Direction:  DEVICE->HOST
+ * Data:       [1:error][1:cmd]
+ *
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
+ *
+ * Since: 0.1.29
+ **/
+#define	CH_CMD_LOAD_SRAM			0x41
+
+/**
+ * CH_CMD_SAVE_SRAM:
+ *
+ * Save the SRAM to the EEPROM.
+ *
+ * PROTOCOLv2:
+ * bRequest:   [cmd]
+ * wValue:     0x00
+ * wIndex:     interface
+ * wLength:    0x00
+ * Direction:  DEVICE->HOST
+ * Data:       [1:error][1:cmd]
+ *
+ * This command is available under these conditions:
+ *
+ *                |  Bootloader  |  Firmware
+ * ---------------+--------------+-----------
+ * ColorHug       |      ×       |      ×
+ * ColorHug2      |      ×       |      ×
+ * ColorHug+      |      ×       |      ✓
+ * ColorHugALS    |      ×       |      ×
+ *
+ * Since: 0.1.29
+ **/
+#define	CH_CMD_SAVE_SRAM			0x42
+
+/**
  * CH_CMD_GET_ERROR:
  *
  * Gets any recorded error from the device.
