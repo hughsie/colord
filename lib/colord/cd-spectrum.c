@@ -951,3 +951,34 @@ cd_spectrum_resample (CdSpectrum *spectrum,
 	cd_spectrum_set_end (sp, end);
 	return sp;
 }
+
+/**
+ * cd_spectrum_resample_to_size:
+ * @spectrum: a #CdSpectrum instance
+ * @size: the output spectrum size
+ *
+ * Resample a new spectrum with the desired number of points.
+ *
+ * Return value: a #CdSpectrum instance
+ *
+ * Since: 1.3.4
+ **/
+CdSpectrum *
+cd_spectrum_resample_to_size (CdSpectrum *spectrum, guint size)
+{
+	gdouble inc;
+	guint i;
+	CdSpectrum *sp;
+
+	sp = cd_spectrum_new ();
+	cd_spectrum_set_start (sp, spectrum->start);
+	cd_spectrum_set_end (sp, spectrum->end);
+
+	inc = (spectrum->end - spectrum->start) / (gdouble) (size - 1);
+	for (i = 0; i < size; i++) {
+		gdouble nm = spectrum->start + ((gdouble) i * inc);
+		gdouble tmp = cd_spectrum_get_value_for_nm (spectrum, nm);
+		cd_spectrum_add_value (sp, tmp);
+	}
+	return sp;
+}

@@ -108,6 +108,8 @@ CdSpectrum	*cd_spectrum_resample		(CdSpectrum		*spectrum,
 						 gdouble		 start,
 						 gdouble		 end,
 						 gdouble		 resolution);
+CdSpectrum	*cd_spectrum_resample_to_size	(CdSpectrum		*spectrum,
+						 guint			 size);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(CdSpectrum, cd_spectrum_free)
 
