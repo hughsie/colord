@@ -2356,8 +2356,117 @@ ch_device_take_reading_xyz (GUsbDevice *device, guint16 calibration_idx,
 }
 
 /**
- * ch_device_get_spectrum:
+ * ch_device_set_spectrum_full:
  * @device: A #GUsbDevice
+ * @kind:  A #ChSpectrumKind
+ * @sp: A #CdSpectrum
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Sets the spectrum from the device. This sends data multiple multiple times
+ * until the spectrum has been populated.
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+gboolean
+ch_device_set_spectrum_full (GUsbDevice *device,
+			     ChSpectrumKind kind,
+			     CdSpectrum *sp,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	const guint sp_len = 1024 * sizeof(guint16);
+	gboolean ret;
+	guint16 buf[CH_EP0_TRANSFER_SIZE_V2 / sizeof(guint16)];
+	gsize actual_length;
+	guint16 i;
+	guint16 j;
+	guint8 protocol_ver = ch_device_get_protocol_ver (device);
+	g_autoptr(CdSpectrum) sp_resampled = NULL;
+
+	g_return_val_if_fail (G_USB_DEVICE (device), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	if (protocol_ver != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "Setting a spectrum is not supported");
+		return FALSE;
+	}
+
+	/* ensure spectrum has 1024 elements */
+	if (cd_spectrum_get_size (sp) != 1024) {
+		g_debug ("resampling sample from %u points to 1024",
+			 cd_spectrum_get_size (sp));
+		sp_resampled = cd_spectrum_resample_to_size (sp, 1024);
+	} else {
+		sp_resampled = cd_spectrum_dup (sp);
+	}
+
+	/* set buf data from sp */
+	for (i = 0; i < sp_len / CH_EP0_TRANSFER_SIZE_V2; i++) {
+
+		/* create normalised data blob */
+		for (j = 0; j < 1024; j++) {
+			guint16 tmp;
+			gdouble val = cd_spectrum_get_value (sp_resampled, j);
+			if (val < 0.f || val > 1.f) {
+				g_set_error (error,
+					     CH_DEVICE_ERROR,
+					     CH_ERROR_NOT_IMPLEMENTED,
+					     "expected normalised data for %u, got %f",
+					     j, val);
+				return FALSE;
+			}
+			tmp = val * (gdouble) 0xffff;
+			memcpy (&buf[j], &tmp, sizeof (guint16));
+		}
+
+		/* send to device */
+		ret = g_usb_device_control_transfer (device,
+						     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
+						     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+						     G_USB_DEVICE_RECIPIENT_INTERFACE,
+						     CH_CMD_WRITE_SRAM,
+						     i + (kind * sp_len),/* wValue */
+						     CH_USB_INTERFACE,	/* idx */
+						     (guint8 *) buf,	/* data */
+						     sizeof(buf),	/* length */
+						     &actual_length,	/* actual_length */
+						     CH_DEVICE_USB_TIMEOUT,
+						     cancellable,
+						     error);
+		if (!ret)
+			return FALSE;
+		if (actual_length != sizeof(buf)) {
+			g_set_error (error,
+				     G_USB_DEVICE_ERROR,
+				     G_USB_DEVICE_ERROR_IO,
+				     "Failed to get spectrum data, got %" G_GSIZE_FORMAT,
+				     actual_length);
+			return FALSE;
+		}
+	}
+
+	/* check status */
+	if (!ch_device_check_status (device, cancellable, error))
+		return FALSE;
+
+	/* sync to eeprom */
+	if (!ch_device_save_sram (device, cancellable, error))
+		return FALSE;
+
+	/* success */
+	return TRUE;
+}
+
+/**
+ * ch_device_get_spectrum_full:
+ * @device: A #GUsbDevice
+ * @kind:  A #ChSpectrumKind
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *
@@ -2366,11 +2475,15 @@ ch_device_take_reading_xyz (GUsbDevice *device, guint16 calibration_idx,
  *
  * Returns: a #CdSpectrum, or %NULL for error
  *
- * Since: 1.3.1
+ * Since: 1.3.4
  **/
 CdSpectrum *
-ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **error)
+ch_device_get_spectrum_full (GUsbDevice *device,
+			     ChSpectrumKind kind,
+			     GCancellable *cancellable,
+			     GError **error)
 {
+	const guint sp_len = 1024 * sizeof(guint16);
 	gboolean ret;
 	guint16 buf[CH_EP0_TRANSFER_SIZE_V2 / sizeof(guint16)];
 	gsize actual_length;
@@ -2398,7 +2511,7 @@ ch_device_get_spectrum (GUsbDevice *device, GCancellable *cancellable, GError **
 						     G_USB_DEVICE_REQUEST_TYPE_CLASS,
 						     G_USB_DEVICE_RECIPIENT_INTERFACE,
 						     CH_CMD_READ_SRAM,
-						     i,			/* wValue */
+						     i + (kind * sp_len),/* wValue */
 						     CH_USB_INTERFACE,	/* idx */
 						     (guint8 *) buf,	/* data */
 						     sizeof(buf),	/* length */

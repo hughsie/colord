@@ -74,16 +74,6 @@ gboolean	 ch_device_check_firmware	(GUsbDevice	*device,
 						 G_GNUC_WARN_UNUSED_RESULT;
 guint16		 ch_device_get_runcode_address	(GUsbDevice	*device);
 const gchar	*ch_device_get_guid		(GUsbDevice	*device);
-
-
-// FIXME: add to spec
-typedef enum {
-	CH_SPECTRUM_KIND_RAW		= 0x00,
-	CH_SPECTRUM_KIND_DARK_CAL	= 0x01,
-	CH_SPECTRUM_KIND_TEMP_CAL	= 0x02,
-	CH_SPECTRUM_KIND_LAST
-} ChSpectrumKind;
-
 gboolean	 ch_device_open_full		(GUsbDevice	*device,
 						 GCancellable	*cancellable,
 						 GError		**error);
@@ -174,6 +164,15 @@ CdColorXYZ	*ch_device_take_reading_xyz	(GUsbDevice	*device,
 						 GCancellable	*cancellable,
 						 GError		**error);
 CdSpectrum	*ch_device_get_spectrum		(GUsbDevice	*device,
+						 GCancellable	*cancellable,
+						 GError		**error);
+CdSpectrum	*ch_device_get_spectrum_full	(GUsbDevice	*device,
+						 ChSpectrumKind	 kind,
+						 GCancellable	*cancellable,
+						 GError		**error);
+gboolean	 ch_device_set_spectrum_full	(GUsbDevice	*device,
+						 ChSpectrumKind	 kind,
+						 CdSpectrum	*sp,
 						 GCancellable	*cancellable,
 						 GError		**error);
 gboolean	 ch_device_load_sram		(GUsbDevice	*device,

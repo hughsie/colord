@@ -1636,6 +1636,14 @@ typedef enum {
 	CH_DEVICE_MODE_LAST
 } ChDeviceMode;
 
+typedef enum {
+	CH_SPECTRUM_KIND_RAW		= 0x00,	/* since 1.3.4 */
+	CH_SPECTRUM_KIND_DARK_CAL	= 0x01,	/* since 1.3.4 */
+	CH_SPECTRUM_KIND_TEMP_CAL	= 0x02,	/* since 1.3.4 */
+	CH_SPECTRUM_KIND_IRRADIANCE_CAL	= 0x03,	/* since 1.3.4 */
+	CH_SPECTRUM_KIND_LAST
+} ChSpectrumKind;
+
 typedef guint8 ChCmd;
 
 /* prototypes */
