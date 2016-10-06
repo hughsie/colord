@@ -2555,3 +2555,146 @@ ch_device_load_sram (GUsbDevice *device,
 	/* success */
 	return TRUE;
 }
+
+/**
+ * ch_device_write_sram:
+ * @device: A #GUsbDevice
+ * @data: A #GBytes
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Loads the entire SRAM from the device EEPROM.
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+gboolean
+ch_device_write_sram (GUsbDevice *device,
+		      guint16 addr,
+		      GBytes *data,
+		      GCancellable *cancellable,
+		      GError **error)
+{
+	const guint8 *dataptr;
+	gboolean ret;
+	gsize len;
+
+	if (ch_device_get_protocol_ver (device) != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "writing SRAM not supported");
+		return FALSE;
+	}
+
+	/* write */
+	dataptr = g_bytes_get_data (data, &len);
+	if (len > CH_EP0_TRANSFER_SIZE_V2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "data blob too large");
+		return FALSE;
+	}
+	ret = g_usb_device_control_transfer (device,
+					     G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     CH_CMD_WRITE_SRAM,
+					     addr,		/* wValue */
+					     CH_USB_INTERFACE,	/* idx */
+					     dataptr,		/* data */
+					     len,		/* length */
+					     NULL,		/* actual_length */
+					     CH_DEVICE_USB_TIMEOUT,
+					     cancellable,
+					     error);
+	if (!ret)
+		return FALSE;
+
+	/* check status */
+	if (!ch_device_check_status (device, cancellable, error))
+		return FALSE;
+
+	/* success */
+	return TRUE;
+}
+
+/**
+ * ch_device_read_sram:
+ * @device: A #GUsbDevice
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Reads a value from the SRAM.
+ *
+ * Returns: %TRUE for success
+ *
+ * Since: 1.3.4
+ **/
+GBytes *
+ch_device_read_sram (GUsbDevice *device,
+		     guint16 addr,
+		     guint16 len,
+		     GCancellable *cancellable,
+		     GError **error)
+{
+	gboolean ret;
+	guint8 buf[CH_EP0_TRANSFER_SIZE_V2];
+	gsize actual_length;
+
+	if (ch_device_get_protocol_ver (device) != 2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "reading SRAM not supported");
+		return NULL;
+	}
+
+	/* too big */
+	if (len > CH_EP0_TRANSFER_SIZE_V2) {
+		g_set_error_literal (error,
+				     CH_DEVICE_ERROR,
+				     CH_ERROR_NOT_IMPLEMENTED,
+				     "length too large");
+		return NULL;
+	}
+
+	/* clear the buffer */
+	memset(buf, 0xbe, sizeof(buf));
+
+	/* read SRAM */
+	ret = g_usb_device_control_transfer (device,
+					     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
+					     G_USB_DEVICE_REQUEST_TYPE_CLASS,
+					     G_USB_DEVICE_RECIPIENT_INTERFACE,
+					     CH_CMD_READ_SRAM,
+					     addr,		/* wValue */
+					     CH_USB_INTERFACE,	/* idx */
+					     buf,		/* data */
+					     len,		/* length */
+					     &actual_length,	/* actual_length */
+					     CH_DEVICE_USB_TIMEOUT,
+					     cancellable,
+					     error);
+	if (!ret)
+		return NULL;
+
+	/* check size returned */
+	if (actual_length != len) {
+		g_set_error (error,
+			     G_USB_DEVICE_ERROR,
+			     G_USB_DEVICE_ERROR_IO,
+			     "failed to get SRAM data, got %" G_GSIZE_FORMAT,
+			     actual_length);
+		return NULL;
+	}
+
+	/* check status */
+	if (!ch_device_check_status (device, cancellable, error))
+		return NULL;
+
+	/* success */
+	return g_bytes_new (buf, len);
+}

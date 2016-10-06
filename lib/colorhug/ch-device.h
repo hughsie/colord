@@ -182,6 +182,16 @@ gboolean	 ch_device_load_sram		(GUsbDevice	*device,
 gboolean	 ch_device_save_sram		(GUsbDevice	*device,
 						 GCancellable	*cancellable,
 						 GError		**error);
+GBytes		*ch_device_read_sram		(GUsbDevice	*device,
+						 guint16	 addr,
+						 guint16	 len,
+						 GCancellable	*cancellable,
+						 GError		**error);
+gboolean	 ch_device_write_sram		(GUsbDevice	*device,
+						 guint16	 addr,
+						 GBytes		*data,
+						 GCancellable	*cancellable,
+						 GError		**error);
 
 G_END_DECLS
 
