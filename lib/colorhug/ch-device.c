@@ -2355,6 +2355,9 @@ ch_device_take_reading_xyz (GUsbDevice *device, guint16 calibration_idx,
 	return NULL;
 }
 
+#define CH_SPECTRUM_STORAGE_SIZE	(CH_CCD_SPECTRAL_RESOLUTION * sizeof(guint16))
+#define CH_PIXELS_PER_TRANSFER		(CH_EP0_TRANSFER_SIZE_V2 / sizeof(guint16))
+
 /**
  * ch_device_set_spectrum_full:
  * @device: A #GUsbDevice
@@ -2377,12 +2380,12 @@ ch_device_set_spectrum_full (GUsbDevice *device,
 			     GCancellable *cancellable,
 			     GError **error)
 {
-	const guint sp_len = 1024 * sizeof(guint16);
 	gboolean ret;
-	guint16 buf[CH_EP0_TRANSFER_SIZE_V2 / sizeof(guint16)];
+	guint16 buf[CH_PIXELS_PER_TRANSFER];
 	gsize actual_length;
 	guint16 i;
 	guint16 j;
+	guint cnt = 0;
 	guint8 protocol_ver = ch_device_get_protocol_ver (device);
 	g_autoptr(CdSpectrum) sp_resampled = NULL;
 
@@ -2398,7 +2401,7 @@ ch_device_set_spectrum_full (GUsbDevice *device,
 	}
 
 	/* ensure spectrum has 1024 elements */
-	if (cd_spectrum_get_size (sp) != 1024) {
+	if (cd_spectrum_get_size (sp) != CH_CCD_SPECTRAL_RESOLUTION) {
 		g_debug ("resampling sample from %u points to 1024",
 			 cd_spectrum_get_size (sp));
 		sp_resampled = cd_spectrum_resample_to_size (sp, 1024);
@@ -2406,13 +2409,13 @@ ch_device_set_spectrum_full (GUsbDevice *device,
 		sp_resampled = cd_spectrum_dup (sp);
 	}
 
-	/* set buf data from sp */
-	for (i = 0; i < sp_len / CH_EP0_TRANSFER_SIZE_V2; i++) {
+	/* i = address in SRAM */
+	for (i = 0; i < CH_SPECTRUM_STORAGE_SIZE; i += CH_EP0_TRANSFER_SIZE_V2) {
 
 		/* create normalised data blob */
-		for (j = 0; j < 1024; j++) {
+		for (j = 0; j < CH_PIXELS_PER_TRANSFER; j++) {
 			guint16 tmp;
-			gdouble val = cd_spectrum_get_value (sp_resampled, j);
+			gdouble val = cd_spectrum_get_value (sp_resampled, cnt + j);
 			if (val < 0.f || val > 1.f) {
 				g_set_error (error,
 					     CH_DEVICE_ERROR,
@@ -2424,14 +2427,15 @@ ch_device_set_spectrum_full (GUsbDevice *device,
 			tmp = val * (gdouble) 0xffff;
 			memcpy (&buf[j], &tmp, sizeof (guint16));
 		}
+		cnt += j;
 
 		/* send to device */
 		ret = g_usb_device_control_transfer (device,
-						     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
+						     G_USB_DEVICE_DIRECTION_HOST_TO_DEVICE,
 						     G_USB_DEVICE_REQUEST_TYPE_CLASS,
 						     G_USB_DEVICE_RECIPIENT_INTERFACE,
 						     CH_CMD_WRITE_SRAM,
-						     i + (kind * sp_len),/* wValue */
+						     i + (kind * CH_SPECTRUM_STORAGE_SIZE),/* wValue */
 						     CH_USB_INTERFACE,	/* idx */
 						     (guint8 *) buf,	/* data */
 						     sizeof(buf),	/* length */
@@ -2483,9 +2487,8 @@ ch_device_get_spectrum_full (GUsbDevice *device,
 			     GCancellable *cancellable,
 			     GError **error)
 {
-	const guint sp_len = 1024 * sizeof(guint16);
 	gboolean ret;
-	guint16 buf[CH_EP0_TRANSFER_SIZE_V2 / sizeof(guint16)];
+	guint16 buf[CH_PIXELS_PER_TRANSFER];
 	gsize actual_length;
 	guint16 i;
 	guint16 j;
@@ -2505,13 +2508,15 @@ ch_device_get_spectrum_full (GUsbDevice *device,
 				     "Getting a spectrum is not supported");
 		return NULL;
 	}
-	for (i = 0; i < 1024 * sizeof(guint16) / CH_EP0_TRANSFER_SIZE_V2; i++) {
+
+	/* i = address in SRAM */
+	for (i = 0; i < CH_SPECTRUM_STORAGE_SIZE; i += CH_EP0_TRANSFER_SIZE_V2) {
 		ret = g_usb_device_control_transfer (device,
 						     G_USB_DEVICE_DIRECTION_DEVICE_TO_HOST,
 						     G_USB_DEVICE_REQUEST_TYPE_CLASS,
 						     G_USB_DEVICE_RECIPIENT_INTERFACE,
 						     CH_CMD_READ_SRAM,
-						     i + (kind * sp_len),/* wValue */
+						     i + (kind * CH_SPECTRUM_STORAGE_SIZE),/* wValue */
 						     CH_USB_INTERFACE,	/* idx */
 						     (guint8 *) buf,	/* data */
 						     sizeof(buf),	/* length */
@@ -2531,7 +2536,7 @@ ch_device_get_spectrum_full (GUsbDevice *device,
 		}
 
 		/* add data */
-		for (j = 0; j < CH_EP0_TRANSFER_SIZE_V2 / sizeof(guint16); j++) {
+		for (j = 0; j < CH_PIXELS_PER_TRANSFER; j++) {
 			gdouble tmp = (gdouble) buf[j] / (gdouble) 0xffff;
 			cd_spectrum_add_value (sp, tmp);
 		}
