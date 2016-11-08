@@ -805,7 +805,8 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 		max = cd_spectrum_get_value_max (sp_probe);
 		if (max < 0.001f) {
 			sample_duration *= 100.f;
-			g_debug ("sensor read no data, setting duration to %luus",
+			g_debug ("sensor read no data, setting duration "
+				 "to %" G_GUINT64_FORMAT ,
 				 sample_duration);
 			continue;
 		}
@@ -813,7 +814,8 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 		/* sensor is saturated, take action */
 		if (max > 0.99f) {
 			sample_duration /= 100.f;
-			g_debug ("sensor saturated, setting duration to %luus",
+			g_debug ("sensor saturated, setting duration "
+				 "to %" G_GUINT64_FORMAT,
 				 sample_duration);
 			continue;
 		}
@@ -833,7 +835,7 @@ osp_device_take_spectrum (GUsbDevice *device, GError **error)
 		/* aim for FSD / 2 */
 		scale = (gdouble) 0.5 / max;
 		sample_duration *= scale;
-		g_debug ("for max of %f, using scale=%f for duration %luus",
+		g_debug ("for max of %f, using scale=%f for duration %" G_GUINT64_FORMAT,
 			 max, scale, sample_duration);
 
 		/* limit this to something sane */
