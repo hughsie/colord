@@ -630,6 +630,7 @@ cd_transform_set_max_threads_default (CdTransform *transform, GError **error)
 	}
 	priv->max_threads = g_ascii_strtoull (tmp + 12, NULL, 10);
 	if (priv->max_threads == 0) {
+		priv->max_threads = 1;
 		g_set_error_literal (error,
 				     CD_TRANSFORM_ERROR,
 				     CD_TRANSFORM_ERROR_LAST,
@@ -683,6 +684,7 @@ cd_transform_process (CdTransform *transform,
 	g_return_val_if_fail (width != 0, FALSE);
 	g_return_val_if_fail (height != 0, FALSE);
 	g_return_val_if_fail (rowstride != 0, FALSE);
+	g_return_val_if_fail (priv->max_threads != 0, FALSE);
 
 	/* check stuff that should have been set */
 	if (priv->rendering_intent == CD_RENDERING_INTENT_UNKNOWN) {
