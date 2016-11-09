@@ -222,7 +222,10 @@ osp_device_query (GUsbDevice *device, OspCmd cmd,
 						 &actual_length,
 						 OSP_USB_TIMEOUT_MS, NULL, error))
 			return FALSE;
-		memcpy (*data_out + offset_wr, buffer_out, OSP_DEVICE_EP_SIZE);
+		if (data_out != NULL) {
+			memcpy (*data_out + offset_wr,
+				buffer_out, OSP_DEVICE_EP_SIZE);
+		}
 		if (g_getenv ("SPARK_PROTOCOL_DEBUG") != NULL)
 			cd_buffer_debug (CD_BUFFER_KIND_RESPONSE, buffer_out, OSP_DEVICE_EP_SIZE);
 		offset_wr += 64;
