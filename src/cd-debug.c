@@ -66,6 +66,7 @@ cd_debug_ignore_cb (const gchar *log_domain,
 #else
 		g_print ("%s\n", message);
 #endif
+		break;
 	case G_LOG_LEVEL_CRITICAL:
 	case G_LOG_LEVEL_ERROR:
 	case G_LOG_LEVEL_WARNING:
@@ -100,6 +101,7 @@ cd_debug_handler_cb (const gchar *log_domain,
 #else
 		g_print ("%s\n", message);
 #endif
+		break;
 	case G_LOG_LEVEL_CRITICAL:
 	case G_LOG_LEVEL_ERROR:
 	case G_LOG_LEVEL_WARNING:
