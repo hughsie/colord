@@ -307,9 +307,6 @@ cd_util_create_cmf (CdUtilPrivate *priv,
 	/* save */
 	file = g_file_new_for_path (values[0]);
 	ret = cd_it8_save_to_file (cmf, file, error);
-	if (!ret)
-		goto out;
-out:
 	for (i = 0; i < 3; i++) {
 		if (spectrum[i] != NULL)
 			cd_spectrum_free (spectrum[i]);
