@@ -228,7 +228,13 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %files libs
 %doc COPYING
-%{_libdir}/lib*.so.*
+%{_libdir}/libcolord.so.2*
+%{_libdir}/libcolordprivate.so.2*
+%{_libdir}/libcolorhug.so.2*
+%if !0%{?rhel}
+%{_libdir}/libcolordcompat.so
+%endif
+
 %{_libdir}/girepository-1.0/*.typelib
 
 %files extra-profiles
@@ -268,7 +274,9 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 %files devel
 %{_includedir}/colord-1
-%{_libdir}/lib*.so
+%{_libdir}/libcolord.so
+%{_libdir}/libcolordprivate.so
+%{_libdir}/libcolorhug.so
 %{_libdir}/pkgconfig/*.pc
 %{_datadir}/gir-1.0/*.gir
 %{_datadir}/vala/vapi/colord.vapi
