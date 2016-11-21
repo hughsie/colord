@@ -684,7 +684,6 @@ cd_transform_process (CdTransform *transform,
 	g_return_val_if_fail (width != 0, FALSE);
 	g_return_val_if_fail (height != 0, FALSE);
 	g_return_val_if_fail (rowstride != 0, FALSE);
-	g_return_val_if_fail (priv->max_threads != 0, FALSE);
 
 	/* check stuff that should have been set */
 	if (priv->rendering_intent == CD_RENDERING_INTENT_UNKNOWN) {
