@@ -1,3 +1,20 @@
+Version 1.3.4
+~~~~~~~~~~~~~
+Released: 2016-11-21
+
+New Features:
+ - colord: Add cd_color_rgb_from_wavelength() (Richard Hughes)
+ - colord: Add cd_spectrum_resample_to_size() (Richard Hughes)
+ - colorhug: Add commands for getting the device calibration spectra (Richard Hughes)
+ - colorhug: Increase the size of the EP0 transfer (Richard Hughes)
+ - colorhug: Support enabling the illuminants on the ColorHug+ (Richard Hughes)
+
+Bugfixes:
+ - Fix a possible NULL dereference when talking to Spark devices (Richard Hughes)
+ - Fix compile with -Wformat-signedness (Richard Hughes)
+ - Fix possible division by zero if parsing /proc/cpuinfo fails (Richard Hughes)
+ - Install the libcolordcompat.so in the main -libs package (Richard Hughes)
+
 Version 1.3.3
 ~~~~~~~~~~~~~
 Released: 2016-07-27
