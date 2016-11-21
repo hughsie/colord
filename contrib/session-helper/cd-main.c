@@ -2020,7 +2020,11 @@ main (int argc, char *argv[])
 	g_option_context_add_main_entries (context, options, NULL);
 	g_option_context_add_group (context, cd_debug_get_option_group ());
 	g_option_context_set_summary (context, "Color Management D-Bus Service");
-	g_option_context_parse (context, &argc, &argv, NULL);
+	if (!g_option_context_parse (context, &argc, &argv, &error)) {
+		g_warning ("CdMain: failed to parse arguemnts: %s",
+			   error->message);
+		goto out;
+	}
 	g_option_context_free (context);
 
 	/* load introspection from file */
