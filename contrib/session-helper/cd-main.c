@@ -1563,6 +1563,7 @@ cd_main_set_basename (CdMainPrivate *priv)
 	GDateTime *datetime;
 	GString *str;
 	g_autofree gchar *date_str = NULL;
+	guint i;
 
 	str = g_string_new ("");
 
@@ -1597,6 +1598,11 @@ cd_main_set_basename (CdMainPrivate *priv)
 
 	/* remove trailing space */
 	g_string_set_size (str, str->len - 1);
+
+	/* Replace '/' with '-' on the string */
+	for (i = 0; i < str->len; i++)
+		if (str->str[i] == '/')
+			str->str[i] = '-';
 
 	/* make suitable filename */
 	g_strdelimit (str->str, "/\"*?", '_');
