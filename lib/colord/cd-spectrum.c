@@ -743,6 +743,26 @@ cd_spectrum_multiply (CdSpectrum *s1, CdSpectrum *s2, gdouble resolution)
 }
 
 /**
+ * cd_spectrum_multiply_scalar:
+ * @spectrum: a #CdSpectrum instance
+ * @value: a scalar value
+ *
+ * Multiplies a spectra with a scalar value.
+ *
+ * Return value: a #CdSpectrum instance
+ *
+ * Since: 1.3.5
+ **/
+CdSpectrum *
+cd_spectrum_multiply_scalar (CdSpectrum *spectrum, gdouble value)
+{
+	CdSpectrum *s = cd_spectrum_dup (spectrum);
+	for (guint i = 0; i < spectrum->data->len; i++)
+		cd_spectrum_add_value (s, cd_spectrum_get_value (spectrum, i) * value);
+	return s;
+}
+
+/**
  * cd_spectrum_subtract:
  * @s1: a #CdSpectrum instance, e.g. a sample
  * @s2: a #CdSpectrum instance, e.g. a dark calibration
