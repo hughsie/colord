@@ -1005,10 +1005,106 @@ cd_color_yxy_to_uvw (const CdColorYxy *src, CdColorUVW *dest)
 	dest->W = src->Y;
 }
 
+/* source: https://github.com/jonls/redshift/blob/master/README-colorramp
+ * use a Planckian curve below 5000K */
+static const CdColorRGB blackbody_data_d65plankian[] = {
+	{ 1.0000, 0.1817, 0.0000 }, /* 1000K */
+	{ 1.0000, 0.2550, 0.0000 }, /* 1100K */
+	{ 1.0000, 0.3094, 0.0000 }, /* 1200K */
+	{ 1.0000, 0.3536, 0.0000 }, /* ... */
+	{ 1.0000, 0.3909, 0.0000 },
+	{ 1.0000, 0.4232, 0.0000 },
+	{ 1.0000, 0.4516, 0.0000 },
+	{ 1.0000, 0.4768, 0.0000 },
+	{ 1.0000, 0.4992, 0.0000 },
+	{ 1.0000, 0.5194, 0.0000 },
+	{ 1.0000, 0.5436, 0.0868 },
+	{ 1.0000, 0.5662, 0.1407 },
+	{ 1.0000, 0.5873, 0.1836 },
+	{ 1.0000, 0.6072, 0.2214 },
+	{ 1.0000, 0.6260, 0.2559 },
+	{ 1.0000, 0.6437, 0.2882 },
+	{ 1.0000, 0.6605, 0.3187 },
+	{ 1.0000, 0.6765, 0.3479 },
+	{ 1.0000, 0.6916, 0.3758 },
+	{ 1.0000, 0.7060, 0.4027 },
+	{ 1.0000, 0.7198, 0.4286 },
+	{ 1.0000, 0.7329, 0.4537 },
+	{ 1.0000, 0.7454, 0.4779 },
+	{ 1.0000, 0.7574, 0.5015 },
+	{ 1.0000, 0.7689, 0.5243 },
+	{ 1.0000, 0.7799, 0.5464 },
+	{ 1.0000, 0.7904, 0.5679 },
+	{ 1.0000, 0.8005, 0.5888 },
+	{ 1.0000, 0.8102, 0.6092 },
+	{ 1.0000, 0.8196, 0.6289 },
+	{ 1.0000, 0.8285, 0.6482 },
+	{ 1.0000, 0.8372, 0.6669 },
+	{ 1.0000, 0.8455, 0.6851 },
+	{ 1.0000, 0.8535, 0.7028 },
+	{ 1.0000, 0.8612, 0.7201 },
+	{ 1.0000, 0.8686, 0.7369 },
+	{ 1.0000, 0.8758, 0.7533 },
+	{ 1.0000, 0.8827, 0.7692 },
+	{ 1.0000, 0.8893, 0.7848 },
+	{ 1.0000, 0.8958, 0.7999 },
+	{ 1.0000, 0.9020, 0.8147 },
+	{ 1.0000, 0.9096, 0.8284 },
+	{ 1.0000, 0.9171, 0.8419 },
+	{ 1.0000, 0.9244, 0.8552 },
+	{ 1.0000, 0.9316, 0.8684 },
+	{ 1.0000, 0.9385, 0.8813 },
+	{ 1.0000, 0.9454, 0.8940 },
+	{ 1.0000, 0.9520, 0.9066 },
+	{ 1.0000, 0.9585, 0.9189 },
+	{ 1.0000, 0.9649, 0.9311 },
+	{ 1.0000, 0.9711, 0.9431 },
+	{ 1.0000, 0.9771, 0.9548 },
+	{ 1.0000, 0.9831, 0.9664 },
+	{ 1.0000, 0.9888, 0.9778 },
+	{ 1.0000, 0.9945, 0.9890 },
+	{ 1.0000, 1.0000, 1.0000 }, /* 6500K */
+	{ 0.9895, 0.9935, 1.0000 },
+	{ 0.9794, 0.9872, 1.0000 },
+	{ 0.9698, 0.9812, 1.0000 },
+	{ 0.9605, 0.9754, 1.0000 },
+	{ 0.9516, 0.9698, 1.0000 },
+	{ 0.9430, 0.9644, 1.0000 },
+	{ 0.9348, 0.9592, 1.0000 },
+	{ 0.9269, 0.9542, 1.0000 },
+	{ 0.9193, 0.9494, 1.0000 },
+	{ 0.9119, 0.9447, 1.0000 },
+	{ 0.9049, 0.9402, 1.0000 },
+	{ 0.8981, 0.9358, 1.0000 },
+	{ 0.8915, 0.9316, 1.0000 },
+	{ 0.8852, 0.9275, 1.0000 },
+	{ 0.8791, 0.9236, 1.0000 },
+	{ 0.8732, 0.9197, 1.0000 },
+	{ 0.8674, 0.9160, 1.0000 },
+	{ 0.8619, 0.9125, 1.0000 },
+	{ 0.8566, 0.9090, 1.0000 },
+	{ 0.8514, 0.9056, 1.0000 },
+	{ 0.8464, 0.9023, 1.0000 },
+	{ 0.8415, 0.8991, 1.0000 },
+	{ 0.8368, 0.8960, 1.0000 },
+	{ 0.8323, 0.8930, 1.0000 },
+	{ 0.8278, 0.8901, 1.0000 },
+	{ 0.8235, 0.8873, 1.0000 },
+	{ 0.8194, 0.8845, 1.0000 },
+	{ 0.8153, 0.8818, 1.0000 },
+	{ 0.8114, 0.8792, 1.0000 },
+	{ 0.8075, 0.8767, 1.0000 },
+	{ 0.8038, 0.8742, 1.0000 },
+	{ 0.8002, 0.8718, 1.0000 },
+	{ 0.7967, 0.8694, 1.0000 },
+	{ 0.7932, 0.8671, 1.0000 },
+	{ 0.7898, 0.8649, 1.0000 } /* 10000K */
+};
+
 /* source: http://www.vendian.org/mncharity/dir3/blackbody/
  * rescaled to make exactly 6500K equal to full intensity in all
  * channels */
-static const CdColorRGB blackbody_data[] = {
+static const CdColorRGB blackbody_data_d65modified[] = {
 	{ 1.0000, 0.0425, 0.0000 }, /* 1000K */
 	{ 1.0000, 0.0668, 0.0000 }, /* 1100K */
 	{ 1.0000, 0.0911, 0.0000 }, /* 1200K */
@@ -1333,23 +1429,31 @@ out:
 }
 
 /**
- * cd_color_get_blackbody_rgb:
+ * cd_color_get_blackbody_rgb_full:
  * @temp: the temperature in Kelvin
  * @result: the destination color
+ * @flags: some #CdColorBlackbodyFlags, e.g. %CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN
  *
  * Get the blackbody color for a specific temperature. If the temperature
  * range is outside 1000K to 10000K then the result is clipped.
  *
  * Return value: TRUE if @temp was in range and the result accurate
  *
- * Since: 0.1.26
+ * Since: 1.3.5
  **/
 gboolean
-cd_color_get_blackbody_rgb (guint temp, CdColorRGB *result)
+cd_color_get_blackbody_rgb_full (gdouble temp,
+				 CdColorRGB *result,
+				 CdColorBlackbodyFlags flags)
 {
 	gboolean ret = TRUE;
 	gdouble alpha;
 	gint temp_index;
+	const CdColorRGB *blackbody_func = blackbody_data_d65modified;
+
+	/* use modified curve */
+	if (flags & CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN)
+		blackbody_func = blackbody_data_d65plankian;
 
 	/* check lower bound */
 	if (temp < 1000) {
@@ -1364,11 +1468,30 @@ cd_color_get_blackbody_rgb (guint temp, CdColorRGB *result)
 	}
 
 	/* bilinear interpolate the blackbody data */
-	alpha = (temp % 100) / 100.0;
-	temp_index = (temp - 1000) / 100;
-	cd_color_rgb_interpolate (&blackbody_data[temp_index],
-				  &blackbody_data[temp_index + 1],
+	alpha = ((guint) temp % 100) / 100.0;
+	temp_index = ((guint) temp - 1000) / 100;
+	cd_color_rgb_interpolate (&blackbody_func[temp_index],
+				  &blackbody_func[temp_index + 1],
 				  alpha,
 				  result);
 	return ret;
+}
+
+/**
+ * cd_color_get_blackbody_rgb:
+ * @temp: the temperature in Kelvin
+ * @result: the destination color
+ *
+ * Get the blackbody color for a specific temperature. If the temperature
+ * range is outside 1000K to 10000K then the result is clipped.
+ *
+ * Return value: TRUE if @temp was in range and the result accurate
+ *
+ * Since: 0.1.26
+ **/
+gboolean
+cd_color_get_blackbody_rgb (guint temp, CdColorRGB *result)
+{
+	return cd_color_get_blackbody_rgb_full (temp, result,
+						CD_COLOR_BLACKBODY_FLAG_NONE);
 }

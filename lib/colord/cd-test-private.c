@@ -1206,24 +1206,46 @@ colord_color_blackbody_func (void)
 	gboolean ret;
 
 	/* D65 */
-	ret = cd_color_get_blackbody_rgb (6500, &rgb);
+	ret = cd_color_get_blackbody_rgb_full (6500, &rgb,
+					       CD_COLOR_BLACKBODY_FLAG_NONE);
+	g_assert (ret);
+	g_assert_cmpfloat (fabs (rgb.R - 1.0000f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.G - 1.0000f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.B - 1.0000f), <, 0.01);
+	ret = cd_color_get_blackbody_rgb_full (6500, &rgb,
+					       CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN);
 	g_assert (ret);
 	g_assert_cmpfloat (fabs (rgb.R - 1.0000f), <, 0.01);
 	g_assert_cmpfloat (fabs (rgb.G - 1.0000f), <, 0.01);
 	g_assert_cmpfloat (fabs (rgb.B - 1.0000f), <, 0.01);
 
 	/* 1000K */
-	ret = cd_color_get_blackbody_rgb (1000, &rgb);
+	ret = cd_color_get_blackbody_rgb_full (1000, &rgb,
+					       CD_COLOR_BLACKBODY_FLAG_NONE);
 	g_assert (ret);
 	g_assert_cmpfloat (fabs (rgb.R - 1.0000f), <, 0.01);
 	g_assert_cmpfloat (fabs (rgb.G - 0.0425f), <, 0.01);
 	g_assert_cmpfloat (fabs (rgb.B - 0.0000f), <, 0.01);
 
+	ret = cd_color_get_blackbody_rgb_full (1000, &rgb,
+					       CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN);
+	g_assert (ret);
+	g_assert_cmpfloat (fabs (rgb.R - 1.0000f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.G - 0.1817f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.B - 0), <, 0.01);
+
 	/* 10000K */
-	ret = cd_color_get_blackbody_rgb (10000, &rgb);
+	ret = cd_color_get_blackbody_rgb_full (10000, &rgb,
+					       CD_COLOR_BLACKBODY_FLAG_NONE);
 	g_assert (ret);
 	g_assert_cmpfloat (fabs (rgb.R - 0.5944f), <, 0.01);
 	g_assert_cmpfloat (fabs (rgb.G - 0.7414f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.B - 1.0000f), <, 0.01);
+	ret = cd_color_get_blackbody_rgb_full (10000, &rgb,
+					       CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN);
+	g_assert (ret);
+	g_assert_cmpfloat (fabs (rgb.R - 0.7898f), <, 0.01);
+	g_assert_cmpfloat (fabs (rgb.G - 0.8649f), <, 0.01);
 	g_assert_cmpfloat (fabs (rgb.B - 1.0000f), <, 0.01);
 
 	/* 90K */

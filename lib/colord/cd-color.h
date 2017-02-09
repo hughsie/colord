@@ -66,6 +66,22 @@ typedef struct {
 	gdouble	 W;
 } CdColorUVW;
 
+/**
+ * CdColorBlackbodyFlags:
+ * @CD_COLOR_BLACKBODY_FLAG_NONE:		No flags set.
+ * @CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN:	Use Planckian below 5000K
+ *
+ * Flags used when returning an RGB color from a temperature.
+ *
+ * Since: 1.3.5
+ **/
+typedef enum {
+	CD_COLOR_BLACKBODY_FLAG_NONE,		/* Since: 1.3.5 */
+	CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN,	/* Since: 1.3.5 */
+	/*< private >*/
+	CD_COLOR_BLACKBODY_FLAG_LAST
+} CdColorBlackbodyFlags;
+
 typedef struct _CdColorSwatch	CdColorSwatch;
 
 #define	CD_TYPE_COLOR_RGB	(cd_color_rgb_get_type ())
@@ -171,6 +187,9 @@ gdouble		 cd_color_uvw_get_chroma_difference	(const CdColorUVW	*p1,
 							 const CdColorUVW	*p2);
 gboolean	 cd_color_get_blackbody_rgb		(guint			 temp,
 							 CdColorRGB		*result);
+gboolean	 cd_color_get_blackbody_rgb_full	(gdouble		 temp,
+							 CdColorRGB		*result,
+							 CdColorBlackbodyFlags	 flags);
 void		 cd_color_rgb_interpolate		(const CdColorRGB	*p1,
 							 const CdColorRGB	*p2,
 							 gdouble		 index,
