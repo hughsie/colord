@@ -1,0 +1,9 @@
+FROM debian:stretch
+
+RUN echo "deb-src http://deb.debian.org/debian/ stretch main" >> /etc/apt/sources.list
+RUN apt-get update -qq
+RUN apt-get build-dep -yq colord
+RUN apt-get install -yq --no-install-recommends \
+        valgrind
+RUN mkdir /build
+WORKDIR /build

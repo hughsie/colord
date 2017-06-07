@@ -1,0 +1,28 @@
+FROM fedora:25
+
+RUN dnf -y update
+RUN dnf -y install \
+	argyllcms \
+	autoconf-archive \
+	bash-completion \
+	color-filesystem \
+	dbus-devel \
+	docbook-utils \
+	gettext \
+	glib2-devel \
+	gobject-introspection-devel \
+	gtk-doc \
+	intltool \
+	lcms2-devel \
+	libgudev1-devel \
+	libgusb-devel \
+	libtool \
+	polkit-devel \
+	redhat-rpm-config \
+	sane-backends-devel \
+	sqlite-devel \
+	systemd-devel \
+	vala-tools
+
+RUN mkdir /build
+WORKDIR /build
