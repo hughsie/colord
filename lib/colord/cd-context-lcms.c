@@ -117,6 +117,8 @@ cd_context_lcms_plugins_cb (int type, const double params[], double x)
 		else
 			val = pow (((x + params[2]) / params[1]), params[0]);
 		break;
+	default:
+		break;
 	}
 	return val;
 }
