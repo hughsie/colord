@@ -239,9 +239,6 @@ cd_mapping_db_alter_func (void)
 	g_object_unref (mdb);
 }
 
-/**
- * cd_mapping_db_test_cb:
- **/
 static gint
 cd_mapping_db_test_cb (void *data, gint argc, gchar **argv, gchar **col_name)
 {

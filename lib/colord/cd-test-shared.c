@@ -28,9 +28,6 @@
 
 #include "cd-test-shared.h"
 
-/**
- * cd_test_get_filename:
- **/
 gchar *
 cd_test_get_filename (const gchar *filename)
 {
@@ -64,9 +61,6 @@ cd_test_hang_check_cb (gpointer user_data)
 	return G_SOURCE_REMOVE;
 }
 
-/**
- * cd_test_loop_run_with_timeout:
- **/
 void
 cd_test_loop_run_with_timeout (guint timeout_ms)
 {
@@ -77,9 +71,6 @@ cd_test_loop_run_with_timeout (guint timeout_ms)
 	g_main_loop_run (_test_loop);
 }
 
-/**
- * cd_test_loop_quit:
- **/
 void
 cd_test_loop_quit (void)
 {
@@ -94,9 +85,6 @@ cd_test_loop_quit (void)
 	}
 }
 
-/**
- * cd_test_compare_lines:
- **/
 gboolean
 cd_test_compare_lines (const gchar *txt1, const gchar *txt2, GError **error)
 {

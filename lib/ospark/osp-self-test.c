@@ -27,9 +27,6 @@
 #include "osp-device.h"
 #include "osp-enum.h"
 
-/**
- * osp_client_get_default:
- **/
 static GUsbDevice *
 osp_client_get_default (GError **error)
 {

@@ -79,9 +79,6 @@ typedef struct {
 
 #define CD_SESSION_ERROR			cd_main_error_quark()
 
-/**
- * cd_main_error_to_string:
- **/
 static const gchar *
 cd_main_error_to_string (CdSessionError error_enum)
 {
@@ -106,9 +103,6 @@ cd_main_error_to_string (CdSessionError error_enum)
 	return NULL;
 }
 
-/**
- * cd_main_error_quark:
- **/
 static GQuark
 cd_main_error_quark (void)
 {
@@ -125,9 +119,6 @@ cd_main_error_quark (void)
 	return quark;
 }
 
-/**
- * cd_main_calib_idle_delay_cb:
- **/
 static gboolean
 cd_main_calib_idle_delay_cb (gpointer user_data)
 {
@@ -136,9 +127,6 @@ cd_main_calib_idle_delay_cb (gpointer user_data)
 	return G_SOURCE_REMOVE;
 }
 
-/**
- * cd_main_calib_idle_delay:
- **/
 static void
 cd_main_calib_idle_delay (guint ms)
 {
@@ -149,9 +137,6 @@ cd_main_calib_idle_delay (guint ms)
 	g_main_loop_unref (loop);
 }
 
-/**
- * cd_main_emit_update_sample:
- **/
 static gboolean
 cd_main_emit_update_sample (CdMainPrivate *priv,
 			    CdColorRGB *color,
@@ -198,9 +183,6 @@ cd_main_emit_update_sample (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_get_display_ti1:
- **/
 static const gchar *
 cd_main_get_display_ti1 (CdProfileQuality quality)
 {
@@ -217,9 +199,6 @@ cd_main_get_display_ti1 (CdProfileQuality quality)
 	return NULL;
 }
 
-/**
- * cd_main_emit_interaction_required:
- **/
 static void
 cd_main_emit_interaction_required (CdMainPrivate *priv,
 				   CdSessionInteraction code)
@@ -268,9 +247,6 @@ cd_main_emit_interaction_required (CdMainPrivate *priv,
 				       NULL);
 }
 
-/**
- * cd_main_emit_update_gamma:
- **/
 static void
 cd_main_emit_update_gamma (CdMainPrivate *priv,
 			   GPtrArray *array)
@@ -304,9 +280,6 @@ cd_main_emit_update_gamma (CdMainPrivate *priv,
 	cd_main_calib_idle_delay (200);
 }
 
-/**
- * cd_main_emit_finished:
- **/
 static void
 cd_main_emit_finished (CdMainPrivate *priv,
 		       CdSessionError exit_code,
@@ -347,9 +320,6 @@ cd_main_emit_finished (CdMainPrivate *priv,
 				       NULL);
 }
 
-/**
- * cd_main_calib_get_sample:
- **/
 static gboolean
 cd_main_calib_get_sample (CdMainPrivate *priv,
 			  CdColorXYZ *xyz,
@@ -367,9 +337,6 @@ cd_main_calib_get_sample (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_calib_get_native_whitepoint:
- **/
 static gboolean
 cd_main_calib_get_native_whitepoint (CdMainPrivate *priv,
 				     gdouble *temp,
@@ -398,9 +365,6 @@ cd_main_calib_get_native_whitepoint (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_calib_try_item:
- **/
 static gboolean
 cd_main_calib_try_item (CdMainPrivate *priv,
 		        CdMainCalibrateItem *item,
@@ -447,9 +411,6 @@ cd_main_calib_try_item (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_calib_process_item:
- **/
 static gboolean
 cd_main_calib_process_item (CdMainPrivate *priv,
 			    CdMainCalibrateItem *item,
@@ -598,11 +559,6 @@ cd_main_calib_process_item (CdMainPrivate *priv,
 	return cd_state_done (state, error);
 }
 
-/**
- * cd_main_calib_interpolate_up:
- *
- * Interpolate from the current number of points to a new size
- **/
 static gboolean
 cd_main_calib_interpolate_up (CdMainPrivate *priv,
 			      guint new_size,
@@ -647,9 +603,6 @@ cd_main_calib_interpolate_up (CdMainPrivate *priv,
 	return ret;
 }
 
-/**
- * cd_main_calib_process:
- **/
 static gboolean
 cd_main_calib_process (CdMainPrivate *priv,
 		       CdState *state,
@@ -839,9 +792,6 @@ cd_main_calib_process (CdMainPrivate *priv,
 	return cd_state_done (state, error);
 }
 
-/**
- * cd_main_finished_quit_cb:
- **/
 static gboolean
 cd_main_finished_quit_cb (gpointer user_data)
 {
@@ -850,9 +800,6 @@ cd_main_finished_quit_cb (gpointer user_data)
 	return G_SOURCE_REMOVE;
 }
 
-/**
- * cd_main_load_samples:
- **/
 static gboolean
 cd_main_load_samples (CdMainPrivate *priv, GError **error)
 {
@@ -872,9 +819,6 @@ cd_main_load_samples (CdMainPrivate *priv, GError **error)
 	return cd_it8_load_from_file (priv->it8_ti1, file, error);
 }
 
-/**
- * cd_main_write_colprof_files:
- **/
 static gboolean
 cd_main_write_colprof_files (CdMainPrivate *priv, GError **error)
 {
@@ -912,9 +856,6 @@ cd_main_write_colprof_files (CdMainPrivate *priv, GError **error)
 	return g_file_set_contents (path_ti3, data, -1, error);
 }
 
-/**
- * cd_main_get_colprof_quality_arg:
- **/
 static const gchar *
 cd_main_get_colprof_quality_arg (CdProfileQuality quality)
 {
@@ -929,9 +870,6 @@ cd_main_get_colprof_quality_arg (CdProfileQuality quality)
 
 #define CD_PROFILE_DEFAULT_COPYRIGHT_STRING	"This profile is free of known copyright restrictions."
 
-/**
- * cd_main_find_argyll_tool:
- **/
 static gchar *
 cd_main_find_argyll_tool (const gchar *command,
 			  GError **error)
@@ -967,9 +905,6 @@ cd_main_find_argyll_tool (const gchar *command,
 	return NULL;
 }
 
-/**
- * cd_main_import_profile:
- **/
 static gboolean
 cd_main_import_profile (CdMainPrivate *priv, GError **error)
 {
@@ -1017,9 +952,6 @@ cd_main_import_profile (CdMainPrivate *priv, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_main_set_profile_metadata:
- **/
 static gboolean
 cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 {
@@ -1097,9 +1029,6 @@ cd_main_set_profile_metadata (CdMainPrivate *priv, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_main_generate_profile:
- **/
 static gboolean
 cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 {
@@ -1154,9 +1083,6 @@ cd_main_generate_profile (CdMainPrivate *priv, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_main_display_get_samples:
- **/
 static gboolean
 cd_main_display_get_samples (CdMainPrivate *priv,
 			     CdState *state,
@@ -1187,9 +1113,6 @@ cd_main_display_get_samples (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_display_characterize:
- **/
 static gboolean
 cd_main_display_characterize (CdMainPrivate *priv,
 			      CdState *state,
@@ -1268,9 +1191,6 @@ cd_main_display_characterize (CdMainPrivate *priv,
 	return cd_state_done (state, error);
 }
 
-/**
- * cd_main_remove_temp_file:
- **/
 static gboolean
 cd_main_remove_temp_file (const gchar *filename,
 			  GCancellable *cancellable,
@@ -1283,9 +1203,6 @@ cd_main_remove_temp_file (const gchar *filename,
 	return g_file_delete (file, cancellable, error);
 }
 
-/**
- * cd_main_remove_temp_files:
- **/
 static gboolean
 cd_main_remove_temp_files (CdMainPrivate *priv, GError **error)
 {
@@ -1318,9 +1235,6 @@ cd_main_remove_temp_files (CdMainPrivate *priv, GError **error)
 					 error);
 }
 
-/**
- * cd_main_start_calibration:
- **/
 static gboolean
 cd_main_start_calibration (CdMainPrivate *priv,
 			   CdState *state,
@@ -1386,9 +1300,6 @@ cd_main_start_calibration (CdMainPrivate *priv,
 	return cd_state_done (state, error);
 }
 
-/**
- * cd_main_start_calibration_cb:
- **/
 static gboolean
 cd_main_start_calibration_cb (gpointer user_data)
 {
@@ -1422,9 +1333,6 @@ cd_main_start_calibration_cb (gpointer user_data)
 	return FALSE;
 }
 
-/**
- * cd_main_status_to_text:
- **/
 static const gchar *
 cd_main_status_to_text (CdSessionStatus status)
 {
@@ -1437,9 +1345,6 @@ cd_main_status_to_text (CdSessionStatus status)
 	return NULL;
 }
 
-/**
- * cd_main_sender_vanished_cb:
- **/
 static void
 cd_main_sender_vanished_cb (GDBusConnection *connection,
 			    const gchar *name,
@@ -1453,9 +1358,6 @@ cd_main_sender_vanished_cb (GDBusConnection *connection,
 	g_main_loop_quit (priv->loop);
 }
 
-/**
- * cd_main_find_device:
- **/
 static CdDevice *
 cd_main_find_device (CdMainPrivate *priv,
 		     const gchar *device_id,
@@ -1503,9 +1405,6 @@ cd_main_find_device (CdMainPrivate *priv,
 	return g_object_ref (device_tmp);
 }
 
-/**
- * cd_main_find_sensor:
- **/
 static CdSensor *
 cd_main_find_sensor (CdMainPrivate *priv,
 		     const gchar *sensor_id,
@@ -1553,9 +1452,6 @@ cd_main_find_sensor (CdMainPrivate *priv,
 	return g_object_ref (sensor_tmp);
 }
 
-/**
- * cd_main_set_basename:
- **/
 static void
 cd_main_set_basename (CdMainPrivate *priv)
 {
@@ -1603,9 +1499,6 @@ cd_main_set_basename (CdMainPrivate *priv)
 	priv->basename = g_string_free (str, FALSE);
 }
 
-/**
- * cd_main_quit_loop_cb:
- **/
 static gboolean
 cd_main_quit_loop_cb (gpointer user_data)
 {
@@ -1614,9 +1507,6 @@ cd_main_quit_loop_cb (gpointer user_data)
 	return G_SOURCE_REMOVE;
 }
 
-/**
- * cd_main_daemon_method_call:
- **/
 static void
 cd_main_daemon_method_call (GDBusConnection *connection,
 			    const gchar *sender,
@@ -1819,9 +1709,6 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 	g_critical ("failed to process method %s", method_name);
 }
 
-/**
- * cd_main_daemon_get_property:
- **/
 static GVariant *
 cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 			     const gchar *object_path, const gchar *interface_name,
@@ -1849,9 +1736,6 @@ cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 	return NULL;
 }
 
-/**
- * cd_main_on_bus_acquired_cb:
- **/
 static void
 cd_main_on_bus_acquired_cb (GDBusConnection *connection,
 			    const gchar *name,
@@ -1879,9 +1763,6 @@ cd_main_on_bus_acquired_cb (GDBusConnection *connection,
 	}
 }
 
-/**
- * cd_main_on_name_acquired_cb:
- **/
 static void
 cd_main_on_name_acquired_cb (GDBusConnection *connection,
 			     const gchar *name,
@@ -1890,9 +1771,6 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	g_debug ("CdMain: acquired name: %s", name);
 }
 
-/**
- * cd_main_on_name_lost_cb:
- **/
 static void
 cd_main_on_name_lost_cb (GDBusConnection *connection,
 			 const gchar *name,
@@ -1903,9 +1781,6 @@ cd_main_on_name_lost_cb (GDBusConnection *connection,
 	g_main_loop_quit (priv->loop);
 }
 
-/**
- * cd_main_timed_exit_cb:
- **/
 static gboolean
 cd_main_timed_exit_cb (gpointer user_data)
 {
@@ -1914,9 +1789,6 @@ cd_main_timed_exit_cb (gpointer user_data)
 	return G_SOURCE_REMOVE;
 }
 
-/**
- * cd_main_load_introspection:
- **/
 static GDBusNodeInfo *
 cd_main_load_introspection (const gchar *filename, GError **error)
 {
@@ -1932,9 +1804,6 @@ cd_main_load_introspection (const gchar *filename, GError **error)
 	return g_dbus_node_info_new_for_xml (data, error);
 }
 
-/**
- * cd_main_emit_property_changed:
- **/
 static void
 cd_main_emit_property_changed (CdMainPrivate *priv,
 			       const gchar *property_name,
@@ -1962,9 +1831,6 @@ cd_main_emit_property_changed (CdMainPrivate *priv,
 				       NULL);
 }
 
-/**
- * cd_main_percentage_changed_cb:
- **/
 static void
 cd_main_percentage_changed_cb (CdState *state,
 			       guint value,
@@ -1976,9 +1842,6 @@ cd_main_percentage_changed_cb (CdState *state,
 				       g_variant_new_uint32 (value));
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char *argv[])
 {

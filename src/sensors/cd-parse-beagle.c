@@ -59,9 +59,6 @@ typedef struct {
 	CdParseEntryDirection	 direction;
 } CdParseEntry;
 
-/**
- * cd_parse_beagle_process_entry_huey:
- **/
 static void
 cd_parse_beagle_process_entry_huey (CdParseEntry *entry)
 {
@@ -122,9 +119,6 @@ out:
 		entry->summary_pretty = g_string_free (output, FALSE);
 }
 
-/**
- * cd_parse_beagle_process_entry_colormunki:
- **/
 static void
 cd_parse_beagle_process_entry_colormunki (CdParseEntry *entry)
 {
@@ -195,9 +189,6 @@ out:
 		entry->summary_pretty = g_string_free (output, FALSE);
 }
 
-/**
- * cd_parse_beagle_process_entry:
- **/
 static gchar *
 cd_parse_beagle_process_entry (CdSensorKind kind, CdParseEntry *entry)
 {
@@ -262,9 +253,6 @@ out:
 	return retval;
 }
 
-/**
- * main:
- **/
 gint
 main (gint argc, gchar *argv[])
 {

@@ -32,9 +32,6 @@
 static gboolean _verbose = FALSE;
 static gboolean _console = FALSE;
 
-/**
- * cd_debug_is_verbose:
- **/
 gboolean
 cd_debug_is_verbose (void)
 {
@@ -49,9 +46,6 @@ cd_debug_is_verbose (void)
 }
 
 
-/**
- * cd_debug_ignore_cb:
- **/
 static void
 cd_debug_ignore_cb (const gchar *log_domain,
 		    GLogLevelFlags log_level,
@@ -81,9 +75,6 @@ cd_debug_ignore_cb (const gchar *log_domain,
 	}
 }
 
-/**
- * cd_debug_handler_cb:
- **/
 static void
 cd_debug_handler_cb (const gchar *log_domain,
 		     GLogLevelFlags log_level,
@@ -143,9 +134,6 @@ cd_debug_handler_cb (const gchar *log_domain,
 	}
 }
 
-/**
- * cd_debug_pre_parse_hook:
- */
 static gboolean
 cd_debug_pre_parse_hook (GOptionContext *context,
 			 GOptionGroup *group,
@@ -164,9 +152,6 @@ cd_debug_pre_parse_hook (GOptionContext *context,
 	return TRUE;
 }
 
-/**
- * cd_debug_destroy:
- */
 void
 cd_debug_destroy (void)
 {
@@ -175,9 +160,6 @@ cd_debug_destroy (void)
 #endif
 }
 
-/**
- * cd_debug_setup:
- */
 void
 cd_debug_setup (gboolean enabled)
 {
@@ -203,9 +185,6 @@ cd_debug_setup (gboolean enabled)
 	_console = (isatty (fileno (stdout)) == 1);
 }
 
-/**
- * cd_debug_post_parse_hook:
- */
 static gboolean
 cd_debug_post_parse_hook (GOptionContext *context,
 			  GOptionGroup *group,
@@ -219,9 +198,6 @@ cd_debug_post_parse_hook (GOptionContext *context,
 	return TRUE;
 }
 
-/**
- * cd_debug_get_option_group:
- */
 GOptionGroup *
 cd_debug_get_option_group (void)
 {

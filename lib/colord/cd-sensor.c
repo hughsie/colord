@@ -341,9 +341,6 @@ cd_sensor_has_cap (CdSensor *sensor, CdSensorCap cap)
 	return cd_bitfield_contain (priv->caps, cap);
 }
 
-/**
- * cd_sensor_set_caps_from_variant:
- **/
 static void
 cd_sensor_set_caps_from_variant (CdSensor *sensor, GVariant *variant)
 {
@@ -363,9 +360,6 @@ cd_sensor_set_caps_from_variant (CdSensor *sensor, GVariant *variant)
 	g_free (caps_tmp);
 }
 
-/**
- * cd_sensor_set_options_from_variant:
- **/
 static void
 cd_sensor_set_options_from_variant (CdSensor *sensor, GVariant *variant)
 {
@@ -388,9 +382,6 @@ cd_sensor_set_options_from_variant (CdSensor *sensor, GVariant *variant)
 	}
 }
 
-/**
- * cd_sensor_set_metadata_from_variant:
- **/
 static void
 cd_sensor_set_metadata_from_variant (CdSensor *sensor, GVariant *variant)
 {
@@ -413,9 +404,6 @@ cd_sensor_set_metadata_from_variant (CdSensor *sensor, GVariant *variant)
 	}
 }
 
-/**
- * cd_sensor_dbus_properties_changed_cb:
- **/
 static void
 cd_sensor_dbus_properties_changed_cb (GDBusProxy *proxy,
 				      GVariant *changed_properties,
@@ -485,9 +473,6 @@ cd_sensor_dbus_properties_changed_cb (GDBusProxy *proxy,
 	}
 }
 
-/**
- * cd_sensor_dbus_signal_cb:
- **/
 static void
 cd_sensor_dbus_signal_cb (GDBusProxy *proxy,
 			  gchar      *sender_name,
@@ -506,9 +491,6 @@ cd_sensor_dbus_signal_cb (GDBusProxy *proxy,
 
 /**********************************************************************/
 
-/**
- * cd_sensor_connect_cb:
- **/
 static void
 cd_sensor_connect_cb (GObject *source_object,
 		      GAsyncResult *res,
@@ -719,9 +701,6 @@ cd_sensor_lock_finish (CdSensor *sensor,
 	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
-/**
- * cd_sensor_fixup_dbus_error:
- **/
 static void
 cd_sensor_fixup_dbus_error (GError *error)
 {

@@ -36,9 +36,6 @@
 #include "cd-it8-utils.h"
 #include "cd-math.h"
 
-/**
- * ch_it8_utils_4color_read_data:
- **/
 static gboolean
 ch_it8_utils_4color_read_data (CdIt8 *it8,
 			       CdMat3x3 *mat_xyz,
@@ -112,9 +109,6 @@ ch_it8_utils_4color_read_data (CdIt8 *it8,
 	return TRUE;
 }
 
-/**
- * ch_it8_utils_4color_decompose:
- **/
 static gboolean
 ch_it8_utils_4color_decompose (CdIt8 *it8,
 			       CdMat3x3 *rgb,

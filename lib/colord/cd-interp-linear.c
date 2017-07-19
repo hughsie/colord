@@ -38,9 +38,6 @@ static void	cd_interp_linear_init		(CdInterpLinear		*interp_linear);
 
 G_DEFINE_TYPE (CdInterpLinear, cd_interp_linear, CD_TYPE_INTERP)
 
-/**
- * cd_interp_linear_eval:
- **/
 static gdouble
 cd_interp_linear_eval (CdInterp *interp, gdouble value, GError **error)
 {
@@ -70,9 +67,6 @@ cd_interp_linear_class_init (CdInterpLinearClass *klass)
 	interp_class->eval = cd_interp_linear_eval;
 }
 
-/**
- * cd_interp_linear_init:
- **/
 static void
 cd_interp_linear_init (CdInterpLinear *interp_linear)
 {

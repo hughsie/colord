@@ -19,9 +19,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/**
- * This object contains all the low level logic for the MUNKI hardware.
- */
 
 #include "config.h"
 
@@ -59,9 +56,6 @@ cd_sensor_munki_get_private (CdSensor *sensor)
 	return g_object_get_data (G_OBJECT (sensor), "priv");
 }
 
-/**
- * cd_sensor_munki_refresh_state_transfer_cb:
- **/
 static void
 cd_sensor_munki_refresh_state_transfer_cb (struct libusb_transfer *transfer)
 {
@@ -105,9 +99,6 @@ out:
 	g_free (transfer->buffer);
 }
 
-/**
- * cd_sensor_munki_refresh_state:
- **/
 static gboolean
 cd_sensor_munki_refresh_state (CdSensor *sensor, GError **error)
 {
@@ -145,9 +136,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_munki_transfer_cb:
- **/
 static void
 cd_sensor_munki_transfer_cb (struct libusb_transfer *transfer)
 {
@@ -186,9 +174,6 @@ out:
 	cd_sensor_munki_submit_transfer (sensor);
 }
 
-/**
- * cd_sensor_munki_submit_transfer:
- **/
 static void
 cd_sensor_munki_submit_transfer (CdSensor *sensor)
 {
@@ -211,9 +196,6 @@ cd_sensor_munki_submit_transfer (CdSensor *sensor)
 		g_warning ("failed to submit transfer: %s", libusb_strerror (retval));
 }
 
-/**
- * cd_sensor_munki_get_eeprom_data:
- **/
 static gboolean
 cd_sensor_munki_get_eeprom_data (CdSensor *sensor,
 				 guint32 address, guint8 *data,
@@ -272,9 +254,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_munki_random:
- **/
 static gboolean
 cd_sensor_munki_random (CdSensor *sensor, GError **error)
 {

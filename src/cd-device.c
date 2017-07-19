@@ -45,11 +45,6 @@ static void cd_device_dbus_emit_device_changed	 (CdDevice *device);
 
 #define GET_PRIVATE(o) (cd_device_get_instance_private (o))
 
-/**
- * CdDevicePrivate:
- *
- * Private #CdDevice data
- **/
 typedef struct
 {
 	CdObjectScope			 object_scope;
@@ -102,9 +97,6 @@ typedef struct {
 static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE_WITH_PRIVATE (CdDevice, cd_device, G_TYPE_OBJECT)
 
-/**
- * cd_device_error_quark:
- **/
 GQuark
 cd_device_error_quark (void)
 {
@@ -121,9 +113,6 @@ cd_device_error_quark (void)
 	return quark;
 }
 
-/**
- * cd_device_get_scope:
- **/
 CdObjectScope
 cd_device_get_scope (CdDevice *device)
 {
@@ -132,9 +121,6 @@ cd_device_get_scope (CdDevice *device)
 	return priv->object_scope;
 }
 
-/**
- * cd_device_set_scope:
- **/
 void
 cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
 {
@@ -143,9 +129,6 @@ cd_device_set_scope (CdDevice *device, CdObjectScope object_scope)
 	priv->object_scope = object_scope;
 }
 
-/**
- * cd_device_get_owner:
- **/
 guint
 cd_device_get_owner (CdDevice *device)
 {
@@ -154,9 +137,6 @@ cd_device_get_owner (CdDevice *device)
 	return priv->owner;
 }
 
-/**
- * cd_device_set_owner:
- **/
 void
 cd_device_set_owner (CdDevice *device, guint owner)
 {
@@ -165,9 +145,6 @@ cd_device_set_owner (CdDevice *device, guint owner)
 	priv->owner = owner;
 }
 
-/**
- * cd_device_get_seat:
- **/
 const gchar *
 cd_device_get_seat (CdDevice *device)
 {
@@ -176,9 +153,6 @@ cd_device_get_seat (CdDevice *device)
 	return priv->seat;
 }
 
-/**
- * cd_device_set_seat:
- **/
 void
 cd_device_set_seat (CdDevice *device, const gchar *seat)
 {
@@ -187,9 +161,6 @@ cd_device_set_seat (CdDevice *device, const gchar *seat)
 	priv->seat = g_strdup (seat);
 }
 
-/**
- * cd_device_mode_to_string:
- **/
 static const gchar *
 _cd_device_mode_to_string (CdDeviceMode device_mode)
 {
@@ -200,9 +171,6 @@ _cd_device_mode_to_string (CdDeviceMode device_mode)
 	return "unknown";
 }
 
-/**
- * _cd_device_mode_from_string:
- **/
 static CdDeviceMode
 _cd_device_mode_from_string (const gchar *device_mode)
 {
@@ -213,9 +181,6 @@ _cd_device_mode_from_string (const gchar *device_mode)
 	return CD_DEVICE_MODE_UNKNOWN;
 }
 
-/**
- * cd_device_set_mode:
- **/
 void
 cd_device_set_mode (CdDevice *device, CdDeviceMode mode)
 {
@@ -225,9 +190,6 @@ cd_device_set_mode (CdDevice *device, CdDeviceMode mode)
 	priv->mode = g_strdup (_cd_device_mode_to_string (mode));
 }
 
-/**
- * cd_device_get_mode:
- **/
 CdDeviceMode
 cd_device_get_mode (CdDevice *device)
 {
@@ -236,9 +198,6 @@ cd_device_get_mode (CdDevice *device)
 	return _cd_device_mode_from_string (priv->mode);
 }
 
-/**
- * cd_device_get_object_path:
- **/
 const gchar *
 cd_device_get_object_path (CdDevice *device)
 {
@@ -247,9 +206,6 @@ cd_device_get_object_path (CdDevice *device)
 	return priv->object_path;
 }
 
-/**
- * cd_device_get_id:
- **/
 const gchar *
 cd_device_get_id (CdDevice *device)
 {
@@ -258,9 +214,6 @@ cd_device_get_id (CdDevice *device)
 	return priv->id;
 }
 
-/**
- * cd_device_get_model:
- **/
 const gchar *
 cd_device_get_model (CdDevice *device)
 {
@@ -269,9 +222,6 @@ cd_device_get_model (CdDevice *device)
 	return priv->model;
 }
 
-/**
- * cd_device_get_kind:
- **/
 CdDeviceKind
 cd_device_get_kind (CdDevice *device)
 {
@@ -280,9 +230,6 @@ cd_device_get_kind (CdDevice *device)
 	return priv->kind;
 }
 
-/**
- * cd_device_set_kind:
- **/
 void
 cd_device_set_kind (CdDevice *device, CdDeviceKind kind)
 {
@@ -292,9 +239,6 @@ cd_device_set_kind (CdDevice *device, CdDeviceKind kind)
 	priv->kind = kind;
 }
 
-/**
- * cd_device_set_object_path:
- **/
 static void
 cd_device_set_object_path (CdDevice *device)
 {
@@ -335,9 +279,6 @@ cd_device_set_object_path (CdDevice *device)
 						      NULL);
 }
 
-/**
- * cd_device_set_id:
- **/
 void
 cd_device_set_id (CdDevice *device, const gchar *id)
 {
@@ -365,9 +306,6 @@ cd_device_set_id (CdDevice *device, const gchar *id)
 	}
 }
 
-/**
- * cd_device_reset_modified:
- **/
 static void
 cd_device_reset_modified (CdDevice *device)
 {
@@ -377,9 +315,6 @@ cd_device_reset_modified (CdDevice *device)
 	priv->require_modified_signal = TRUE;
 }
 
-/**
- * cd_device_dbus_emit_property_changed:
- **/
 static void
 cd_device_dbus_emit_property_changed (CdDevice *device,
 				      const gchar *property_name,
@@ -421,9 +356,6 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 	g_variant_builder_clear (&invalidated_builder);
 }
 
-/**
- * cd_device_dbus_emit_device_changed:
- **/
 static void
 cd_device_dbus_emit_device_changed (CdDevice *device)
 {
@@ -456,9 +388,6 @@ cd_device_dbus_emit_device_changed (CdDevice *device)
 				       NULL);
 }
 
-/**
- * cd_device_match_qualifier:
- **/
 static gboolean
 cd_device_match_qualifier (const gchar *qual1, const gchar *qual2)
 {
@@ -493,9 +422,6 @@ cd_device_match_qualifier (const gchar *qual1, const gchar *qual2)
 	return TRUE;
 }
 
-/**
- * cd_device_find_by_qualifier:
- **/
 static CdProfile *
 cd_device_find_by_qualifier (const gchar *regex,
 			     GPtrArray *array,
@@ -538,9 +464,6 @@ cd_device_find_by_qualifier (const gchar *regex,
 	return  NULL;
 }
 
-/**
- * cd_device_find_profile_by_object_path:
- **/
 static CdProfile *
 cd_device_find_profile_by_object_path (GPtrArray *array, const gchar *object_path)
 {
@@ -559,9 +482,6 @@ cd_device_find_profile_by_object_path (GPtrArray *array, const gchar *object_pat
 	return NULL;
 }
 
-/**
- * cd_device_get_profiles_as_variant:
- **/
 static GVariant *
 cd_device_get_profiles_as_variant (CdDevice *device)
 {
@@ -615,9 +535,6 @@ cd_device_get_profiles_as_variant (CdDevice *device)
 				    priv->profiles->len);
 }
 
-/**
- * cd_device_remove_profile:
- **/
 gboolean
 cd_device_remove_profile (CdDevice *device,
 			  const gchar *profile_object_path,
@@ -664,9 +581,6 @@ cd_device_remove_profile (CdDevice *device,
 	return TRUE;
 }
 
-/**
- * cd_device_find_profile_relation:
- **/
 static CdDeviceRelation
 cd_device_find_profile_relation (CdDevice *device,
 				 const gchar *profile_object_path)
@@ -686,9 +600,6 @@ cd_device_find_profile_relation (CdDevice *device,
 	return CD_DEVICE_RELATION_UNKNOWN;
 }
 
-/**
- * _cd_device_relation_to_string:
- **/
 static const gchar *
 _cd_device_relation_to_string (CdDeviceRelation device_relation)
 {
@@ -699,9 +610,6 @@ _cd_device_relation_to_string (CdDeviceRelation device_relation)
 	return "unknown";
 }
 
-/**
- * cd_device_profile_item_sort_cb:
- **/
 static gint
 cd_device_profile_item_sort_cb (gconstpointer a, gconstpointer b)
 {
@@ -717,9 +625,6 @@ cd_device_profile_item_sort_cb (gconstpointer a, gconstpointer b)
 	return 0;
 }
 
-/**
- * cd_device_add_profile:
- **/
 gboolean
 cd_device_add_profile (CdDevice *device,
 		       CdDeviceRelation relation,
@@ -799,9 +704,6 @@ cd_device_add_profile (CdDevice *device,
 	return TRUE;
 }
 
-/**
- * cd_device_set_property_to_db:
- **/
 static void
 cd_device_set_property_to_db (CdDevice *device,
 			      const gchar *property,
@@ -825,9 +727,6 @@ cd_device_set_property_to_db (CdDevice *device,
 	}
 }
 
-/**
- * cd_device_get_metadata_as_variant:
- **/
 static GVariant *
 cd_device_get_metadata_as_variant (CdDevice *device)
 {
@@ -853,9 +752,6 @@ cd_device_get_metadata_as_variant (CdDevice *device)
 	return g_variant_builder_end (&builder);
 }
 
-/**
- * cd_device_string_remove_suffix:
- **/
 static void
 cd_device_string_remove_suffix (gchar *vendor, const gchar *suffix)
 {
@@ -869,9 +765,6 @@ cd_device_string_remove_suffix (gchar *vendor, const gchar *suffix)
 	g_strchomp (vendor);
 }
 
-/**
- * cd_device_set_vendor:
- **/
 static void
 cd_device_set_vendor (CdDevice *device, const gchar *vendor)
 {
@@ -880,9 +773,6 @@ cd_device_set_vendor (CdDevice *device, const gchar *vendor)
 	priv->vendor = cd_quirk_vendor_name (vendor);
 }
 
-/**
- * cd_device_set_model:
- **/
 static void
 cd_device_set_model (CdDevice *device, const gchar *model)
 {
@@ -905,9 +795,6 @@ cd_device_set_model (CdDevice *device, const gchar *model)
 	priv->model = g_string_free (tmp, FALSE);
 }
 
-/**
- * cd_device_get_nullable_for_string:
- **/
 static GVariant *
 cd_device_get_nullable_for_string (const gchar *value)
 {
@@ -916,9 +803,6 @@ cd_device_get_nullable_for_string (const gchar *value)
 	return g_variant_new_string (value);
 }
 
-/**
- * cd_device_set_serial:
- **/
 static void
 cd_device_set_serial (CdDevice *device, const gchar *value)
 {
@@ -935,9 +819,6 @@ cd_device_set_serial (CdDevice *device, const gchar *value)
 	priv->serial = g_strdup (value);
 }
 
-/**
- * cd_device_set_property_internal:
- **/
 gboolean
 cd_device_set_property_internal (CdDevice *device,
 				 const gchar *property,
@@ -1016,9 +897,6 @@ cd_device_set_property_internal (CdDevice *device,
 	return TRUE;
 }
 
-/**
- * cd_device_get_metadata:
- **/
 const gchar *
 cd_device_get_metadata (CdDevice *device, const gchar *key)
 {
@@ -1032,9 +910,6 @@ cd_device_get_metadata (CdDevice *device, const gchar *key)
 	return g_hash_table_lookup (priv->metadata, key);
 }
 
-/**
- * cd_device_make_default:
- **/
 gboolean
 cd_device_make_default (CdDevice *device,
 		        const gchar *profile_object_path,
@@ -1082,9 +957,6 @@ cd_device_make_default (CdDevice *device,
 	return TRUE;
 }
 
-/**
- * cd_device_set_enabled:
- **/
 static gboolean
 cd_device_set_enabled (CdDevice *device,
 		       gboolean enabled,
@@ -1128,9 +1000,6 @@ cd_device_set_enabled (CdDevice *device,
 	return TRUE;
 }
 
-/**
- * cd_device_dbus_method_call:
- **/
 static void
 cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
@@ -1530,9 +1399,6 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	g_critical ("failed to process device method %s", method_name);
 }
 
-/**
- * cd_device_inhibit_changed_cb:
- **/
 static void
 cd_device_inhibit_changed_cb (CdInhibit *inhibit,
 			      gpointer user_data)
@@ -1549,9 +1415,6 @@ cd_device_inhibit_changed_cb (CdInhibit *inhibit,
 	cd_device_dbus_emit_device_changed (device);
 }
 
-/**
- * cd_device_dbus_get_property:
- **/
 static GVariant *
 cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 			     const gchar *object_path, const gchar *interface_name,
@@ -1610,9 +1473,6 @@ cd_device_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	return NULL;
 }
 
-/**
- * cd_device_register_object:
- **/
 gboolean
 cd_device_register_object (CdDevice *device,
 			   GDBusConnection *connection,
@@ -1651,9 +1511,6 @@ cd_device_register_object (CdDevice *device,
 	return TRUE;
 }
 
-/**
- * cd_device_name_vanished_cb:
- **/
 static void
 cd_device_name_vanished_cb (GDBusConnection *connection,
 			    const gchar *name,
@@ -1664,9 +1521,6 @@ cd_device_name_vanished_cb (GDBusConnection *connection,
 	g_signal_emit (device, signals[SIGNAL_INVALIDATE], 0);
 }
 
-/**
- * cd_device_watch_sender:
- **/
 void
 cd_device_watch_sender (CdDevice *device, const gchar *sender)
 {
@@ -1682,9 +1536,6 @@ cd_device_watch_sender (CdDevice *device, const gchar *sender)
 						     NULL);
 }
 
-/**
- * cd_device_get_property:
- **/
 static void
 cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
@@ -1704,9 +1555,6 @@ cd_device_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	}
 }
 
-/**
- * cd_device_set_property:
- **/
 static void
 cd_device_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
@@ -1728,9 +1576,6 @@ cd_device_set_property (GObject *object, guint prop_id, const GValue *value, GPa
 	}
 }
 
-/**
- * cd_device_class_init:
- **/
 static void
 cd_device_class_init (CdDeviceClass *klass)
 {
@@ -1767,9 +1612,6 @@ cd_device_class_init (CdDeviceClass *klass)
 			      G_TYPE_NONE, 0);
 }
 
-/**
- * cd_device_profiles_item_free:
- **/
 static void
 cd_device_profiles_item_free (CdDeviceProfileItem *item)
 {
@@ -1777,9 +1619,6 @@ cd_device_profiles_item_free (CdDeviceProfileItem *item)
 	g_free (item);
 }
 
-/**
- * cd_device_init:
- **/
 static void
 cd_device_init (CdDevice *device)
 {
@@ -1801,9 +1640,6 @@ cd_device_init (CdDevice *device)
 							 g_free);
 }
 
-/**
- * cd_device_finalize:
- **/
 static void
 cd_device_finalize (GObject *object)
 {
@@ -1838,9 +1674,6 @@ cd_device_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_device_parent_class)->finalize (object);
 }
 
-/**
- * cd_device_new:
- **/
 CdDevice *
 cd_device_new (void)
 {

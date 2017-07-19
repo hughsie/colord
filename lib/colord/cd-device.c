@@ -498,9 +498,6 @@ cd_device_get_default_profile (CdDevice *device)
 	return g_object_ref (g_ptr_array_index (priv->profiles, 0));
 }
 
-/**
- * cd_device_set_profiles_array_from_variant:
- **/
 static void
 cd_device_set_profiles_array_from_variant (CdDevice *device,
 					   GVariant *profiles)
@@ -563,9 +560,6 @@ cd_device_get_metadata_item (CdDevice *device, const gchar *key)
 	return g_hash_table_lookup (priv->metadata, key);
 }
 
-/**
- * cd_device_set_metadata_from_variant:
- **/
 static void
 cd_device_set_metadata_from_variant (CdDevice *device, GVariant *variant)
 {
@@ -605,9 +599,6 @@ cd_device_get_nullable_str (GVariant *value)
 	return g_strdup (tmp);
 }
 
-/**
- * cd_device_dbus_properties_changed_cb:
- **/
 static void
 cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 				      GVariant    *changed_properties,
@@ -683,9 +674,6 @@ cd_device_dbus_properties_changed_cb (GDBusProxy  *proxy,
 	}
 }
 
-/**
- * cd_device_dbus_signal_cb:
- **/
 static void
 cd_device_dbus_signal_cb (GDBusProxy *proxy,
 			  gchar      *sender_name,
@@ -971,9 +959,6 @@ cd_device_set_property_finish (CdDevice *device,
 	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
-/**
- * cd_device_fixup_dbus_error:
- **/
 static void
 cd_device_fixup_dbus_error (GError *error)
 {

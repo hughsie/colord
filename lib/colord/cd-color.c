@@ -760,9 +760,6 @@ cd_color_rgb8_to_rgb (const CdColorRGB8 *src, CdColorRGB *dest)
 	dest->B = (gdouble) src->B / 255.0f;
 }
 
-/**
- * cd_color_value_double_to_uint8:
- **/
 static guint8
 cd_color_value_double_to_uint8 (gdouble value)
 {

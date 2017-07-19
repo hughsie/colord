@@ -145,9 +145,6 @@ cd_icc_fix_utf8_string (GString *string)
 	return g_utf8_validate (string->str, string->len, NULL);
 }
 
-/**
- * cd_icc_uint32_to_str:
- **/
 static void
 cd_icc_uint32_to_str (guint32 id, gchar *str)
 {
@@ -156,9 +153,6 @@ cd_icc_uint32_to_str (guint32 id, gchar *str)
 	str[4] = '\0';
 }
 
-/**
- * cd_icc_read_tag:
- **/
 static gpointer
 cd_icc_read_tag (CdIcc *icc, cmsTagSignature sig, GError **error)
 {
@@ -187,9 +181,6 @@ cd_icc_read_tag (CdIcc *icc, cmsTagSignature sig, GError **error)
 	return NULL;
 }
 
-/**
- * cd_icc_write_tag:
- **/
 static gboolean
 cd_icc_write_tag (CdIcc *icc, cmsTagSignature sig, gpointer data, GError **error)
 {
@@ -692,9 +683,6 @@ cd_icc_get_tags (CdIcc *icc, GError **error)
 	return (gchar **) g_ptr_array_free (tags, FALSE);
 }
 
-/**
- * cd_icc_str_to_tag:
- **/
 static cmsTagSignature
 cd_icc_str_to_tag (const gchar *tag)
 {
@@ -828,9 +816,6 @@ const struct {
 	{ 0,				CD_COLORSPACE_LAST }
 };
 
-/**
- * cd_icc_get_precooked_md5:
- **/
 static gchar *
 cd_icc_get_precooked_md5 (cmsHPROFILE lcms_profile)
 {
@@ -857,9 +842,6 @@ cd_icc_get_precooked_md5 (cmsHPROFILE lcms_profile)
 	return md5;
 }
 
-/**
- * cd_icc_calc_whitepoint:
- **/
 static gboolean
 cd_icc_calc_whitepoint (CdIcc *icc, GError **error)
 {
@@ -916,9 +898,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_icc_load_characterization_data:
- **/
 static gboolean
 cd_icc_load_characterization_data (CdIcc *icc, GError **error)
 {
@@ -957,9 +936,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_icc_load_primaries:
- **/
 static gboolean
 cd_icc_load_primaries (CdIcc *icc, GError **error)
 {
@@ -1034,9 +1010,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_icc_load_metadata_item:
- **/
 static gboolean
 cd_icc_load_metadata_item (CdIcc *icc,
 			   const gunichar *name,
@@ -1077,9 +1050,6 @@ cd_icc_load_metadata_item (CdIcc *icc,
 	return TRUE;
 }
 
-/**
- * cd_icc_load_metadata:
- **/
 static gboolean
 cd_icc_load_metadata (CdIcc *icc, GError **error)
 {
@@ -1112,9 +1082,6 @@ cd_icc_load_metadata (CdIcc *icc, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_icc_load:
- **/
 static gboolean
 cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 {
@@ -1245,9 +1212,6 @@ cd_icc_load_data (CdIcc *icc,
 	return TRUE;
 }
 
-/**
- * cd_util_write_dict_entry:
- **/
 static gboolean
 cd_util_write_dict_entry (cmsHANDLE dict,
 			  const gchar *key,
@@ -1284,9 +1248,6 @@ typedef struct {
 	gunichar	*wtext;
 } CdMluObject;
 
-/**
- * cd_util_mlu_object_free:
- **/
 static void
 cd_util_mlu_object_free (gpointer data)
 {
@@ -1297,9 +1258,6 @@ cd_util_mlu_object_free (gpointer data)
 	g_free (obj);
 }
 
-/**
- * cd_util_mlu_object_parse:
- **/
 static CdMluObject *
 cd_util_mlu_object_parse (const gchar *locale,
 			  const gchar *utf8_text,
@@ -1357,9 +1315,6 @@ cd_util_mlu_object_parse (const gchar *locale,
 	return obj;
 }
 
-/**
- * cd_util_write_tag_ascii:
- **/
 static gboolean
 cd_util_write_tag_ascii (CdIcc *icc,
 			 cmsTagSignature sig,
@@ -1397,9 +1352,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_util_write_tag_ascii_default:
- **/
 static gboolean
 cd_util_write_tag_ascii_default (CdIcc *icc,
 				 cmsTagSignature sig,
@@ -1412,9 +1364,6 @@ cd_util_write_tag_ascii_default (CdIcc *icc,
 	return cd_util_write_tag_ascii (icc, sig, value, error);
 }
 
-/**
- * cd_util_sort_mlu_array_cb:
- **/
 static gint
 cd_util_sort_mlu_array_cb (gconstpointer a, gconstpointer b)
 {
@@ -1423,9 +1372,6 @@ cd_util_sort_mlu_array_cb (gconstpointer a, gconstpointer b)
 	return g_strcmp0 (sa->language_code, sb->language_code);
 }
 
-/**
- * cd_util_write_tag_localized:
- **/
 static gboolean
 cd_util_write_tag_localized (CdIcc *icc,
 			     cmsTagSignature sig,
@@ -1510,9 +1456,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_icc_save_file_mkdir_parents:
- **/
 static gboolean
 cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
 {
@@ -1536,9 +1479,6 @@ cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_icc_serialize_profile:
- **/
 static GBytes *
 cd_icc_serialize_profile (CdIcc *icc, GError **error)
 {
@@ -2333,9 +2273,6 @@ cd_icc_remove_metadata (CdIcc *icc, const gchar *key)
 	g_hash_table_remove (priv->metadata, key);
 }
 
-/**
- * cd_icc_load_named_colors:
- **/
 static gboolean
 cd_icc_load_named_colors (CdIcc *icc, GError **error)
 {
@@ -2500,9 +2437,6 @@ cd_icc_get_checksum (CdIcc *icc)
 	return priv->checksum;
 }
 
-/**
- * cd_icc_get_locale_key:
- **/
 static gchar *
 cd_icc_get_locale_key (const gchar *locale)
 {
@@ -2516,9 +2450,6 @@ cd_icc_get_locale_key (const gchar *locale)
 	return locale_key;
 }
 
-/**
- * cd_icc_get_mluc_data:
- **/
 static const gchar *
 cd_icc_get_mluc_data (CdIcc *icc,
 		      const gchar *locale,
@@ -3450,9 +3381,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_icc_check_whitepoint:
- **/
 static CdProfileWarning
 cd_icc_check_whitepoint (CdIcc *icc)
 {
@@ -3470,9 +3398,6 @@ cd_icc_check_whitepoint (CdIcc *icc)
 	return CD_PROFILE_WARNING_NONE;
 }
 
-/**
- * cd_icc_check_vcgt:
- **/
 static CdProfileWarning
 cd_icc_check_vcgt (CdIcc *icc)
 {
@@ -3509,9 +3434,6 @@ cd_icc_check_vcgt (CdIcc *icc)
 	return CD_PROFILE_WARNING_NONE;
 }
 
-/**
- * cd_profile_check_scum_dot:
- **/
 static CdProfileWarning
 cd_profile_check_scum_dot (CdIcc *icc)
 {
@@ -3549,9 +3471,6 @@ out:
 	return warning;
 }
 
-/**
- * cd_icc_check_primaries:
- **/
 static CdProfileWarning
 cd_icc_check_primaries (CdIcc *icc)
 {
@@ -3596,9 +3515,6 @@ cd_icc_check_primaries (CdIcc *icc)
 	return CD_PROFILE_WARNING_NONE;
 }
 
-/**
- * cd_icc_check_gray_axis:
- **/
 static CdProfileWarning
 cd_icc_check_gray_axis (CdIcc *icc)
 {
@@ -3663,9 +3579,6 @@ out:
 	return warning;
 }
 
-/**
- * cd_icc_check_d50_whitepoint:
- **/
 static CdProfileWarning
 cd_icc_check_d50_whitepoint (CdIcc *icc)
 {
@@ -3845,9 +3758,6 @@ out:
 	return flags;
 }
 
-/**
- * cd_icc_get_property:
- **/
 static void
 cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
@@ -3897,9 +3807,6 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 	}
 }
 
-/**
- * cd_icc_set_property:
- **/
 static void
 cd_icc_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
@@ -3920,9 +3827,6 @@ cd_icc_set_property (GObject *object, guint prop_id, const GValue *value, GParam
 	}
 }
 
-/**
- * cd_icc_class_init:
- */
 static void
 cd_icc_class_init (CdIccClass *klass)
 {
@@ -4030,9 +3934,6 @@ cd_icc_class_init (CdIccClass *klass)
 	g_object_class_install_property (object_class, PROP_TEMPERATURE, pspec);
 }
 
-/**
- * cd_icc_init:
- */
 static void
 cd_icc_init (CdIcc *icc)
 {
@@ -4059,9 +3960,6 @@ cd_icc_init (CdIcc *icc)
 	cd_color_xyz_clear (&priv->blue);
 }
 
-/**
- * cd_icc_finalize:
- */
 static void
 cd_icc_finalize (GObject *object)
 {

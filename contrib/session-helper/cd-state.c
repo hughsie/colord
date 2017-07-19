@@ -67,9 +67,6 @@ G_DEFINE_TYPE (CdState, cd_state, G_TYPE_OBJECT)
 
 #define CD_STATE_SPEED_SMOOTHING_ITEMS		5
 
-/**
- * cd_state_error_quark:
- **/
 GQuark
 cd_state_error_quark (void)
 {
@@ -79,9 +76,6 @@ cd_state_error_quark (void)
 	return quark;
 }
 
-/**
- * cd_state_set_enable_profile:
- **/
 void
 cd_state_set_enable_profile (CdState *state, gboolean enable_profile)
 {
@@ -89,9 +83,6 @@ cd_state_set_enable_profile (CdState *state, gboolean enable_profile)
 	state->priv->enable_profile = enable_profile;
 }
 
-/**
- * cd_state_discrete_to_percent:
- **/
 static gfloat
 cd_state_discrete_to_percent (guint discrete, guint steps)
 {
@@ -105,9 +96,6 @@ cd_state_discrete_to_percent (guint discrete, guint steps)
 	return ((gfloat) discrete * (100.0f / (gfloat) (steps)));
 }
 
-/**
- * cd_state_print_parent_chain:
- **/
 static void
 cd_state_print_parent_chain (CdState *state, guint level)
 {
@@ -117,9 +105,6 @@ cd_state_print_parent_chain (CdState *state, guint level)
 		 level, state->priv->id, state->priv->current, state->priv->steps);
 }
 
-/**
- * cd_state_set_percentage:
- **/
 gboolean
 cd_state_set_percentage (CdState *state, guint percentage)
 {
@@ -157,18 +142,12 @@ cd_state_set_percentage (CdState *state, guint percentage)
 	return TRUE;
 }
 
-/**
- * cd_state_get_percentage:
- **/
 guint
 cd_state_get_percentage (CdState *state)
 {
 	return state->priv->last_percentage;
 }
 
-/**
- * cd_state_set_subpercentage:
- **/
 static gboolean
 cd_state_set_subpercentage (CdState *state, guint percentage)
 {
@@ -181,9 +160,6 @@ cd_state_set_subpercentage (CdState *state, guint percentage)
 	return TRUE;
 }
 
-/**
- * cd_state_child_percentage_changed_cb:
- **/
 static void
 cd_state_child_percentage_changed_cb (CdState *child, guint percentage, CdState *state)
 {
@@ -243,9 +219,6 @@ out:
 	cd_state_set_percentage (state, parent_percentage);
 }
 
-/**
- * cd_state_child_subpercentage_changed_cb:
- **/
 static void
 cd_state_child_subpercentage_changed_cb (CdState *child, guint percentage, CdState *state)
 {
@@ -257,9 +230,6 @@ cd_state_child_subpercentage_changed_cb (CdState *child, guint percentage, CdSta
 	cd_state_set_subpercentage (state, percentage);
 }
 
-/**
- * cd_state_reset:
- **/
 gboolean
 cd_state_reset (CdState *state)
 {
@@ -300,18 +270,12 @@ cd_state_reset (CdState *state)
 	return TRUE;
 }
 
-/**
- * cd_state_set_global_share:
- **/
 static void
 cd_state_set_global_share (CdState *state, gdouble global_share)
 {
 	state->priv->global_share = global_share;
 }
 
-/**
- * cd_state_get_child:
- **/
 CdState *
 cd_state_get_child (CdState *state)
 {
@@ -354,9 +318,6 @@ cd_state_get_child (CdState *state)
 	return child;
 }
 
-/**
- * cd_state_set_number_steps_real:
- **/
 gboolean
 cd_state_set_number_steps_real (CdState *state, guint steps, const gchar *strloc)
 {
@@ -393,9 +354,6 @@ cd_state_set_number_steps_real (CdState *state, guint steps, const gchar *strloc
 	return TRUE;
 }
 
-/**
- * cd_state_set_steps_real:
- **/
 gboolean
 cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gint value, ...)
 {
@@ -459,9 +417,6 @@ cd_state_set_steps_real (CdState *state, GError **error, const gchar *strloc, gi
 	return TRUE;
 }
 
-/**
- * cd_state_show_profile:
- **/
 static void
 cd_state_show_profile (CdState *state)
 {
@@ -493,9 +448,6 @@ cd_state_show_profile (CdState *state)
 	g_printerr ("\n\n%s-1 ] at %s\n\n", result->str, state->priv->id);
 }
 
-/**
- * cd_state_done_real:
- **/
 gboolean
 cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 {
@@ -569,9 +521,6 @@ cd_state_done_real (CdState *state, GError **error, const gchar *strloc)
 	return TRUE;
 }
 
-/**
- * cd_state_finished_real:
- **/
 gboolean
 cd_state_finished_real (CdState *state, GError **error, const gchar *strloc)
 {
@@ -590,9 +539,6 @@ cd_state_finished_real (CdState *state, GError **error, const gchar *strloc)
 	return TRUE;
 }
 
-/**
- * cd_state_finalize:
- **/
 static void
 cd_state_finalize (GObject *object)
 {
@@ -611,9 +557,6 @@ cd_state_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_state_parent_class)->finalize (object);
 }
 
-/**
- * cd_state_class_init:
- **/
 static void
 cd_state_class_init (CdStateClass *klass)
 {
@@ -637,9 +580,6 @@ cd_state_class_init (CdStateClass *klass)
 	g_type_class_add_private (klass, sizeof (CdStatePrivate));
 }
 
-/**
- * cd_state_init:
- **/
 static void
 cd_state_init (CdState *state)
 {
@@ -648,9 +588,6 @@ cd_state_init (CdState *state)
 	state->priv->timer = g_timer_new ();
 }
 
-/**
- * cd_state_new:
- **/
 CdState *
 cd_state_new (void)
 {

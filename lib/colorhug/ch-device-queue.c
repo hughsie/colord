@@ -94,9 +94,6 @@ static guint signals[SIGNAL_LAST] = { 0 };
 
 static gboolean ch_device_queue_process_data (GTask *task, ChDeviceQueueData *data);
 
-/**
- * ch_device_queue_data_free:
- **/
 static void
 ch_device_queue_data_free (ChDeviceQueueData *data)
 {
@@ -109,9 +106,6 @@ ch_device_queue_data_free (ChDeviceQueueData *data)
 	g_free (data);
 }
 
-/**
- * ch_device_queue_task_data_free:
- **/
 static void
 ch_device_queue_task_data_free (ChDeviceQueueTaskData *data)
 {
@@ -120,9 +114,6 @@ ch_device_queue_task_data_free (ChDeviceQueueTaskData *data)
 	g_free (data);
 }
 
-/**
- * ch_device_queue_device_force_complete:
- **/
 static void
 ch_device_queue_device_force_complete (ChDeviceQueue *device_queue, GUsbDevice *device)
 {
@@ -142,9 +133,6 @@ ch_device_queue_device_force_complete (ChDeviceQueue *device_queue, GUsbDevice *
 	}
 }
 
-/**
- * ch_device_queue_update_progress:
- **/
 static void
 ch_device_queue_update_progress (ChDeviceQueue *device_queue)
 {
@@ -173,9 +161,6 @@ ch_device_queue_update_progress (ChDeviceQueue *device_queue)
 		       percentage);
 }
 
-/**
- * ch_device_queue_count_in_state:
- **/
 static guint
 ch_device_queue_count_in_state (ChDeviceQueue *device_queue,
 				ChDeviceQueueDataState state)
@@ -194,9 +179,6 @@ ch_device_queue_count_in_state (ChDeviceQueue *device_queue,
 	return cnt;
 }
 
-/**
- * ch_device_queue_process_write_command_cb:
- **/
 static void
 ch_device_queue_process_write_command_cb (GObject *source,
 					  GAsyncResult *res,
@@ -427,9 +409,6 @@ typedef struct {
 	gboolean	 ret;
 } ChDeviceQueueSyncHelper;
 
-/**
- * ch_device_queue_process_finish_cb:
- **/
 static void
 ch_device_queue_process_finish_cb (GObject *source,
 				   GAsyncResult *res,
@@ -487,9 +466,6 @@ ch_device_queue_process (ChDeviceQueue	*device_queue,
 
 /**********************************************************************/
 
-/**
- * ch_device_queue_add_internal:
- **/
 static void
 ch_device_queue_add_internal (ChDeviceQueue		*device_queue,
 			      GUsbDevice		*device,
@@ -687,9 +663,6 @@ ch_device_queue_set_multiplier (ChDeviceQueue *device_queue,
 			     0);
 }
 
-/**
- * ch_device_queue_buffer_uint16_from_le_cb:
- **/
 static gboolean
 ch_device_queue_buffer_uint16_from_le_cb (guint8 *output_buffer,
 					  gsize output_buffer_size,
@@ -710,9 +683,6 @@ ch_device_queue_buffer_uint16_from_le_cb (guint8 *output_buffer,
 	return TRUE;
 }
 
-/**
- * ch_device_queue_buffer_uint32_from_le_cb:
- **/
 static gboolean
 ch_device_queue_buffer_uint32_from_le_cb (guint8 *output_buffer,
 					  gsize output_buffer_size,
@@ -868,9 +838,6 @@ typedef struct {
 	guint16		*micro;
 } ChDeviceQueueGetFirmwareVerHelper;
 
-/**
- * ch_device_queue_buffer_to_firmware_ver_cb:
- **/
 static gboolean
 ch_device_queue_buffer_to_firmware_ver_cb (guint8 *output_buffer,
 					   gsize output_buffer_size,
@@ -950,9 +917,6 @@ typedef struct {
 	gchar		*description;
 } ChDeviceQueueGetCalibrationHelper;
 
-/**
- * ch_device_queue_buffer_to_get_calibration_cb:
- **/
 static gboolean
 ch_device_queue_buffer_to_get_calibration_cb (guint8 *output_buffer,
 					      gsize output_buffer_size,
@@ -1379,9 +1343,6 @@ ch_device_queue_clear_calibration (ChDeviceQueue *device_queue,
 			     0);
 }
 
-/**
- * ch_device_queue_buffer_to_double_cb:
- **/
 static gboolean
 ch_device_queue_buffer_to_double_cb (guint8 *output_buffer,
 				     gsize output_buffer_size,
@@ -2125,9 +2086,6 @@ ch_device_queue_write_eeprom (ChDeviceQueue *device_queue,
 			     0);
 }
 
-/**
- * ch_device_queue_buffer_dark_offsets_cb:
- **/
 static gboolean
 ch_device_queue_buffer_dark_offsets_cb (guint8 *output_buffer,
 					gsize output_buffer_size,
@@ -2260,9 +2218,6 @@ ch_device_queue_take_reading_raw (ChDeviceQueue *device_queue,
 				      NULL);
 }
 
-/**
- * ch_device_queue_buffer_triple_rgb_cb:
- **/
 static gboolean
 ch_device_queue_buffer_triple_rgb_cb (guint8 *output_buffer,
 				      gsize output_buffer_size,
@@ -2328,9 +2283,6 @@ ch_device_queue_take_readings (ChDeviceQueue *device_queue,
 				      NULL);
 }
 
-/**
- * ch_device_queue_buffer_triple_xyz_cb:
- **/
 static gboolean
 ch_device_queue_buffer_triple_xyz_cb (guint8 *output_buffer,
 				      gsize output_buffer_size,
@@ -2423,9 +2375,6 @@ ch_device_queue_reset (ChDeviceQueue *device_queue,
 			     0);
 }
 
-/**
- * ch_device_queue_calculate_checksum:
- **/
 static guint8
 ch_device_queue_calculate_checksum (const guint8 *data,
 				    gsize len)
@@ -2484,9 +2433,6 @@ typedef struct {
 	gsize		 len;
 } ChDeviceQueueReadFlashHelper;
 
-/**
- * ch_device_queue_buffer_read_flash_cb:
- **/
 static gboolean
 ch_device_queue_buffer_read_flash_cb (guint8 *output_buffer,
 				      gsize output_buffer_size,
@@ -2571,9 +2517,6 @@ ch_device_queue_read_flash (ChDeviceQueue *device_queue,
 				      g_free);
 }
 
-/**
- * ch_device_queue_buffer_verify_flash_cb:
- **/
 static gboolean
 ch_device_queue_buffer_verify_flash_cb (guint8 *output_buffer,
 					gsize output_buffer_size,
@@ -3049,9 +2992,6 @@ ch_device_queue_set_measure_mode (ChDeviceQueue *device_queue,
 			     0);
 }
 
-/**
- * ch_device_queue_write_sram_internal:
- **/
 static void
 ch_device_queue_write_sram_internal (ChDeviceQueue *device_queue,
 				     GUsbDevice *device,
@@ -3121,9 +3061,6 @@ ch_device_queue_write_sram (ChDeviceQueue *device_queue,
 	} while (idx < len);
 }
 
-/**
- * ch_device_queue_read_sram_internal:
- **/
 static void
 ch_device_queue_read_sram_internal (ChDeviceQueue *device_queue,
 				    GUsbDevice *device,
@@ -3194,9 +3131,6 @@ ch_device_queue_read_sram (ChDeviceQueue *device_queue,
 
 /**********************************************************************/
 
-/**
- * ch_device_queue_class_init:
- **/
 static void
 ch_device_queue_class_init (ChDeviceQueueClass *klass)
 {
@@ -3235,9 +3169,6 @@ ch_device_queue_class_init (ChDeviceQueueClass *klass)
 			      G_TYPE_NONE, 1, G_TYPE_UINT);
 }
 
-/**
- * ch_device_queue_init:
- **/
 static void
 ch_device_queue_init (ChDeviceQueue *device_queue)
 {
@@ -3249,9 +3180,6 @@ ch_device_queue_init (ChDeviceQueue *device_queue)
 								    NULL);
 }
 
-/**
- * ch_device_queue_finalize:
- **/
 static void
 ch_device_queue_finalize (GObject *object)
 {

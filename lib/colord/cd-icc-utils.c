@@ -38,9 +38,6 @@ typedef struct {
 	cmsFloat32Number	*data;
 } CdIccUtilsGamutCheckHelper;
 
-/**
- * cd_icc_utils_get_coverage_sample_cb:
- **/
 static cmsInt32Number
 cd_icc_utils_get_coverage_sample_cb (const cmsFloat32Number in[],
 				     cmsFloat32Number out[],
@@ -53,9 +50,6 @@ cd_icc_utils_get_coverage_sample_cb (const cmsFloat32Number in[],
 	return 1;
 }
 
-/**
- * cd_icc_utils_get_coverage_calc:
- **/
 static gboolean
 cd_icc_utils_get_coverage_calc (CdIcc *icc,
 				CdIcc *icc_reference,

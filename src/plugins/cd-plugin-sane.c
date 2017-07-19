@@ -29,18 +29,12 @@ struct CdPluginPrivate {
 	gboolean		 scan_in_progress;
 };
 
-/**
- * cd_plugin_get_description:
- */
 const gchar *
 cd_plugin_get_description (void)
 {
 	return "Add and remove scanner devices using SANE";
 }
 
-/**
- * cd_plugin_config_enabled:
- */
 gboolean
 cd_plugin_config_enabled (void)
 {
@@ -99,9 +93,6 @@ cd_plugin_config_enabled_sane_devices(CdPluginPrivate *priv)
 }
 
 
-/**
- * cd_plugin_uevent_cb:
- **/
 static void
 cd_plugin_uevent_cb (GUdevClient *udev_client,
 		     const gchar *action,
@@ -114,9 +105,6 @@ cd_plugin_uevent_cb (GUdevClient *udev_client,
 	}
 }
 
-/**
- * cd_plugin_coldplug:
- */
 void
 cd_plugin_coldplug (CdPlugin *plugin)
 {
@@ -127,9 +115,6 @@ cd_plugin_coldplug (CdPlugin *plugin)
 			  G_CALLBACK (cd_plugin_uevent_cb), plugin);
 }
 
-/**
- * cd_plugin_initialize:
- */
 void
 cd_plugin_initialize (CdPlugin *plugin)
 {
@@ -141,9 +126,6 @@ cd_plugin_initialize (CdPlugin *plugin)
 	plugin->priv->scan_in_progress = FALSE;
 }
 
-/**
- * cd_plugin_destroy:
- */
 void
 cd_plugin_destroy (CdPlugin *plugin)
 {

@@ -640,9 +640,6 @@ osp_device_get_irradiance_cal (GUsbDevice *device, guint *length, GError **error
 	return coefs;
 }
 
-/**
- * osp_device_take_spectrum_internal:
- **/
 static CdSpectrum *
 osp_device_take_spectrum_internal (GUsbDevice *device,
 				   guint64 sample_duration,

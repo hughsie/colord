@@ -72,9 +72,6 @@ cd_dom_error_quark (void)
 	return quark;
 }
 
-/**
- * cd_dom_print_node_cb:
- **/
 static gboolean
 cd_dom_print_node_cb (GNode *node, gpointer user_data)
 {
@@ -123,9 +120,6 @@ cd_dom_to_string (CdDom *dom)
 	return g_string_free (string, FALSE);
 }
 
-/**
- * cd_dom_start_element_cb:
- **/
 static void
 cd_dom_start_element_cb (GMarkupParseContext *context,
 			 const gchar         *element_name,
@@ -160,9 +154,6 @@ cd_dom_start_element_cb (GMarkupParseContext *context,
 	priv->current = new;
 }
 
-/**
- * cd_dom_end_element_cb:
- **/
 static void
 cd_dom_end_element_cb (GMarkupParseContext *context,
 		       const gchar         *element_name,
@@ -174,9 +165,6 @@ cd_dom_end_element_cb (GMarkupParseContext *context,
 	priv->current = priv->current->parent;
 }
 
-/**
- * cd_dom_text_cb:
- **/
 static void
 cd_dom_text_cb (GMarkupParseContext *context,
 		const gchar         *text,
@@ -248,9 +236,6 @@ cd_dom_parse_xml_data (CdDom *dom,
 	return TRUE;
 }
 
-/**
- * cd_dom_get_child_node:
- **/
 static GNode *
 cd_dom_get_child_node (const GNode *root, const gchar *name)
 {
@@ -608,9 +593,6 @@ cd_dom_get_node_localized (const GNode *node, const gchar *key)
 	return hash;
 }
 
-/**
- * cd_dom_destroy_node_cb:
- **/
 static gboolean
 cd_dom_destroy_node_cb (GNode *node, gpointer user_data)
 {
@@ -624,9 +606,6 @@ cd_dom_destroy_node_cb (GNode *node, gpointer user_data)
 	return FALSE;
 }
 
-/**
- * cd_dom_class_init:
- */
 static void
 cd_dom_class_init (CdDomClass *klass)
 {
@@ -634,9 +613,6 @@ cd_dom_class_init (CdDomClass *klass)
 	object_class->finalize = cd_dom_finalize;
 }
 
-/**
- * cd_dom_init:
- */
 static void
 cd_dom_init (CdDom *dom)
 {
@@ -645,9 +621,6 @@ cd_dom_init (CdDom *dom)
 	priv->current = priv->root;
 }
 
-/**
- * cd_dom_finalize:
- */
 static void
 cd_dom_finalize (GObject *object)
 {

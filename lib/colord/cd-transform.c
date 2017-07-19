@@ -96,9 +96,6 @@ cd_transform_error_quark (void)
 	return quark;
 }
 
-/**
- * cd_transform_invalidate:
- **/
 static void
 cd_transform_invalidate (CdTransform *transform)
 {
@@ -449,9 +446,6 @@ const struct {
 	{ 0,				CD_RENDERING_INTENT_LAST }
 };
 
-/**
- * cd_transform_get_bpp:
- **/
 static guint
 cd_transform_get_bpp (CdPixelFormat format)
 {
@@ -469,9 +463,6 @@ cd_transform_get_bpp (CdPixelFormat format)
 	}
 }
 
-/**
- * cd_transform_setup:
- **/
 static gboolean
 cd_transform_setup (CdTransform *transform, GError **error)
 {
@@ -586,9 +577,6 @@ typedef struct {
 	guint	 rows_to_process;
 } CdTransformJob;
 
-/**
- * cd_transform_process_func:
- **/
 static void
 cd_transform_process_func (gpointer data, gpointer user_data)
 {
@@ -609,9 +597,6 @@ cd_transform_process_func (gpointer data, gpointer user_data)
 	g_slice_free (CdTransformJob, job);
 }
 
-/**
- * cd_transform_set_max_threads_default:
- **/
 static gboolean
 cd_transform_set_max_threads_default (CdTransform *transform, GError **error)
 {
@@ -769,9 +754,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_transform_get_property:
- **/
 static void
 cd_transform_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
@@ -806,9 +788,6 @@ cd_transform_get_property (GObject *object, guint prop_id, GValue *value, GParam
 	}
 }
 
-/**
- * cd_transform_set_property:
- **/
 static void
 cd_transform_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
@@ -841,9 +820,6 @@ cd_transform_set_property (GObject *object, guint prop_id, const GValue *value, 
 	}
 }
 
-/**
- * cd_transform_class_init:
- */
 static void
 cd_transform_class_init (CdTransformClass *klass)
 {
@@ -911,9 +887,6 @@ cd_transform_class_init (CdTransformClass *klass)
 	g_object_class_install_property (object_class, PROP_ABSTRACT_ICC, pspec);
 }
 
-/**
- * cd_transform_init:
- */
 static void
 cd_transform_init (CdTransform *transform)
 {
@@ -926,9 +899,6 @@ cd_transform_init (CdTransform *transform)
 	priv->max_threads = 1;
 }
 
-/**
- * cd_transform_finalize:
- */
 static void
 cd_transform_finalize (GObject *object)
 {

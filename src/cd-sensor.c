@@ -34,9 +34,6 @@ static void cd_sensor_finalize			 (GObject *object);
 
 #define GET_PRIVATE(o) (cd_sensor_get_instance_private (o))
 
-/**
- * CdSensorIface:
- */
 typedef struct {
 	void		 (*get_sample_async)	(CdSensor		*sensor,
 						 CdSensorCap		 cap,
@@ -83,11 +80,6 @@ typedef struct {
 						 GError			**error);
 } CdSensorIface;
 
-/**
- * CdSensorPrivate:
- *
- * Private #CdSensor data
- **/
 typedef struct
 {
 	gchar				*id;
@@ -136,9 +128,6 @@ enum {
 
 G_DEFINE_TYPE_WITH_PRIVATE (CdSensor, cd_sensor, G_TYPE_OBJECT)
 
-/**
- * cd_sensor_error_quark:
- **/
 GQuark
 cd_sensor_error_quark (void)
 {
@@ -155,9 +144,6 @@ cd_sensor_error_quark (void)
 	return quark;
 }
 
-/**
- * cd_sensor_get_object_path:
- **/
 const gchar *
 cd_sensor_get_object_path (CdSensor *sensor)
 {
@@ -166,9 +152,6 @@ cd_sensor_get_object_path (CdSensor *sensor)
 	return priv->object_path;
 }
 
-/**
- * cd_sensor_get_id:
- **/
 const gchar *
 cd_sensor_get_id (CdSensor *sensor)
 {
@@ -177,9 +160,6 @@ cd_sensor_get_id (CdSensor *sensor)
 	return priv->id;
 }
 
-/**
- * cd_sensor_set_id:
- **/
 static void
 cd_sensor_set_id (CdSensor *sensor, const gchar *id)
 {
@@ -198,9 +178,6 @@ cd_sensor_set_id (CdSensor *sensor, const gchar *id)
 	priv->id = g_strdup (id);
 }
 
-/**
- * cd_sensor_dbus_emit_property_changed:
- **/
 static void
 cd_sensor_dbus_emit_property_changed (CdSensor *sensor,
 				      const gchar *property_name,
@@ -236,11 +213,6 @@ cd_sensor_dbus_emit_property_changed (CdSensor *sensor,
 	g_variant_builder_clear (&invalidated_builder);
 }
 
-/**
- * cd_sensor_button_pressed:
- *
- * Causes the ::button-pressed signal to be fired.
- **/
 void
 cd_sensor_button_pressed (CdSensor *sensor)
 {
@@ -298,9 +270,6 @@ cd_sensor_set_kind (CdSensor *sensor, CdSensorKind kind)
 					      g_variant_new_uint32 (kind));
 }
 
-/**
- * cd_sensor_get_kind:
- **/
 CdSensorKind
 cd_sensor_get_kind (CdSensor *sensor)
 {
@@ -387,9 +356,6 @@ cd_sensor_load (CdSensor *sensor, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_sensor_set_locked:
- **/
 static void
 cd_sensor_set_locked (CdSensor *sensor, gboolean locked)
 {
@@ -482,9 +448,6 @@ typedef struct {
 	CdSensorState	 state;
 } CdSensorIdleHelper;
 
-/**
- * cd_sensor_set_state_in_idle_cb:
- **/
 static gboolean
 cd_sensor_set_state_in_idle_cb (gpointer user_data)
 {
@@ -521,9 +484,6 @@ cd_sensor_set_state_in_idle (CdSensor *sensor, CdSensorState state)
 		g_idle_add (cd_sensor_set_state_in_idle_cb, helper);
 }
 
-/**
- * cd_sensor_set_mode:
- **/
 void
 cd_sensor_set_mode (CdSensor *sensor, CdSensorCap mode)
 {
@@ -534,9 +494,6 @@ cd_sensor_set_mode (CdSensor *sensor, CdSensorCap mode)
 					      g_variant_new_string (cd_sensor_cap_to_string (mode)));
 }
 
-/**
- * cd_sensor_get_mode:
- **/
 CdSensorCap
 cd_sensor_get_mode (CdSensor *sensor)
 {
@@ -589,9 +546,6 @@ cd_sensor_dump (CdSensor *sensor, GString *data, GError **error)
 	return priv->desc->dump_device (sensor, data, error);
 }
 
-/**
- * cd_sensor_get_sample_cb:
- **/
 static void
 cd_sensor_get_sample_cb (GObject *source_object,
 			 GAsyncResult *res,
@@ -620,9 +574,6 @@ cd_sensor_get_sample_cb (GObject *source_object,
 	g_dbus_method_invocation_return_value (invocation, result);
 }
 
-/**
- * cd_sensor_get_spectrum_cb:
- **/
 static void
 cd_sensor_get_spectrum_cb (GObject *source_object,
 			   GAsyncResult *res,
@@ -666,9 +617,6 @@ cd_sensor_get_spectrum_cb (GObject *source_object,
 	g_dbus_method_invocation_return_value (invocation, result);
 }
 
-/**
- * cd_sensor_set_options_cb:
- **/
 static void
 cd_sensor_set_options_cb (GObject *source_object,
 			  GAsyncResult *res,
@@ -689,9 +637,6 @@ cd_sensor_set_options_cb (GObject *source_object,
 	g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-/**
- * cd_sensor_lock_cb:
- **/
 static void
 cd_sensor_lock_cb (GObject *source_object,
 		   GAsyncResult *res,
@@ -720,9 +665,6 @@ cd_sensor_lock_cb (GObject *source_object,
 	g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-/**
- * cd_sensor_unlock_cb:
- **/
 static void
 cd_sensor_unlock_cb (GObject *source_object,
 		     GAsyncResult *res,
@@ -754,9 +696,6 @@ cd_sensor_unlock_cb (GObject *source_object,
 	g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
-/**
- * cd_sensor_unlock_quietly_cb:
- **/
 static void
 cd_sensor_unlock_quietly_cb (GObject *source_object,
 			     GAsyncResult *res,
@@ -783,9 +722,6 @@ cd_sensor_unlock_quietly_cb (GObject *source_object,
 	cd_sensor_set_locked (sensor, FALSE);
 }
 
-/**
- * cd_sensor_name_vanished_cb:
- **/
 static void
 cd_sensor_name_vanished_cb (GDBusConnection *connection,
 			     const gchar *name,
@@ -811,9 +747,6 @@ out:
 	priv->watcher_id = 0;
 }
 
-/**
- * cd_sensor_dbus_method_call:
- **/
 static void
 cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
@@ -1119,9 +1052,6 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	g_critical ("failed to process sensor method %s", method_name);
 }
 
-/**
- * cd_sensor_get_options_as_variant:
- **/
 static GVariant *
 cd_sensor_get_options_as_variant (CdSensor *sensor)
 {
@@ -1147,9 +1077,6 @@ cd_sensor_get_options_as_variant (CdSensor *sensor)
 	return g_variant_builder_end (&builder);
 }
 
-/**
- * cd_sensor_get_metadata_as_variant:
- **/
 static GVariant *
 cd_sensor_get_metadata_as_variant (CdSensor *sensor)
 {
@@ -1175,9 +1102,6 @@ cd_sensor_get_metadata_as_variant (CdSensor *sensor)
 	return g_variant_builder_end (&builder);
 }
 
-/**
- * cd_sensor_get_nullable_for_string:
- **/
 static GVariant *
 cd_sensor_get_nullable_for_string (const gchar *value)
 {
@@ -1186,9 +1110,6 @@ cd_sensor_get_nullable_for_string (const gchar *value)
 	return g_variant_new_string (value);
 }
 
-/**
- * cd_sensor_get_variant_for_caps:
- **/
 static GVariant *
 cd_sensor_get_variant_for_caps (guint64 caps)
 {
@@ -1205,9 +1126,6 @@ cd_sensor_get_variant_for_caps (guint64 caps)
 	return g_variant_new ("as", &builder);
 }
 
-/**
- * cd_sensor_dbus_get_property:
- **/
 static GVariant *
 cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 			     const gchar *object_path, const gchar *interface_name,
@@ -1253,9 +1171,6 @@ cd_sensor_dbus_get_property (GDBusConnection *connection_, const gchar *sender,
 	return NULL;
 }
 
-/**
- * cd_sensor_register_object:
- **/
 gboolean
 cd_sensor_register_object (CdSensor *sensor,
 			   GDBusConnection *connection,
@@ -1294,9 +1209,6 @@ cd_sensor_register_object (CdSensor *sensor,
 	return TRUE;
 }
 
-/**
- * cd_sensor_get_device_path:
- **/
 const gchar *
 cd_sensor_get_device_path (CdSensor *sensor)
 {
@@ -1308,9 +1220,6 @@ cd_sensor_get_device_path (CdSensor *sensor)
 #endif
 }
 
-/**
- * cd_sensor_get_usb_path:
- **/
 const gchar *
 cd_sensor_get_usb_path (CdSensor *sensor)
 {
@@ -1319,9 +1228,6 @@ cd_sensor_get_usb_path (CdSensor *sensor)
 }
 
 #ifdef HAVE_GUSB
-/**
- * cd_sensor_open_usb_device:
- **/
 GUsbDevice *
 cd_sensor_open_usb_device (CdSensor *sensor,
 			   gint config,
@@ -1360,9 +1266,6 @@ cd_sensor_open_usb_device (CdSensor *sensor,
 }
 #endif
 
-/**
- * cd_sensor_add_cap:
- **/
 void
 cd_sensor_add_cap (CdSensor *sensor, CdSensorCap cap)
 {
@@ -1375,9 +1278,6 @@ cd_sensor_add_cap (CdSensor *sensor, CdSensorCap cap)
 }
 
 #ifdef HAVE_UDEV
-/**
- * cd_sensor_get_device:
- **/
 GUdevDevice *
 cd_sensor_get_device (CdSensor *sensor)
 {
@@ -1385,9 +1285,6 @@ cd_sensor_get_device (CdSensor *sensor)
 	return priv->device;
 }
 
-/**
- * cd_sensor_set_model:
- **/
 static void
 cd_sensor_set_model (CdSensor *sensor,
 		     const gchar *model)
@@ -1398,9 +1295,6 @@ cd_sensor_set_model (CdSensor *sensor,
 	priv->model = g_strdup (model);
 }
 
-/**
- * cd_sensor_set_from_device:
- **/
 gboolean
 cd_sensor_set_from_device (CdSensor *sensor,
 			   GUdevDevice *device,
@@ -1514,9 +1408,6 @@ cd_sensor_set_from_device (CdSensor *sensor,
 }
 #endif
 
-/**
- * cd_sensor_set_index:
- **/
 void
 cd_sensor_set_index (CdSensor *sensor,
 		     guint idx)
@@ -1529,9 +1420,6 @@ cd_sensor_set_index (CdSensor *sensor,
 	cd_sensor_set_id (sensor, id);
 }
 
-/**
- * cd_sensor_add_option:
- **/
 void
 cd_sensor_add_option (CdSensor *sensor,
 		      const gchar *key,
@@ -1574,9 +1462,6 @@ cd_sensor_debug_data (CdSensorDebugMode debug_mode,
 	g_print ("%c[%dm\n", 0x1B, 0);
 }
 
-/**
- * cd_sensor_get_property:
- **/
 static void
 cd_sensor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
@@ -1593,9 +1478,6 @@ cd_sensor_get_property (GObject *object, guint prop_id, GValue *value, GParamSpe
 	}
 }
 
-/**
- * cd_sensor_set_property:
- **/
 static void
 cd_sensor_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
@@ -1645,9 +1527,6 @@ cd_sensor_set_property (GObject *object, guint prop_id, const GValue *value, GPa
 	}
 }
 
-/**
- * cd_sensor_class_init:
- **/
 static void
 cd_sensor_class_init (CdSensorClass *klass)
 {
@@ -1730,9 +1609,6 @@ cd_sensor_class_init (CdSensorClass *klass)
 	g_object_class_install_property (object_class, PROP_LOCKED, pspec);
 }
 
-/**
- * cd_sensor_init:
- **/
 static void
 cd_sensor_init (CdSensor *sensor)
 {
@@ -1752,9 +1628,6 @@ cd_sensor_init (CdSensor *sensor)
 						g_free);
 }
 
-/**
- * cd_sensor_finalize:
- **/
 static void
 cd_sensor_finalize (GObject *object)
 {
@@ -1791,9 +1664,6 @@ cd_sensor_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_sensor_parent_class)->finalize (object);
 }
 
-/**
- * cd_sensor_new:
- **/
 CdSensor *
 cd_sensor_new (void)
 {

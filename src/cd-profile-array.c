@@ -30,11 +30,6 @@ static void     cd_profile_array_finalize	(GObject     *object);
 
 #define GET_PRIVATE(o) (cd_profile_array_get_instance_private (o))
 
-/**
- * CdProfileArrayPrivate:
- *
- * Private #CdProfileArray data
- **/
 typedef struct
 {
 	GPtrArray			*array;
@@ -44,9 +39,6 @@ G_DEFINE_TYPE_WITH_PRIVATE (CdProfileArray, cd_profile_array, G_TYPE_OBJECT)
 
 static gpointer cd_profile_array_object = NULL;
 
-/**
- * cd_profile_array_add:
- **/
 void
 cd_profile_array_add (CdProfileArray *profile_array, CdProfile *profile)
 {
@@ -56,9 +48,6 @@ cd_profile_array_add (CdProfileArray *profile_array, CdProfile *profile)
 	g_ptr_array_add (priv->array, g_object_ref (profile));
 }
 
-/**
- * cd_profile_array_remove:
- **/
 void
 cd_profile_array_remove (CdProfileArray *profile_array, CdProfile *profile)
 {
@@ -68,9 +57,6 @@ cd_profile_array_remove (CdProfileArray *profile_array, CdProfile *profile)
 	g_ptr_array_remove (priv->array, profile);
 }
 
-/**
- * cd_profile_array_get_by_id_owner:
- **/
 CdProfile *
 cd_profile_array_get_by_id_owner (CdProfileArray *profile_array,
 				  const gchar *id,
@@ -96,9 +82,6 @@ cd_profile_array_get_by_id_owner (CdProfileArray *profile_array,
 	return NULL;
 }
 
-/**
- * cd_profile_array_get_by_filename:
- **/
 static CdProfile *
 cd_profile_array_get_by_basename (CdProfileArray *profile_array,
 				  const gchar *filename)
@@ -124,9 +107,6 @@ cd_profile_array_get_by_basename (CdProfileArray *profile_array,
 	return profile;
 }
 
-/**
- * cd_profile_array_get_by_filename:
- **/
 CdProfile *
 cd_profile_array_get_by_filename (CdProfileArray *profile_array,
 				  const gchar *filename)
@@ -150,9 +130,6 @@ cd_profile_array_get_by_filename (CdProfileArray *profile_array,
 	return NULL;
 }
 
-/**
- * cd_profile_array_get_by_property:
- **/
 CdProfile *
 cd_profile_array_get_by_property (CdProfileArray *profile_array,
 				  const gchar *key,
@@ -175,9 +152,6 @@ cd_profile_array_get_by_property (CdProfileArray *profile_array,
 	return NULL;
 }
 
-/**
- * cd_profile_array_get_by_kind:
- **/
 GPtrArray *
 cd_profile_array_get_by_kind (CdProfileArray *profile_array,
 			      CdProfileKind kind)
@@ -197,9 +171,6 @@ cd_profile_array_get_by_kind (CdProfileArray *profile_array,
 	return array;
 }
 
-/**
- * cd_profile_array_get_by_metadata:
- **/
 GPtrArray *
 cd_profile_array_get_by_metadata (CdProfileArray *profile_array,
 				  const gchar *key,
@@ -224,9 +195,6 @@ cd_profile_array_get_by_metadata (CdProfileArray *profile_array,
 	return array;
 }
 
-/**
- * cd_profile_array_get_by_object_path:
- **/
 CdProfile *
 cd_profile_array_get_by_object_path (CdProfileArray *profile_array,
 				     const gchar *object_path)
@@ -245,9 +213,6 @@ cd_profile_array_get_by_object_path (CdProfileArray *profile_array,
 	return profile;
 }
 
-/**
- * cd_profile_array_class_init:
- **/
 GVariant *
 cd_profile_array_get_variant (CdProfileArray *profile_array)
 {
@@ -269,9 +234,6 @@ cd_profile_array_get_variant (CdProfileArray *profile_array)
 				    priv->array->len);
 }
 
-/**
- * cd_profile_array_class_init:
- **/
 static void
 cd_profile_array_class_init (CdProfileArrayClass *klass)
 {
@@ -279,9 +241,6 @@ cd_profile_array_class_init (CdProfileArrayClass *klass)
 	object_class->finalize = cd_profile_array_finalize;
 }
 
-/**
- * cd_profile_array_init:
- **/
 static void
 cd_profile_array_init (CdProfileArray *profile_array)
 {
@@ -289,9 +248,6 @@ cd_profile_array_init (CdProfileArray *profile_array)
 	priv->array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 }
 
-/**
- * cd_profile_array_finalize:
- **/
 static void
 cd_profile_array_finalize (GObject *object)
 {
@@ -303,9 +259,6 @@ cd_profile_array_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_profile_array_parent_class)->finalize (object);
 }
 
-/**
- * cd_profile_array_new:
- **/
 CdProfileArray *
 cd_profile_array_new (void)
 {

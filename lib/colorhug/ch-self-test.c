@@ -437,9 +437,6 @@ ch_test_math_multiply_func (void)
 	g_assert_cmpint (rc, ==, CH_ERROR_OVERFLOW_MULTIPLY);
 }
 
-/**
- * ch_client_get_default:
- **/
 static GUsbDevice *
 ch_client_get_default (GError **error)
 {
@@ -1231,11 +1228,6 @@ out:
 	}
 }
 
-/**
- * ch_test_firmware_func:
- *
- * This tests the firmware detection.
- */
 static void
 ch_test_firmware_func (void)
 {

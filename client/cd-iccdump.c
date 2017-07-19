@@ -31,9 +31,6 @@
 
 static gint lcms_error_code = 0;
 
-/**
- * cd_fix_profile_error_cb:
- **/
 static void
 cd_fix_profile_error_cb (cmsContext ContextID,
 			 cmsUInt32Number errorcode,
@@ -45,9 +42,6 @@ cd_fix_profile_error_cb (cmsContext ContextID,
 	lcms_error_code = errorcode;
 }
 
-/**
- * cd_iccdump_print_file:
- **/
 static gboolean
 cd_iccdump_print_file (const gchar *filename, GError **error)
 {
@@ -67,9 +61,6 @@ cd_iccdump_print_file (const gchar *filename, GError **error)
 	return TRUE;
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char **argv)
 {

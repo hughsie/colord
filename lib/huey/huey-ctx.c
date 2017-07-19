@@ -448,9 +448,6 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 	return cd_color_xyz_dup (&color_result);
 }
 
-/**
- * huey_ctx_get_property:
- **/
 static void
 huey_ctx_get_property (GObject *object,
 		       guint prop_id,
@@ -471,9 +468,6 @@ huey_ctx_get_property (GObject *object,
 }
 
 
-/**
- * huey_ctx_set_property:
- **/
 static void
 huey_ctx_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
@@ -530,9 +524,6 @@ huey_ctx_init (HueyCtx *ctx)
 	huey_ctx_error_quark ();
 }
 
-/**
- * huey_ctx_finalize:
- **/
 static void
 huey_ctx_finalize (GObject *object)
 {

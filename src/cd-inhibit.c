@@ -30,11 +30,6 @@ static void     cd_inhibit_finalize	(GObject     *object);
 
 #define GET_PRIVATE(o) (cd_inhibit_get_instance_private (o))
 
-/**
- * CdInhibitPrivate:
- *
- * Private #CdInhibit data
- **/
 typedef struct
 {
 	GPtrArray			*array;
@@ -55,9 +50,6 @@ static guint signals [SIGNAL_LAST] = { 0 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CdInhibit, cd_inhibit, G_TYPE_OBJECT)
 
-/**
- * cd_inhibit_valid:
- **/
 gboolean
 cd_inhibit_valid (CdInhibit *inhibit)
 {
@@ -66,9 +58,6 @@ cd_inhibit_valid (CdInhibit *inhibit)
 	return priv->array->len == 0;
 }
 
-/**
- * cd_inhibit_get_bus_names:
- **/
 gchar **
 cd_inhibit_get_bus_names (CdInhibit *inhibit)
 {
@@ -86,9 +75,6 @@ cd_inhibit_get_bus_names (CdInhibit *inhibit)
 	return bus_names;
 }
 
-/**
- * cd_inhibit_valid:
- **/
 static void
 cd_inhibit_item_free (CdInhibitItem *item)
 {
@@ -98,9 +84,6 @@ cd_inhibit_item_free (CdInhibitItem *item)
 	g_free (item);
 }
 
-/**
- * cd_inhibit_get_by_sender:
- **/
 static CdInhibitItem *
 cd_inhibit_get_by_sender (CdInhibit *inhibit,
 			  const gchar *sender)
@@ -118,9 +101,6 @@ cd_inhibit_get_by_sender (CdInhibit *inhibit,
 	return NULL;
 }
 
-/**
- * cd_inhibit_remove:
- **/
 gboolean
 cd_inhibit_remove (CdInhibit *inhibit, const gchar *sender, GError **error)
 {
@@ -153,9 +133,6 @@ cd_inhibit_remove (CdInhibit *inhibit, const gchar *sender, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_inhibit_name_vanished_cb:
- **/
 static void
 cd_inhibit_name_vanished_cb (GDBusConnection *connection,
 			     const gchar *name,
@@ -173,9 +150,6 @@ cd_inhibit_name_vanished_cb (GDBusConnection *connection,
 	}
 }
 
-/**
- * cd_inhibit_add:
- **/
 gboolean
 cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 {
@@ -212,9 +186,6 @@ cd_inhibit_add (CdInhibit *inhibit, const gchar *sender, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_inhibit_class_init:
- **/
 static void
 cd_inhibit_class_init (CdInhibitClass *klass)
 {
@@ -229,9 +200,6 @@ cd_inhibit_class_init (CdInhibitClass *klass)
 			      G_TYPE_NONE, 0);
 }
 
-/**
- * cd_inhibit_init:
- **/
 static void
 cd_inhibit_init (CdInhibit *inhibit)
 {
@@ -239,9 +207,6 @@ cd_inhibit_init (CdInhibit *inhibit)
 	priv->array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_inhibit_item_free);
 }
 
-/**
- * cd_inhibit_finalize:
- **/
 static void
 cd_inhibit_finalize (GObject *object)
 {
@@ -253,9 +218,6 @@ cd_inhibit_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_inhibit_parent_class)->finalize (object);
 }
 
-/**
- * cd_inhibit_new:
- **/
 CdInhibit *
 cd_inhibit_new (void)
 {

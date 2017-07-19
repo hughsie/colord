@@ -30,11 +30,6 @@ static void     cd_device_array_finalize	(GObject     *object);
 
 #define GET_PRIVATE(o) (cd_device_array_get_instance_private (o))
 
-/**
- * CdDeviceArrayPrivate:
- *
- * Private #CdDeviceArray data
- **/
 typedef struct
 {
 	GPtrArray			*array;
@@ -44,9 +39,6 @@ G_DEFINE_TYPE_WITH_PRIVATE (CdDeviceArray, cd_device_array, G_TYPE_OBJECT)
 
 static gpointer cd_device_array_object = NULL;
 
-/**
- * cd_device_array_add:
- **/
 void
 cd_device_array_add (CdDeviceArray *device_array, CdDevice *device)
 {
@@ -59,9 +51,6 @@ cd_device_array_add (CdDeviceArray *device_array, CdDevice *device)
 			 g_object_ref (device));
 }
 
-/**
- * cd_device_array_remove:
- **/
 void
 cd_device_array_remove (CdDeviceArray *device_array, CdDevice *device)
 {
@@ -74,9 +63,6 @@ cd_device_array_remove (CdDeviceArray *device_array, CdDevice *device)
 			    device);
 }
 
-/**
- * cd_device_array_get_by_id_owner:
- **/
 CdDevice *
 cd_device_array_get_by_id_owner (CdDeviceArray *device_array,
 				 const gchar *id,
@@ -105,9 +91,6 @@ cd_device_array_get_by_id_owner (CdDeviceArray *device_array,
 	return NULL;
 }
 
-/**
- * cd_device_array_get_by_object_path:
- **/
 CdDevice *
 cd_device_array_get_by_object_path (CdDeviceArray *device_array,
 				     const gchar *object_path)
@@ -125,9 +108,6 @@ cd_device_array_get_by_object_path (CdDeviceArray *device_array,
 	return NULL;
 }
 
-/**
- * cd_device_array_get_by_property:
- **/
 CdDevice *
 cd_device_array_get_by_property (CdDeviceArray *device_array,
 				 const gchar *key,
@@ -148,9 +128,6 @@ cd_device_array_get_by_property (CdDeviceArray *device_array,
 	return NULL;
 }
 
-/**
- * cd_device_array_get_array:
- **/
 GPtrArray *
 cd_device_array_get_array (CdDeviceArray *device_array)
 {
@@ -158,9 +135,6 @@ cd_device_array_get_array (CdDeviceArray *device_array)
 	return g_ptr_array_ref (priv->array);
 }
 
-/**
- * cd_device_array_get_by_kind:
- **/
 GPtrArray *
 cd_device_array_get_by_kind (CdDeviceArray *device_array,
 			     CdDeviceKind kind)
@@ -183,9 +157,6 @@ cd_device_array_get_by_kind (CdDeviceArray *device_array,
 	return array_tmp;
 }
 
-/**
- * cd_device_array_class_init:
- **/
 static void
 cd_device_array_class_init (CdDeviceArrayClass *klass)
 {
@@ -193,9 +164,6 @@ cd_device_array_class_init (CdDeviceArrayClass *klass)
 	object_class->finalize = cd_device_array_finalize;
 }
 
-/**
- * cd_device_array_init:
- **/
 static void
 cd_device_array_init (CdDeviceArray *device_array)
 {
@@ -203,9 +171,6 @@ cd_device_array_init (CdDeviceArray *device_array)
 	priv->array = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
 }
 
-/**
- * cd_device_array_finalize:
- **/
 static void
 cd_device_array_finalize (GObject *object)
 {
@@ -217,9 +182,6 @@ cd_device_array_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_device_array_parent_class)->finalize (object);
 }
 
-/**
- * cd_device_array_new:
- **/
 CdDeviceArray *
 cd_device_array_new (void)
 {

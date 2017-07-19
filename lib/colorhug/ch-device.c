@@ -144,9 +144,6 @@ ch_device_get_mode (GUsbDevice *device)
 	return state;
 }
 
-/**
- * ch_print_data_buffer:
- **/
 static void
 ch_print_data_buffer (const gchar *title,
 		      const guint8 *data,
@@ -198,9 +195,6 @@ ch_device_write_command_finish (GUsbDevice *device,
 	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
-/**
- * ch_device_task_data_free:
- **/
 static void
 ch_device_task_data_free (ChDeviceTaskData *tdata)
 {
@@ -211,9 +205,6 @@ ch_device_task_data_free (ChDeviceTaskData *tdata)
 
 static void ch_device_request_cb (GObject *source_object, GAsyncResult *res, gpointer user_data);
 
-/**
- * ch_device_reply_cb:
- **/
 static void
 ch_device_reply_cb (GObject *source_object,
 		    GAsyncResult *res,
@@ -308,9 +299,6 @@ ch_device_reply_cb (GObject *source_object,
 	g_object_unref (task);
 }
 
-/**
- * ch_device_request_cb:
- **/
 static void
 ch_device_request_cb (GObject *source_object,
 		      GAsyncResult *res,
@@ -346,9 +334,6 @@ ch_device_request_cb (GObject *source_object,
 					       task);
 }
 
-/**
- * ch_device_emulate_cb:
- **/
 static gboolean
 ch_device_emulate_cb (gpointer user_data)
 {
@@ -387,9 +372,6 @@ ch_device_emulate_cb (gpointer user_data)
 #define CH_SENSOR_HID_REPORT_SET		0x09
 #define CH_SENSOR_HID_FEATURE			0x0300
 
-/**
- * ch_device_sensor_hid_set_cb:
- **/
 static void
 ch_device_sensor_hid_set_cb (GObject *source_object,
 			     GAsyncResult *res,
@@ -420,9 +402,6 @@ ch_device_sensor_hid_set_cb (GObject *source_object,
 	g_object_unref (task);
 }
 
-/**
- * ch_device_sensor_hid_report_cb:
- **/
 static void
 ch_device_sensor_hid_report_cb (GObject *source_object,
 				GAsyncResult *res,
@@ -455,9 +434,6 @@ ch_device_sensor_hid_report_cb (GObject *source_object,
 	g_object_unref (task);
 }
 
-/**
- * ch_device_sensor_hid_get_cb:
- **/
 static void
 ch_device_sensor_hid_get_cb (GObject *source_object,
 			     GAsyncResult *res,
@@ -723,9 +699,6 @@ typedef struct {
 	gboolean	 ret;
 } ChDeviceSyncHelper;
 
-/**
- * ch_device_write_command_finish_cb:
- **/
 static void
 ch_device_write_command_finish_cb (GObject *source,
 				   GAsyncResult *res,
@@ -931,9 +904,6 @@ ch_device_get_guid (GUsbDevice *device)
 	return NULL;
 }
 
-/**
- * ch_device_get_protocol_ver:
- **/
 static guint8
 ch_device_get_protocol_ver (GUsbDevice *device)
 {
@@ -954,27 +924,18 @@ ch_device_get_protocol_ver (GUsbDevice *device)
 	return 0x0;
 }
 
-/**
- * ch_offset_float_to_double:
- **/
 static gdouble
 ch_offset_float_to_double (gint32 tmp)
 {
 	return (gdouble) tmp / (gdouble) 0xffff;
 }
 
-/**
- * ch_offset_float_from_double:
- **/
 static gint32
 ch_offset_float_from_double (gdouble tmp)
 {
 	return tmp * 0xffff;
 }
 
-/**
- * ch_device_check_status:
- **/
 static gboolean
 ch_device_check_status (GUsbDevice *device, GCancellable *cancellable, GError **error)
 {
@@ -2185,9 +2146,6 @@ ch_device_open_full (GUsbDevice *device, GCancellable *cancellable, GError **err
 	return FALSE;
 }
 
-/**
- * ch_device_fixup_error:
- **/
 static gboolean
 ch_device_fixup_error (GUsbDevice *device, GCancellable *cancellable, GError **error)
 {

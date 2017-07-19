@@ -66,9 +66,6 @@ set_vcgt_from_data (cmsHPROFILE profile,
 	return ret;
 }
 
-/**
- * cd_util_create_colprof:
- **/
 static gboolean
 cd_util_create_colprof (CdUtilPrivate *priv,
 			CdDom *dom,
@@ -262,9 +259,6 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_util_create_named_color:
- **/
 static gboolean
 cd_util_create_named_color (CdUtilPrivate *priv,
 			    CdDom *dom,
@@ -338,9 +332,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_util_create_x11_gamma:
- **/
 static gboolean
 cd_util_create_x11_gamma (CdUtilPrivate *priv,
 			  CdDom *dom,
@@ -397,11 +388,6 @@ cd_util_create_x11_gamma (CdUtilPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_util_build_srgb_gamma:
- *
- * Values taken from lcms2.
- **/
 static cmsToneCurve *
 cd_util_build_srgb_gamma (void)
 {
@@ -414,9 +400,6 @@ cd_util_build_srgb_gamma (void)
 	return cmsBuildParametricToneCurve (NULL, 4, params);
 }
 
-/**
- * cd_util_build_lstar_gamma:
- **/
 static cmsToneCurve *
 cd_util_build_lstar_gamma (void)
 {
@@ -429,9 +412,6 @@ cd_util_build_lstar_gamma (void)
 	return cmsBuildParametricToneCurve (NULL, 4, params);
 }
 
-/**
- * cd_util_build_rec709_gamma:
- **/
 static cmsToneCurve *
 cd_util_build_rec709_gamma (void)
 {
@@ -444,9 +424,6 @@ cd_util_build_rec709_gamma (void)
 	return cmsBuildParametricToneCurve (NULL, LCMS_CURVE_PLUGIN_TYPE_REC709, params);
 }
 
-/**
- * cd_util_create_standard_space:
- **/
 static gboolean
 cd_util_create_standard_space (CdUtilPrivate *priv,
 			       CdDom *dom,
@@ -582,9 +559,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_util_create_temperature:
- **/
 static gboolean
 cd_util_create_temperature (CdUtilPrivate *priv,
 			    CdDom *dom,
@@ -654,9 +628,6 @@ cd_util_create_temperature (CdUtilPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_util_icc_set_metadata_coverage:
- **/
 static gboolean
 cd_util_icc_set_metadata_coverage (CdIcc *icc, GError **error)
 {
@@ -685,9 +656,6 @@ cd_util_icc_set_metadata_coverage (CdIcc *icc, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_create_from_xml:
- **/
 static gboolean
 cd_util_create_from_xml (CdUtilPrivate *priv,
 			 const gchar *filename,
@@ -791,9 +759,6 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 	return TRUE;
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char **argv)
 {

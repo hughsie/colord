@@ -296,9 +296,6 @@ cd_interp_kind_to_string (CdInterpKind kind)
 	return "unknown";
 }
 
-/**
- * cd_interp_get_property:
- **/
 static void
 cd_interp_get_property (GObject *object,
 			guint prop_id,
@@ -319,9 +316,6 @@ cd_interp_get_property (GObject *object,
 }
 
 
-/**
- * cd_interp_set_property:
- **/
 static void
 cd_interp_set_property (GObject *object,
 			guint prop_id,
@@ -368,9 +362,6 @@ cd_interp_class_init (CdInterpClass *klass)
 							    G_PARAM_READWRITE));
 }
 
-/**
- * cd_interp_init:
- **/
 static void
 cd_interp_init (CdInterp *interp)
 {
@@ -379,9 +370,6 @@ cd_interp_init (CdInterp *interp)
 	priv->y = g_array_new (FALSE, TRUE, sizeof (gdouble));
 }
 
-/**
- * cd_interp_finalize:
- **/
 static void
 cd_interp_finalize (GObject *object)
 {

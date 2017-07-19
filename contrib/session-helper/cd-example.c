@@ -57,9 +57,6 @@ gnome_rr_output_get_gamma_size (GnomeRROutput *output)
 	return (guint) len;
 }
 
-/**
- * cd_example_calib_setup_screen:
- **/
 static gboolean
 cd_example_calib_setup_screen (CdExamplePrivate *priv,
 			       const gchar *name,
@@ -96,9 +93,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_example_calib_set_output_gamma:
- **/
 static gboolean
 cd_example_calib_set_output_gamma (CdExamplePrivate *priv,
 				   GPtrArray *array,
@@ -161,9 +155,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_example_property_changed_cb:
- **/
 static void
 cd_example_property_changed_cb (GDBusProxy *proxy,
 				GVariant *changed_properties,
@@ -198,9 +189,6 @@ typedef enum {
 	CD_MAIN_INTERACTION_CODE_NONE
 } CdMainInteractionCode;
 
-/**
- * cd_example_interaction_required:
- **/
 static void
 cd_example_interaction_required (CdExamplePrivate *priv,
 				 CdMainInteractionCode code,
@@ -235,9 +223,6 @@ cd_example_interaction_required (CdExamplePrivate *priv,
 	gtk_label_set_label (label, message);
 }
 
-/**
- * cd_example_signal_cb:
- **/
 static void
 cd_example_signal_cb (GDBusProxy *proxy,
 		      const gchar *sender_name,
@@ -337,9 +322,6 @@ out:
 		g_variant_unref (dict);
 }
 
-/**
- * cd_example_move_and_resize_window:
- **/
 static gboolean
 cd_example_move_and_resize_window (GtkWindow *window,
 				   CdDevice *device,
@@ -383,18 +365,12 @@ out:
 	return ret;
 }
 
-/**
- * cd_example_window_realize_cb:
- **/
 static void
 cd_example_window_realize_cb (GtkWidget *widget, CdExamplePrivate *priv)
 {
 	gtk_window_fullscreen (GTK_WINDOW (widget));
 }
 
-/**
- * cd_example_window_realize_cb:
- **/
 static gboolean
 cd_example_window_state_cb (GtkWidget *widget,
 			    GdkEvent *event,
@@ -421,9 +397,6 @@ cd_example_window_state_cb (GtkWidget *widget,
 	return TRUE;
 }
 
-/**
- * cd_example_button_start_cb:
- **/
 static void
 cd_example_button_start_cb (GtkWidget *widget, CdExamplePrivate *priv)
 {
@@ -447,18 +420,12 @@ out:
 		g_variant_unref (retval);
 }
 
-/**
- * cd_example_button_cancel_cb:
- **/
 static void
 cd_example_button_cancel_cb (GtkWidget *widget, CdExamplePrivate *priv)
 {
 	g_main_loop_quit (priv->loop);
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char **argv)
 {

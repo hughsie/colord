@@ -41,9 +41,6 @@ static gpointer cd_profile_db_object = NULL;
 
 G_DEFINE_TYPE_WITH_PRIVATE (CdProfileDb, cd_profile_db, G_TYPE_OBJECT)
 
-/**
- * cd_profile_db_load:
- **/
 gboolean
 cd_profile_db_load (CdProfileDb *pdb,
 		    const gchar *filename,
@@ -95,9 +92,6 @@ cd_profile_db_load (CdProfileDb *pdb,
 	return TRUE;
 }
 
-/**
- * cd_profile_db_empty:
- **/
 gboolean
 cd_profile_db_empty (CdProfileDb *pdb, GError **error)
 {
@@ -124,9 +118,6 @@ cd_profile_db_empty (CdProfileDb *pdb, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_profile_db_set_property:
- **/
 gboolean
 cd_profile_db_set_property (CdProfileDb *pdb,
 			    const gchar *profile_id,
@@ -168,9 +159,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_profile_db_remove:
- **/
 gboolean
 cd_profile_db_remove (CdProfileDb *pdb,
 		      const gchar *profile_id,
@@ -210,9 +198,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_profile_db_sqlite_cb:
- **/
 static gint
 cd_profile_db_sqlite_cb (void *data,
 			gint argc,
@@ -227,9 +212,6 @@ cd_profile_db_sqlite_cb (void *data,
 	return 0;
 }
 
-/**
- * cd_profile_db_get_property:
- **/
 gboolean
 cd_profile_db_get_property (CdProfileDb *pdb,
 			   const gchar *profile_id,
@@ -275,9 +257,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_profile_db_class_init:
- **/
 static void
 cd_profile_db_class_init (CdProfileDbClass *klass)
 {
@@ -285,17 +264,11 @@ cd_profile_db_class_init (CdProfileDbClass *klass)
 	object_class->finalize = cd_profile_db_finalize;
 }
 
-/**
- * cd_profile_db_init:
- **/
 static void
 cd_profile_db_init (CdProfileDb *pdb)
 {
 }
 
-/**
- * cd_profile_db_finalize:
- **/
 static void
 cd_profile_db_finalize (GObject *object)
 {
@@ -308,9 +281,6 @@ cd_profile_db_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_profile_db_parent_class)->finalize (object);
 }
 
-/**
- * cd_profile_db_new:
- **/
 CdProfileDb *
 cd_profile_db_new (void)
 {

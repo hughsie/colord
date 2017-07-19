@@ -36,18 +36,12 @@
 /*< private >*/
 #define LCMS_CURVE_PLUGIN_TYPE_REC709	1024
 
-/**
- * cd_context_lcms_get_error:
- **/
 static GError **
 cd_context_lcms_get_error (gpointer ctx)
 {
 	return cmsGetContextUserData (ctx);
 }
 
-/**
- * cd_context_lcms2_error_cb:
- **/
 static void
 cd_context_lcms2_error_cb (cmsContext context_id,
 			   cmsUInt32Number code,
@@ -105,9 +99,6 @@ cd_context_lcms2_error_cb (cmsContext context_id,
 	g_set_error_literal (error_ctx, CD_ICC_ERROR, error_code, message);
 }
 
-/**
- * cd_context_lcms_plugins_cb:
- **/
 static double
 cd_context_lcms_plugins_cb (int type, const double params[], double x)
 {

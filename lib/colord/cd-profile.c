@@ -473,9 +473,6 @@ cd_profile_get_metadata_item (CdProfile *profile, const gchar *key)
 	return g_hash_table_lookup (priv->metadata, key);
 }
 
-/**
- * cd_profile_set_metadata_from_variant:
- **/
 static void
 cd_profile_set_metadata_from_variant (CdProfile *profile, GVariant *variant)
 {
@@ -515,9 +512,6 @@ cd_profile_get_nullable_str (GVariant *value)
 	return g_strdup (tmp);
 }
 
-/**
- * cd_profile_dbus_properties_changed_cb:
- **/
 static void
 cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 				    GVariant    *changed_properties,
@@ -581,9 +575,6 @@ cd_profile_dbus_properties_changed_cb (GDBusProxy  *proxy,
 	}
 }
 
-/**
- * cd_profile_dbus_signal_cb:
- **/
 static void
 cd_profile_dbus_signal_cb (GDBusProxy *proxy,
 			   gchar      *sender_name,
@@ -626,9 +617,6 @@ cd_profile_connect_finish (CdProfile *profile,
 	return g_task_propagate_boolean (G_TASK (res), error);
 }
 
-/**
- * cd_profile_fixup_dbus_error:
- **/
 static void
 cd_profile_fixup_dbus_error (GError *error)
 {

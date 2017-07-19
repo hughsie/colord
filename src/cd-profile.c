@@ -42,11 +42,6 @@ static void	cd_profile_set_filename	(CdProfile	*profile,
 
 #define GET_PRIVATE(o) (cd_profile_get_instance_private (o))
 
-/**
- * CdProfilePrivate:
- *
- * Private #CdProfile data
- **/
 typedef struct
 {
 	CdObjectScope			 object_scope;
@@ -91,9 +86,6 @@ enum {
 static guint signals[SIGNAL_LAST] = { 0 };
 G_DEFINE_TYPE_WITH_PRIVATE (CdProfile, cd_profile, G_TYPE_OBJECT)
 
-/**
- * cd_profile_error_quark:
- **/
 GQuark
 cd_profile_error_quark (void)
 {
@@ -110,9 +102,6 @@ cd_profile_error_quark (void)
 	return quark;
 }
 
-/**
- * cd_profile_get_scope:
- **/
 CdObjectScope
 cd_profile_get_scope (CdProfile *profile)
 {
@@ -121,9 +110,6 @@ cd_profile_get_scope (CdProfile *profile)
 	return priv->object_scope;
 }
 
-/**
- * cd_profile_set_scope:
- **/
 void
 cd_profile_set_scope (CdProfile *profile, CdObjectScope object_scope)
 {
@@ -132,9 +118,6 @@ cd_profile_set_scope (CdProfile *profile, CdObjectScope object_scope)
 	priv->object_scope = object_scope;
 }
 
-/**
- * cd_profile_get_owner:
- **/
 guint
 cd_profile_get_owner (CdProfile *profile)
 {
@@ -143,9 +126,6 @@ cd_profile_get_owner (CdProfile *profile)
 	return priv->owner;
 }
 
-/**
- * cd_profile_set_owner:
- **/
 void
 cd_profile_set_owner (CdProfile *profile, guint owner)
 {
@@ -154,9 +134,6 @@ cd_profile_set_owner (CdProfile *profile, guint owner)
 	priv->owner = owner;
 }
 
-/**
- * cd_profile_set_is_system_wide:
- **/
 void
 cd_profile_set_is_system_wide (CdProfile *profile, gboolean is_system_wide)
 {
@@ -168,9 +145,6 @@ cd_profile_set_is_system_wide (CdProfile *profile, gboolean is_system_wide)
 	priv->score += 1;
 }
 
-/**
- * cd_profile_get_is_system_wide:
- **/
 gboolean
 cd_profile_get_is_system_wide (CdProfile *profile)
 {
@@ -179,9 +153,6 @@ cd_profile_get_is_system_wide (CdProfile *profile)
 	return priv->is_system_wide;
 }
 
-/**
- * cd_profile_get_object_path:
- **/
 const gchar *
 cd_profile_get_object_path (CdProfile *profile)
 {
@@ -190,9 +161,6 @@ cd_profile_get_object_path (CdProfile *profile)
 	return priv->object_path;
 }
 
-/**
- * cd_profile_get_id:
- **/
 const gchar *
 cd_profile_get_id (CdProfile *profile)
 {
@@ -201,9 +169,6 @@ cd_profile_get_id (CdProfile *profile)
 	return priv->id;
 }
 
-/**
- * cd_profile_set_object_path:
- **/
 static void
 cd_profile_set_object_path (CdProfile *profile)
 {
@@ -244,9 +209,6 @@ cd_profile_set_object_path (CdProfile *profile)
 						       NULL);
 }
 
-/**
- * cd_profile_set_metadata:
- **/
 static void
 cd_profile_set_metadata (CdProfile *profile,
 			 const gchar *property,
@@ -261,9 +223,6 @@ cd_profile_set_metadata (CdProfile *profile,
 			     g_strdup (value));
 }
 
-/**
- * cd_profile_set_id:
- **/
 void
 cd_profile_set_id (CdProfile *profile, const gchar *id)
 {
@@ -330,9 +289,6 @@ cd_profile_set_id (CdProfile *profile, const gchar *id)
 	cd_profile_set_object_path (profile);
 }
 
-/**
- * cd_profile_get_filename:
- **/
 const gchar *
 cd_profile_get_filename (CdProfile *profile)
 {
@@ -341,9 +297,6 @@ cd_profile_get_filename (CdProfile *profile)
 	return priv->filename;
 }
 
-/**
- * cd_profile_dbus_emit_property_changed:
- **/
 static void
 cd_profile_dbus_emit_property_changed (CdProfile *profile,
 				       const gchar *property_name,
@@ -378,9 +331,6 @@ cd_profile_dbus_emit_property_changed (CdProfile *profile,
 	g_variant_builder_clear (&invalidated_builder);
 }
 
-/**
- * cd_profile_dbus_emit_profile_changed:
- **/
 static void
 cd_profile_dbus_emit_profile_changed (CdProfile *profile)
 {
@@ -413,9 +363,6 @@ cd_profile_dbus_emit_profile_changed (CdProfile *profile)
 				       NULL);
 }
 
-/**
- * cd_profile_install_system_wide:
- **/
 static gboolean
 cd_profile_install_system_wide (CdProfile *profile, GError **error)
 {
@@ -502,9 +449,6 @@ cd_profile_install_system_wide (CdProfile *profile, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_profile_get_metadata_as_variant:
- **/
 static GVariant *
 cd_profile_get_metadata_as_variant (CdProfile *profile)
 {
@@ -530,9 +474,6 @@ cd_profile_get_metadata_as_variant (CdProfile *profile)
 	return g_variant_builder_end (&builder);
 }
 
-/**
- * cd_profile_get_nullable_for_string:
- **/
 static GVariant *
 cd_profile_get_nullable_for_string (const gchar *value)
 {
@@ -541,9 +482,6 @@ cd_profile_get_nullable_for_string (const gchar *value)
 	return g_variant_new_string (value);
 }
 
-/**
- * cd_profile_set_title:
- **/
 static gboolean
 cd_profile_set_title (CdProfile *profile,
 		      const gchar *value,
@@ -568,9 +506,6 @@ cd_profile_set_title (CdProfile *profile,
 					   value, error);
 }
 
-/**
- * cd_profile_set_property_internal:
- **/
 gboolean
 cd_profile_set_property_internal (CdProfile *profile,
 				  const gchar *property,
@@ -635,9 +570,6 @@ cd_profile_set_property_internal (CdProfile *profile,
 	return TRUE;
 }
 
-/**
- * cd_profile_dbus_method_call:
- **/
 static void
 cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
@@ -740,9 +672,6 @@ cd_profile_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	g_critical ("failed to process method %s", method_name);
 }
 
-/**
- * cd_profile_dbus_get_property:
- **/
 static GVariant *
 cd_profile_dbus_get_property (GDBusConnection *connection, const gchar *sender,
 			     const gchar *object_path, const gchar *interface_name,
@@ -810,9 +739,6 @@ cd_profile_dbus_get_property (GDBusConnection *connection, const gchar *sender,
 	return NULL;
 }
 
-/**
- * cd_profile_register_object:
- **/
 gboolean
 cd_profile_register_object (CdProfile *profile,
 			    GDBusConnection *connection,
@@ -848,9 +774,6 @@ cd_profile_register_object (CdProfile *profile,
 	return TRUE;
 }
 
-/**
- * cd_profile_fixup_title:
- **/
 static gchar *
 cd_profile_fixup_title (const gchar *text)
 {
@@ -887,9 +810,6 @@ cd_profile_fixup_title (const gchar *text)
 	return title;
 }
 
-/**
- * cd_profile_set_from_profile:
- **/
 static gboolean
 cd_profile_set_from_profile (CdProfile *profile, CdIcc *icc, GError **error)
 {
@@ -976,9 +896,6 @@ cd_profile_set_from_profile (CdProfile *profile, CdIcc *icc, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_profile_get_warnings:
- **/
 const gchar **
 cd_profile_get_warnings (CdProfile *profile)
 {
@@ -986,9 +903,6 @@ cd_profile_get_warnings (CdProfile *profile)
 	return (const gchar **) priv->warnings;
 }
 
-/**
- * cd_profile_emit_parsed_property_changed:
- **/
 static void
 cd_profile_emit_parsed_property_changed (CdProfile *profile)
 {
@@ -1023,9 +937,6 @@ cd_profile_emit_parsed_property_changed (CdProfile *profile)
 					       g_variant_new_int64 (priv->created));
 }
 
-/**
- * cd_profile_load_from_icc:
- **/
 gboolean
 cd_profile_load_from_icc (CdProfile *profile, CdIcc *icc, GError **error)
 {
@@ -1043,9 +954,6 @@ cd_profile_load_from_icc (CdProfile *profile, CdIcc *icc, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_profile_load_from_fd:
- **/
 gboolean
 cd_profile_load_from_fd (CdProfile *profile,
 			 gint fd,
@@ -1101,9 +1009,6 @@ cd_profile_load_from_fd (CdProfile *profile,
 	return TRUE;
 }
 
-/**
- * cd_profile_load_from_filename:
- **/
 gboolean
 cd_profile_load_from_filename (CdProfile *profile, const gchar *filename, GError **error)
 {
@@ -1160,9 +1065,6 @@ cd_profile_load_from_filename (CdProfile *profile, const gchar *filename, GError
 	return TRUE;
 }
 
-/**
- * cd_profile_get_qualifier:
- **/
 const gchar *
 cd_profile_get_qualifier (CdProfile *profile)
 {
@@ -1171,9 +1073,6 @@ cd_profile_get_qualifier (CdProfile *profile)
 	return priv->qualifier;
 }
 
-/**
- * cd_profile_set_qualifier:
- **/
 void
 cd_profile_set_qualifier (CdProfile *profile, const gchar *qualifier)
 {
@@ -1183,9 +1082,6 @@ cd_profile_set_qualifier (CdProfile *profile, const gchar *qualifier)
 	priv->qualifier = g_strdup (qualifier);
 }
 
-/**
- * cd_profile_set_format:
- **/
 void
 cd_profile_set_format (CdProfile *profile, const gchar *format)
 {
@@ -1195,9 +1091,6 @@ cd_profile_set_format (CdProfile *profile, const gchar *format)
 	priv->format = g_strdup (format);
 }
 
-/**
- * cd_profile_set_filename:
- **/
 static void
 cd_profile_set_filename (CdProfile *profile, const gchar *filename)
 {
@@ -1207,9 +1100,6 @@ cd_profile_set_filename (CdProfile *profile, const gchar *filename)
 	priv->filename = g_strdup (filename);
 }
 
-/**
- * cd_profile_get_title:
- **/
 const gchar *
 cd_profile_get_title (CdProfile *profile)
 {
@@ -1218,9 +1108,6 @@ cd_profile_get_title (CdProfile *profile)
 	return priv->title;
 }
 
-/**
- * cd_profile_get_metadata:
- **/
 GHashTable *
 cd_profile_get_metadata (CdProfile *profile)
 {
@@ -1229,9 +1116,6 @@ cd_profile_get_metadata (CdProfile *profile)
 	return priv->metadata;
 }
 
-/**
- * cd_profile_get_metadata_item:
- **/
 const gchar *
 cd_profile_get_metadata_item (CdProfile *profile, const gchar *key)
 {
@@ -1257,9 +1141,6 @@ cd_profile_get_score (CdProfile *profile)
 	return priv->score;
 }
 
-/**
- * cd_profile_get_kind:
- **/
 CdProfileKind
 cd_profile_get_kind (CdProfile *profile)
 {
@@ -1268,9 +1149,6 @@ cd_profile_get_kind (CdProfile *profile)
 	return priv->kind;
 }
 
-/**
- * cd_profile_get_colorspace:
- **/
 CdColorspace
 cd_profile_get_colorspace (CdProfile *profile)
 {
@@ -1279,9 +1157,6 @@ cd_profile_get_colorspace (CdProfile *profile)
 	return priv->colorspace;
 }
 
-/**
- * cd_profile_get_has_vcgt:
- **/
 gboolean
 cd_profile_get_has_vcgt (CdProfile *profile)
 {
@@ -1290,9 +1165,6 @@ cd_profile_get_has_vcgt (CdProfile *profile)
 	return priv->has_vcgt;
 }
 
-/**
- * cd_profile_get_checksum:
- **/
 const gchar *
 cd_profile_get_checksum (CdProfile *profile)
 {
@@ -1301,9 +1173,6 @@ cd_profile_get_checksum (CdProfile *profile)
 	return priv->checksum;
 }
 
-/**
- * cd_profile_name_vanished_cb:
- **/
 static void
 cd_profile_name_vanished_cb (GDBusConnection *connection,
 			     const gchar *name,
@@ -1314,9 +1183,6 @@ cd_profile_name_vanished_cb (GDBusConnection *connection,
 	g_signal_emit (profile, signals[SIGNAL_INVALIDATE], 0);
 }
 
-/**
- * cd_profile_watch_sender:
- **/
 void
 cd_profile_watch_sender (CdProfile *profile, const gchar *sender)
 {
@@ -1331,9 +1197,6 @@ cd_profile_watch_sender (CdProfile *profile, const gchar *sender)
 						      NULL);
 }
 
-/**
- * cd_profile_get_property:
- **/
 static void
 cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
@@ -1353,9 +1216,6 @@ cd_profile_get_property (GObject *object, guint prop_id, GValue *value, GParamSp
 	}
 }
 
-/**
- * cd_profile_set_property:
- **/
 static void
 cd_profile_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
@@ -1377,9 +1237,6 @@ cd_profile_set_property (GObject *object, guint prop_id, const GValue *value, GP
 	}
 }
 
-/**
- * cd_profile_class_init:
- **/
 static void
 cd_profile_class_init (CdProfileClass *klass)
 {
@@ -1416,9 +1273,6 @@ cd_profile_class_init (CdProfileClass *klass)
 			      G_TYPE_NONE, 0);
 }
 
-/**
- * cd_profile_init:
- **/
 static void
 cd_profile_init (CdProfile *profile)
 {
@@ -1430,9 +1284,6 @@ cd_profile_init (CdProfile *profile)
 							 g_free);
 }
 
-/**
- * cd_profile_finalize:
- **/
 static void
 cd_profile_finalize (GObject *object)
 {
@@ -1461,9 +1312,6 @@ cd_profile_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_profile_parent_class)->finalize (object);
 }
 
-/**
- * cd_profile_new:
- **/
 CdProfile *
 cd_profile_new (void)
 {

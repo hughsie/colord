@@ -45,9 +45,6 @@ cd_sensor_dump_lock_cb (GObject *source_object,
 	g_main_loop_quit (loop);
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char **argv)
 {

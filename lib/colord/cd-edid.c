@@ -105,9 +105,6 @@ cd_edid_get_monitor_name (CdEdid *edid)
 	return priv->monitor_name;
 }
 
-/**
- * cd_edid_convert_pnp_id_to_string:
- **/
 static gchar *
 cd_edid_convert_pnp_id_to_string (const gchar *pnp_id)
 {
@@ -437,18 +434,12 @@ cd_edid_reset (CdEdid *edid)
 	priv->gamma = 0.0f;
 }
 
-/**
- * cd_edid_get_bit:
- **/
 static gint
 cd_edid_get_bit (gint in, gint bit)
 {
 	return (in & (1 << bit)) >> bit;
 }
 
-/**
- * cd_edid_get_bits:
- **/
 static gint
 cd_edid_get_bits (gint in, gint begin, gint end)
 {
@@ -457,9 +448,6 @@ cd_edid_get_bits (gint in, gint begin, gint end)
 	return (in >> begin) & mask;
 }
 
-/**
- * cd_edid_decode_fraction:
- **/
 static gdouble
 cd_edid_decode_fraction (gint high, gint low)
 {
@@ -472,9 +460,6 @@ cd_edid_decode_fraction (gint high, gint low)
 	return result;
 }
 
-/**
- * cd_edid_parse_string:
- **/
 static gchar *
 cd_edid_parse_string (const guint8 *data)
 {
@@ -662,9 +647,6 @@ cd_edid_parse (CdEdid *edid, GBytes *edid_data, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_edid_class_init:
- **/
 static void
 cd_edid_class_init (CdEdidClass *klass)
 {
@@ -672,9 +654,6 @@ cd_edid_class_init (CdEdidClass *klass)
 	object_class->finalize = cd_edid_finalize;
 }
 
-/**
- * cd_edid_init:
- **/
 static void
 cd_edid_init (CdEdid *edid)
 {
@@ -686,9 +665,6 @@ cd_edid_init (CdEdid *edid)
 	priv->white = cd_color_yxy_new ();
 }
 
-/**
- * cd_edid_finalize:
- **/
 static void
 cd_edid_finalize (GObject *object)
 {

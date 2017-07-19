@@ -72,9 +72,6 @@ typedef struct {
 	gchar			*system_model;
 } CdMainPrivate;
 
-/**
- * cd_main_profile_removed:
- **/
 static void
 cd_main_profile_removed (CdMainPrivate *priv, CdProfile *profile)
 {
@@ -118,9 +115,6 @@ cd_main_profile_removed (CdMainPrivate *priv, CdProfile *profile)
 				       NULL);
 }
 
-/**
- * cd_main_profile_invalidate_cb:
- **/
 static void
 cd_main_profile_invalidate_cb (CdProfile *profile,
 			       gpointer user_data)
@@ -132,9 +126,6 @@ cd_main_profile_invalidate_cb (CdProfile *profile,
 	cd_main_profile_removed (priv, profile);
 }
 
-/**
- * cd_main_device_removed:
- **/
 static void
 cd_main_device_removed (CdMainPrivate *priv, CdDevice *device)
 {
@@ -173,9 +164,6 @@ cd_main_device_removed (CdMainPrivate *priv, CdDevice *device)
 				       &error);
 }
 
-/**
- * cd_main_device_invalidate_cb:
- **/
 static void
 cd_main_device_invalidate_cb (CdDevice *device,
 			      gpointer user_data)
@@ -187,9 +175,6 @@ cd_main_device_invalidate_cb (CdDevice *device,
 	cd_main_device_removed (priv, device);
 }
 
-/**
- * cd_main_add_profile:
- **/
 static gboolean
 cd_main_add_profile (CdMainPrivate *priv,
 		     CdProfile *profile,
@@ -206,9 +191,6 @@ cd_main_add_profile (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_create_profile:
- **/
 static CdProfile *
 cd_main_create_profile (CdMainPrivate *priv,
 			const gchar *sender,
@@ -261,9 +243,6 @@ cd_main_create_profile (CdMainPrivate *priv,
 	return g_object_ref (profile_tmp);
 }
 
-/**
- * cd_main_auto_add_from_md:
- **/
 static gboolean
 cd_main_auto_add_from_md (CdMainPrivate *priv,
 			  CdDevice *device,
@@ -321,9 +300,6 @@ cd_main_auto_add_from_md (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_auto_add_from_db:
- **/
 static gboolean
 cd_main_auto_add_from_db (CdMainPrivate *priv,
 			  CdDevice *device,
@@ -361,9 +337,6 @@ cd_main_auto_add_from_db (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_device_auto_add_from_md:
- **/
 static void
 cd_main_device_auto_add_from_md (CdMainPrivate *priv,
 				 CdDevice *device)
@@ -385,9 +358,6 @@ cd_main_device_auto_add_from_md (CdMainPrivate *priv,
 	}
 }
 
-/**
- * cd_main_device_auto_add_from_db:
- **/
 static void
 cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 {
@@ -444,9 +414,6 @@ cd_main_device_auto_add_from_db (CdMainPrivate *priv, CdDevice *device)
 	}
 }
 
-/**
- * cd_main_device_register_on_bus:
- **/
 static gboolean
 cd_main_device_register_on_bus (CdMainPrivate *priv,
 				CdDevice *device,
@@ -474,9 +441,6 @@ cd_main_device_register_on_bus (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_device_add:
- **/
 static gboolean
 cd_main_device_add (CdMainPrivate *priv,
 		    CdDevice *device,
@@ -518,9 +482,6 @@ cd_main_device_add (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_get_seat_for_process:
- */
 static gchar *
 cd_main_get_seat_for_process (guint pid)
 {
@@ -553,9 +514,6 @@ out:
 	return seat;
 }
 
-/**
- * cd_main_create_device:
- **/
 static CdDevice *
 cd_main_create_device (CdMainPrivate *priv,
 		       const gchar *sender,
@@ -594,9 +552,6 @@ cd_main_create_device (CdMainPrivate *priv,
 	return g_object_ref (device_tmp);
 }
 
-/**
- * cd_main_device_array_to_variant:
- **/
 static GVariant *
 cd_main_device_array_to_variant (GPtrArray *array, guint uid)
 {
@@ -630,9 +585,6 @@ cd_main_device_array_to_variant (GPtrArray *array, guint uid)
 				    length);
 }
 
-/**
- * cd_main_profile_array_to_variant:
- **/
 static GVariant *
 cd_main_profile_array_to_variant (GPtrArray *array)
 {
@@ -656,9 +608,6 @@ cd_main_profile_array_to_variant (GPtrArray *array)
 				    length);
 }
 
-/**
- * cd_main_sensor_array_to_variant:
- **/
 static GVariant *
 cd_main_sensor_array_to_variant (GPtrArray *array)
 {
@@ -682,9 +631,6 @@ cd_main_sensor_array_to_variant (GPtrArray *array)
 				    length);
 }
 
-/**
- * cd_main_profile_auto_add_from_db:
- **/
 static void
 cd_main_profile_auto_add_from_db (CdMainPrivate *priv,
 				  CdProfile *profile)
@@ -728,9 +674,6 @@ cd_main_profile_auto_add_from_db (CdMainPrivate *priv,
 	}
 }
 
-/**
- * cd_main_profile_auto_add_from_md:
- **/
 static void
 cd_main_profile_auto_add_from_md (CdMainPrivate *priv,
 				  CdProfile *profile)
@@ -758,9 +701,6 @@ typedef enum {
 	CD_LOGGING_FLAG_LAST
 } CdLoggingFlags;
 
-/**
- * cd_main_profile_register_on_bus:
- **/
 static gboolean
 cd_main_profile_register_on_bus (CdMainPrivate *priv,
 				 CdProfile *profile,
@@ -790,9 +730,6 @@ cd_main_profile_register_on_bus (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_get_standard_space_override:
- **/
 static CdProfile *
 cd_main_get_standard_space_override (CdMainPrivate *priv,
 				     const gchar *standard_space)
@@ -804,9 +741,6 @@ cd_main_get_standard_space_override (CdMainPrivate *priv,
 	return g_object_ref (profile);
 }
 
-/**
- * cd_main_get_standard_space_metadata:
- **/
 static CdProfile *
 cd_main_get_standard_space_metadata (CdMainPrivate *priv,
 				     const gchar *standard_space)
@@ -839,9 +773,6 @@ cd_main_get_standard_space_metadata (CdMainPrivate *priv,
 	return g_object_ref (profile_best);
 }
 
-/**
- * cd_main_get_display_fallback_id:
- **/
 static gchar *
 cd_main_get_display_fallback_id (GVariant *dict)
 {
@@ -864,9 +795,6 @@ cd_main_get_display_fallback_id (GVariant *dict)
 	return device_id;
 }
 
-/**
- * cd_main_get_cmdline_for_pid:
- **/
 static gchar *
 cd_main_get_cmdline_for_pid (guint pid)
 {
@@ -899,9 +827,6 @@ cd_main_get_cmdline_for_pid (guint pid)
 	return cmdline;
 }
 
-/**
- * cd_main_daemon_method_call:
- **/
 static void
 cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
@@ -1643,9 +1568,6 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	g_critical ("failed to process method %s", method_name);
 }
 
-/**
- * cd_main_daemon_get_property:
- **/
 static GVariant *
 cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 			     const gchar *object_path, const gchar *interface_name,
@@ -1670,9 +1592,6 @@ cd_main_daemon_get_property (GDBusConnection *connection_, const gchar *sender,
 	return NULL;
 }
 
-/**
- * cd_main_on_bus_acquired_cb:
- **/
 static void
 cd_main_on_bus_acquired_cb (GDBusConnection *connection,
 			    const gchar *name,
@@ -1697,9 +1616,6 @@ cd_main_on_bus_acquired_cb (GDBusConnection *connection,
 	g_assert (registration_id > 0);
 }
 
-/**
- * cd_main_icc_store_added_cb:
- **/
 static void
 cd_main_icc_store_added_cb (CdIccStore *icc_store,
 			    CdIcc *icc,
@@ -1758,9 +1674,6 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 	}
 }
 
-/**
- * cd_main_icc_store_removed_cb:
- **/
 static void
 cd_main_icc_store_removed_cb (CdIccStore *icc_store,
 			      CdIcc *icc,
@@ -1778,9 +1691,6 @@ cd_main_icc_store_removed_cb (CdIccStore *icc_store,
 	cd_profile_array_remove (priv->profiles_array, profile);
 }
 
-/**
- * cd_main_add_disk_device:
- **/
 static void
 cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 {
@@ -1852,9 +1762,6 @@ cd_main_add_disk_device (CdMainPrivate *priv, const gchar *device_id)
 	}
 }
 
-/**
- * cd_main_sensor_register_on_bus:
- **/
 static gboolean
 cd_main_sensor_register_on_bus (CdMainPrivate *priv,
 				CdSensor *sensor,
@@ -1882,9 +1789,6 @@ cd_main_sensor_register_on_bus (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_add_sensor:
- **/
 static void
 cd_main_add_sensor (CdMainPrivate *priv, CdSensor *sensor)
 {
@@ -1910,9 +1814,6 @@ cd_main_add_sensor (CdMainPrivate *priv, CdSensor *sensor)
 	}
 }
 
-/**
- * cd_main_plugin_phase:
- **/
 static void
 cd_main_plugin_phase (CdMainPrivate *priv, CdPluginPhase phase)
 {
@@ -1958,9 +1859,6 @@ cd_main_plugin_phase (CdMainPrivate *priv, CdPluginPhase phase)
 	}
 }
 
-/**
- * cd_main_on_name_acquired_cb:
- **/
 static void
 cd_main_on_name_acquired_cb (GDBusConnection *connection,
 			     const gchar *name,
@@ -2044,9 +1942,6 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 	}
 }
 
-/**
- * cd_main_on_name_lost_cb:
- **/
 static void
 cd_main_on_name_lost_cb (GDBusConnection *connection,
 			 const gchar *name,
@@ -2059,9 +1954,6 @@ cd_main_on_name_lost_cb (GDBusConnection *connection,
 
 #ifdef HAVE_UDEV
 
-/**
- * cd_main_client_sensor_added_cb:
- **/
 static void
 cd_main_client_sensor_added_cb (CdSensorClient *sensor_client_,
 				CdSensor *sensor,
@@ -2071,9 +1963,6 @@ cd_main_client_sensor_added_cb (CdSensorClient *sensor_client_,
 	cd_main_add_sensor (priv, sensor);
 }
 
-/**
- * cd_main_client_sensor_removed_cb:
- **/
 static void
 cd_main_client_sensor_removed_cb (CdSensorClient *sensor_client_,
 				  CdSensor *sensor,
@@ -2097,9 +1986,6 @@ cd_main_client_sensor_removed_cb (CdSensorClient *sensor_client_,
 }
 #endif
 
-/**
- * cd_main_timed_exit_cb:
- **/
 static gboolean
 cd_main_timed_exit_cb (gpointer user_data)
 {
@@ -2108,9 +1994,6 @@ cd_main_timed_exit_cb (gpointer user_data)
 	return G_SOURCE_REMOVE;
 }
 
-/**
- * cd_main_load_introspection:
- **/
 static GDBusNodeInfo *
 cd_main_load_introspection (const gchar *filename, GError **error)
 {
@@ -2130,9 +2013,6 @@ cd_main_load_introspection (const gchar *filename, GError **error)
 	return g_dbus_node_info_new_for_xml (g_bytes_get_data (data, NULL), error);
 }
 
-/**
- * cd_main_plugin_free:
- **/
 static void
 cd_main_plugin_free (CdPlugin *plugin)
 {
@@ -2141,9 +2021,6 @@ cd_main_plugin_free (CdPlugin *plugin)
 	g_free (plugin);
 }
 
-/**
- * cd_main_plugin_device_added:
- **/
 static void
 cd_main_plugin_device_added_cb (CdPlugin *plugin,
 				CdDevice *device,
@@ -2170,9 +2047,6 @@ cd_main_plugin_device_added_cb (CdPlugin *plugin,
 	}
 }
 
-/**
- * cd_main_plugin_device_removed_cb:
- **/
 static void
 cd_main_plugin_device_removed_cb (CdPlugin *plugin,
 				  CdDevice *device,
@@ -2183,9 +2057,6 @@ cd_main_plugin_device_removed_cb (CdPlugin *plugin,
 	cd_main_device_removed (priv, device);
 }
 
-/**
- * cd_main_load_plugin:
- */
 static gboolean
 cd_main_load_plugin (CdMainPrivate *priv,
 		     const gchar *filename,
@@ -2249,9 +2120,6 @@ cd_main_load_plugin (CdMainPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_main_load_plugins:
- */
 static void
 cd_main_load_plugins (CdMainPrivate *priv)
 {
@@ -2300,9 +2168,6 @@ cd_main_load_plugins (CdMainPrivate *priv)
 	} while (TRUE);
 }
 
-/**
- * cd_main_get_edid_for_output:
- **/
 static CdEdid *
 cd_main_get_edid_for_output (const gchar *output_name)
 {
@@ -2356,9 +2221,6 @@ cd_main_get_edid_for_output (const gchar *output_name)
 	return g_object_ref (edid);
 }
 
-/**
- * cd_main_get_display_id:
- **/
 static gchar *
 cd_main_get_display_id (CdEdid *edid)
 {
@@ -2374,9 +2236,6 @@ cd_main_get_display_id (CdEdid *edid)
 	return g_string_free (device_id, FALSE);
 }
 
-/**
- * cd_main_check_duplicate_edids:
- **/
 static gboolean
 cd_main_check_duplicate_edids (void)
 {
@@ -2412,9 +2271,6 @@ cd_main_check_duplicate_edids (void)
 	return use_xrandr_mode;
 }
 
-/**
- * cd_main_dmi_get_from_filename:
- **/
 static gchar *
 cd_main_dmi_get_from_filename (const gchar *filename)
 {
@@ -2446,9 +2302,6 @@ cd_main_dmi_get_from_filename (const gchar *filename)
 	return data;
 }
 
-/**
- * cd_main_dmi_get_from_filenames:
- **/
 static gchar *
 cd_main_dmi_get_from_filenames (const gchar * const * filenames)
 {
@@ -2465,9 +2318,6 @@ cd_main_dmi_get_from_filenames (const gchar * const * filenames)
 }
 
 
-/**
- * cd_main_dmi_get_vendor:
- **/
 static gchar *
 cd_main_dmi_get_vendor (void)
 {
@@ -2484,9 +2334,6 @@ cd_main_dmi_get_vendor (void)
 		return g_strdup("Unknown");
 	return cd_quirk_vendor_name (tmp);
 }
-/**
- * cd_main_dmi_get_model:
- **/
 static gchar *
 cd_main_dmi_get_model (void)
 {
@@ -2509,9 +2356,6 @@ cd_main_dmi_get_model (void)
 	return model;
 }
 
-/**
- * cd_main_dmi_setup:
- **/
 static void
 cd_main_dmi_setup (CdMainPrivate *priv)
 {
@@ -2519,9 +2363,6 @@ cd_main_dmi_setup (CdMainPrivate *priv)
 	priv->system_model = cd_main_dmi_get_model ();
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char *argv[])
 {

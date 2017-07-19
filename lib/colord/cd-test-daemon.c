@@ -1431,9 +1431,6 @@ colord_client_fd_pass_func (void)
 	g_free (filename);
 }
 
-/**
- * colord_get_profile_destination:
- **/
 static GFile *
 colord_get_profile_destination (GFile *file)
 {

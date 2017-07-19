@@ -114,9 +114,6 @@ _cmsIT8GetPropertyDbl (cmsHANDLE it8_lcms, const gchar *key)
 	return g_ascii_strtod (value, NULL);
 }
 
-/**
- * _cmsIT8GetPropertyInt:
- **/
 static guint
 _cmsIT8GetPropertyInt (cmsHANDLE it8_lcms, const gchar *key)
 {
@@ -188,9 +185,6 @@ _cmsIT8SetPropertyDbl (cmsHANDLE it8_lcms, const gchar *key, gdouble value)
 	cmsIT8SetPropertyUncooked (it8_lcms, key, buffer);
 }
 
-/**
- * _cmsIT8SetPropertyInt:
- **/
 static void
 _cmsIT8SetPropertyInt (cmsHANDLE it8_lcms, const gchar *key, gint value)
 {
@@ -283,9 +277,6 @@ cd_it8_get_kind (CdIt8 *it8)
 	return priv->kind;
 }
 
-/**
- * cd_it8_parse_luminance:
- **/
 static gboolean
 cd_it8_parse_luminance (const gchar *text, CdColorXYZ *xyz, GError **error)
 {
@@ -434,9 +425,6 @@ cd_it8_get_spectral (CdIt8 *it8)
 	return priv->spectral;
 }
 
-/**
- * cd_it8_load_ti1_cal:
- **/
 static gboolean
 cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -489,9 +477,6 @@ cd_it8_load_ti1_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_it8_load_ti3:
- **/
 static gboolean
 cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -568,9 +553,6 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_it8_load_ccmx:
- **/
 static gboolean
 cd_it8_load_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -603,9 +585,6 @@ cd_it8_load_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_it8_load_ccss_spect:
- **/
 static gboolean
 cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -716,9 +695,6 @@ cd_it8_load_ccss_spect (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_it8_load_cmf:
- **/
 static gboolean
 cd_it8_load_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -1011,9 +987,6 @@ cd_it8_load_from_file (CdIt8 *it8, GFile *file, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_it8_color_match:
- **/
 static gboolean
 cd_it8_color_match (CdColorRGB *rgb, gdouble r, gdouble g, gdouble b)
 {
@@ -1026,9 +999,6 @@ cd_it8_color_match (CdColorRGB *rgb, gdouble r, gdouble g, gdouble b)
 	return TRUE;
 }
 
-/**
- * cd_it8_convert_xyz_to_string:
- **/
 static gchar *
 cd_it8_convert_xyz_to_string (CdColorXYZ *src)
 {
@@ -1039,9 +1009,6 @@ cd_it8_convert_xyz_to_string (CdColorXYZ *src)
 	return g_strdup_printf ("%s %s %s", buffer[0], buffer[1], buffer[2]);
 }
 
-/**
- * cd_it8_save_to_file_ti1_ti3:
- **/
 static gboolean
 cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -1151,9 +1118,6 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_it8_save_to_file_cal:
- **/
 static gboolean
 cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -1191,9 +1155,6 @@ cd_it8_save_to_file_cal (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	return ret;
 }
 
-/**
- * cd_it8_save_to_file_ccmx:
- **/
 static gboolean
 cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -1231,9 +1192,6 @@ cd_it8_save_to_file_ccmx (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	return ret;
 }
 
-/**
- * cd_it8_save_to_file_cmf:
- **/
 static gboolean
 cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -1293,9 +1251,6 @@ cd_it8_save_to_file_cmf (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_it8_save_to_file_ccss_sp:
- **/
 static gboolean
 cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 {
@@ -1949,9 +1904,6 @@ cd_it8_get_property (GObject *object,
 	}
 }
 
-/**
- * cd_it8_set_property:
- **/
 static void
 cd_it8_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {

@@ -32,9 +32,6 @@ static void     cd_sensor_client_finalize	(GObject	*object);
 
 #define GET_PRIVATE(o) (cd_sensor_client_get_instance_private (o))
 
-/**
- * CdSensorClientPrivate:
- **/
 typedef struct
 {
 	GUdevClient			*gudev_client;
@@ -52,9 +49,6 @@ static guint signals[SIGNAL_LAST] = { 0 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (CdSensorClient, cd_sensor_client, G_TYPE_OBJECT)
 
-/**
- * cd_sensor_client_get_by_id:
- **/
 CdSensor *
 cd_sensor_client_get_by_id (CdSensorClient *sensor_client,
 			    const gchar *sensor_id)
@@ -74,9 +68,6 @@ cd_sensor_client_get_by_id (CdSensorClient *sensor_client,
 	return sensor;
 }
 
-/**
- * cd_sensor_client_add:
- **/
 static gboolean
 cd_sensor_client_add (CdSensorClient *sensor_client,
 		      GUdevDevice *device)
@@ -138,9 +129,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_sensor_client_remove:
- **/
 static void
 cd_sensor_client_remove (CdSensorClient *sensor_client,
 			 GUdevDevice *device)
@@ -182,9 +170,6 @@ out:
 	return;
 }
 
-/**
- * cd_sensor_client_uevent_cb:
- **/
 static void
 cd_sensor_client_uevent_cb (GUdevClient *gudev_client,
 			    const gchar *action,
@@ -222,9 +207,6 @@ out:
 	return;
 }
 
-/**
- * cd_sensor_client_coldplug:
- **/
 void
 cd_sensor_client_coldplug (CdSensorClient *sensor_client)
 {
@@ -244,9 +226,6 @@ cd_sensor_client_coldplug (CdSensorClient *sensor_client)
 	g_list_free (devices);
 }
 
-/**
- * cd_sensor_client_class_init:
- **/
 static void
 cd_sensor_client_class_init (CdSensorClientClass *klass)
 {
@@ -266,9 +245,6 @@ cd_sensor_client_class_init (CdSensorClientClass *klass)
 			      G_TYPE_NONE, 1, CD_TYPE_SENSOR);
 }
 
-/**
- * cd_sensor_client_init:
- **/
 static void
 cd_sensor_client_init (CdSensorClient *sensor_client)
 {
@@ -280,9 +256,6 @@ cd_sensor_client_init (CdSensorClient *sensor_client)
 			  G_CALLBACK (cd_sensor_client_uevent_cb), sensor_client);
 }
 
-/**
- * cd_sensor_client_finalize:
- **/
 static void
 cd_sensor_client_finalize (GObject *object)
 {
@@ -295,9 +268,6 @@ cd_sensor_client_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_sensor_client_parent_class)->finalize (object);
 }
 
-/**
- * cd_sensor_client_new:
- **/
 CdSensorClient *
 cd_sensor_client_new (void)
 {

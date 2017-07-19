@@ -31,18 +31,12 @@ struct CdPluginPrivate {
 	GHashTable		*devices;
 };
 
-/**
- * cd_plugin_get_description:
- */
 const gchar *
 cd_plugin_get_description (void)
 {
 	return "Add and remove camera devices using info from video4linux";
 }
 
-/**
- * cd_plugin_get_camera_id_for_udev_device:
- **/
 static gchar *
 cd_plugin_get_camera_id_for_udev_device (GUdevDevice *udev_device)
 {
@@ -67,9 +61,6 @@ cd_plugin_get_camera_id_for_udev_device (GUdevDevice *udev_device)
 	return g_string_free (string, FALSE);
 }
 
-/**
- * cd_plugin_is_device_embedded:
- **/
 static gboolean
 cd_plugin_is_device_embedded (GUdevDevice *device)
 {
@@ -101,9 +92,6 @@ cd_plugin_is_device_embedded (GUdevDevice *device)
 	return embedded;
 }
 
-/**
- * cd_plugin_add:
- **/
 static void
 cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 {
@@ -197,9 +185,6 @@ cd_plugin_add (CdPlugin *plugin, GUdevDevice *udev_device)
 	cd_plugin_device_added (plugin, device);
 }
 
-/**
- * cd_plugin_uevent_cb:
- **/
 static void
 cd_plugin_uevent_cb (GUdevClient *udev_client,
 		     const gchar *action,
@@ -231,9 +216,6 @@ cd_plugin_uevent_cb (GUdevClient *udev_client,
 	}
 }
 
-/**
- * cd_plugin_coldplug:
- */
 void
 cd_plugin_coldplug (CdPlugin *plugin)
 {
@@ -266,9 +248,6 @@ cd_plugin_coldplug (CdPlugin *plugin)
 			  G_CALLBACK (cd_plugin_uevent_cb), plugin);
 }
 
-/**
- * cd_plugin_initialize:
- */
 void
 cd_plugin_initialize (CdPlugin *plugin)
 {
@@ -283,9 +262,6 @@ cd_plugin_initialize (CdPlugin *plugin)
 	plugin->priv->udev_client = g_udev_client_new (subsystems);
 }
 
-/**
- * cd_plugin_destroy:
- */
 void
 cd_plugin_destroy (CdPlugin *plugin)
 {

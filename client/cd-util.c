@@ -56,9 +56,6 @@ typedef struct {
 	CdUtilPrivateCb	 callback;
 } CdUtilItem;
 
-/**
- * cd_util_filter_attribute:
- **/
 static gboolean
 cd_util_filter_attribute (gchar **filters, const gchar *id)
 {
@@ -72,9 +69,6 @@ cd_util_filter_attribute (gchar **filters, const gchar *id)
 	return FALSE;
 }
 
-/**
- * cd_util_print_field:
- **/
 static void
 cd_util_print_field (const gchar *title,
 		     const gchar *filter_id,
@@ -114,9 +108,6 @@ cd_util_print_field (const gchar *title,
 	g_print ("%s\n", message);
 }
 
-/**
- * cd_util_print_field_time:
- **/
 static void
 cd_util_print_field_time (const gchar *title,
 			  const gchar *filter_id,
@@ -133,9 +124,6 @@ cd_util_print_field_time (const gchar *title,
 	g_date_time_unref (datetime);
 }
 
-/**
- * cd_util_show_owner:
- **/
 static void
 cd_util_show_owner (CdUtilPrivate *priv, guint uid)
 {
@@ -152,9 +140,6 @@ cd_util_show_owner (CdUtilPrivate *priv, guint uid)
 #endif
 }
 
-/**
- * cd_util_show_profile:
- **/
 static void
 cd_util_show_profile (CdUtilPrivate *priv, CdProfile *profile)
 {
@@ -258,9 +243,6 @@ cd_util_show_profile (CdUtilPrivate *priv, CdProfile *profile)
 		cd_util_print_field (_("Warning"), "warnings", priv, warnings[i]);
 }
 
-/**
- * cd_util_show_device:
- **/
 static void
 cd_util_show_device (CdUtilPrivate *priv, CdDevice *device)
 {
@@ -406,9 +388,6 @@ cd_util_show_device (CdUtilPrivate *priv, CdDevice *device)
 	}
 }
 
-/**
- * cd_util_idle_loop_quit_cb:
- **/
 static gboolean
 cd_util_idle_loop_quit_cb (gpointer user_data)
 {
@@ -416,9 +395,6 @@ cd_util_idle_loop_quit_cb (gpointer user_data)
 	g_main_loop_quit (loop);
 	return G_SOURCE_REMOVE;
 }
-/**
- * cd_util_sensor_cap_to_string:
- **/
 static const gchar *
 cd_util_sensor_cap_to_string (CdSensorCap sensor_cap)
 {
@@ -509,9 +485,6 @@ cd_util_sensor_cap_to_string (CdSensorCap sensor_cap)
 	return _("Unknown");
 }
 
-/**
- * cd_util_show_sensor:
- **/
 static void
 cd_util_show_sensor (CdUtilPrivate *priv, CdSensor *sensor)
 {
@@ -671,9 +644,6 @@ out:
 		g_main_loop_unref (loop);
 }
 
-/**
- * cd_util_item_free:
- **/
 static void
 cd_util_item_free (CdUtilItem *item)
 {
@@ -692,9 +662,6 @@ cd_sort_command_name_cb (CdUtilItem **item1, CdUtilItem **item2)
 	return g_strcmp0 ((*item1)->name, (*item2)->name);
 }
 
-/**
- * cd_util_add:
- **/
 static void
 cd_util_add (GPtrArray *array,
 	     const gchar *name,
@@ -728,9 +695,6 @@ cd_util_add (GPtrArray *array,
 	}
 }
 
-/**
- * cd_util_get_descriptions:
- **/
 static gchar *
 cd_util_get_descriptions (GPtrArray *array)
 {
@@ -774,9 +738,6 @@ cd_util_get_descriptions (GPtrArray *array)
 	return g_string_free (string, FALSE);
 }
 
-/**
- * cd_util_run:
- **/
 static gboolean
 cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError **error)
 {
@@ -806,9 +767,6 @@ cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError *
 	return FALSE;
 }
 
-/**
- * cd_util_dump:
- **/
 static gboolean
 cd_util_dump (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -917,9 +875,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_util_get_devices:
- **/
 static gboolean
 cd_util_get_devices (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -942,9 +897,6 @@ cd_util_get_devices (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_get_devices_by_kind:
- **/
 static gboolean
 cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -980,9 +932,6 @@ cd_util_get_devices_by_kind (CdUtilPrivate *priv, gchar **values, GError **error
 	return TRUE;
 }
 
-/**
- * cd_util_get_profiles:
- **/
 static gboolean
 cd_util_get_profiles (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1005,9 +954,6 @@ cd_util_get_profiles (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_get_sensors:
- **/
 static gboolean
 cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1036,9 +982,6 @@ cd_util_get_sensors (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_sensor_lock:
- **/
 static gboolean
 cd_util_sensor_lock (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1074,9 +1017,6 @@ cd_util_sensor_lock (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_get_sensor_reading:
- **/
 static gboolean
 cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1198,9 +1138,6 @@ cd_util_get_sensor_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_get_spectral_reading:
- **/
 static gboolean
 cd_util_get_spectral_reading (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1293,9 +1230,6 @@ cd_util_get_spectral_reading (CdUtilPrivate *priv, gchar **values, GError **erro
 	return TRUE;
 }
 
-/**
- * cd_util_sensor_set_options:
- **/
 static gboolean
 cd_util_sensor_set_options (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1367,9 +1301,6 @@ cd_util_sensor_set_options (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_create_device:
- **/
 static gboolean
 cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1408,9 +1339,6 @@ cd_util_create_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_find_device:
- **/
 static gboolean
 cd_util_find_device (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1437,9 +1365,6 @@ cd_util_find_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_find_device_by_property:
- **/
 static gboolean
 cd_util_find_device_by_property (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1469,9 +1394,6 @@ cd_util_find_device_by_property (CdUtilPrivate *priv, gchar **values, GError **e
 	return TRUE;
 }
 
-/**
- * cd_util_find_profile:
- **/
 static gboolean
 cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1498,9 +1420,6 @@ cd_util_find_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_find_profile_by_filename:
- **/
 static gboolean
 cd_util_find_profile_by_filename (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1527,9 +1446,6 @@ cd_util_find_profile_by_filename (CdUtilPrivate *priv, gchar **values, GError **
 	return TRUE;
 }
 
-/**
- * cd_util_get_standard_space:
- **/
 static gboolean
 cd_util_get_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1558,9 +1474,6 @@ cd_util_get_standard_space (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_create_profile:
- **/
 static gboolean
 cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1590,9 +1503,6 @@ cd_util_create_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_device_add_profile:
- **/
 static gboolean
 cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1637,9 +1547,6 @@ cd_util_device_add_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 					   error);
 }
 
-/**
- * cd_util_device_make_profile_default:
- **/
 static gboolean
 cd_util_device_make_profile_default (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1680,9 +1587,6 @@ cd_util_device_make_profile_default (CdUtilPrivate *priv, gchar **values, GError
 	return cd_device_make_profile_default_sync (device, profile, NULL, error);
 }
 
-/**
- * cd_util_delete_device:
- **/
 static gboolean
 cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1710,9 +1614,6 @@ cd_util_delete_device (CdUtilPrivate *priv, gchar **values, GError **error)
 	return cd_client_delete_device_sync (priv->client, device, NULL, error);
 }
 
-/**
- * cd_util_delete_profile:
- **/
 static gboolean
 cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1740,9 +1641,6 @@ cd_util_delete_profile (CdUtilPrivate *priv, gchar **values, GError **error)
 	return cd_client_delete_profile_sync (priv->client, profile, NULL, error);
 }
 
-/**
- * cd_util_profile_set_property:
- **/
 static gboolean
 cd_util_profile_set_property (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1776,9 +1674,6 @@ cd_util_profile_set_property (CdUtilPrivate *priv, gchar **values, GError **erro
 					     error);
 }
 
-/**
- * cd_util_device_set_model:
- **/
 static gboolean
 cd_util_device_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1808,9 +1703,6 @@ cd_util_device_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 	return cd_device_set_model_sync (device, values[1], NULL, error);
 }
 
-/**
- * cd_util_device_set_enabled:
- **/
 static gboolean
 cd_util_device_set_enabled (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1842,9 +1734,6 @@ cd_util_device_set_enabled (CdUtilPrivate *priv, gchar **values, GError **error)
 					   error);
 }
 
-/**
- * cd_util_device_get_default_profile:
- **/
 static gboolean
 cd_util_device_get_default_profile (CdUtilPrivate *priv,
 				    gchar **values,
@@ -1888,9 +1777,6 @@ cd_util_device_get_default_profile (CdUtilPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_util_device_set_vendor:
- **/
 static gboolean
 cd_util_device_set_vendor (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1920,9 +1806,6 @@ cd_util_device_set_vendor (CdUtilPrivate *priv, gchar **values, GError **error)
 	return cd_device_set_vendor_sync (device, values[1], NULL, error);
 }
 
-/**
- * cd_util_device_set_serial:
- **/
 static gboolean
 cd_util_device_set_serial (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1952,9 +1835,6 @@ cd_util_device_set_serial (CdUtilPrivate *priv, gchar **values, GError **error)
 	return cd_device_set_serial_sync (device, values[1], NULL, error);
 }
 
-/**
- * cd_util_device_set_kind:
- **/
 static gboolean
 cd_util_device_set_kind (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -1984,9 +1864,6 @@ cd_util_device_set_kind (CdUtilPrivate *priv, gchar **values, GError **error)
 	return cd_device_set_kind_sync (device, cd_device_kind_from_string (values[1]), NULL, error);
 }
 
-/**
- * cd_util_device_inhibit:
- **/
 static gboolean
 cd_util_device_inhibit (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -2041,9 +1918,6 @@ cd_util_device_inhibit (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_device_get_profile_for_qualifiers:
- **/
 static gboolean
 cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 					   gchar **values,
@@ -2085,9 +1959,6 @@ cd_util_device_get_profile_for_qualifiers (CdUtilPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_util_import_profile:
- **/
 static gboolean
 cd_util_import_profile (CdUtilPrivate *priv,
 			gchar **values,
@@ -2118,18 +1989,12 @@ cd_util_import_profile (CdUtilPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_util_ignore_cb:
- **/
 static void
 cd_util_ignore_cb (const gchar *log_domain, GLogLevelFlags log_level,
 		   const gchar *message, gpointer user_data)
 {
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char *argv[])
 {

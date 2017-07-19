@@ -35,9 +35,6 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(PolkitSubject, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(PolkitAuthority, g_object_unref)
 #endif
 
-/**
- * cd_client_error_quark:
- **/
 GQuark
 cd_client_error_quark (void)
 {
@@ -54,9 +51,6 @@ cd_client_error_quark (void)
 	return quark;
 }
 
-/**
- * cd_main_ensure_dbus_path:
- **/
 gchar *
 cd_main_ensure_dbus_path (const gchar *object_path)
 {
@@ -70,9 +64,6 @@ cd_main_ensure_dbus_path (const gchar *object_path)
 	return object_path_tmp;
 }
 
-/**
- * cd_main_get_sender_uid:
- **/
 guint
 cd_main_get_sender_uid (GDBusConnection *connection,
 			const gchar *sender,
@@ -99,9 +90,6 @@ cd_main_get_sender_uid (GDBusConnection *connection,
 	return uid;
 }
 
-/**
- * cd_main_get_sender_pid:
- **/
 guint
 cd_main_get_sender_pid (GDBusConnection *connection,
 			const gchar *sender,
@@ -128,9 +116,6 @@ cd_main_get_sender_pid (GDBusConnection *connection,
 	return pid;
 }
 
-/**
- * cd_main_sender_authenticated:
- **/
 gboolean
 cd_main_sender_authenticated (GDBusConnection *connection,
 			      const gchar *sender,
@@ -220,9 +205,6 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 }
 
 
-/**
- * cd_main_mkdir_with_parents:
- **/
 gboolean
 cd_main_mkdir_with_parents (const gchar *filename, GError **error)
 {

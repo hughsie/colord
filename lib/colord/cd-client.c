@@ -244,9 +244,6 @@ cd_client_get_has_server (CdClient *client)
 
 /**********************************************************************/
 
-/**
- * cd_client_dbus_signal_cb:
- **/
 static void
 cd_client_dbus_signal_cb (GDBusProxy *proxy,
 			  gchar      *sender_name,
@@ -311,9 +308,6 @@ cd_client_dbus_signal_cb (GDBusProxy *proxy,
 	}
 }
 
-/**
- * cd_client_owner_notify_cb:
- **/
 static void
 cd_client_owner_notify_cb (GObject *object,
 			   GParamSpec *pspec,
@@ -476,9 +470,6 @@ cd_client_create_device_finish (CdClient *client,
 	return g_task_propagate_pointer (G_TASK (res), error);
 }
 
-/**
- * cd_client_fixup_dbus_error:
- **/
 static void
 cd_client_fixup_dbus_error (GError *error)
 {
@@ -852,9 +843,6 @@ cd_client_create_profile_for_icc_finish (CdClient *client,
 
 /**********************************************************************/
 
-/**
- * cd_client_import_get_profile_destination:
- **/
 static GFile *
 cd_client_import_get_profile_destination (GFile *file)
 {
@@ -869,9 +857,6 @@ cd_client_import_get_profile_destination (GFile *file)
 	return g_file_new_for_path (destination);
 }
 
-/**
- * cd_client_import_mkdir_and_copy:
- **/
 static gboolean
 cd_client_import_mkdir_and_copy (GFile *source,
 				 GFile *destination,
@@ -1746,9 +1731,6 @@ cd_client_get_standard_space (CdClient *client,
 
 /**********************************************************************/
 
-/**
- * cd_client_get_device_array_from_variant:
- **/
 static GPtrArray *
 cd_client_get_device_array_from_variant (CdClient *client,
 					 GVariant *result)
@@ -1953,9 +1935,6 @@ cd_client_get_devices_by_kind (CdClient *client,
 
 /**********************************************************************/
 
-/**
- * cd_client_get_profile_array_from_variant:
- **/
 static GPtrArray *
 cd_client_get_profile_array_from_variant (CdClient *client,
 					 GVariant *result)
@@ -2069,9 +2048,6 @@ cd_client_get_profiles (CdClient *client,
 
 /**********************************************************************/
 
-/**
- * cd_client_get_sensor_array_from_variant:
- **/
 static GPtrArray *
 cd_client_get_sensor_array_from_variant (CdClient *client,
 					 GVariant *result)

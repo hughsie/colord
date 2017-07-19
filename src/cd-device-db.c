@@ -41,9 +41,6 @@ static gpointer cd_device_db_object = NULL;
 
 G_DEFINE_TYPE_WITH_PRIVATE (CdDeviceDb, cd_device_db, G_TYPE_OBJECT)
 
-/**
- * cd_device_db_load:
- **/
 gboolean  
 cd_device_db_load (CdDeviceDb *ddb,
 		    const gchar *filename,
@@ -106,9 +103,6 @@ cd_device_db_load (CdDeviceDb *ddb,
 	return TRUE;
 }
 
-/**
- * cd_device_db_empty:
- **/
 gboolean  
 cd_device_db_empty (CdDeviceDb *ddb,
 		     GError  **error)
@@ -136,9 +130,6 @@ cd_device_db_empty (CdDeviceDb *ddb,
 	return TRUE;
 }
 
-/**
- * cd_device_db_add:
- **/
 gboolean  
 cd_device_db_add (CdDeviceDb *ddb,
 		  const gchar *device_id,
@@ -175,9 +166,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_device_db_set_property:
- **/
 gboolean  
 cd_device_db_set_property (CdDeviceDb *ddb,
 			   const gchar *device_id,
@@ -217,9 +205,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_device_db_remove:
- **/
 gboolean  
 cd_device_db_remove (CdDeviceDb *ddb,
 		     const gchar *device_id,
@@ -271,9 +256,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_device_db_sqlite_cb:
- **/
 static gint
 cd_device_db_sqlite_cb (void *data,
 			gint argc,
@@ -288,9 +270,6 @@ cd_device_db_sqlite_cb (void *data,
 	return 0;
 }
 
-/**
- * cd_device_db_get_property:
- **/
 gchar *
 cd_device_db_get_property (CdDeviceDb *ddb,
 			   const gchar *device_id,
@@ -347,9 +326,6 @@ out:
 	return value;
 }
 
-/**
- * cd_device_db_get_devices:
- **/
 GPtrArray *
 cd_device_db_get_devices (CdDeviceDb *ddb,
 			  GError  **error)
@@ -390,9 +366,6 @@ out:
 	return array;
 }
 
-/**
- * cd_device_db_get_properties:
- **/
 GPtrArray *
 cd_device_db_get_properties (CdDeviceDb *ddb,
 			     const gchar *device_id,
@@ -436,10 +409,6 @@ out:
 	return array;
 }
 
-/**
- * cd_device_db_class_init:
- * @klass: The CdDeviceDbClass
- **/
 static void
 cd_device_db_class_init (CdDeviceDbClass *klass)
 {
@@ -447,18 +416,11 @@ cd_device_db_class_init (CdDeviceDbClass *klass)
 	object_class->finalize = cd_device_db_finalize;
 }
 
-/**
- * cd_device_db_init:
- **/
 static void
 cd_device_db_init (CdDeviceDb *ddb)
 {
 }
 
-/**
- * cd_device_db_finalize:
- * @object: The object to finalize
- **/
 static void
 cd_device_db_finalize (GObject *object)
 {
@@ -471,11 +433,6 @@ cd_device_db_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_device_db_parent_class)->finalize (object);
 }
 
-/**
- * cd_device_db_new:
- *
- * Return value: a new CdDeviceDb object.
- **/
 CdDeviceDb *
 cd_device_db_new (void)
 {

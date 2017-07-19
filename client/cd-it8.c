@@ -48,9 +48,6 @@ typedef struct {
 	CdUtilPrivateCb	 callback;
 } CdUtilItem;
 
-/**
- * cd_util_item_free:
- **/
 static void
 cd_util_item_free (CdUtilItem *item)
 {
@@ -69,9 +66,6 @@ cd_sort_command_name_cb (CdUtilItem **item1, CdUtilItem **item2)
 	return g_strcmp0 ((*item1)->name, (*item2)->name);
 }
 
-/**
- * cd_util_add:
- **/
 static void
 cd_util_add (GPtrArray *array,
 	     const gchar *name,
@@ -105,9 +99,6 @@ cd_util_add (GPtrArray *array,
 	}
 }
 
-/**
- * cd_util_get_descriptions:
- **/
 static gchar *
 cd_util_get_descriptions (GPtrArray *array)
 {
@@ -151,9 +142,6 @@ cd_util_get_descriptions (GPtrArray *array)
 	return g_string_free (string, FALSE);
 }
 
-/**
- * cd_util_run:
- **/
 static gboolean
 cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError **error)
 {
@@ -188,18 +176,12 @@ typedef struct {
 	CdColorXYZ	 xyz;
 } CdSpectrumData;
 
-/**
- * cd_csv2cmf_data_free:
- **/
 static void
 cd_csv2cmf_data_free (CdSpectrumData *data)
 {
 	g_slice_free (CdSpectrumData, data);
 }
 
-/**
- * cd_util_create_cmf:
- **/
 static gboolean
 cd_util_create_cmf (CdUtilPrivate *priv,
 		    gchar **values,
@@ -314,9 +296,6 @@ cd_util_create_cmf (CdUtilPrivate *priv,
 	return ret;
 }
 
-/**
- * cd_util_calculate_ccmx:
- **/
 static gboolean
 cd_util_calculate_ccmx (CdUtilPrivate *priv,
 			gchar **values,
@@ -370,9 +349,6 @@ cd_util_calculate_ccmx (CdUtilPrivate *priv,
 	return TRUE;
 }
 
-/**
- * cd_util_create_sp:
- **/
 static gboolean
 cd_util_create_sp (CdUtilPrivate *priv,
 		   gchar **values,
@@ -467,18 +443,12 @@ cd_util_create_sp (CdUtilPrivate *priv,
 	return cd_it8_save_to_file (cmf, file, error);
 }
 
-/**
- * cd_util_ignore_cb:
- **/
 static void
 cd_util_ignore_cb (const gchar *log_domain, GLogLevelFlags log_level,
 		   const gchar *message, gpointer user_data)
 {
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char *argv[])
 {

@@ -31,9 +31,6 @@
 #define	CH_RECORD_TYPE_EOF		1
 #define	CH_RECORD_TYPE_EXTENDED		4
 
-/**
- * ch_inhx32_parse_uint8:
- **/
 static guint8
 ch_inhx32_parse_uint8 (const gchar *data, guint pos)
 {

@@ -43,9 +43,6 @@ typedef struct {
 	gboolean	 valid;
 } CdMainDev;
 
-/**
- * cd_main_dev_free:
- **/
 static void
 cd_main_dev_free (CdMainDev *tmp)
 {
@@ -54,9 +51,6 @@ cd_main_dev_free (CdMainDev *tmp)
 	g_free (tmp);
 }
 
-/**
- * cd_main_dev_find_by_id:
- **/
 static CdMainDev *
 cd_main_dev_find_by_id (CdMainPrivate *priv,
 			const gchar *id)
@@ -75,9 +69,6 @@ cd_main_dev_find_by_id (CdMainPrivate *priv,
 	return NULL;
 }
 
-/**
- * cd_client_get_id_for_sane_device:
- **/
 static gchar *
 cd_client_get_id_for_sane_device (const SANE_Device *sane_device)
 {
@@ -89,9 +80,6 @@ typedef struct {
 	gchar		*id;
 } CdMainCreateDeviceHelper;
 
-/**
- * cd_main_colord_create_device_cb:
- **/
 static void
 cd_main_colord_create_device_cb (GObject *source_object,
 				 GAsyncResult *res,
@@ -107,9 +95,6 @@ cd_main_colord_create_device_cb (GObject *source_object,
 		g_warning ("failed to create device: %s", error->message);
 }
 
-/**
- * cd_sane_client_add:
- **/
 static void
 cd_sane_client_add (CdMainPrivate *priv, const SANE_Device *sane_device)
 {
@@ -177,9 +162,6 @@ cd_sane_client_add (CdMainPrivate *priv, const SANE_Device *sane_device)
 				 NULL);
 }
 
-/**
- * cd_main_colord_delete_device_cb:
- **/
 static void
 cd_main_colord_delete_device_cb (GObject *source_object,
 				 GAsyncResult *res,
@@ -193,9 +175,6 @@ cd_main_colord_delete_device_cb (GObject *source_object,
 		g_warning ("failed to delete device: %s", error->message);
 }
 
-/**
- * cd_sane_client_remove:
- **/
 static void
 cd_sane_client_remove (CdMainPrivate *priv, CdDevice *device)
 {
@@ -207,9 +186,6 @@ cd_sane_client_remove (CdMainPrivate *priv, CdDevice *device)
 				 priv);
 }
 
-/**
- * cd_sane_client_refresh:
- **/
 static void
 cd_sane_client_refresh (CdMainPrivate *priv)
 {
@@ -253,9 +229,6 @@ out:
 	g_main_loop_quit (priv->loop);
 }
 
-/**
- * cd_sane_add_device_if_from_colord_sane
- **/
 static void
 cd_sane_add_device_if_from_colord_sane (gpointer data,
 				        gpointer user_data)
@@ -286,9 +259,6 @@ cd_sane_add_device_if_from_colord_sane (gpointer data,
 	}
 }
 
-/**
- * cd_sane_client_populate_existing_devices
- **/
 static void
 cd_sane_populate_existing_devices_cb (GObject *source_object,
 				      GAsyncResult *res,
@@ -312,9 +282,6 @@ cd_sane_populate_existing_devices_cb (GObject *source_object,
 	cd_sane_client_refresh (priv);
 }
 
-/**
- * cd_main_colord_connect_cb:
- **/
 static void
 cd_main_colord_connect_cb (GObject *source_object,
 			   GAsyncResult *res,
@@ -339,9 +306,6 @@ cd_main_colord_connect_cb (GObject *source_object,
 				       priv);
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char *argv[])
 {

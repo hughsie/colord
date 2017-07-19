@@ -74,9 +74,6 @@ static guint signals [SIGNAL_LAST] = { 0 };
 
 G_DEFINE_TYPE (CdSpawn, cd_spawn, G_TYPE_OBJECT)
 
-/**
- * cd_spawn_read_fd_into_buffer:
- **/
 static gboolean
 cd_spawn_read_fd_into_buffer (gint fd, GString *string)
 {
@@ -92,9 +89,6 @@ cd_spawn_read_fd_into_buffer (gint fd, GString *string)
 	return TRUE;
 }
 
-/**
- * cd_spawn_emit_whole_lines:
- **/
 static gboolean
 cd_spawn_emit_whole_lines (CdSpawn *spawn, GString *string)
 {
@@ -128,9 +122,6 @@ cd_spawn_emit_whole_lines (CdSpawn *spawn, GString *string)
 	return TRUE;
 }
 
-/**
- * cd_spawn_exit_type_enum_to_string:
- **/
 static const gchar *
 cd_spawn_exit_type_enum_to_string (CdSpawnExitType type)
 {
@@ -145,9 +136,6 @@ cd_spawn_exit_type_enum_to_string (CdSpawnExitType type)
 	return "unknown";
 }
 
-/**
- * cd_spawn_check_child:
- **/
 static gboolean
 cd_spawn_check_child (CdSpawn *spawn)
 {
@@ -261,9 +249,6 @@ cd_spawn_check_child (CdSpawn *spawn)
 	return G_SOURCE_REMOVE;
 }
 
-/**
- * cd_spawn_sigkill_cb:
- **/
 static gboolean
 cd_spawn_sigkill_cb (CdSpawn *spawn)
 {
@@ -397,9 +382,6 @@ cd_spawn_send_stdin (CdSpawn *spawn, const gchar *command)
 	return TRUE;
 }
 
-/**
- * cd_spawn_argv:
- **/
 gboolean
 cd_spawn_argv (CdSpawn *spawn, gchar **argv, gchar **envp, GError **error)
 {
@@ -461,10 +443,6 @@ cd_spawn_argv (CdSpawn *spawn, gchar **argv, gchar **envp, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_spawn_class_init:
- * @klass: The CdSpawnClass
- **/
 static void
 cd_spawn_class_init (CdSpawnClass *klass)
 {
@@ -491,10 +469,6 @@ cd_spawn_class_init (CdSpawnClass *klass)
 	g_type_class_add_private (klass, sizeof (CdSpawnPrivate));
 }
 
-/**
- * cd_spawn_init:
- * @spawn: This class instance
- **/
 static void
 cd_spawn_init (CdSpawn *spawn)
 {
@@ -511,10 +485,6 @@ cd_spawn_init (CdSpawn *spawn)
 	spawn->priv->stderr_buf = g_string_new ("");
 }
 
-/**
- * cd_spawn_finalize:
- * @object: The object to finalize
- **/
 static void
 cd_spawn_finalize (GObject *object)
 {
@@ -555,11 +525,6 @@ cd_spawn_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_spawn_parent_class)->finalize (object);
 }
 
-/**
- * cd_spawn_new:
- *
- * Return value: a new CdSpawn object.
- **/
 CdSpawn *
 cd_spawn_new (void)
 {

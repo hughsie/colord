@@ -53,9 +53,6 @@ typedef struct
 
 G_DEFINE_TYPE_WITH_PRIVATE (CdInterpAkima, cd_interp_akima, CD_TYPE_INTERP)
 
-/**
- * cd_interp_akima_prepare:
- **/
 static gboolean
 cd_interp_akima_prepare (CdInterp *interp, GError **error)
 {
@@ -154,9 +151,6 @@ cd_interp_akima_prepare (CdInterp *interp, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_interp_akima_eval:
- **/
 static gdouble
 cd_interp_akima_eval (CdInterp *interp, gdouble value, GError **error)
 {
@@ -194,17 +188,11 @@ cd_interp_akima_class_init (CdInterpAkimaClass *klass)
 	object_class->finalize = cd_interp_akima_finalize;
 }
 
-/**
- * cd_interp_akima_init:
- **/
 static void
 cd_interp_akima_init (CdInterpAkima *interp_akima)
 {
 }
 
-/**
- * cd_interp_akima_finalize:
- **/
 static void
 cd_interp_akima_finalize (GObject *object)
 {

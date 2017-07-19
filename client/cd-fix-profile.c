@@ -49,9 +49,6 @@ typedef struct {
 	CdUtilPrivateCb	 callback;
 } CdUtilItem;
 
-/**
- * cd_util_item_free:
- **/
 static void
 cd_util_item_free (CdUtilItem *item)
 {
@@ -69,9 +66,6 @@ cd_sort_command_name_cb (CdUtilItem **item1, CdUtilItem **item2)
 	return g_strcmp0 ((*item1)->name, (*item2)->name);
 }
 
-/**
- * cd_util_add:
- **/
 static void
 cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUtilPrivateCb callback)
 {
@@ -96,9 +90,6 @@ cd_util_add (GPtrArray *array, const gchar *name, const gchar *description, CdUt
 	}
 }
 
-/**
- * cd_util_get_descriptions:
- **/
 static gchar *
 cd_util_get_descriptions (GPtrArray *array)
 {
@@ -141,9 +132,6 @@ cd_util_get_descriptions (GPtrArray *array)
 	return g_string_free (string, FALSE);
 }
 
-/**
- * cd_util_run:
- **/
 static gboolean
 cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError **error)
 {
@@ -171,9 +159,6 @@ cd_util_run (CdUtilPrivate *priv, const gchar *command, gchar **values, GError *
 	return TRUE;
 }
 
-/**
- * cd_util_set_copyright:
- **/
 static gboolean
 cd_util_set_copyright (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -196,9 +181,6 @@ cd_util_set_copyright (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_set_description:
- **/
 static gboolean
 cd_util_set_description (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -214,9 +196,6 @@ cd_util_set_description (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_set_manufacturer:
- **/
 static gboolean
 cd_util_set_manufacturer (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -232,9 +211,6 @@ cd_util_set_manufacturer (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_set_model:
- **/
 static gboolean
 cd_util_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -250,9 +226,6 @@ cd_util_set_model (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_clear_metadata:
- **/
 static gboolean
 cd_util_clear_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -264,9 +237,6 @@ cd_util_clear_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_get_standard_space_filename:
- **/
 static gchar *
 cd_util_get_standard_space_filename (CdUtilPrivate *priv,
 				     CdStandardSpace standard_space,
@@ -340,9 +310,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_util_get_profile_coverage:
- **/
 static gdouble
 cd_util_get_profile_coverage (CdUtilPrivate *priv,
 			      CdStandardSpace standard_space,
@@ -369,9 +336,6 @@ out:
 	return coverage;
 }
 
-/**
- * cd_util_set_version:
- **/
 static gboolean
 cd_util_set_version (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -404,9 +368,6 @@ cd_util_set_version (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_export_tag_data:
- **/
 static gboolean
 cd_util_export_tag_data (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -439,9 +400,6 @@ cd_util_export_tag_data (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_set_fix_metadata:
- **/
 static gboolean
 cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -492,9 +450,6 @@ cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_init_metadata:
- **/
 static gboolean
 cd_util_init_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -518,9 +473,6 @@ cd_util_init_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_remove_metadata:
- **/
 static gboolean
 cd_util_remove_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -536,9 +488,6 @@ cd_util_remove_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_add_metadata:
- **/
 static gboolean
 cd_util_add_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -554,9 +503,6 @@ cd_util_add_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_extract_vcgt:
- **/
 static gboolean
 cd_util_extract_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
 {
@@ -605,18 +551,12 @@ cd_util_extract_vcgt (CdUtilPrivate *priv, gchar **values, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_util_ignore_cb:
- **/
 static void
 cd_util_ignore_cb (const gchar *log_domain, GLogLevelFlags log_level,
 		   const gchar *message, gpointer user_data)
 {
 }
 
-/**
- * cd_util_lcms_error_cb:
- **/
 static void
 cd_util_lcms_error_cb (cmsContext ContextID,
 		       cmsUInt32Number errorcode,
@@ -625,9 +565,6 @@ cd_util_lcms_error_cb (cmsContext ContextID,
 	g_warning ("LCMS error %" G_GUINT32_FORMAT ": %s", errorcode, text);
 }
 
-/**
- * main:
- **/
 int
 main (int argc, char *argv[])
 {

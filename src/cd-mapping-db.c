@@ -41,9 +41,6 @@ static gpointer cd_mapping_db_object = NULL;
 
 G_DEFINE_TYPE_WITH_PRIVATE (CdMappingDb, cd_mapping_db, G_TYPE_OBJECT)
 
-/**
- * cd_mapping_db_convert_cb:
- **/
 static gint
 cd_mapping_db_convert_cb (void *data, gint argc, gchar **argv, gchar **col_name)
 {
@@ -61,9 +58,6 @@ cd_mapping_db_convert_cb (void *data, gint argc, gchar **argv, gchar **col_name)
 	return rc;
 }
 
-/**
- * cd_mapping_db_load:
- **/
 gboolean
 cd_mapping_db_load (CdMappingDb *mdb,
 		    const gchar *filename,
@@ -171,9 +165,6 @@ cd_mapping_db_load (CdMappingDb *mdb,
 	return TRUE;
 }
 
-/**
- * cd_mapping_db_empty:
- **/
 gboolean
 cd_mapping_db_empty (CdMappingDb *mdb,
 		     GError  **error)
@@ -201,9 +192,6 @@ cd_mapping_db_empty (CdMappingDb *mdb,
 	return TRUE;
 }
 
-/**
- * cd_mapping_db_add:
- **/
 gboolean
 cd_mapping_db_add (CdMappingDb *mdb,
 		   const gchar *device_id,
@@ -333,9 +321,6 @@ out:
 	return ret;
 }
 
-/**
- * cd_mapping_db_sqlite_cb:
- **/
 static gint
 cd_mapping_db_sqlite_cb (void *data,
 			 gint argc,
@@ -450,9 +435,6 @@ out:
 	return array;
 }
 
-/**
- * cd_mapping_db_sqlite_timestamp_cb:
- **/
 static gint
 cd_mapping_db_sqlite_timestamp_cb (void *data,
 				   gint argc,
@@ -525,10 +507,6 @@ out:
 	return timestamp;
 }
 
-/**
- * cd_mapping_db_class_init:
- * @klass: The CdMappingDbClass
- **/
 static void
 cd_mapping_db_class_init (CdMappingDbClass *klass)
 {
@@ -536,18 +514,11 @@ cd_mapping_db_class_init (CdMappingDbClass *klass)
 	object_class->finalize = cd_mapping_db_finalize;
 }
 
-/**
- * cd_mapping_db_init:
- **/
 static void
 cd_mapping_db_init (CdMappingDb *mdb)
 {
 }
 
-/**
- * cd_mapping_db_finalize:
- * @object: The object to finalize
- **/
 static void
 cd_mapping_db_finalize (GObject *object)
 {
@@ -560,11 +531,6 @@ cd_mapping_db_finalize (GObject *object)
 	G_OBJECT_CLASS (cd_mapping_db_parent_class)->finalize (object);
 }
 
-/**
- * cd_mapping_db_new:
- *
- * Return value: a new CdMappingDb object.
- **/
 CdMappingDb *
 cd_mapping_db_new (void)
 {

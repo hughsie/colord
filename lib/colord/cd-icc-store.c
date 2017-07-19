@@ -74,9 +74,6 @@ typedef struct {
 	GFileMonitor	*monitor;
 } CdIccStoreDirHelper;
 
-/**
- * cd_icc_store_helper_free:
- **/
 static void
 cd_icc_store_helper_free (CdIccStoreDirHelper *helper)
 {
@@ -146,9 +143,6 @@ cd_icc_store_find_by_checksum (CdIccStore *store, const gchar *checksum)
 	return NULL;
 }
 
-/**
- * cd_icc_store_find_by_directory:
- **/
 static CdIccStoreDirHelper *
 cd_icc_store_find_by_directory (CdIccStore *store, const gchar *path)
 {
@@ -165,9 +159,6 @@ cd_icc_store_find_by_directory (CdIccStore *store, const gchar *path)
 	return NULL;
 }
 
-/**
- * cd_icc_store_remove_icc:
- **/
 static gboolean
 cd_icc_store_remove_icc (CdIccStore *store, const gchar *filename)
 {
@@ -190,9 +181,6 @@ cd_icc_store_remove_icc (CdIccStore *store, const gchar *filename)
 	return TRUE;
 }
 
-/**
- * cd_icc_store_add_icc:
- **/
 static gboolean
 cd_icc_store_add_icc (CdIccStore *store, GFile *file, GError **error)
 {
@@ -261,9 +249,6 @@ cd_icc_store_add_icc (CdIccStore *store, GFile *file, GError **error)
 	return TRUE;
 }
 
-/**
- * cd_icc_store_created_query_info_cb:
- **/
 static void
 cd_icc_store_created_query_info_cb (GObject *source_object,
 				    GAsyncResult *res,
@@ -288,9 +273,6 @@ cd_icc_store_created_query_info_cb (GObject *source_object,
 		g_warning ("failed to search file: %s", error->message);
 }
 
-/**
- * cd_icc_store_remove_from_prefix:
- **/
 static void
 cd_icc_store_remove_from_prefix (CdIccStore *store, const gchar *prefix)
 {
@@ -309,9 +291,6 @@ cd_icc_store_remove_from_prefix (CdIccStore *store, const gchar *prefix)
 	}
 }
 
-/**
- * cd_icc_store_file_monitor_changed_cb:
- **/
 static void
 cd_icc_store_file_monitor_changed_cb (GFileMonitor *monitor,
 				      GFile *file,
@@ -370,9 +349,6 @@ cd_icc_store_file_monitor_changed_cb (GFileMonitor *monitor,
 	}
 }
 
-/**
- * cd_icc_store_search_path_child:
- **/
 static gboolean
 cd_icc_store_search_path_child (CdIccStore *store,
 				const gchar *path,
@@ -415,9 +391,6 @@ cd_icc_store_search_path_child (CdIccStore *store,
 	return cd_icc_store_add_icc (store, file, error);
 }
 
-/**
- * cd_icc_store_search_path:
- **/
 static gboolean
 cd_icc_store_search_path (CdIccStore *store,
 			  const gchar *path,
@@ -692,9 +665,6 @@ cd_icc_store_search_location (CdIccStore *store,
 	return cd_icc_store_search_path (store, location, 0, cancellable, error);
 }
 
-/**
- * cd_icc_store_class_init:
- **/
 static void
 cd_icc_store_class_init (CdIccStoreClass *klass)
 {
@@ -733,9 +703,6 @@ cd_icc_store_class_init (CdIccStoreClass *klass)
 			      G_TYPE_NONE, 1, CD_TYPE_ICC);
 }
 
-/**
- * cd_icc_store_init:
- **/
 static void
 cd_icc_store_init (CdIccStore *store)
 {
@@ -745,9 +712,6 @@ cd_icc_store_init (CdIccStore *store)
 	priv->directory_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_icc_store_helper_free);
 }
 
-/**
- * cd_icc_store_finalize:
- **/
 static void
 cd_icc_store_finalize (GObject *object)
 {

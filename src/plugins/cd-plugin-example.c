@@ -27,18 +27,12 @@ struct CdPluginPrivate {
 	guint			 dummy;
 };
 
-/**
- * cd_plugin_get_description:
- */
 const gchar *
 cd_plugin_get_description (void)
 {
 	return "A dummy plugin that doesn't do anything";
 }
 
-/**
- * cd_plugin_initialize:
- */
 void
 cd_plugin_initialize (CdPlugin *plugin)
 {
@@ -47,9 +41,6 @@ cd_plugin_initialize (CdPlugin *plugin)
 	plugin->priv->dummy = 999;
 }
 
-/**
- * cd_plugin_destroy:
- */
 void
 cd_plugin_destroy (CdPlugin *plugin)
 {

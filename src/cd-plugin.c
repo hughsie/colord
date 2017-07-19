@@ -23,9 +23,6 @@
 
 #include "cd-plugin.h"
 
-/**
- * cd_plugin_device_added:
- **/
 void
 cd_plugin_device_added (CdPlugin *plugin, CdDevice *device)
 {
@@ -35,9 +32,6 @@ cd_plugin_device_added (CdPlugin *plugin, CdDevice *device)
 	plugin->device_added (plugin, device, plugin->user_data);
 }
 
-/**
- * cd_plugin_device_removed:
- **/
 void
 cd_plugin_device_removed (CdPlugin *plugin, CdDevice *device)
 {
