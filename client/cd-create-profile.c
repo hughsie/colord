@@ -100,8 +100,10 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	g_autofree gchar *debug_stdout = NULL;
 	g_autofree gchar *output_fn = NULL;
 	g_autofree gchar *ti3_fn = NULL;
+	g_autofree gchar *tmpdir = NULL;
 	g_autoptr(GFile) output_file = NULL;
 	g_autoptr(GFile) ti3_file = NULL;
+	g_autoptr(GFile) tmpdir_file = NULL;
 	g_autoptr(GPtrArray) argv = NULL;
 
 #ifndef TOOL_COLPROF
@@ -192,8 +194,15 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 				     "XML error: no data_ti3");
 		return FALSE;
 	}
+
+	/* create temp location */
+	tmpdir = g_dir_make_tmp ("cd-create-profile-XXXXXX", error);
+	if (tmpdir == NULL)
+		return FALSE;
+	tmpdir_file = g_file_new_for_path (tmpdir);
+
 	data_ti3 = cd_dom_get_node_data (tmp);
-	ti3_fn = g_strdup_printf ("/tmp/%s.ti3", basename);
+	ti3_fn = g_strdup_printf ("%s/%s.ti3", tmpdir, basename);
 	ti3_file = g_file_new_for_path (ti3_fn);
 	ret = g_file_replace_contents (ti3_file,
 				       data_ti3,
@@ -208,7 +217,7 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 		return FALSE;
 
 	/* ensure temporary icc profile does not already exist */
-	output_fn = g_strdup_printf ("/tmp/%s.icc", basename);
+	output_fn = g_strdup_printf ("%s/%s.icc", tmpdir, basename);
 	output_file = g_file_new_for_path (output_fn);
 	if (g_file_query_exists (output_file, NULL)) {
 		if (!g_file_delete (output_file, NULL, error))
@@ -219,7 +228,7 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	g_ptr_array_add (argv, g_strdup_printf ("-O%s.icc", basename));
 	g_ptr_array_add (argv, g_strdup (basename));
 	g_ptr_array_add (argv, NULL);
-	ret = g_spawn_sync ("/tmp",
+	ret = g_spawn_sync (tmpdir,
 			    (gchar **) argv->pdata,
 			    NULL,
 			    0,
@@ -244,7 +253,7 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	if (!g_file_load_contents (output_file, NULL, &data, &len, NULL, error))
 		return FALSE;
 
-	/* open /tmp/$basename.icc as hProfile */
+	/* open $tmpdir/$basename.icc as hProfile */
 	priv->lcms_profile = cmsOpenProfileFromMemTHR (cd_icc_get_context (priv->icc),
 						       data, len);
 	if (priv->lcms_profile == NULL) {
@@ -258,6 +267,8 @@ cd_util_create_colprof (CdUtilPrivate *priv,
 	if (!g_file_delete (output_file, NULL, error))
 		return FALSE;
 	if (!g_file_delete (ti3_file, NULL, error))
+		return FALSE;
+	if (!g_file_delete (tmpdir_file, NULL, error))
 		return FALSE;
 	return TRUE;
 }
