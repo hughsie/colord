@@ -57,6 +57,7 @@ generatedprofiles =					\
 	NTSC-RGB.icc					\
 	PAL-RGB.icc					\
 	ProPhotoRGB.icc					\
+	Rec709.icc					\
 	SMPTE-C-RGB.icc					\
 	sRGB.icc					\
 	WideGamutRGB.icc				\
@@ -144,6 +145,10 @@ ProPhotoRGB.icc: ProPhotoRGB.xml
 	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
 		--output $@				\
 		$(builddir)/ProPhotoRGB.xml
+Rec709.icc: Rec709.xml
+	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
+		--output $@				\
+		$(builddir)/Rec709.xml
 SMPTE-C-RGB.icc: SMPTE-C-RGB.xml
 	$(AM_V_GEN) $(CD_CREATE_PROFILE)		\
 		--output $@				\

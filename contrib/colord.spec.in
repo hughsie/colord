@@ -213,6 +213,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %dir %{_icccolordir}/colord
 %{_icccolordir}/colord/AdobeRGB1998.icc
 %{_icccolordir}/colord/ProPhotoRGB.icc
+%{_icccolordir}/colord/Rec709.icc
 %{_icccolordir}/colord/SMPTE-C-RGB.icc
 %{_icccolordir}/colord/sRGB.icc
 
