@@ -414,7 +414,7 @@ cd_util_create_x11_gamma (CdUtilPrivate *priv,
  * Values taken from lcms2.
  **/
 static cmsToneCurve *
-cd_util_build_srgb_gamma (void)
+cd_util_build_srgb_gamma (CdUtilPrivate *priv)
 {
 	cmsFloat64Number params[5];
 	params[0] = 2.4;
@@ -422,14 +422,14 @@ cd_util_build_srgb_gamma (void)
 	params[2] = 0.055 / 1.055;
 	params[3] = 1. / 12.92;
 	params[4] = 0.04045;
-	return cmsBuildParametricToneCurve (NULL, 4, params);
+	return cmsBuildParametricToneCurve (cd_icc_get_context (priv->icc), 4, params);
 }
 
 /**
  * cd_util_build_lstar_gamma:
  **/
 static cmsToneCurve *
-cd_util_build_lstar_gamma (void)
+cd_util_build_lstar_gamma (CdUtilPrivate *priv)
 {
 	cmsFloat64Number params[5];
 	params[0] = 3.000000;
@@ -437,14 +437,14 @@ cd_util_build_lstar_gamma (void)
 	params[2] = 0.137924;
 	params[3] = 0.110703;
 	params[4] = 0.080002;
-	return cmsBuildParametricToneCurve (NULL, 4, params);
+	return cmsBuildParametricToneCurve (cd_icc_get_context (priv->icc), 4, params);
 }
 
 /**
  * cd_util_build_rec709_gamma:
  **/
 static cmsToneCurve *
-cd_util_build_rec709_gamma (void)
+cd_util_build_rec709_gamma (CdUtilPrivate *priv)
 {
 	cmsFloat64Number params[5];
 	params[0] = 1.0 / 0.45;
@@ -452,7 +452,8 @@ cd_util_build_rec709_gamma (void)
 	params[2] = 0.099;
 	params[3] = 4.500;
 	params[4] = 0.018;
-	return cmsBuildParametricToneCurve (NULL, LCMS_CURVE_PLUGIN_TYPE_REC709, params);
+	return cmsBuildParametricToneCurve (cd_icc_get_context (priv->icc),
+					    LCMS_CURVE_PLUGIN_TYPE_REC709, params);
 }
 
 /**
@@ -482,15 +483,15 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 	}
 	data = cd_dom_get_node_data (tmp);
 	if (g_strcmp0 (data, "sRGB") == 0) {
-		transfer[0] = cd_util_build_srgb_gamma ();
+		transfer[0] = cd_util_build_srgb_gamma (priv);
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	} else if (g_strcmp0 (data, "L*") == 0) {
-		transfer[0] = cd_util_build_lstar_gamma ();
+		transfer[0] = cd_util_build_lstar_gamma (priv);
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	} else if (g_strcmp0 (data, "Rec709") == 0) {
-		transfer[0] = cd_util_build_rec709_gamma ();
+		transfer[0] = cd_util_build_rec709_gamma (priv);
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
 	} else {
@@ -505,6 +506,13 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 		transfer[0] = cmsBuildGamma (NULL, curve_gamma);
 		transfer[1] = transfer[0];
 		transfer[2] = transfer[0];
+	}
+	if (transfer[0] == NULL) {
+		ret = FALSE;
+		g_set_error (error, 1, 0,
+			     "failed to set transfer function for %s",
+			     data);
+		goto out;
 	}
 
 	/* values taken from https://en.wikipedia.org/wiki/Standard_illuminant */
@@ -587,6 +595,12 @@ cd_util_create_standard_space (CdUtilPrivate *priv,
 						     &white,
 						     &primaries,
 						     transfer);
+	if (priv->lcms_profile == NULL) {
+		ret = FALSE;
+		g_set_error_literal (error, 1, 0,
+				     "Failed to create profile");
+		goto out;
+	}
 	ret = TRUE;
 out:
 	cmsFreeToneCurve (transfer[0]);
