@@ -63,7 +63,6 @@ typedef struct {
 	CdSensorClient		*sensor_client;
 #endif
 	GPtrArray		*sensors;
-	GHashTable		*standard_spaces;
 	GPtrArray		*plugins;
 	GMainLoop		*loop;
 	gboolean		 create_dummy_sensor;
@@ -731,17 +730,6 @@ cd_main_profile_register_on_bus (CdMainPrivate *priv,
 }
 
 static CdProfile *
-cd_main_get_standard_space_override (CdMainPrivate *priv,
-				     const gchar *standard_space)
-{
-	CdProfile *profile;
-	profile = g_hash_table_lookup (priv->standard_spaces, standard_space);
-	if (profile == NULL)
-		return NULL;
-	return g_object_ref (profile);
-}
-
-static CdProfile *
 cd_main_get_standard_space_metadata (CdMainPrivate *priv,
 				     const gchar *standard_space)
 {
@@ -1073,10 +1061,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		g_debug ("CdMain: %s:GetStandardSpace(%s)",
 			 sender, device_id);
 
-		/* first search overrides */
-		profile = cd_main_get_standard_space_override (priv, device_id);
-		if (profile == NULL)
-			profile = cd_main_get_standard_space_metadata (priv, device_id);
+		/* will also return overrides */
+		profile = cd_main_get_standard_space_metadata (priv, device_id);
 		if (profile == NULL) {
 			g_dbus_method_invocation_return_error (invocation,
 							       CD_CLIENT_ERROR,
@@ -2414,10 +2400,6 @@ main (int argc, char *argv[])
 	priv->devices_array = cd_device_array_new ();
 	priv->profiles_array = cd_profile_array_new ();
 	priv->sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
-	priv->standard_spaces = g_hash_table_new_full (g_str_hash,
-						 g_str_equal,
-						 g_free,
-						 (GDestroyNotify) g_object_unref);
 #ifdef HAVE_UDEV
 	priv->sensor_client = cd_sensor_client_new ();
 	g_signal_connect (priv->sensor_client, "sensor-added",
@@ -2549,7 +2531,6 @@ out:
 			g_ptr_array_unref (priv->sensors);
 		if (priv->plugins != NULL)
 			g_ptr_array_unref (priv->plugins);
-		g_hash_table_destroy (priv->standard_spaces);
 #ifdef HAVE_UDEV
 		if (priv->sensor_client != NULL)
 			g_object_unref (priv->sensor_client);
