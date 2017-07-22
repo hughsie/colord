@@ -19,7 +19,7 @@ AM_CPPFLAGS =							\
 	-I$(top_builddir)/lib					\
 	-I.							\
 	-DCD_COMPILATION					\
-	-DCH_COMPILATION					\
+	-DCD_COMPILATION					\
 	-DG_USB_API_IS_SUBJECT_TO_CHANGE			\
 	-DG_LOG_DOMAIN=\"Ch\"					\
 	-DTOP_SRCDIR=\""$(top_srcdir)"\" 			\
