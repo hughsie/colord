@@ -1,2 +1,3 @@
+contrib/session-helper/cd-debug.c
 contrib/session-helper/cd-example.ui
 policy/org.freedesktop.color.policy.in

@@ -36,8 +36,8 @@ libexec_PROGRAMS =					\
 	colord-session
 
 colord_session_SOURCES =				\
-	$(top_srcdir)/src/cd-debug.c			\
-	$(top_srcdir)/src/cd-debug.h			\
+	cd-debug.c					\
+	cd-debug.h					\
 	cd-session.h					\
 	cd-state.c					\
 	cd-state.h					\
