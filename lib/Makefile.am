@@ -6,9 +6,7 @@ SUBDIRS +=						\
 	compat
 endif
 
-if HAVE_GUSB
 SUBDIRS +=						\
 	colorhug
-endif
 
 -include $(top_srcdir)/git.mk

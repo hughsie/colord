@@ -162,14 +162,7 @@ AC_ARG_ENABLE(session_helper, AS_HELP_STRING([--enable-session-helper],[Enable S
 	      enable_session_helper=$enableval, enable_session_helper=$enable_unix)
 AM_CONDITIONAL(HAVE_SESSION_HELPER, test x$enable_session_helper = xyes)
 
-AC_ARG_ENABLE(gusb, AS_HELP_STRING([--enable-gusb],[Enable GUSB support]),
-	      enable_gusb=$enableval, enable_gusb=yes)
-if test x$enable_gusb != xno; then
-	PKG_CHECK_MODULES(GUSB, gusb >= 0.2.7)
-	AC_DEFINE(HAVE_GUSB,1,[whether gusb is available])
-fi
-AM_CONDITIONAL(HAVE_GUSB, test x$enable_gusb = xyes)
-
+PKG_CHECK_MODULES(GUSB, gusb >= 0.2.7)
 PKG_CHECK_MODULES(LCMS, lcms2 >= 2.6)
 
 PKG_CHECK_MODULES(SQLITE, sqlite3)
@@ -476,7 +469,6 @@ echo "
         Reverse engineering tools: ${enable_reverse}
         BASH completion support:   ${enable_bash_completion}
         SANE support:              ${has_sane}
-        GUsb support:              ${enable_gusb}
         Extra print profiles:      ${enable_print_profiles}
         Install tests:             ${enable_installed_tests}
         ArgyllCMS sensor:          ${enable_argyllcms_sensor}

@@ -12,7 +12,6 @@ AM_CPPFLAGS =						\
 	-DG_USB_API_IS_SUBJECT_TO_CHANGE		\
 	-DLOCALEDIR=\""$(localedir)"\"
 
-if HAVE_GUSB
 plugindir = $(libdir)/colord-sensors
 plugin_LTLIBRARIES =					\
 	libcolord_sensor_spark.la
@@ -28,6 +27,5 @@ libcolord_sensor_spark_la_LIBADD =			\
 	$(GUSB_LIBS)
 libcolord_sensor_spark_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_spark_la_CFLAGS = $(WARN_CFLAGS)
-endif
 
 -include $(top_srcdir)/git.mk

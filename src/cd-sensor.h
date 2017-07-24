@@ -29,10 +29,7 @@
 #include <colord-private.h>
 
 #include <gudev/gudev.h>
-
-#ifdef HAVE_GUSB
 #include <gusb.h>
-#endif
 
 #include "cd-common.h"
 
@@ -75,12 +72,10 @@ gboolean	 cd_sensor_set_from_device	(CdSensor		*sensor,
 GUdevDevice	*cd_sensor_get_device		(CdSensor		*sensor);
 void		 cd_sensor_set_index		(CdSensor		*sensor,
 						 guint			 idx);
-#ifdef HAVE_GUSB
 GUsbDevice	*cd_sensor_open_usb_device	(CdSensor		*sensor,
 						 gint			 config,
 						 gint			 interface,
 						 GError			**error);
-#endif
 void		 cd_sensor_button_pressed	(CdSensor		*sensor);
 gboolean	 cd_sensor_dump			(CdSensor		*sensor,
 						 GString		*data,
