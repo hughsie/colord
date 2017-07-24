@@ -8,7 +8,6 @@ SUBDIRS = 						\
 	tests						\
 	ti1
 
-if HAVE_DAEMON
 dbusdir = $(sysconfdir)/dbus-1/system.d
 dist_dbus_DATA = org.freedesktop.ColorManager.conf
 
@@ -22,8 +21,6 @@ $(dbusservicemain_DATA): $(dbusservicemain_in_files) Makefile
 systemdservicemain_in_files = colord.service.in
 
 dist_tmpfiles_DATA = colord.conf
-
-endif
 
 if HAVE_SYSTEMD
 systemdservicemaindir = $(systemdsystemunitdir)

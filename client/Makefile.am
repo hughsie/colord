@@ -23,12 +23,8 @@ bin_PROGRAMS =						\
 	cd-create-profile				\
 	cd-iccdump					\
 	cd-it8						\
-	cd-fix-profile
-
-if HAVE_DAEMON
-bin_PROGRAMS +=						\
+	cd-fix-profile					\
 	colormgr
-endif
 
 colormgr_SOURCES =					\
 	cd-util.c

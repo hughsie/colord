@@ -20,13 +20,11 @@ SUBDIRS += 						\
 	data
 
 # this needs data/profiles/*.icc
-if HAVE_DAEMON
 SUBDIRS += 						\
 	man						\
 	policy						\
 	rules						\
 	src
-endif
 
 snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-$(VERSION)-`date +"%Y%m%d"`
