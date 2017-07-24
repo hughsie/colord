@@ -2218,7 +2218,7 @@ colord_device_seat_func (void)
 {
 	CdClient *client;
 	CdDevice *device;
-#ifdef HAVE_LIBSYSTEMD_LOGIN
+#ifdef HAVE_SYSTEMD
 	const gchar *tmp;
 #endif
 	gboolean ret;
@@ -2256,7 +2256,7 @@ colord_device_seat_func (void)
 	g_assert (ret);
 
 	/* check the seat */
-#ifdef HAVE_LIBSYSTEMD_LOGIN
+#ifdef HAVE_SYSTEMD
 	tmp = cd_device_get_seat (device);
 	if (tmp != NULL)
 		g_assert_cmpstr (tmp, ==, "seat0");

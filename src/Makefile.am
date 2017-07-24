@@ -18,7 +18,7 @@ AM_CPPFLAGS =						\
 	$(GUDEV_CFLAGS)					\
 	$(GUSB_CFLAGS)					\
 	$(SQLITE_CFLAGS)				\
-	$(LIBSYSTEMD_LOGIN_CFLAGS)			\
+	$(LIBSYSTEMD_CFLAGS)			\
 	-I$(top_srcdir)/lib				\
 	-I$(top_builddir)/lib				\
 	-I$(top_srcdir)/lib/colord			\
@@ -102,7 +102,7 @@ colord_LDADD =						\
 	$(LCMS_LIBS)					\
 	$(GUDEV_LIBS)					\
 	$(GUSB_LIBS)					\
-	$(LIBSYSTEMD_LOGIN_LIBS)			\
+	$(LIBSYSTEMD_LIBS)			\
 	$(COLORD_PRIVATE_LIBS)				\
 	$(GLIB_LIBS)					\
 	$(GLIB_UNIX_LIBS)
@@ -151,7 +151,7 @@ cd_self_test_LDADD =					\
 	$(POLKIT_LIBS)					\
 	$(LCMS_LIBS)					\
 	$(SQLITE_LIBS)					\
-	$(LIBSYSTEMD_LOGIN_LIBS)			\
+	$(LIBSYSTEMD_LIBS)			\
 	$(GLIB_LIBS)					\
 	$(GLIB_UNIX_LIBS)
 

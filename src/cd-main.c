@@ -29,7 +29,7 @@
 #include <glib/gi18n.h>
 #include <locale.h>
 
-#ifdef HAVE_LIBSYSTEMD_LOGIN
+#ifdef HAVE_SYSTEMD
 #include <systemd/sd-login.h>
 #endif
 
@@ -483,7 +483,7 @@ static gchar *
 cd_main_get_seat_for_process (guint pid)
 {
 	gchar *seat = NULL;
-#ifdef HAVE_LIBSYSTEMD_LOGIN
+#ifdef HAVE_SYSTEMD
 	char *sd_seat = NULL;
 	char *sd_session = NULL;
 	gint rc;

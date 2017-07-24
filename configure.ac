@@ -217,7 +217,6 @@ AC_ARG_WITH([systemdsystemunitdir],
 if test "x$with_systemdsystemunitdir" != "xno"; then
 	AC_SUBST([systemdsystemunitdir], [$with_systemdsystemunitdir])
 fi
-AM_CONDITIONAL(HAVE_SYSTEMD, [test -n "$systemdsystemunitdir"])
 
 dnl ---------------------------------------------------------------------------
 dnl - Where to install tmpfiles.d snippet rules
@@ -240,23 +239,20 @@ fi
 AM_CONDITIONAL(BUILD_LIBCOLORDCOMPAT, test x$build_libcolordcompat = xyes)
 
 dnl ---------------------------------------------------------------------------
-dnl - Use systemd-login to track the process seat
+dnl - Use systemd to track the process seat
 dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(systemd-login, AS_HELP_STRING([--enable-systemd-login],[Build systemd seat-tracking support]),
-	      enable_systemd_login=$enableval, enable_systemd_login=yes)
-AM_CONDITIONAL(HAVE_LIBSYSTEMD_LOGIN, test x$enable_systemd_login = xyes)
-if test x$enable_systemd_login != xno; then
+AC_ARG_ENABLE(systemd, AS_HELP_STRING([--enable-systemd],[Build systemd seat-tracking support]),
+	      enable_systemd=$enableval, enable_systemd=yes)
+AM_CONDITIONAL(HAVE_SYSTEMD, test x$enable_systemd = xyes)
+if test x$enable_systemd != xno; then
 	PKG_CHECK_MODULES(LIBSYSTEMD,
 			  [libsystemd],
-			  [LIBSYSTEMD_LOGIN_CFLAGS=$LIBSYSTEMD_CFLAGS;
-			   LIBSYSTEMD_LOGIN_LIBS=$LIBSYSTEMD_LIBS],
-			  [PKG_CHECK_MODULES(LIBSYSTEMD_LOGIN,
-			                     [libsystemd-login >= 44])])
-	AC_DEFINE([HAVE_LIBSYSTEMD_LOGIN], 1, [Define to 1 if systemd login is available])
+			  [LIBSYSTEMD_CFLAGS=$LIBSYSTEMD_CFLAGS;
+			   LIBSYSTEMD_LIBS=$LIBSYSTEMD_LIBS],
+			  [PKG_CHECK_MODULES(LIBSYSTEMD,
+			                     [libsystemd >= 44])])
+	AC_DEFINE([HAVE_SYSTEMD], 1, [Define to 1 if systemd login is available])
 fi
-AC_SUBST(HAVE_LIBSYSTEMD_LOGIN)
-AC_SUBST(LIBSYSTEMD_LOGIN_CFLAGS)
-AC_SUBST(LIBSYSTEMD_LOGIN_LIBS)
 
 dnl ---------------------------------------------------------------------------
 dnl - Where to install udev rules
@@ -476,7 +472,7 @@ echo "
         Vala API generator:        ${has_vapigen}
         Daemon user:               ${daemon_user}
         udev rules.d dir:          ${with_udevrulesdir}
-        systemd-login support:     ${enable_systemd_login}
+        systemd support:           ${enable_systemd}
         systemd service dir:       ${with_systemdsystemunitdir}
         tmpfiles.d dir:            ${with_tmpfilesdir}
         Session helper support:    ${enable_session_helper}

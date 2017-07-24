@@ -58,7 +58,7 @@ Compiling for Microsoft Windows
             --disable-print-profiles                \
             --disable-sane                          \
             --disable-session-example               \
-            --disable-systemd-login                 \
+            --disable-systemd                 \
             --disable-udev                          \
             --disable-unix                          \
             --without-pic                           \
