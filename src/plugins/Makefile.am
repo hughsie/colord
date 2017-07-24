@@ -10,7 +10,6 @@ AM_CPPFLAGS =						\
 	$(GUDEV_CFLAGS)					\
 	-DG_LOG_DOMAIN=\"Cd\"				\
 	-DCD_COMPILATION				\
-	-DCD_DISABLE_DEPRECATED				\
 	-DCOLORD_SANE_BINARY=\""$(libexecdir)/colord-sane"\"	\
 	-I$(top_srcdir)/lib				\
 	-I$(top_builddir)/lib				\

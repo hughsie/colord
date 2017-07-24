@@ -445,6 +445,13 @@ po/Makefile.in
 src/Makefile
 src/plugins/Makefile
 src/sensors/Makefile
+src/sensors/argyll/Makefile
+src/sensors/colorhug/Makefile
+src/sensors/dtp94/Makefile
+src/sensors/dummy/Makefile
+src/sensors/huey/Makefile
+src/sensors/munki/Makefile
+src/sensors/spark/Makefile
 client/Makefile
 lib/Makefile
 lib/colord/cd-version.h
