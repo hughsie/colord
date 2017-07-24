@@ -461,10 +461,6 @@ lib/colorhug/Makefile
 lib/colorhug/colorhug.pc
 lib/colorhug/ch-version.h
 lib/compat/Makefile
-lib/dtp94/Makefile
-lib/huey/Makefile
-lib/munki/Makefile
-lib/ospark/Makefile
 ])
 AC_OUTPUT
 

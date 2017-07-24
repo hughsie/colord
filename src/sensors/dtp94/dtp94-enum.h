@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#if !defined (__DTP94_H_INSIDE__) && !defined (DTP94_COMPILATION)
-#error "Only <dtp94.h> can be included directly."
-#endif
-
 #ifndef __DTP94_ENUM_H
 #define __DTP94_ENUM_H
 

@@ -11,6 +11,7 @@ AM_CPPFLAGS =						\
 	$(GLIB_CFLAGS)					\
 	$(GUSB_CFLAGS)					\
 	$(GUDEV_CFLAGS)					\
+	$(POLKIT_CFLAGS)				\
 	-I$(top_srcdir)/src				\
 	-I$(top_srcdir)/lib				\
 	-I$(top_builddir)/lib				\
@@ -33,13 +34,13 @@ noinst_PROGRAMS =					\
 	cd-parse-beagle
 
 cd_parse_beagle_SOURCES =				\
+	huey/huey-enum.c				\
+	munki/munki-enum.c				\
 	cd-parse-beagle.c
 
 cd_parse_beagle_LDADD =					\
 	$(COLORD_PRIVATE_LIBS)				\
-	$(GLIB_LIBS)					\
-	$(top_builddir)/lib/huey/libhuey-private.la	\
-	$(top_builddir)/lib/munki/libmunki-private.la
+	$(GLIB_LIBS)
 
 cd_parse_beagle_CFLAGS =				\
 	$(WARN_CFLAGS)

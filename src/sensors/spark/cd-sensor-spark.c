@@ -24,9 +24,11 @@
 
 #include <glib-object.h>
 #include <colord-private.h>
-#include <ospark/ospark.h>
 
 #include "../src/cd-sensor.h"
+
+#include "osp-device.h"
+#include "osp-enum.h"
 
 typedef struct
 {

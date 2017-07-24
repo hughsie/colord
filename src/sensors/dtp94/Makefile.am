@@ -18,11 +18,14 @@ plugin_LTLIBRARIES =					\
 	libcolord_sensor_dtp94.la
 
 libcolord_sensor_dtp94_la_SOURCES =			\
+	dtp94-device.c					\
+	dtp94-device.h					\
+	dtp94-enum.c					\
+	dtp94-enum.h					\
 	cd-sensor-dtp94.c
 libcolord_sensor_dtp94_la_LIBADD =			\
 	$(GLIB_LIBS)					\
-	$(GUSB_LIBS)					\
-	$(top_builddir)/lib/dtp94/libdtp94-private.la
+	$(GUSB_LIBS)
 libcolord_sensor_dtp94_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_dtp94_la_CFLAGS = $(WARN_CFLAGS)
 endif

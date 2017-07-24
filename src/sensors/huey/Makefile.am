@@ -18,11 +18,16 @@ plugin_LTLIBRARIES =					\
 	libcolord_sensor_huey.la
 
 libcolord_sensor_huey_la_SOURCES =			\
+	huey-ctx.c					\
+	huey-ctx.h					\
+	huey-device.c					\
+	huey-device.h					\
+	huey-enum.c					\
+	huey-enum.h					\
 	cd-sensor-huey.c
 libcolord_sensor_huey_la_LIBADD =			\
 	$(GLIB_LIBS)					\
-	$(GUSB_LIBS)					\
-	$(top_builddir)/lib/huey/libhuey-private.la
+	$(GUSB_LIBS)
 libcolord_sensor_huey_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_huey_la_CFLAGS = $(WARN_CFLAGS)
 endif

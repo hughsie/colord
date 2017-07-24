@@ -28,7 +28,8 @@
 
 #include "../src/cd-sensor.h"
 
-#include <dtp94/dtp94.h>
+#include "dtp94-enum.h"
+#include "dtp94-device.h"
 
 typedef struct
 {

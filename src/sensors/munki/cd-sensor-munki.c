@@ -29,6 +29,8 @@
 #include "cd-buffer.h"
 #include "cd-sensor.h"
 
+#include "munki-enum.h"
+
 typedef struct
 {
 	gboolean			 done_startup;

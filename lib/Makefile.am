@@ -8,11 +8,7 @@ endif
 
 if HAVE_GUSB
 SUBDIRS +=						\
-	colorhug					\
-	dtp94						\
-	huey						\
-	ospark						\
-	munki
+	colorhug
 endif
 
 -include $(top_srcdir)/git.mk

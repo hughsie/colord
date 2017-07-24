@@ -25,8 +25,9 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <glib.h>
-#include <huey/huey.h>
-#include <munki/munki.h>
+
+#include "huey/huey-enum.h"
+#include "munki/munki-enum.h"
 
 #include "cd-sensor.h"
 

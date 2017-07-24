@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#if !defined (__HUEY_H_INSIDE__) && !defined (HUEY_COMPILATION)
-#error "Only <huey.h> can be included directly."
-#endif
-
 #ifndef __HUEY_DEVICE_H
 #define __HUEY_DEVICE_H
 

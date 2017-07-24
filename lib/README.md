@@ -29,32 +29,3 @@ This library is used by the daemon, and also ships a pkg-config file and
 headers which makes it suitable for other programs to us.
 
 This library is is versioned and has the same ABI guarantees of libcolord.
-
-dtp94
------
-This module installs the `libcolorhug.so` shared library and used to interface
-with the DTP94 colorimeter sensor.
-
-This library is used by the daemon only and is currently unsuitable for other
-programs to use. This library is is unversioned and **does not** have the same
-ABI and API guarantees of libcolord.
-
-huey
-----
-This module installs the `libcolorhug.so` shared library and used to interface
-with the Huey colorimeter sensor.
-
-This library is used by the daemon only and is currently unsuitable for other
-programs to use. This library is is unversioned and **does not** have the same
-ABI and API guarantees of libcolord.
-
-munki
------
-This module installs the `libcolorhug.so` shared library and used to interface
-with the ColorMunki photospectrometer sensor.
-
-This library is used by the daemon only and is currently unsuitable for othe
-programs to use. This library is is unversioned and **does not** have the same
-ABI and API guarantees of libcolord.
-
-The library is incomplete and requires a lot more work before it it useful.

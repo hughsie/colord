@@ -25,9 +25,12 @@
 #include <glib-object.h>
 #include <gusb.h>
 #include <colord-private.h>
-#include <huey/huey.h>
 
 #include "../src/cd-sensor.h"
+
+#include "huey-ctx.h"
+#include "huey-device.h"
+#include "huey-enum.h"
 
 typedef struct
 {

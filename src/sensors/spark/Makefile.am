@@ -18,11 +18,14 @@ plugin_LTLIBRARIES =					\
 	libcolord_sensor_spark.la
 
 libcolord_sensor_spark_la_SOURCES =			\
+	osp-device.c					\
+	osp-device.h					\
+	osp-enum.c					\
+	osp-enum.h					\
 	cd-sensor-spark.c
 libcolord_sensor_spark_la_LIBADD =			\
 	$(GLIB_LIBS)					\
-	$(GUSB_LIBS)					\
-	$(top_builddir)/lib/ospark/libospark-private.la
+	$(GUSB_LIBS)
 libcolord_sensor_spark_la_LDFLAGS = -module -avoid-version
 libcolord_sensor_spark_la_CFLAGS = $(WARN_CFLAGS)
 endif

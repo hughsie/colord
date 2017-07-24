@@ -19,10 +19,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#if !defined (__MUNKI_H_INSIDE__) && !defined (MUNKI_COMPILATION)
-#error "Only <munki.h> can be included directly."
-#endif
-
 #ifndef __MUNKI_ENUM_H
 #define __MUNKI_ENUM_H
 
