@@ -53,7 +53,6 @@ Compiling for Microsoft Windows
     mingw64-configure                               \
             --disable-argyllcms-sensor              \
             --disable-bash-completion               \
-            --disable-examples                      \
             --disable-polkit                        \
             --disable-print-profiles                \
             --disable-sane                          \

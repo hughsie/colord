@@ -254,19 +254,6 @@ AC_ARG_WITH([udevrulesdir],
 AC_SUBST([udevrulesdir], [$with_udevrulesdir])
 
 dnl ---------------------------------------------------------------------------
-dnl - Build DBus examples
-dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(examples, AS_HELP_STRING([--enable-examples],[enable DBus example code]),
-	      enable_examples=$enableval,enable_examples=yes)
-AM_CONDITIONAL(CD_BUILD_EXAMPLES, test x$enable_examples = xyes)
-if test x$enable_examples = xyes; then
-	PKG_CHECK_MODULES(DBUS, dbus-1, have_dbus=yes, have_dbus=no)
-	if test x$have_dbus = xno ; then
-		AC_MSG_ERROR([DBus examples require dbus-1 package, not found])
-	fi
-fi
-
-dnl ---------------------------------------------------------------------------
 dnl - Build ArgyllCMS sensor
 dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE(argyllcms-sensor, AS_HELP_STRING([--enable-argyllcms-sensor],[enable ArgllCMS sensor]),
@@ -390,7 +377,6 @@ Makefile
 contrib/Makefile
 contrib/session-helper/Makefile
 contrib/colord-sane/Makefile
-examples/Makefile
 man/Makefile
 doc/Makefile
 doc/api/Makefile

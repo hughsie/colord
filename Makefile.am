@@ -12,8 +12,7 @@ SUBDIRS = 						\
 SUBDIRS += 						\
 	client						\
 	contrib						\
-	doc						\
-	examples
+	doc
 
 # this needs client/cd-create-profile
 SUBDIRS += 						\
