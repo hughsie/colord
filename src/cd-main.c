@@ -59,9 +59,7 @@ typedef struct {
 	CdMappingDb		*mapping_db;
 	CdDeviceDb		*device_db;
 	CdProfileDb		*profile_db;
-#ifdef HAVE_UDEV
 	CdSensorClient		*sensor_client;
-#endif
 	GPtrArray		*sensors;
 	GPtrArray		*plugins;
 	GMainLoop		*loop;
@@ -1905,10 +1903,8 @@ cd_main_on_name_acquired_cb (GDBusConnection *connection,
 		cd_main_add_disk_device (priv, device_id);
 	}
 
-#ifdef HAVE_UDEV
 	/* add sensor devices */
 	cd_sensor_client_coldplug (priv->sensor_client);
-#endif
 
 	/* coldplug plugin devices */
 	cd_main_plugin_phase (priv, CD_PLUGIN_PHASE_COLDPLUG);
@@ -1938,7 +1934,6 @@ cd_main_on_name_lost_cb (GDBusConnection *connection,
 	g_main_loop_quit (priv->loop);
 }
 
-#ifdef HAVE_UDEV
 
 static void
 cd_main_client_sensor_added_cb (CdSensorClient *sensor_client_,
@@ -1970,7 +1965,6 @@ cd_main_client_sensor_removed_cb (CdSensorClient *sensor_client_,
 				       NULL);
 	g_ptr_array_remove (priv->sensors, sensor);
 }
-#endif
 
 static gboolean
 cd_main_timed_exit_cb (gpointer user_data)
@@ -2400,7 +2394,6 @@ main (int argc, char *argv[])
 	priv->devices_array = cd_device_array_new ();
 	priv->profiles_array = cd_profile_array_new ();
 	priv->sensors = g_ptr_array_new_with_free_func ((GDestroyNotify) g_object_unref);
-#ifdef HAVE_UDEV
 	priv->sensor_client = cd_sensor_client_new ();
 	g_signal_connect (priv->sensor_client, "sensor-added",
 			  G_CALLBACK (cd_main_client_sensor_added_cb),
@@ -2408,7 +2401,6 @@ main (int argc, char *argv[])
 	g_signal_connect (priv->sensor_client, "sensor-removed",
 			  G_CALLBACK (cd_main_client_sensor_removed_cb),
 			  priv);
-#endif
 
 	/* connect to the mapping db */
 	priv->mapping_db = cd_mapping_db_new ();
@@ -2531,10 +2523,8 @@ out:
 			g_ptr_array_unref (priv->sensors);
 		if (priv->plugins != NULL)
 			g_ptr_array_unref (priv->plugins);
-#ifdef HAVE_UDEV
 		if (priv->sensor_client != NULL)
 			g_object_unref (priv->sensor_client);
-#endif
 		if (priv->icc_store != NULL)
 			g_object_unref (priv->icc_store);
 		if (priv->mapping_db != NULL)

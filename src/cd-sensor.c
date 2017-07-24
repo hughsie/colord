@@ -89,9 +89,7 @@ typedef struct
 	gchar				*serial;
 	gchar				*model;
 	gchar				*vendor;
-#ifdef HAVE_UDEV
 	GUdevDevice			*device;
-#endif
 	gboolean			 native;
 	gboolean			 embedded;
 	gboolean			 locked;
@@ -1212,12 +1210,8 @@ cd_sensor_register_object (CdSensor *sensor,
 const gchar *
 cd_sensor_get_device_path (CdSensor *sensor)
 {
-#ifdef HAVE_UDEV
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 	return g_udev_device_get_sysfs_path (priv->device);
-#else
-	return NULL;
-#endif
 }
 
 const gchar *
@@ -1234,7 +1228,6 @@ cd_sensor_open_usb_device (CdSensor *sensor,
 			   gint interface,
 			   GError **error)
 {
-#ifdef HAVE_UDEV
 	CdSensorPrivate *priv = GET_PRIVATE (sensor);
 	guint8 busnum;
 	guint8 devnum;
@@ -1259,10 +1252,6 @@ cd_sensor_open_usb_device (CdSensor *sensor,
 		return NULL;
 	}
 	return g_object_ref (device);
-#else
-	g_set_error_literal (error, 1, 0, "failed: no gudev support");
-	return NULL;
-#endif
 }
 #endif
 
@@ -1277,7 +1266,6 @@ cd_sensor_add_cap (CdSensor *sensor, CdSensorCap cap)
 
 }
 
-#ifdef HAVE_UDEV
 GUdevDevice *
 cd_sensor_get_device (CdSensor *sensor)
 {
@@ -1406,7 +1394,6 @@ cd_sensor_set_from_device (CdSensor *sensor,
 	/* success */
 	return TRUE;
 }
-#endif
 
 void
 cd_sensor_set_index (CdSensor *sensor,
@@ -1656,10 +1643,8 @@ cd_sensor_finalize (GObject *object)
 #ifdef HAVE_GUSB
 	g_object_unref (priv->usb_ctx);
 #endif
-#ifdef HAVE_UDEV
 	if (priv->device != NULL)
 		g_object_unref (priv->device);
-#endif
 
 	G_OBJECT_CLASS (cd_sensor_parent_class)->finalize (object);
 }

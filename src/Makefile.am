@@ -91,11 +91,9 @@ colord_SOURCES =					\
 	cd-sensor.h					\
 	cd-main.c
 
-if HAVE_UDEV
 colord_SOURCES +=					\
 	cd-sensor-client.c				\
 	cd-sensor-client.h
-endif
 
 colord_LDADD =						\
 	$(LIBM)						\

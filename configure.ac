@@ -180,15 +180,9 @@ PKG_CHECK_MODULES(LCMS, lcms2 >= 2.6)
 PKG_CHECK_MODULES(SQLITE, sqlite3)
 
 dnl **** Check for UDEV ****
-AC_ARG_ENABLE(udev, AS_HELP_STRING([--enable-udev],[Enable GUDEV support]),
-	      enable_udev=$enableval, enable_udev=yes)
-if test x$enable_udev != xno; then
-	PKG_CHECK_MODULES(UDEV, libudev)
-	PKG_CHECK_MODULES(GUDEV, gudev-1.0)
-	COLORD_REQUIRES_PRIVATE+=", libudev"
-	AC_DEFINE(HAVE_UDEV,1,[Use UDEV support])
-fi
-AM_CONDITIONAL(HAVE_UDEV, test x$enable_udev = xyes)
+PKG_CHECK_MODULES(UDEV, libudev)
+PKG_CHECK_MODULES(GUDEV, gudev-1.0)
+COLORD_REQUIRES_PRIVATE+=", libudev"
 
 dnl **** Bash completion ****
 AC_ARG_ENABLE(bash_completion, AS_HELP_STRING([--enable-bash-completion],[Enable bash completion]),
@@ -339,13 +333,6 @@ if test x$enable_sane != xno; then
 		fi
 
 	fi
-	if test x$enable_udev != xyes; then
-		has_sane=no
-		if test x$enable_sane = xyes; then
-			AC_MSG_ERROR([--enable-sane was specified and SANE requires udev support, not found])
-		fi
-		AC_MSG_WARN([udev not found, SANE support will not be enabled])
-	fi
 	if test x$have_dbus != xyes; then
 		has_sane=no
 		if test x$enable_sane = xyes; then
@@ -491,7 +478,6 @@ echo "
         Reverse engineering tools: ${enable_reverse}
         BASH completion support:   ${enable_bash_completion}
         SANE support:              ${has_sane}
-        Udev support:              ${enable_udev}
         GUsb support:              ${enable_gusb}
         Build daemon:              ${enable_daemon}
         Extra print profiles:      ${enable_print_profiles}

@@ -27,8 +27,6 @@ libcd_plugin_example_la_LIBADD = $(CD_PLUGIN_LIBS)
 libcd_plugin_example_la_LDFLAGS = -module -avoid-version
 libcd_plugin_example_la_CFLAGS = $(CD_PLUGIN_CFLAGS) $(WARN_CFLAGS)
 
-if HAVE_UDEV
-
 plugin_LTLIBRARIES =					\
 	libcd_plugin_camera.la				\
 	libcd_plugin_scanner.la
@@ -54,6 +52,5 @@ libcd_plugin_sane_la_LDFLAGS = -module -avoid-version
 libcd_plugin_sane_la_CFLAGS = $(GUDEV_CFLAGS) $(WARN_CFLAGS)
 
 endif # HAVE_SANE
-endif # HAVE_UDEV
 
 -include $(top_srcdir)/git.mk

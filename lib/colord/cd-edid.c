@@ -25,9 +25,7 @@
 #include <string.h>
 #include <glib-object.h>
 #include <math.h>
-#ifdef HAVE_UDEV
-  #include <libudev.h>
-#endif
+#include <libudev.h>
 
 #include "cd-edid.h"
 #include "cd-quirk.h"
@@ -108,7 +106,6 @@ cd_edid_get_monitor_name (CdEdid *edid)
 static gchar *
 cd_edid_convert_pnp_id_to_string (const gchar *pnp_id)
 {
-#ifdef HAVE_UDEV
 	gchar *vendor = NULL;
 	struct udev_hwdb *hwdb = NULL;
 	struct udev_list_entry *e;
@@ -142,41 +139,6 @@ out:
 		udev_hwdb_unref (hwdb);
 	if (udev != NULL)
 		udev_unref (udev);
-#else
-	gboolean ret;
-	gchar *idx2;
-	gchar *idx;
-	gchar *vendor = NULL;
-	guint i;
-	const gchar *pnp_ids[] = { "/usr/share/hwdata/pnp.ids",
-				   "/usr/share/misc/pnp.ids",
-				   "/usr/share/libgnome-desktop/pnp.ids",
-				   NULL };
-	g_autofree gchar *data = NULL;
-
-	for (i = 0; pnp_ids[i] != NULL; i++) {
-		ret = g_file_get_contents (pnp_ids[i], &data, NULL, NULL);
-		if (ret)
-			break;
-	}
-	if (data == NULL)
-		goto out;
-
-	/* get the vendor name from the tab delimited data */
-	for (idx = data; idx != NULL; ) {
-		if (strncmp (idx, pnp_id, 3) == 0) {
-			idx2 = g_strstr_len (idx, -1, "\n");
-			if (idx2 != NULL)
-				*idx2 = '\0';
-			vendor = g_strdup (idx + 4);
-			break;
-		}
-		idx = g_strstr_len (idx, -1, "\n");
-		if (idx != NULL)
-			idx++;
-	}
-out:
-#endif
 	return vendor;
 }
 
