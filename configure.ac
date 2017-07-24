@@ -191,20 +191,10 @@ if test "$DOCBOOK2MAN" = "no" ; then
 fi
 AM_CONDITIONAL(HAVE_DOCBOOK2MAN, [test "$DOCBOOK2MAN" != "no"])
 
-dnl ---------------------------------------------------------------------------
-dnl - Build PolicyKit code
-dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(polkit, AS_HELP_STRING([--enable-polkit],[enable PolicyKit]),
-	      enable_polkit=$enableval,enable_polkit=yes)
-AM_CONDITIONAL(CD_BUILD_POLKIT, test x$enable_polkit = xyes)
-if test x$enable_polkit = xyes; then
-	PKG_CHECK_MODULES(POLKIT, polkit-gobject-1 >= 0.103)
-	AC_DEFINE(USE_POLKIT, 1, [if we should use PolicyKit])
-
-        PKG_CHECK_EXISTS([polkit-gobject-1 >= 0.114],
-                         [AC_DEFINE(POLKIT_HAS_AUTOPTR_MACROS, 1, [if PolKit has autoptr macros])],
-                         [])
-fi
+PKG_CHECK_MODULES(POLKIT, polkit-gobject-1 >= 0.103)
+PKG_CHECK_EXISTS([polkit-gobject-1 >= 0.114],
+		 [AC_DEFINE(POLKIT_HAS_AUTOPTR_MACROS, 1, [if PolKit has autoptr macros])],
+		 [])
 
 dnl ---------------------------------------------------------------------------
 dnl - Select whether and where to install systemd system service files
@@ -461,7 +451,6 @@ echo "
         cd-it8:                    ${CD_IT8}
         cd-create-profile:         ${CD_CREATE_PROFILE}
         gobject-introspection:     ${found_introspection}
-        PolicyKit support:         ${enable_polkit}
         Reverse engineering tools: ${enable_reverse}
         BASH completion support:   ${enable_bash_completion}
         SANE support:              ${has_sane}
@@ -478,14 +467,6 @@ echo "
         Session helper support:    ${enable_session_helper}
         Unix support:              ${enable_unix}
 "
-
-
-# warn that dummy is basically broken
-if test x$enable_polkit = xno; then
-	echo "*******************************************************************"
-	echo "** YOU ARE NOT USING A SECURE DAEMON. ALL USERS CAN DO ANYTHING! **"
-	echo "*******************************************************************"
-fi
 
 # warn that using the default root user isn't always a good idea
 if test x$daemon_user = xroot; then

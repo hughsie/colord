@@ -22,14 +22,11 @@
 #include "config.h"
 
 #include <string.h>
-
-#ifdef USE_POLKIT
 #include <polkit/polkit.h>
-#endif
 
 #include "cd-common.h"
 
-#if defined(USE_POLKIT) && !defined(POLKIT_HAS_AUTOPTR_MACROS)
+#if !defined(POLKIT_HAS_AUTOPTR_MACROS)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(PolkitAuthorizationResult, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(PolkitSubject, g_object_unref)
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(PolkitAuthority, g_object_unref)
@@ -124,11 +121,9 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 {
 	guint uid;
 	g_autoptr(GError) error_local = NULL;
-#ifdef USE_POLKIT
 	g_autoptr(PolkitAuthority) authority = NULL;
 	g_autoptr(PolkitAuthorizationResult) result = NULL;
 	g_autoptr(PolkitSubject) subject = NULL;
-#endif
 
 	/* uid 0 is allowed to do all actions */
 	uid = cd_main_get_sender_uid (connection, sender, &error_local);
@@ -158,7 +153,6 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 	}
 #endif
 
-#ifdef USE_POLKIT
 	/* get authority */
 	authority = polkit_authority_get_sync (NULL, &error_local);
 	if (authority == NULL) {
@@ -197,10 +191,6 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 			     action_id);
 		return FALSE;
 	}
-#else
-	g_warning ("CdCommon: not checking %s for %s as no PolicyKit support",
-		   action_id, sender);
-#endif
 	return TRUE;
 }
 
