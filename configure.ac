@@ -279,13 +279,6 @@ if test x$enable_argyllcms_sensor = xyes; then
 	fi
 fi
 
-dnl ---------------------------------------------------------------------------
-dnl - Build reverse engineering
-dnl ---------------------------------------------------------------------------
-AC_ARG_ENABLE(reverse, AS_HELP_STRING([--enable-reverse],[enable reverse engineering tools]),
-	      enable_reverse=$enableval,enable_reverse=no)
-AM_CONDITIONAL(CD_BUILD_REVERSE, test x$enable_reverse = xyes)
-
 dnl **** Check for SANE ****
 AC_ARG_ENABLE(sane, AS_HELP_STRING([--enable-sane],[Enable SANE support]),
 	      enable_sane=$enableval,enable_sane=no)
@@ -451,7 +444,6 @@ echo "
         cd-it8:                    ${CD_IT8}
         cd-create-profile:         ${CD_CREATE_PROFILE}
         gobject-introspection:     ${found_introspection}
-        Reverse engineering tools: ${enable_reverse}
         BASH completion support:   ${enable_bash_completion}
         SANE support:              ${has_sane}
         Extra print profiles:      ${enable_print_profiles}
