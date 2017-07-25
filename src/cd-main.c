@@ -44,8 +44,9 @@
 #include "cd-profile-db.h"
 #include "cd-profile.h"
 #include "cd-icc-store.h"
-#include "cd-resources.h"
 #include "cd-sensor-client.h"
+
+#include "colord-resources.h"
 
 typedef struct {
 	GDBusConnection		*connection;

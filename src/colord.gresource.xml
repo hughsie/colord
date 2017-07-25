@@ -5,22 +5,23 @@
   <file preprocess="xml-stripblanks" compressed="true">org.freedesktop.ColorManager.Device.xml</file>
   <file preprocess="xml-stripblanks" compressed="true">org.freedesktop.ColorManager.Profile.xml</file>
   <file preprocess="xml-stripblanks" compressed="true">org.freedesktop.ColorManager.Sensor.xml</file>
-
+ </gresource>
+ <gresource prefix="/org/freedesktop/colord/profiles">
   <!--
     build in these common profiles to avoid seeking lots of small files when
     the daemon is loaded at boot time
   -->
-  <file>profiles/AdobeRGB1998.icc</file>
-  <file>profiles/AppleRGB.icc</file>
-  <file>profiles/Bluish.icc</file>
-  <file>profiles/CIE-RGB.icc</file>
-  <file>profiles/ColorMatchRGB.icc</file>
-  <file>profiles/NTSC-RGB.icc</file>
-  <file>profiles/PAL-RGB.icc</file>
-  <file>profiles/ProPhotoRGB.icc</file>
-  <file>profiles/SMPTE-C-RGB.icc</file>
-  <file>profiles/sRGB.icc</file>
-  <file>profiles/SwappedRedAndGreen.icc</file>
-  <file>profiles/x11-colors.icc</file>
+  <file>AdobeRGB1998.icc</file>
+  <file>AppleRGB.icc</file>
+  <file>Bluish.icc</file>
+  <file>CIE-RGB.icc</file>
+  <file>ColorMatchRGB.icc</file>
+  <file>NTSC-RGB.icc</file>
+  <file>PAL-RGB.icc</file>
+  <file>ProPhotoRGB.icc</file>
+  <file>SMPTE-C-RGB.icc</file>
+  <file>sRGB.icc</file>
+  <file>SwappedRedAndGreen.icc</file>
+  <file>x11-colors.icc</file>
  </gresource>
 </gresources>

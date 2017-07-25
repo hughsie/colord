@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>Crayons</name>
+ <description>Crayon Colors</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!--
+  TRANSLATORS: 'Crayola' is a trademark, please don't translate,
+  also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
+ -->
+ <model>
+  This named color profile contains all the Crayola crayon colors in popular use.
+  It is a test profile designed for testing embedding named colors into documents.
+ </model>
+ <license>CC0</license>
+ <named>
+  <color>
+   <name>White</name>
+   <L>91</L>
+   <a>0.83</a>
+   <b>8.04</b>
+  </color>
+  <color>
+   <name>Apricot</name>
+   <L>71</L>
+   <a>32.38</a>
+   <b>40.43</b>
+  </color>
+  <color>
+   <name>Carnation Pink</name>
+   <L>54</L>
+   <a>59.11</a>
+   <b>-2.89</b>
+  </color>
+  <color>
+   <name>Dandelion</name>
+   <L>69</L>
+   <a>23.11</a>
+   <b>71.43</b>
+  </color>
+  <color>
+   <name>Orange</name>
+   <L>56</L>
+   <a>49.2</a>
+   <b>52.88</b>
+  </color>
+  <color>
+   <name>Yellow Orange</name>
+   <L>58</L>
+   <a>45.18</a>
+   <b>54.96</b>
+  </color>
+  <color>
+   <name>Red Orange</name>
+   <L>46</L>
+   <a>53.48</a>
+   <b>37.35</b>
+  </color>
+  <color>
+   <name>Scarlet</name>
+   <L>42</L>
+   <a>50.35</a>
+   <b>31.78</b>
+  </color>
+  <color>
+   <name>Red</name>
+   <L>37</L>
+   <a>43.44</a>
+   <b>21.52</b>
+  </color>
+  <color>
+   <name>Yellow</name>
+   <L>71</L>
+   <a>1.68</a>
+   <b>70.81</b>
+  </color>
+  <color>
+   <name>Violet Red</name>
+   <L>36</L>
+   <a>42.82</a>
+   <b>15.71</b>
+  </color>
+  <color>
+   <name>Green Yellow</name>
+   <L>68</L>
+   <a>-19.08</a>
+   <b>61.91</b>
+  </color>
+  <color>
+   <name>Red Violet</name>
+   <L>29</L>
+   <a>26</a>
+   <b>5.65</b>
+  </color>
+  <color>
+   <name>Violet</name>
+   <L>26</L>
+   <a>4.75</a>
+   <b>-4.12</b>
+  </color>
+  <color>
+   <name>Blue Violet</name>
+   <L>23</L>
+   <a>2.32</a>
+   <b>-6.79</b>
+  </color>
+  <color>
+   <name>Brown</name>
+   <L>30</L>
+   <a>11.62</a>
+   <b>9.55</b>
+  </color>
+  <color>
+   <name>Indigo</name>
+   <L>25</L>
+   <a>2.64</a>
+   <b>-10.49</b>
+  </color>
+  <color>
+   <name>Grey</name>
+   <L>40</L>
+   <a>-1.22</a>
+   <b>-3.67</b>
+  </color>
+  <color>
+   <name>Yellow Green</name>
+   <L>44</L>
+   <a>-37.13</a>
+   <b>26</b>
+  </color>
+  <color>
+   <name>Blue Green</name>
+   <L>27</L>
+   <a>-2.78</a>
+   <b>-9.6</b>
+  </color>
+  <color>
+   <name>Cerulean</name>
+   <L>26</L>
+   <a>4.54</a>
+   <b>-24.55</b>
+  </color>
+  <color>
+   <name>Blue</name>
+   <L>25</L>
+   <a>5.13</a>
+   <b>-19.8</b>
+  </color>
+  <color>
+   <name>Black</name>
+   <L>25</L>
+   <a>-0.06</a>
+   <b>-0.61</b>
+  </color>
+  <color>
+   <name>Green</name>
+   <L>30</L>
+   <a>-20.33</a>
+   <b>4.91</b>
+  </color>
+ </named>
+</profile>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>SwappedRedAndGreen</name>
+ <description>Swapped Red and Green</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!-- TRANSLATORS: channels refer to the RGB values in an image -->
+ <model>
+  This test profile swaps the red and green channels and is useful as a visual
+  check that profiles are being applied correctly.
+  If this profile is applied twice, the image looks unchanged.
+ </model>
+ <license>CC0</license>
+ <data_source>test</data_source>
+ <gamma>sRGB</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.3000</x>
+   <y>0.6000</y>
+   <Y>0.715158</Y>
+  </red>
+  <green>
+   <x>0.6400</x>
+   <y>0.3300</y>
+   <Y>0.212656</Y>
+  </green>
+  <blue>
+   <x>0.1500</x>
+   <y>0.0600</y>
+   <Y>0.072186</Y>
+  </blue>
+ </primaries>
+</profile>

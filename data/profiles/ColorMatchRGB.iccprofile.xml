@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>ColorMatchRGB</name>
+ <description>ColorMatch RGB</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!-- TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't translate -->
+ <model>
+  This profile was designed by Radius for the PressView monitor.
+  Only use this profile as a display profile or as a editing space as the
+  profile is not significantly different to sRGB.
+  You should only need to use this profile if viewing images created on a
+  PressView monitor.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>colormatch-rgb</standard_space>
+ <gamma>1.8</gamma>
+ <whitepoint>D50</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6300</x>
+   <y>0.3400</y>
+   <Y>0.274884</Y>
+  </red>
+  <green>
+   <x>0.2950</x>
+   <y>0.6050</y>
+   <Y>0.658132</Y>
+  </green>
+  <blue>
+   <x>0.1500</x>
+   <y>0.0750</y>
+   <Y>0.066985</Y>
+  </blue>
+ </primaries>
+</profile>

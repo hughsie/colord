@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>CIE-RGB</name>
+ <description>CIE RGB</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!-- TRANSLATORS: theoretical in that the profile primaries are not real colors -->
+ <model>
+  This theoretical profile is designed for use in color experiments.
+  You probably don't want to use this profile as a editing space or a display profile.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>cie-rgb</standard_space>
+ <gamma>2.2</gamma>
+ <whitepoint>E</whitepoint>
+ <primaries>
+  <red>
+   <x>0.7350</x>
+   <y>0.2650</y>
+   <Y>0.176204</Y>
+  </red>
+  <green>
+   <x>0.2740</x>
+   <y>0.7170</y>
+   <Y>0.812985</Y>
+  </green>
+  <blue>
+   <x>0.1670</x>
+   <y>0.0090</y>
+   <Y>0.010811</Y>
+  </blue>
+ </primaries>
+</profile>

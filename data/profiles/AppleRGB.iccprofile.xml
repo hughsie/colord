@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>AppleRGB</name>
+ <description>Apple RGB</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!--
+  TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are trademarks,
+  don't translate those
+ -->
+ <model>
+  This legacy profile was originally created by Adobe for use with Photoshop and
+  Illustrator.
+  As it is based on the original Apple 13" RGB monitor and is similar to sRGB,
+  it should not be used as a display profile or for new images.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>apple-rgb</standard_space>
+ <gamma>1.8</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6250</x>
+   <y>0.3400</y>
+   <Y>0.244634</Y>
+  </red>
+  <green>
+   <x>0.2800</x>
+   <y>0.5950</y>
+   <Y>0.672034</Y>
+  </green>
+  <blue>
+   <x>0.1550</x>
+   <y>0.0700</y>
+   <Y>0.083332</Y>
+  </blue>
+ </primaries>
+</profile>

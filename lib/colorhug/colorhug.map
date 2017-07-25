@@ -1,0 +1,6 @@
+{
+global:
+    ch_*;
+local:
+    *;
+};

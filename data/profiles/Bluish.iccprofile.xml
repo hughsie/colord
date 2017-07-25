@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>bluish</name>
+ <type>x11-gamma</type>
+ <description>Blue</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!-- TRANSLATORS: the lookup tables in the GPU map one color to another -->
+ <model>
+  This test profile is used to make all colors on the screen slightly more
+  blue by altering the video card lookup table.
+  This allows the user to check the calibration is being applied correctly.
+ </model>
+ <license>CC0</license>
+ <data_source>test</data_source>
+ <x11_gamma>
+  <R>0.7</R>
+  <G>0.8</G>
+  <B>1.0</B>
+ </x11_gamma>
+</profile>

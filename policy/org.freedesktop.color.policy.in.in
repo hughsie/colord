@@ -17,90 +17,90 @@
     <!-- SECURITY:
           - Normal users should not have to authenticate to add devices
      -->
-    <_description>Create a color managed device</_description>
-    <_message>Authentication is required to create a color managed device</_message>
+    <description>Create a color managed device</description>
+    <message>Authentication is required to create a color managed device</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
   <action id="org.freedesktop.color-manager.create-profile">
     <!-- SECURITY:
           - Normal users should not have to authenticate to add profiles
      -->
-    <_description>Create a color profile</_description>
-    <_message>Authentication is required to create a color profile</_message>
+    <description>Create a color profile</description>
+    <message>Authentication is required to create a color profile</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
   <action id="org.freedesktop.color-manager.delete-device">
     <!-- SECURITY:
           - Normal users should not have to authenticate to delete devices
      -->
-    <_description>Remove a color managed device</_description>
-    <_message>Authentication is required to remove a color managed device</_message>
+    <description>Remove a color managed device</description>
+    <message>Authentication is required to remove a color managed device</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
   <action id="org.freedesktop.color-manager.delete-profile">
     <!-- SECURITY:
           - Normal users should not have to authenticate to delete profiles
      -->
-    <_description>Remove a color profile</_description>
-    <_message>Authentication is required to remove a color profile</_message>
+    <description>Remove a color profile</description>
+    <message>Authentication is required to remove a color profile</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
   <action id="org.freedesktop.color-manager.modify-device">
     <!-- SECURITY:
           - Normal users should not have to authenticate to modify devices
      -->
-    <_description>Modify color settings for a device</_description>
-    <_message>Authentication is required to modify the color settings for a device</_message>
+    <description>Modify color settings for a device</description>
+    <message>Authentication is required to modify the color settings for a device</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
   <action id="org.freedesktop.color-manager.modify-profile">
     <!-- SECURITY:
           - Normal users should not have to authenticate to modify profiles
      -->
-    <_description>Modify a color profile</_description>
-    <_message>Authentication is required to modify a color profile</_message>
+    <description>Modify a color profile</description>
+    <message>Authentication is required to modify a color profile</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
   <action id="org.freedesktop.color-manager.install-system-wide">
@@ -112,15 +112,15 @@
             set a profile set to all-white or all-black and thus make the
             other sessions unusable.
      -->
-    <_description>Install system color profiles</_description>
-    <_message>Authentication is required to install the color profile for all users</_message>
+    <description>Install system color profiles</description>
+    <message>Authentication is required to install the color profile for all users</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
   <action id="org.freedesktop.color-manager.device-inhibit">
@@ -128,15 +128,15 @@
           - Normal users should not have to authenticate to profile
             devices.
      -->
-    <_description>Inhibit color profile selection</_description>
-    <_message>Authentication is required to disable profile matching for a device</_message>
+    <description>Inhibit color profile selection</description>
+    <message>Authentication is required to disable profile matching for a device</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
   <action id="org.freedesktop.color-manager.sensor-lock">
@@ -144,15 +144,15 @@
           - Normal users should not have to authenticate to use the
             colorimeter device.
      -->
-    <_description>Use color sensor</_description>
-    <_message>Authentication is required to use the color sensor</_message>
+    <description>Use color sensor</description>
+    <message>Authentication is required to use the color sensor</message>
     <icon_name>application-vnd.iccprofile</icon_name>
     <defaults>
       <allow_any>auth_admin</allow_any>
       <allow_inactive>no</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
-    <!--@ANNOTATE_OWNER@-->
+    <annotate key="org.freedesktop.policykit.owner">unix-user:@DAEMON_USER@</annotate>
   </action>
 
 </policyconfig>

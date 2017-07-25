@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>WideGamutRGB</name>
+ <description>Wide Gamut RGB</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!-- TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that -->
+ <model>
+  This editing space was designed by Adobe Systems to capture many more colors
+  than Adobe RGB.
+  This profile is used to print to devices such as film recorders and can define
+  many colors that cannot be displayed on a computer screen.
+  Unless you are working with 16 bits per channel precision, you may see color
+  banding when editing images.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>wide-gamut-rgb</standard_space>
+ <!-- according to http://www.adobe.com/digitalimag/pdfs/AdobeRGB1998.pdf -->
+ <gamma>2.19921875</gamma>
+ <whitepoint>D50</whitepoint>
+ <primaries>
+  <red>
+   <x>0.7350</x>
+   <y>0.2650</y>
+   <Y>0.258187</Y>
+  </red>
+  <green>
+   <x>0.1150</x>
+   <y>0.8260</y>
+   <Y>0.724938</Y>
+  </green>
+  <blue>
+   <x>0.1570</x>
+   <y>0.0180</y>
+   <Y>0.016875</Y>
+  </blue>
+ </primaries>
+</profile>

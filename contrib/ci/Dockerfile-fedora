@@ -1,9 +1,8 @@
-FROM fedora:25
+FROM fedora:26
 
 RUN dnf -y update
 RUN dnf -y install \
 	argyllcms \
-	autoconf-archive \
 	bash-completion \
 	color-filesystem \
 	dbus-devel \
@@ -12,16 +11,17 @@ RUN dnf -y install \
 	glib2-devel \
 	gobject-introspection-devel \
 	gtk-doc \
-	intltool \
 	lcms2-devel \
 	libgudev1-devel \
 	libgusb-devel \
 	libtool \
+	meson \
 	polkit-devel \
 	redhat-rpm-config \
 	sane-backends-devel \
 	sqlite-devel \
 	systemd-devel \
+	systemd-udev \
 	vala-tools
 
 RUN mkdir /build

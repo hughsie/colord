@@ -1,0 +1,845 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>x11-colors</name>
+ <description>X11 Colors</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!--
+  TRANSLATORS: A 'named color profile' contains a list of color swatches that
+  look the same on all computer screens
+ -->
+ <model>
+  This named color profile contains all the colors defined by X11, assuming the
+  source colors were supposed to be sRGB.
+ </model>
+ <license>CC0</license>
+ <named>
+  <color>
+   <name>Light pink</name>
+   <L>81.37</L>
+   <a>28.23</a>
+   <b>5.52</b>
+  </color>
+  <color>
+   <name>Pink</name>
+   <L>83.85</L>
+   <a>24.32</a>
+   <b>3.74</b>
+  </color>
+  <color>
+   <name>Crimson</name>
+   <L>48.24</L>
+   <a>70.50</a>
+   <b>34.55</b>
+  </color>
+  <color>
+   <name>Lavender blush</name>
+   <L>96.12</L>
+   <a>5.83</a>
+   <b>-0.51</b>
+  </color>
+  <color>
+   <name>Pale violet red</name>
+   <L>61.12</L>
+   <a>45.05</a>
+   <b>1.19</b>
+  </color>
+  <color>
+   <name>Hot pink</name>
+   <L>66.03</L>
+   <a>62.86</a>
+   <b>-9.59</b>
+  </color>
+  <color>
+   <name>Deep pink</name>
+   <L>56.85</L>
+   <a>82.81</a>
+   <b>-4.10</b>
+  </color>
+  <color>
+   <name>Medium violet red</name>
+   <L>45.57</L>
+   <a>68.72</a>
+   <b>-13.88</b>
+  </color>
+  <color>
+   <name>Orchid</name>
+   <L>62.94</L>
+   <a>52.08</a>
+   <b>-33.89</b>
+  </color>
+  <color>
+   <name>Thistle</name>
+   <L>80.14</L>
+   <a>12.35</a>
+   <b>-9.09</b>
+  </color>
+  <color>
+   <name>Plum</name>
+   <L>73.45</L>
+   <a>30.47</a>
+   <b>-21.68</b>
+  </color>
+  <color>
+   <name>Violet</name>
+   <L>69.76</L>
+   <a>52.98</a>
+   <b>-36.35</b>
+  </color>
+  <color>
+   <name>Fuchsia</name>
+   <L>60.38</L>
+   <a>92.91</a>
+   <b>-60.16</b>
+  </color>
+  <color>
+   <name>Dark magenta</name>
+   <L>33.19</L>
+   <a>58.23</a>
+   <b>-37.80</b>
+  </color>
+  <color>
+   <name>Purple</name>
+   <L>30.48</L>
+   <a>54.63</a>
+   <b>-35.49</b>
+  </color>
+  <color>
+   <name>Medium orchid</name>
+   <L>53.66</L>
+   <a>54.50</a>
+   <b>-47.09</b>
+  </color>
+  <color>
+   <name>Dark violet</name>
+   <L>39.31</L>
+   <a>69.32</a>
+   <b>-70.48</b>
+  </color>
+  <color>
+   <name>Dark orchid</name>
+   <L>43.26</L>
+   <a>59.11</a>
+   <b>-60.02</b>
+  </color>
+  <color>
+   <name>Indigo</name>
+   <L>21.03</L>
+   <a>44.63</a>
+   <b>-52.55</b>
+  </color>
+  <color>
+   <name>Blue violet</name>
+   <L>41.68</L>
+   <a>62.09</a>
+   <b>-75.24</b>
+  </color>
+  <color>
+   <name>Medium purple</name>
+   <L>54.73</L>
+   <a>31.39</a>
+   <b>-50.25</b>
+  </color>
+  <color>
+   <name>Medium slate blue</name>
+   <L>51.60</L>
+   <a>33.46</a>
+   <b>-66.00</b>
+  </color>
+  <color>
+   <name>Slate blue</name>
+   <L>44.99</L>
+   <a>29.21</a>
+   <b>-58.15</b>
+  </color>
+  <color>
+   <name>Dark slate blue</name>
+   <L>31.06</L>
+   <a>20.75</a>
+   <b>-41.88</b>
+  </color>
+  <color>
+   <name>Ghost white</name>
+   <L>97.74</L>
+   <a>0.93</a>
+   <b>-3.35</b>
+  </color>
+  <color>
+   <name>Lavender</name>
+   <L>91.77</L>
+   <a>2.76</a>
+   <b>-9.68</b>
+  </color>
+  <color>
+   <name>Blue</name>
+   <L>30.36</L>
+   <a>66.58</a>
+   <b>-110.68</b>
+  </color>
+  <color>
+   <name>Medium blue</name>
+   <L>23.78</L>
+   <a>55.65</a>
+   <b>-93.26</b>
+  </color>
+  <color>
+   <name>Dark blue</name>
+   <L>14.99</L>
+   <a>39.75</a>
+   <b>-68.42</b>
+  </color>
+  <color>
+   <name>Navy</name>
+   <L>13.53</L>
+   <a>36.86</a>
+   <b>-63.98</b>
+  </color>
+  <color>
+   <name>Midnight blue</name>
+   <L>16.68</L>
+   <a>23.76</a>
+   <b>-48.61</b>
+  </color>
+  <color>
+   <name>Royal blue</name>
+   <L>47.18</L>
+   <a>17.53</a>
+   <b>-66.09</b>
+  </color>
+  <color>
+   <name>Cornflower blue</name>
+   <L>61.45</L>
+   <a>3.02</a>
+   <b>-49.88</b>
+  </color>
+  <color>
+   <name>Light steel blue</name>
+   <L>78.36</L>
+   <a>-2.88</a>
+   <b>-15.36</b>
+  </color>
+  <color>
+   <name>Light slate gray</name>
+   <L>56.04</L>
+   <a>-3.40</a>
+   <b>-11.18</b>
+  </color>
+  <color>
+   <name>Slate gray</name>
+   <L>53.00</L>
+   <a>-3.24</a>
+   <b>-10.63</b>
+  </color>
+  <color>
+   <name>Dodger blue</name>
+   <L>58.60</L>
+   <a>0.88</a>
+   <b>-64.39</b>
+  </color>
+  <color>
+   <name>Alice blue</name>
+   <L>97.13</L>
+   <a>-1.77</a>
+   <b>-4.32</b>
+  </color>
+  <color>
+   <name>Steel blue</name>
+   <L>52.30</L>
+   <a>-8.25</a>
+   <b>-32.53</b>
+  </color>
+  <color>
+   <name>Light sky blue</name>
+   <L>79.38</L>
+   <a>-14.34</a>
+   <b>-28.96</b>
+  </color>
+  <color>
+   <name>Sky blue</name>
+   <L>78.95</L>
+   <a>-17.43</a>
+   <b>-21.68</b>
+  </color>
+  <color>
+   <name>Deep sky blue</name>
+   <L>71.97</L>
+   <a>-23.89</a>
+   <b>-43.34</b>
+  </color>
+  <color>
+   <name>Light blue</name>
+   <L>83.68</L>
+   <a>-12.16</a>
+   <b>-11.73</b>
+  </color>
+  <color>
+   <name>Powder blue</name>
+   <L>86.01</L>
+   <a>-14.99</a>
+   <b>-8.27</b>
+  </color>
+  <color>
+   <name>Cadet blue</name>
+   <L>61.17</L>
+   <a>-20.53</a>
+   <b>-7.72</b>
+  </color>
+  <color>
+   <name>Dark turquoise</name>
+   <L>75.01</L>
+   <a>-42.12</a>
+   <b>-14.15</b>
+  </color>
+  <color>
+   <name>Azure</name>
+   <L>98.89</L>
+   <a>-5.05</a>
+   <b>-1.77</b>
+  </color>
+  <color>
+   <name>Light cyan</name>
+   <L>97.78</L>
+   <a>-10.31</a>
+   <b>-3.55</b>
+  </color>
+  <color>
+   <name>Pale turquoise</name>
+   <L>89.91</L>
+   <a>-20.40</a>
+   <b>-6.73</b>
+  </color>
+  <color>
+   <name>Aqua</name>
+   <L>90.71</L>
+   <a>-50.40</a>
+   <b>-14.89</b>
+  </color>
+  <color>
+   <name>Dark cyan</name>
+   <L>52.24</L>
+   <a>-31.76</a>
+   <b>-9.41</b>
+  </color>
+  <color>
+   <name>Teal</name>
+   <L>48.35</L>
+   <a>-29.84</a>
+   <b>-8.85</b>
+  </color>
+  <color>
+   <name>Dark slate gray</name>
+   <L>31.89</L>
+   <a>-11.79</a>
+   <b>-3.81</b>
+  </color>
+  <color>
+   <name>Medium turquoise</name>
+   <L>76.67</L>
+   <a>-38.61</a>
+   <b>-8.92</b>
+  </color>
+  <color>
+   <name>Light sea green</name>
+   <L>65.67</L>
+   <a>-38.46</a>
+   <b>-6.86</b>
+  </color>
+  <color>
+   <name>Turquoise</name>
+   <L>81.05</L>
+   <a>-44.85</a>
+   <b>-4.65</b>
+  </color>
+  <color>
+   <name>Aquamarine</name>
+   <L>91.90</L>
+   <a>-44.63</a>
+   <b>9.12</b>
+  </color>
+  <color>
+   <name>Medium aquamarine</name>
+   <L>75.66</L>
+   <a>-37.49</a>
+   <b>7.79</b>
+  </color>
+  <color>
+   <name>Medium spring green</name>
+   <L>87.29</L>
+   <a>-67.27</a>
+   <b>31.43</b>
+  </color>
+  <color>
+   <name>Mint cream</name>
+   <L>99.15</L>
+   <a>-4.05</a>
+   <b>1.19</b>
+  </color>
+  <color>
+   <name>Spring green</name>
+   <L>88.49</L>
+   <a>-72.08</a>
+   <b>45.70</b>
+  </color>
+  <color>
+   <name>Medium seagreen</name>
+   <L>65.40</L>
+   <a>-45.52</a>
+   <b>23.48</b>
+  </color>
+  <color>
+   <name>Sea green</name>
+   <L>51.81</L>
+   <a>-37.26</a>
+   <b>19.26</b>
+  </color>
+  <color>
+   <name>Honeydew</name>
+   <L>98.58</L>
+   <a>-7.05</a>
+   <b>5.40</b>
+  </color>
+  <color>
+   <name>Dark sea green</name>
+   <L>72.25</L>
+   <a>-22.04</a>
+   <b>17.67</b>
+  </color>
+  <color>
+   <name>Pale green</name>
+   <L>90.84</L>
+   <a>-44.62</a>
+   <b>37.74</b>
+  </color>
+  <color>
+   <name>Light green</name>
+   <L>86.65</L>
+   <a>-42.78</a>
+   <b>36.18</b>
+  </color>
+  <color>
+   <name>Lime green</name>
+   <L>72.81</L>
+   <a>-61.35</a>
+   <b>59.32</b>
+  </color>
+  <color>
+   <name>Lime</name>
+   <L>87.87</L>
+   <a>-78.80</a>
+   <b>80.22</b>
+  </color>
+  <color>
+   <name>Forest green</name>
+   <L>50.97</L>
+   <a>-44.92</a>
+   <b>42.87</b>
+  </color>
+  <color>
+   <name>Green</name>
+   <L>46.67</L>
+   <a>-46.53</a>
+   <b>46.75</b>
+  </color>
+  <color>
+   <name>Dark green</name>
+   <L>36.84</L>
+   <a>-38.51</a>
+   <b>38.28</b>
+  </color>
+  <color>
+   <name>Lawn green</name>
+   <L>89.10</L>
+   <a>-60.99</a>
+   <b>82.25</b>
+  </color>
+  <color>
+   <name>Chartreuse</name>
+   <L>90.09</L>
+   <a>-61.16</a>
+   <b>83.08</b>
+  </color>
+  <color>
+   <name>Green yellow</name>
+   <L>92.24</L>
+   <a>-46.19</a>
+   <b>79.79</b>
+  </color>
+  <color>
+   <name>Dark olive green</name>
+   <L>42.82</L>
+   <a>-16.04</a>
+   <b>29.35</b>
+  </color>
+  <color>
+   <name>Yellow green</name>
+   <L>76.87</L>
+   <a>-32.88</a>
+   <b>64.87</b>
+  </color>
+  <color>
+   <name>Olive drab</name>
+   <L>55.11</L>
+   <a>-24.23</a>
+   <b>47.86</b>
+  </color>
+  <color>
+   <name>Ivory</name>
+   <L>99.70</L>
+   <a>-1.89</a>
+   <b>7.17</b>
+  </color>
+  <color>
+   <name>Beige</name>
+   <L>96.06</L>
+   <a>-3.10</a>
+   <b>12.05</b>
+  </color>
+  <color>
+   <name>Light yellow</name>
+   <L>99.40</L>
+   <a>-3.78</a>
+   <b>14.83</b>
+  </color>
+  <color>
+   <name>Light golden rod yellow</name>
+   <L>97.52</L>
+   <a>-4.79</a>
+   <b>19.21</b>
+  </color>
+  <color>
+   <name>Yellow</name>
+   <L>97.62</L>
+   <a>-15.69</a>
+   <b>92.63</b>
+  </color>
+  <color>
+   <name>Olive</name>
+   <L>52.46</L>
+   <a>-9.32</a>
+   <b>54.25</b>
+  </color>
+  <color>
+   <name>Dark khaki</name>
+   <L>73.77</L>
+   <a>-5.78</a>
+   <b>38.92</b>
+  </color>
+  <color>
+   <name>Pale golden rod</name>
+   <L>91.41</L>
+   <a>-4.79</a>
+   <b>30.88</b>
+  </color>
+  <color>
+   <name>Lemon chiffon</name>
+   <L>97.83</L>
+   <a>-3.51</a>
+   <b>22.23</b>
+  </color>
+  <color>
+   <name>Khaki</name>
+   <L>90.68</L>
+   <a>-5.57</a>
+   <b>44.74</b>
+  </color>
+  <color>
+   <name>Gold</name>
+   <L>87.52</L>
+   <a>2.89</a>
+   <b>85.63</b>
+  </color>
+  <color>
+   <name>Corn silk</name>
+   <L>97.59</L>
+   <a>-0.95</a>
+   <b>14.33</b>
+  </color>
+  <color>
+   <name>Golden rod</name>
+   <L>71.46</L>
+   <a>12.13</a>
+   <b>67.63</b>
+  </color>
+  <color>
+   <name>Dark golden rod</name>
+   <L>59.91</L>
+   <a>12.95</a>
+   <b>61.14</b>
+  </color>
+  <color>
+   <name>Floral white</name>
+   <L>98.46</L>
+   <a>0.46</a>
+   <b>5.41</b>
+  </color>
+  <color>
+   <name>Old lace</name>
+   <L>96.88</L>
+   <a>0.91</a>
+   <b>8.22</b>
+  </color>
+  <color>
+   <name>Wheat</name>
+   <L>89.63</L>
+   <a>3.46</a>
+   <b>24.09</b>
+  </color>
+  <color>
+   <name>Orange</name>
+   <L>75.70</L>
+   <a>27.36</a>
+   <b>77.91</b>
+  </color>
+  <color>
+   <name>Moccasin</name>
+   <L>92.01</L>
+   <a>4.54</a>
+   <b>26.46</b>
+  </color>
+  <color>
+   <name>Papaya whip</name>
+   <L>95.25</L>
+   <a>2.53</a>
+   <b>14.61</b>
+  </color>
+  <color>
+   <name>Blanched almond</name>
+   <L>94.12</L>
+   <a>3.58</a>
+   <b>17.13</b>
+  </color>
+  <color>
+   <name>Navajo white</name>
+   <L>90.42</L>
+   <a>6.70</a>
+   <b>28.39</b>
+  </color>
+  <color>
+   <name>Antique white</name>
+   <L>93.88</L>
+   <a>2.85</a>
+   <b>11.61</b>
+  </color>
+  <color>
+   <name>Tan</name>
+   <L>75.34</L>
+   <a>6.89</a>
+   <b>24.49</b>
+  </color>
+  <color>
+   <name>Burly wood</name>
+   <L>77.43</L>
+   <a>9.23</a>
+   <b>30.09</b>
+  </color>
+  <color>
+   <name>Dark orange</name>
+   <L>70.35</L>
+   <a>39.54</a>
+   <b>74.67</b>
+  </color>
+  <color>
+   <name>Bisque</name>
+   <L>92.25</L>
+   <a>6.00</a>
+   <b>19.15</b>
+  </color>
+  <color>
+   <name>Linen</name>
+   <L>95.40</L>
+   <a>2.23</a>
+   <b>6.09</b>
+  </color>
+  <color>
+   <name>Peru</name>
+   <L>62.45</L>
+   <a>23.75</a>
+   <b>47.63</b>
+  </color>
+  <color>
+   <name>Peach puff</name>
+   <L>89.64</L>
+   <a>9.74</a>
+   <b>21.22</b>
+  </color>
+  <color>
+   <name>Sandy brown</name>
+   <L>74.59</L>
+   <a>25.58</a>
+   <b>46.91</b>
+  </color>
+  <color>
+   <name>Chocolate</name>
+   <L>56.88</L>
+   <a>38.88</a>
+   <b>56.09</b>
+  </color>
+  <color>
+   <name>Saddle brown</name>
+   <L>38.48</L>
+   <a>27.51</a>
+   <b>39.27</b>
+  </color>
+  <color>
+   <name>Seashell</name>
+   <L>97.19</L>
+   <a>2.58</a>
+   <b>4.62</b>
+  </color>
+  <color>
+   <name>Sienna</name>
+   <L>44.70</L>
+   <a>30.45</a>
+   <b>35.17</b>
+  </color>
+  <color>
+   <name>Light salmon</name>
+   <L>75.33</L>
+   <a>33.32</a>
+   <b>35.04</b>
+  </color>
+  <color>
+   <name>Coral</name>
+   <L>68.14</L>
+   <a>47.09</a>
+   <b>47.98</b>
+  </color>
+  <color>
+   <name>Orange red</name>
+   <L>58.75</L>
+   <a>68.64</a>
+   <b>68.67</b>
+  </color>
+  <color>
+   <name>Dark salmon</name>
+   <L>70.44</L>
+   <a>29.70</a>
+   <b>28.14</b>
+  </color>
+  <color>
+   <name>Tomato</name>
+   <L>63.18</L>
+   <a>58.95</a>
+   <b>47.13</b>
+  </color>
+  <color>
+   <name>Salmon</name>
+   <L>68.00</L>
+   <a>46.33</a>
+   <b>29.85</b>
+  </color>
+  <color>
+   <name>Misty Rose</name>
+   <L>92.79</L>
+   <a>9.16</a>
+   <b>5.00</b>
+  </color>
+  <color>
+   <name>Light coral</name>
+   <L>66.81</L>
+   <a>43.54</a>
+   <b>20.31</b>
+  </color>
+  <color>
+   <name>Snow</name>
+   <L>98.66</L>
+   <a>1.71</a>
+   <b>0.62</b>
+  </color>
+  <color>
+   <name>Rosy brown</name>
+   <L>63.98</L>
+   <a>17.42</a>
+   <b>6.89</b>
+  </color>
+  <color>
+   <name>Indian Red</name>
+   <L>54.21</L>
+   <a>45.31</a>
+   <b>22.78</b>
+  </color>
+  <color>
+   <name>Red</name>
+   <L>54.56</L>
+   <a>80.12</a>
+   <b>67.10</b>
+  </color>
+  <color>
+   <name>Brown</name>
+   <L>38.69</L>
+   <a>49.49</a>
+   <b>30.47</b>
+  </color>
+  <color>
+   <name>Firebrick</name>
+   <L>40.33</L>
+   <a>55.68</a>
+   <b>37.39</b>
+  </color>
+  <color>
+   <name>Dark red</name>
+   <L>29.59</L>
+   <a>49.98</a>
+   <b>38.83</b>
+  </color>
+  <color>
+   <name>Maroon</name>
+   <L>27.10</L>
+   <a>46.84</a>
+   <b>35.66</b>
+  </color>
+  <color>
+   <name>White</name>
+   <L>100.00</L>
+   <a>0.00</a>
+   <b>0.00</b>
+  </color>
+  <color>
+   <name>White smoke</name>
+   <L>96.55</L>
+   <a>0.00</a>
+   <b>0.00</b>
+  </color>
+  <color>
+   <name>Gainsboro</name>
+   <L>87.81</L>
+   <a>0.00</a>
+   <b>0.00</b>
+  </color>
+  <color>
+   <name>Light grey</name>
+   <L>84.62</L>
+   <a>0.00</a>
+   <b>0.00</b>
+  </color>
+  <color>
+   <name>Silver</name>
+   <L>77.80</L>
+   <a>0.00</a>
+   <b>0.00</b>
+  </color>
+  <color>
+   <name>Dark gray</name>
+   <L>69.39</L>
+   <a>0.00</a>
+   <b>0.00</b>
+  </color>
+  <color>
+   <name>Gray</name>
+   <L>53.88</L>
+   <a>0.00</a>
+   <b>0.00</b>
+  </color>
+  <color>
+   <name>Dim gray</name>
+   <L>44.84</L>
+   <a>0.01</a>
+   <b>0.00</b>
+  </color>
+  <color>
+   <name>Black</name>
+   <L>3.14</L>
+   <a>0.05</a>
+   <b>-0.01</b>
+  </color>
+ </named>
+</profile>
