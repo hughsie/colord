@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<locatingRules>
+  <locatingRule name="IccProfile" pattern="*.iccprofile.xml">
+    <documentRule localName="profile" target="colord.its"/>
+  </locatingRule>
+</locatingRules>

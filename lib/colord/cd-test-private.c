@@ -64,7 +64,11 @@ colord_it8_cri_util_func (void)
 
 	/* load a CMF */
 	cmf = cd_it8_new ();
-	file = g_file_new_for_path ("../../data/cmf/CIE1931-2deg-XYZ.cmf");
+	file = g_file_new_for_path ("../build/data/cmf/CIE1931-2deg-XYZ.cmf");
+	if (!g_file_query_exists (file, NULL)) {
+		g_test_skip ("generated files not available");
+		return;
+	}
 	ret = cd_it8_load_from_file (cmf, file, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -73,7 +77,11 @@ colord_it8_cri_util_func (void)
 
 	/* load the TCS */
 	tcs = cd_it8_new ();
-	file = g_file_new_for_path ("../../data/ref/CIE-TCS.sp");
+	file = g_file_new_for_path ("../data/ref/CIE-TCS.sp");
+	if (!g_file_query_exists (file, NULL)) {
+		g_test_skip ("generated files not available");
+		return;
+	}
 	ret = cd_it8_load_from_file (tcs, file, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -82,7 +90,11 @@ colord_it8_cri_util_func (void)
 
 	/* load the test spectra */
 	test = cd_it8_new ();
-	file = g_file_new_for_path ("../../data/illuminant/CIE-F4.sp");
+	file = g_file_new_for_path ("../build/data/illuminant/CIE-F4.sp");
+	if (!g_file_query_exists (file, NULL)) {
+		g_test_skip ("generated files not available");
+		return;
+	}
 	ret = cd_it8_load_from_file (test, file, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -2404,7 +2416,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
 	g_test_add_func ("/colord/it8{ccmx-util}", colord_it8_ccmx_util_func);
 	g_test_add_func ("/colord/it8{spectra-util}", colord_it8_spectra_util_func);
-if(0)	g_test_add_func ("/colord/it8{cri-util}", colord_it8_cri_util_func);
+	g_test_add_func ("/colord/it8{cri-util}", colord_it8_cri_util_func);
 	g_test_add_func ("/colord/it8{ccss}", colord_it8_ccss_func);
 	g_test_add_func ("/colord/it8{spect}", colord_it8_spect_func);
 

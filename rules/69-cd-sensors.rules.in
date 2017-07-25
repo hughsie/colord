@@ -102,6 +102,6 @@ ENV{COLORD_SENSOR_KIND}=="*?", ENV{ID_MODEL}=="", IMPORT{builtin}="usb_id"
 ENV{COLORD_SENSOR_KIND}=="*?", ENV{ID_MODEL_FROM_DATABASE}=="", IMPORT{builtin}="hwdb --subsystem=usb"
 
 # Allow the daemon to access the color devices
-ENV{COLORD_SENSOR_KIND}=="*?", GROUP="@daemon_user@"
+ENV{COLORD_SENSOR_KIND}=="*?", GROUP="@DAEMON_USER@"
 
 LABEL="gcm_rules_end"

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>ECI-RGBv2</name>
+ <description>eciRGB v2</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!-- TRANSLATORS: lightness is a technical word for brightness -->
+ <model>
+  This profile was designed with a lightness gamma curve which means the monitor
+  will have to be also calibrated in the same way.
+  This profile is only useful for advanced users and is not recommended for
+  general use.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>eci-rgb-v2</standard_space>
+ <gamma>L*</gamma>
+ <whitepoint>D50</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6700</x>
+   <y>0.3300</y>
+   <Y>0.320250</Y>
+  </red>
+  <green>
+   <x>0.2100</x>
+   <y>0.7100</y>
+   <Y>0.602071</Y>
+  </green>
+  <blue>
+   <x>0.1400</x>
+   <y>0.0800</y>
+   <Y>0.077679</Y>
+  </blue>
+ </primaries>
+</profile>

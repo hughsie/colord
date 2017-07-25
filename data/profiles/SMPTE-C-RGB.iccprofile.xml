@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>SMPTE-C-RGB</name>
+ <description>SMPTE-C RGB</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!-- TRANSLATORS: studio recording means 'shows you'll see on TV' -->
+ <model>
+  This is the current standard used by North America and Japan for studio
+  recording.
+  You should only use this profile to encode or decode video.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>smpte-c-rgb</standard_space>
+ <gamma>2.2</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6300</x>
+   <y>0.3400</y>
+   <Y>0.212395</Y>
+  </red>
+  <green>
+   <x>0.3100</x>
+   <y>0.5950</y>
+   <Y>0.701049</Y>
+  </green>
+  <blue>
+   <x>0.1550</x>
+   <y>0.0700</y>
+   <Y>0.086556</Y>
+  </blue>
+ </primaries>
+</profile>

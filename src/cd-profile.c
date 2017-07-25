@@ -34,7 +34,8 @@
 #include "cd-common.h"
 #include "cd-profile.h"
 #include "cd-profile-db.h"
-#include "cd-resources.h"
+
+#include "colord-resources.h"
 
 static void	cd_profile_finalize	(GObject	*object);
 static void	cd_profile_set_filename	(CdProfile	*profile,

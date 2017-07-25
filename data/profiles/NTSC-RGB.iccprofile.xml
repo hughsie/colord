@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>NTSC-RGB</name>
+ <description>NTSC RGB</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!--
+  TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
+  Same Color' as it's really a poor choice compared to sRGB
+ -->
+ <model>
+  This profile defines the range of colors used with the NTSC video standard.
+  It is an obsolete standard that has been replaced by SMTE-C.
+  You should only use this profile to decode archived video.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>ntsc-rgb</standard_space>
+ <gamma>2.2</gamma>
+ <whitepoint>C</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6700</x>
+   <y>0.3300</y>
+   <Y>0.298839</Y>
+  </red>
+  <green>
+   <x>0.2100</x>
+   <y>0.7100</y>
+   <Y>0.586811</Y>
+  </green>
+  <blue>
+   <x>0.1400</x>
+   <y>0.0800</y>
+   <Y>0.114350</Y>
+  </blue>
+ </primaries>
+</profile>

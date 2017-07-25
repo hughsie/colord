@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>EktaSpacePS5</name>
+ <description>Ekta Space PS5</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+ <!-- TRANSLATORS: negatives refers to the film on which a negative image is stored -->
+ <model>
+  This profile was designed for storing archives of scanned transparency film.
+  It is suitable for storing images from color negatives, although nowadays
+  ProPhoto RGB is a more popular profile for archival.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>ekta-space-ps5</standard_space>
+ <gamma>2.2</gamma>
+ <whitepoint>D50</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6950</x>
+   <y>0.3050</y>
+   <Y>0.260629</Y>
+  </red>
+  <green>
+   <x>0.2600</x>
+   <y>0.7000</y>
+   <Y>0.734946</Y>
+  </green>
+  <blue>
+   <x>0.1100</x>
+   <y>0.0050</y>
+   <Y>0.004425</Y>
+  </blue>
+ </primaries>
+</profile>

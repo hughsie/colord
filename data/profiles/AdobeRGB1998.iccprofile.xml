@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<profile>
+ <name>AdobeRGB1998</name>
+ <description>Compatible with Adobe RGB (1998)</description>
+ <copyright>This profile is free of known copyright restrictions</copyright>
+  <!--
+  TRANSLATORS: a editing space is a profile you use for editing,
+  'SWOP' is also a trademark so don't translate that
+  -->
+ <model>
+  This editing space was designed as SMPTE-240M and encompasses most of the
+  possible colors available on a CMYK color printer.
+  This is a popular choice for editing photographs and for use in printing,
+  as all the SWOP colors can be reproduced.
+ </model>
+ <license>CC0</license>
+ <data_source>standard</data_source>
+ <standard_space>adobe-rgb</standard_space>
+ <!-- according to http://www.adobe.com/digitalimag/pdfs/AdobeRGB1998.pdf -->
+ <gamma>2.19921875</gamma>
+ <whitepoint>D65</whitepoint>
+ <primaries>
+  <red>
+   <x>0.6400</x>
+   <y>0.3300</y>
+   <Y>0.297361</Y>
+  </red>
+  <green>
+   <x>0.2100</x>
+   <y>0.7100</y>
+   <Y>0.627355</Y>
+  </green>
+  <blue>
+   <x>0.1500</x>
+   <y>0.0600</y>
+   <Y>0.075285</Y>
+  </blue>
+ </primaries>
+</profile>

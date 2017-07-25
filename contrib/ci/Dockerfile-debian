@@ -1,9 +1,32 @@
-FROM debian:stretch
+FROM debian:unstable
 
-RUN echo "deb-src http://deb.debian.org/debian/ stretch main" >> /etc/apt/sources.list
 RUN apt-get update -qq
-RUN apt-get build-dep -yq colord
 RUN apt-get install -yq --no-install-recommends \
-        valgrind
+	bash-completion \
+	docbook-utils \
+	gettext \
+	gobject-introspection \
+	gtk-doc-tools \
+	gvfs-bin \
+	libdbus-glib-1-dev \
+	libgirepository1.0-dev \
+	libglib2.0-dev \
+	libgudev-1.0-dev \
+	libgusb-dev \
+	liblcms2-dev \
+	libpolkit-gobject-1-dev \
+	libsane-dev \
+	libsoup2.4-dev \
+	libsqlite3-dev \
+	libsystemd-dev \
+	libtool-bin \
+	libudev-dev \
+	meson \
+	pkg-config \
+	policykit-1 \
+	shared-mime-info \
+	systemd \
+	udev \
+	valgrind
 RUN mkdir /build
 WORKDIR /build

@@ -1,0 +1,6 @@
+{
+global:
+    cd_*;
+local:
+    *;
+};

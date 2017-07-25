@@ -1,0 +1,20 @@
+if get_option('enable-reverse')
+  shared_module('cd-sensor-munki',
+    sources : [
+      'cd-sensor-munki.c',
+      'munki-enum.c',
+    ],
+    include_directories : [
+      src_incdir,
+      colord_incdir,
+      lib_incdir,
+      root_incdir,
+    ],
+    c_args : cargs,
+    dependencies : [
+      gio,
+      gusb,
+      gudev,
+    ],
+  )
+endif

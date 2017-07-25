@@ -29,7 +29,6 @@ BuildRequires: dbus-devel
 BuildRequires: docbook-utils
 BuildRequires: gettext
 BuildRequires: glib2-devel
-BuildRequires: intltool
 BuildRequires: systemd-devel
 BuildRequires: lcms2-devel >= 2.6
 BuildRequires: libgudev1-devel
@@ -40,6 +39,7 @@ BuildRequires: vala-tools
 BuildRequires: libgusb-devel >= 0.2.2
 BuildRequires: gtk-doc
 BuildRequires: color-filesystem
+BuildRequires: meson
 %if !0%{?rhel}
 BuildRequires: bash-completion
 %endif
@@ -114,39 +114,30 @@ This may be useful for CMYK soft-proofing or for extra device support.
 # generating the print profile rather than trying to allocate a 3.1 GiB
 # chunk of RAM to put the entire B-to-A tables in.
 ulimit -Sv 2000000
-%configure \
-        --with-daemon-user=colord \
-        --enable-gtk-doc \
-        --enable-vala \
+
+%meson \
+    -Denable-vala=false \
 %if 0%{?build_print_profiles}
-        --enable-print-profiles \
+    -Denable-print-profiles=true \
 %else
-        --disable-print-profiles \
+    -Denable-print-profiles=false \
 %endif
 %if 0%{?enable_sane}
-        --enable-sane \
+    -Denable-sane=true \
 %endif
 %if 0%{?rhel}
-        --disable-bash-completion \
-        --disable-argyllcms-sensor \
+    -Denable-bash-completion=false \
+    -Denable-argyllcms-sensor=false \
 %endif
 %if !0%{?rhel}
-        --enable-libcolordcompat \
+    -Denable-libcolordcompat=true \
 %endif
-        --disable-static \
-        --disable-rpath \
-        --disable-examples \
-        --disable-silent-rules \
-        --disable-dependency-tracking
+    -Dwith-daemon-user=colord
 
-make %{?_smp_mflags}
+%meson_build
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT
-
-# Remove static libs and libtool archives.
-find %{buildroot} -name '*.la' -exec rm -f {} ';'
-find %{buildroot} -name '*.a' -exec rm -f {} ';'
+%meson_install
 
 # databases
 touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/mapping.db
@@ -182,7 +173,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %attr(755,colord,colord) %dir %{_localstatedir}/lib/colord/icc
 %{_bindir}/*
 %{_datadir}/glib-2.0/schemas/org.freedesktop.ColorHelper.gschema.xml
-%{_sysconfdir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
+%{_datadir}/dbus-1/system.d/org.freedesktop.ColorManager.conf
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
@@ -281,7 +272,7 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libdir}/libcolorhug.so
 %{_libdir}/pkgconfig/*.pc
 %{_datadir}/gir-1.0/*.gir
-%{_datadir}/vala/vapi/colord.vapi
+#%{_datadir}/vala/vapi/colord.vapi
 
 %files devel-docs
 %dir %{_datadir}/gtk-doc/html/colord
