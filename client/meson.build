@@ -6,9 +6,9 @@ executable(
     'cd-util.c',
   ],
   include_directories : [
-    include_directories('..'),
-    include_directories('../lib'),
-    include_directories('../lib/colord'),
+      colord_incdir,
+      lib_incdir,
+      root_incdir,
   ],
   dependencies : [
     gio,
@@ -29,9 +29,9 @@ executable(
     'cd-fix-profile.c',
   ],
   include_directories : [
-    include_directories('..'),
-    include_directories('../lib'),
-    include_directories('../lib/colord'),
+      colord_incdir,
+      lib_incdir,
+      root_incdir,
   ],
   dependencies : [
     gio,
@@ -52,9 +52,9 @@ executable(
     'cd-iccdump.c',
   ],
   include_directories : [
-    include_directories('..'),
-    include_directories('../lib'),
-    include_directories('../lib/colord'),
+      colord_incdir,
+      lib_incdir,
+      root_incdir,
   ],
   dependencies : [
     gio,
@@ -75,9 +75,9 @@ cd_idt8 = executable(
     'cd-it8.c',
   ],
   include_directories : [
-    include_directories('..'),
-    include_directories('../lib'),
-    include_directories('../lib/colord'),
+      colord_incdir,
+      lib_incdir,
+      root_incdir,
   ],
   dependencies : [
     gio,
@@ -98,9 +98,9 @@ cd_create_profile = executable(
     'cd-create-profile.c',
   ],
   include_directories : [
-    include_directories('..'),
-    include_directories('../lib'),
-    include_directories('../lib/colord'),
+      colord_incdir,
+      lib_incdir,
+      root_incdir,
   ],
   dependencies : [
     gio,

@@ -110,9 +110,9 @@ if get_option('enable-tests')
       'ch-self-test.c',
     ],
     include_directories : [
-      include_directories('..'),
-      include_directories('../colord'),
-    root_incdir,
+      colord_incdir,
+      lib_incdir,
+      root_incdir,
     ],
     dependencies : [
       gio,

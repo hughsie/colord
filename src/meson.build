@@ -47,9 +47,9 @@ executable(
     'cd-sensor-client.c',
   ],
   include_directories : [
-    include_directories('..'),
-    include_directories('../lib'),
-    include_directories('../lib/colord'),
+    colord_incdir,
+    lib_incdir,
+    root_incdir,
   ],
   dependencies : [
     giounix,
@@ -85,9 +85,9 @@ if get_option('enable-tests')
       'cd-self-test.c',
     ],
     include_directories : [
-      include_directories('..'),
-      include_directories('../lib'),
-      include_directories('../lib/colord'),
+      colord_incdir,
+      lib_incdir,
+      root_incdir,
     ],
     dependencies : [
       giounix,
