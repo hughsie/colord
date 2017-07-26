@@ -57,7 +57,8 @@ if get_option('enable-sane')
       'cd-plugin-sane.c',
     ],
     include_directories : [
-      root_incdir,
+      colord_incdir,
+      lib_incdir,
       root_incdir,
       src_incdir,
     ],
