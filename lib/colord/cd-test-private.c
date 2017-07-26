@@ -630,11 +630,11 @@ colord_it8_raw_func (void)
 static void
 colord_it8_locale_func (void)
 {
-	CdIt8 *ccmx;
 	CdMat3x3 mat;
 	const gchar *orig_locale;
 	gboolean ret;
-	gchar *data;
+	g_autofree gchar *data = NULL;
+	g_autoptr(CdIt8) ccmx = NULL;
 	g_autoptr(GError) error = NULL;
 
 	/* set to a locale with ',' as the decimal point */
@@ -664,9 +664,6 @@ colord_it8_locale_func (void)
 				   " 0.0	0.0	0.0\n"
 				   "END_DATA\n");
 	setlocale (LC_NUMERIC, orig_locale);
-
-	g_free (data);
-	g_object_unref (ccmx);
 }
 
 static void
@@ -674,12 +671,12 @@ colord_it8_normalized_func (void)
 {
 	CdColorRGB rgb;
 	CdColorXYZ xyz;
-	CdIt8 *it8;
 	gboolean ret;
-	gchar *filename;
+	g_autofree gchar *filename = NULL;
+	g_autoptr(CdIt8) it8 = NULL;
 	g_autoptr(GError) error = NULL;
-	GFile *file;
-	GFile *file_new;
+	g_autoptr(GFile) file_new = NULL;
+	g_autoptr(GFile) file = NULL;
 
 	it8 = cd_it8_new ();
 	g_assert (it8 != NULL);
@@ -721,11 +718,6 @@ colord_it8_normalized_func (void)
 	ret = g_file_delete (file_new, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
-
-	g_free (filename);
-	g_object_unref (it8);
-	g_object_unref (file);
-	g_object_unref (file_new);
 }
 
 static void
@@ -773,13 +765,13 @@ colord_it8_ccmx_util_func (void)
 static void
 colord_it8_ccmx_func (void)
 {
-	CdIt8 *it8;
 	const CdMat3x3 *matrix;
 	gboolean ret;
-	gchar *filename;
+	g_autoptr(CdIt8) it8 = NULL;
 	g_autoptr(GError) error = NULL;
-	GFile *file;
-	GFile *file_new;
+	g_autoptr(GFile) file_new = NULL;
+	g_autoptr(GFile) file = NULL;
+	g_autofree gchar *filename = NULL;
 
 	it8 = cd_it8_new ();
 	g_assert (it8 != NULL);
@@ -819,11 +811,6 @@ colord_it8_ccmx_func (void)
 	ret = g_file_delete (file_new, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
-
-	g_free (filename);
-	g_object_unref (it8);
-	g_object_unref (file);
-	g_object_unref (file_new);
 }
 
 static void
@@ -1002,11 +989,11 @@ colord_enum_func (void)
 static void
 colord_dom_func (void)
 {
-	CdDom *dom;
+	g_autoptr(CdDom) dom = NULL;
 	const gchar *markup = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><html> <body> <p class='1'>moo1</p> <p wrap='false'>moo2</p>\n</body> </html>";
 	const GNode *tmp;
 	gboolean ret;
-	gchar *str;
+	g_autofree gchar *str = NULL;
 	g_autoptr(GError) error = NULL;
 
 	dom = cd_dom_new ();
@@ -1019,7 +1006,6 @@ colord_dom_func (void)
 	/* to string */
 	str = cd_dom_to_string (dom);
 	g_assert_cmpstr (str, ==, "  <html> []\n   <body> []\n    <p> [moo1]\n    <p> [moo2]\n");
-	g_free (str);
 
 	/* get node */
 	tmp = cd_dom_get_node (dom, NULL, "html/body");
@@ -1036,8 +1022,6 @@ colord_dom_func (void)
 	g_assert_cmpstr (cd_dom_get_node_name (tmp), ==, "p");
 	g_assert_cmpstr (cd_dom_get_node_data (tmp), ==, "moo2");
 	g_assert_cmpstr (cd_dom_get_node_attribute (tmp, "wrap"), ==, "false");
-
-	g_object_unref (dom);
 }
 
 static void
@@ -1045,7 +1029,7 @@ colord_dom_color_func (void)
 {
 	CdColorLab lab;
 	CdColorRGB rgb;
-	CdDom *dom;
+	g_autoptr(CdDom) dom = NULL;
 	const gchar *markup = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
 		"<named>"
 		" <color>"
@@ -1078,14 +1062,11 @@ colord_dom_color_func (void)
 	/* get value */
 	ret = cd_dom_get_node_rgb (tmp, &rgb);
 	g_assert (!ret);
-
-	g_object_unref (dom);
 }
 
 static void
 colord_dom_localized_func (void)
 {
-	CdDom *dom;
 	const gchar *markup = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
 		"<profile>"
 		" <copyright>Colors cannot be copyrighted</copyright>"
@@ -1094,8 +1075,9 @@ colord_dom_localized_func (void)
 	const gchar *lang;
 	const GNode *tmp;
 	gboolean ret;
+	g_autoptr(CdDom) dom = NULL;
 	g_autoptr(GError) error = NULL;
-	GHashTable *hash;
+	g_autoptr(GHashTable) hash = NULL;
 
 	dom = cd_dom_new ();
 
@@ -1116,9 +1098,6 @@ colord_dom_localized_func (void)
 	g_assert_cmpstr (lang, ==, "Colours cannot be copyrighted");
 	lang = g_hash_table_lookup (hash, "fr");
 	g_assert_cmpstr (lang, ==, NULL);
-	g_hash_table_unref (hash);
-
-	g_object_unref (dom);
 }
 
 static void
@@ -1187,8 +1166,8 @@ cd_test_math_func (void)
 static void
 colord_color_interpolate_func (void)
 {
-	GPtrArray *array;
-	GPtrArray *result;
+	g_autoptr(GPtrArray) array = NULL;
+	g_autoptr(GPtrArray) result = NULL;
 	guint i;
 	CdColorRGB *rgb;
 	gdouble test_data[] = { 0.10, 0.35, 0.40, 0.80, 1.00, -1.0 };
@@ -1206,9 +1185,6 @@ colord_color_interpolate_func (void)
 	result = cd_color_rgb_array_interpolate (array, 10);
 	g_assert (result != NULL);
 	g_assert_cmpint (result->len, ==, 10);
-
-	g_ptr_array_unref (result);
-	g_ptr_array_unref (array);
 }
 
 static void
@@ -1278,7 +1254,7 @@ colord_color_blackbody_func (void)
 static void
 colord_interp_linear_func (void)
 {
-	CdInterp *interp;
+	g_autoptr(CdInterp) interp = NULL;
 	GArray *array_tmp;
 	gboolean ret;
 	gdouble tmp;
@@ -1330,13 +1306,12 @@ colord_interp_linear_func (void)
 		g_assert_no_error (error);
 		g_assert_cmpfloat (y, <, data[i] + 0.01);
 	}
-	g_object_unref (interp);
 }
 
 static void
 colord_interp_akima_func (void)
 {
-	CdInterp *interp;
+	g_autoptr(CdInterp) interp = NULL;
 	gboolean ret;
 	gdouble x;
 	gdouble y;
@@ -1372,8 +1347,6 @@ colord_interp_akima_func (void)
 		g_assert_cmpfloat (y, <, data[i] + 0.01);
 		g_assert_cmpfloat (y, >, data[i] - 0.01);
 	}
-
-	g_object_unref (interp);
 }
 
 static void
@@ -1973,7 +1946,7 @@ static void
 _copy_files (const gchar *src, const gchar *dest)
 {
 	gboolean ret;
-	gchar *data;
+	g_autofree gchar *data = NULL;
 	g_autoptr(GError) error = NULL;
 	gsize len;
 
@@ -1983,7 +1956,6 @@ _copy_files (const gchar *src, const gchar *dest)
 	ret = g_file_set_contents (dest, data, len, &error);
 	g_assert (ret);
 	g_assert_no_error (error);
-	g_free (data);
 }
 
 static void
@@ -2017,6 +1989,7 @@ colord_icc_store_func (void)
 	gchar *root;
 	g_autoptr(GError) error = NULL;
 	GPtrArray *array;
+	gint rc;
 	guint added = 0;
 	guint removed = 0;
 
@@ -2030,7 +2003,9 @@ colord_icc_store_func (void)
 	cd_icc_store_set_load_flags (store, CD_ICC_LOAD_FLAGS_NONE);
 
 	filename1 = cd_test_get_filename ("ibm-t61.icc");
+	g_assert (filename1 != NULL);
 	filename2 = cd_test_get_filename ("crayons.icc");
+	g_assert (filename2 != NULL);
 
 	/* create test directory */
 	root = g_strdup_printf ("/tmp/colord-%c%c%c%c",
@@ -2038,7 +2013,8 @@ colord_icc_store_func (void)
 				g_random_int_range ('a', 'z'),
 				g_random_int_range ('a', 'z'),
 				g_random_int_range ('a', 'z'));
-	g_mkdir (root, 0777);
+	rc = g_mkdir_with_parents (root, 0777);
+	g_assert (rc == 0);
 
 	file1 = g_build_filename (root, "already-exists.icc", NULL);
 	_copy_files (filename1, file1);
@@ -2376,6 +2352,7 @@ int
 main (int argc, char **argv)
 {
 	g_test_init (&argc, &argv, NULL);
+	g_setenv ("G_MESSAGES_DEBUG", "all", TRUE);
 
 	/* only critical and error are fatal */
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
