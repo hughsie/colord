@@ -175,14 +175,27 @@ huey_device_unlock (GUsbDevice *device, GError **error)
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
-	request[0] = HUEY_CMD_UNLOCK;
-	request[1] = 'G';
-	request[2] = 'r';
-	request[3] = 'M';
-	request[4] = 'b';
-	request[5] = '\0';
-	request[6] = '\0';
-	request[7] = '\0';
+	/* embedded devices on Lenovo machines use a different unlock code */
+	if (g_usb_device_get_vid (device) == 0x0765 &&
+	    g_usb_device_get_pid (device) == 0x5001) {
+		request[0] = HUEY_CMD_UNLOCK;
+		request[1] = 'h';
+		request[2] = 'u';
+		request[3] = 'y';
+		request[4] = 'L';
+		request[5] = '\0';
+		request[6] = '\0';
+		request[7] = '\0';
+	} else {
+		request[0] = HUEY_CMD_UNLOCK;
+		request[1] = 'G';
+		request[2] = 'r';
+		request[3] = 'M';
+		request[4] = 'b';
+		request[5] = '\0';
+		request[6] = '\0';
+		request[7] = '\0';
+	}
 
 	/* no idea why the hardware gets 'locked' */
 	ret = huey_device_send_data (device,
