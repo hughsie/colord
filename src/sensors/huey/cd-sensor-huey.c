@@ -188,15 +188,17 @@ cd_sensor_huey_lock_thread_cb (GTask *task,
 	}
 
 	/* spin the LEDs */
-	for (i = 0; spin_leds[i] != 0xff; i++) {
-		if (!huey_device_set_leds (priv->device, spin_leds[i], &error)) {
-			g_task_return_new_error (task,
-						 CD_SENSOR_ERROR,
-						 CD_SENSOR_ERROR_INTERNAL,
-						 "%s", error->message);
-			goto out;
+	if (!cd_sensor_get_is_embedded (sensor)) {
+		for (i = 0; spin_leds[i] != 0xff; i++) {
+			if (!huey_device_set_leds (priv->device, spin_leds[i], &error)) {
+				g_task_return_new_error (task,
+							 CD_SENSOR_ERROR,
+							 CD_SENSOR_ERROR_INTERNAL,
+							 "%s", error->message);
+				goto out;
+			}
+			g_usleep (50000);
 		}
-		g_usleep (50000);
 	}
 
 	/* success */

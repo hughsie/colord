@@ -80,6 +80,7 @@ void		 cd_sensor_button_pressed	(CdSensor		*sensor);
 gboolean	 cd_sensor_dump			(CdSensor		*sensor,
 						 GString		*data,
 						 GError			**error);
+gboolean	 cd_sensor_get_is_embedded	(CdSensor		*sensor);
 CdSensorKind	 cd_sensor_get_kind		(CdSensor		*sensor);
 void		 cd_sensor_set_kind		(CdSensor		*sensor,
 						 CdSensorKind		 kind);

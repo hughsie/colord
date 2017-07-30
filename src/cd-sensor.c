@@ -273,6 +273,13 @@ cd_sensor_get_kind (CdSensor *sensor)
 	return priv->kind;
 }
 
+gboolean
+cd_sensor_get_is_embedded (CdSensor *sensor)
+{
+	CdSensorPrivate *priv = GET_PRIVATE (sensor);
+	return priv->embedded;
+}
+
 /**
  * cd_sensor_load:
  * @sensor: a valid #CdSensor instance
