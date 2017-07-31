@@ -1,4 +1,4 @@
-shared_module('cd-sensor-colorhug',
+shared_module('colord_sensor_colorhug',
   sources : [
     'cd-sensor-colorhug.c',
   ],

@@ -1,4 +1,4 @@
-shared_module('cd-sensor-spark',
+shared_module('colord_sensor_spark',
   sources : [
     'cd-sensor-spark.c',
     'osp-device.c',

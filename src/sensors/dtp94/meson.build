@@ -1,4 +1,4 @@
-shared_module('cd-sensor-dtp94',
+shared_module('colord_sensor_dtp94',
   sources : [
     'cd-sensor-dtp94.c',
     'dtp94-device.c',

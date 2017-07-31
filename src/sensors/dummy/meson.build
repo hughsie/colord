@@ -1,4 +1,4 @@
-shared_module('cd-sensor-dummy',
+shared_module('colord_sensor_dummy',
   sources : [
     'cd-sensor-dummy.c',
   ],

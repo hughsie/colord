@@ -1,4 +1,4 @@
-shared_module('cd-sensor-huey',
+shared_module('colord_sensor_huey',
   sources : [
     'cd-sensor-huey.c',
     'huey-ctx.c',

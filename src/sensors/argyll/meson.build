@@ -1,4 +1,4 @@
-shared_module('cd-sensor-argyll',
+shared_module('colord_sensor_argyll',
   sources : [
     'cd-sensor-argyll.c',
     'cd-spawn.c',

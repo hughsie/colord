@@ -1,6 +1,6 @@
 cargs = ['-DG_LOG_DOMAIN="Cd"']
 
-shared_module('cd-plugin-example',
+shared_module('colord_sensor_example',
   sources : [
     'cd-plugin-example.c',
   ],
@@ -15,7 +15,7 @@ shared_module('cd-plugin-example',
     gio,
   ],
 )
-shared_module('cd-plugin-camera',
+shared_module('colord_sensor_camera',
   sources : [
     'cd-plugin-camera.c',
   ],
@@ -33,7 +33,7 @@ shared_module('cd-plugin-camera',
     gudev,
   ],
 )
-shared_module('cd-plugin-scanner',
+shared_module('colord_sensor_scanner',
   sources : [
     'cd-plugin-scanner.c',
   ],
@@ -52,7 +52,7 @@ shared_module('cd-plugin-scanner',
   ],
 )
 if get_option('enable-sane')
-  shared_module('cd-plugin-sane',
+  shared_module('colord_sensor_sane',
     sources : [
       'cd-plugin-sane.c',
     ],

@@ -1,5 +1,5 @@
 if get_option('enable-reverse')
-  shared_module('cd-sensor-munki',
+  shared_module('colord_sensor_munki',
     sources : [
       'cd-sensor-munki.c',
       'munki-enum.c',
