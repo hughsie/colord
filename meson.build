@@ -242,7 +242,9 @@ subdir('doc')
 subdir('data')
 
 # this needs data/profiles/*.icc
-subdir('man')
+if get_option('enable-man')
+  subdir('man')
+endif
 subdir('policy')
 subdir('rules')
 subdir('src')
