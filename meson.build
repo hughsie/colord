@@ -14,6 +14,9 @@ conf = configuration_data()
 conf.set('FWUPD_MAJOR_VERSION', colord_major_version)
 conf.set('FWUPD_MINOR_VERSION', colord_minor_version)
 conf.set('FWUPD_MICRO_VERSION', colord_micro_version)
+conf.set('CD_MAJOR_VERSION', colord_major_version)
+conf.set('CD_MINOR_VERSION', colord_minor_version)
+conf.set('CD_MICRO_VERSION', colord_micro_version)
 conf.set_quoted('PACKAGE_VERSION', colord_version)
 
 # libtool versioning - this applies to libcolord
