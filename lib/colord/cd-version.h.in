@@ -41,21 +41,21 @@
  *
  * The compile-time major version
  */
-#define CD_MAJOR_VERSION				(@CD_MAJOR_VERSION@)
+#define CD_MAJOR_VERSION				(@CD_MAJOR_VERSION_PRIVATE@)
 
 /**
  * CD_MINOR_VERSION:
  *
  * The compile-time minor version
  */
-#define CD_MINOR_VERSION				(@CD_MINOR_VERSION@)
+#define CD_MINOR_VERSION				(@CD_MINOR_VERSION_PRIVATE@)
 
 /**
  * CD_MICRO_VERSION:
  *
  * The compile-time micro version
  */
-#define CD_MICRO_VERSION				(@CD_MICRO_VERSION@)
+#define CD_MICRO_VERSION				(@CD_MICRO_VERSION_PRIVATE@)
 
 /**
  * CD_CHECK_VERSION:

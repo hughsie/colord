@@ -2,10 +2,15 @@ cargs = [
   '-DG_LOG_DOMAIN="libcolord"',
 ]
 
+con2 = configuration_data()
+con2.set('CD_MAJOR_VERSION_PRIVATE', colord_major_version)
+con2.set('CD_MINOR_VERSION_PRIVATE', colord_minor_version)
+con2.set('CD_MICRO_VERSION_PRIVATE', colord_micro_version)
+
 colord_version_h = configure_file(
   input : 'cd-version.h.in',
   output : 'cd-version.h',
-  configuration : conf
+  configuration : con2
 )
 
 install_headers(
