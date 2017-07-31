@@ -69,6 +69,9 @@ while (($# > 0)); do
 	--mandir) read_arg mandir "$@" || shift;;
 	--includedir) read_arg includedir "$@" || shift;;
 	--disable-print-profiles) enable_print_profiles='-Denable-print-profiles=false';;
+	--disable-bash-completion) enable_bash_completion='-Denable-bash-completion=false';;
+	--disable-argyllcms-sensor) enable_argyllcms_sensor='-Denable-argyllcms-sensor=false';;
+	--disable-installed-tests) enable_installed_tests='-Denable-installed-tests=false';;
 	*) echo -e "\e[1;33mINFO\e[0m: Ignoring unknown option '$1'";;
     esac
     shift
@@ -114,7 +117,7 @@ echo "  libdir:...... ${libdir}"
 echo "  mandir:...... ${mandir}"
 echo "  includedir:.. ${includedir}"
 echo "  additional:.."
-echo "    - ${enable_print-profiles}"
+echo "    - ${enable_print_profiles} ${enable_argyllcms_sensor} ${enable_bash_completion} ${enable_installed_tests}"
 
 exec ${MESON} \
 	--prefix=${prefix} \
@@ -127,6 +130,9 @@ exec ${MESON} \
 	--mandir=${mandir} \
 	--default-library shared \
 	${enable_print_profiles} \
+	${enable_argyllcms_sensor} \
+	${enable_bash_completion} \
+	${enable_installed_tests} \
 	${srcdir}
 
 # vim: ai ts=8 noet sts=2 ft=sh
