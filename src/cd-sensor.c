@@ -665,6 +665,20 @@ cd_sensor_lock_cb (GObject *source_object,
 		return;
 	}
 	cd_sensor_set_locked (sensor, TRUE);
+
+	/* debug */
+	if (g_getenv ("COLORD_DEVICE_DEBUG") != NULL) {
+		g_autoptr(GString) str = g_string_new (NULL);
+		if (!cd_sensor_dump (sensor, str, &error)) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_NO_SUPPORT,
+							       "failed to dump: %s",
+							       error->message);
+			return;
+		}
+	}
+
 	g_dbus_method_invocation_return_value (invocation, NULL);
 }
 
