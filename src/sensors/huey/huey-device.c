@@ -177,7 +177,8 @@ huey_device_unlock (GUsbDevice *device, GError **error)
 
 	/* embedded devices on Lenovo machines use a different unlock code */
 	if (g_usb_device_get_vid (device) == 0x0765 &&
-	    g_usb_device_get_pid (device) == 0x5001) {
+	    (g_usb_device_get_pid (device) == 0x5001 ||
+	     g_usb_device_get_pid (device) == 0x5010)) {
 		request[0] = HUEY_CMD_UNLOCK;
 		request[1] = 'h';
 		request[2] = 'u';
