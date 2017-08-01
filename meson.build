@@ -11,9 +11,6 @@ colord_minor_version = varr[1]
 colord_micro_version = varr[2]
 
 conf = configuration_data()
-conf.set('FWUPD_MAJOR_VERSION', colord_major_version)
-conf.set('FWUPD_MINOR_VERSION', colord_minor_version)
-conf.set('FWUPD_MICRO_VERSION', colord_micro_version)
 conf.set('CD_MAJOR_VERSION', colord_major_version)
 conf.set('CD_MINOR_VERSION', colord_minor_version)
 conf.set('CD_MICRO_VERSION', colord_micro_version)
