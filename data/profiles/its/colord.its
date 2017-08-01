@@ -4,6 +4,7 @@
   <its:translateRule selector="//*" translate="no"/>
   <its:translateRule selector="//profile/name |
                                //profile/model |
-                               //profile/description"
+                               //profile/description |
+                               //profile/copyright"
                      translate="yes"/>
 </its:rules>
