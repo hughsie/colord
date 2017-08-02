@@ -142,6 +142,38 @@ huey_device_send_data (GUsbDevice *device,
 	return FALSE;
 }
 
+gchar *
+huey_device_get_status (GUsbDevice *device, GError **error)
+{
+	guint8 request[8];
+	guint8 reply[8];
+	gboolean ret;
+	gsize reply_read;
+	g_autoptr(GError) error_local = NULL;
+
+	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
+
+	memset (request, 0x00, sizeof(request));
+	memset (reply, 0x00, sizeof(reply));
+	request[0] = HUEY_CMD_GET_STATUS;
+	ret = huey_device_send_data (device,
+				     request, 8,
+				     reply, 8,
+				     &reply_read,
+				     &error_local);
+	if (!ret) {
+		if (!g_error_matches (error_local, G_IO_ERROR, G_IO_ERROR_NOT_INITIALIZED)) {
+			g_propagate_error (error, error_local);
+			error_local = NULL;
+			return NULL;
+		}
+	}
+
+	/* for error the string is also set */
+	return g_strndup ((gchar *) reply + 2, 6);
+}
+
 gboolean
 huey_device_unlock (GUsbDevice *device, GError **error)
 {
@@ -149,9 +181,16 @@ huey_device_unlock (GUsbDevice *device, GError **error)
 	guint8 reply[8];
 	gboolean ret;
 	gsize reply_read;
+	g_autofree gchar *status = NULL;
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	/* get initial status */
+	status = huey_device_get_status (device, error);
+	if (status == NULL)
+		return FALSE;
+	g_debug ("status is: %s", status);
 
 	/* embedded devices on Lenovo machines use a different unlock code */
 	if (g_usb_device_get_vid (device) == 0x0765 &&

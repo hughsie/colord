@@ -43,6 +43,9 @@ gboolean	 huey_device_set_leds		(GUsbDevice	*device,
 gchar		*huey_device_get_serial_number	(GUsbDevice	*device,
 						 GError		**error)
 						 G_GNUC_WARN_UNUSED_RESULT;
+gchar		*huey_device_get_status		(GUsbDevice	*device,
+						 GError		**error)
+						 G_GNUC_WARN_UNUSED_RESULT;
 gchar		*huey_device_get_unlock_string	(GUsbDevice	*device,
 						 GError		**error)
 						 G_GNUC_WARN_UNUSED_RESULT;
