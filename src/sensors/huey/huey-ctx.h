@@ -29,9 +29,6 @@
 
 G_BEGIN_DECLS
 
-#define HUEY_CTX_ERROR		(huey_ctx_error_quark ())
-#define HUEY_CTX_TYPE_ERROR	(huey_ctx_error_get_type ())
-
 #define HUEY_TYPE_CTX (huey_ctx_get_type ())
 G_DECLARE_DERIVABLE_TYPE (HueyCtx, huey_ctx, HUEY, CTX, GObject)
 
@@ -50,20 +47,6 @@ struct _HueyCtxClass
 	void (*_huey_ctx_reserved8) (void);
 };
 
-/**
- * HueyCtxError:
- * @HUEY_CTX_ERROR_FAILED: the request failed for an unknown reason
- *
- * Errors that can be thrown
- */
-typedef enum
-{
-	HUEY_CTX_ERROR_FAILED,
-	HUEY_CTX_ERROR_NO_SUPPORT,
-	HUEY_CTX_ERROR_LAST
-} HueyCtxError;
-
-GQuark		 huey_ctx_error_quark		(void);
 HueyCtx		*huey_ctx_new			(void);
 
 CdColorXYZ	*huey_ctx_take_sample		(HueyCtx	*ctx,

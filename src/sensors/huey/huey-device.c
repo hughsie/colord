@@ -33,23 +33,6 @@
 /* fudge factor to convert the value of HUEY_CMD_GET_AMBIENT to Lux */
 #define HUEY_AMBIENT_UNITS_TO_LUX	125.0f
 
-/**
- * huey_device_error_quark:
- **/
-GQuark
-huey_device_error_quark (void)
-{
-	static GQuark quark = 0;
-	if (!quark)
-		quark = g_quark_from_static_string ("HueyError");
-	return quark;
-}
-
-/**
- * huey_device_send_data:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_send_data (GUsbDevice *device,
 		       const guint8 *request,
@@ -109,8 +92,8 @@ huey_device_send_data (GUsbDevice *device,
 				 reply, *reply_read);
 		if (reply[1] != request[0]) {
 			g_set_error (error,
-				     HUEY_DEVICE_ERROR,
-				     HUEY_DEVICE_ERROR_INTERNAL,
+				     G_IO_ERROR,
+				     G_IO_ERROR_FAILED,
 				     "wrong command reply, got 0x%02x, "
 				     "expected 0x%02x",
 				     reply[1],
@@ -125,8 +108,8 @@ huey_device_send_data (GUsbDevice *device,
 		/* failure, the return buffer is set to "Locked" */
 		if (reply[0] == HUEY_RC_LOCKED) {
 			g_set_error_literal (error,
-					     HUEY_DEVICE_ERROR,
-					     HUEY_DEVICE_ERROR_INTERNAL,
+					     G_IO_ERROR,
+					     G_IO_ERROR_NOT_INITIALIZED,
 					     "the device is locked");
 			return FALSE;
 		}
@@ -134,8 +117,8 @@ huey_device_send_data (GUsbDevice *device,
 		/* failure, the return buffer is set to "NoCmd" */
 		if (reply[0] == HUEY_RC_ERROR) {
 			g_set_error (error,
-				     HUEY_DEVICE_ERROR,
-				     HUEY_DEVICE_ERROR_INTERNAL,
+				     G_IO_ERROR,
+				     G_IO_ERROR_FAILED,
 				     "failed to issue command: %s", &reply[2]);
 			return FALSE;
 		}
@@ -143,8 +126,8 @@ huey_device_send_data (GUsbDevice *device,
 		/* we ignore retry */
 		if (reply[0] != HUEY_RC_RETRY) {
 			g_set_error (error,
-				     HUEY_DEVICE_ERROR,
-				     HUEY_DEVICE_ERROR_INTERNAL,
+				     G_IO_ERROR,
+				     G_IO_ERROR_FAILED,
 				     "return value unknown: 0x%02x", reply[0]);
 			return FALSE;
 		}
@@ -152,18 +135,13 @@ huey_device_send_data (GUsbDevice *device,
 
 	/* no success */
 	g_set_error (error,
-		     HUEY_DEVICE_ERROR,
-		     HUEY_DEVICE_ERROR_INTERNAL,
+		     G_IO_ERROR,
+		     G_IO_ERROR_FAILED,
 		     "gave up retrying after %i reads",
 		     HUEY_MAX_READ_RETRIES);
 	return FALSE;
 }
 
-/**
- * huey_device_unlock:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_unlock (GUsbDevice *device, GError **error)
 {
@@ -209,11 +187,6 @@ huey_device_unlock (GUsbDevice *device, GError **error)
 	return TRUE;
 }
 
-/**
- * huey_device_get_serial_number:
- *
- * Since: 0.1.29
- **/
 gchar *
 huey_device_get_serial_number (GUsbDevice *device, GError **error)
 {
@@ -232,11 +205,6 @@ huey_device_get_serial_number (GUsbDevice *device, GError **error)
 	return g_strdup_printf ("%" G_GUINT32_FORMAT, tmp);
 }
 
-/**
- * huey_device_get_unlock_string:
- *
- * Since: 0.1.29
- **/
 gchar *
 huey_device_get_unlock_string (GUsbDevice *device, GError **error)
 {
@@ -256,11 +224,6 @@ huey_device_get_unlock_string (GUsbDevice *device, GError **error)
 	return g_strndup (tmp, sizeof (tmp));
 }
 
-/**
- * huey_device_set_leds:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_set_leds (GUsbDevice *device, guint8 value, GError **error)
 {
@@ -284,13 +247,6 @@ huey_device_set_leds (GUsbDevice *device, guint8 value, GError **error)
 				      error);
 }
 
-/**
- * huey_device_read_register_byte:
- *
- * Return value: -1 for error.
- *
- * Since: 0.1.29
- **/
 gdouble
 huey_device_get_ambient (GUsbDevice *device, GError **error)
 {
@@ -323,11 +279,6 @@ huey_device_get_ambient (GUsbDevice *device, GError **error)
 	return (gdouble) cd_buffer_read_uint16_be (reply+5) / HUEY_AMBIENT_UNITS_TO_LUX;
 }
 
-/**
- * huey_device_read_register_byte:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_read_register_byte (GUsbDevice *device,
 				guint8 addr,
@@ -362,11 +313,6 @@ huey_device_read_register_byte (GUsbDevice *device,
 	return TRUE;
 }
 
-/**
- * huey_device_read_register_string:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_read_register_string (GUsbDevice *device,
 				  guint8 addr,
@@ -392,11 +338,6 @@ huey_device_read_register_string (GUsbDevice *device,
 	return TRUE;
 }
 
-/**
- * huey_device_read_register_word:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_read_register_word (GUsbDevice *device,
 				guint8 addr,
@@ -425,11 +366,6 @@ huey_device_read_register_word (GUsbDevice *device,
 	return TRUE;
 }
 
-/**
- * huey_device_read_register_float:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_read_register_float (GUsbDevice *device,
 				 guint8 addr,
@@ -455,11 +391,6 @@ huey_device_read_register_float (GUsbDevice *device,
 	return TRUE;
 }
 
-/**
- * huey_device_read_register_vector:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_read_register_vector (GUsbDevice *device,
 				  guint8 addr,
@@ -492,11 +423,6 @@ huey_device_read_register_vector (GUsbDevice *device,
 	return TRUE;
 }
 
-/**
- * huey_device_read_register_matrix:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_device_read_register_matrix (GUsbDevice *device,
 				  guint8 addr,

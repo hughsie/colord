@@ -28,16 +28,6 @@
 
 G_BEGIN_DECLS
 
-#define HUEY_DEVICE_ERROR			 huey_device_error_quark()
-
-typedef enum {
-	HUEY_DEVICE_ERROR_INTERNAL,
-	HUEY_DEVICE_ERROR_NO_DATA,
-	HUEY_DEVICE_ERROR_NO_SUPPORT,
-	HUEY_DEVICE_ERROR_LAST
-} HueyError;
-
-GQuark		 huey_device_error_quark	(void);
 gboolean	 huey_device_send_data		(GUsbDevice	*device,
 						 const guchar	*request,
 						 gsize		 request_len,

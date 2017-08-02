@@ -51,11 +51,6 @@ static void	huey_ctx_finalize	(GObject	*object);
  * indicates we doing something wrong. */
 #define HUEY_XYZ_POST_MULTIPLY_FACTOR	3.428
 
-/**
- * HueyCtxPrivate:
- *
- * Private #HueyCtx data
- **/
 typedef struct
 {
 	CdMat3x3		 calibration_crt;
@@ -74,29 +69,6 @@ enum {
 
 G_DEFINE_TYPE_WITH_PRIVATE (HueyCtx, huey_ctx, G_TYPE_OBJECT)
 
-/**
- * huey_ctx_error_quark:
- *
- * Return value: An error quark.
- *
- * Since: 0.1.0
- **/
-GQuark
-huey_ctx_error_quark (void)
-{
-	static GQuark quark = 0;
-	if (!quark) {
-		quark = g_quark_from_static_string ("huey_ctx_error");
-	}
-	return quark;
-}
-
-
-/**
- * huey_ctx_get_device:
- *
- * Since: 0.1.29
- **/
 GUsbDevice *
 huey_ctx_get_device (HueyCtx *ctx)
 {
@@ -105,11 +77,6 @@ huey_ctx_get_device (HueyCtx *ctx)
 	return priv->device;
 }
 
-/**
- * huey_ctx_set_device:
- *
- * Since: 0.1.29
- **/
 void
 huey_ctx_set_device (HueyCtx *ctx, GUsbDevice *device)
 {
@@ -118,11 +85,6 @@ huey_ctx_set_device (HueyCtx *ctx, GUsbDevice *device)
 	priv->device = g_object_ref (device);
 }
 
-/**
- * huey_ctx_setup:
- *
- * Since: 0.1.29
- **/
 gboolean
 huey_ctx_setup (HueyCtx *ctx, GError **error)
 {
@@ -172,11 +134,6 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 	return TRUE;
 }
 
-/**
- * huey_ctx_get_calibration_lcd:
- *
- * Since: 0.1.29
- **/
 const CdMat3x3 *
 huey_ctx_get_calibration_lcd (HueyCtx *ctx)
 {
@@ -185,11 +142,6 @@ huey_ctx_get_calibration_lcd (HueyCtx *ctx)
 	return &priv->calibration_lcd;
 }
 
-/**
- * huey_ctx_get_calibration_crt:
- *
- * Since: 0.1.29
- **/
 const CdMat3x3 *
 huey_ctx_get_calibration_crt (HueyCtx *ctx)
 {
@@ -198,11 +150,6 @@ huey_ctx_get_calibration_crt (HueyCtx *ctx)
 	return &priv->calibration_crt;
 }
 
-/**
- * huey_ctx_get_calibration_value:
- *
- * Since: 0.1.29
- **/
 gfloat
 huey_ctx_get_calibration_value (HueyCtx *ctx)
 {
@@ -211,11 +158,6 @@ huey_ctx_get_calibration_value (HueyCtx *ctx)
 	return priv->calibration_value;
 }
 
-/**
- * huey_ctx_get_dark_offset:
- *
- * Since: 0.1.29
- **/
 const CdVec3 *
 huey_ctx_get_dark_offset (HueyCtx *ctx)
 {
@@ -224,11 +166,6 @@ huey_ctx_get_dark_offset (HueyCtx *ctx)
 	return &priv->dark_offset;
 }
 
-/**
- * huey_ctx_get_unlock_string:
- *
- * Since: 0.1.29
- **/
 const gchar *
 huey_ctx_get_unlock_string (HueyCtx *ctx)
 {
@@ -334,11 +271,6 @@ huey_ctx_convert_device_RGB_to_XYZ (CdColorRGB *src,
 }
 
 
-/**
- * huey_ctx_take_sample:
- *
- * Since: 0.1.29
- **/
 CdColorXYZ *
 huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 {
@@ -357,8 +289,8 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 	/* no hardware support */
 	if (cap == CD_SENSOR_CAP_PROJECTOR) {
 		g_set_error_literal (error,
-				     HUEY_CTX_ERROR,
-				     HUEY_CTX_ERROR_NO_SUPPORT,
+				     G_IO_ERROR,
+				     G_IO_ERROR_NOT_SUPPORTED,
 				     "Huey cannot measure in projector mode");
 		return NULL;
 	}
@@ -484,9 +416,6 @@ huey_ctx_set_property (GObject *object, guint prop_id, const GValue *value, GPar
 	}
 }
 
-/*
- * huey_ctx_class_init:
- */
 static void
 huey_ctx_class_init (HueyCtxClass *klass)
 {
@@ -496,11 +425,6 @@ huey_ctx_class_init (HueyCtxClass *klass)
 	object_class->set_property = huey_ctx_set_property;
 	object_class->finalize = huey_ctx_finalize;
 
-	/**
-	 * HueyCtx:device:
-	 *
-	 * Since: 0.1.29
-	 **/
 	g_object_class_install_property (object_class,
 					 PROP_DEVICE,
 					 g_param_spec_object ("device",
@@ -509,9 +433,6 @@ huey_ctx_class_init (HueyCtxClass *klass)
 							      G_PARAM_READWRITE));
 }
 
-/*
- * huey_ctx_init:
- */
 static void
 huey_ctx_init (HueyCtx *ctx)
 {
@@ -519,9 +440,6 @@ huey_ctx_init (HueyCtx *ctx)
 
 	cd_mat33_clear (&priv->calibration_lcd);
 	cd_mat33_clear (&priv->calibration_crt);
-
-	/* ensure the remote errors are registered */
-	huey_ctx_error_quark ();
 }
 
 static void
@@ -537,15 +455,6 @@ huey_ctx_finalize (GObject *object)
 	G_OBJECT_CLASS (huey_ctx_parent_class)->finalize (object);
 }
 
-/**
- * huey_ctx_new:
- *
- * Creates a new #HueyCtx object.
- *
- * Return value: a new HueyCtx object.
- *
- * Since: 0.1.29
- **/
 HueyCtx *
 huey_ctx_new (void)
 {

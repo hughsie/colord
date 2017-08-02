@@ -19,27 +19,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-/**
- * SECTION:huey-enum
- * @short_description: Types used by huey and libhuey
- *
- * These helper functions provide a way to marshal enumerated values to
- * text and back again.
- *
- * See also: #CdClient, #CdDevice
- */
-
 #include "config.h"
 
 #include <glib.h>
 
 #include "huey-enum.h"
 
-/**
- * huey_rc_to_string:
- *
- * Since: 0.1.29
- **/
 const gchar *
 huey_rc_to_string (guchar value)
 {
@@ -58,11 +43,6 @@ huey_rc_to_string (guchar value)
 	return NULL;
 }
 
-/**
- * huey_cmd_code_to_string:
- *
- * Since: 0.1.29
- **/
 const gchar *
 huey_cmd_code_to_string (guchar value)
 {
