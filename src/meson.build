@@ -72,6 +72,7 @@ executable(
 if get_option('enable-tests')
   e = executable(
     'cd-self-test',
+    resources_src,
     sources : [
       'cd-common.c',
       'cd-device-array.c',
