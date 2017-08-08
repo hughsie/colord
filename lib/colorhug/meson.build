@@ -2,10 +2,15 @@ cargs = [
   '-DG_LOG_DOMAIN="libcolorhug"',
 ]
 
+ch_version_h_conf = configuration_data()
+ch_version_h_conf.set('CD_MAJOR_VERSION', colord_major_version)
+ch_version_h_conf.set('CD_MINOR_VERSION', colord_minor_version)
+ch_version_h_conf.set('CD_MICRO_VERSION', colord_micro_version)
+
 colorhug_version_h = configure_file(
   input : 'ch-version.h.in',
   output : 'ch-version.h',
-  configuration : conf,
+  configuration : ch_version_h_conf,
   install : true,
   install_dir: join_paths(get_option('includedir'), 'colord-1/colorhug'),
 )
