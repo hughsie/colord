@@ -10,3 +10,4 @@ option('enable-tests', type : 'boolean', value : true, description : 'Build self
 option('enable-installed-tests', type : 'boolean', value : false, description : 'Install tests')
 option('with-daemon-user', type : 'string', value : 'root', description : 'User for running the colord daemon')
 option('enable-man', type : 'boolean', value : true, description : 'Generate man pages')
+option('enable-docs', type : 'boolean', value : true, description : 'Generate documentation')

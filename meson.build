@@ -236,7 +236,9 @@ subdir('po')
 # this needs libcolord
 subdir('client')
 subdir('contrib')
-subdir('doc')
+if get_option('enable-docs')
+  subdir('doc')
+endif
 
 # this needs client/cd-create-profile
 subdir('data')

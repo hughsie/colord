@@ -73,6 +73,7 @@ while (($# > 0)); do
 	--disable-argyllcms-sensor) enable_argyllcms_sensor='-Denable-argyllcms-sensor=false';;
 	--disable-installed-tests) enable_installed_tests='-Denable-installed-tests=false';;
 	--disable-man) enable_man='-Denable-man=false';;
+	--disable-gtk-doc) enable_docs='-Denable-docs=false';;
 	*) echo -e "\e[1;33mINFO\e[0m: Ignoring unknown option '$1'";;
     esac
     shift
@@ -118,7 +119,7 @@ echo "  libdir:...... ${libdir}"
 echo "  mandir:...... ${mandir}"
 echo "  includedir:.. ${includedir}"
 echo "  additional:.."
-echo "    - ${enable_print_profiles} ${enable_argyllcms_sensor} ${enable_bash_completion} ${enable_installed_tests} ${enable_man}"
+echo "    - ${enable_print_profiles} ${enable_argyllcms_sensor} ${enable_bash_completion} ${enable_installed_tests} ${enable_man} ${enable_docs}"
 
 exec ${MESON} \
 	--prefix=${prefix} \
@@ -135,6 +136,7 @@ exec ${MESON} \
 	${enable_bash_completion} \
 	${enable_installed_tests} \
 	${enable_man} \
+	${enable_docs} \
 	${srcdir}
 
 # vim: ai ts=8 noet sts=2 ft=sh
