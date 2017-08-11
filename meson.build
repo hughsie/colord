@@ -1,7 +1,8 @@
 project('colord', 'c',
   version : '1.4.1',
   license : 'LGPL-2.1+',
-  meson_version : '>=0.37.0'
+  meson_version : '>=0.37.0',
+  default_options : ['c_std=c99']
 )
 
 colord_version = meson.project_version()
