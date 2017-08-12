@@ -187,13 +187,13 @@ glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %{_libdir}/colord-sensors
 %{_libdir}/colord-plugins
 %ghost %attr(-,colord,colord) %{_localstatedir}/lib/colord/*.db
-/usr/lib/systemd/system/colord.service
+%{_unitdir}/colord.service
 
 # session helper
 %{_libexecdir}/colord-session
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorHelper.xml
 %{_datadir}/dbus-1/services/org.freedesktop.ColorHelper.service
-/usr/lib/systemd/user/colord-session.service
+%{_userunitdir}/colord-session.service
 
 # sane helper
 %if 0%{?enable_sane}
