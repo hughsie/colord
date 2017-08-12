@@ -23,11 +23,14 @@
 
 #include <limits.h>
 #include <stdlib.h>
-#include <limits.h>
 
 #include <glib.h>
 
 #include "cd-test-shared.h"
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
 
 gchar *
 cd_test_get_filename (const gchar *filename)
