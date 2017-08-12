@@ -195,6 +195,9 @@ i18n = import('i18n')
 
 add_project_arguments('-DCD_COMPILATION', language: 'c')
 
+# Needed for realpath() and PATH_MAX
+add_project_arguments('-D_XOPEN_SOURCE=500', language : 'c')
+
 conf.set_quoted('SYSCONFDIR', get_option('sysconfdir'))
 conf.set_quoted('BINDIR',
                 join_paths(get_option('prefix'),
