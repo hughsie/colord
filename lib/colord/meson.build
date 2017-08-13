@@ -184,6 +184,9 @@ libcolord_girtarget = gnome.generate_gir(colord,
   symbol_prefix : 'cd',
   identifier_prefix : 'Cd',
   export_packages : 'colord',
+  extra_args : [
+    '--c-include=colord.h',
+    ],
   c_args : [
       cargs,
     ],
