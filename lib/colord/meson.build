@@ -205,6 +205,7 @@ libcolord_typelib = libcolord_girtarget[1]
 if get_option('enable-vala')
 libfoo_vapi = gnome.generate_vapi('colord',
   sources: libcolord_girtarget[0],
+  packages: ['gio-2.0'],
   install: true,
 )
 endif
