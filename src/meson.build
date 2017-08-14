@@ -25,6 +25,11 @@ resources_src = gnome.compile_resources(
   dependencies : generated_iccs,
 )
 
+colord_extra_deps = []
+if get_option('enable-systemd')
+  colord_extra_deps += libsystemd
+endif
+
 executable(
   'colord',
   resources_src,
@@ -52,12 +57,12 @@ executable(
     root_incdir,
   ],
   dependencies : [
+    colord_extra_deps,
     giounix,
     gmodule,
     gudev,
     gusb,
     lcms,
-    libsystemd,
     polkit,
     sqlite,
   ],

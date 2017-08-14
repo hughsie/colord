@@ -6,9 +6,11 @@ subdir('ref')
 subdir('tests')
 subdir('ti1')
 
-install_data('colord.conf',
-  install_dir: systemd.get_pkgconfig_variable('tmpfilesdir')
-)
+if get_option('enable-systemd')
+  install_data('colord.conf',
+    install_dir: systemd.get_pkgconfig_variable('tmpfilesdir')
+  )
+endif
 
 if get_option('enable-bash-completion')
   install_data('colormgr',
@@ -23,13 +25,15 @@ con2.set('servicedir',
 con2.set('daemon_user', get_option('with-daemon-user'))
 
 # replace @servicedir@ and @daemon_user@
-configure_file(
-  input : 'colord.service.in',
-  output : 'colord.service',
-  configuration : con2,
-  install: true,
-  install_dir: systemd.get_pkgconfig_variable('systemdsystemunitdir'),
-)
+if get_option('enable-systemd')
+  configure_file(
+    input : 'colord.service.in',
+    output : 'colord.service',
+    configuration : con2,
+    install: true,
+    install_dir: systemd.get_pkgconfig_variable('systemdsystemunitdir'),
+  )
+endif
 
 # replace @servicedir@ and @daemon_user@
 configure_file(
