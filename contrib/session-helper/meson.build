@@ -15,13 +15,15 @@ con2.set('servicedir',
                     get_option('libexecdir')))
 
 # replace @servicedir@
-configure_file(
-  input : 'colord-session.service.in',
-  output : 'colord-session.service',
-  configuration : con2,
-  install: true,
-  install_dir: systemd.get_pkgconfig_variable('systemduserunitdir'),
-)
+if get_option('enable-systemd')
+  configure_file(
+    input : 'colord-session.service.in',
+    output : 'colord-session.service',
+    configuration : con2,
+    install: true,
+    install_dir: systemd.get_pkgconfig_variable('systemduserunitdir'),
+  )
+endif
 
 # replace @servicedir@
 configure_file(
