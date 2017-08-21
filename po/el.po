@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2017-08-21 08:32+0000\n"
+"PO-Revision-Date: 2017-08-21 08:33+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Greek (http://www.transifex.com/freedesktop/colord/language/el/)\n"
 "MIME-Version: 1.0\n"
@@ -725,7 +725,7 @@ msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Συμβατό με το Adobe RGB (1998)"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -766,7 +766,7 @@ msgstr ""
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Αυτό το προφίλ είναι απαλλαγμένο από τους γνωστούς περιορισμούς πνευματικών δικαιωμάτων"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -776,7 +776,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr ""
+msgstr "Αυτός ο χώρος επεξεργασίας σχεδιάστηκε ως SMPTE-240M και περιλαμβάνει τα περισσότερα από τα πιθανά χρώματα διαθέσιμα σε έναν έγχρωμο εκτυπωτή CMYK. Αυτή είναι μια δημοφιλής επιλογή για επεξεργασία φωτογραφιών και για τη χρήση στην εκτύπωση, μιας και όλα τα χρώματα SWOP μπορούν να αναπαραχθούν."
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
@@ -795,7 +795,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr ""
+msgstr "Αυτό το νόμιμο προφίλ δημιουργήθηκε αρχικά από την Adobe για χρήση με το Photoshop και το Illustrator. Δεδομένου ότι βασίζεται στο πρωτότυπη οθόνη της Apple 13\" RGB και είναι παρόμοιο με το sRGB, δεν πρέπει να χρησιμοποιείται ως ένα προφίλ οθόνης ή για νέες εικόνες."
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
@@ -813,7 +813,7 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "Αυτός ο χώρος επεξεργασίας μπορεί να εμφανίσει πιο κορεσμένα χρώματα από το Adobe RGB και είναι κατάλληλος για εικόνες με πολύ κορεσμένα χρώματα που χρησιμοποιούνται συχνά σε διαφημίσεις. Είναι πολύ παρόμοιο με το DonRGB4, αλλά μπορεί να δείξει και υπερ-κορεσμένα κόκκινα χρώματα που μερικές φορές υπάρχουν στο Fujichrome Velvia."
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
@@ -830,7 +830,7 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "Αυτός ο χώρος επεξεργασίας μπορεί να εμφανίσει πιο κορεσμένα χρώματα από το Adobe RGB. Είναι λιγότερο επιρρεπής σε σφάλματα κβαντισμού σε σύγκριση με το ProPhoto RGB, αν και διατηρείται μεγαλύτερη λεπτομέρεια σκιάς. Στις περισσότερες περιπτώσεις το ProPhoto RGB είναι ίσως μια καλύτερη επιλογή."
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
@@ -838,7 +838,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr ""
+msgstr "Μπλε"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -846,7 +846,7 @@ msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "Αυτό το δοκιμαστικό προφίλ χρησιμοποιείται για να κάνει όλα τα χρώματα στην οθόνη λίγο πιο μπλε όταν μεταβάλλεται ο πίνακας αναζήτησης της κάρτας βίντεο. Αυτό επιτρέπει στο χρήστη να ελέγξει αν η βαθμονόμηση αυτή εφαρμόζεται σωστά."
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
@@ -862,7 +862,7 @@ msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr ""
+msgstr "Πρόκειται για ένα χώρο επεξεργασίας RGB για τη χρήση του με το Adobe Photoshop 5.0 και νεότερες εκδόσεις αυτού. Είχε σχεδιαστεί με επίκεντρο την απόδοση συμβιβαστικής λύσης μεταξύ του ColorMatch RGB και του Adobe RGB και συνήθιζε να προτιμάται από ορισμένες υπηρεσίες εκτύπωσης φωτογραφιών."
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
@@ -878,7 +878,7 @@ msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "Αυτό το θεωρητικό προφίλ έχει σχεδιαστεί για τη χρήση του σε πειράματα με χρώματα. Πιθανώς δεν θέλετε να χρησιμοποιήσετε αυτό το προφίλ ως χώρο επεξεργασίας ή ως προφίλ οθόνης."
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
@@ -896,7 +896,7 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr ""
+msgstr "Αυτό το προφίλ έχει σχεδιαστεί από την Radius για την οθόνη PressView. Χρησιμοποιείτε αυτό το προφίλ μόνο ως προφίλ οθόνης ή ως χώρο επεξεργασίας, καθώς το προφίλ αυτό δεν είναι σημαντικά διαφορετικό από το sRGB. Θα χρειστεί να χρησιμοποιήσετε αυτό το προφίλ μόνο αν προβάλετε εικόνες που δημιουργούνται σε μια οθόνη PressView."
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
@@ -904,7 +904,7 @@ msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
-msgstr ""
+msgstr "Παστέλ χρώματα"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -913,7 +913,7 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "Αυτό το όνομα προφίλ χρωμάτων περιέχει όλα τα δημοφιλέστερα στη χρήση παστέλ χρώματα της Crayola. Πρόκειται για ένα δοκιμαστικό προφίλ που σχεδιάστηκε για τη δοκιμή ενσωμάτωσης ονομασμένων χρωμάτων σε έγγραφα."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
@@ -929,7 +929,7 @@ msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "Αυτός ο χώρος επεξεργασίας μπορεί να εμφανίσει πιο κορεσμένα χρώματα (πιο ζωηρά, φωτεινά) από το Adobe RGB και είναι κατάλληλος για εικόνες με πολύ κορεσμένα χρώματα που χρησιμοποιούνται συχνά σε διαφημίσεις."
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
@@ -946,7 +946,7 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr ""
+msgstr "Αυτό το προφίλ συνιστάται από την ECI (European Color Initiative) ως χώρος επεξεργασίας για την επαγγελματική επεξεργασία εικόνας και έχει ως στόχο να καλύψει όλα τα χρώματα που μπορούν να εκτυπωθούν σε τυπογραφικά πιεστήρια. Αυτό χρησιμοποιείται μερικές φορές ως μια μορφή ανταλλαγής δεδομένων χρωμάτων μεταξύ εκδοτών και τυπογραφείων."
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
@@ -962,7 +962,7 @@ msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr ""
+msgstr "Αυτό το προφίλ έχει σχεδιαστεί με μια καμπύλη φωτεινότητας γάμμα που σημαίνει ότι η οθόνη θα πρέπει να βαθμονομθεί επίσης με τον ίδιο τρόπο. Αυτό το προφίλ είναι χρήσιμο μόνο για προχωρημένους χρήστες και δεν συνιστάται για γενική χρήση."
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
@@ -979,11 +979,11 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr ""
+msgstr "Αυτό το προφίλ έχει σχεδιαστεί για την αποθήκευση αρχείων από σαρωμένα φιλμ διαφάνειας. Είναι κατάλληλο για την αποθήκευση εικόνων από έγχρωμα αρνητικά, αν και στις μέρες μας το ProPhoto RGB είναι πιο δημοφιλές προφίλ για αρχειοθέτηση."
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "FOGRA27L Επιχρισμένο"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:6
@@ -991,11 +991,11 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για τη δημιουργία θετικής πλάκας, την εκτύπωση σε τύπους χαρτιού 1 και 2 (επιχρισμένα ή ματ), με τροφοδότηση μεμονωμένων φύλλων offset. Αυτό το σύνολο προφίλ δεν θα πρέπει πλέον να χρησιμοποιείται για παραγωγή, χρησιμοποιείστε το FOGRA39L αντ 'αυτού."
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "FOGRA28L Με επίχριση ρολού"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -1004,11 +1004,11 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για τη δημιουργία θετικής πλάκας, την εκτύπωση σε χαρτί τύπου 3 (LWC), με τροφοδότηση συνεχόμενου ρολού offset. Αυτό το προφίλ δεν πρέπει πλέον να χρησιμοποιείται για την παραγωγή, χρησιμοποιείστε το FOGRA45 αντ 'αυτού."
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
-msgstr ""
+msgstr "FOGRA29L Xωρίς επίχριση"
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -1017,22 +1017,22 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για τη δημιουργία θετικής πλάκας, την εκτύπωση σε τύπο χαρτιού 4 (χωρίς επίχριση λευκό), με τροφοδότηση μεμονωμένων φύλλων offset. Αυτό το προφίλ δεν πρέπει πλέον να χρησιμοποιείται για την παραγωγή, χρησιμοποιείστε το FOGRA47 αντ 'αυτού."
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr ""
+msgstr "FOGRA30L Χωρίς επίχριση κιτρινωπό"
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:6
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για τη δημιουργία θετικής πλάκας, την εκτύπωση σε χαρτί τύπου 5 (χωρίς επίχριση κιτρινωπό), με τροφοδότηση μεμονωμένων φύλλων offset."
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
-msgstr ""
+msgstr "FOGRA39L Επιχρισμένο"
 
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
@@ -1042,22 +1042,22 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για την εκτύπωση σε τύπους χαρτιού 1 και 2 (επιχρισμένα ή ματ), με τροφοδότηση μεμονωμένων φύλλων offset. Αυτό το προφίλ δεν είναι σημαντικά διαφορετικό από το GRACoL 2006 (TR 006) των ΗΠΑ."
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
-msgstr ""
+msgstr "FOGRA40L SC Χάρτινο"
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:6
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για την εκτύπωση σε χαρτί SC (πάρα πολύ καλανδραρισμένο), με τροφοδότηση συνεχόμενου ρολού offset. Δεν υπάρχει κανένα γνωστό ισοδύναμο προφίλ απο τις ΗΠΑ."
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L Με ελαφριά επίχριση"
 
 #. TRANSLATORS: ISO is a trademark
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:6
@@ -1065,18 +1065,18 @@ msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr ""
+msgstr "Αυτό το συμβατό με το ISO 12647-2:2004 προφίλ χρησιμοποιείται για την εκτύπωση σε βελτιωμένο ελαφρώς επικαλυμμένο χαρτί (LWC) για 60 l/cm θερμή συνεχής εκτύπωση σε ρολό offset. Αντικαθιστά το FOGRA28L."
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "FOGRA47L Xωρίς επίχριση"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:6
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr ""
+msgstr "Αυτό το συμβατό με το πρότυπο ISO 12647-2 προφίλ χρησιμοποιείται για την εκτύπωση σε 115 gsm χωρίς επίστρωση λευκού (τύπου χαρτιού 4), με τροφοδότηση μεμονωμένων φύλλων offset των 60 l/cm ."
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
@@ -1098,18 +1098,18 @@ msgstr ""
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "GRACoL TR006 Επιχρισμένο"
 
 #. TRANSLATORS: coated = smooth and expensive
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:6
 msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για την εκτύπωση με ποιότητα χαρτιού 1 και 2 των ΗΠΑ με επικάλυψη, με τροφοδότηση μεμονωμένων φύλλων offset και γκραβούρας. Είναι το αντίστοιχο FOGRA39 των ΗΠΑ."
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 Δημοσιογραφικό χαρτί"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -1119,7 +1119,7 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για εκτύπωση δημοσιογραφικού χαρτιού, και αποτελεί συμβατό με το ISO12647-3: 2005 προφίλ σχεδιασμένο για ένα τυπογραφείο που εμφανίζει 26% TVI (άπλωμα κουκκίδας). Συνιστάται από την WAN-IFRA για την εκτύπωση ψυχρής διαμόρφωσης δημοσιογραφικού χαρτιού εφημερίδων σε όλο τον κόσμο."
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
@@ -1136,7 +1136,7 @@ msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
-msgstr ""
+msgstr "Αυτό το προφίλ καθορίζει το εύρος των χρωμάτων που χρησιμοποιούνται με το πρότυπο βίντεο NTSC. Είναι ένα ξεπερασμένο πρότυπο που έχει αντικατασταθεί από το SMTE-C. Θα πρέπει να χρησιμοποιείτε αυτό το προφίλ μόνο για να αποκωδικοποιήσετε αρχειοθετημένα βίντεο."
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
@@ -1152,7 +1152,7 @@ msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr ""
+msgstr "Αυτό το προφίλ καθορίζει το εύρος των χρωμάτων που χρησιμοποιούνται με τα πρότυπα βίντεο PAL και SECAM και είναι πολύ παρόμοιο με το sRGB. Θα πρέπει να χρησιμοποιείτε αυτό το προφίλ μόνο για την κωδικοποίηση ή την αποκωδικοποίηση βίντεο."
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
@@ -1169,7 +1169,7 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr ""
+msgstr "Αρχικά σχεδιασμένο από την Eastman Kodak και με ονομασία ROMM RGB, το προφίλ αυτό μπορεί να εμφανίσει μια πολύ μεγάλη γκάμα χρωμάτων και χρησιμοποιείται από πολλούς φωτογράφους για την απόδοση, την επεξεργασία και αρχειοθέτηση εικόνων RAW. Μπορείτε να δείτε χρώματα σκίασης κατά την επεξεργασία εικόνων, εκτός και αν εργάζεστε με ακρίβεια 16 bits ανά κανάλι."
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
@@ -1185,7 +1185,7 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "Η σύσταση του BT.709 απο την ITU-R είναι ένα πρότυπο τηλεόρασης υψηλής ευκρίνειας που εγκρίθηκε για πρώτη φορά το 1990. Το προφίλ Rec. 709 χρησιμοποιεί την ίδια γκάμα χρωμάτων με το sRGB, παρόλο που η καμπύλη φωτεινότητας είναι διαφορετική."
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
@@ -1200,18 +1200,18 @@ msgstr ""
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "Αυτό είναι το τρέχον πρότυπο που χρησιμοποιείται από τη Βόρεια Αμερική και την Ιαπωνία για την εγγραφή σε στούντιο. Θα πρέπει να χρησιμοποιείτε μόνο αυτό το προφίλ για την κωδικοποίηση ή την αποκωδικοποίηση βίντεο."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 Δημοσιογραφικό χαρτί"
 
 #. TRANSLATORS: CGATS is a trademark
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:6
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr ""
+msgstr "Αυτό είναι ένα προφίλ βασισμένο στο ANSI CGATS/SNAP TR 002-2007 για εκτύπωση δημοσιογραφικού χαρτιού στις ΗΠΑ, ψυχρής διαμόρφωσης offset. Το TVI (άπλωμα κουκκίδας) είναι 26%."
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
@@ -1226,7 +1226,7 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr ""
+msgstr "Αυτό το προφίλ γενικής χρήσης σχεδιάστηκε από την Hewlett-Packard και τη Microsoft και υπάρχει ως προεπιλεγμένο προφίλ στο διαδίκτυο για χρώματα RGB χωρίς καθορισμένο χρωματικό προφίλ και χρησιμοποιείται σε HDTV. Οι περισσότερες μη βαθμονομημένες οθόνες είναι σε θέση να εμφανίσουν τα περισσότερα από τα διαθέσιμα χρώματα στο sRGB, αν και αυτό το προφίλ είναι μερικές φορές μια κακή επιλογή για την εκτύπωση."
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
@@ -1234,7 +1234,7 @@ msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Αλλαγή εικόνων κόκκινου και πράσινου"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1242,11 +1242,11 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "Αυτό το δοκιμαστικό προφίλ ανταλλάσσει τα κόκκινα και τα πράσινα κανάλια και είναι χρήσιμο για ένα οπτικό έλεγχο εάν τα προφίλ εφαρμόζονται σωστά. Εάν το προφίλ αυτό έχει εφαρμοστεί δύο φορές, η εικόνα φαίνεται αμετάβλητη."
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "SWOP TR003 Επιχρισμένο"
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:6
@@ -1254,11 +1254,11 @@ msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για την εκτύπωση με ποιότητα χαρτιού 3 των ΗΠΑ με επικάλυψη, με τροφοδότηση μεμονωμένων φύλλων offset και γκραβούρας. Χρησιμοποιείται για υψηλής ποιότητας εκτύπωση περιοδικών με λευκό χαρτί."
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "SWOP TR005 Επιχρισμένο"
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:6
@@ -1266,7 +1266,7 @@ msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr ""
+msgstr "Αυτό το προφίλ χρησιμοποιείται για την εκτύπωση με ποιότητα χαρτιού 5 των ΗΠΑ με επικάλυψη, με τροφοδότηση μεμονωμένων φύλλων offset και γκραβούρας. Χρησιμοποιείται ως πρότυπο εκτύπωσης περιοδικών με κιτρινωπό χαρτί."
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
@@ -1274,7 +1274,7 @@ msgstr ""
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "Ευρείας γκάμας RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 #: data/profiles/WideGamutRGB.iccprofile.xml:7
@@ -1284,7 +1284,7 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr ""
+msgstr "Αυτός ο χώρος επεξεργασίας σχεδιάστηκε από την Adobe Systems για να συλλάβει πολλά περισσότερα χρώματα από το Adobe RGB. Αυτό το προφίλ χρησιμοποιείται για την εκτύπωση σε συσκευές, όπως συσκευές εγγραφής ταινιών και μπορεί να καθορίσει πολλά χρώματα που δεν μπορούν να εμφανιστούν στην οθόνη ενός υπολογιστή. Μπορείτε να δείτε χρώματα σκίασης κατά την επεξεργασία εικόνων, εκτός και αν εργάζεστε με ακρίβεια 16 bits ανά κανάλι."
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
@@ -1292,7 +1292,7 @@ msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 Χρώματα"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1300,7 +1300,7 @@ msgstr ""
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr ""
+msgstr "Αυτό το προφίλ χρωμάτων περιέχει όλα τα χρώματα που ορίζονται από X11, υποθέτοντας ότι τα πηγαία χρώματα έπρεπε να είναι sRGB."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
