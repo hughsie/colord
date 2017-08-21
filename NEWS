@@ -1,3 +1,17 @@
+Version 1.4.1
+~~~~~~~~~~~~~
+Released: 2017-08-21
+
+Bugfixes:
+ - Add back the meson -Denable-systemd=false configure argument (Richard Hughes)
+ - Add the fallback rules for older PolicyKit versions (Richard Hughes)
+ - Define PATH_MAX if not available (Emmanuele Bassi)
+ - Enable C99 support in meson.build (Philip Withnall)
+ - Include all the files in the GIR target (Richard Hughes)
+ - Include the correct file when using Colord-1.0.gir (Richard Hughes)
+ - Use appropriate feature macro for realpath() (Emmanuele Bassi, Philip Withnall)
+ - Use gio-2.0 when generating the VAPI (Ernestas Kulik)
+
 Version 1.4.0
 ~~~~~~~~~~~~~
 Released: 2017-08-09
