@@ -89,9 +89,6 @@ libcolorhug_gir = gnome.generate_gir(colorhug,
   symbol_prefix : 'ch',
   identifier_prefix : 'Ch',
   export_packages : 'colorhug',
-  c_args : [
-      cargs,
-    ],
   link_with : colorhug,
   dependencies : [
     gio,
