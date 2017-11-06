@@ -2246,7 +2246,7 @@ cd_main_check_duplicate_edids (void)
 			use_xrandr_mode = TRUE;
 		}
 		g_hash_table_insert (hash,
-				     g_strdup (cd_main_get_display_id (edid)),
+				     g_strdup (cd_edid_get_checksum (edid)),
 				     GINT_TO_POINTER (1));
 	}
 	return use_xrandr_mode;
