@@ -6,5 +6,5 @@ install_data([
     'printer-normal.ti1',
     'printer-short.ti1',
   ],
-  install_dir: join_paths(get_option('datadir'), 'colord', 'ti1')
+  install_dir: join_paths(datadir, 'colord', 'ti1')
 )

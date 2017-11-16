@@ -12,7 +12,7 @@ if polkit.version().version_compare('>0.113')
     input: policy_in,
     output: 'org.freedesktop.color.policy',
     install: true,
-    install_dir: join_paths(get_option('datadir'), 'polkit-1', 'actions') ,
+    install_dir: join_paths(datadir, 'polkit-1', 'actions') ,
     type: 'xml',
     po_dir: join_paths(meson.source_root(), 'po')
   )
@@ -22,7 +22,7 @@ else
     input: policy_in,
     output: 'org.freedesktop.color.policy',
     install: true,
-    install_dir: join_paths(get_option('datadir'), 'polkit-1', 'actions') ,
+    install_dir: join_paths(datadir, 'polkit-1', 'actions') ,
     type: 'xml',
     data_dirs: join_paths(meson.source_root(), 'policy'),
     po_dir: join_paths(meson.source_root(), 'po')

@@ -21,5 +21,5 @@ executable(
     cargs,
   ],
   install : true,
-  install_dir : get_option('libexecdir')
+  install_dir : libexecdir
 )

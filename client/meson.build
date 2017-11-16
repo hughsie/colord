@@ -20,7 +20,7 @@ executable(
     cargs,
   ],
   install : true,
-  install_dir : get_option('bindir')
+  install_dir : bindir
 )
 
 executable(
@@ -43,7 +43,7 @@ executable(
     cargs,
   ],
   install : true,
-  install_dir : get_option('bindir')
+  install_dir : bindir
 )
 
 executable(
@@ -66,7 +66,7 @@ executable(
     cargs,
   ],
   install : true,
-  install_dir : get_option('bindir')
+  install_dir : bindir
 )
 
 cd_idt8 = executable(
@@ -89,7 +89,7 @@ cd_idt8 = executable(
     cargs,
   ],
   install : true,
-  install_dir : get_option('bindir')
+  install_dir : bindir
 )
 
 cd_create_profile = executable(
@@ -112,5 +112,5 @@ cd_create_profile = executable(
     cargs,
   ],
   install : true,
-  install_dir : get_option('bindir')
+  install_dir : bindir
 )

@@ -17,6 +17,6 @@ if get_option('enable-installed-tests')
       'test.ccss',
       'test.sp',
     ],
-    install_dir: join_paths(get_option('libexecdir'), 'installed-tests', 'colord')
+    install_dir: join_paths(libexecdir, 'installed-tests', 'colord')
   )
 endif

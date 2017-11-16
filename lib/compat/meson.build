@@ -13,7 +13,7 @@ shared_module('colordcompat',
     root_incdir,
   ],
   install : true,
-  install_dir: get_option('libdir'),
+  install_dir: libdir,
   c_args : cargs,
   link_with : colord,
   dependencies : [

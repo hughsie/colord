@@ -26,6 +26,6 @@ foreach arg: generated_spectra
     output: arg + '.sp',
     command: [ cd_idt8, 'create-sp', '@OUTPUT@', '@INPUT@', '100.0' ],
     install: true,
-    install_dir: join_paths(get_option('datadir'), 'colord', 'illuminant')
+    install_dir: join_paths(datadir, 'colord', 'illuminant')
   )
 endforeach

@@ -18,5 +18,5 @@ install_data([
     'spyder4-attach.svg',
     'spyder5-attach.svg',
   ],
-  install_dir: join_paths(get_option('datadir'), 'colord', 'icons')
+  install_dir: join_paths(datadir, 'colord', 'icons')
 )
