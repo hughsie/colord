@@ -19,9 +19,7 @@ if get_option('enable-bash-completion')
 endif
 
 con2 = configuration_data()
-con2.set('servicedir',
-         join_paths(get_option('prefix'),
-                    get_option('libexecdir')))
+con2.set('servicedir', libexecdir)
 con2.set('daemon_user', get_option('with-daemon-user'))
 
 # replace @servicedir@ and @daemon_user@
@@ -41,7 +39,7 @@ configure_file(
   output : 'org.freedesktop.ColorManager.service',
   configuration : con2,
   install: true,
-  install_dir: join_paths(get_option('datadir'), 'dbus-1', 'system-services') ,
+  install_dir: join_paths(datadir, 'dbus-1', 'system-services') ,
 )
 
 # replace @daemon_user@
@@ -50,5 +48,5 @@ configure_file(
   output : 'org.freedesktop.ColorManager.conf',
   configuration : con2,
   install: true,
-  install_dir: join_paths(get_option('datadir'), 'dbus-1', 'system.d') ,
+  install_dir: join_paths(datadir, 'dbus-1', 'system.d') ,
 )

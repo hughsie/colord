@@ -11,7 +11,7 @@ install_data([
     'org.freedesktop.ColorManager.Sensor.xml',
     'org.freedesktop.ColorManager.Profile.xml',
   ],
-  install_dir : join_paths(get_option('datadir'), 'dbus-1', 'interfaces')
+  install_dir : join_paths(datadir, 'dbus-1', 'interfaces')
 )
 
 resources_src = gnome.compile_resources(
@@ -71,7 +71,7 @@ executable(
     cargs,
   ],
   install : true,
-  install_dir : get_option('libexecdir')
+  install_dir : libexecdir
 )
 
 if get_option('enable-tests')

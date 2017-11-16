@@ -1,7 +1,7 @@
 cargs = ['-DG_LOG_DOMAIN="Cd"']
 
 install_data('org.freedesktop.ColorHelper.xml',
-  install_dir : join_paths(get_option('datadir'), 'dbus-1', 'interfaces')
+  install_dir : join_paths(datadir, 'dbus-1', 'interfaces')
 )
 
 install_headers(
@@ -10,9 +10,7 @@ install_headers(
 )
 
 con2 = configuration_data()
-con2.set('servicedir',
-         join_paths(get_option('prefix'),
-                    get_option('libexecdir')))
+con2.set('servicedir', libexecdir)
 
 # replace @servicedir@
 if get_option('enable-systemd')
@@ -31,7 +29,7 @@ configure_file(
   output : 'org.freedesktop.ColorHelper.service',
   configuration : con2,
   install: true,
-  install_dir: join_paths(get_option('datadir'), 'dbus-1', 'services') ,
+  install_dir: join_paths(datadir, 'dbus-1', 'services') ,
 )
 
 executable(
@@ -59,7 +57,7 @@ executable(
     cargs,
   ],
   install : true,
-  install_dir : get_option('libexecdir')
+  install_dir : libexecdir
 )
 
 install_data('org.freedesktop.ColorHelper.gschema.xml',

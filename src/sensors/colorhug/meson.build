@@ -9,7 +9,7 @@ shared_module('colord_sensor_colorhug',
     root_incdir,
   ],
   install : true,
-  install_dir: join_paths(get_option('libdir'), 'colord-sensors'),
+  install_dir: join_paths(libdir, 'colord-sensors'),
   c_args : cargs,
   link_with : colorhug,
   dependencies : [

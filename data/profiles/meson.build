@@ -61,7 +61,7 @@ foreach arg: icc_profiles
     output: arg + '.icc',
     command: [ cd_create_profile, '--output=@OUTPUT@', '@INPUT@' ],
     install: true,
-    install_dir: join_paths(get_option('datadir'), 'color', 'icc', 'colord'),
+    install_dir: join_paths(datadir, 'color', 'icc', 'colord'),
   )
   generated_iccs += generated_icc
 endforeach

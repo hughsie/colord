@@ -12,7 +12,7 @@ colorhug_version_h = configure_file(
   output : 'ch-version.h',
   configuration : ch_version_h_conf,
   install : true,
-  install_dir: join_paths(get_option('includedir'), 'colord-1/colorhug'),
+  install_dir: join_paths(includedir, 'colord-1', 'colorhug'),
 )
 
 install_headers(

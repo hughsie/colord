@@ -213,9 +213,7 @@ endif
 if get_option('enable-installed-tests')
 con2 = configuration_data()
 con2.set('installedtestsdir',
-         join_paths(get_option('prefix'),
-                    get_option('libexecdir'),
-                    'installed-tests', 'colord'))
+         join_paths(libexecdir, 'installed-tests', 'colord'))
 configure_file(
   input : 'colord-daemon.test.in',
   output : 'colord-daemon.test',

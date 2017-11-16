@@ -202,25 +202,25 @@ add_project_arguments('-DCD_COMPILATION', language: 'c')
 # Needed for realpath() and PATH_MAX
 add_project_arguments('-D_XOPEN_SOURCE=500', language : 'c')
 
-conf.set_quoted('SYSCONFDIR', get_option('sysconfdir'))
-conf.set_quoted('BINDIR',
-                join_paths(get_option('prefix'),
-                           get_option('bindir')))
-conf.set_quoted('LIBDIR',
-                join_paths(get_option('prefix'),
-                           get_option('libdir')))
-conf.set_quoted('DATADIR',
-                join_paths(get_option('prefix'),
-                           get_option('datadir')))
-conf.set_quoted('LIBEXECDIR',
-                join_paths(get_option('prefix'),
-                           get_option('libexecdir')))
-conf.set_quoted('LOCALSTATEDIR',
-                join_paths(get_option('prefix'),
-                           get_option('localstatedir')))
+prefix = get_option('prefix')
 
-cd_system_profiles_dir = join_paths(get_option('prefix'),
-                                    get_option('localstatedir'),
+bindir = join_paths(prefix, get_option('bindir'))
+libdir = join_paths(prefix, get_option('libdir'))
+datadir = join_paths(prefix, get_option('datadir'))
+libexecdir = join_paths(prefix, get_option('libexecdir'))
+localstatedir = join_paths(prefix, get_option('localstatedir'))
+sysconfdir = join_paths(prefix, get_option('sysconfdir'))
+mandir = join_paths(prefix, get_option('mandir'))
+includedir = join_paths(prefix, get_option('includedir'))
+
+conf.set_quoted('SYSCONFDIR', sysconfdir)
+conf.set_quoted('BINDIR', bindir)
+conf.set_quoted('LIBDIR', libdir)
+conf.set_quoted('DATADIR', datadir)
+conf.set_quoted('LIBEXECDIR', libexecdir)
+conf.set_quoted('LOCALSTATEDIR', localstatedir)
+
+cd_system_profiles_dir = join_paths(localstatedir,
                                     'lib', 'colord', 'icc')
 conf.set_quoted('CD_SYSTEM_PROFILES_DIR', cd_system_profiles_dir)
 
@@ -232,9 +232,6 @@ configure_file(
   output : 'config.h',
   configuration : conf
 )
-
-localstatedir = join_paths(get_option('prefix'),
-                           get_option('localstatedir'))
 
 root_incdir = include_directories('.')
 
