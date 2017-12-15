@@ -29,9 +29,11 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 #include <lcms2.h>
+#include <lcms2_plugin.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <math.h>
 
 #include "cd-context-lcms.h"
@@ -70,6 +72,7 @@ typedef struct
 	gdouble			 version;
 	GHashTable		*mluc_data[CD_MLUC_LAST]; /* key is 'en_GB' or '' for default */
 	GHashTable		*metadata;
+	gint64			 creation_time;
 	guint32			 size;
 	GPtrArray		*named_colors;
 	guint			 temperature;
@@ -1677,6 +1680,47 @@ cd_icc_save_data (CdIcc *icc,
 			goto out;
 	}
 
+	/* finally, optionally override the created date */
+	if (priv->creation_time != -1) {
+		/*
+		 * LCMS2 maintainer rejects adding API to do this,
+		 * instead suggesting you munge the header directly:
+		 * https://github.com/mm2/Little-CMS/issues/71
+		 */
+		struct tm creation_time;
+		cmsICCHeader *header;
+		g_autoptr(GByteArray) mutable_data;
+
+		data = cd_icc_serialize_profile (icc, error);
+		if (data == NULL)
+			goto out;
+
+		mutable_data = g_bytes_unref_to_array (data);
+		data = NULL;
+
+		if (!gmtime_r (&priv->creation_time, &creation_time)) {
+			g_set_error (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_SAVE,
+				     "failed to translate creation time: %s (%i)",
+				     g_strerror (errno),
+				     errno);
+			goto out;
+		}
+		header = (cmsICCHeader*)mutable_data->data;
+		_cmsEncodeDateTimeNumber (&header->date, &creation_time);
+
+		/*
+		 * Now that we've changed the creation date, we need to recalculate MD5.
+		 * The simplest way to do that is to re-read the exported profile,
+		 * then calculate MD5 as normal.
+		 */
+		cmsCloseProfile (priv->lcms_profile);
+		priv->lcms_profile = cmsOpenProfileFromMemTHR (priv->context_lcms,
+							       mutable_data->data,
+							       mutable_data->len);
+	}
+
 	/* write profile id */
 	ret = cmsMD5computeID (priv->lcms_profile);
 	if (!ret) {
@@ -2402,6 +2446,10 @@ cd_icc_get_created (CdIcc *icc)
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
+	/* If the creation time has been overridden, return that */
+	if (priv->creation_time != (gint64)-1)
+		return g_date_time_new_from_unix_local (priv->creation_time);
+
 	/* get the profile creation time and date */
 	if (!cmsGetHeaderCreationDateTime (priv->lcms_profile, &created_tm))
 		return NULL;
@@ -2415,6 +2463,23 @@ cd_icc_get_created (CdIcc *icc)
 
 	/* instantiate object */
 	return g_date_time_new_from_unix_local (created_t);
+}
+
+/**
+ * cd_icc_set_created
+ * @icc: A valid #CdIcc
+ *
+ * Sets the ICC creation date and time.
+ *
+ * Since: 1.4.2
+ **/
+void
+cd_icc_set_created (CdIcc *icc, GDateTime* creation_time)
+{
+	CdIccPrivate *priv = GET_PRIVATE (icc);
+
+	g_return_if_fail (CD_IS_ICC (icc));
+	priv->creation_time = g_date_time_to_unix (creation_time);
 }
 
 /**
@@ -3949,6 +4014,7 @@ cd_icc_init (CdIcc *icc)
 						     g_str_equal,
 						     g_free,
 						     g_free);
+	priv->creation_time = -1;
 	for (i = 0; i < CD_MLUC_LAST; i++) {
 		priv->mluc_data[i] = g_hash_table_new_full (g_str_hash,
 								 g_str_equal,
