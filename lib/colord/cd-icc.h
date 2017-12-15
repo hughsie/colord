@@ -195,6 +195,8 @@ void		 cd_icc_remove_metadata			(CdIcc		*icc,
 GPtrArray	*cd_icc_get_named_colors		(CdIcc		*icc);
 gboolean	 cd_icc_get_can_delete			(CdIcc		*icc);
 GDateTime	*cd_icc_get_created			(CdIcc		*icc);
+void		 cd_icc_set_created			(CdIcc		*icc,
+							 GDateTime	*creation_time);
 const gchar	*cd_icc_get_checksum			(CdIcc		*icc);
 const gchar	*cd_icc_get_description			(CdIcc		*icc,
 							 const gchar	*locale,
