@@ -22,10 +22,14 @@
 #include "config.h"
 
 #include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <gio/gio.h>
 #include <locale.h>
 #include <lcms2.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <errno.h>
+#include <stdio.h>
 #include <math.h>
 #include <colord-private.h>
 
@@ -682,6 +686,91 @@ cd_util_icc_set_metadata_coverage (CdIcc *icc, GError **error)
 }
 
 static gboolean
+cd_util_adjust_creation_time (CdUtilPrivate *priv, const char *source_filename, GError **error)
+{
+	g_autoptr(GFile) source_file;
+	g_autoptr(GFileInfo) file_info;
+	g_autoptr(GDateTime) creation_time;
+	GTimeVal source_file_creation_time;
+	gint64 build_date = 0;
+	char *source_date_epoch_string;
+	unsigned long long source_date_epoch;
+	char *endptr;
+
+	/* adjust creation time to match the XML one or SOURCE_DATE_EPOCH if specified and older */
+	source_date_epoch_string = getenv ("SOURCE_DATE_EPOCH");
+	if (source_date_epoch_string != NULL) {
+		errno = 0;
+		source_date_epoch = strtoull (source_date_epoch_string, &endptr, 10);
+		if ((source_date_epoch == ERANGE && (source_date_epoch == ULLONG_MAX || source_date_epoch == 0))
+		|| (errno != 0 && source_date_epoch == 0)) {
+			g_set_error (error,
+				     1,
+				     0,
+				     "Environment variable $SOURCE_DATE_EPOCH: strtoull: %s",
+				     g_strerror (errno));
+			return FALSE;
+		}
+		if (endptr == source_date_epoch_string) {
+			g_set_error (error,
+				     1,
+				     0,
+				     "Environment variable $SOURCE_DATE_EPOCH: No digits were found: %s",
+				     endptr);
+			return FALSE;
+		}
+		if (*endptr != '\0') {
+			g_set_error (error,
+				     1,
+				     0,
+				     "Environment variable $SOURCE_DATE_EPOCH: Trailing garbage: %s",
+				     endptr);
+			return FALSE;
+		}
+		if (source_date_epoch > ULONG_MAX) {
+			g_set_error (error,
+				     1,
+				     0,
+				     "Environment variable $SOURCE_DATE_EPOCH: value must be smaller than or equal to:"
+				     " %lu but was found to be: %llu",
+				     ULONG_MAX,
+				     source_date_epoch);
+			return FALSE;
+		}
+		build_date = source_date_epoch;
+	}
+
+	source_file = g_file_new_for_path (source_filename);
+	file_info = g_file_query_info (source_file,
+				       G_FILE_ATTRIBUTE_TIME_MODIFIED,
+				       0,
+				       NULL,
+				       error);
+	if (file_info != NULL) {
+		g_file_info_get_modification_time (file_info, &source_file_creation_time);
+		if (build_date > 0 &&
+		    source_file_creation_time.tv_sec < build_date) {
+			    build_date = source_file_creation_time.tv_sec;
+		}
+	} else if (build_date == 0) {
+		/* No SOURCE_DATE_EPOCH and for some reason we can't stat() the source file; bail */
+		return FALSE;
+	}
+
+	creation_time = g_date_time_new_from_unix_utc (build_date);
+	if (creation_time == NULL) {
+		/* We don't care about any previous errors, but g_file_query_info may have
+		 * set some. It's safe to unconditionally clear it.
+		 */
+		g_clear_error (error);
+		g_set_error_literal (error, 1, 0, "Build date outside of range supported by GDateTime");
+		return FALSE;
+	}
+	cd_icc_set_created (priv->icc, creation_time);
+	return TRUE;
+}
+
+static gboolean
 cd_util_create_from_xml (CdUtilPrivate *priv,
 			 const gchar *filename,
 			 GError **error)
@@ -756,6 +845,9 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 				     CD_PROFILE_METADATA_DATA_SOURCE,
 				     cd_dom_get_node_data (tmp));
 	}
+
+	if (!cd_util_adjust_creation_time (priv, filename, error))
+		return FALSE;
 
 	/* add CMS defines */
 	cd_icc_add_metadata (priv->icc,
