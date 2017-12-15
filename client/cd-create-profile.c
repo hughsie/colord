@@ -681,6 +681,51 @@ cd_util_icc_set_metadata_coverage (CdIcc *icc, GError **error)
 	return TRUE;
 }
 
+static GDateTime *
+cd_util_get_creation_time (const gchar *source_filename, GError **error)
+{
+	GTimeVal epoch_tv;
+	const gchar *epoch_str;
+	g_autoptr(GDateTime) creation_time = NULL;
+	g_autoptr(GFileInfo) file_info = NULL;
+	g_autoptr(GFile) source_file = NULL;
+
+	/* use SOURCE_DATE_EPOCH if specified */
+	epoch_str = g_getenv ("SOURCE_DATE_EPOCH");
+	if (epoch_str != NULL) {
+		guint64 epoch_val = g_ascii_strtoull (epoch_str, NULL, 10);
+		if (epoch_val == 0) {
+			g_set_error (error, 1, 0,
+				     "$SOURCE_DATE_EPOCH invalid %s",
+				     epoch_str);
+			return NULL;
+		}
+		creation_time = g_date_time_new_from_unix_utc (epoch_val);
+		if (creation_time == NULL) {
+			g_set_error_literal (error, 1, 0,
+					     "build date not supported");
+			return NULL;
+		}
+		return g_steal_pointer (&creation_time);
+	}
+
+	/* use the source file */
+	source_file = g_file_new_for_path (source_filename);
+	file_info = g_file_query_info (source_file,
+				       G_FILE_ATTRIBUTE_TIME_MODIFIED,
+				       0, NULL, error);
+	if (file_info == NULL)
+		return NULL;
+	g_file_info_get_modification_time (file_info, &epoch_tv);
+	creation_time = g_date_time_new_from_unix_utc (epoch_tv.tv_sec);
+	if (creation_time == NULL) {
+		g_set_error_literal (error, 1, 0,
+				     "build date not supported");
+		return NULL;
+	}
+	return g_steal_pointer (&creation_time);
+}
+
 static gboolean
 cd_util_create_from_xml (CdUtilPrivate *priv,
 			 const gchar *filename,
@@ -693,6 +738,7 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 	gssize data_len = -1;
 	g_autofree gchar *data = NULL;
 	g_autoptr(CdDom) dom = NULL;
+	g_autoptr(GDateTime) creation_time = NULL;
 
 	/* parse the XML into DOM */
 	if (!g_file_get_contents (filename, &data, (gsize *) &data_len, error))
@@ -756,6 +802,12 @@ cd_util_create_from_xml (CdUtilPrivate *priv,
 				     CD_PROFILE_METADATA_DATA_SOURCE,
 				     cd_dom_get_node_data (tmp));
 	}
+
+	/* set created time */
+	creation_time = cd_util_get_creation_time (filename, error);
+	if (creation_time == NULL)
+		return FALSE;
+	cd_icc_set_created (priv->icc, creation_time);
 
 	/* add CMS defines */
 	cd_icc_add_metadata (priv->icc,
