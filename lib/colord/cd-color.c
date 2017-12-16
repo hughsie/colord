@@ -1444,9 +1444,11 @@ cd_color_get_blackbody_rgb_full (gdouble temp,
 				 CdColorBlackbodyFlags flags)
 {
 	gboolean ret = TRUE;
-	gdouble alpha;
-	gint temp_index;
+	guint temp_quot, temp_rem;
 	const CdColorRGB *blackbody_func = blackbody_data_d65modified;
+
+	g_return_val_if_fail (!isnan (temp), FALSE);
+	g_return_val_if_fail (result != NULL, FALSE);
 
 	/* use modified curve */
 	if (flags & CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN)
@@ -1464,12 +1466,23 @@ cd_color_get_blackbody_rgb_full (gdouble temp,
 		temp = 10000;
 	}
 
+	/* blackbody data has a resolution of 100 K */
+	temp_quot = (guint) temp / 100;
+	temp_rem = (guint) temp % 100;
+
+	/* blackbody data starts at 1000 K */
+	temp_quot -= 10;
+
+	if (temp_rem == 0) {
+		/* exact match for data point */
+		*result = blackbody_func[temp_quot];
+		return ret;
+	}
+
 	/* bilinear interpolate the blackbody data */
-	alpha = ((guint) temp % 100) / 100.0;
-	temp_index = ((guint) temp - 1000) / 100;
-	cd_color_rgb_interpolate (&blackbody_func[temp_index],
-				  &blackbody_func[temp_index + 1],
-				  alpha,
+	cd_color_rgb_interpolate (&blackbody_func[temp_quot],
+				  &blackbody_func[temp_quot + 1],
+				  temp_rem / 100.0,
 				  result);
 	return ret;
 }
