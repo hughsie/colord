@@ -213,6 +213,32 @@ cd_icc_write_tag (CdIcc *icc, cmsTagSignature sig, gpointer data, GError **error
 	return FALSE;
 }
 
+static gchar *
+cd_icc_get_precooked_md5 (cmsHPROFILE lcms_profile)
+{
+	cmsUInt8Number icc_id[16];
+	gboolean md5_precooked = FALSE;
+	gchar *md5 = NULL;
+	guint i;
+
+	/* check to see if we have a pre-cooked MD5 */
+	cmsGetHeaderProfileID (lcms_profile, icc_id);
+	for (i = 0; i < 16; i++) {
+		if (icc_id[i] != 0) {
+			md5_precooked = TRUE;
+			break;
+		}
+	}
+	if (md5_precooked == FALSE)
+		return NULL;
+
+	/* convert to a hex string */
+	md5 = g_new0 (gchar, 32 + 1);
+	for (i = 0; i < 16; i++)
+		g_snprintf (md5 + i * 2, 3, "%02x", icc_id[i]);
+	return md5;
+}
+
 /**
  * cd_icc_to_string:
  * @icc: a #CdIcc instance.
@@ -240,7 +266,7 @@ cd_icc_to_string (CdIcc *icc)
 	guint32 number_tags;
 	guint32 tmp;
 	guint64 header_flags;
-	guint8 profile_id[4];
+	g_autofree gchar *profile_id = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
@@ -335,12 +361,8 @@ cd_icc_to_string (CdIcc *icc)
 	g_string_append_printf (str, "  Creator\t= %s\n", tag_str);
 
 	/* profile ID */
-	cmsGetHeaderProfileID (priv->lcms_profile, profile_id);
-	g_string_append_printf (str, "  Profile ID\t= 0x%02x%02x%02x%02x\n",
-				profile_id[0],
-				profile_id[1],
-				profile_id[2],
-				profile_id[3]);
+	profile_id = cd_icc_get_precooked_md5 (priv->lcms_profile);
+	g_string_append_printf (str, "  Profile ID\t= %s", profile_id);
 
 	/* print tags */
 	g_string_append (str, "\n");
@@ -816,32 +838,6 @@ const struct {
 	{ cmsSigCmyData,		CD_COLORSPACE_CMY },
 	{ 0,				CD_COLORSPACE_LAST }
 };
-
-static gchar *
-cd_icc_get_precooked_md5 (cmsHPROFILE lcms_profile)
-{
-	cmsUInt8Number icc_id[16];
-	gboolean md5_precooked = FALSE;
-	gchar *md5 = NULL;
-	guint i;
-
-	/* check to see if we have a pre-cooked MD5 */
-	cmsGetHeaderProfileID (lcms_profile, icc_id);
-	for (i = 0; i < 16; i++) {
-		if (icc_id[i] != 0) {
-			md5_precooked = TRUE;
-			break;
-		}
-	}
-	if (md5_precooked == FALSE)
-		return NULL;
-
-	/* convert to a hex string */
-	md5 = g_new0 (gchar, 32 + 1);
-	for (i = 0; i < 16; i++)
-		g_snprintf (md5 + i * 2, 3, "%02x", icc_id[i]);
-	return md5;
-}
 
 static gboolean
 cd_icc_calc_whitepoint (CdIcc *icc, GError **error)
