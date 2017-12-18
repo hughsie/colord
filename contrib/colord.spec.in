@@ -22,8 +22,8 @@ Name:      colord
 Version:   #VERSION#
 Release:   0.#BUILD#%{?alphatag}%{?dist}
 License:   GPLv2+ and LGPLv2+
-URL:       http://www.freedesktop.org/software/colord/
-Source0:   http://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
+URL:       https://www.freedesktop.org/software/colord/
+Source0:   https://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
 
 BuildRequires: dbus-devel
 BuildRequires: docbook-utils

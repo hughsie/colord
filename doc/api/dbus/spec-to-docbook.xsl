@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd"
+  xmlns:doc="https://www.freedesktop.org/dbus/1.0/doc.dtd"
   exclude-result-prefixes="doc">
 <!--
      Convert D-Bus Glib xml into DocBook refentries

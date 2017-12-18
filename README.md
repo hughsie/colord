@@ -19,7 +19,7 @@ What colord does:
 * Provides the session for a way to set system settings, for instance
   setting the display profile for all users and all sessions.
 
-See [the website](http://www.freedesktop.org/software/colord/) for more details.
+See [the website](https://www.freedesktop.org/software/colord/) for more details.
 
 Compiling for Linux
 ===================
