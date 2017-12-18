@@ -48,7 +48,7 @@ git push
 
 colord is a system activated daemon that maps devices to color profiles.
 
-See http://www.freedesktop.org/software/colord/ for more details.
+See https://www.freedesktop.org/software/colord/ for more details.
 
 Tarballs can be found here:
-http://www.freedesktop.org/software/colord/releases/
+https://www.freedesktop.org/software/colord/releases/

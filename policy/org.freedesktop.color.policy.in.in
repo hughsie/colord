@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policyconfig PUBLIC
  "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
- "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+ "https://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
 <policyconfig>
 
   <!--
@@ -10,7 +10,7 @@
   -->
 
   <vendor>System Color Manager</vendor>
-  <vendor_url>http://www.freedesktop.org/projects/system-color-manager/</vendor_url>
+  <vendor_url>https://www.freedesktop.org/projects/system-color-manager/</vendor_url>
   <icon_name>application-vnd.iccprofile</icon_name>
 
   <action id="org.freedesktop.color-manager.create-device">
