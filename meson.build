@@ -200,7 +200,7 @@ i18n = import('i18n')
 add_project_arguments('-DCD_COMPILATION', language: 'c')
 
 # Needed for realpath() and PATH_MAX
-add_project_arguments('-D_XOPEN_SOURCE=500', language : 'c')
+add_project_arguments('-D_XOPEN_SOURCE=700', language : 'c')
 
 prefix = get_option('prefix')
 
