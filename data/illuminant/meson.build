@@ -20,11 +20,18 @@ generated_spectra = [
   'CIE-F8',
   'CIE-F9',
 ]
+
+generation_command = [ cd_idt8 ]
+if not get_option('enable-embedded-timestamps')
+  generation_command += '--no-timestamps'
+endif
+generation_command += [ 'create-sp', '@OUTPUT@', '@INPUT@', '100.0' ]
+
 foreach arg: generated_spectra
   custom_target(arg,
     input: arg + '.csv',
     output: arg + '.sp',
-    command: [ cd_idt8, 'create-sp', '@OUTPUT@', '@INPUT@', '100.0' ],
+    command: generation_command,
     install: true,
     install_dir: join_paths(datadir, 'colord', 'illuminant')
   )

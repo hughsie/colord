@@ -35,6 +35,7 @@
 typedef struct {
 	GOptionContext		*context;
 	GPtrArray		*cmd_array;
+	gboolean		 timestamps;
 } CdUtilPrivate;
 
 typedef gboolean (*CdUtilPrivateCb)	(CdUtilPrivate	*util,
@@ -285,6 +286,7 @@ cd_util_create_cmf (CdUtilPrivate *priv,
 	if (dot != NULL)
 		*dot = '\0';
 	cd_it8_set_title (cmf, title);
+	cd_it8_set_enable_created (cmf, priv->timestamps);
 
 	/* save */
 	file = g_file_new_for_path (values[0]);
@@ -437,6 +439,7 @@ cd_util_create_sp (CdUtilPrivate *priv,
 	if (dot != NULL)
 		*dot = '\0';
 	cd_it8_set_title (cmf, title);
+	cd_it8_set_enable_created (cmf, priv->timestamps);
 
 	/* save */
 	file = g_file_new_for_path (values[0]);
@@ -455,6 +458,7 @@ main (int argc, char *argv[])
 	CdUtilPrivate *priv;
 	gboolean ret;
 	gboolean verbose = FALSE;
+	gboolean disable_timestamps = FALSE;
 	guint retval = 1;
 	g_autoptr(GError) error = NULL;
 	g_autofree gchar *cmd_descriptions = NULL;
@@ -462,6 +466,9 @@ main (int argc, char *argv[])
 		{ "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose,
 			/* TRANSLATORS: command line option */
 			_("Show extra debugging information"), NULL },
+		{ "no-timestamps", 'd', 0, G_OPTION_ARG_NONE, &disable_timestamps,
+                        /* TRANSLATORS: command line option */
+                        _("Don't write embedded creation timestamps"), NULL },
 		{ NULL}
 	};
 
@@ -473,6 +480,7 @@ main (int argc, char *argv[])
 
 	/* create helper object */
 	priv = g_new0 (CdUtilPrivate, 1);
+	priv->timestamps = !disable_timestamps;
 
 	/* add commands */
 	priv->cmd_array = g_ptr_array_new_with_free_func ((GDestroyNotify) cd_util_item_free);
