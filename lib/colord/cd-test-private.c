@@ -1140,8 +1140,8 @@ colord_color_func (void)
 static void
 cd_test_math_func (void)
 {
-	CdMat3x3 mat;
-	CdMat3x3 matsrc;
+	CdMat3x3 mat = { 0 };
+	CdMat3x3 matsrc = { 0 };
 
 	/* matrix */
 	mat.m00 = 1.00f;
