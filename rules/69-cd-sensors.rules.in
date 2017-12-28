@@ -93,9 +93,6 @@ ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1006", ENV{COLORD_SENSOR_KIND}="colo
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1007", ENV{COLORD_SENSOR_KIND}="colorhug-als", ENV{COLORD_IGNORE}="1"
 ATTRS{idVendor}=="273f", ATTRS{idProduct}=="1008", ENV{COLORD_SENSOR_KIND}="colorhug-als", ENV{COLORD_IGNORE}="1"
 
-# OceanOptics Spark
-ATTRS{idVendor}=="2457", ATTRS{idProduct}=="4200", ENV{COLORD_SENSOR_KIND}="spark", ENV{COLORD_SENSOR_CAPS}="lcd crt projector printer spot ambient"
-
 # color calibration device
 ENV{COLORD_SENSOR_KIND}=="*?", ENV{COLOR_MEASUREMENT_DEVICE}="1"
 ENV{COLORD_SENSOR_KIND}=="*?", ENV{ID_MODEL}=="", IMPORT{builtin}="usb_id"

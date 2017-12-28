@@ -5,7 +5,6 @@ subdir('dummy')
 subdir('huey')
 subdir('huey2')
 subdir('munki')
-subdir('spark')
 
 cargs = ['-DG_LOG_DOMAIN="Cd"']
 
