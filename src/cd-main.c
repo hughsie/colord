@@ -2046,7 +2046,6 @@ cd_main_load_plugin (CdMainPrivate *priv,
 	CdPluginEnabledFunc plugin_enabled = NULL;
 	CdPluginGetDescFunc plugin_desc = NULL;
 	CdPlugin *plugin;
-	gboolean ret = FALSE;
 	GModule *module;
 
 	/* open the plugin and import all symbols */
@@ -2061,10 +2060,8 @@ cd_main_load_plugin (CdMainPrivate *priv,
 	}
 
 	/* get description */
-	ret = g_module_symbol (module,
-			       "cd_plugin_get_description",
-			       (gpointer *) &plugin_desc);
-	if (!ret) {
+	if (!g_module_symbol (module, "cd_plugin_get_description",
+			      (gpointer *) &plugin_desc)) {
 		g_set_error_literal (error,
 				     CD_CLIENT_ERROR,
 				     CD_CLIENT_ERROR_INTERNAL,
@@ -2074,12 +2071,9 @@ cd_main_load_plugin (CdMainPrivate *priv,
 	}
 
 	/* give the module the option to opt-out */
-	ret = g_module_symbol (module,
-			       "cd_plugin_enabled",
-			       (gpointer *) &plugin_enabled);
-	if (ret) {
+	if (g_module_symbol (module, "cd_plugin_enabled",
+			     (gpointer *) &plugin_enabled)) {
 		if (!plugin_enabled ()) {
-			ret = FALSE;
 			g_set_error_literal (error,
 					     CD_CLIENT_ERROR,
 					     CD_CLIENT_ERROR_NOT_SUPPORTED,
