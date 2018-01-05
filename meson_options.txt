@@ -1,5 +1,6 @@
 option('enable-session-example', type : 'boolean', value : false, description : 'Enable session example')
 option('enable-bash-completion', type : 'boolean', value : true, description : 'Enable bash completion')
+option('enable-udev-rules', type: 'boolean', value: true, description: 'Install udev rules')
 option('enable-systemd', type : 'boolean', value : true, description : 'Enable systemd integration')
 option('enable-libcolordcompat', type : 'boolean', value : false, description : 'Enable libcolordcompat.so which is used by ArgyllCMS')
 option('enable-argyllcms-sensor', type : 'boolean', value : true, description : 'Enable ArgllCMS sensor')
