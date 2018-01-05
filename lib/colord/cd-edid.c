@@ -106,6 +106,7 @@ cd_edid_get_monitor_name (CdEdid *edid)
 static gchar *
 cd_edid_convert_pnp_id_to_string (const gchar *pnp_id)
 {
+#ifndef PNP_IDS
 	gchar *vendor = NULL;
 	struct udev_hwdb *hwdb = NULL;
 	struct udev_list_entry *e;
@@ -140,6 +141,29 @@ out:
 	if (udev != NULL)
 		udev_unref (udev);
 	return vendor;
+#else
+	g_autofree gchar *data = NULL;
+
+	/* load pnp.ids */
+	if (!g_file_get_contents (PNP_IDS, &data, NULL, NULL))
+		return NULL;
+	if (data == NULL)
+		return NULL;
+
+	/* get the vendor name from the tab delimited data */
+	for (gchar *idx = data; idx != NULL; ) {
+		if (strncmp (idx, pnp_id, 3) == 0) {
+			gchar *idx2 = g_strstr_len (idx, -1, "\n");
+			if (idx2 != NULL)
+				*idx2 = '\0';
+			return g_strdup (idx + 4);
+		}
+		idx = g_strstr_len (idx, -1, "\n");
+		if (idx != NULL)
+			idx++;
+	}
+	return NULL;
+#endif
 }
 
 /**

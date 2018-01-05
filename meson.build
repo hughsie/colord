@@ -182,6 +182,10 @@ if get_option('with-daemon-user') == 'root'
   message('RUNNING THIS AS root IS NOT A GOOD IDEA SEE --with-daemon-user')
 endif
 
+if get_option('with-pnp-ids') != ''
+  conf.set_quoted('PNP_IDS', get_option('with-pnp-ids'))
+endif
+
 polkit = dependency('polkit-gobject-1', version : '>= 0.103')
 if polkit.version().version_compare('>= 0.114')
   conf.set('POLKIT_HAS_AUTOPTR_MACROS', '1')

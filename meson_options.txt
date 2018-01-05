@@ -11,5 +11,6 @@ option('enable-print-profiles', type : 'boolean', value : false, description : '
 option('enable-tests', type : 'boolean', value : true, description : 'Build self tests')
 option('enable-installed-tests', type : 'boolean', value : false, description : 'Install tests')
 option('with-daemon-user', type : 'string', value : 'root', description : 'User for running the colord daemon')
+option('with-pnp-ids', type : 'string', value : '', description : 'Location of pnp.ids if hwdb is not available')
 option('enable-man', type : 'boolean', value : true, description : 'Generate man pages')
 option('enable-docs', type : 'boolean', value : true, description : 'Generate documentation')
