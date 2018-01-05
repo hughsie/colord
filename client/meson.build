@@ -114,3 +114,15 @@ cd_create_profile = executable(
   install : true,
   install_dir : bindir
 )
+
+run_cd_idt8 = [
+  join_paths(meson.source_root(), 'client', 'run.sh'),
+  join_paths(meson.build_root(), 'lib', 'colord'),
+  cd_idt8
+]
+
+run_cd_create_profile = [
+  join_paths(meson.source_root(), 'client', 'run.sh'),
+  join_paths(meson.build_root(), 'lib', 'colord'),
+  cd_create_profile
+]

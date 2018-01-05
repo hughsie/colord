@@ -24,7 +24,7 @@ foreach arg: generated_spectra
   custom_target(arg,
     input: arg + '.csv',
     output: arg + '.sp',
-    command: [ cd_idt8, 'create-sp', '@OUTPUT@', '@INPUT@', '100.0' ],
+    command: [ run_cd_idt8, 'create-sp', '@OUTPUT@', '@INPUT@', '100.0' ],
     install: true,
     install_dir: join_paths(datadir, 'colord', 'illuminant')
   )
