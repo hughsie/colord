@@ -1280,22 +1280,42 @@ cd_util_mlu_object_parse (const gchar *locale,
 	}
 
 	/* ignore ##@latin */
-	if (g_strstr_len (locale, -1, "@") != NULL)
+	if (g_strstr_len (locale, -1, "@") != NULL) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_PARSE,
+			     "ignoring @latin");
 		return NULL;
+	}
 
 	key = g_strdup (locale);
 	g_strdelimit (key, ".", '\0');
 	split = g_strsplit (key, "_", -1);
-	if (strlen (split[0]) != 2)
+	if (strlen (split[0]) != 2) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_PARSE,
+			     "ignoring invalid country code: %s", split[0]);
 		return NULL;
+	}
 	type = g_strv_length (split);
-	if (type > 2)
+	if (type > 2) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_PARSE,
+			     "ignoring invalid locale: %s", key);
 		return NULL;
+	}
 
 	/* convert to wchars */
 	wtext = g_utf8_to_ucs4 (utf8_text, -1, NULL, NULL, error);
-	if (wtext == NULL)
+	if (wtext == NULL) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_PARSE,
+			     "ignoring invalid UTF-8 text: %s", utf8_text);
 		return NULL;
+	}
 
 	/* lv */
 	if (type == 1) {
@@ -1306,8 +1326,13 @@ cd_util_mlu_object_parse (const gchar *locale,
 	}
 
 	/* en_GB */
-	if (strlen (split[1]) != 2)
+	if (strlen (split[1]) != 2) {
+		g_set_error (error,
+			     CD_ICC_ERROR,
+			     CD_PROFILE_ERROR_FAILED_TO_PARSE,
+			     "ignoring invalid locale: %s", split[1]);
 		return NULL;
+	}
 	obj = g_new0 (CdMluObject, 1);
 	obj->language_code = g_strdup (split[0]);
 	obj->country_code = g_strdup (split[1]);
