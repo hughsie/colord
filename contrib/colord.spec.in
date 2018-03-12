@@ -153,14 +153,12 @@ getent passwd colord >/dev/null || \
 exit 0
 
 %post
-glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %systemd_post colord.service
 
 %preun
 %systemd_preun colord.service
 
 %postun
-glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 %systemd_postun colord.service
 
 %post libs -p /sbin/ldconfig
