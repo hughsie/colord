@@ -1,5 +1,5 @@
 project('colord', 'c',
-  version : '1.4.2',
+  version : '1.4.3',
   license : 'LGPL-2.1+',
   meson_version : '>=0.37.0',
   default_options : ['c_std=c99']
