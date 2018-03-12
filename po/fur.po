@@ -3,147 +3,147 @@
 # This file is distributed under the same license as the colord package.
 # 
 # Translators:
-# gogo <trebelnik2@gmail.com>, 2017-2018
+# Fabio Tomat <f.t.public@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2018-03-11 23:52+0000\n"
-"Last-Translator: gogo <trebelnik2@gmail.com>\n"
-"Language-Team: Croatian (http://www.transifex.com/freedesktop/colord/language/hr/)\n"
+"PO-Revision-Date: 2017-12-24 15:22+0000\n"
+"Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
+"Language-Team: Friulian (http://www.transifex.com/freedesktop/colord/language/fur/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hr\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language: fur\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:800
 msgid "Profile to create"
-msgstr "Profil za stvoriti"
+msgstr "Profîl di creâ"
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:815
 msgid "ICC profile creation program"
-msgstr "Program stvaranja ICC profila"
+msgstr "Program di creazion profîl ICC"
 
 #. TRANSLATORS: the user didn't read the man page
 #: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
 #: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
 msgid "Failed to parse arguments"
-msgstr "Neuspjela obrada argumenata"
+msgstr "No si è rivâts a analizâ i argoments"
 
 #. TRANSLATORS: the user forgot to use -o
 #: client/cd-create-profile.c:828
 msgid "No output filename specified"
-msgstr "Nema određenog naziva datoteke izlaza"
+msgstr "Nissun non di file di jessude specificât"
 
 #. TRANSLATORS: this is a command alias
 #: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
-msgstr "Zamjena za %s"
+msgstr "Alias a %s"
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
-msgstr "Naredba nije pronađena, valjane naredbe su:"
+msgstr "Comant no cjatât, i comants valits a son:"
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
 msgid "Show extra debugging information"
-msgstr "Prikaži dodatne informacije otklanjanja grešaka"
+msgstr "Mostre informazions di debug adizionâls"
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:585
 msgid "The locale to use when setting localized text"
-msgstr "Lokalizacija koja se koristi za postavljanje loklaliziranog teksta"
+msgstr "La localizazion di doprâ cuant che si stabilìs il test localizât"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
 msgid "Generate the VCGT calibration of a given size"
-msgstr "Stvori VCGT kalibraciju zadane veličine"
+msgstr "Gjenere la calibradure VCGT di une dimension furnide"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
 msgid "Clear any metadata in the profile"
-msgstr "Obriši sve metapodatke u profilu"
+msgstr "Nete ducj i metadâts tal profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:616
 msgid "Initialize any metadata for the profile"
-msgstr "Pokreni sve metapodatke za profil"
+msgstr "Inizialize ducj i metadâts pal profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:621
 msgid "Add a metadata item to the profile"
-msgstr "Dodaj stavku metapodatka u profil"
+msgstr "Zonte un element metadât al profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:626
 msgid "Remove a metadata item from the profile"
-msgstr "Ukloni stavku metapodatka iz profila"
+msgstr "Gjave un element metadât dal profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
 msgid "Sets the copyright string"
-msgstr "Postavlja niz autorskog prava"
+msgstr "Al stabilìs la stringhe copyright"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:636
 msgid "Sets the description string"
-msgstr "Postavlja niz opisa"
+msgstr "Al stabilìs la stringhe di descrizion"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:641
 msgid "Sets the manufacturer string"
-msgstr "Postavlja niz proizvođača"
+msgstr "Al stabilìs la stringhe produtôr"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:646
 msgid "Sets the model string"
-msgstr "Postavlja niz modela"
+msgstr "Al stabilìs la stringhe dal model"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:651
 msgid "Automatically fix metadata in the profile"
-msgstr "Automatski popravlja metapodatke u profilu"
+msgstr "Al juste in automatic il metadât tal profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:656
 msgid "Set the ICC profile version"
-msgstr "Postavi inačicu ICC profila"
+msgstr "Stabilìs la version dal profîl ICC"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
 msgid "Export the tag data"
-msgstr "Izvezi podatke oznake"
+msgstr "Espuarte il dât de etichete"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
 #: src/cd-main.c:2379
 msgid "Color Management"
-msgstr "Upravljanje bojama"
+msgstr "Gjestion colôr"
 
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
 msgid "ICC profile dump program"
-msgstr "Program opširnog ispisa ICC profila"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:483
 msgid "Create a CMF from CSV data"
-msgstr "Stvori CMF iz CSV podataka"
+msgstr "Cree un CMF dai dâts CSV"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:489
 msgid "Create a spectrum from CSV data"
-msgstr "Svori spektrum iz CSV podataka"
+msgstr "Cree un spectrum dai dâts CSV"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:495
 msgid "Create a CCMX from reference and measurement data"
-msgstr "Stvori CCMX iz preporuka i podataka mjerenja"
+msgstr "Cree un CCMS dal riferiment e dai dâts di misurazion"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: client/cd-util.c:122
@@ -154,12 +154,12 @@ msgstr ""
 #. TRANSLATORS: profile UID
 #: client/cd-util.c:134 client/cd-util.c:139
 msgid "Owner"
-msgstr "Vlasnik"
+msgstr "Proprietari"
 
 #. TRANSLATORS: the internal DBus path
 #: client/cd-util.c:159 client/cd-util.c:262 client/cd-util.c:508
 msgid "Object Path"
-msgstr "Putanja objekta"
+msgstr "Percors ogjet"
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -167,90 +167,90 @@ msgstr "Putanja objekta"
 #. * ColorModel.OutputMode.OutputResolution
 #: client/cd-util.c:167 client/cd-util.c:330
 msgid "Format"
-msgstr "Format"
+msgstr "Formât"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: client/cd-util.c:175
 msgid "Title"
-msgstr "Naziv"
+msgstr "Titul"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: client/cd-util.c:180
 msgid "Qualifier"
-msgstr "Oznaka"
+msgstr ""
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: client/cd-util.c:185 client/cd-util.c:281 client/cd-util.c:530
 msgid "Type"
-msgstr "Vrsta"
+msgstr "Gjenar"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 #: client/cd-util.c:192 client/cd-util.c:342
 msgid "Colorspace"
-msgstr "Prostor boje"
+msgstr "Spazi colôr"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: client/cd-util.c:199 client/cd-util.c:336
 msgid "Scope"
-msgstr "Djelokrug"
+msgstr ""
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: client/cd-util.c:205
 msgid "Gamma Table"
-msgstr "Tablica game"
+msgstr ""
 
 #. TRANSLATORS: if the profile is installed for all users
 #: client/cd-util.c:210
 msgid "System Wide"
-msgstr "Cijeli sustav"
+msgstr ""
 
 #. TRANSLATORS: profile filename
 #: client/cd-util.c:215
 msgid "Filename"
-msgstr "Naziv datoteke"
+msgstr "Non file"
 
 #. TRANSLATORS: profile identifier
 #: client/cd-util.c:220
 msgid "Profile ID"
-msgstr "ID profila"
+msgstr "ID profîl"
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 #: client/cd-util.c:235 client/cd-util.c:386 client/cd-util.c:601
 msgid "Metadata"
-msgstr "Metapodaci"
+msgstr "Metadât"
 
 #: client/cd-util.c:243
 msgid "Warning"
-msgstr "Upozorenje"
+msgstr "Avertiment"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 #: client/cd-util.c:270
 msgid "Created"
-msgstr "Stvoreno"
+msgstr "Creât"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 #: client/cd-util.c:276
 msgid "Modified"
-msgstr "Promijenjeno"
+msgstr "Modificât"
 
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
 msgid "Enabled"
-msgstr "Omogućeno"
+msgstr "Abilitât"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 #: client/cd-util.c:292
 msgid "Embedded"
-msgstr "Ugrađeno"
+msgstr "Incorporât"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -262,7 +262,7 @@ msgstr "Model"
 #. TRANSLATORS: sensor vendor
 #: client/cd-util.c:302 client/cd-util.c:562
 msgid "Vendor"
-msgstr "Dobavljač"
+msgstr "Vendidôr"
 
 #: client/cd-util.c:308
 msgid "Inhibitors"
@@ -271,7 +271,7 @@ msgstr ""
 #. TRANSLATORS: the device serial number
 #: client/cd-util.c:312
 msgid "Serial"
-msgstr "Serijski broj"
+msgstr "Seriâl"
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
@@ -286,12 +286,12 @@ msgstr ""
 #. TRANSLATORS: the device identifier
 #: client/cd-util.c:347
 msgid "Device ID"
-msgstr "ID uređaja"
+msgstr "ID dispositîf"
 
 #. TRANSLATORS: the profile for the device
 #: client/cd-util.c:356
 msgid "Profile"
-msgstr "Profil"
+msgstr "Profîl"
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
@@ -302,63 +302,63 @@ msgstr "CRT"
 #. TRANSLATORS: this is a desktop printer
 #: client/cd-util.c:408
 msgid "Printer"
-msgstr "Pisač"
+msgstr "Stampant"
 
 #. TRANSLATORS: a beamer used for presentations
 #: client/cd-util.c:412
 msgid "Projector"
-msgstr "Projektor"
+msgstr "Proietôr"
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
 #: client/cd-util.c:417
 msgid "Spot"
-msgstr "Točka"
+msgstr ""
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 #: client/cd-util.c:422
 msgid "Ambient"
-msgstr "Ambijent"
+msgstr "Ambient"
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:426
 msgid "Calibration"
-msgstr "Kalibracija"
+msgstr "Calibradure"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
 msgid "Dark Calibration"
-msgstr "Tamna kalibracija"
+msgstr "Calibradure scure"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
 msgid "Irradiance Calibration"
-msgstr "Sjajna kalibracija"
+msgstr ""
 
 #. TRANSLATORS: this is the sensor capability
 #: client/cd-util.c:438
 msgid "Spectral"
-msgstr "Spektar"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #: client/cd-util.c:443
 msgid "LCD Generic"
-msgstr "LCD izvorni"
+msgstr "LCD gjeneric"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: client/cd-util.c:448
 msgid "LED Generic"
-msgstr "LED izvorni"
+msgstr "LED gjeneric"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 #: client/cd-util.c:454
 msgid "Plasma"
-msgstr "Plazma"
+msgstr "Plasma"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -379,253 +379,253 @@ msgstr "LCD RGB LED"
 #. * better than normal consumer monitors
 #: client/cd-util.c:472
 msgid "Wide Gamut LCD CCFL"
-msgstr "LCD CCFL široke game"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:476
 msgid "Wide Gamut LCD RGB LED"
-msgstr "LCD RGB LED široke game"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 #: client/cd-util.c:482
 msgid "LCD White LED"
-msgstr "LCD bijeli LED"
+msgstr "LCD LED blanc"
 
 #. TRANSLATORS: this an unknown display technology
 #: client/cd-util.c:485
 msgid "Unknown"
-msgstr "Nepoznato"
+msgstr "No cognossût"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: client/cd-util.c:538
 msgid "State"
-msgstr "Stanje"
+msgstr "Stât"
 
 #. TRANSLATORS: sensor serial
 #: client/cd-util.c:546
 msgid "Serial number"
-msgstr "Serijski broj"
+msgstr "Numar seriâl"
 
 #. TRANSLATORS: sensor identifier
 #: client/cd-util.c:568
 msgid "Sensor ID"
-msgstr "ID senzora"
+msgstr "ID sensôr"
 
 #. TRANSLATORS: the options for the sensor
 #: client/cd-util.c:588
 msgid "Options"
-msgstr "Mogućnosti"
+msgstr "Opzions"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: client/cd-util.c:606
 msgid "Native"
-msgstr "Izvorni"
+msgstr "Natîf"
 
 #. TRANSLATORS: if the sensor is locked
 #: client/cd-util.c:611
 msgid "Locked"
-msgstr "Zaključan"
+msgstr "Blocât"
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 #: client/cd-util.c:629
 msgid "Capabilities"
-msgstr "Mogućnosti"
+msgstr "Capacitâts"
 
 #: client/cd-util.c:971 client/cd-util.c:1000 client/cd-util.c:1048
 #: client/cd-util.c:1176 client/cd-util.c:1260
 msgid "There are no supported sensors attached"
-msgstr "Nema priključenog podržanog senzora"
+msgstr "Nissun sensôr supuartât tacât"
 
 #. TRANSLATORS: this is the sensor title
 #: client/cd-util.c:1060 client/cd-util.c:1197 client/cd-util.c:1289
 msgid "Sensor"
-msgstr "Senzor"
+msgstr "Sensôr"
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr "Postavite uređaj kako bi kalibrirali položaj i pritisnite Enter."
+msgstr "Met il dispositîf ae posizion di calibradure e frache Invie."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
 msgid "Set the device to the surface position and press enter."
-msgstr "Postavite uređaj na položaj površine i pritisnite Enter."
+msgstr "Met il dispositîf ae posizion di superficie e frache Invie."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1097
 msgid "Put the device in a dark place and press enter."
-msgstr "Stavite uređaj u tamno mjesto i pritisnite Enter."
+msgstr "Met il dispositîf intun puest scûr e frache Invie."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1107
 msgid "Calibrate with a 3200K light source."
-msgstr "Kalibriraj sa 3200K izvora svjetla."
+msgstr "Calibrâ cuntune sorzint lûs a 3200K."
 
 #: client/cd-util.c:1124
 msgid "Put the device on the color to be measured and press enter."
-msgstr "Stavi uređaj na boju kako bi se izmjerio i pritisnite Enter."
+msgstr "Met il dispositîf sul colôr di misurâ e frache Invie."
 
 #: client/cd-util.c:1130
 msgid "Color"
-msgstr "Boja"
+msgstr "Colôr"
 
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
 msgid "No spectral capability"
-msgstr "Nema spektarne mogućnosti"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
 msgid "Show client and daemon versions"
-msgstr "Prikaži inačice klijenta i pozadinskog programa"
+msgstr "Mostre lis versions dal client e dal demoni"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2019
 msgid "Show the value without any header"
-msgstr "Prikaži vrijednost bez ijednog zaglavlja"
+msgstr "Mostre il valôr cence nissune intestazion"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2022
 msgid "Filter object properties when displaying"
-msgstr "Filtriraj svojstva objekta prilikom prikaza"
+msgstr "Filtre lis proprietâts dal ogjet cuant che si visualize"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr "Ispiši sve podatke otklanjanja grešaka u datoteku"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
 msgid "Gets all the color managed devices"
-msgstr "Pribavlja sve uređaje upravljive boje"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2053
 msgid "Gets all the color managed devices of a specific kind"
-msgstr "Pribavlja sve uređaje upravljive boje određene vrste"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
 msgid "Gets all the available color profiles"
-msgstr "Pribavlja sve dostupne profile boje"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
 msgid "Gets all the available color sensors"
-msgstr "Pribavlja sve dostupne senzore boje"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
 msgid "Gets a spectral reading from a sensor"
-msgstr "Pribavlja spektralna očitanja iz senzora"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
 msgid "Gets a reading from a sensor"
-msgstr "Pribavlja sva očitanja iz senzora"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2083
 msgid "Locks the color sensor"
-msgstr "Zaključava senzor boje"
+msgstr "Al bloche il sensôr dal colôr"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2089
 msgid "Sets one or more sensor options"
-msgstr "Postavlja jednu ili više mogućnosti senzora"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2095
 msgid "Create a device"
-msgstr "Stvara uređaj"
+msgstr "Cree un dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2101
 msgid "Find a device from the device ID"
-msgstr "Traži uređaj u ID-u uređaja"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2107
 msgid "Find a device with a given property value"
-msgstr "Traži uređaj kada je zadana vrijednost svojstva"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2113
 msgid "Find a profile from the profile ID"
-msgstr "Traži profil iz ID-a profila"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr "Traži profil prema nazivu"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
 msgid "Get a standard colorspace"
-msgstr "Pribavlja standardni prostor boje"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2131
 msgid "Create a profile"
-msgstr "Stvara profil"
+msgstr "Cree un profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr "Dodaj profil u već postojeći uređaj"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
 msgid "Makes a profile default for a device"
-msgstr "Čini profil zadanim za uređaj"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2149
 msgid "Deletes a device"
-msgstr "Briše uređaj"
+msgstr "Al elimine un dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2155
 msgid "Deletes a profile"
-msgstr "Briše profil"
+msgstr "Al elimine un profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2161
 msgid "Sets extra properties on the profile"
-msgstr "Postavlja dodatna svojstva u profil"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2167
 msgid "Sets the device model"
-msgstr "Postavlja model uređaja"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2173
 msgid "Enables or disables the device"
-msgstr "Omogućuje ili onemogućuje uređaj"
+msgstr "Al abilite o disabilite il dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2179
 msgid "Gets the default profile for a device"
-msgstr "Pribavlja zadani profil za uređaj"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2185
 msgid "Sets the device vendor"
-msgstr "Postavlja dobavljača uređaja"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2191
 msgid "Sets the device serial"
-msgstr "Postavlja serijski broj uređaja"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2197
 msgid "Sets the device kind"
-msgstr "Postavlja vrstu uređaja"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2203
@@ -635,87 +635,87 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2209
 msgid "Returns all the profiles that match a qualifier"
-msgstr "Vraća sve profile koji se podudaraju s oznakom"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2215
 msgid "Import a profile and install it for the user"
-msgstr "Uvezi profil i instaliraj ga za korisnika"
+msgstr ""
 
 #. TRANSLATORS: no colord available
 #: client/cd-util.c:2256
 msgid "No connection to colord:"
-msgstr "Nema povezivanja s bojom:"
+msgstr ""
 
 #: client/cd-util.c:2263
 msgid "Client version:"
-msgstr "Inačica klijenta:"
+msgstr "Version client:"
 
 #: client/cd-util.c:2265
 msgid "Daemon version:"
-msgstr "Inačica pozadinskog programa:"
+msgstr "Version demoni:"
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
-msgstr "Dobavljač sustava:"
+msgstr "Vendidôr sisteme:"
 
 #: client/cd-util.c:2269
 msgid "System model:"
-msgstr "Model sustava:"
+msgstr "Model sisteme:"
 
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
 msgid "Show debugging information for all files"
-msgstr "Prikaži informacije otklanjanja greške za sve datoteke"
+msgstr "Mostre lis informazions di debug par ducj i file"
 
 #: contrib/session-helper/cd-debug.c:206 src/cd-debug.c:206
 msgid "Debugging Options"
-msgstr "Mogućnosti otklanjanja greške"
+msgstr "Opzions di debug"
 
 #: contrib/session-helper/cd-debug.c:207 src/cd-debug.c:207
 msgid "Show debugging options"
-msgstr "Prikaži mogućnosti otklanjanja greške"
+msgstr "Mostre opzions di debug"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:5
 msgid "Default gamma for the display"
-msgstr "Zadana gama za zaslon"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:6
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr "Zadana ciljana vrijednost game za zaslon. Uobičajene vrijednosti su 1.8, 2.2 i 2.4."
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
-msgstr "Zadana ciljana bijela točka zaslona"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:14
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr "Zadana ciljana bijela točka u Kelvinima za kalibraciju zaslona, sa 0 je zaslon neaktivan. Uobičajene vrijednosti su 6500 za D65 i 5000 za D50."
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
-msgstr "Odgoda između razdoblja uzorka"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:23
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr "Ovo je odgoda između postavki uzorka boje i upita instrumenta mjerenja da uzme uzorak. Ovo je potrebno zato jer oboje, grafički upravljački programi i sam zaslon predstavljaju latenciju."
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
 msgid "Web service profile upload URI"
-msgstr "URI web usluge slanja profila "
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr "URI web usluge koja omogućuje alate kalibracije za slanje određenog profila na internet."
+msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
@@ -723,7 +723,7 @@ msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr "Kompatibilno sa Adobe RGB (1998)"
+msgstr "Compatibil cun Adobe RGB (1998)"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -764,7 +764,7 @@ msgstr "Kompatibilno sa Adobe RGB (1998)"
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr "Ovaj profil je oslobođen od poznatih ograničenja autorskim pravom."
+msgstr "Chest profîl al è libar di restrizions di copyright cognossudis"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -774,7 +774,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr "Ovaj prostor uređivanja je dizajniran kao SMPTE-240M i obuhvaća većinu mogućih boja dostupnih na CMYK pisačima u boji. Ovo je popularan izbor za uređivanje i ispis fotografija, kao što se i sve SWOP boje mogu reproducirati."
+msgstr ""
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
@@ -793,15 +793,15 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr "Zastarjeli profil je izvorno stvorio Adobe za korištenje u Photoshopu i Illustratoru. Jer je temeljen na izvornom Apple 13\" RGB zaslonu i sličan je sRGB-u, ne bi se trebao koristiti kao profil zaslona ili za nove slike."
+msgstr ""
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
-msgstr "Najbolji RGB"
+msgstr "BestRGB"
 
 #: data/profiles/BestRGB.iccprofile.xml:4
 msgid "Best RGB"
-msgstr "Najbolji RGB"
+msgstr "Best RGB"
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -811,11 +811,11 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr "Ovaj prostor uređivanja može prikazati više zasićene boje nego Adobe RGB i prikladan je za slike s visoko zasićenim bojama, koje se često koriste u oglašavanjima. Vrlo je sličan DonRGB4, ali može prikazati super zasićene crvene boje ponekad prisutne u Fujichrome Velvia."
+msgstr ""
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
-msgstr "Beta RGB"
+msgstr "BetaRGB"
 
 #: data/profiles/BetaRGB.iccprofile.xml:4
 msgid "Beta RGB"
@@ -828,7 +828,7 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr "Ovaj prostor uređivanja može prikazati više zasićene boje nego Adobe RGB. Manje je skloniji greškama kvantizacije u usporedbi s ProPhoto RGB-om, iako je više očuvanih potankosti sjenke. U većini slučajeva ProPhoto RGB je zacijelo bolji odabir."
+msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
@@ -836,7 +836,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr "Plava"
+msgstr ""
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -848,11 +848,11 @@ msgstr ""
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
-msgstr ""
+msgstr "BruceRGB"
 
 #: data/profiles/BruceRGB.iccprofile.xml:4
 msgid "Bruce RGB"
-msgstr ""
+msgstr "Bruce RGB"
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 #: data/profiles/BruceRGB.iccprofile.xml:7
@@ -864,11 +864,11 @@ msgstr ""
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
-msgstr ""
+msgstr "CIE-RGB"
 
 #: data/profiles/CIE-RGB.iccprofile.xml:4
 msgid "CIE RGB"
-msgstr ""
+msgstr "CIE RGB"
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 #: data/profiles/CIE-RGB.iccprofile.xml:7
@@ -915,11 +915,11 @@ msgstr ""
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
-msgstr ""
+msgstr "DonRGB4"
 
 #: data/profiles/DonRGB4.iccprofile.xml:4
 msgid "Don RGB 4"
-msgstr ""
+msgstr "Don RGB 4"
 
 #. TRANSLATORS: saturated means vivid bright colors
 #: data/profiles/DonRGB4.iccprofile.xml:7
@@ -931,11 +931,11 @@ msgstr ""
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
-msgstr ""
+msgstr "ECI-RGBv1"
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:4
 msgid "eciRGB v1"
-msgstr ""
+msgstr "eciRGB v1"
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 #: data/profiles/ECI-RGBv1.iccprofile.xml:7
@@ -948,11 +948,11 @@ msgstr ""
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
-msgstr ""
+msgstr "ECI-RGBv2"
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:4
 msgid "eciRGB v2"
-msgstr ""
+msgstr "eciRGB v2"
 
 #. TRANSLATORS: lightness is a technical word for brightness
 #: data/profiles/ECI-RGBv2.iccprofile.xml:7
@@ -964,11 +964,11 @@ msgstr ""
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
-msgstr ""
+msgstr "EktaSpacePS5"
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:4
 msgid "Ekta Space PS5"
-msgstr ""
+msgstr "Ekta Space PS5"
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -1080,19 +1080,19 @@ msgstr ""
 #: data/profiles/Gamma5500K.iccprofile.xml:3
 #: data/profiles/Gamma6500K.iccprofile.xml:3
 msgid "Gamma6500K"
-msgstr ""
+msgstr "Gamma6500K"
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
-msgstr ""
+msgstr "D50"
 
 #: data/profiles/Gamma5500K.iccprofile.xml:5
 msgid "D55"
-msgstr ""
+msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr ""
+msgstr "D65"
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
@@ -1121,11 +1121,11 @@ msgstr ""
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr ""
+msgstr "NTSC-RGB"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr ""
+msgstr "NTSC RGB"
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1138,11 +1138,11 @@ msgstr ""
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr ""
+msgstr "PAL-RGB"
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr ""
+msgstr "PAL/SECAM RGB"
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7
@@ -1171,11 +1171,11 @@ msgstr ""
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
-msgstr ""
+msgstr "Rec709"
 
 #: data/profiles/Rec709.iccprofile.xml:4
 msgid "Rec. 709"
-msgstr ""
+msgstr "Rec. 709"
 
 #. TRANSLATORS: ITU-R is a standards body
 #: data/profiles/Rec709.iccprofile.xml:9
@@ -1187,11 +1187,11 @@ msgstr ""
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
-msgstr ""
+msgstr "SMPTE-C-RGB"
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:4
 msgid "SMPTE-C RGB"
-msgstr ""
+msgstr "SMPTE-C RGB"
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:7
@@ -1213,7 +1213,7 @@ msgstr ""
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1286,11 +1286,11 @@ msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
-msgstr ""
+msgstr "x11-colors"
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr "X11 boje"
+msgstr "Colôrs X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1304,61 +1304,61 @@ msgstr ""
 #. - Normal users should not have to authenticate to add devices
 #: policy/org.freedesktop.color.policy.in.in:20
 msgid "Create a color managed device"
-msgstr "Stvori uređaj upravljive boje"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr "Potrebna je ovjera za stvaranje uređaja upravljive boje"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #: policy/org.freedesktop.color.policy.in.in:35
 msgid "Create a color profile"
-msgstr "Stvori profil boje"
+msgstr "Cree un profîl di colôr"
 
 #: policy/org.freedesktop.color.policy.in.in:36
 msgid "Authentication is required to create a color profile"
-msgstr "Potrebna je ovjera za stvaranje profila boje"
+msgstr "La autenticazion e je necessarie par creâ un profîl di colôr"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 #: policy/org.freedesktop.color.policy.in.in:50
 msgid "Remove a color managed device"
-msgstr "Ukloni uređaj upravljive boje"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr "Potrebna je ovjera za uklanjanje uređaja upravljive boje"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
 #: policy/org.freedesktop.color.policy.in.in:65
 msgid "Remove a color profile"
-msgstr "Ukloni profil boje"
+msgstr "Gjave un profîl di colôr"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"
-msgstr "Potrebna je ovjera za uklanjanje profila boje"
+msgstr "La autenticazion e je necessarie par gjavâ un profîl di colôr"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #: policy/org.freedesktop.color.policy.in.in:80
 msgid "Modify color settings for a device"
-msgstr "Promijeni postavke boje uređaja"
+msgstr "Modifiche lis impostazion di colôr par un dispositîf"
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Potrebna je ovjera za promjenu postavki boja uređaja"
+msgstr "La autenticazion e je necessarie par modificâ lis impostazions di colôr par un dispositîf"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #: policy/org.freedesktop.color.policy.in.in:95
 msgid "Modify a color profile"
-msgstr "Promijeni profil boje"
+msgstr "Modifiche un profîl di colôr"
 
 #: policy/org.freedesktop.color.policy.in.in:96
 msgid "Authentication is required to modify a color profile"
-msgstr "Potrebna je ovjera za promjenu profila boje"
+msgstr "La autenticazion e je necessarie par modificâ un profîl di colôr"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -1369,11 +1369,11 @@ msgstr "Potrebna je ovjera za promjenu profila boje"
 #. other sessions unusable.
 #: policy/org.freedesktop.color.policy.in.in:115
 msgid "Install system color profiles"
-msgstr "Instaliraj profile boja sustava"
+msgstr "Instale profîi di colôr di sisteme"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Potrebna je ovjera za instalaciju profila boja za sve korisnike"
+msgstr "La autenticazion e je necessarie par instalâ il profîl di colôr par ducj i utents"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
@@ -1384,34 +1384,34 @@ msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Potrebna je ovjera onemogućavanja podudaranja profila za uređaj"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
 #: policy/org.freedesktop.color.policy.in.in:147
 msgid "Use color sensor"
-msgstr "Koristi senzor boje"
+msgstr "Dopre sensôr di colôr"
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"
-msgstr "Potrebna je ovjera za korištenje senzora boje"
+msgstr "La autenticazion e je necessarie par doprâ il sensôr di colôr"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: src/cd-main.c:2361
 msgid "Exit after a small delay"
-msgstr "Izađi nakon kratke odgode"
+msgstr "Jes dopo un piçul ritart"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2364
 msgid "Exit after the engine has loaded"
-msgstr "Izađi nakon učitavanja pogona"
+msgstr "Jes dopo che il motôr al sedi cjariât"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2367
 msgid "Create a dummy sensor for testing"
-msgstr "Stvori lažni senzor za testiranje"
+msgstr "Cree un sensôr pustiç pes provis"
 
 #: src/cd-main.c:2383
 msgid "Color Management D-Bus Service"
-msgstr "D-Bus usluga upravljanja bojom"
+msgstr "Servizi D-Bus di gjestion dal colôr"

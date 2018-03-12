@@ -1,3 +1,19 @@
+Version 1.4.2
+~~~~~~~~~~~~~
+Released: 2018-03-12
+
+New Features:
+ - Add cd_icc_set_created (Christopher James Halse Rogers)
+ - Add --enable-timestamps option for CREATED header (Jérémy Bobbio)
+
+Bugfixes:
+ - Avoid buffer overflow when reading profile_id (Richard Hughes)
+ - Fix the detection of duplicate EDIDs (Richard Hughes)
+ - Make udev hwdb optional by using pnp.ids as fallback (Ting-Wei Lan)
+ - Raise _XOPEN_SOURCE to 700 to enable C99 on FreeBSD (Ting-Wei Lan)
+ - Refactor build directory selection (Jan Tojnar)
+ - Set cd-create-profile date to SOURCE_DATE_EPOCH (Christopher James Halse Rogers)
+
 Version 1.4.1
 ~~~~~~~~~~~~~
 Released: 2017-08-21
