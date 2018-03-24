@@ -51,7 +51,7 @@ shared_module('colord_sensor_scanner',
     gudev,
   ],
 )
-if get_option('enable-sane')
+if get_option('sane')
   shared_module('colord_sensor_sane',
     sources : [
       'cd-plugin-sane.c',

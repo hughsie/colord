@@ -116,23 +116,23 @@ This may be useful for CMYK soft-proofing or for extra device support.
 ulimit -Sv 2000000
 
 %meson \
-    -Denable-vala=true \
+    -Dvapi=true \
 %if 0%{?build_print_profiles}
-    -Denable-print-profiles=true \
+    -Dprint_profiles=true \
 %else
-    -Denable-print-profiles=false \
+    -Dprint_profiles=false \
 %endif
 %if 0%{?enable_sane}
-    -Denable-sane=true \
+    -Dsane=true \
 %endif
 %if 0%{?rhel}
-    -Denable-bash-completion=false \
-    -Denable-argyllcms-sensor=false \
+    -Dbash_completion=false \
+    -Dargyllcms_sensor=false \
 %endif
 %if !0%{?rhel}
-    -Denable-libcolordcompat=true \
+    -Dlibcolordcompat=true \
 %endif
-    -Dwith-daemon-user=colord
+    -Ddaemon_user=colord
 
 %meson_build
 

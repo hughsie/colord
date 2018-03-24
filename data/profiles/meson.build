@@ -43,7 +43,7 @@ icc_print_profiles = [
 ]
 
 icc_profiles = icc_display_profiles
-if get_option('enable-print-profiles')
+if get_option('print_profiles')
   icc_profiles += icc_print_profiles
 endif
 

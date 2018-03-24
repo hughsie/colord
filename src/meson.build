@@ -26,7 +26,7 @@ resources_src = gnome.compile_resources(
 )
 
 colord_extra_deps = []
-if get_option('enable-systemd')
+if get_option('systemd')
   colord_extra_deps += libsystemd
 endif
 
@@ -74,7 +74,7 @@ executable(
   install_dir : libexecdir
 )
 
-if get_option('enable-tests')
+if get_option('tests')
   e = executable(
     'cd-self-test',
     resources_src,

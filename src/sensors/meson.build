@@ -8,7 +8,7 @@ subdir('munki')
 
 cargs = ['-DG_LOG_DOMAIN="Cd"']
 
-if get_option('enable-reverse')
+if get_option('reverse')
   executable(
     'cd-parse-beagle',
     sources : [

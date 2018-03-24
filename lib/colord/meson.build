@@ -202,7 +202,7 @@ libcolord_girtarget = gnome.generate_gir(colord,
 libcolord_gir = libcolord_girtarget[0]
 libcolord_typelib = libcolord_girtarget[1]
 
-if get_option('enable-vala')
+if get_option('vapi')
 gnome.generate_vapi('colord',
   sources: libcolord_girtarget[0],
   packages: ['gio-2.0'],
@@ -210,7 +210,7 @@ gnome.generate_vapi('colord',
 )
 endif
 
-if get_option('enable-installed-tests')
+if get_option('installed_tests')
 con2 = configuration_data()
 con2.set('installedtestsdir',
          join_paths(libexecdir, 'installed-tests', 'colord'))
@@ -230,7 +230,7 @@ configure_file(
 )
 endif
 
-if get_option('enable-tests')
+if get_option('tests')
   testdatadir = join_paths(meson.source_root(), 'data', 'tests')
   e = executable(
     'colord-self-test-private',

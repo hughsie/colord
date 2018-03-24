@@ -1,4 +1,4 @@
-if get_option('enable-reverse')
+if get_option('reverse')
   shared_module('colord_sensor_munki',
     sources : [
       'cd-sensor-munki.c',

@@ -13,7 +13,7 @@ con2 = configuration_data()
 con2.set('servicedir', libexecdir)
 
 # replace @servicedir@
-if get_option('enable-systemd')
+if get_option('systemd')
   configure_file(
     input : 'colord-session.service.in',
     output : 'colord-session.service',
@@ -63,7 +63,7 @@ executable(
 install_data('org.freedesktop.ColorHelper.gschema.xml',
              install_dir : 'share/glib-2.0/schemas')
 
-if get_option('enable-session-example')
+if get_option('session_example')
   executable(
     'colord-session-example',
     sources : [

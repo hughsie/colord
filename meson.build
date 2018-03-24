@@ -119,11 +119,11 @@ gudev = dependency('gudev-1.0')
 libm = cc.find_library('m', required: false)
 libudev = dependency('libudev')
 
-if get_option('enable-udev-rules')
+if get_option('udev_rules')
   udev = dependency('udev')
 endif
 
-if get_option('enable-systemd')
+if get_option('systemd')
   systemd = dependency('systemd')
   libsystemd = dependency('libsystemd')
   conf.set('HAVE_SYSTEMD', '1')
@@ -142,48 +142,48 @@ if cc.has_function('getuid', prefix : '#include<unistd.h>')
   conf.set('HAVE_GETUID', '1')
 endif
 
-if get_option('enable-libcolordcompat')
+if get_option('libcolordcompat')
   conf.set('BUILD_LIBCOLORDCOMPAT', '1')
 endif
-if get_option('enable-session-example')
+if get_option('session_example')
   gnome_desktop = dependency('gnome-desktop-3.0', version : '>= 0.2.7')
   colord_gtk = dependency('colord-gtk', version : '>= 0.1.24')
 endif
-if get_option('enable-bash-completion')
+if get_option('bash_completion')
   bash_completion = dependency('bash-completion', version : '>= 2.0')
 endif
 
-if get_option('enable-sane')
+if get_option('sane')
   sane = dependency('sane-backends')
   dbus = dependency('dbus-1')
   conf.set('HAVE_SANE', '1')
 endif
 
-if get_option('enable-argyllcms-sensor')
+if get_option('argyllcms_sensor')
   spotread = find_program('spotread')
   conf.set('HAVE_ARGYLLCMS_SENSOR', '1')
 endif
 
-if get_option('enable-print-profiles')
+if get_option('print_profiles')
   colprof = find_program('colprof')
   conf.set_quoted('TOOL_COLPROF', colprof.path())
 endif
 
-if get_option('enable-vala')
+if get_option('vapi')
   vapigen = find_program('vapigen')
 endif
 
-if get_option('enable-reverse')
+if get_option('reverse')
   conf.set('CD_BUILD_REVERSE', '1')
 endif
 
-conf.set_quoted('DAEMON_USER', get_option('with-daemon-user'))
-if get_option('with-daemon-user') == 'root'
+conf.set_quoted('DAEMON_USER', get_option('daemon_user'))
+if get_option('daemon_user') == 'root'
   message('RUNNING THIS AS root IS NOT A GOOD IDEA SEE --with-daemon-user')
 endif
 
-if get_option('with-pnp-ids') != ''
-  conf.set_quoted('PNP_IDS', get_option('with-pnp-ids'))
+if get_option('pnp_ids') != ''
+  conf.set_quoted('PNP_IDS', get_option('pnp_ids'))
 endif
 
 polkit = dependency('polkit-gobject-1', version : '>= 0.103')
@@ -248,7 +248,7 @@ subdir('po')
 # this needs libcolord
 subdir('client')
 subdir('contrib')
-if get_option('enable-docs')
+if get_option('docs')
   subdir('doc')
 endif
 
@@ -256,14 +256,14 @@ endif
 subdir('data')
 
 # this needs data/profiles/*.icc
-if get_option('enable-man')
+if get_option('man')
   subdir('man')
 endif
 subdir('policy')
-if get_option('enable-udev-rules')
+if get_option('udev_rules')
   subdir('rules')
 endif
 subdir('src')
 
 meson.add_install_script('meson_post_install.sh',
-                         localstatedir, get_option('with-daemon-user'))
+                         localstatedir, get_option('daemon_user'))

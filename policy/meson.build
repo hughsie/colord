@@ -1,5 +1,5 @@
 con2 = configuration_data()
-con2.set('DAEMON_USER', get_option('with-daemon-user'))
+con2.set('DAEMON_USER', get_option('daemon_user'))
 policy_in = configure_file(
   input : 'org.freedesktop.color.policy.in.in',
   output : 'org.freedesktop.color.policy.in',

@@ -41,7 +41,7 @@ Ensure the following packages are installed:
 * systemd-devel
 * vala-tools
 
-Then just do `./autogen.sh && make`
+Then just do `mkdir build && cd build && meson --prefix=/usr .. && ninja`
 
 Compiling for Microsoft Windows
 ===============================
