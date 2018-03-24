@@ -104,7 +104,7 @@ libcolorhug_gir = gnome.generate_gir(colorhug,
   install : true
 )
 
-if get_option('enable-tests')
+if get_option('tests')
   testdatadir = join_paths(meson.source_root(), 'data', 'tests')
   e = executable(
     'ch-self-test',

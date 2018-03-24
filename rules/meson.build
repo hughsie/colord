@@ -1,5 +1,5 @@
 con2 = configuration_data()
-con2.set('DAEMON_USER', get_option('with-daemon-user'))
+con2.set('DAEMON_USER', get_option('daemon_user'))
 sensor_rules_in = configure_file(
   input : '69-cd-sensors.rules.in',
   output : '69-cd-sensors.rules',

@@ -1,4 +1,4 @@
-if get_option('enable-installed-tests')
+if get_option('installed_tests')
   install_data([
       'calibration.ccmx',
       'corrupt-dict.icc',
