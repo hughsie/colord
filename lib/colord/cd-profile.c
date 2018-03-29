@@ -664,11 +664,11 @@ cd_profile_connect_cb (GObject *source_object,
 	priv->proxy = g_dbus_proxy_new_for_bus_finish (res, &error);
 	if (priv->proxy == NULL) {
 		g_task_return_new_error (task,
-						 CD_PROFILE_ERROR,
-						 CD_PROFILE_ERROR_INTERNAL,
-						 "Failed to connect to profile %s: %s",
-						 cd_profile_get_object_path (profile),
-						 error->message);
+					 CD_PROFILE_ERROR,
+					 CD_PROFILE_ERROR_INTERNAL,
+					 "Failed to connect to profile %s: %s",
+					 cd_profile_get_object_path (profile),
+					 error->message);
 		return;
 	}
 
@@ -681,10 +681,10 @@ cd_profile_connect_cb (GObject *source_object,
 	/* if the profile is missing, then fail */
 	if (id == NULL) {
 		g_task_return_new_error (task,
-						 CD_PROFILE_ERROR,
-						 CD_PROFILE_ERROR_INTERNAL,
-						 "Failed to connect to missing profile %s",
-						 cd_profile_get_object_path (profile));
+					 CD_PROFILE_ERROR,
+					 CD_PROFILE_ERROR_INTERNAL,
+					 "Failed to connect to missing profile %s",
+					 cd_profile_get_object_path (profile));
 		return;
 	}
 
