@@ -1968,7 +1968,7 @@ cd_client_get_profile_array_from_variant (CdClient *client,
  *
  * Gets the result from the asynchronous function.
  *
- * Return value: (element-type CdProfile) (transfer full): the profiles
+ * Return value: (element-type CdProfile) (transfer container): the profiles
  *
  * Since: 0.1.8
  **/
