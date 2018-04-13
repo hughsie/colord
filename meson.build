@@ -179,7 +179,7 @@ endif
 
 conf.set_quoted('DAEMON_USER', get_option('daemon_user'))
 if get_option('daemon_user') == 'root'
-  message('RUNNING THIS AS root IS NOT A GOOD IDEA SEE --with-daemon-user')
+  message('RUNNING THE DAEMON AS root IS NOT A GOOD IDEA, use -Ddaemon_user= to set user')
 endif
 
 if get_option('pnp_ids') != ''
