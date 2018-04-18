@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2018-01-22 21:02+0000\n"
+"POT-Creation-Date: 2018-04-18 10:50+0100\n"
+"PO-Revision-Date: 2018-03-12 19:56+0000\n"
 "Last-Translator: Mingcong Bai <jeffbai@aosc.xyz>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/freedesktop/colord/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -25,38 +25,38 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. TRANSLATORS: command line option
-#: client/cd-create-profile.c:800
+#: client/cd-create-profile.c:852
 msgid "Profile to create"
 msgstr "要创建的配置文件"
 
 #. TRANSLATORS: program name
-#: client/cd-create-profile.c:815
+#: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
 msgstr "ICC 配置文件创建程序"
 
 #. TRANSLATORS: the user didn't read the man page
-#: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
-#: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
+#: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
+#: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
 msgstr "传递参数失败"
 
 #. TRANSLATORS: the user forgot to use -o
-#: client/cd-create-profile.c:828
+#: client/cd-create-profile.c:880
 msgid "No output filename specified"
 msgstr "未指定输出文件名"
 
 #. TRANSLATORS: this is a command alias
-#: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
+#: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
 msgstr "%s 的别名"
 
-#: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
+#: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
 msgstr "未找到命令，有效的命令为："
 
 #. TRANSLATORS: command line option
-#: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
+#: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
 msgstr "显示额外的除错信息"
 
@@ -126,8 +126,8 @@ msgid "Export the tag data"
 msgstr "导出标记数据"
 
 #. TRANSLATORS: program name
-#: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
-#: src/cd-main.c:2379
+#: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
+#: src/cd-main.c:2373
 msgid "Color Management"
 msgstr "色彩管理"
 
@@ -136,18 +136,23 @@ msgstr "色彩管理"
 msgid "ICC profile dump program"
 msgstr "ICC 文件转储程序"
 
+#. TRANSLATORS: command line option
+#: client/cd-it8.c:471
+msgid "Write embedded creation timestamps"
+msgstr ""
+
 #. TRANSLATORS: command description
-#: client/cd-it8.c:483
+#: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
 msgstr "从 CSV 数据中创建 CMF"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:489
+#: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
 msgstr "从 CSV 数据创建色谱"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:495
+#: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
 msgstr "根据参考数据与测量结果制作 CCMX"
 
@@ -1404,20 +1409,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "需要授权来使用色彩传感器"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2355
 msgid "Exit after a small delay"
 msgstr "短暂延迟后退出"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2364
+#: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
 msgstr "引擎载入后退出"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2367
+#: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
 msgstr "创建用于测试的假感应器"
 
-#: src/cd-main.c:2383
+#: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
 msgstr "色彩管理 D-Bus 服务"

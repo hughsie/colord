@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2018-02-20 07:48+0000\n"
+"POT-Creation-Date: 2018-04-18 10:50+0100\n"
+"PO-Revision-Date: 2018-03-20 14:33+0000\n"
 "Last-Translator: Milo Casagrande <milo@ubuntu.com>\n"
 "Language-Team: Italian (http://www.transifex.com/freedesktop/colord/language/it/)\n"
 "MIME-Version: 1.0\n"
@@ -22,38 +22,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: command line option
-#: client/cd-create-profile.c:800
+#: client/cd-create-profile.c:852
 msgid "Profile to create"
 msgstr "Profilo da creare"
 
 #. TRANSLATORS: program name
-#: client/cd-create-profile.c:815
+#: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
 msgstr "Programma creazione profilo ICC"
 
 #. TRANSLATORS: the user didn't read the man page
-#: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
-#: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
+#: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
+#: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
 msgstr "Analisi degli argomenti non riuscita"
 
 #. TRANSLATORS: the user forgot to use -o
-#: client/cd-create-profile.c:828
+#: client/cd-create-profile.c:880
 msgid "No output filename specified"
 msgstr "Nessun nome di file di output specificato"
 
 #. TRANSLATORS: this is a command alias
-#: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
+#: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
 msgstr "Alias per %s"
 
-#: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
+#: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
 msgstr "Comando non trovato, comandi validi sono:"
 
 #. TRANSLATORS: command line option
-#: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
+#: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
 msgstr "Mostra informazioni di debug"
 
@@ -123,8 +123,8 @@ msgid "Export the tag data"
 msgstr "Esporta i dati del profilo"
 
 #. TRANSLATORS: program name
-#: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
-#: src/cd-main.c:2379
+#: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
+#: src/cd-main.c:2373
 msgid "Color Management"
 msgstr "Gestione colore"
 
@@ -133,18 +133,23 @@ msgstr "Gestione colore"
 msgid "ICC profile dump program"
 msgstr "Programma per dump di profili ICC"
 
+#. TRANSLATORS: command line option
+#: client/cd-it8.c:471
+msgid "Write embedded creation timestamps"
+msgstr "Scrivi orari di creazione"
+
 #. TRANSLATORS: command description
-#: client/cd-it8.c:483
+#: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
 msgstr "Crea un CMF da dati CSV"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:489
+#: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
 msgstr "Crea uno spectrum da dati CSV"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:495
+#: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
 msgstr "Crea un CCMX da dati di riferimento e misurazioni"
 
@@ -1401,20 +1406,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "È richiesto autenticarsi per usare il sensore di colore"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2355
 msgid "Exit after a small delay"
 msgstr "Esce dopo un breve ritardo"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2364
+#: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
 msgstr "Esce dopo il caricamento del motore"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2367
+#: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
 msgstr "Crea un sensore per eseguire test"
 
-#: src/cd-main.c:2383
+#: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
 msgstr "Servizio D-Bus gestione colore"

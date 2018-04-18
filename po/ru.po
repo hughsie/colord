@@ -4,15 +4,15 @@
 # 
 # Translators:
 # Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2011
-# Serge Vylekzhanin <vylekzhanin@mail.ru>, 2013-2015
+# Serge Vylekzhanin <vylekzhanin@mail.ru>, 2013-2015,2017
 # Yuri Kozlov <yuray@komyakino.ru>, 2012
 # Alexandre Prokoudine <alexandre.prokoudine@gmail.com>, 2011
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2017-08-21 08:33+0000\n"
+"POT-Creation-Date: 2018-04-18 10:50+0100\n"
+"PO-Revision-Date: 2018-03-12 19:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Russian (http://www.transifex.com/freedesktop/colord/language/ru/)\n"
 "MIME-Version: 1.0\n"
@@ -22,38 +22,38 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #. TRANSLATORS: command line option
-#: client/cd-create-profile.c:800
+#: client/cd-create-profile.c:852
 msgid "Profile to create"
 msgstr "Создаваемый профиль"
 
 #. TRANSLATORS: program name
-#: client/cd-create-profile.c:815
+#: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
 msgstr "Программа для создания профилей ICC"
 
 #. TRANSLATORS: the user didn't read the man page
-#: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
-#: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
+#: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
+#: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
 msgstr "Не удалось разобрать аргументы"
 
 #. TRANSLATORS: the user forgot to use -o
-#: client/cd-create-profile.c:828
+#: client/cd-create-profile.c:880
 msgid "No output filename specified"
 msgstr "Не указано имя файла результата"
 
 #. TRANSLATORS: this is a command alias
-#: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
+#: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
 msgstr "Псевдоним %s"
 
-#: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
+#: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
 msgstr "Команда не найдена, доступны следующие команды:"
 
 #. TRANSLATORS: command line option
-#: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
+#: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
 msgstr "Показать дополнительную отладочную информацию"
 
@@ -123,8 +123,8 @@ msgid "Export the tag data"
 msgstr "Экспортировать данные тегов"
 
 #. TRANSLATORS: program name
-#: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
-#: src/cd-main.c:2379
+#: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
+#: src/cd-main.c:2373
 msgid "Color Management"
 msgstr "Управление цветом"
 
@@ -133,18 +133,23 @@ msgstr "Управление цветом"
 msgid "ICC profile dump program"
 msgstr "Программа для создания дампов профилей ICC"
 
+#. TRANSLATORS: command line option
+#: client/cd-it8.c:471
+msgid "Write embedded creation timestamps"
+msgstr ""
+
 #. TRANSLATORS: command description
-#: client/cd-it8.c:483
+#: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
 msgstr "Создать CMF из CSV-данных"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:489
+#: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
 msgstr "Создать спектр из CSV-данных"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:495
+#: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
 msgstr "Создать CCMX на основе эталонных данных и данных измерений"
 
@@ -722,7 +727,7 @@ msgstr "Адрес интернет-службы, по которому инст
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
-msgstr ""
+msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
@@ -781,11 +786,11 @@ msgstr "Это пространство для редактирования бы
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr ""
+msgstr "AppleRGB"
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
-msgstr ""
+msgstr "Apple RGB"
 
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
@@ -800,11 +805,11 @@ msgstr "Первоначально этот устаревший профиль 
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
-msgstr ""
+msgstr "BestRGB"
 
 #: data/profiles/BestRGB.iccprofile.xml:4
 msgid "Best RGB"
-msgstr ""
+msgstr "Best RGB"
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -818,11 +823,11 @@ msgstr "Это пространство для редактирования мо
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
-msgstr ""
+msgstr "BetaRGB"
 
 #: data/profiles/BetaRGB.iccprofile.xml:4
 msgid "Beta RGB"
-msgstr ""
+msgstr "Beta RGB"
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 #: data/profiles/BetaRGB.iccprofile.xml:7
@@ -835,7 +840,7 @@ msgstr "Это пространство для редактирования мо
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "синеватый"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
@@ -851,11 +856,11 @@ msgstr "Этот тестовый профиль используется для
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
-msgstr ""
+msgstr "BruceRGB"
 
 #: data/profiles/BruceRGB.iccprofile.xml:4
 msgid "Bruce RGB"
-msgstr ""
+msgstr "Bruce RGB"
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 #: data/profiles/BruceRGB.iccprofile.xml:7
@@ -867,11 +872,11 @@ msgstr "Это RGB пространство для редактирования,
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
-msgstr ""
+msgstr "CIE-RGB"
 
 #: data/profiles/CIE-RGB.iccprofile.xml:4
 msgid "CIE RGB"
-msgstr ""
+msgstr "CIE RGB"
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 #: data/profiles/CIE-RGB.iccprofile.xml:7
@@ -883,11 +888,11 @@ msgstr "Этот теоретический профиль разработан 
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
-msgstr ""
+msgstr "ColorMatchRGB"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:4
 msgid "ColorMatch RGB"
-msgstr ""
+msgstr "ColorMatch RGB"
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -901,7 +906,7 @@ msgstr "Этот профиль был разработан компанией R
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr ""
+msgstr "Crayons"
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
@@ -918,11 +923,11 @@ msgstr "Этот профиль именованных цветов содерж
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
-msgstr ""
+msgstr "DonRGB4"
 
 #: data/profiles/DonRGB4.iccprofile.xml:4
 msgid "Don RGB 4"
-msgstr ""
+msgstr "Don RGB 4"
 
 #. TRANSLATORS: saturated means vivid bright colors
 #: data/profiles/DonRGB4.iccprofile.xml:7
@@ -934,11 +939,11 @@ msgstr "Это пространство для редактирования мо
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
-msgstr ""
+msgstr "ECI-RGBv1"
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:4
 msgid "eciRGB v1"
-msgstr ""
+msgstr "eciRGB v1"
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 #: data/profiles/ECI-RGBv1.iccprofile.xml:7
@@ -951,11 +956,11 @@ msgstr "Этот профиль рекомендован к использова
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
-msgstr ""
+msgstr "ECI-RGBv2"
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:4
 msgid "eciRGB v2"
-msgstr ""
+msgstr "eciRGB v2"
 
 #. TRANSLATORS: lightness is a technical word for brightness
 #: data/profiles/ECI-RGBv2.iccprofile.xml:7
@@ -967,11 +972,11 @@ msgstr "Этот профиль был разработан с учётом ис
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
-msgstr ""
+msgstr "EktaSpacePS5"
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:4
 msgid "Ekta Space PS5"
-msgstr ""
+msgstr "Ekta Space PS5"
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -1083,19 +1088,19 @@ msgstr "Этот профиль, совместимый с ISO 12647-2, испо
 #: data/profiles/Gamma5500K.iccprofile.xml:3
 #: data/profiles/Gamma6500K.iccprofile.xml:3
 msgid "Gamma6500K"
-msgstr ""
+msgstr "Gamma6500K"
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
-msgstr ""
+msgstr "D50"
 
 #: data/profiles/Gamma5500K.iccprofile.xml:5
 msgid "D55"
-msgstr ""
+msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr ""
+msgstr "D65"
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
@@ -1124,11 +1129,11 @@ msgstr "Этот профиль используется для печати н�
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr ""
+msgstr "NTSC-RGB"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr ""
+msgstr "NTSC RGB"
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1141,11 +1146,11 @@ msgstr "Этот профиль определяет диапазон цвето
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr ""
+msgstr "PAL-RGB"
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr ""
+msgstr "PAL/SECAM RGB"
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7
@@ -1157,11 +1162,11 @@ msgstr "Этот профиль определяет диапазон цвето
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
-msgstr ""
+msgstr "ProPhotoRGB"
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:4
 msgid "ProPhoto RGB"
-msgstr ""
+msgstr "ProPhoto RGB"
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 #: data/profiles/ProPhotoRGB.iccprofile.xml:7
@@ -1174,11 +1179,11 @@ msgstr "Первоначально разработанный компанией
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
-msgstr ""
+msgstr "Rec709"
 
 #: data/profiles/Rec709.iccprofile.xml:4
 msgid "Rec. 709"
-msgstr ""
+msgstr "Rec. 709"
 
 #. TRANSLATORS: ITU-R is a standards body
 #: data/profiles/Rec709.iccprofile.xml:9
@@ -1190,11 +1195,11 @@ msgstr "Рекомендация BT.709 от ITU-R — это стандарт �
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
-msgstr ""
+msgstr "SMPTE-C-RGB"
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:4
 msgid "SMPTE-C RGB"
-msgstr ""
+msgstr "SMPTE-C RGB"
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:7
@@ -1216,7 +1221,7 @@ msgstr "Этот профиль, основанный на ANSI CGATS/SNAP TR 00
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1231,7 +1236,7 @@ msgstr "Этот профиль общего назначения был раз�
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
-msgstr ""
+msgstr "SwappedRedAndGreen"
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
@@ -1271,7 +1276,7 @@ msgstr "Этот профиль используется для печати н�
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
-msgstr ""
+msgstr "WideGamutRGB"
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
@@ -1289,7 +1294,7 @@ msgstr "Это пространство для редактирования бы
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
-msgstr ""
+msgstr "x11-цвета"
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
@@ -1401,20 +1406,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "Для использования цветового датчика необходима аутентификация"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2355
 msgid "Exit after a small delay"
 msgstr "Выйти после небольшой паузы"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2364
+#: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
 msgstr "Выйти после загрузки инструмента"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2367
+#: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
 msgstr "Создать фиктивный датчик для тестирования"
 
-#: src/cd-main.c:2383
+#: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
 msgstr "Служба D-Bus для управления цветом"

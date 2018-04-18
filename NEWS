@@ -1,3 +1,12 @@
+Version 1.4.3
+~~~~~~~~~~~~~
+Released: 2018-04-18
+
+Bugfixes:
+ - Make cd_color_get_blackbody_rgb_full safer (Jan Alexander Steffens)
+ - Update style of Meson build options (Soapux)
+ - Update warning about running daemon as root (Soapux)
+
 Version 1.4.2
 ~~~~~~~~~~~~~
 Released: 2018-03-12

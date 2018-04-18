@@ -5,16 +5,16 @@
 # Translators:
 # Anders Jonsson <transifex@norsjovallen.se>, 2017-2018
 # Daniel Nylander <po@danielnylander.se>, 2011
-# Josef Andersson <josef.andersson@fripost.org>, 2017
+# Josef Andersson <josef.andersson@fripost.org>, 2017-2018
 # sebras <sebras@gmail.com>, 2015
 # sebras <sebras@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2018-01-07 11:34+0000\n"
-"Last-Translator: Anders Jonsson <transifex@norsjovallen.se>\n"
+"POT-Creation-Date: 2018-04-18 10:50+0100\n"
+"PO-Revision-Date: 2018-03-14 01:06+0000\n"
+"Last-Translator: Josef Andersson <josef.andersson@fripost.org>\n"
 "Language-Team: Swedish (http://www.transifex.com/freedesktop/colord/language/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -23,38 +23,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: command line option
-#: client/cd-create-profile.c:800
+#: client/cd-create-profile.c:852
 msgid "Profile to create"
 msgstr "Profil att skapa"
 
 #. TRANSLATORS: program name
-#: client/cd-create-profile.c:815
+#: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
 msgstr "ICC-profilsskapare"
 
 #. TRANSLATORS: the user didn't read the man page
-#: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
-#: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
+#: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
+#: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
 msgstr "Misslyckades med att tolka argument"
 
 #. TRANSLATORS: the user forgot to use -o
-#: client/cd-create-profile.c:828
+#: client/cd-create-profile.c:880
 msgid "No output filename specified"
 msgstr "Inget utmatningsfilnamn angivet"
 
 #. TRANSLATORS: this is a command alias
-#: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
+#: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
 msgstr "Alias till %s"
 
-#: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
+#: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
 msgstr "Kommandot hittades inte. Giltiga kommandon är:"
 
 #. TRANSLATORS: command line option
-#: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
+#: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
 msgstr "Visa extra felsökningsinformation"
 
@@ -124,8 +124,8 @@ msgid "Export the tag data"
 msgstr "Exportera taggdatan"
 
 #. TRANSLATORS: program name
-#: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
-#: src/cd-main.c:2379
+#: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
+#: src/cd-main.c:2373
 msgid "Color Management"
 msgstr "Färghantering"
 
@@ -134,18 +134,23 @@ msgstr "Färghantering"
 msgid "ICC profile dump program"
 msgstr "ICC-profil dumpprogram"
 
+#. TRANSLATORS: command line option
+#: client/cd-it8.c:471
+msgid "Write embedded creation timestamps"
+msgstr "Skriv inbäddade skapelsetidsstämplar"
+
 #. TRANSLATORS: command description
-#: client/cd-it8.c:483
+#: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
 msgstr "Skapa en CMF från CSV-data"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:489
+#: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
 msgstr "Skapa ett spektrum från CSV-data"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:495
+#: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
 msgstr "Skapa en CCMX från referens och uppmätt data"
 
@@ -1402,20 +1407,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "Autentisering krävs för att använda färgsensorn"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2355
 msgid "Exit after a small delay"
 msgstr "Avsluta efter en kort fördröjning"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2364
+#: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
 msgstr "Avsluta efter att motorn har lästs in"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2367
+#: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
 msgstr "Skapa en attrappsensor för testning"
 
-#: src/cd-main.c:2383
+#: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
 msgstr "D-Bus-tjänst för färghantering"

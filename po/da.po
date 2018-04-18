@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2017-08-21 08:32+0000\n"
+"POT-Creation-Date: 2018-04-18 10:50+0100\n"
+"PO-Revision-Date: 2018-03-12 19:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Danish (http://www.transifex.com/freedesktop/colord/language/da/)\n"
 "MIME-Version: 1.0\n"
@@ -21,38 +21,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: command line option
-#: client/cd-create-profile.c:800
+#: client/cd-create-profile.c:852
 msgid "Profile to create"
 msgstr "Profil at oprette"
 
 #. TRANSLATORS: program name
-#: client/cd-create-profile.c:815
+#: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
 msgstr "Oprettelsesprogram for ICC-profil"
 
 #. TRANSLATORS: the user didn't read the man page
-#: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
-#: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
+#: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
+#: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
 msgstr "Kunne ikke fortolke parametre"
 
 #. TRANSLATORS: the user forgot to use -o
-#: client/cd-create-profile.c:828
+#: client/cd-create-profile.c:880
 msgid "No output filename specified"
 msgstr "Der var ikke angivet et filnavn for uddata"
 
 #. TRANSLATORS: this is a command alias
-#: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
+#: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
 msgstr "Alias til %s"
 
-#: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
+#: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
 msgstr "Kommandoen blev ikke fundet, gyldige kommandoer er:"
 
 #. TRANSLATORS: command line option
-#: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
+#: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
 msgstr "Vis ekstra fejlsøgningsinformation"
 
@@ -122,8 +122,8 @@ msgid "Export the tag data"
 msgstr "Eksporter mærkedataene"
 
 #. TRANSLATORS: program name
-#: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
-#: src/cd-main.c:2379
+#: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
+#: src/cd-main.c:2373
 msgid "Color Management"
 msgstr "Color-håndtering"
 
@@ -132,18 +132,23 @@ msgstr "Color-håndtering"
 msgid "ICC profile dump program"
 msgstr "Dumpprogram for ICC-profil"
 
+#. TRANSLATORS: command line option
+#: client/cd-it8.c:471
+msgid "Write embedded creation timestamps"
+msgstr ""
+
 #. TRANSLATORS: command description
-#: client/cd-it8.c:483
+#: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
 msgstr "Opret en CMF fra CSV-data"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:489
+#: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
 msgstr "Opret et spektrum fra CSV-data"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:495
+#: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
 msgstr "Opret en CCMX fra reference- og måledata"
 
@@ -725,7 +730,7 @@ msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Kompatibel med Adobe RGB (1998)"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -766,7 +771,7 @@ msgstr ""
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Denne profil er fri for kendte ophavsretsbegrænsninger"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -776,7 +781,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr ""
+msgstr "Dette redigeringsrum blev designet som SMPTE-240M og omfatter de fleste mulige farver tilgængelige på en CMYK-farveprinter. Dette er et populært valg for redigering af billeder og til brug for udskrivning, da alle SWOP-farverne kan gengives."
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
@@ -795,7 +800,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr ""
+msgstr "Denne forældet profil blev oprindelig oprettet af Adobe for brug med Photoshop og Illustrator. Da den er baseret på den originale Apple 13\" RGB-skærm og svarer til sRGB, bør den ikke bruges som skærmprofil eller for nye billeder."
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
@@ -813,7 +818,7 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "Dette redigeringsrum kan vise mere farvemættede farver end Adobe RGB og er egnet for billeder med meget farvemættede farver ofte brugt i reklamer. Svarer i høj grad til DonRGB4, men kan vise meget farvemættede røde farver som undertiden ses i Fujichrome Velvia."
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
@@ -830,7 +835,7 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "Dette redigeringsrum kan vise mere farvemættede farver end Adobe RGB. Det er mindre sårbar for kvantiserinsfejl sammenlignet med ProPhoto RGB, selvom flere skyggedetaljer bevares. I de fleste instanser er ProPhoto RGB sandsynligvis et bedre valg."
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
@@ -838,7 +843,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr ""
+msgstr "Blå"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -846,7 +851,7 @@ msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "Denne testprofil bruges til at gøre alle farverne på skærmen en smule mere blå ved at ændre opslagstabellen for videokortet. Dette gør det muligt for brugeren at kontrollere om kalibreringen bliver anvendt korrekt."
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
@@ -878,7 +883,7 @@ msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "Denne teoretiske profil er designet til brug for farveeksperimenter. Du ønsker sandsynligvis ikke at bruge denne profi lsom redigeringsrum eller som en skærmprofil."
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
@@ -904,7 +909,7 @@ msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
-msgstr ""
+msgstr "Caryon Colors"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -913,7 +918,7 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "Denne navngivet farveprofil indeholder alle Crayola crayon-farver i populær brug. Det er en testprofil designet for test af indlejring af navngivne farver i dokumenter."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
@@ -929,7 +934,7 @@ msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "Dette redigeringsrum kan vise mere farvemættede farver end Adobe RGB og er egent for billeder med meget farvemættede farver ofte brugt i reklamer."
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
@@ -983,7 +988,7 @@ msgstr ""
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "FOGRA27L Coated"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:6
@@ -995,7 +1000,7 @@ msgstr ""
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "FOGRA28L Web Coated"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -1008,7 +1013,7 @@ msgstr ""
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
-msgstr ""
+msgstr "FOGRA29L Uncoated"
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -1021,7 +1026,7 @@ msgstr ""
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr ""
+msgstr "FOGRA30L Uncoated Yellowish"
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:6
@@ -1032,7 +1037,7 @@ msgstr ""
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
-msgstr ""
+msgstr "FOGRA39L Coated"
 
 #. TRANSLATORS: coated refers to the high quality paper covering making the
 #. paper
@@ -1046,18 +1051,18 @@ msgstr ""
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
-msgstr ""
+msgstr "FOGRA40L SC Paper"
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:6
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr ""
+msgstr "Denne profil bruges for udskrivning på SC (supercalendered) papir, webfed-forskydning. Der er ingen kendt amerikansk variant."
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L Lightweight Coated"
 
 #. TRANSLATORS: ISO is a trademark
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:6
@@ -1069,7 +1074,7 @@ msgstr ""
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "FOGRA47L Uncoated"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:6
@@ -1098,7 +1103,7 @@ msgstr ""
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "GRACoL TR006 Coated"
 
 #. TRANSLATORS: coated = smooth and expensive
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:6
@@ -1109,7 +1114,7 @@ msgstr ""
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 Newsprint"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -1200,11 +1205,11 @@ msgstr ""
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "Dette er den nuværende standard brugt af Nordamerika og Japan til studiooptagelse. Du bør kun bruge denne profil til at kode eller afkode video."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 Newsprint"
 
 #. TRANSLATORS: CGATS is a trademark
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:6
@@ -1234,7 +1239,7 @@ msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Rød og grøn byttet om"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1246,7 +1251,7 @@ msgstr ""
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "SWOP TR003 Coated"
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:6
@@ -1258,7 +1263,7 @@ msgstr ""
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "SWOP TR005 Coated"
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:6
@@ -1274,7 +1279,7 @@ msgstr ""
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "Wide Gamut RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 #: data/profiles/WideGamutRGB.iccprofile.xml:7
@@ -1292,7 +1297,7 @@ msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 Colors"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1300,7 +1305,7 @@ msgstr ""
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr ""
+msgstr "Denne navngivne farveprofil indeholder alle farverene defineret af X11, hvis det antages at kildefarverne skal være sRGB."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -1400,20 +1405,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "Godkendelse er krævet for at bruge color-sensoren"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2355
 msgid "Exit after a small delay"
 msgstr "Afslut efter en lille forsinkelse"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2364
+#: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
 msgstr "Afslut efter motoren har indlæst"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2367
+#: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
 msgstr "Opret en dummysensor for test"
 
-#: src/cd-main.c:2383
+#: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
 msgstr "D-Bus-tjeneste for Color-håndtering"

@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2017-08-21 08:32+0000\n"
+"POT-Creation-Date: 2018-04-18 10:50+0100\n"
+"PO-Revision-Date: 2018-03-12 19:56+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/freedesktop/colord/language/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -21,38 +21,38 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. TRANSLATORS: command line option
-#: client/cd-create-profile.c:800
+#: client/cd-create-profile.c:852
 msgid "Profile to create"
 msgstr "生成するプロファイル"
 
 #. TRANSLATORS: program name
-#: client/cd-create-profile.c:815
+#: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
 msgstr "ICC プロファイル生成プログラム"
 
 #. TRANSLATORS: the user didn't read the man page
-#: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
-#: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
+#: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
+#: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
 msgstr "引数をパースできませんでした"
 
 #. TRANSLATORS: the user forgot to use -o
-#: client/cd-create-profile.c:828
+#: client/cd-create-profile.c:880
 msgid "No output filename specified"
 msgstr "出力ファイル名が指定されていません。"
 
 #. TRANSLATORS: this is a command alias
-#: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
+#: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
 msgstr "%s の別名"
 
-#: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
+#: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
 msgstr "コマンドが見つかりません。有効なコマンド:"
 
 #. TRANSLATORS: command line option
-#: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
+#: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
 msgstr "拡張デバッグ情報の表示"
 
@@ -122,8 +122,8 @@ msgid "Export the tag data"
 msgstr ""
 
 #. TRANSLATORS: program name
-#: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
-#: src/cd-main.c:2379
+#: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
+#: src/cd-main.c:2373
 msgid "Color Management"
 msgstr "カラーマネジメント"
 
@@ -132,18 +132,23 @@ msgstr "カラーマネジメント"
 msgid "ICC profile dump program"
 msgstr ""
 
+#. TRANSLATORS: command line option
+#: client/cd-it8.c:471
+msgid "Write embedded creation timestamps"
+msgstr ""
+
 #. TRANSLATORS: command description
-#: client/cd-it8.c:483
+#: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:489
+#: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
 msgstr ""
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:495
+#: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
 msgstr ""
 
@@ -725,7 +730,7 @@ msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Adobe RGB (1998) 互換"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -766,7 +771,7 @@ msgstr ""
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "このプロファイルは既知の著作権からフリーです"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -838,7 +843,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr ""
+msgstr "青"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -904,7 +909,7 @@ msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
-msgstr ""
+msgstr "クレヨン色"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -1234,7 +1239,7 @@ msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "交換された赤および緑"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1274,7 +1279,7 @@ msgstr ""
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "高色域 RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 #: data/profiles/WideGamutRGB.iccprofile.xml:7
@@ -1292,7 +1297,7 @@ msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 カラー"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1400,20 +1405,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "カラーセンサーを使用するには認証が必要です。"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2355
 msgid "Exit after a small delay"
 msgstr "少し遅延して終了"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2364
+#: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
 msgstr "エンジンを読み込んで終了します"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2367
+#: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
 msgstr ""
 
-#: src/cd-main.c:2383
+#: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
 msgstr "Color Management D-Bus Service"

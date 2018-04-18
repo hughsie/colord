@@ -14,9 +14,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2017-08-21 08:32+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2018-04-18 10:50+0100\n"
+"PO-Revision-Date: 2018-03-12 19:56+0000\n"
+"Last-Translator: fabricio s <fabrice.silva@gipsa-lab.fr>\n"
 "Language-Team: French (http://www.transifex.com/freedesktop/colord/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,38 +25,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. TRANSLATORS: command line option
-#: client/cd-create-profile.c:800
+#: client/cd-create-profile.c:852
 msgid "Profile to create"
 msgstr "Profil à créer"
 
 #. TRANSLATORS: program name
-#: client/cd-create-profile.c:815
+#: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
 msgstr "Programme de création de profil ICC"
 
 #. TRANSLATORS: the user didn't read the man page
-#: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
-#: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
+#: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
+#: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
 msgstr "L’analyse des arguments a échoué"
 
 #. TRANSLATORS: the user forgot to use -o
-#: client/cd-create-profile.c:828
+#: client/cd-create-profile.c:880
 msgid "No output filename specified"
 msgstr "Pas de fichier de sortie spécifié"
 
 #. TRANSLATORS: this is a command alias
-#: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
+#: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
 msgstr "Alias de %s"
 
-#: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
+#: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
 msgstr "Commande introuvable. Les commandes valides sont :"
 
 #. TRANSLATORS: command line option
-#: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
+#: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
 msgstr "Plus d’informations de débogage"
 
@@ -126,8 +126,8 @@ msgid "Export the tag data"
 msgstr "Exporter les données de balises"
 
 #. TRANSLATORS: program name
-#: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
-#: src/cd-main.c:2379
+#: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
+#: src/cd-main.c:2373
 msgid "Color Management"
 msgstr "Gestion des couleurs"
 
@@ -136,18 +136,23 @@ msgstr "Gestion des couleurs"
 msgid "ICC profile dump program"
 msgstr "Programme d'exportation de profil ICC"
 
+#. TRANSLATORS: command line option
+#: client/cd-it8.c:471
+msgid "Write embedded creation timestamps"
+msgstr ""
+
 #. TRANSLATORS: command description
-#: client/cd-it8.c:483
+#: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
 msgstr "Créer un CMF à partir de données CSV"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:489
+#: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
 msgstr "Créer un spectre à partir de données CSV"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:495
+#: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
 msgstr "Créer un CCMX à partir de données de référence et de mesures"
 
@@ -729,7 +734,7 @@ msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Compatible avec Adobe RVB (1998)"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -770,7 +775,7 @@ msgstr ""
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Ce profil est libre de restrictions connues de droits d'auteurs"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -842,7 +847,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr ""
+msgstr "Bleue"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -1204,7 +1209,7 @@ msgstr ""
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "Ceci est le standard actuellement utilisé en Amérique du nord et au Japon par les studios d’enregistrement. Vous ne devriez l’utiliser que pour encoder et décoder des vidéos."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
@@ -1238,7 +1243,7 @@ msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Rouge et vert inversés"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1246,7 +1251,7 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "Ce profil de test échange les canaux rouges et verts. Il permet de vérifier visuellement que les profils sont appliqués correctement. Si ce profil est appliqué deux fois, l’image n’est pas modifiée."
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
@@ -1288,7 +1293,7 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr ""
+msgstr "Cet espace d'édition a été conçu par Adobe Systems pour ?? bien plus de couleurs que Adobe RGB. Ce profil est utilisé pour des appareils de transfert sur pellicule et définit de nombreuses couleurs qui ne peuvent être affichées sur un écran d'ordinateur. À moins de travailler avec une profondeur de 16bits par canal, un effet de postérisation peut apparaître lors de l'édition d'images."
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
@@ -1296,7 +1301,7 @@ msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr ""
+msgstr "Couleurs X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1404,20 +1409,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "Il est nécessaire de s’authentifier pour utiliser le capteur de couleur"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2355
 msgid "Exit after a small delay"
 msgstr "Quitter après un court délai"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2364
+#: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
 msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2367
+#: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
 msgstr "Créer un capteur fictif pour test"
 
-#: src/cd-main.c:2383
+#: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
 msgstr "Service D-Bus de gestion de couleurs"

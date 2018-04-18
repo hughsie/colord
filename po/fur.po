@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the colord package.
 # 
 # Translators:
-# Fabio Tomat <f.t.public@gmail.com>, 2017
+# Fabio Tomat <f.t.public@gmail.com>, 2017-2018
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-21 09:32+0100\n"
-"PO-Revision-Date: 2017-12-24 15:22+0000\n"
+"POT-Creation-Date: 2018-04-18 10:50+0100\n"
+"PO-Revision-Date: 2018-03-25 13:57+0000\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian (http://www.transifex.com/freedesktop/colord/language/fur/)\n"
 "MIME-Version: 1.0\n"
@@ -19,38 +19,38 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: command line option
-#: client/cd-create-profile.c:800
+#: client/cd-create-profile.c:852
 msgid "Profile to create"
 msgstr "Profîl di creâ"
 
 #. TRANSLATORS: program name
-#: client/cd-create-profile.c:815
+#: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
 msgstr "Program di creazion profîl ICC"
 
 #. TRANSLATORS: the user didn't read the man page
-#: client/cd-create-profile.c:820 client/cd-fix-profile.c:679
-#: client/cd-iccdump.c:88 client/cd-it8.c:514 client/cd-util.c:2233
+#: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
+#: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
 msgstr "No si è rivâts a analizâ i argoments"
 
 #. TRANSLATORS: the user forgot to use -o
-#: client/cd-create-profile.c:828
+#: client/cd-create-profile.c:880
 msgid "No output filename specified"
 msgstr "Nissun non di file di jessude specificât"
 
 #. TRANSLATORS: this is a command alias
-#: client/cd-fix-profile.c:85 client/cd-it8.c:93 client/cd-util.c:689
+#: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
 msgstr "Alias a %s"
 
-#: client/cd-fix-profile.c:153 client/cd-it8.c:163 client/cd-util.c:759
+#: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
 msgstr "Comant no cjatât, i comants valits a son:"
 
 #. TRANSLATORS: command line option
-#: client/cd-fix-profile.c:582 client/cd-it8.c:464 client/cd-util.c:2013
+#: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
 msgstr "Mostre informazions di debug adizionâls"
 
@@ -120,28 +120,33 @@ msgid "Export the tag data"
 msgstr "Espuarte il dât de etichete"
 
 #. TRANSLATORS: program name
-#: client/cd-fix-profile.c:674 client/cd-it8.c:508 client/cd-util.c:2228
-#: src/cd-main.c:2379
+#: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
+#: src/cd-main.c:2373
 msgid "Color Management"
 msgstr "Gjestion colôr"
 
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "Program par scrivi jù de memorie il profîl ICC"
+
+#. TRANSLATORS: command line option
+#: client/cd-it8.c:471
+msgid "Write embedded creation timestamps"
+msgstr "Scrîf datis e oris di creazions incorporadis"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:483
+#: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
 msgstr "Cree un CMF dai dâts CSV"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:489
+#: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
 msgstr "Cree un spectrum dai dâts CSV"
 
 #. TRANSLATORS: command description
-#: client/cd-it8.c:495
+#: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
 msgstr "Cree un CCMS dal riferiment e dai dâts di misurazion"
 
@@ -196,17 +201,17 @@ msgstr "Spazi colôr"
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: client/cd-util.c:199 client/cd-util.c:336
 msgid "Scope"
-msgstr ""
+msgstr "Ambit"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: client/cd-util.c:205
 msgid "Gamma Table"
-msgstr ""
+msgstr "Tabele de schirie"
 
 #. TRANSLATORS: if the profile is installed for all users
 #: client/cd-util.c:210
 msgid "System Wide"
-msgstr ""
+msgstr "Par dut il sisteme"
 
 #. TRANSLATORS: profile filename
 #: client/cd-util.c:215
@@ -266,7 +271,7 @@ msgstr "Vendidôr"
 
 #: client/cd-util.c:308
 msgid "Inhibitors"
-msgstr ""
+msgstr "inibidôrs"
 
 #. TRANSLATORS: the device serial number
 #: client/cd-util.c:312
@@ -281,7 +286,7 @@ msgstr "Seriâl"
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
-msgstr ""
+msgstr "Sente"
 
 #. TRANSLATORS: the device identifier
 #: client/cd-util.c:347
@@ -313,7 +318,7 @@ msgstr "Proietôr"
 #. * getting the color from a color swatch
 #: client/cd-util.c:417
 msgid "Spot"
-msgstr ""
+msgstr "Balin"
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
@@ -334,12 +339,12 @@ msgstr "Calibradure scure"
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
 msgid "Irradiance Calibration"
-msgstr ""
+msgstr "Calibradure iradiance"
 
 #. TRANSLATORS: this is the sensor capability
 #: client/cd-util.c:438
 msgid "Spectral"
-msgstr ""
+msgstr "Spetrâl"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -475,7 +480,7 @@ msgstr "Colôr"
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
 msgid "No spectral capability"
-msgstr ""
+msgstr "Nissune capacitât spetrâl"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
@@ -495,7 +500,7 @@ msgstr "Filtre lis proprietâts dal ogjet cuant che si visualize"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "Scrîf jù ducj i dâts di debug suntun file"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
@@ -535,7 +540,7 @@ msgstr "Al bloche il sensôr dal colôr"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2089
 msgid "Sets one or more sensor options"
-msgstr ""
+msgstr "Al stabilìs une o plui opzions dal sensôr"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2095
@@ -545,22 +550,22 @@ msgstr "Cree un dispositîf"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2101
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Cjate un dispositîf dal ID di dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2107
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Cjate un dispositîf cuntun ciert valôr di proprietât furnît"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2113
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Cjate un profîl dal ID di profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr ""
+msgstr "Cjate un profîl dal non dal file"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
@@ -575,12 +580,12 @@ msgstr "Cree un profîl"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Zonte un profîl a un dispositîf che al esist za"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
 msgid "Makes a profile default for a device"
-msgstr ""
+msgstr "Al rint predefinît un profîl par un dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2149
@@ -595,12 +600,12 @@ msgstr "Al elimine un profîl"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2161
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "Stabilìs proprietâts adizionâls sul profîl"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2167
 msgid "Sets the device model"
-msgstr ""
+msgstr "Al stabilìs il model dal dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2173
@@ -615,22 +620,22 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2185
 msgid "Sets the device vendor"
-msgstr ""
+msgstr "Al stabilìs il produtôr dal dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2191
 msgid "Sets the device serial"
-msgstr ""
+msgstr "Al stabilìs il seriâl dal dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2197
 msgid "Sets the device kind"
-msgstr ""
+msgstr "Al stabilìs il gjenar di dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2203
 msgid "Inhibits color profiles for this device"
-msgstr ""
+msgstr "Al inibìs i profîi colôr par chest dispositîf"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2209
@@ -640,12 +645,12 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2215
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Impuarte un profîl e instalilu pal utent"
 
 #. TRANSLATORS: no colord available
 #: client/cd-util.c:2256
 msgid "No connection to colord:"
-msgstr ""
+msgstr "Nissune conession a colord:"
 
 #: client/cd-util.c:2263
 msgid "Client version:"
@@ -678,7 +683,7 @@ msgstr "Mostre opzions di debug"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:5
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "Schirie predefinide pal schermi"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:6
 msgid ""
@@ -698,7 +703,7 @@ msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Ritart tra i intervai di campionament"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:23
 msgid ""
@@ -709,13 +714,13 @@ msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "URI di cjariament profîl dal servizi Web"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr ""
+msgstr "Il URI dal servizi web che al permet ai struments di calibradure di cjariâ un specific profîl su internet."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
@@ -1198,7 +1203,7 @@ msgstr "SMPTE-C RGB"
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "Chest al è l'atuâl standard doprât in Americhe dal nord e in Gjapon pe regjistrazion in studi. Si varès di doprâ chest profîl dome par codificâ e decodificâ videos."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
@@ -1224,7 +1229,7 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr ""
+msgstr "Chest profîl gjeneric al è stât progjetât di Hewlett-Packard e Microsoft, al continue a esisti come profîl predefinît su internet pai colôrs RGB cence etichete e al ven doprât tes HDTV. I schermis cun mancul calibradure a puedin mostrâ la plui part dai colôrs disponibii in sRGB, dut câs chest profîl cualchi volte al è une puare sielte pe stampe."
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
@@ -1240,7 +1245,7 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "Chest profîl al scambie i canâi ros e vert; al è util par controlâ in maniere visive che i profîi a esdi aplicâts in maniere juste. Se chest profîl al ven aplicât dôs voltis, la imagjin no semee modificade."
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
@@ -1304,11 +1309,11 @@ msgstr ""
 #. - Normal users should not have to authenticate to add devices
 #: policy/org.freedesktop.color.policy.in.in:20
 msgid "Create a color managed device"
-msgstr ""
+msgstr "Cree un dispositîf cui colôrs gjestîts"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr ""
+msgstr "La autenticazion e je necessarie par creâ un dispositîf cui colôrs gjestîts"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
@@ -1324,11 +1329,11 @@ msgstr "La autenticazion e je necessarie par creâ un profîl di colôr"
 #. - Normal users should not have to authenticate to delete devices
 #: policy/org.freedesktop.color.policy.in.in:50
 msgid "Remove a color managed device"
-msgstr ""
+msgstr "Gjave un dispositîf cui colôrs gjestîts"
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr ""
+msgstr "La autenticazion e je necessarie par gjavâ un dispositîf cui colôrs gjestîts "
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1380,11 +1385,11 @@ msgstr "La autenticazion e je necessarie par instalâ il profîl di colôr par d
 #. devices.
 #: policy/org.freedesktop.color.policy.in.in:131
 msgid "Inhibit color profile selection"
-msgstr ""
+msgstr "Inibìs la selezion dal profîl colôr"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr ""
+msgstr "La autenticazion e je necessarie par disabilitâ la corispondence dal profîl par un dispositîf"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
@@ -1398,20 +1403,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "La autenticazion e je necessarie par doprâ il sensôr di colôr"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2355
 msgid "Exit after a small delay"
 msgstr "Jes dopo un piçul ritart"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2364
+#: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
 msgstr "Jes dopo che il motôr al sedi cjariât"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2367
+#: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
 msgstr "Cree un sensôr pustiç pes provis"
 
-#: src/cd-main.c:2383
+#: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
 msgstr "Servizi D-Bus di gjestion dal colôr"
