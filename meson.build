@@ -1,7 +1,7 @@
 project('colord', 'c',
   version : '1.4.4',
   license : 'LGPL-2.1+',
-  meson_version : '>=0.37.0',
+  meson_version : '>=0.46.0',
   default_options : ['c_std=c99']
 )
 
@@ -99,7 +99,7 @@ test_link_args = [
   '-Wl,-z,now',
 ]
 foreach arg: test_link_args
-  if cc.has_argument(arg)
+  if cc.has_link_argument(arg)
     global_link_args += arg
   endif
 endforeach
