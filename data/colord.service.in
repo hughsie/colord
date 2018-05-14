@@ -4,7 +4,7 @@ Description=Manage, Install and Generate Color Profiles
 [Service]
 Type=dbus
 BusName=org.freedesktop.ColorManager
-ExecStart=@servicedir@/colord
+ExecStart=@servicedir@/colord --timed-exit
 User=@daemon_user@
 # We think that udev's AF_NETLINK messages are being filtered when
 # network namespacing is on.
