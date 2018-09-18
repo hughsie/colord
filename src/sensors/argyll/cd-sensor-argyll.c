@@ -251,7 +251,7 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 	/* if spotread is not already running then execute */
 	if (!cd_spawn_is_running (priv->spawn)) {
 		argv = g_ptr_array_new_with_free_func (g_free);
-		g_ptr_array_add (argv, g_strdup ("/usr/bin/spotread"));
+		g_ptr_array_add (argv, g_strdup ("spotread"));
 		g_ptr_array_add (argv, g_strdup ("-d"));
 		g_ptr_array_add (argv, g_strdup_printf ("-c%u", priv->communication_port));
 		g_ptr_array_add (argv, g_strdup ("-N")); //no autocal
