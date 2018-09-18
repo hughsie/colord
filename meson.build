@@ -160,7 +160,10 @@ if get_option('sane')
 endif
 
 if get_option('argyllcms_sensor')
-  spotread = find_program('spotread')
+  spotread = find_program('spotread', required : false)
+  if spotread.found() == false
+    warning('spotread not found. Argyll sensor will not work unless argyll is installed')
+  endif
   conf.set('HAVE_ARGYLLCMS_SENSOR', '1')
 endif
 
