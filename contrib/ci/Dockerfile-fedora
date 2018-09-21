@@ -19,6 +19,7 @@ RUN dnf -y install \
 	polkit-devel \
 	redhat-rpm-config \
 	sane-backends-devel \
+	shared-mime-info \
 	sqlite-devel \
 	systemd-devel \
 	systemd-udev \
