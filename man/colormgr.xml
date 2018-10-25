@@ -1,37 +1,28 @@
-<!doctype refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
-  <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY date        "<date>18 June,2013</date>">
-  <!ENTITY package     "colormgr">
-  <!ENTITY gnu         "<acronym>GNU</acronym>">
-  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
-]>
-
-<refentry>
-  <refentryinfo>
+<!-- Please adjust the date whenever revising the manpage. -->
+<refentry xmlns="http://docbook.org/ns/docbook" version="5.0">
+  <info>
     <address>
       <email>richard@hughsie.com</email>;
     </address>
-    <author>
-      <firstname>Richard</firstname>
-      <surname>Hughes</surname>
-    </author>
+    <author><personname><firstname>Richard</firstname><surname>Hughes</surname></personname></author>
     <copyright>
       <year>2010-2013</year>
       <holder>Richard Hughes</holder>
     </copyright>
-    &date;
-  </refentryinfo>
+    <date>18 June,2013</date>
+  </info>
   <refmeta>
     <refentrytitle>colormgr</refentrytitle>
     <manvolnum>1</manvolnum>
+    <refmiscinfo class="manual">User Commands</refmiscinfo>
   </refmeta>
   <refnamediv>
-    <refname>&package;</refname>
+    <refname>colormgr</refname>
     <refpurpose>Color Manager Testing Tool</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
     <cmdsynopsis>
-      <command>&package;</command>
+      <command>colormgr</command>
       <arg><option>--verbose</option></arg>
       <arg><option>--version</option></arg>
     </cmdsynopsis>
@@ -39,17 +30,17 @@
   <refsect1>
     <title>DESCRIPTION</title>
     <para>
-      This manual page documents briefly the <command>&package;</command> command.
+      This manual page documents briefly the <command>colormgr</command> command.
     </para>
     <para>
-      <command>&package;</command> allows an administrator to view and
+      <command>colormgr</command> allows an administrator to view and
       change color profile to device mappings.
     </para>
   </refsect1>
   <refsect1>
     <title>OPTIONS</title>
     <para>
-      This program follows the usual &gnu; command line syntax,
+      This program follows the usual <acronym>GNU</acronym> command line syntax,
       with long options starting with two dashes (`-').  A summary of
       options is included below.
     </para>
@@ -342,20 +333,3 @@
     </para>
   </refsect1>
 </refentry>
-
-<!-- Keep this comment at the end of the file
-Local variables:
-mode: sgml
-sgml-omittag:t
-sgml-shorttag:t
-sgml-minimize-attributes:nil
-sgml-always-quote-attributes:t
-sgml-indent-step:2
-sgml-indent-data:t
-sgml-parent-document:nil
-sgml-default-dtd-file:nil
-sgml-exposed-tags:nil
-sgml-local-catalogs:nil
-sgml-local-ecat-files:nil
-End:
--->
