@@ -3,7 +3,8 @@ FROM debian:unstable
 RUN apt-get update -qq
 RUN apt-get install -yq --no-install-recommends \
 	bash-completion \
-	docbook-utils \
+	xsltproc \
+	docbook-xsl-ns \
 	gettext \
 	gobject-introspection \
 	gtk-doc-tools \

@@ -26,7 +26,8 @@ URL:       https://www.freedesktop.org/software/colord/
 Source0:   https://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
 
 BuildRequires: dbus-devel
-BuildRequires: docbook-utils
+BuildRequires: libxslt
+BuildRequires: docbook5-style-xsl
 BuildRequires: gettext
 BuildRequires: glib2-devel
 BuildRequires: systemd-devel
