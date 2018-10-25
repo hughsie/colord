@@ -27,7 +27,8 @@ Compiling for Linux
 Ensure the following packages are installed:
 
 * dbus-devel
-* docbook-utils
+* libxslt
+* docbook5-style-xsl
 * gettext
 * glib2-devel
 * gobject-introspection-devel
