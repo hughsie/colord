@@ -1,6 +1,6 @@
 docbook2man = find_program('docbook2man')
 custom_target('colormgr-man',
-  input : 'colormgr.sgml',
+  input : 'colormgr.xml',
   output : 'colormgr.1',
   command : [
     docbook2man, '@INPUT@',
@@ -10,7 +10,7 @@ custom_target('colormgr-man',
   install_dir : join_paths(mandir, 'man1'),
 )
 custom_target('cd-create-profile-man',
-  input : 'cd-create-profile.sgml',
+  input : 'cd-create-profile.xml',
   output : 'cd-create-profile.1',
   command : [
     docbook2man, '@INPUT@',
@@ -20,7 +20,7 @@ custom_target('cd-create-profile-man',
   install_dir : join_paths(mandir, 'man1'),
 )
 custom_target('cd-fix-profile-man',
-  input : 'cd-fix-profile.sgml',
+  input : 'cd-fix-profile.xml',
   output : 'cd-fix-profile.1',
   command : [
     docbook2man, '@INPUT@',
@@ -30,7 +30,7 @@ custom_target('cd-fix-profile-man',
   install_dir : join_paths(mandir, 'man1'),
 )
 custom_target('cd-it8-man',
-  input : 'cd-it8.sgml',
+  input : 'cd-it8.xml',
   output : 'cd-it8.1',
   command : [
     docbook2man, '@INPUT@',
