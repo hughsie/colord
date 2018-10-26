@@ -9,7 +9,7 @@
       <year>2011</year>
       <holder>Richard Hughes</holder>
     </copyright>
-    <date>8 April,1011</date>
+    <date>8 April, 2011</date>
   </info>
   <refmeta>
     <refentrytitle>cd-create-profile</refentrytitle>
@@ -27,7 +27,7 @@
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
-    <title>DESCRIPTION</title>
+    <title>Description</title>
     <para>
       This manual page documents briefly the <command>cd-create-profile</command> command.
     </para>
@@ -37,10 +37,10 @@
     </para>
   </refsect1>
   <refsect1>
-    <title>OPTIONS</title>
+    <title>Options</title>
     <para>
       This program follows the usual <acronym>GNU</acronym> command line syntax,
-      with long options starting with two dashes (`-').  A summary of
+      with long options starting with two dashes (‘-’).  A summary of
       options is included below.
     </para>
     <variablelist>
@@ -89,7 +89,7 @@
           <option>--srgb-palette</option>
         </term>
         <listitem>
-          <para>Specifies a comma seporated values file that is used for the named color.</para>
+          <para>Specifies a comma separated values file that is used for the named color.</para>
           <para>The format of the CSV file must be "Color Name",0-255(red),0-255(green),0-255(blue).</para>
         </listitem>
       </varlistentry>
@@ -120,7 +120,7 @@
     </variablelist>
   </refsect1>
   <refsect1>
-    <title>AUTHOR</title>
+    <title>Author</title>
     <para>This manual page was written by Richard Hughes <email>richard@hughsie.com</email>.
     </para>
   </refsect1>
