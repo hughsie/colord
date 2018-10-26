@@ -6,10 +6,10 @@
     </address>
     <author><personname><firstname>Richard</firstname><surname>Hughes</surname></personname></author>
     <copyright>
-      <year>2010-2013</year>
+      <year>2010–2013</year>
       <holder>Richard Hughes</holder>
     </copyright>
-    <date>18 June,2013</date>
+    <date>18 June, 2013</date>
   </info>
   <refmeta>
     <refentrytitle>colormgr</refentrytitle>
@@ -28,7 +28,7 @@
     </cmdsynopsis>
   </refsynopsisdiv>
   <refsect1>
-    <title>DESCRIPTION</title>
+    <title>Description</title>
     <para>
       This manual page documents briefly the <command>colormgr</command> command.
     </para>
@@ -38,10 +38,10 @@
     </para>
   </refsect1>
   <refsect1>
-    <title>OPTIONS</title>
+    <title>Options</title>
     <para>
       This program follows the usual <acronym>GNU</acronym> command line syntax,
-      with long options starting with two dashes (`-').  A summary of
+      with long options starting with two dashes (‘-’).  A summary of
       options is included below.
     </para>
     <variablelist>
@@ -56,7 +56,7 @@
     </variablelist>
   </refsect1>
   <refsect1>
-    <title>COMMANDS</title>
+    <title>Commands</title>
     <para>
       This program takes commands with a variable number of arguments.
     </para>
@@ -328,7 +328,7 @@
     </variablelist>
   </refsect1>
   <refsect1>
-    <title>AUTHOR</title>
+    <title>Author</title>
     <para>This manual page was written by Richard Hughes <email>richard@hughsie.com</email>.
     </para>
   </refsect1>
