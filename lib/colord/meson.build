@@ -233,7 +233,7 @@ endif
 if get_option('tests')
   testdatadir = join_paths(meson.source_root(), 'data', 'tests')
   e = executable(
-    'colord-self-test-private',
+    'colord-test-private',
     sources : [
       'cd-test-private.c',
       'cd-test-shared.h',
@@ -252,10 +252,12 @@ if get_option('tests')
       cargs,
       '-DTESTDATADIR="' + testdatadir + '"',
     ],
+    install : get_option('installed_tests'),
+    install_dir : join_paths(libexecdir, 'installed-tests', 'colord'),
   )
-  test('colord-self-test-private', e)
+  test('colord-test-private', e)
   e = executable(
-    'colord-self-test-daemon',
+    'colord-test-daemon',
     sources : [
       'cd-test-daemon.c',
       'cd-test-shared.h',
@@ -274,6 +276,8 @@ if get_option('tests')
       cargs,
       '-DTESTDATADIR="' + testdatadir + '"',
     ],
+    install : get_option('installed_tests'),
+    install_dir : join_paths(libexecdir, 'installed-tests', 'colord'),
   )
-  test('colord-self-test-daemon', e)
+  test('colord-test-daemon', e)
 endif

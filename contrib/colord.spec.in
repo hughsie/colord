@@ -107,6 +107,12 @@ Provides: shared-color-profiles-extra
 More color profiles for color management that are less commonly used.
 This may be useful for CMYK soft-proofing or for extra device support.
 
+%package tests
+Summary: Data files for installed tests
+
+%description tests
+Data files for installed tests.
+
 %prep
 %setup -q
 
@@ -118,6 +124,7 @@ ulimit -Sv 2000000
 
 %meson \
     -Dvapi=true \
+    -Dinstalled_tests=true \
 %if 0%{?build_print_profiles}
     -Dprint_profiles=true \
 %else
@@ -277,6 +284,12 @@ exit 0
 %files devel-docs
 %dir %{_datadir}/gtk-doc/html/colord
 %{_datadir}/gtk-doc/html/colord/*
+
+%files tests
+%dir %{_libexecdir}/installed-tests/colord
+%{_libexecdir}/installed-tests/colord/*
+%dir %{_datadir}/installed-tests/colord
+%{_datadir}/installed-tests/colord/*
 
 %changelog
 * #LONGDATE# Richard Hughes <richard@hughsie.com> #VERSION#-0.#BUILD##ALPHATAG#
