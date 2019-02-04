@@ -186,6 +186,7 @@ libcolord_girtarget = gnome.generate_gir(colord,
   export_packages : 'colord',
   extra_args : [
     '--c-include=colord.h',
+    '-DCD_COMPILATION',
     ],
   link_with : colordprivate,
   dependencies : [

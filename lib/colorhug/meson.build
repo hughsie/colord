@@ -101,6 +101,9 @@ libcolorhug_gir = gnome.generate_gir(colorhug,
     'GUsb-1.0',
     libcolord_gir,
   ],
+  extra_args : [
+    '-DCD_COMPILATION',
+  ],
   install : true
 )
 
