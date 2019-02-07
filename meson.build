@@ -180,18 +180,22 @@ if get_option('reverse')
   conf.set('CD_BUILD_REVERSE', '1')
 endif
 
+if get_option('daemon')
 conf.set_quoted('DAEMON_USER', get_option('daemon_user'))
 if get_option('daemon_user') == 'root'
   warning('RUNNING THE DAEMON AS root IS NOT A GOOD IDEA, use -Ddaemon_user= to set user')
+endif
 endif
 
 if get_option('pnp_ids') != ''
   conf.set_quoted('PNP_IDS', get_option('pnp_ids'))
 endif
 
+if get_option('daemon')
 polkit = dependency('polkit-gobject-1', version : '>= 0.103')
 if polkit.version().version_compare('>= 0.114')
   conf.set('POLKIT_HAS_AUTOPTR_MACROS', '1')
+endif
 endif
 
 if meson.version().version_compare('>0.41.0')
@@ -262,11 +266,13 @@ subdir('data')
 if get_option('man')
   subdir('man')
 endif
-subdir('policy')
-if get_option('udev_rules')
-  subdir('rules')
+if get_option('daemon')
+  if get_option('udev_rules')
+    subdir('rules')
+  endif
+  subdir('policy')
+  subdir('src')
 endif
-subdir('src')
 
 meson.add_install_script('meson_post_install.sh',
                          localstatedir, get_option('daemon_user'))
