@@ -102,6 +102,7 @@ libcolorhug_gir = gnome.generate_gir(colorhug,
     libcolord_gir,
   ],
   extra_args : [
+    '--c-include=colorhug.h',
     '-DCD_COMPILATION',
   ],
   install : true
