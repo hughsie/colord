@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugs.freedesktop.org/enter_bug.cgi?product=col"
 "ord&keywords=I18N+L10N&component=client\n"
 "POT-Creation-Date: 2018-04-18 13:43+0000\n"
-"PO-Revision-Date: 2019-02-22 00:00+0200\n"
+"PO-Revision-Date: 2019-02-22 10:08+0200\n"
 "Last-Translator: scootergrisen\n"
 "Language-Team: Danish\n"
 "Language: da\n"
@@ -387,12 +387,12 @@ msgstr "LCD RGB LED"
 #. * better than normal consumer monitors
 #: client/cd-util.c:472
 msgid "Wide Gamut LCD CCFL"
-msgstr "Wide Gamut LCD CCFL"
+msgstr "Bred gamut LCD CCFL"
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:476
 msgid "Wide Gamut LCD RGB LED"
-msgstr "Wide Gamut LCD RGB LED"
+msgstr "Bred gamut LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
@@ -865,7 +865,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr "blålig"
+msgstr "bluish"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
@@ -936,11 +936,11 @@ msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr "Farveblyant"
+msgstr "Crayons"
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
-msgstr "Farveblyantsfarver"
+msgstr "Farveblyanters farver"
 
 #.
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
@@ -951,9 +951,9 @@ msgid ""
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
 msgstr ""
-"Denne navngivne farveprofil indeholder alle Crayola-farveblyantsfarver i "
-"populær brug. Det er en testprofil designet for test af indlejring af "
-"navngivne farver i dokumenter."
+"Denne navngivne farveprofil indeholder alle farverne fra Crayola-"
+"farveblyanter i populær brug. Det er en testprofil designet for test af "
+"indlejring af navngivne farver i dokumenter."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
@@ -1036,7 +1036,7 @@ msgstr ""
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
-msgstr "FOGRA28L Web bestrøget"
+msgstr "FOGRA28L web bestrøget"
 
 #.
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
@@ -1152,7 +1152,7 @@ msgstr ""
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
-msgstr "IFRA26S 2004 Newsprint"
+msgstr "IFRA26S 2004 avispapir"
 
 #.
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
@@ -1171,7 +1171,7 @@ msgstr "NTSC-RGB"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr ""
+msgstr "NTSC RGB"
 
 #.
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
@@ -1253,7 +1253,7 @@ msgstr ""
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
-msgstr "SNAP TR002 Newsprint"
+msgstr "SNAP TR002 avispapir"
 
 #. TRANSLATORS: CGATS is a trademark
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:6
@@ -1324,7 +1324,7 @@ msgstr "WideGamutRGB"
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
-msgstr "Wide Gamut RGB"
+msgstr "Bred gamut RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 #: data/profiles/WideGamutRGB.iccprofile.xml:7
