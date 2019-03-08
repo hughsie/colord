@@ -7,17 +7,18 @@
 # Christian <Christian.Kirbach@googlemail.com>, 2012
 # Christian Kirbach <christian.kirbach@gmail.com>, 2013
 # Christoph Brill, 2013
-# Ettore Atalan <atalanttore@googlemail.com>, 2014
+# Ettore Atalan <atalanttore@googlemail.com>, 2014,2018
 # jwildeboer <jan.wildeboer@gmx.de>, 2013
 # jwildeboer <jan.wildeboer@gmx.de>, 2013
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2018
 # Matthias Vogelgesang <matthias.vogelgesang@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2019-03-08 12:39+0000\n"
+"PO-Revision-Date: 2018-10-27 22:42+0000\n"
+"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
 "Language-Team: German (http://www.transifex.com/freedesktop/colord/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,7 +70,7 @@ msgstr "Die beim Festlegen von übersetztem Text zu verwendende Sprachumgebung"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
 msgid "Generate the VCGT calibration of a given size"
-msgstr "VCGT-Kalibration der gegebenen Größe anlegen"
+msgstr "VCGT-Kalibrierung der gegebenen Größe anlegen"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
@@ -140,7 +141,7 @@ msgstr "Programm zum Ablegen des ICC-Farbprofils"
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr ""
+msgstr "Eingebettete Erstellungs-Zeitstempel schreiben"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
@@ -336,7 +337,7 @@ msgstr "Ambient"
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:426
 msgid "Calibration"
-msgstr "Kalibration"
+msgstr "Kalibrierung"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
@@ -346,7 +347,7 @@ msgstr "Kalibrierung von schwarz"
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
 msgid "Irradiance Calibration"
-msgstr ""
+msgstr "Kalibrierung der Bestrahlungsstärke"
 
 #. TRANSLATORS: this is the sensor capability
 #: client/cd-util.c:438
@@ -731,7 +732,7 @@ msgstr "Die Adresse des Internet-Dienstes, der es den Kalibrierungswerkzeugen er
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
-msgstr ""
+msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
@@ -790,11 +791,11 @@ msgstr "Dieser Bearbeitungsraum wurde als SMPTE-240M entworfen und umfasst die m
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr ""
+msgstr "AppleRGB"
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
-msgstr ""
+msgstr "Apple RGB"
 
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
@@ -809,11 +810,11 @@ msgstr "Dieses veraltete Profil wurde ursprünglich von Adobe für Photoshop und
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
-msgstr ""
+msgstr "BestRGB"
 
 #: data/profiles/BestRGB.iccprofile.xml:4
 msgid "Best RGB"
-msgstr ""
+msgstr "Best RGB"
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -827,11 +828,11 @@ msgstr "Dieser Bearbeitungsraum kann gesättigtere Farben wiedergeben als Adobe 
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
-msgstr ""
+msgstr "BetaRGB"
 
 #: data/profiles/BetaRGB.iccprofile.xml:4
 msgid "Beta RGB"
-msgstr ""
+msgstr "Beta RGB"
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 #: data/profiles/BetaRGB.iccprofile.xml:7
@@ -844,7 +845,7 @@ msgstr "Dieser Bearbeitungsraum kann gesättigtere Farben wiedergeben als Adobe 
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "bläulich"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
@@ -860,11 +861,11 @@ msgstr "Dieses Testprofil verschiebt alle Bildschirmfarben in Richtung Blau durc
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
-msgstr ""
+msgstr "BruceRGB"
 
 #: data/profiles/BruceRGB.iccprofile.xml:4
 msgid "Bruce RGB"
-msgstr ""
+msgstr "Bruce RGB"
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 #: data/profiles/BruceRGB.iccprofile.xml:7
@@ -876,11 +877,11 @@ msgstr "Dies ist ein RGB-Bearbeitungsprofil für Adobe Photoshop 5.0 und später
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
-msgstr ""
+msgstr "CIE-RGB"
 
 #: data/profiles/CIE-RGB.iccprofile.xml:4
 msgid "CIE RGB"
-msgstr ""
+msgstr "CIE RGB"
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 #: data/profiles/CIE-RGB.iccprofile.xml:7
@@ -892,11 +893,11 @@ msgstr "Dieses theoretische Profil wurde für den Einsatz bei Farbexperimenten e
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
-msgstr ""
+msgstr "ColorMatchRGB"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:4
 msgid "ColorMatch RGB"
-msgstr ""
+msgstr "ColorMatch RGB"
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -910,7 +911,7 @@ msgstr "Dieses Profil wurde von Radius für den PressView-Bildschirm entworfen. 
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr ""
+msgstr "Kreiden"
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
@@ -927,11 +928,11 @@ msgstr "Dieses Profil beinhaltet alle weit verbreiteten Farben der Crayola Wachs
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
-msgstr ""
+msgstr "DonRGB4"
 
 #: data/profiles/DonRGB4.iccprofile.xml:4
 msgid "Don RGB 4"
-msgstr ""
+msgstr "Don RGB 4"
 
 #. TRANSLATORS: saturated means vivid bright colors
 #: data/profiles/DonRGB4.iccprofile.xml:7
@@ -943,11 +944,11 @@ msgstr "Dieser Bearbeitungsraum kann gesättigtere Farben darstellen als Adobe R
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
-msgstr ""
+msgstr "ECI-RGBv1"
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:4
 msgid "eciRGB v1"
-msgstr ""
+msgstr "eciRGB v1"
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 #: data/profiles/ECI-RGBv1.iccprofile.xml:7
@@ -960,11 +961,11 @@ msgstr "Dieses Profil wird von der ECI (European Color Initiative) als Bearbeitu
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
-msgstr ""
+msgstr "ECI-RGBv2"
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:4
 msgid "eciRGB v2"
-msgstr ""
+msgstr "eciRGB v2"
 
 #. TRANSLATORS: lightness is a technical word for brightness
 #: data/profiles/ECI-RGBv2.iccprofile.xml:7
@@ -976,11 +977,11 @@ msgstr "Dieses Profil wurde mit einer Helligkeits-Gammakurve entworfen. Dies bed
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
-msgstr ""
+msgstr "EktaSpacePS5"
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:4
 msgid "Ekta Space PS5"
-msgstr ""
+msgstr "Ekta Space PS5"
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -1092,19 +1093,19 @@ msgstr ""
 #: data/profiles/Gamma5500K.iccprofile.xml:3
 #: data/profiles/Gamma6500K.iccprofile.xml:3
 msgid "Gamma6500K"
-msgstr ""
+msgstr "Gamma6500K"
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
-msgstr ""
+msgstr "D50"
 
 #: data/profiles/Gamma5500K.iccprofile.xml:5
 msgid "D55"
-msgstr ""
+msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr ""
+msgstr "D65"
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
@@ -1133,11 +1134,11 @@ msgstr ""
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr ""
+msgstr "NTSC-RGB"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr ""
+msgstr "NTSC RGB"
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1150,11 +1151,11 @@ msgstr "Dieses Profil definiert den Farbbereich, wie er im NTSC Videostandard be
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr ""
+msgstr "PAL-RGB"
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr ""
+msgstr "PAL/SECAM RGB"
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7
@@ -1166,11 +1167,11 @@ msgstr "Diese Farbprofil definiert den Farbbereich wie er bei den PAL und SECAM 
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
-msgstr ""
+msgstr "ProPhotoRGB"
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:4
 msgid "ProPhoto RGB"
-msgstr ""
+msgstr "ProPhoto RGB"
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 #: data/profiles/ProPhotoRGB.iccprofile.xml:7
@@ -1183,11 +1184,11 @@ msgstr "Ursprünglich wurde das Profil von Eastman Kodak entworfen und ROMM RGB 
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
-msgstr ""
+msgstr "Rec709"
 
 #: data/profiles/Rec709.iccprofile.xml:4
 msgid "Rec. 709"
-msgstr ""
+msgstr "Rec. 709"
 
 #. TRANSLATORS: ITU-R is a standards body
 #: data/profiles/Rec709.iccprofile.xml:9
@@ -1199,11 +1200,11 @@ msgstr "ITU-R empfiehlt BT.709 als HD-Fensehstandard, der in 1990 verabschiedet 
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
-msgstr ""
+msgstr "SMPTE-C-RGB"
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:4
 msgid "SMPTE-C RGB"
-msgstr ""
+msgstr "SMPTE-C RGB"
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:7
@@ -1225,7 +1226,7 @@ msgstr ""
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1298,7 +1299,7 @@ msgstr "Das Bearbeitungsprofil wurde von Adobe Systems entworfen um mehr Farben 
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
-msgstr ""
+msgstr "x11-Farben"
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"

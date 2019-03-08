@@ -1,3 +1,19 @@
+Version 1.4.4
+~~~~~~~~~~~~~
+Released: 2019-03-08
+
+New Features:
+ - Actually install the installed tests (Richard Hughes)
+ - Allow building without the daemon (Richard Hughes)
+
+Bugfixes:
+ - Consistently search for spotread in $PATH (Christopher James Halse Rogers)
+ - Don't hard-require spotread to build argyll sensor (Christopher James Halse Rogers)
+ - Fix linker argument checks (Ting-Wei Lan)
+ - Include C header in Colorhug-1.0.gir (Tomasz Miąsko)
+ - Pass -DCD_COMPILATION to gir compiler (maxice8)
+ - Port manpages to xsltproc and DocBook 5 (Jan Tojnar)
+
 Version 1.4.3
 ~~~~~~~~~~~~~
 Released: 2018-04-18

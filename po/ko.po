@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Seong-ho Cho <darkcircle.0426@gmail.com>, 2012,2015-2017
+# Shinjo Park <kde@peremen.name>, 2018
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
-"Last-Translator: Seong-ho Cho <darkcircle.0426@gmail.com>\n"
+"POT-Creation-Date: 2019-03-08 12:39+0000\n"
+"PO-Revision-Date: 2018-07-27 14:13+0000\n"
+"Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean (http://www.transifex.com/freedesktop/colord/language/ko/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,12 +22,12 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
 msgid "Profile to create"
-msgstr "만들 프로파일"
+msgstr "만들 프로필"
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
-msgstr "ICC 프로파일 생성 프로그램"
+msgstr "ICC 프로필 생성 프로그램"
 
 #. TRANSLATORS: the user didn't read the man page
 #: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
@@ -67,22 +68,22 @@ msgstr "주어진 크기의 VCGT 보정 설정을 만듭니다"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
 msgid "Clear any metadata in the profile"
-msgstr "프로파일 메타데이터를 지웁니다"
+msgstr "프로필 메타데이터를 지웁니다"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:616
 msgid "Initialize any metadata for the profile"
-msgstr "프로파일 메타데이터를 초기화합니다"
+msgstr "프로필 메타데이터를 초기화합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:621
 msgid "Add a metadata item to the profile"
-msgstr "프로파일에 메타데이터 요소를 추가합니다"
+msgstr "프로필에 메타데이터 요소를 추가합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:626
 msgid "Remove a metadata item from the profile"
-msgstr "프로파일의 메타데이터 요소를 제거합니다"
+msgstr "프로필의 메타데이터 요소를 제거합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
@@ -97,7 +98,7 @@ msgstr "설명 문자열을 설정합니다"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:641
 msgid "Sets the manufacturer string"
-msgstr "제조자 문자열을 설정합니다"
+msgstr "제조사 문자열을 설정합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:646
@@ -107,12 +108,12 @@ msgstr "모델 문자열을 설정합니다"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:651
 msgid "Automatically fix metadata in the profile"
-msgstr "프로파일의 메타데이터를 자동으로 고칩니다"
+msgstr "프로필의 메타데이터를 자동으로 고칩니다"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:656
 msgid "Set the ICC profile version"
-msgstr "ICC 프로파일 버전을 설정합니다"
+msgstr "ICC 프로필 버전을 설정합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
@@ -128,12 +129,12 @@ msgstr "색상 관리자"
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
 msgid "ICC profile dump program"
-msgstr "ICC 프로파일 덤프 프로그램"
+msgstr "ICC 프로필 덤프 프로그램"
 
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr ""
+msgstr "임베드된 생성 시간 기록"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
@@ -221,7 +222,7 @@ msgstr "파일 이름"
 #. TRANSLATORS: profile identifier
 #: client/cd-util.c:220
 msgid "Profile ID"
-msgstr "프로파일 ID"
+msgstr "프로필 ID"
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
@@ -238,13 +239,13 @@ msgstr "경고"
 #. * unless the device has been explicitly saved in the database
 #: client/cd-util.c:270
 msgid "Created"
-msgstr "만든 일시"
+msgstr "만든 날짜"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 #: client/cd-util.c:276
 msgid "Modified"
-msgstr "수정일시"
+msgstr "수정한 날짜"
 
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
@@ -267,7 +268,7 @@ msgstr "모델"
 #. TRANSLATORS: sensor vendor
 #: client/cd-util.c:302 client/cd-util.c:562
 msgid "Vendor"
-msgstr "공급자"
+msgstr "제조사"
 
 #: client/cd-util.c:308
 msgid "Inhibitors"
@@ -296,7 +297,7 @@ msgstr "장치 ID"
 #. TRANSLATORS: the profile for the device
 #: client/cd-util.c:356
 msgid "Profile"
-msgstr "프로파일"
+msgstr "프로필"
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
@@ -442,7 +443,7 @@ msgstr "기능"
 #: client/cd-util.c:971 client/cd-util.c:1000 client/cd-util.c:1048
 #: client/cd-util.c:1176 client/cd-util.c:1260
 msgid "There are no supported sensors attached"
-msgstr "연결된 지원 센서가 없습니다"
+msgstr "지원하는 센서가 연결되지 않았습니다"
 
 #. TRANSLATORS: this is the sensor title
 #: client/cd-util.c:1060 client/cd-util.c:1197 client/cd-util.c:1289
@@ -452,17 +453,17 @@ msgstr "센서"
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr "보정 위치로 장치를 설정하고 엔터 키를 누르십시오."
+msgstr "보정 위치로 장치를 설정하고 Enter 키를 누르십시오."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
 msgid "Set the device to the surface position and press enter."
-msgstr "표면 위치로 장치를 설정하고 엔터 키를 누르십시오."
+msgstr "표면 위치로 장치를 설정하고 Enter 키를 누르십시오."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1097
 msgid "Put the device in a dark place and press enter."
-msgstr "어두운 색 영역에 장치를 올려둔 후 엔터 키를 누르십시오."
+msgstr "어두운 색 영역에 장치를 올려둔 후 Enter 키를 누르십시오."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1107
@@ -471,7 +472,7 @@ msgstr "3200K 광원으로 보정합니다."
 
 #: client/cd-util.c:1124
 msgid "Put the device on the color to be measured and press enter."
-msgstr "측정할 색상에 장치를 올려둔 후 엔터 키를 누르십시오."
+msgstr "측정할 색상에 장치를 올려둔 후 Enter 키를 누르십시오."
 
 #: client/cd-util.c:1130
 msgid "Color"
@@ -515,7 +516,7 @@ msgstr "지정한 종류의 모든 색상 관리 장치를 가져옵니다"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
 msgid "Gets all the available color profiles"
-msgstr "사용할 수 있는 모든 색상 프로파일을 가져옵니다"
+msgstr "사용할 수 있는 모든 색상 프로필을 가져옵니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
@@ -530,7 +531,7 @@ msgstr "센서에서 스펙트럼 정보를 가져옵니다"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
 msgid "Gets a reading from a sensor"
-msgstr "센서로부터 데이터를 읽어옵니다"
+msgstr "센서에서 데이터를 읽어옵니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2083
@@ -560,12 +561,12 @@ msgstr "주어진 속성 값으로 장치를 찾습니다"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2113
 msgid "Find a profile from the profile ID"
-msgstr "프로파일 ID로 프로파일을 찾습니다"
+msgstr "프로필 ID로 프로필을 찾습니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr "파일 이름으로 프로파일을 찾습니다"
+msgstr "파일 이름으로 프로필을 찾습니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
@@ -575,17 +576,17 @@ msgstr "표준 색상 영역을 가져옵니다"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2131
 msgid "Create a profile"
-msgstr "프로파일을 만듭니다"
+msgstr "프로필을 만듭니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr "이미 존재하는 장치에 프로파일을 추가합니다"
+msgstr "이미 존재하는 장치에 프로필을 추가합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
 msgid "Makes a profile default for a device"
-msgstr "장치 프로파일을 기본으로 설정합니다"
+msgstr "장치 프로필을 기본으로 설정합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2149
@@ -595,12 +596,12 @@ msgstr "장치를 지웁니다"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2155
 msgid "Deletes a profile"
-msgstr "프로파일을 지웁니다"
+msgstr "프로필을 지웁니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2161
 msgid "Sets extra properties on the profile"
-msgstr "프로파일에 추가 속성을 설정합니다"
+msgstr "프로필에 추가 속성을 설정합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2167
@@ -615,12 +616,12 @@ msgstr "장치를 활성화하거나 비활성화합니다"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2179
 msgid "Gets the default profile for a device"
-msgstr "장치의 기본 프로파일을 가져옵니다"
+msgstr "장치의 기본 프로필을 가져옵니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2185
 msgid "Sets the device vendor"
-msgstr "장치 공급자를 설정합니다"
+msgstr "장치 제조사를 설정합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2191
@@ -635,22 +636,22 @@ msgstr "장치 종류를 설정합니다"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2203
 msgid "Inhibits color profiles for this device"
-msgstr "이 장치에 대한 프로파일을 제한합니다"
+msgstr "이 장치에 대한 프로필을 제한합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2209
 msgid "Returns all the profiles that match a qualifier"
-msgstr "식별자 문구에 일치하는 모든 프로파일을 반환합니다"
+msgstr "식별자 문구에 일치하는 모든 프로필을 반환합니다"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2215
 msgid "Import a profile and install it for the user"
-msgstr "개별 사용자용 프로파일을 가져오고 설치합니다"
+msgstr "개별 사용자용 프로필을 가져오고 설치합니다"
 
 #. TRANSLATORS: no colord available
 #: client/cd-util.c:2256
 msgid "No connection to colord:"
-msgstr "colord가 없습니다:"
+msgstr "colord에 연결할 수 없습니다:"
 
 #: client/cd-util.c:2263
 msgid "Client version:"
@@ -699,7 +700,7 @@ msgstr "기본 디스플레이 대상 화이트포인트"
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr "디스플레이 장치를 보정할 때 사용할 켈빈단위의 기본 대상 화이트포인트 값이며 0 값은 장치 고유 값을 의미합니다. 보통 사용하는 값은 D65에서 6500, D50에서 5000입니다."
+msgstr "디스플레이 장치를 보정할 때 사용할 켈빈 단위의 기본 대상 화이트포인트 값이며 0 값은 장치 고유 값을 의미합니다. 보통 사용하는 값은 D65에서 6500, D50에서 5000입니다."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
@@ -714,13 +715,13 @@ msgstr "샘플 색상을 설정하고 측정 장치에서 샘플을 채취하도
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
 msgid "Web service profile upload URI"
-msgstr "프로파일 업로드용 웹 서비스 URI"
+msgstr "프로필 업로드용 웹 서비스 URI"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr "보정 도구에서 인터넷에 개별 프로파일을 업로드할 수 있는 웹 서비스의 URI입니다."
+msgstr "보정 도구에서 인터넷에 개별 프로필을 업로드할 수 있는 웹 서비스의 URI입니다."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
@@ -769,7 +770,7 @@ msgstr "Adobe RGB (1998) 호환"
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr "이 프로파일은 저작권 제한으로부터 자유롭습니다"
+msgstr "이 프로필은 저작권 제한으로부터 자유롭습니다"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -779,7 +780,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr "이 편집 영역은 SMPTE-240M과 유사하게 설계했으며, CMYK 컬러 프린터로 재현 가능한 모든 색상을 아우릅니다. 사진 편집, 모든 SWOP 색상을 재현할 수 있는 인쇄 용도로 널리 알려진 선택수단 입니다."
+msgstr "이 편집 영역은 SMPTE-240M과 유사하게 설계했으며, CMYK 컬러 프린터로 재현 가능한 모든 색상을 포함합니다. 모든 SWOP 색상을 재현할 수 있으므로 사진 편집 및 인쇄 용도로 적합합니다."
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
@@ -798,7 +799,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr "이 오래된 기존 프로파일은 원래 Adobe에서 Photoshop과 Illustrator에서 사용하려고 만들었습니다. 기존 Apple 13\" RGB 모니터를 기반으로 하며 sRGB와 유사하므로, 디스플레이 프로파일로 사용하거나 새 이미지를 편집할 용도로 사용하면 안됩니다."
+msgstr "이 오래된 기존 프로필은 원래 Adobe에서 Photoshop과 Illustrator에서 사용하려고 만들었습니다. 기존 Apple 13\" RGB 모니터를 기반으로 하며 sRGB와 유사하므로, 디스플레이 프로필로 사용하거나 새 이미지를 편집할 용도로 사용하면 안됩니다."
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
@@ -849,7 +850,7 @@ msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr "이 시험 프로파일은 비디오 카드 검색 테이블을 대체할 때 화면에 나타난 모든 색상을 거의 시퍼런색으로 만들 때 활용합니다. 사용자는 이 프로파일을 통해 보정 설정을 제대로 적용했는지 확인할 수 있습니다."
+msgstr "이 시험 프로필은 비디오 카드 검색 테이블을 대체할 때 화면에 나타난 모든 색상을 거의 시퍼런색으로 만들 때 활용합니다. 사용자는 이 프로필을 통해 보정 설정을 제대로 적용했는지 확인할 수 있습니다."
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
@@ -865,7 +866,7 @@ msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr "이 RGB 편집 영역은 Adobe Photoshop 5.0 이상 전용입니다. ColorMatch RGB 와 Adobe RGB 간의 출력 중심 프로파일의 절충안으로 설계했으며 사진 인쇄 서비스에서 종종 선호합니다."
+msgstr "이 RGB 편집 영역은 Adobe Photoshop 5.0 이상 전용입니다. ColorMatch RGB 와 Adobe RGB 간의 출력 중심 프로필의 절충안으로 설계했으며 사진 인쇄 서비스에서 종종 선호합니다."
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
@@ -881,7 +882,7 @@ msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr "이 이론적 프로파일은 색상 경험상 활용 용도로 설계했습니다. 사용자 여러분은 색상 영역을 편집한다거나 디스플레이 프로파일로서 이 프로파일을 선호하지 않을 것입니다."
+msgstr "이 이론적 프로필은 색상 실험용으로 설계했습니다. 편집 영역이나 디스플레이 프로필로 사용할 필요는 없습니다."
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
@@ -899,7 +900,7 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr "이 프로파일은 PressView 모니터용으로 Radius에서 설계했습니다. 이 프로파일을 디스플레이 프로파일 전용으로 활용하거나 프로파일로 활용할 편집 영역 전용으로 활용할 경우 sRGB랑 눈에 띄게 달라지는 건 없습니다. PressView 모니터에서 만든 이미지를 볼 경우에만 이 프로파일 활용이 필요합니다."
+msgstr "이 프로필은 PressView 모니터용으로 Radius에서 설계했습니다. 이 프로필은 sRGB와 큰 차이가 없으므로 디스플레이 프로필이나 편집 영역으로만 사용하십시오. PressView 모니터에 표시할 이미지를 작업할 때에만 이 프로필이 필요합니다."
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
@@ -916,7 +917,7 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr "이 명칭이 붙은 색상 프로파일에는 널리 사용하는 모든 크라욜라 크레용 색상이 들어있습니다. 문서에 이름을 붙인 색상을 넣을 때 시험해볼 목적으로 시험 프로파일을 설계했습니다."
+msgstr "이 명칭이 붙은 색상 프로필에는 널리 사용하는 모든 크라욜라 크레용 색상이 들어있습니다. 문서에 이름을 붙인 색상을 넣을 때 시험해볼 목적으로 시험 프로필을 설계했습니다."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
@@ -949,7 +950,7 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr "이 프로파일은 ECI(유럽 색상 협회)에서 색상 편집 영역으로 추천하며, 인쇄 프레스에서 인쇄할 수 있는 모든 색상취급을 목표로 합니다. 간혹 서적 저자와 인쇄소가 색상 정보를 주고 받을때 사용하는 데이터 형식으로 사용하기도 합니다."
+msgstr "이 프로필은 ECI(유럽 색상 협회)에서 색상 편집 영역으로 추천하며, 인쇄 프레스에서 인쇄할 수 있는 모든 색상취급을 목표로 합니다. 간혹 서적 저자와 인쇄소가 색상 정보를 주고 받을 때 사용하는 데이터 형식으로 사용하기도 합니다."
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
@@ -982,7 +983,7 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr "이 프로파일은 스캔 투명 필름 아카이브를 보관할 목적으로 설계했습니다. 최근에는 ProPhoto RGB 프로파일을 보관 용도로 더 많이 사용하지만 반전 색상 형식으로 이미지를 저장하는데 적합합니다."
+msgstr "이 프로필은 스캔 투명 필름 아카이브를 보관할 목적으로 설계했습니다. 최근에는 ProPhoto RGB 프로필을 보관 용도로 더 많이 사용하지만 반전 색상 형식으로 이미지를 저장하는데 적합합니다."
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
@@ -994,7 +995,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr "이 프로파일은 양극판 제판, 용지 형식 1, 2(광택 또는 무광택), 삽지 옵셋에 인쇄할 때 활용합니다. 제조 공정에서 이 프로파일을 더 이상 활용하지 마시고, FOGRA39L를 활용하십시오."
+msgstr "이 프로필은 양극판 제판, 용지 형식 1, 2(광택 또는 무광택), 삽지 옵셋에 인쇄할 때 활용합니다. 제조 공정에서 이 프로필을 더 이상 활용하지 마시고, FOGRA39L를 활용하십시오."
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
@@ -1007,7 +1008,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr "이 프로파일은 양극판 제판, 용지 형식 3(LW), 윤전 인쇄 옵셋 인쇄 용도로 활용합니다. 제조 공정에서 이 프로파일을 더 이상 활용하지 마시고, FOGRA45를 활용하십시오."
+msgstr "이 프로필은 양극판 제판, 용지 형식 3(LW), 윤전 인쇄 옵셋 인쇄 용도로 활용합니다. 제조 공정에서 이 프로필을 더 이상 활용하지 마시고, FOGRA45를 활용하십시오."
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
@@ -1020,7 +1021,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr "이 프로파일은 양극판 제판, 용지 형식 4(무광택 백색), 삽지 옵셋 인쇄시 활용합니다. 제조 공정에서 이 프로파일을 더 이상 활용하지 마시고, FOGRA47을 활용하십시오."
+msgstr "이 프로필은 양극판 제판, 용지 형식 4(무광택 백색), 삽지 옵셋 인쇄시 활용합니다. 제조 공정에서 이 프로필을 더 이상 활용하지 마시고, FOGRA47을 활용하십시오."
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
@@ -1031,7 +1032,7 @@ msgstr "FOGRA30L Uncoated Yellowish"
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr "이 프로파일은 양극판 제판, 용지 형식 5(무광택 황색), 삽지 옵셋 인쇄시 활용합니다."
+msgstr "이 프로필은 양극판 제판, 용지 형식 5(무광택 황색), 삽지 옵셋 인쇄시 활용합니다."
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
@@ -1045,7 +1046,7 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr "이 프로파일은 용지 형식 1, 2(광택 또는 무광택), 삽지 옵셋에 인쇄할 때 활용합니다. 이 프로파일은 U.S. GRACoL 2006 (TR 006)과 큰 차이가 없습니다."
+msgstr "이 프로필은 용지 형식 1, 2(광택 또는 무광택), 삽지 옵셋에 인쇄할 때 활용합니다. 이 프로파일은 U.S. GRACoL 2006 (TR 006)과 큰 차이가 없습니다."
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
@@ -1056,7 +1057,7 @@ msgstr "FOGRA40L SC Paper"
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr "이 프로파일은 SC(강광택) 용지, 윤전 옵셋에서 인쇄할 때 활용합니다. 알려진 미국 색상 프로파일 중 동일한 프로파일은 없습니다."
+msgstr "이 프로필은 SC(강광택) 용지, 윤전 옵셋에서 인쇄할 때 활용합니다. 알려진 미국 색상 프로필 중 동일한 프로필은 없습니다."
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
@@ -1068,7 +1069,7 @@ msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr "ISO 12647-2:2004 규격 준수 프로파일은 60 l/cm 히트셋 윤전 인쇄용 개선 경량 광택(LWC) 용지 인쇄시 활용합니다. FOGRA28L을 대체합니다."
+msgstr "ISO 12647-2:2004 규격 준수 프로필은 60 l/cm 히트셋 윤전 인쇄용 개선 경량 광택(LWC) 용지 인쇄시 활용합니다. FOGRA28L을 대체합니다."
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
@@ -1079,7 +1080,7 @@ msgstr "FOGRA47L Uncoated"
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr "ISO 12647-2 규격 준수 프로파일은 60 l/cm 삽지 옵셋 인쇄시 115 gsm 무광 백색 용지(용지 형식 4)에 인쇄할 때 활용합니다."
+msgstr "ISO 12647-2 규격 준수 프로필은 60 l/cm 삽지 옵셋 인쇄시 115 gsm 무광 백색 용지(용지 형식 4)에 인쇄할 때 활용합니다."
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
@@ -1139,7 +1140,7 @@ msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
-msgstr "이 프로파일은 NTSC 비디오 표준에서 사용하는 색상 범위를 정의합니다.  SMTE-C로 대체되어 오래된 채로 방치된 표준입니다. 동영상 기록물을 디코딩할 때만 이 프로파일을 활용해야합니다."
+msgstr "이 프로필은 NTSC 비디오 표준에서 사용하는 색상 범위를 정의합니다.  SMTE-C로 대체되어 오래된 채로 방치된 표준입니다. 동영상 기록물을 디코딩할 때만 이 프로필을 활용해야합니다."
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
@@ -1155,7 +1156,7 @@ msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr "이 프로파일에서는 PAL 과 SECAM 비디오 표준에서 활용하는 색상 범위를 정의하며 sRGB와 거의 유사합니다. 이 프로파일은 동영상을 인코딩 또는 디코딩할 경우에만 활용해야 합니다."
+msgstr "이 프로필에서는 PAL 과 SECAM 비디오 표준에서 활용하는 색상 범위를 정의하며 sRGB와 거의 유사합니다. 이 프로필은 동영상을 인코딩 또는 디코딩할 경우에만 활용해야 합니다."
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
@@ -1172,7 +1173,7 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr "애초에 Eastman Kodak에서 설계했고 ROMM RGB라고도 하는 이 프로파일은 상당히 넓은 영역의 색상을 표현할 수 있으며 대부분의 사진사들이 RAW 이미지를 표현하고 편집하고 저장하는데 활용합니다. 16비트 채널 정밀도로 작업하지 않는 이상, 이미지를 편집할 때 색 띠 현상을 관찰할 수 있습니다."
+msgstr "애초에 Eastman Kodak에서 설계했고 ROMM RGB라고도 하는 이 프로필은 상당히 넓은 영역의 색상을 표현할 수 있으며 대부분의 사진사들이 RAW 이미지를 표현하고 편집하고 저장하는데 활용합니다. 16비트 채널 정밀도로 작업하지 않는 이상, 이미지를 편집할 때 색 띠 현상을 관찰할 수 있습니다."
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
@@ -1203,7 +1204,7 @@ msgstr "SMPTE-C RGB"
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr "이는 북아메리카, 일본에서 스튜디오 녹화시 활용하는 표준안입니다. 동영상을 인코딩하거나 디코딩할 경우에만 이 프로파일을 활용해야합니다."
+msgstr "이는 북아메리카, 일본에서 스튜디오 녹화시 활용하는 표준안입니다. 동영상을 인코딩하거나 디코딩할 경우에만 이 프로필을 활용해야합니다."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
@@ -1229,7 +1230,7 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr "이 범용 프로파일은 휴렛 팩커드와 마이크로소프트에서 설계했으며 태깅하지 않은 인터넷 RGB 색상용 기본 프로파일로 존재하고, HDTV에서 활용합니다. 대부분의 보정하지 않은 디스플레이 장치에서는 이 프로파일이 간혹 인쇄에 적합하지 않은 선택이겠지만, sRGB 영역의 대부분의 색상을 표현할 수 있습니다."
+msgstr "이 범용 프로필은 휴렛 팩커드와 마이크로소프트에서 설계했으며 태깅하지 않은 인터넷 RGB 색상용 기본 프로필로 존재하고, HDTV에서 활용합니다. 대부분의 보정하지 않은 디스플레이 장치에서는 이 프로필이 간혹 인쇄에 적합하지 않은 선택이겠지만, sRGB 영역의 대부분의 색상을 표현할 수 있습니다."
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
@@ -1245,7 +1246,7 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr "이 시험 프로파일은 적, 녹 채널을 서로 도치하며, 프로파일을 올바로 적용했는지 눈으로 확인할 때 유용합니다. 이 프로파일을 두번 적용하면 이미지 형태는 원 상태로 보입니다."
+msgstr "이 시험 프로필은 적, 녹 채널을 서로 도치하며, 프로필을 올바로 적용했는지 눈으로 확인할 때 유용합니다. 이 프로필을 두번 적용하면 이미지 형태는 원 상태로 보입니다."
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
@@ -1257,7 +1258,7 @@ msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr "이 프로파일은 미 3등급 광택용지, 삽지 옵셋, 그라비어 용지에 인쇄할 때 사용합니다. 백지에 고급 잡지 인쇄를 할 때 활용합니다."
+msgstr "이 프로필은 미 3등급 광택용지, 삽지 옵셋, 그라비어 용지에 인쇄할 때 사용합니다. 백지에 고급 잡지 인쇄를 할 때 활용합니다."
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
@@ -1269,7 +1270,7 @@ msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr "이 프로파일은 미 5등급 광택용지, 삽지 옵셋, 그라비어 용지에 인쇄할 때 사용합니다. 누런 종이에 표준 잡지 인쇄를 할 때 활용합니다."
+msgstr "이 프로필은 미 5등급 광택용지, 삽지 옵셋, 그라비어 용지에 인쇄할 때 사용합니다. 누런 종이에 표준 잡지 인쇄를 할 때 활용합니다."
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
@@ -1287,7 +1288,7 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr "이 편집 영역은 Adobe RGB보다 더 많은 색상을 잡을 수 있도록 Adobe Systems에서 설계했습니다. 이 프로파일은 동영상 녹화 장치와 같은 장치에서 출력할 때 사용하며, 컴퓨터 화면에 나타낼 수 없는 더 많은 색상을 정의할 수 있습니다. 채널 정밀도를 16 비트로 설정하여 작업하는 이상 이미지를 편집할 때 색 띠 현상을 관찰할 수 있습니다."
+msgstr "이 편집 영역은 Adobe RGB보다 더 많은 색상을 잡을 수 있도록 Adobe Systems에서 설계했습니다. 이 프로필은 동영상 녹화 장치와 같은 장치에서 출력할 때 사용하며, 컴퓨터 화면에 나타낼 수 없는 더 많은 색상을 정의할 수 있습니다. 채널 정밀도를 16 비트로 설정하여 작업하는 이상 이미지를 편집할 때 색 띠 현상을 관찰할 수 있습니다."
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
@@ -1303,13 +1304,13 @@ msgstr "X11 색상"
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr "이 이름이 붙은 색상 프로파일에는 X11에서 원본 색상을 sRGB로 가정하여 정의한 모든 색상이 들어있습니다."
+msgstr "이 이름이 붙은 색상 프로필에는 X11에서 원본 색상을 sRGB로 가정하여 정의한 모든 색상이 들어있습니다."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #: policy/org.freedesktop.color.policy.in.in:20
 msgid "Create a color managed device"
-msgstr "색상 관리 장치 만듭니다"
+msgstr "색상 관리 장치 만들기"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
@@ -1319,11 +1320,11 @@ msgstr "색상 관리 장치를 만들려면 인증이 필요합니다"
 #. - Normal users should not have to authenticate to add profiles
 #: policy/org.freedesktop.color.policy.in.in:35
 msgid "Create a color profile"
-msgstr "색상 프로파일 만들기"
+msgstr "색상 프로필 만들기"
 
 #: policy/org.freedesktop.color.policy.in.in:36
 msgid "Authentication is required to create a color profile"
-msgstr "색상 프로파일을 만들려면 인증이 필요합니다"
+msgstr "색상 프로필을 만들려면 인증이 필요합니다"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
@@ -1339,7 +1340,7 @@ msgstr "색상 관리 장치를 제거하려면 인증이 필요합니다"
 #. - Normal users should not have to authenticate to delete profiles
 #: policy/org.freedesktop.color.policy.in.in:65
 msgid "Remove a color profile"
-msgstr "색상 프로파일 제거"
+msgstr "색상 프로필 제거"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"
@@ -1359,11 +1360,11 @@ msgstr "장치 색상 설정을 수정하려면 인증이 필요합니다"
 #. - Normal users should not have to authenticate to modify profiles
 #: policy/org.freedesktop.color.policy.in.in:95
 msgid "Modify a color profile"
-msgstr "색상 프로파일 수정"
+msgstr "색상 프로필 수정"
 
 #: policy/org.freedesktop.color.policy.in.in:96
 msgid "Authentication is required to modify a color profile"
-msgstr "색상 프로파일을 수정하려면 인증이 필요합니다"
+msgstr "색상 프로필을 수정하려면 인증이 필요합니다"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -1374,22 +1375,22 @@ msgstr "색상 프로파일을 수정하려면 인증이 필요합니다"
 #. other sessions unusable.
 #: policy/org.freedesktop.color.policy.in.in:115
 msgid "Install system color profiles"
-msgstr "시스템 색상 프로파일 설치"
+msgstr "시스템 색상 프로필 설치"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "모든 사용자들이 사용하는 색상 프로파일을 설치하려면 인증이 필요합니다"
+msgstr "모든 사용자들이 사용하는 색상 프로필을 설치하려면 인증이 필요합니다"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
 #: policy/org.freedesktop.color.policy.in.in:131
 msgid "Inhibit color profile selection"
-msgstr "색상 프로파일 선택 제한"
+msgstr "색상 프로필 선택 제한"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "장치 프로파일 일치를 비활성화 하려면 인증이 필요합니다"
+msgstr "장치 프로필 일치를 비활성화 하려면 인증이 필요합니다"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the

@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
+"POT-Creation-Date: 2019-03-08 12:39+0000\n"
+"PO-Revision-Date: 2018-05-10 15:20+0000\n"
 "Last-Translator: Mingcong Bai <jeffbai@aosc.xyz>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/freedesktop/colord/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
@@ -139,7 +139,7 @@ msgstr "ICC 文件转储程序"
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr ""
+msgstr "嵌入创建时间戳"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491

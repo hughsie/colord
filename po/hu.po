@@ -4,7 +4,7 @@
 # 
 # Translators:
 # Balázs Meskó <meskobalazs@gmail.com>, 2016,2018
-# Balázs Úr <urbalazs@gmail.com>, 2014-2015
+# Balázs Úr <ur.balazs@fsf.hu>, 2014-2015
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2012
 # kelemeng <kelemeng@ubuntu.com>, 2012
 # kelemeng <kelemeng@ubuntu.com>, 2012
@@ -16,9 +16,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
+"POT-Creation-Date: 2019-03-08 12:39+0000\n"
+"PO-Revision-Date: 2018-04-29 11:57+0000\n"
+"Last-Translator: Balázs Meskó <meskobalazs@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/freedesktop/colord/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -141,7 +141,7 @@ msgstr "ICC profil dump program"
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr ""
+msgstr "Beágyazott létrehozási időbélyeg írása"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
