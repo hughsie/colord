@@ -1,2 +1,2 @@
-d /var/lib/colord 0755 @daemon_user@ @daemon_user@
-d /var/lib/colord/icc 0755 @daemon_user@ @daemon_user@
+d @localstatedir@/lib/colord 0755 @daemon_user@ @daemon_user@
+d @localstatedir@/lib/colord/icc 0755 @daemon_user@ @daemon_user@

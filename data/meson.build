@@ -13,10 +13,11 @@ if get_option('bash_completion')
 endif
 
 con2 = configuration_data()
+con2.set('localstatedir', localstatedir)
 con2.set('servicedir', libexecdir)
 con2.set('daemon_user', get_option('daemon_user'))
 
-# replace @servicedir@ and @daemon_user@
+# replace @servicedir@, @daemon_user@ and @localstatedir@
 if get_option('systemd')
   configure_file(
     input : 'colord.service.in',
