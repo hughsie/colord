@@ -6,12 +6,6 @@ subdir('ref')
 subdir('tests')
 subdir('ti1')
 
-if get_option('systemd')
-  install_data('colord.conf',
-    install_dir: systemd.get_pkgconfig_variable('tmpfilesdir')
-  )
-endif
-
 if get_option('bash_completion')
   install_data('colormgr',
     install_dir: bash_completion.get_pkgconfig_variable('completionsdir')
@@ -30,6 +24,14 @@ if get_option('systemd')
     configuration : con2,
     install: true,
     install_dir: systemd.get_pkgconfig_variable('systemdsystemunitdir'),
+  )
+
+  configure_file(
+    input : 'colord.conf.in',
+    output : 'colord.conf',
+    configuration : con2,
+    install: true,
+    install_dir: systemd.get_pkgconfig_variable('tmpfilesdir')
   )
 endif
 
