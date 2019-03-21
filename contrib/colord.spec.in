@@ -36,7 +36,7 @@ BuildRequires: libgudev1-devel
 BuildRequires: polkit-devel >= 0.103
 BuildRequires: sqlite-devel
 BuildRequires: gobject-introspection-devel
-BuildRequires: vala-tools
+BuildRequires: vala
 BuildRequires: libgusb-devel >= 0.2.2
 BuildRequires: gtk-doc
 BuildRequires: color-filesystem
@@ -169,8 +169,7 @@ exit 0
 %postun
 %systemd_postun colord.service
 
-%post libs -p /sbin/ldconfig
-%postun libs -p /sbin/ldconfig
+%ldconfig_scriptlets libs
 
 %files -f %{name}.lang
 %doc README.md AUTHORS NEWS COPYING
