@@ -1067,7 +1067,7 @@ cd_client_import_profile_query_info_cb (GObject *source_object,
  *
  * Imports a color profile into the users home directory.
  *
- * If the profile should be accessable for all users, then call
+ * If the profile should be accessible for all users, then call
  * cd_profile_install_system_wide() on the result.
  *
  * Since: 0.1.12

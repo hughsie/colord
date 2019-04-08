@@ -1820,7 +1820,7 @@ ch_device_get_integral_time (GUsbDevice *device, guint16 *value,
 /**
  * ch_device_get_temperature:
  * @device: A #GUsbDevice
- * @value: (out): temperature in Celcius
+ * @value: (out): temperature in Celsius
  * @cancellable: a #GCancellable, or %NULL
  * @error: a #GError, or %NULL
  *

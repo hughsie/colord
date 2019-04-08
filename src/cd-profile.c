@@ -1052,7 +1052,7 @@ cd_profile_load_from_filename (CdProfile *profile, const gchar *filename, GError
 		g_set_error (error,
 			     CD_PROFILE_ERROR,
 			     CD_PROFILE_ERROR_FAILED_TO_READ,
-			     "failed to create mapped file from filname %s",
+			     "failed to create mapped file from filename %s",
 			     filename);
 		return FALSE;
 	}

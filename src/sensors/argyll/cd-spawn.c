@@ -295,7 +295,7 @@ cd_spawn_is_running (CdSpawn *spawn)
  *
  * We send SIGQUIT and after a few ms SIGKILL (if allowed)
  *
- * IMPORTANT: This is not a syncronous operation, and client programs will need
+ * IMPORTANT: This is not a synchronous operation, and client programs will need
  * to wait for the ::exit signal.
  **/
 gboolean
@@ -419,7 +419,7 @@ cd_spawn_argv (CdSpawn *spawn, gchar **argv, gchar **envp, GError **error)
 		return FALSE;
 	}
 
-	/* install an idle handler to check if the child returnd successfully. */
+	/* install an idle handler to check if the child returned successfully. */
 	rc = fcntl (spawn->priv->stdout_fd, F_SETFL, O_NONBLOCK);
 	if (rc < 0) {
 		g_set_error_literal (error, 1, 0, "stdout fcntl failed");

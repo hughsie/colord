@@ -11,7 +11,7 @@
 # Devices that may have profiles.
 #
 # These are properties defining the behavior:
-#  COLORD_DEVICE		Can be assinged a profile
+#  COLORD_DEVICE		Can be assigned a profile
 #  COLORD_KIND		The kind of device
 
 # video cameras

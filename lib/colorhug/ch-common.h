@@ -1447,7 +1447,7 @@ G_BEGIN_DECLS
 /**
  * CH_CMD_SET_CRYPTO_KEY:
  *
- * Sets the 128 bit encyption key for the device.
+ * Sets the 128 bit encryption key for the device.
  *
  * PROTOCOLv2:
  * bRequest:   [cmd]

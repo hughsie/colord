@@ -110,7 +110,7 @@ cd_sensor_client_add (CdSensorClient *sensor_client,
 	/* load the sensor */
 	ret = cd_sensor_load (sensor, &error);
 	if (!ret) {
-		/* not fatal, non-native devices are still useable */
+		/* not fatal, non-native devices are still usable */
 		g_debug ("CdSensorClient: failed to load native sensor: %s",
 			 error->message);
 		g_clear_error (&error);

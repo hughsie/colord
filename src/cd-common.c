@@ -198,7 +198,7 @@ cd_main_sender_authenticated (GDBusConnection *connection,
 gboolean
 cd_main_mkdir_with_parents (const gchar *filename, GError **error)
 {
-	/* ensure desination exists */
+	/* ensure destination exists */
 	if (!g_file_test (filename, G_FILE_TEST_EXISTS)) {
 		g_autoptr(GFile) file = NULL;
 		file = g_file_new_for_path (filename);

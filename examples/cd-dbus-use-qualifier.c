@@ -56,7 +56,7 @@ split_qualifier (const char *qualifier)
 		goto out;
 	tmp[0] = '\0';
 
-	/* get resulution */
+	/* get resolution */
 	split[QUAL_RESOLUTION] = strdup(tmp + 1);
 out:
 	free(qualifier_copy);
@@ -86,7 +86,7 @@ get_filename_for_profile_path (DBusConnection *con,
 	dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &interface);
 	dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &property);
 
-	/* send syncronous */
+	/* send synchronous */
 	dbus_error_init(&error);
 	printf("Calling %s.Get(%s)\n", interface, property);
 	reply = dbus_connection_send_with_reply_and_block(con,
@@ -181,7 +181,7 @@ get_profile_for_device_path (DBusConnection *con,
 	}
 	dbus_message_iter_close_container(&args, &entry);
 
-	/* send syncronous */
+	/* send synchronous */
 	dbus_error_init(&error);
 	printf("Calling GetProfileForQualifiers(%s...)\n", key[0]);
 	reply = dbus_connection_send_with_reply_and_block(con,
@@ -244,7 +244,7 @@ get_profile_for_device_id (DBusConnection *con,
 	dbus_message_iter_init_append(message, &args);
 	dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &device_id);
 
-	/* send syncronous */
+	/* send synchronous */
 	dbus_error_init(&error);
 	printf("Calling FindDeviceById(%s)\n", device_id);
 	reply = dbus_connection_send_with_reply_and_block(con,

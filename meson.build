@@ -39,7 +39,7 @@ lt_revision = '5'
 lt_age = '0'
 lt_version = '@0@.@1@.@2@'.format(lt_current, lt_age, lt_revision)
 
-# get suported warning flags
+# get supported warning flags
 test_args = [
   '-fstack-protector-strong',
   '-Waggregate-return',

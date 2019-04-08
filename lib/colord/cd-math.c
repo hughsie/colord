@@ -122,7 +122,7 @@ cd_vec3_add (const CdVec3 *src1, const CdVec3 *src2, CdVec3 *dest)
  * @src2: the other source
  * @dest: the destination
  *
- * Subtracts one vector quantaty from another
+ * Subtracts one vector quantity from another
  * The arguments @src and @dest can be the same value.
  **/
 void

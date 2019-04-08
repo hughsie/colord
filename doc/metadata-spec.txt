@@ -16,7 +16,7 @@ These data values are not properties on the DBus interface, but are
 loaded from the metadata table in the .icc file, and added to the colord
 Profile.Metadata dictionary.
 
-These keys are optional but recomended. Other keys may also be present,
+These keys are optional but recommended. Other keys may also be present,
 and should be ignored.
 
 License			A content license, e.g. "Public Domain" or "CC0"

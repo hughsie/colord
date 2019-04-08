@@ -317,7 +317,7 @@ cd_util_show_device (CdUtilPrivate *priv, CdDevice *device)
 	 * defined as a monitor, keyboard and mouse.
 	 * For instance, in a public library one central computer can
 	 * have 3 keyboards, 3 displays and 3 mice plugged in and with
-	 * systemd these can be setup as three independant seats with
+	 * systemd these can be setup as three independent seats with
 	 * different sessions running on them */
 	cd_util_print_field (_("Seat"),
 			     "seat", priv,

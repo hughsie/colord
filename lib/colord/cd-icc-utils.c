@@ -96,7 +96,7 @@ cd_icc_utils_get_coverage_calc (CdIcc *icc,
 	alarm_codes[0] = 0xffff;
 	cmsSetAlarmCodes (alarm_codes);
 
-	/* slice profile in regular intevals */
+	/* slice profile in regular intervals */
 	data = g_new0 (cmsFloat32Number, data_len * 3);
 	helper.data = data;
 	helper.idx = 0;

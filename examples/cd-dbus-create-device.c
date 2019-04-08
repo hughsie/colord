@@ -81,7 +81,7 @@ main (int argc, char **argv)
 	helper_dict_add_property(&dict, "Kind", "scanner");
 	dbus_message_iter_close_container(&args, &dict);
 
-	/* send syncronous */
+	/* send synchronous */
 	dbus_error_init(&error);
 	printf("Calling CreateDevice(%s,%s)\n",
 		device_id, scope);

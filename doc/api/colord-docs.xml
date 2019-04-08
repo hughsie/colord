@@ -82,7 +82,7 @@
     <title>libcolord</title>
     <partintro>
       <para>
-        This part documents helper funtions in libcolord.
+        This part documents helper functions in libcolord.
       </para>
     </partintro>
     <xi:include href="xml/cd-client-sync.xml"/>

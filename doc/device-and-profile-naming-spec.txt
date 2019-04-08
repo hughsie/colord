@@ -30,9 +30,9 @@ NOTE: This is a working document, and may change based on feedback.
 
 Notations used in this document:
 
- * {%varible}
+ * {%variable}
      A variable substitution is performed.
- * [-{%varible}]
+ * [-{%variable}]
      if the variable is non-NULL then the clause is used, else ignored.
 
 = Device ID Format =
@@ -57,7 +57,7 @@ A colord device should not be created for a display interface that does
 not have a physical device attached to it.
 
 A XRandR device typically has the device EDID data available, and this
-is the prefered way of identifying the device. Using the EDID ensures
+is the preferred way of identifying the device. Using the EDID ensures
 the device ID remains constant if the physical display connection is
 moved from VGA to DVI1 for instance.
 
@@ -130,7 +130,7 @@ and spaces and does not have to be escaped.
 A profile ID is the same for binary identical profiles, even if
 duplicated on the filesystem with the exception of user profiles.
 
-In line with other ICC reccomendations, the embedded profile ID (bytes
+In line with other ICC recommendations, the embedded profile ID (bytes
 84 to 99) is used, after converting it to a hexadecimal encoding.
 
 Format:		icc-{%embedded-profile-id}

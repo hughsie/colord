@@ -1319,7 +1319,7 @@ colord_device_mapping_func (void)
 			 cd_profile_get_object_path (profile1));
 	g_object_unref (profile_tmp);
 
-	/* add back the second (and prefered) profile */
+	/* add back the second (and preferred) profile */
 	profile2 = cd_client_create_profile_sync (client,
 						  profile_id2,
 						  CD_OBJECT_SCOPE_TEMP,

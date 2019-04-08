@@ -224,7 +224,7 @@ dtp94_device_setup (GUsbDevice *device, GError **error)
 	if (!dtp94_device_send_cmd (device, "0207CF\r", error))
 		return FALSE;
 
-	/* set delimeter to CR */
+	/* set delimiter to CR */
 	if (!dtp94_device_send_cmd (device, "0008CF\r", error))
 		return FALSE;
 

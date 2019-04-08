@@ -428,7 +428,7 @@ ch_device_queue_process_finish_cb (GObject *source,
  * @error:		A #GError, or %NULL
  *
  * Processes all commands in the command queue.
- * WARNING: this function is syncronous and will block.
+ * WARNING: this function is synchronous and will block.
  *
  * Return value: %TRUE if the commands were executed successfully.
  *
@@ -1443,7 +1443,7 @@ ch_device_queue_set_pre_scale (ChDeviceQueue *device_queue,
  * ch_device_queue_get_temperature:
  * @device_queue:	A #ChDeviceQueue
  * @device:		A #GUsbDevice
- * @temperature:	Temperature in Celcius
+ * @temperature:	Temperature in Celsius
  *
  * Gets the device temperature.
  *
@@ -2663,7 +2663,7 @@ ch_device_queue_erase_flash (ChDeviceQueue *device_queue,
  * @device:		A #GUsbDevice
  * @value:		Success value
  *
- * Sets the firmware flash sucess value.
+ * Sets the firmware flash success value.
  * Be careful using this function as misuse can result in a 'bricked'
  * ColorHug device.
  *

@@ -68,7 +68,7 @@ cd_edid_install_profile (unsigned char *edid,
 	if (edid == NULL || edid_len == 0)
 		return CD_EDID_ERROR_NO_DATA;
 
-	/* conect to daemon */
+	/* connect to daemon */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {
@@ -204,7 +204,7 @@ cd_edid_remove_profile (unsigned char *edid,
 	if (edid == NULL || edid_len == 0)
 		return CD_EDID_ERROR_NO_DATA;
 
-	/* conect to daemon */
+	/* connect to daemon */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {
@@ -298,7 +298,7 @@ cd_edid_get_profile (unsigned char *edid,
 	if (edid == NULL || edid_len == 0)
 		return CD_EDID_ERROR_NO_DATA;
 
-	/* conect to daemon */
+	/* connect to daemon */
 	client = cd_client_new ();
 	ret = cd_client_connect_sync (client, NULL, &error);
 	if (!ret) {

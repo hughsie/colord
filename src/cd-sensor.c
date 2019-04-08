@@ -1379,7 +1379,7 @@ cd_sensor_set_from_device (CdSensor *sensor,
 		}
 	}
 
-	/* is the sensor embeded, e.g. on the W700? */
+	/* is the sensor embedded, e.g. on the W700? */
 	if (g_udev_device_get_property_as_boolean (device, "COLORD_SENSOR_EMBEDDED"))
 		priv->embedded = TRUE;
 

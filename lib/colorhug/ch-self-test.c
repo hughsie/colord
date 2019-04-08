@@ -177,7 +177,7 @@ ch_test_device_queue_func (void)
 	/* check we failed both devices */
 	g_assert_cmpint (device_failed_cnt, ==, valid_devices);
 
-	/* chekc we got enough progress updates */
+	/* check we got enough progress updates */
 	if (valid_devices > 0)
 		g_assert_cmpint (progress_changed_cnt, ==, valid_devices * 3 + 1);
 
@@ -1137,7 +1137,7 @@ ch_test_reading_xyz_func (void)
  * ch_test_incomplete_request_func:
  *
  * This tests what happens when we do request,request,read on the device
- * rather than just request,read. With new firmare versions we should
+ * rather than just request,read. With new firmware versions we should
  * return a %CH_ERROR_INCOMPLETE_REQUEST error value and the original
  * command ID rather than just the device re-enumerating on the USB bus.
  */

@@ -1496,7 +1496,7 @@ cd_icc_save_file_mkdir_parents (GFile *file, GError **error)
 		return FALSE;
 	}
 
-	/* ensure desination does not already exist */
+	/* ensure destination does not already exist */
 	if (g_file_query_exists (parent_dir, NULL))
 		return TRUE;
 	if (!g_file_make_directory_with_parents (parent_dir, NULL, error))
@@ -2606,7 +2606,7 @@ cd_icc_get_mluc_data (CdIcc *icc,
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_NO_DATA,
-				     "cmsSigProfile*Tag mising");
+				     "cmsSigProfile*Tag missing");
 		goto out;
 	}
 

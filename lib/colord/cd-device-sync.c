@@ -284,7 +284,7 @@ cd_device_get_profile_for_qualifiers_finish_sync (CdDevice *device,
  * @cancellable: a #GCancellable or %NULL
  * @error: a #GError, or %NULL.
  *
- * Gets the prefered profile for some qualifiers.
+ * Gets the preferred profile for some qualifiers.
  *
  * WARNING: This function is synchronous, and may block.
  * Do not use it in GUI applications.

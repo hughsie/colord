@@ -1448,7 +1448,7 @@ cd_it8_save_to_data (CdIt8 *it8,
 	if (data != NULL)
 		*data = g_strdup (data_tmp);
 
-	/* LCMS alocates an extra byte for the '\0' byte */
+	/* LCMS allocates an extra byte for the '\0' byte */
 	if (size != NULL)
 		*size = size_tmp - 1;
 out:

@@ -1525,7 +1525,7 @@ cd_device_get_profile_for_qualifiers_cb (GObject *source_object,
  * @callback: the function to run on completion
  * @user_data: the data to pass to @callback
  *
- * Gets the prefered profile for some qualifiers.
+ * Gets the preferred profile for some qualifiers.
  *
  * Since: 0.1.8
  **/
