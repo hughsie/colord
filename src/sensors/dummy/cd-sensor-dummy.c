@@ -41,8 +41,9 @@ cd_sensor_dummy_get_private (CdSensor *sensor)
 }
 
 static gboolean
-cd_sensor_get_ambient_wait_cb (GTask *task)
+cd_sensor_get_ambient_wait_cb (GTask *unowned_task)
 {
+	g_autoptr(GTask) task = unowned_task;
 	CdColorXYZ *sample = NULL;
 
 	sample = cd_color_xyz_new ();
@@ -55,8 +56,9 @@ cd_sensor_get_ambient_wait_cb (GTask *task)
 }
 
 static gboolean
-cd_sensor_get_sample_wait_cb (GTask *task)
+cd_sensor_get_sample_wait_cb (GTask *unowned_task)
 {
+	g_autoptr(GTask) task = unowned_task;
 	CdSensor *sensor = CD_SENSOR (g_task_get_source_object (task));
 	CdSensorDummyPrivate *priv = cd_sensor_dummy_get_private (sensor);
 	CdColorXYZ *sample = NULL;
@@ -101,9 +103,9 @@ cd_sensor_get_sample_async (CdSensor *sensor,
 
 	/* just complete in idle */
 	if (cap != CD_SENSOR_CAP_AMBIENT)
-		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_get_sample_wait_cb, task);
+		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_get_sample_wait_cb, g_steal_pointer(&task));
 	else
-		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_get_ambient_wait_cb, task);
+		g_timeout_add_seconds (2, (GSourceFunc) cd_sensor_get_ambient_wait_cb, g_steal_pointer(&task));
 }
 
 CdColorXYZ *
