@@ -193,6 +193,7 @@ typedef enum {
 	CD_SENSOR_KIND_COLORHUG2,		/* Since: 1.2.2 */
 	CD_SENSOR_KIND_SPYDER5,			/* Since: 1.2.11 */
 	CD_SENSOR_KIND_SPARK,			/* Since: 1.2.11 */
+	CD_SENSOR_KIND_SPYDERX,                 /* Since: 1.4.5 */
 	/*< private >*/
 	CD_SENSOR_KIND_LAST
 } CdSensorKind;
