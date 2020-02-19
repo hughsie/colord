@@ -3041,18 +3041,21 @@ cd_icc_get_white (CdIcc *icc)
 }
 
 /**
- * cd_icc_create_default:
+ * cd_icc_create_default_full:
  * @icc: A valid #CdIcc
- * @error: A #GError, or %NULL
+ * @flags: a set of #CdIccLoadFlags
+ * @error: (out): A #GError, or %NULL
  *
  * Creates a default sRGB ICC profile.
  *
  * Return value: %TRUE for success
  *
- * Since: 1.1.2
+ * Since: 1.4.5
  **/
 gboolean
-cd_icc_create_default (CdIcc *icc, GError **error)
+cd_icc_create_default_full (CdIcc *icc,
+			    CdIccLoadFlags flags,
+			    GError **error)
 {
 	CdIccPrivate *priv = GET_PRIVATE (icc);
 	gboolean ret = TRUE;
@@ -3079,7 +3082,7 @@ cd_icc_create_default (CdIcc *icc, GError **error)
 	}
 
 	/* get defaults from profile */
-	ret = cd_icc_load (icc, 0, error);
+	ret = cd_icc_load (icc, flags, error);
 	if (!ret)
 		goto out;
 
@@ -3092,6 +3095,23 @@ cd_icc_create_default (CdIcc *icc, GError **error)
 			     cd_standard_space_to_string (CD_STANDARD_SPACE_SRGB));
 out:
 	return ret;
+}
+
+/**
+ * cd_icc_create_default:
+ * @icc: A valid #CdIcc
+ * @error: (out): A #GError, or %NULL
+ *
+ * Creates a default sRGB ICC profile.
+ *
+ * Return value: %TRUE for success
+ *
+ * Since: 1.1.2
+ **/
+gboolean
+cd_icc_create_default (CdIcc *icc, GError **error)
+{
+	return cd_icc_create_default_full (icc, CD_ICC_LOAD_FLAGS_NONE, error);
 }
 
 /**
