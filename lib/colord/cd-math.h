@@ -88,6 +88,8 @@ void		 cd_mat33_normalize		(const CdMat3x3		*src,
 						 CdMat3x3		*dest);
 void		 cd_mat33_copy			(const CdMat3x3		*src,
 						 CdMat3x3		*dest);
+gboolean	 cd_mat33_is_finite		(const CdMat3x3		*mat,
+						 GError			**error);
 
 #undef __CD_MATH_H_INSIDE__
 

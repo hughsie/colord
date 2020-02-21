@@ -453,3 +453,30 @@ cd_mat33_copy (const CdMat3x3 *src, CdMat3x3 *dest)
 	g_return_if_fail (src != dest);
 	memcpy (dest, src, sizeof (CdMat3x3));
 }
+
+/**
+ * cd_mat33_is_finite:
+ * @mat: the matrix to test
+ * @error: (out): A #GError, or %NULL
+ *
+ * Determine whether all entries in the specified matrix are finite and not
+ * NaNs.
+ *
+ * Return value: %TRUE if isfinite() returns %TRUE for all values.
+ */
+gboolean
+cd_mat33_is_finite (const CdMat3x3 *mat, GError **error)
+{
+	const gdouble *data = cd_mat33_get_data (mat);
+
+	for (guint i = 0; i < 9; i++) {
+		if (!isfinite (data[i])) {
+			g_set_error (error, 1, 0,
+				     "Matrix value %u non-normal: %f",
+				     i, data[i]);
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
