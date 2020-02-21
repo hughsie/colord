@@ -183,10 +183,8 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	CdMat3x3 m_rgb;
 	CdMat3x3 m_rgb_inv;
 	CdMat3x3 n_rgb;
-	const gdouble *data;
 	gdouble m_lumi = 0.0f;
 	gdouble n_lumi = 0.0f;
-	guint i;
 	g_autofree gchar *tmp = NULL;
 
 	/* read reference matrix */
@@ -217,14 +215,8 @@ cd_it8_utils_calculate_ccmx (CdIt8 *it8_reference,
 	g_debug ("device calibration = %s", tmp);
 
 	/* check there are no nan's or inf's */
-	data = cd_mat33_get_data (&calibration);
-	for (i = 0; i < 9; i++) {
-		if (fpclassify (data[i]) != FP_NORMAL) {
-			g_set_error (error, 1, 0,
-				     "Matrix value %u non-normal: %f", i, data[i]);
-			return FALSE;
-		}
-	}
+	if (!cd_mat33_is_finite (&calibration, error))
+		return FALSE;
 
 	/* save to ccmx file */
 	cd_it8_set_matrix (it8_ccmx, &calibration);
