@@ -172,3 +172,126 @@ cd_icc_utils_get_coverage (CdIcc *icc,
 		*coverage = coverage_tmp;
 	return TRUE;
 }
+
+/**
+ * cd_icc_utils_get_chroma_matrix:
+ * @icc: The profile to use.
+ * @mat: (out): The returned matrix containing the primaries from @icc.
+ *
+ * Fills a 3x3 matrix with the XYZ red, green, and blue primary values from an
+ * ICC profile as columns.
+ */
+static void
+cd_icc_utils_get_chroma_matrix (CdIcc *icc, CdMat3x3 *mat)
+{
+	const CdColorXYZ *red = cd_icc_get_red (icc);
+	const CdColorXYZ *green = cd_icc_get_green (icc);
+	const CdColorXYZ *blue = cd_icc_get_blue (icc);
+	CdMat3x3 matrix = {
+		red->X, green->X, blue->X,
+		red->Y, green->Y, blue->Y,
+		red->Z, green->Z, blue->Z };
+
+	*mat = matrix;
+}
+
+/**
+ * cd_bradford_transform:
+ * @reference: The white point to use as a reference.
+ * @measured: The white point measurement for the target device.
+ * @mat: (out): The returned Bradford color adaptation matrix.
+ */
+static void
+cd_bradford_transform (const CdColorXYZ *reference,
+		       const CdColorXYZ *measured,
+		       CdMat3x3 *mat)
+{
+	/* see https://onlinelibrary.wiley.com/doi/pdf/10.1002/9781119021780.app3 */
+	const CdMat3x3 bradford_response_matrix = {
+		 0.8951,  0.2664, -0.1614,
+		-0.7502,  1.7135,  0.0367,
+		 0.0389, -0.0685,  1.0296 };
+	CdMat3x3 bradford_inv;
+	CdMat3x3 ratio;
+	CdMat3x3 tmp;
+	CdVec3 ref_xyz = { reference->X / reference->Y,
+			   1.0,
+			   reference->Z / reference->Y };
+	CdVec3 meas_xyz = { measured->X / measured->Y,
+			    1.0,
+			    measured->Z / measured->Y };
+	CdVec3 ref_rgb;
+	CdVec3 meas_rgb;
+
+	/* convert XYZ white point values to RGB */
+	cd_mat33_vector_multiply (&bradford_response_matrix,
+				  &ref_xyz,
+				  &ref_rgb);
+	cd_mat33_vector_multiply (&bradford_response_matrix,
+				  &meas_xyz,
+				  &meas_rgb);
+
+	/* construct a diagonal matrix D of the ratios between the RGB values */
+	cd_mat33_clear (&ratio);
+	ratio.m00 = meas_rgb.v0 / ref_rgb.v0;
+	ratio.m11 = meas_rgb.v1 / ref_rgb.v1;
+	ratio.m22 = meas_rgb.v2 / ref_rgb.v2;
+
+	/* transform is inv(B) * D * B */
+	cd_mat33_reciprocal (&bradford_response_matrix, &bradford_inv);
+	cd_mat33_matrix_multiply (&bradford_inv, &ratio, &tmp);
+	cd_mat33_matrix_multiply (&tmp, &bradford_response_matrix, mat);
+}
+
+/**
+ * cd_icc_utils_get_adaptation_matrix:
+ * @icc: The measured ICC profile for the target device.
+ * @icc_reference: The ICC profile to use as a reference (typically sRGB).
+ * @mat: (out): The returned adaptation matrix.
+ * @error: (out): A #GError, or %NULL
+ *
+ * Computes a correction matrix suitable for adjusting colors in a reference
+ * color space @icc_reference (typically sRGB) to the color space of a target
+ * device described by @icc.
+ *
+ * This function is designed to be used by desktop window systems to program the
+ * color transform matrix (CTM) property of the display hardware.
+ *
+ * Return value: %TRUE for success
+ *
+ * Since: 1.4.5
+ */
+gboolean
+cd_icc_utils_get_adaptation_matrix (CdIcc *icc,
+				    CdIcc *icc_reference,
+				    CdMat3x3 *mat,
+				    GError **error)
+{
+	CdMat3x3 reference;
+	CdMat3x3 measured_chroma;
+	CdMat3x3 measured;
+	CdMat3x3 measured_inv;
+	CdMat3x3 bradford;
+
+	cd_icc_utils_get_chroma_matrix (icc_reference, &reference);
+	cd_icc_utils_get_chroma_matrix (icc, &measured_chroma);
+
+	/* compute a Bradford color adaptation transform from the measured white
+	 * point to the reference white point */
+	cd_bradford_transform (cd_icc_get_white (icc_reference),
+			       cd_icc_get_white (icc),
+			       &bradford);
+
+	/* use the Bradford transform to adjust the measured chroma values to
+	 * match the reference luminance */
+	cd_mat33_matrix_multiply (&bradford, &measured_chroma, &measured);
+
+	/* invert the adjusted measured chroma matrix and multiply by the
+	 * reference colors to compute the resulting CSC matrix */
+	cd_mat33_reciprocal (&measured, &measured_inv);
+	cd_mat33_matrix_multiply (&measured_inv,
+				  &reference,
+				  mat);
+
+	return cd_mat33_is_finite (mat, error);
+}

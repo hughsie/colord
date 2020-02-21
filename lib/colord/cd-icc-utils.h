@@ -29,6 +29,7 @@
 #include <glib-object.h>
 
 #include "cd-icc.h"
+#include "cd-math.h"
 
 G_BEGIN_DECLS
 
@@ -36,6 +37,11 @@ gboolean	 cd_icc_utils_get_coverage		(CdIcc		*icc,
 							 CdIcc		*icc_reference,
 							 gdouble	*coverage,
 							 GError		**error);
+
+gboolean	cd_icc_utils_get_adaptation_matrix (CdIcc		*icc,
+						    CdIcc		*icc_reference,
+						    CdMat3x3		*out,
+						    GError		**error);
 
 G_END_DECLS
 
