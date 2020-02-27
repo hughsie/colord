@@ -796,12 +796,12 @@ cd_main_get_cmdline_for_pid (guint pid)
 	proc_path = g_strdup_printf ("/proc/%u/cmdline", pid);
 	ret = g_file_get_contents (proc_path, &cmdline, &len, &error);
 	if (!ret) {
-		g_warning ("CdMain: failed to read %s: %s",
+		g_debug ("CdMain: failed to read %s: %s",
 			   proc_path, error->message);
 		return NULL;
 	}
 	if (len == 0) {
-		g_warning ("CdMain: failed to read %s", proc_path);
+		g_debug ("CdMain: failed to read %s", proc_path);
 		g_free (cmdline);
 		return NULL;
 	}
