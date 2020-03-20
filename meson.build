@@ -1,7 +1,7 @@
 project('colord', 'c',
   version : '1.4.5',
   license : 'LGPL-2.1+',
-  meson_version : '>=0.46.0',
+  meson_version : '>=0.52.0',
   default_options : ['c_std=c99']
 )
 

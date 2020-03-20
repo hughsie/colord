@@ -232,7 +232,8 @@ configure_file(
 endif
 
 if get_option('tests')
-  testdatadir = join_paths(meson.source_root(), 'data', 'tests')
+  testdatadir = environment({'TESTDATADIR' : join_paths(meson.source_root(), 'data', 'tests')})
+
   e = executable(
     'colord-test-private',
     sources : [
@@ -249,14 +250,10 @@ if get_option('tests')
       lcms,
     ],
     link_with : colordprivate,
-    c_args : [
-      cargs,
-      '-DTESTDATADIR="' + testdatadir + '"',
-    ],
     install : get_option('installed_tests'),
     install_dir : join_paths(libexecdir, 'installed-tests', 'colord'),
   )
-  test('colord-test-private', e)
+  test('colord-test-private', e, env : testdatadir)
   e = executable(
     'colord-test-daemon',
     sources : [
@@ -273,12 +270,8 @@ if get_option('tests')
       lcms,
     ],
     link_with : colord,
-    c_args : [
-      cargs,
-      '-DTESTDATADIR="' + testdatadir + '"',
-    ],
     install : get_option('installed_tests'),
     install_dir : join_paths(libexecdir, 'installed-tests', 'colord'),
   )
-  test('colord-test-daemon', e)
+  test('colord-test-daemon', e, env : testdatadir)
 endif
