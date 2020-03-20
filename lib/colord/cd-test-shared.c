@@ -41,7 +41,7 @@ cd_test_get_filename (const gchar *filename)
 {
 	gchar *tmp;
 	char full_tmp[PATH_MAX];
-	g_autofree gchar *path = NULL;
+	const gchar *testdatadir;
 
 	/* running in the installed system */
 	if (g_getenv ("INSTALLED_TESTS") != NULL) {
@@ -51,11 +51,16 @@ cd_test_get_filename (const gchar *filename)
 					 filename,
 					 NULL);
 	}
-	path = g_build_filename (TESTDATADIR, filename, NULL);
-	tmp = realpath (path, full_tmp);
-	if (tmp == NULL)
-		return NULL;
-	return g_strdup (full_tmp);
+	/* self tests are running */
+	testdatadir = g_getenv ("TESTDATADIR");
+	if (testdatadir != NULL) {
+		g_autofree gchar *path = NULL;
+		path = g_build_filename (testdatadir, filename, NULL);
+		tmp = realpath (path, full_tmp);
+		if (tmp != NULL)
+			return g_strdup (full_tmp);
+	}
+	return NULL;
 }
 
 static GMainLoop *_test_loop = NULL;
