@@ -21,8 +21,10 @@
 
 #include "config.h"
 
+#include <errno.h>
 #include <gio/gio.h>
 #include <glib-object.h>
+#include <glib/gstdio.h>
 #include <sqlite3.h>
 
 #include "cd-common.h"
@@ -58,13 +60,13 @@ cd_mapping_db_convert_cb (void *data, gint argc, gchar **argv, gchar **col_name)
 	return rc;
 }
 
-gboolean
-cd_mapping_db_load (CdMappingDb *mdb,
+static gboolean
+cd_mapping_db_open(CdMappingDb *mdb,
 		    const gchar *filename,
+			gboolean retry,
 		    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	const gchar *statement;
 	gchar *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
@@ -89,6 +91,55 @@ cd_mapping_db_load (CdMappingDb *mdb,
 		sqlite3_close (priv->db);
 		return FALSE;
 	}
+
+	/* Quick sanity check of the database */
+	rc = sqlite3_exec (priv->db, "PRAGMA quick_check", NULL, NULL, &error_msg);
+	if (rc != SQLITE_OK) {
+		/* Database appears to be mangled, so wipe it and try again */
+		sqlite3_close (priv->db);
+		priv->db = NULL;
+
+		if (retry) {
+			if (g_unlink (filename) != 0) {
+				g_set_error (error,
+					     CD_CLIENT_ERROR,
+					     CD_CLIENT_ERROR_INTERNAL,
+					     "Cannot remove damaged database: %s",
+					     g_strerror (errno));
+				return FALSE;
+			}
+
+			return cd_mapping_db_open (mdb, filename, FALSE, error);
+		} else {
+			g_set_error (error,
+				     CD_CLIENT_ERROR,
+				     CD_CLIENT_ERROR_INTERNAL,
+				     "Cannot open mapping database: %s",
+				     error_msg);
+			sqlite3_free (error_msg);
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+gboolean
+cd_mapping_db_load (CdMappingDb *mdb,
+		    const gchar *filename,
+		    GError  **error)
+{
+	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
+	const gchar *statement;
+	gchar *error_msg = NULL;
+	gint rc;
+	g_autofree gchar *path = NULL;
+
+	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
+	g_return_val_if_fail (priv->db == NULL, FALSE);
+
+	if (!cd_mapping_db_open (mdb, filename, TRUE, error))
+		return FALSE;
 
 	/* we don't need to keep doing fsync */
 	rc = sqlite3_exec (priv->db, "PRAGMA synchronous=OFF",
