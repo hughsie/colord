@@ -91,9 +91,17 @@ cd_mapping_db_load (CdMappingDb *mdb,
 	}
 
 	/* we don't need to keep doing fsync */
-	sqlite3_exec (priv->db, "PRAGMA synchronous=OFF",
-		      NULL, NULL, NULL);
-
+	rc = sqlite3_exec (priv->db, "PRAGMA synchronous=OFF",
+			   NULL, NULL, &error_msg);
+	if (rc != SQLITE_OK) {
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_INTERNAL,
+			     "Failed to turn off synchronous operations: SQL error: %s",
+			     error_msg);
+		sqlite3_free (error_msg);
+		return FALSE;
+	}
 	/* check mappings */
 	rc = sqlite3_exec (priv->db, "SELECT * FROM mappings LIMIT 1",
 			   NULL, NULL, &error_msg);
