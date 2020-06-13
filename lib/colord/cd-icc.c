@@ -1153,7 +1153,7 @@ cd_icc_load (CdIcc *icc, CdIccLoadFlags flags, GError **error)
 /**
  * cd_icc_load_data:
  * @icc: a #CdIcc instance.
- * @data: binary data
+ * @data: (array length=data_len): binary data
  * @data_len: Length of @data
  * @flags: a set of #CdIccLoadFlags
  * @error: A #GError or %NULL
