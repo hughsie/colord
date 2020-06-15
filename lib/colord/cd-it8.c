@@ -828,7 +828,7 @@ cd_it8_has_option (CdIt8 *it8, const gchar *option)
 /**
  * cd_it8_load_from_data:
  * @it8: a #CdIt8 instance.
- * @data: text data
+ * @data: (array length=size): text data
  * @size: the size of text data
  * @error: a #GError, or %NULL
  *
@@ -1347,7 +1347,7 @@ cd_it8_save_to_file_ccss_sp (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 /**
  * cd_it8_save_to_data:
  * @it8: a #CdIt8 instance.
- * @data: a pointer to returned data
+ * @data: (array length=size): a pointer to returned data
  * @size: size of @data
  * @error: a #GError, or %NULL
  *

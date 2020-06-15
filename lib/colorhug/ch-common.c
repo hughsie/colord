@@ -448,7 +448,7 @@ ch_device_mode_to_string (ChDeviceMode device_mode)
 
 /**
  * ch_device_mode_from_firmware:
- * @data: firmware binary data
+ * @data: (array length=data_len): firmware binary data
  * @data_len: size of @data
  *
  * Gets the device mode from the unique code stored in the firmware data.

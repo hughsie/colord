@@ -1150,10 +1150,10 @@ ch_device_queue_set_calibration_ccmx (ChDeviceQueue *device_queue,
 
 /**
  * ch_device_queue_write_firmware:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @data:		Firmware binary data
- * @len:		Size of @data
+ * @device_queue:		A #ChDeviceQueue
+ * @device:			A #GUsbDevice
+ * @data: (array length=len):	Firmware binary data
+ * @len:			Size of @data
  *
  * Writes new firmware to the device.
  *
@@ -1206,10 +1206,10 @@ ch_device_queue_write_firmware (ChDeviceQueue	*device_queue,
 
 /**
  * ch_device_queue_verify_firmware:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @data:		Firmware binary data
- * @len:		Size of @data
+ * @device_queue:		A #ChDeviceQueue
+ * @device:			A #GUsbDevice
+ * @data: (array length=len):	Firmware binary data
+ * @len:			Size of @data
  *
  * Verifies firmware on the device.
  *
@@ -1252,10 +1252,10 @@ ch_device_queue_verify_firmware (ChDeviceQueue	*device_queue,
 
 /**
  * ch_device_queue_read_firmware:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @data:		Firmware binary data
- * @len:		Size of @data
+ * @device_queue:		A #ChDeviceQueue
+ * @device:			A #GUsbDevice
+ * @data: (array length=len):	Firmware binary data
+ * @len:			Size of @data
  *
  * Reads firmware on the device.
  *
@@ -2388,11 +2388,11 @@ ch_device_queue_calculate_checksum (const guint8 *data,
 
 /**
  * ch_device_queue_write_flash:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @address:		The device EEPROM address
- * @data:		Binary data
- * @len:		The length of @data
+ * @device_queue:		A #ChDeviceQueue
+ * @device:			A #GUsbDevice
+ * @address:			The device EEPROM address
+ * @data: (array length=len):	Binary data
+ * @len:			The length of @data
  *
  * Write flash code to the device.
  *
@@ -2467,11 +2467,11 @@ ch_device_queue_buffer_read_flash_cb (guint8 *output_buffer,
 
 /**
  * ch_device_queue_read_flash:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @address:		The device EEPROM address
- * @data:		Binary data
- * @len:		The length of @data
+ * @device_queue:		A #ChDeviceQueue
+ * @device:			A #GUsbDevice
+ * @address:			The device EEPROM address
+ * @data: (array length=len):	Binary data
+ * @len:			The length of @data
  *
  * Read flash code from the device.
  *
@@ -2569,11 +2569,11 @@ ch_device_queue_verify_flash_helper_destroy (gpointer data)
 
 /**
  * ch_device_queue_verify_flash:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @address:		The device EEPROM address
- * @data:		Binary data
- * @len:		The length of @data
+ * @device_queue:		A #ChDeviceQueue
+ * @device:			A #GUsbDevice
+ * @address:			The device EEPROM address
+ * @data: (array length=len):	Binary data
+ * @len:			The length of @data
  *
  * Verify flash code from the device.
  *
@@ -2621,10 +2621,10 @@ ch_device_queue_verify_flash (ChDeviceQueue *device_queue,
 
 /**
  * ch_device_queue_erase_flash:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @address:		The device EEPROM address
- * @len:		The length of @data
+ * @device_queue:			A #ChDeviceQueue
+ * @device:				A #GUsbDevice
+ * @address: (array length=len):	The device EEPROM address
+ * @len:				The length of @data
  *
  * Erase program code on the device.
  *
@@ -3019,11 +3019,11 @@ ch_device_queue_write_sram_internal (ChDeviceQueue *device_queue,
 
 /**
  * ch_device_queue_write_sram:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @address:		The device memory address
- * @data:		The binary data
- * @len:		Size of @data
+ * @device_queue:		A #ChDeviceQueue
+ * @device:			A #GUsbDevice
+ * @address:			The device memory address
+ * @data: (array length=len):	The binary data
+ * @len:			Size of @data
  *
  * Writes binary data to the SRAM.
  *
@@ -3087,11 +3087,11 @@ ch_device_queue_read_sram_internal (ChDeviceQueue *device_queue,
 
 /**
  * ch_device_queue_read_sram:
- * @device_queue:	A #ChDeviceQueue
- * @device:		A #GUsbDevice
- * @address:		The device memory address
- * @data:		The binary data
- * @len:		Size of @data
+ * @device_queue:		A #ChDeviceQueue
+ * @device:			A #GUsbDevice
+ * @address:			The device memory address
+ * @data: (array length=len):	The binary data
+ * @len:			Size of @data
  *
  * Reads binary data from the SRAM.
  *

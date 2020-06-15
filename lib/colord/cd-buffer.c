@@ -167,7 +167,7 @@ cd_buffer_read_uint32_le (const guint8 *buffer)
 /**
  * cd_buffer_debug:
  * @buffer_kind: the debug mode, e.g %CD_BUFFER_KIND_REQUEST
- * @data: the data of size @length
+ * @data: (array length=length): the data of size @length
  * @length: the size of data
  *
  * Prints some debugging of the request to the console.

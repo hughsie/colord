@@ -199,7 +199,7 @@ cd_dom_text_cb (GMarkupParseContext *context,
 /**
  * cd_dom_parse_xml_data:
  * @dom: a #CdDom instance.
- * @data: XML data
+ * @data: (array length=data_len): XML data
  * @data_len: Length of @data, or -1 if NULL terminated
  * @error: A #GError or %NULL
  *

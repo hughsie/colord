@@ -764,7 +764,7 @@ ch_device_write_command (GUsbDevice *device,
 
 /**
  * ch_device_check_firmware:
- * @data: firmware binary data
+ * @data: (array length=data_len): firmware binary data
  * @data_len: size of @data
  *
  * Checks the firmware is suitable for the ColorHug device that is attached.
