@@ -331,9 +331,8 @@ cd_edid_get_profile (unsigned char *edid,
 	/* get the default profile for the device */
 	profile = cd_device_get_default_profile (device);
 	if (profile == NULL) {
-		g_printerr ("No profile for %s: %s",
-			    cd_device_get_id (device),
-			    error->message);
+		g_printerr ("No profile for %s",
+			    cd_device_get_id (device));
 		return CD_EDID_ERROR_NO_PROFILE;
 	}
 
