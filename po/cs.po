@@ -4,6 +4,7 @@
 # 
 # Translators:
 # Adam Pribyl <pribyl@lowlevel.cz>, 2008
+# Ascii Wolf <mail@asciiwolf.com>, 2020
 # fri, 2011
 # fri, 2011
 # Marek Černocký <marek@manet.cz>, 2017-2018
@@ -14,9 +15,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 12:39+0000\n"
-"PO-Revision-Date: 2018-09-24 08:42+0000\n"
-"Last-Translator: Marek Černocký <marek@manet.cz>\n"
+"POT-Creation-Date: 2020-11-02 10:50+0000\n"
+"PO-Revision-Date: 2020-01-13 12:08+0000\n"
+"Last-Translator: Ascii Wolf <mail@asciiwolf.com>\n"
 "Language-Team: Czech (http://www.transifex.com/freedesktop/colord/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -53,7 +54,7 @@ msgstr "Alias pro %s"
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
-msgstr "Příkaz nebyl nenalezen, platné příkazy jsou:"
+msgstr "Příkaz nebyl nalezen, platné příkazy jsou:"
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
@@ -288,7 +289,7 @@ msgstr "Sériové číslo"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"

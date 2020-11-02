@@ -1,3 +1,23 @@
+Version 1.4.5
+~~~~~~~~~~~~~
+Released: 2020-11-02
+
+New Features:
+ - Add cd_icc_create_default_full (Aaron Plattner)
+ - Add cd_icc_utils_get_adaptation_matrix (Aaron Plattner)
+ - Add cd_mat33_is_finite (Aaron Plattner)
+ - Add support for datacolor SpyderX (Richard Brown)
+
+Bugfixes:
+ - Check for errors from more sqlite calls (Ross Burton)
+ - Fix cd_icc_load_data() annotation for the data array (Elmar Hoffmann)
+ - Fix cd-sensor-dummy (Christopher James Halse Rogers)
+ - Fix more annotation for data arrays (Elmar Hoffmann)
+ - Fix owner and permissions on existing state files (Will Thompson)
+ - Fix segfault due to dereferencing NULL pointer (Simon Munton)
+ - Make the build reproductible (Laurent Bigonville)
+ - Refactor opening of mapping database and try again if fails (Ross Burton)
+
 Version 1.4.4
 ~~~~~~~~~~~~~
 Released: 2019-03-08

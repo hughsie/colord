@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
+"POT-Creation-Date: 2020-11-02 10:50+0000\n"
+"PO-Revision-Date: 2020-03-31 08:56+0000\n"
 "Last-Translator: Andika Triwidada <andika@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/freedesktop/colord/language/id/)\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
 msgid "Profile to create"
-msgstr "Profil untuk dibuat"
+msgstr "Profil yang akan dibuat"
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:867
@@ -133,7 +133,7 @@ msgstr "Program pencurah profil ICCC"
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr ""
+msgstr "Tulis stempel waktu pembuatan yang tertanam"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
@@ -282,7 +282,7 @@ msgstr "Nomor seri"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -710,17 +710,17 @@ msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
+msgstr "Ini adalah penundaan antara pengaturan warna sampel dan meminta instrumen pengukur untuk mengambil sampel. Ini diperlukan karena driver grafis dan layarnya sendiri memperkenalkan latensi."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
 msgid "Web service profile upload URI"
-msgstr ""
+msgstr "URI unggah profil layanan web"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
 msgid ""
 "The URI of the web service that allows the calibration tools to upload a "
 "specific profile to the Internet."
-msgstr ""
+msgstr "URI layanan web yang memungkinkan alat kalibrasi untuk mengunggah profil tertentu ke Internet."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
@@ -779,7 +779,7 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr ""
+msgstr "Ruang penyuntingan ini dirancang sebagai SMPTE-240M dan mencakup sebagian besar warna yang mungkin tersedia pada pencetak warna CMYK. Ini adalah pilihan populer untuk menyunting foto dan untuk digunakan dalam pencetakan, karena semua warna SWOP dapat direproduksi."
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
@@ -798,7 +798,7 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr ""
+msgstr "Profil lawas ini awalnya dibuat oleh Adobe untuk digunakan dengan Photoshop dan Illustrator. Karena didasarkan pada monitor Apple 13\" RGB asli dan mirip dengan sRGB, ini tidak boleh digunakan sebagai profil tampilan atau untuk gambar baru."
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
@@ -816,7 +816,7 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "Ruang penyuntingan ini dapat menampilkan lebih banyak warna jenuh daripada Adobe RGB dan cocok untuk gambar dengan warna sangat jenuh yang sering digunakan dalam iklan. Ini sangat mirip dengan DonRGB4, tetapi dapat menunjukkan warna merah super jenuh yang terkadang hadir di Fujichrome Velvia."
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
@@ -833,11 +833,11 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "Ruang penyuntingan ini dapat menampilkan lebih banyak warna jenuh daripada Adobe RGB. Ini kurang rentan terhadap kesalahan kuantisasi dibandingkan dengan ProPhoto RGB, meskipun detail bayangan lebih dipertahankan. Dalam kebanyakan kasus ProPhoto RGB mungkin merupakan pilihan yang lebih baik."
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "kebiruan"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
@@ -849,7 +849,7 @@ msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "Profil uji ini digunakan untuk membuat semua warna pada layar sedikit lebih biru dengan mengubah tabel pencarian kartu video. Ini memungkinkan pengguna untuk memeriksa kalibrasi yang diterapkan dengan benar."
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
@@ -865,7 +865,7 @@ msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr ""
+msgstr "Ini adalah ruang penyuntingan RGB untuk digunakan dengan Adobe Photoshop 5.0 dan yang lebih baru. Itu dirancang sebagai kompromi keluaran-sentris antara ColorMatch RGB dan Adobe RGB dan dulu lebih disukai oleh beberapa layanan pencetakan foto."
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
@@ -881,7 +881,7 @@ msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "Profil teoritis ini dirancang untuk digunakan dalam eksperimen warna. Anda mungkin tidak ingin menggunakan profil ini sebagai ruang penyuntingan atau profil tampilan."
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
@@ -899,7 +899,7 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr ""
+msgstr "Profil ini dirancang oleh Radius untuk monitor PressView. Gunakan profil ini hanya sebagai profil tampilan atau sebagai ruang penyuntingan karena profilnya tidak jauh berbeda dengan sRGB. Anda hanya perlu menggunakan profil ini jika melihat gambar yang dibuat pada monitor PressView."
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
@@ -916,7 +916,7 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "Profil warna bernama ini berisi semua warna krayon Crayola yang populer digunakan. Ini adalah profil uji yang dirancang untuk menguji warna yang disematkan ke dalam dokumen."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
@@ -932,7 +932,7 @@ msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "Ruang penyuntingan ini dapat menampilkan lebih banyak warna jenuh daripada Adobe RGB dan cocok untuk gambar dengan warna sangat jenuh yang sering digunakan dalam iklan."
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
@@ -949,7 +949,7 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr ""
+msgstr "Profil ini direkomendasikan oleh ECI (European Color Initiative) sebagai ruang penyuntingan untuk penyuntingan gambar profesional dan bertujuan untuk mencakup semua warna yang dapat dicetak pada mesin cetak. Ini kadang-kadang digunakan sebagai format pertukaran data warna antara penerbit dan percetakan."
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
@@ -965,7 +965,7 @@ msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr ""
+msgstr "Profil ini dirancang dengan kurva gamma ringan yang berarti monitor harus juga dikalibrasi dengan cara yang sama. Profil ini hanya berguna untuk pengguna tingkat lanjut dan tidak disarankan untuk penggunaan umum."
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
@@ -982,7 +982,7 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr ""
+msgstr "Profil ini dirancang untuk menyimpan arsip film transparansi yang dipindai. Sangat cocok untuk menyimpan gambar dari negatif warna, meskipun saat ini ProPhoto RGB adalah profil yang lebih populer untuk arsip."
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
@@ -994,7 +994,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "Profil ini digunakan untuk pembuatan pelat positif, mencetak pada jenis kertas 1 dan 2 (berlapis atau matte), offset sheetfed. Kumpulan profil ini seharusnya tidak lagi digunakan untuk produksi, gunakan FOGRA39L sebagai gantinya."
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
@@ -1007,7 +1007,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "Profil ini digunakan untuk pembuatan pelat positif, mencetak pada jenis kertas 3 (LWC), offset webfed. Profil ini seharusnya tidak lagi digunakan untuk produksi, gunakan FOGRA45 sebagai gantinya."
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
@@ -1031,7 +1031,7 @@ msgstr "FOGRA30L Uncoated Yellowish"
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr ""
+msgstr "Profil ini digunakan untuk pembuatan pelat positif, mencetak pada kertas tipe 5 (tidak dilapisi kekuningan), offset sheetfed."
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
@@ -1045,7 +1045,7 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr ""
+msgstr "Profil ini digunakan untuk mencetak pada jenis kertas 1 dan 2 (dilapisi atau matte), offset lembaran. Profil ini tidak berbeda secara signifikan dengan US GRACoL 2006 (TR 006)."
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
@@ -1056,7 +1056,7 @@ msgstr "FOGRA40L SC Paper"
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr ""
+msgstr "Profil ini digunakan untuk mencetak pada kertas SC (supercalendered), offset webfed. Tidak ada penyetaraannya di AS yang diketahui."
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
@@ -1068,7 +1068,7 @@ msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr ""
+msgstr "Profil yang memenuhi persyaratan ISO 12647-2:2004 ini digunakan untuk mencetak pada kertas dengan pelapis ringan (LWC) yang ditingkatkan untuk pencetakan offset web heatset 60 l/cm. Ini menggantikan FOGRA28L."
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
@@ -1079,7 +1079,7 @@ msgstr "FOGRA47L Uncoated"
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr ""
+msgstr "Profil yang sesuai dengan ISO 12647-2 ini digunakan untuk mencetak pada 115 gsm putih yang tidak dilapisi (jenis kertas 4) untuk pencetakan offset 60 l/cm."
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
@@ -1108,7 +1108,7 @@ msgstr "GRACoL TR006 Coated"
 msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
-msgstr ""
+msgstr "Profil ini digunakan untuk mencetak pada kertas berlapis AS grade 1 dan 2, offset lembaran, dan gravure. Ini setara dengan AS untuk FOGRA39."
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
@@ -1122,7 +1122,7 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr ""
+msgstr "Profil ini digunakan untuk mencetak pada kertas koran, dan merupakan profil yang sesuai dengan ISO12647-3:2005 yang dirancang untuk mesin cetak yang menunjukkan TVI 26% (dot gain). Dianjurkan oleh WAN-IFRA untuk mencetak coldset pada kertas koran di seluruh dunia."
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
@@ -1139,7 +1139,7 @@ msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
-msgstr ""
+msgstr "Profil ini menentukan rentang warna yang digunakan dengan standar video NTSC. Ini adalah standar usang yang telah digantikan oleh SMTE-C. Anda hanya harus menggunakan profil ini untuk memecahkan kode video yang diarsipkan."
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
@@ -1155,7 +1155,7 @@ msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr ""
+msgstr "Profil ini menentukan kisaran warna yang digunakan dengan standar video PAL dan SECAM dan sangat mirip dengan sRGB. Anda hanya boleh menggunakan profil ini untuk menyandikan atau mendekode video."
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
@@ -1172,7 +1172,7 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr ""
+msgstr "Awalnya dirancang oleh Eastman Kodak dan disebut ROMM RGB, profil ini dapat menampilkan rentang warna yang sangat besar dan digunakan oleh banyak fotografer untuk merender, menyunting, dan mengarsipkan gambar RAW. Kecuali jika Anda bekerja dengan presisi 16 bit per saluran, Anda mungkin melihat garis warna ketika menyunting gambar."
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
@@ -1188,7 +1188,7 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr ""
+msgstr "Rekomendasi ITU-R BT.709 adalah standar televisi definisi tinggi yang pertama kali disetujui pada tahun 1990. Profil Rec. 709 menggunakan rentang warna yang sama seperti sRGB meskipun kurva luminansi berbeda."
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
@@ -1203,7 +1203,7 @@ msgstr "SMPTE-C RGB"
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr ""
+msgstr "Ini adalah standar saat ini yang digunakan oleh Amerika Utara dan Jepang untuk rekaman studio. Anda hanya boleh menggunakan profil ini untuk menyandikan atau mendekode video."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
@@ -1214,7 +1214,7 @@ msgstr "SNAP TR002 Newsprint"
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr ""
+msgstr "Ini adalah profil berbasis ANSI CGATS/SNAP TR 002-2007 untuk mencetak pada kertas koran di AS, offset coldset. TVI (dot gain) adalah 26%."
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
@@ -1229,7 +1229,7 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr ""
+msgstr "Profil tujuan umum ini dirancang oleh Hewlett-Packard dan Microsoft dan hidup sebagai profil default di Internet untuk warna RGB yang tidak ditandai dan digunakan dalam HDTV. Sebagian besar tampilan yang tidak dikalibrasi dapat menampilkan sebagian besar warna yang tersedia di sRGB, meskipun profil ini terkadang merupakan pilihan yang buruk untuk pencetakan."
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
@@ -1245,7 +1245,7 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr ""
+msgstr "Profil uji ini menukar saluran merah dan hijau dan berguna sebagai pemeriksaan visual bahwa profil diterapkan dengan benar. Jika profil ini diterapkan dua kali, gambar tampak tidak berubah."
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
@@ -1257,7 +1257,7 @@ msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr ""
+msgstr "Profil ini digunakan untuk mencetak pada kertas berlapis US grade 3, offset sheetfed, dan gravure. Ini digunakan untuk pencetakan majalah berkualitas tinggi dengan kertas putih."
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
@@ -1269,7 +1269,7 @@ msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr ""
+msgstr "Profil ini digunakan untuk mencetak pada kertas berlapis US grade 5, offset sheetfed, dan gravure. Ini digunakan untuk pencetakan majalah standar dengan kertas kekuningan."
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
@@ -1287,7 +1287,7 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr ""
+msgstr "Ruang penyuntingan ini dirancang oleh Adobe Systems untuk menangkap lebih banyak warna daripada Adobe RGB. Profil ini digunakan untuk mencetak ke perangkat seperti perekam film dan dapat menentukan banyak warna yang tidak dapat ditampilkan pada layar komputer. Kecuali jika Anda bekerja dengan presisi 16 bit per saluran, Anda mungkin melihat garis warna ketika mengedit gambar."
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
