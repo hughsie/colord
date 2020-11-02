@@ -2,9 +2,9 @@ colord Release Notes
 
 1. Write NEWS entries for colord in the same format as usual.
 
-git shortlog 1.4.4.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog 1.4.5.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
-Version 1.4.5
+Version 1.4.6
 ~~~~~~~~~~~~~
 Released: 2020-xx-xx
 
@@ -40,9 +40,7 @@ scp meson-dist/colord-${release_ver}.tar.* hughsient@annarchy.freedesktop.org:/s
 git commit -a -m "trivial: post release version bump"
 git push
 
-7. Sync website with ./upload.sh
-
-8. Send an email to colord@lists.freedesktop.org
+7. Send an email to colord@lists.freedesktop.org
 
 colord is a system activated daemon that maps devices to color profiles.
 
