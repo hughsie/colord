@@ -109,7 +109,7 @@ add_global_link_arguments(
 )
 
 gio = dependency('gio-2.0', version : '>= 2.45.8')
-glib = dependency('glib-2.0')
+glib = dependency('glib-2.0', version : '>= 2.58')
 gmodule = dependency('gmodule-2.0')
 giounix = dependency('gio-unix-2.0', version : '>= 2.45.8')
 lcms = dependency('lcms2', version : '>= 2.6')
