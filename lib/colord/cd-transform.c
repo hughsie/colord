@@ -430,7 +430,7 @@ guint
 cd_transform_get_max_threads (CdTransform *transform)
 {
 	CdTransformPrivate *priv = GET_PRIVATE (transform);
-	g_return_val_if_fail (CD_IS_TRANSFORM (transform), FALSE);
+	g_return_val_if_fail (CD_IS_TRANSFORM (transform), 0);
 	return priv->max_threads;
 }
 
