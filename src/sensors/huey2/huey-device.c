@@ -156,7 +156,7 @@ huey_device_read_eeprom (GUsbDevice *device, GError **error)
 					     error);
 		if (!ret) {
 			g_prefix_error (error, "failed to read eeprom @0x%04x: ", i);
-			return FALSE;
+			return NULL;
 		}
 		memcpy (eeprom + i, reply + 0x4, 0x4);
 	}
