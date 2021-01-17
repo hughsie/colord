@@ -1729,7 +1729,7 @@ cd_util_device_set_enabled (CdUtilPrivate *priv, gchar **values, GError **error)
 	if (!cd_device_connect_sync (device, NULL, error))
 		return FALSE;
 	return cd_device_set_enabled_sync (device,
-					   g_strcmp0 (values[1], "True") == 0,
+					   g_ascii_strncasecmp (values[1], "True", 4) == 0,
 					   NULL,
 					   error);
 }
