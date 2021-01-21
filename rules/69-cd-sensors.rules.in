@@ -69,6 +69,9 @@ ATTRS{idVendor}=="085c", ATTRS{idProduct}=="0400", ENV{COLORD_SENSOR_KIND}="spyd
 # Spyder 5
 ATTRS{idVendor}=="085c", ATTRS{idProduct}=="0500", ENV{COLORD_SENSOR_KIND}="spyder5", ENV{COLORD_SENSOR_CAPS}="lcd crt ambient"
 
+# Spyder X
+ATTRS{idVendor}=="085c", ATTRS{idProduct}=="0a00", ENV{COLORD_SENSOR_KIND}="spyderX", ENV{COLORD_SENSOR_CAPS}="lcd crt ambient"
+
 # Huey
 ATTRS{idVendor}=="0971", ATTRS{idProduct}=="2005", ENV{COLORD_SENSOR_KIND}="huey"
 
