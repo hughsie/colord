@@ -64,3 +64,9 @@ Compiling for Microsoft Windows
             --without-pic                           \
             --with-systemdsystemunitdir=/tmp        \
             --with-udevrulesdir=/tmp && make
+
+Contributing
+============
+
+Patches are accepted in form of pull requests for repository
+https://github.com/hughsie/colord
