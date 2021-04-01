@@ -79,7 +79,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 
 	/* check devices */
 	rc = sqlite3_exec (priv->db, "SELECT * FROM devices LIMIT 1",
-			   NULL, NULL, &error_msg);
+			   NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_debug ("CdDeviceDb: creating table to repair: %s", error_msg);
 		sqlite3_free (error_msg);
@@ -91,7 +91,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 
 	/* check properties version 2 */
 	rc = sqlite3_exec (priv->db, "SELECT * FROM properties_v2 LIMIT 1",
-			   NULL, NULL, &error_msg);
+			   NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		statement = "CREATE TABLE properties_v2 ("
 			    "device_id TEXT,"
