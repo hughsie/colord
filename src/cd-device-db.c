@@ -91,7 +91,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 
 	/* check properties version 2 */
 	rc = sqlite3_exec (priv->db, "SELECT * FROM properties_v2 LIMIT 1",
-			   NULL, NULL, &error_msg);
+			   NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		statement = "CREATE TABLE properties_v2 ("
 			    "device_id TEXT,"
