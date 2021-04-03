@@ -5,7 +5,6 @@ option('udev_rules', type: 'boolean', value: true, description: 'Install udev ru
 option('systemd', type : 'boolean', value : true, description : 'Enable systemd integration')
 option('libcolordcompat', type : 'boolean', value : false, description : 'Enable libcolordcompat.so which is used by ArgyllCMS')
 option('argyllcms_sensor', type : 'boolean', value : true, description : 'Enable ArgllCMS sensor')
-option('reverse', type : 'boolean', value : false, description : 'Enable reverse engineering tools')
 option('sane', type : 'boolean', value : false, description : 'Enable SANE support')
 option('vapi', type : 'boolean', value : false, description : 'Build vala bindings')
 option('print_profiles', type : 'boolean', value : false, description : 'Build extra print profiles')

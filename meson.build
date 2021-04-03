@@ -176,10 +176,6 @@ if get_option('vapi')
   vapigen = find_program('vapigen')
 endif
 
-if get_option('reverse')
-  conf.set('CD_BUILD_REVERSE', '1')
-endif
-
 if get_option('daemon')
 conf.set_quoted('DAEMON_USER', get_option('daemon_user'))
 if get_option('daemon_user') == 'root'
