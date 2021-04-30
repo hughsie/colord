@@ -6,6 +6,7 @@ option('systemd', type : 'boolean', value : true, description : 'Enable systemd 
 option('libcolordcompat', type : 'boolean', value : false, description : 'Enable libcolordcompat.so which is used by ArgyllCMS')
 option('argyllcms_sensor', type : 'boolean', value : true, description : 'Enable ArgllCMS sensor')
 option('sane', type : 'boolean', value : false, description : 'Enable SANE support')
+option('introspection', type : 'boolean', value : true, description : 'Build gobject-introspection typelib files')
 option('vapi', type : 'boolean', value : false, description : 'Build vala bindings')
 option('print_profiles', type : 'boolean', value : false, description : 'Build extra print profiles')
 option('tests', type : 'boolean', value : true, description : 'Build self tests')
