@@ -73,6 +73,7 @@ pkgg.generate(
   description : 'ColorHug is a simple display hardware colorimeter',
 )
 
+if get_option('introspection')
 libcolorhug_gir = gnome.generate_gir(colorhug,
   sources : [
     'ch-common.c',
@@ -107,6 +108,7 @@ libcolorhug_gir = gnome.generate_gir(colorhug,
   ],
   install : true
 )
+endif
 
 if get_option('tests')
   e = executable(

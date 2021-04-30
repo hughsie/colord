@@ -146,6 +146,7 @@ pkgg.generate(
   description : 'colord is a system daemon for managing color devices',
 )
 
+if get_option('introspection')
 libcolord_girtarget = gnome.generate_gir(colord,
   sources : [
     'cd-client.c',
@@ -202,6 +203,7 @@ libcolord_girtarget = gnome.generate_gir(colord,
 )
 libcolord_gir = libcolord_girtarget[0]
 libcolord_typelib = libcolord_girtarget[1]
+endif
 
 if get_option('vapi')
 gnome.generate_vapi('colord',
