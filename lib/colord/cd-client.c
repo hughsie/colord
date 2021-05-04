@@ -2464,7 +2464,7 @@ cd_client_class_init (CdClientClass *klass)
 	 * @client: the #CdClient instance that emitted the signal
 	 * @device: the #CdDevice that was removed.
 	 *
-	 * The ::device-added signal is emitted when a device is removed.
+	 * The ::device-removed signal is emitted when a device is removed.
 	 *
 	 * Since: 0.1.0
 	 **/
