@@ -27,13 +27,5 @@
         introduce latency.
       </description>
     </key>
-    <key name="profile-upload-uri" type="s">
-      <default>'http://www.hughski.com/profile-store.php'</default>
-      <summary>Web service profile upload URI</summary>
-      <description>
-        The URI of the web service that allows the calibration tools to upload a
-        specific profile to the Internet.
-      </description>
-    </key>
   </schema>
 </schemalist>
