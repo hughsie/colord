@@ -59,7 +59,7 @@ foreach arg: icc_profiles
   generated_icc = custom_target(arg + '.icc',
     input: xml_i18n,
     output: arg + '.icc',
-    command: [ cd_create_profile, '--output=@OUTPUT@', '@INPUT@' ],
+    command: [ run_cd_create_profile, '--output=@OUTPUT@', '@INPUT@' ],
     install: true,
     install_dir: join_paths(datadir, 'color', 'icc', 'colord'),
   )
