@@ -1426,8 +1426,8 @@ cd_util_write_tag_localized (CdIcc *icc,
 			continue;
 		obj = cd_util_mlu_object_parse (locale, value, &error_local);
 		if (obj == NULL) {
-			g_warning ("failed to parse localized text %s[%s]: %s",
-				   value, locale, error_local->message);
+			g_debug ("failed to parse localized text %s[%s]: %s",
+				 value, locale, error_local->message);
 			g_clear_error (&error_local);
 			continue;
 		}
