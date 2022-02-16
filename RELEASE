@@ -2,9 +2,9 @@ colord Release Notes
 
 1. Write NEWS entries for colord in the same format as usual.
 
-git shortlog 1.4.5.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog 1.4.6.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
-Version 1.4.6
+Version 1.4.7
 ~~~~~~~~~~~~~
 Released: 2022-xx-xx
 
