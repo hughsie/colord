@@ -4,14 +4,16 @@
 # 
 # Translators:
 # Hajime Taira <htaira@redhat.com>, 2012
+# Nobuhiro Iwamatsu <iwamatsu@nigauri.org>, 2021
 # Rio Fujita <rifujita@microsoft.com>, 2012
-# Tomoyuki KATO <inactive+katomo@transifex.com>, 2012-2013
+# Takuro Onoue <kusanaginoturugi@gmail.com>, 2021
+# e93ed3aa97dec2eb31063731872555fc_1460a05 <71305a0095156d8e18373a5b7cfeb79e_8587>, 2012-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
+"POT-Creation-Date: 2022-02-16 15:33+0000\n"
+"PO-Revision-Date: 2022-02-16 15:33+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/freedesktop/colord/language/ja/)\n"
 "MIME-Version: 1.0\n"
@@ -45,7 +47,7 @@ msgstr "出力ファイル名が指定されていません。"
 #: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
-msgstr "%s の別名"
+msgstr "%s のエイリアス"
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
@@ -59,12 +61,12 @@ msgstr "拡張デバッグ情報の表示"
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:585
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "ローカライズされたテキストを設定するときに使用するロケール"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
 msgid "Generate the VCGT calibration of a given size"
-msgstr "指定された大きさの VCGT 目盛の生成"
+msgstr "指定された大きさの VCGT 較正の生成"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
@@ -119,7 +121,7 @@ msgstr "ICC プロファイル・バージョンの作成"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
 msgid "Export the tag data"
-msgstr ""
+msgstr "タグデータをエクスポート"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
@@ -130,27 +132,27 @@ msgstr "カラーマネジメント"
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
 msgid "ICC profile dump program"
-msgstr ""
+msgstr "ICC プロファイルダンププログラム"
 
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr ""
+msgstr "埋め込み作成タイムスタンプを書き込む"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "CSV データ から CMF を作成"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "CSV データからスペクトラムを作成"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "参照データと測定データから CCMX を作成"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: client/cd-util.c:122
@@ -284,7 +286,7 @@ msgstr "シリアル"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -336,17 +338,17 @@ msgstr "較正"
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
 msgid "Dark Calibration"
-msgstr ""
+msgstr "暗所較正"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
 msgid "Irradiance Calibration"
-msgstr ""
+msgstr "放射照度較正"
 
 #. TRANSLATORS: this is the sensor capability
 #: client/cd-util.c:438
 msgid "Spectral"
-msgstr ""
+msgstr "スペクトル"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -386,12 +388,12 @@ msgstr "LCD RGB LED"
 #. * better than normal consumer monitors
 #: client/cd-util.c:472
 msgid "Wide Gamut LCD CCFL"
-msgstr " LCD CCFL"
+msgstr "広色域 LCD CCFL"
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:476
 msgid "Wide Gamut LCD RGB LED"
-msgstr "高色域 LCD RGB LED"
+msgstr "広色域 LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
@@ -454,7 +456,7 @@ msgstr "センサー"
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr "デバイスを調整位置に設定し、Enter を押してください。"
+msgstr "デバイスを較正位置に設定し、Enter を押す。"
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
@@ -464,16 +466,16 @@ msgstr "デバイスを表面位置に設定し、Enter を押してください
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1097
 msgid "Put the device in a dark place and press enter."
-msgstr ""
+msgstr "デバイスを暗い場所に置き、Enter キーを押す。"
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1107
 msgid "Calibrate with a 3200K light source."
-msgstr ""
+msgstr "3200K 光源で較正する。"
 
 #: client/cd-util.c:1124
 msgid "Put the device on the color to be measured and press enter."
-msgstr ""
+msgstr "測定したい色の上にデバイスを置いて、エンダーキーを押す。"
 
 #: client/cd-util.c:1130
 msgid "Color"
@@ -482,27 +484,27 @@ msgstr "色"
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
 msgid "No spectral capability"
-msgstr ""
+msgstr "スペクトル機能なし"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
 msgid "Show client and daemon versions"
-msgstr "クライアントとデーモンのバージョンを表示します"
+msgstr "クライアントとデーモンのバージョンを表示する"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2019
 msgid "Show the value without any header"
-msgstr ""
+msgstr "ヘッダーなしで値を表示"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2022
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "表示時にオブジェクトのプロパティをフィルタリングする"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "すべてのデバッグデータをファイルにダンプする"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
@@ -527,7 +529,7 @@ msgstr "利用可能なすべてのカラーセンサーを取得"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
 msgid "Gets a spectral reading from a sensor"
-msgstr ""
+msgstr "センサーからスペクトルの読み取り値を取得する"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
@@ -552,17 +554,17 @@ msgstr "デバイスの作成"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2101
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "デバイス ID からデバイスを検索"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2107
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "指定されたプロパティ値を持つデバイスを検索"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2113
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "プロファイル ID からプロファイルを検索する"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
@@ -582,7 +584,7 @@ msgstr "プロファイルの作成"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "すでに存在するデバイスにプロファイルを追加する"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
@@ -647,7 +649,7 @@ msgstr "修飾子に合う全てのプロファイルを返す"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2215
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "プロファイルをインポートして、ユーザー用にインストールする"
 
 #. TRANSLATORS: no colord available
 #: client/cd-util.c:2256
@@ -664,11 +666,11 @@ msgstr "デーモンのバージョン:"
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
-msgstr ""
+msgstr "システムベンダー:"
 
 #: client/cd-util.c:2269
 msgid "System model:"
-msgstr ""
+msgstr "システムモデル:"
 
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
@@ -705,28 +707,18 @@ msgstr "ディスプレイ較正のためのケルビン単位の標準ターゲ
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "サンプル間隔間の遅延"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:23
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr ""
+msgstr "これは、サンプルの色を設定してから測定器にサンプルを採取するように依頼するまでの遅延です。グラフィックドライバとディスプレイ自体の両方が遅延を引き起こすため、これが必要です。"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
-msgstr ""
+msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
@@ -781,15 +773,15 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr ""
+msgstr "この編集スペースは SMPTE-240M として設計されており、CMYK カラープリンターで使用可能なほとんどの色を網羅しています。 これは、すべての SWOP カラーを再現できるため、写真の編集や印刷での使用に人気があります。"
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr ""
+msgstr "AppleRGB"
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
-msgstr ""
+msgstr "Apple RGB"
 
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
@@ -800,15 +792,15 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr ""
+msgstr "このレガシープロファイルは、もともと Photoshop と Illustrator で使用するために Adobe によって作成されました。 オリジナルの Apple13 \"RGB モニターに基づいており、sRGB に類似しているため、ディスプレイプロファイルや新しい画像として使用しないでください。"
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
-msgstr ""
+msgstr "BestRGB"
 
 #: data/profiles/BestRGB.iccprofile.xml:4
 msgid "Best RGB"
-msgstr ""
+msgstr "Best RGB"
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -818,15 +810,15 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr ""
+msgstr "この編集スペースは、Adobe RGB よりも彩度の高い色を表示でき、広告でよく使用される彩度の高い色の画像に適しています。 DonRGB4 と非常によく似ていますが、フジクロームベルビアに時々見られる過飽和の赤い色を示すことがあります。"
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
-msgstr ""
+msgstr "BetaRGB"
 
 #: data/profiles/BetaRGB.iccprofile.xml:4
 msgid "Beta RGB"
-msgstr ""
+msgstr "Beta RGB"
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 #: data/profiles/BetaRGB.iccprofile.xml:7
@@ -835,11 +827,11 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr ""
+msgstr "この編集スペースは、AdobeRGB よりも彩度の高い色を表示できます。 より多くの影の詳細が保持されますが、ProPhotoRGB と比較して量子化エラーが発生しにくくなります。 ほとんどの場合、ProPhotoRGB がおそらくより良い選択です。"
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "bluish"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
@@ -851,15 +843,15 @@ msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr ""
+msgstr "このテストプロファイルは、ビデオカードのルックアップテーブルを変更することにより、画面上のすべての色を少し青くするために使用されます。 これにより、ユーザーはキャリブレーションが正しく適用されていることを確認できます。"
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
-msgstr ""
+msgstr "BruceRGB"
 
 #: data/profiles/BruceRGB.iccprofile.xml:4
 msgid "Bruce RGB"
-msgstr ""
+msgstr "Bruce RGB"
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 #: data/profiles/BruceRGB.iccprofile.xml:7
@@ -867,15 +859,15 @@ msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr ""
+msgstr "これは、Adobe Photoshop 5.0 以降で使用するための RGB 編集スペースです。 これは、ColorMatchRGB と AdobeRGB の間の出力中心の妥協案として設計されており、一部の写真印刷サービスで好まれていました。"
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
-msgstr ""
+msgstr "CIE-RGB"
 
 #: data/profiles/CIE-RGB.iccprofile.xml:4
 msgid "CIE RGB"
-msgstr ""
+msgstr "CIE RGB"
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 #: data/profiles/CIE-RGB.iccprofile.xml:7
@@ -883,15 +875,15 @@ msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr ""
+msgstr "この理論的プロファイルは、色の実験で使用するために設計されています。 このプロファイルを編集スペースまたは表示プロファイルとして使用したくない場合があります。"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
-msgstr ""
+msgstr "ColorMatchRGB"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:4
 msgid "ColorMatch RGB"
-msgstr ""
+msgstr "ColorMatch RGB"
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -901,11 +893,11 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr ""
+msgstr "このプロファイルは、PressView モニター用に Radius によって設計されました。 プロファイルは sRGB と大きく異なるわけではないため、このプロファイルは表示プロファイルまたは編集スペースとしてのみ使用してください。 PressView モニターで作成された画像を表示する場合にのみ、このプロファイルを使用する必要があります。"
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr ""
+msgstr "クレヨン"
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
@@ -918,15 +910,15 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr ""
+msgstr "この名前付きカラープロファイルには、一般的に使用されているすべてのクレヨラクレヨンカラーが含まれています。 これは、名前付きの色をドキュメントに埋め込むことをテストするために設計されたテストプロファイルです。"
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
-msgstr ""
+msgstr "DonRGB4"
 
 #: data/profiles/DonRGB4.iccprofile.xml:4
 msgid "Don RGB 4"
-msgstr ""
+msgstr "Don RGB 4"
 
 #. TRANSLATORS: saturated means vivid bright colors
 #: data/profiles/DonRGB4.iccprofile.xml:7
@@ -934,15 +926,15 @@ msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr ""
+msgstr "この編集スペースは、Adobe RGB よりも彩度の高い色を表示でき、広告でよく使用される彩度の高い色の画像に適しています。"
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
-msgstr ""
+msgstr "ECI-RGBv1"
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:4
 msgid "eciRGB v1"
-msgstr ""
+msgstr "eciRGB v1"
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 #: data/profiles/ECI-RGBv1.iccprofile.xml:7
@@ -951,15 +943,15 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr ""
+msgstr "このプロファイルは、プロの画像編集用の編集スペースとしてECI（European Color Initiative）によって推奨されており、印刷機で印刷できるすべての色をカバーすることを目的としています。 これは、出版社と印刷会社の間のカラーデータ交換フォーマットとして使用されることがあります。"
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
-msgstr ""
+msgstr "ECI-RGBv2"
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:4
 msgid "eciRGB v2"
-msgstr ""
+msgstr "eciRGB v2"
 
 #. TRANSLATORS: lightness is a technical word for brightness
 #: data/profiles/ECI-RGBv2.iccprofile.xml:7
@@ -967,15 +959,15 @@ msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr ""
+msgstr "このプロファイルは、明度のガンマカーブを使用して設計されています。つまり、モニターも同じ方法でキャリブレーションする必要があります。 このプロファイルは上級ユーザーにのみ役立ち、一般的な使用にはお勧めしません。"
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
-msgstr ""
+msgstr "EktaSpacePS5"
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:4
 msgid "Ekta Space PS5"
-msgstr ""
+msgstr "Ekta Space PS5"
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -984,11 +976,11 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr ""
+msgstr "このプロファイルは、スキャンした OHP フィルムのアーカイブを保存するために設計されました。 カラーネガからの画像を保存するのに適していますが、最近では ProPhotoRGB がアーカイブ用のより一般的なプロファイルです。"
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "FOGRA27L Coated"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:6
@@ -996,11 +988,11 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr ""
+msgstr "このプロファイルは、ポジ製版、用紙タイプ 1 および 2（コーティングまたはマット）への印刷、枚葉オフセットに使用されます。 このプロファイルセットは本番環境では使用しないでください。代わりに FOGRA39L を使用してください。"
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "FOGRA28L Web Coated"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -1009,7 +1001,7 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr ""
+msgstr "このプロファイルは、ポジ製版、用紙タイプ3（LWC）への印刷、ウェブフィードオフセットに使用されます。 このプロファイルは本番環境では使用しないでください。代わりに FOGRA45 を使用してください。"
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
@@ -1091,15 +1083,15 @@ msgstr ""
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
-msgstr ""
+msgstr "D50"
 
 #: data/profiles/Gamma5500K.iccprofile.xml:5
 msgid "D55"
-msgstr ""
+msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr ""
+msgstr "D65"
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
@@ -1128,11 +1120,11 @@ msgstr ""
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr ""
+msgstr "NTSC-RGB"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr ""
+msgstr "NTSC RGB"
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1145,11 +1137,11 @@ msgstr ""
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr ""
+msgstr "PAL-RGB"
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr ""
+msgstr "PAL/SECAM RGB"
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7

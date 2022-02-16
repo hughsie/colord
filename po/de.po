@@ -6,7 +6,7 @@
 # Christian <Christian.Kirbach@googlemail.com>, 2012
 # Christian <Christian.Kirbach@googlemail.com>, 2012
 # Christian Kirbach <christian.kirbach@gmail.com>, 2013
-# Christoph Brill, 2013
+# 970ef311f15ca96eb942bf74dcbed9d9_f88d0ac, 2013
 # Ettore Atalan <atalanttore@googlemail.com>, 2014,2018
 # jwildeboer <jan.wildeboer@gmx.de>, 2013
 # jwildeboer <jan.wildeboer@gmx.de>, 2013
@@ -16,9 +16,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 12:39+0000\n"
-"PO-Revision-Date: 2018-10-27 22:42+0000\n"
-"Last-Translator: Ettore Atalan <atalanttore@googlemail.com>\n"
+"POT-Creation-Date: 2022-02-16 15:33+0000\n"
+"PO-Revision-Date: 2022-02-16 15:33+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: German (http://www.transifex.com/freedesktop/colord/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -290,7 +290,7 @@ msgstr "Seriennummer"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -719,16 +719,6 @@ msgid ""
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
 msgstr "Dies ist die Verzögerung zwischen dem Festlegen der Stichprobenfarbe und Beauftragung des Messinstruments eine Stichprobe zu nehmen. Es ist notwendig, weil sowohl der Grafiktreiber als auch die Anzeige selbst die Verzögerung hervorrufen."
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr "Adresse des Internet-Dienstes zum Hochladen des Profils"
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "Die Adresse des Internet-Dienstes, der es den Kalibrierungswerkzeugen ermöglicht, ein bestimmtes Profil  ins Internet hochzuladen."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"

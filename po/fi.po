@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-02 10:50+0000\n"
-"PO-Revision-Date: 2020-05-23 09:40+0000\n"
-"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
+"POT-Creation-Date: 2022-02-16 15:33+0000\n"
+"PO-Revision-Date: 2022-02-16 15:33+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Finnish (http://www.transifex.com/freedesktop/colord/language/fi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -713,16 +713,6 @@ msgid ""
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
 msgstr "Tämä on viive näytevärin asettamiseen ja mittauslaitteen näytteen ottamisen välillä. Se on tarpeellinen, koska sekä näytönohjain että näyttö esittävät latenssin."
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr "Web-palveluprofiilin lähetys-URI"
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "Verkkopalvelun URI, jonka avulla kalibrointityökalut voivat ladata tietyn profiilin Internetiin."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"

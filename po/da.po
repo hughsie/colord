@@ -7,14 +7,14 @@
 # Kris Thomsen <lakristho@gmail.com>, 2009-2011
 # Richard Hughes <richard@hughsie.com>, 2011
 # scootergrisen, 2019
-# scootergrisen, 2019
+# scootergrisen, 2019-2020
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 12:39+0000\n"
-"PO-Revision-Date: 2019-03-08 12:05+0000\n"
-"Last-Translator: scootergrisen\n"
+"POT-Creation-Date: 2022-02-16 15:33+0000\n"
+"PO-Revision-Date: 2022-02-16 15:33+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Danish (http://www.transifex.com/freedesktop/colord/language/da/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -91,7 +91,7 @@ msgstr "Fjern et metadatapunkt fra profilen"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
 msgid "Sets the copyright string"
-msgstr "Angiver strengen for ophavesret"
+msgstr "Angiver strengen for ophavsret"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:636
@@ -280,13 +280,13 @@ msgstr "Hæmmere"
 #. TRANSLATORS: the device serial number
 #: client/cd-util.c:312
 msgid "Serial"
-msgstr "Serielnr."
+msgstr "Serienr."
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -716,16 +716,6 @@ msgid ""
 " and the display itself introduce latency."
 msgstr "Forsinkelsen mellem angivelse af prøvefarven og anmodningen om at måleinstrumentet skal tage en prøve. Den kræves da både grafikdriveren og skærmen i sig selv introducerer forsinkelse af svartider."
 
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr "Nettjeneste - profiloverførsels-URI"
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "URI'en for nettjenesten som tillader kalibreringsværktøjerne at overføre en bestemt profil til internettet."
-
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
 msgstr "AdobeRGB1998"
@@ -1083,7 +1073,7 @@ msgstr "FOGRA47L ubestrøget"
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr "ISO 12647-2-kompilante profil som bruges til udskrivning på 115 gsm ubestrøget hvidt (papirtype 4) til 60 l/cm arkfremførings-offsettryk."
+msgstr "ISO 12647-2-kompilant profil som bruges til udskrivning på 115 gsm ubestrøget hvidt (papirtype 4) til 60 l/cm arkfremførings-offsettryk."
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
@@ -1414,7 +1404,7 @@ msgstr "Afslut efter en lille forsinkelse"
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
-msgstr "Afslut efter motoren har indlæst"
+msgstr "Afslut efter motoren er indlæst"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2361

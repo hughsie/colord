@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
+"POT-Creation-Date: 2022-02-16 15:33+0000\n"
+"PO-Revision-Date: 2022-02-16 15:33+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Greek (http://www.transifex.com/freedesktop/colord/language/el/)\n"
 "MIME-Version: 1.0\n"
@@ -284,7 +284,7 @@ msgstr "Σειριακός"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -713,16 +713,6 @@ msgid ""
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
 msgstr "Αυτή είναι η καθυστέρηση μεταξύ του καθορισμού του χρώματος του δείγματος και της ερώτησης από το όργανο μέτρησης για τη λήψη δείγματος. Είναι απαραίτητη, διότι τόσο ο οδηγός γραφικών και η ίδια η οθόνη παρουσιάζουν αδράνεια."
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr "URI μεταφόρτωσης για προφίλ υπηρεσίας διαδικτύου"
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "Το URI της υπηρεσίας διαδικτύου που επιτρέπει τα εργαλεία βαθμονόμησης να ανεβάσουν ένα συγκεκριμένο προφίλ στο διαδίκτυο."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"

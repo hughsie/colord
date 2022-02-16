@@ -1,3 +1,18 @@
+Version 1.4.6
+~~~~~~~~~~~~~
+Released: 2022-02-16
+
+Bugfixes:
+ - Add missing copyright notices (Aaron Plattner)
+ - Add Spyder X entry (Misha Gusarov)
+ - Document where to send patches (Misha Gusarov)
+ - Don't use exact floating point comparisons (Christopher James Halse Rogers)
+ - Drop option for removed reverse engineering tools (Mingcong Bai)
+ - Drop references to hughski.com (Paul Wise)
+ - Fix a small memory leak in sqlite3_exec() (Zero0one1)
+ - Fix typo in device-removed signal documentation (Jeremy Cline)
+ - Make introspection optional in meson (David Michael)
+
 Version 1.4.5
 ~~~~~~~~~~~~~
 Released: 2020-11-02

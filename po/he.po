@@ -3,47 +3,48 @@
 # This file is distributed under the same license as the colord package.
 # 
 # Translators:
-# Yaron Shahrabani <sh.yaron@gmail.com>, 2012
+# Omer I.S. <omeritzicschwartz@gmail.com>, 2021
+# Yaron Shahrabani <sh.yaron@gmail.com>, 2012,2021
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
+"POT-Creation-Date: 2022-02-16 15:33+0000\n"
+"PO-Revision-Date: 2022-02-16 15:33+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Hebrew (http://www.transifex.com/freedesktop/colord/language/he/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: he\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
 
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
 msgid "Profile to create"
-msgstr ""
+msgstr "פרופיל ליצירה"
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
-msgstr ""
+msgstr "תכנית ליצירת פרופיל ICC"
 
 #. TRANSLATORS: the user didn't read the man page
 #: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
 #: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
-msgstr ""
+msgstr "פענוח הארגומנטים נכשל"
 
 #. TRANSLATORS: the user forgot to use -o
 #: client/cd-create-profile.c:880
 msgid "No output filename specified"
-msgstr ""
+msgstr "לא צוין שם קובץ פלט"
 
 #. TRANSLATORS: this is a command alias
 #: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
-msgstr ""
+msgstr "כינוי עבור %s"
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
@@ -159,7 +160,7 @@ msgstr ""
 #. TRANSLATORS: profile UID
 #: client/cd-util.c:134 client/cd-util.c:139
 msgid "Owner"
-msgstr ""
+msgstr "בעלים"
 
 #. TRANSLATORS: the internal DBus path
 #: client/cd-util.c:159 client/cd-util.c:262 client/cd-util.c:508
@@ -172,13 +173,13 @@ msgstr "נתיב הפריט"
 #. * ColorModel.OutputMode.OutputResolution
 #: client/cd-util.c:167 client/cd-util.c:330
 msgid "Format"
-msgstr ""
+msgstr "פורמט"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: client/cd-util.c:175
 msgid "Title"
-msgstr ""
+msgstr "כותרת"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: client/cd-util.c:180
@@ -190,7 +191,7 @@ msgstr "מגדיר"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: client/cd-util.c:185 client/cd-util.c:281 client/cd-util.c:530
 msgid "Type"
-msgstr ""
+msgstr "סוג"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -231,7 +232,7 @@ msgstr "נתוני על"
 
 #: client/cd-util.c:243
 msgid "Warning"
-msgstr ""
+msgstr "אזהרה"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -249,7 +250,7 @@ msgstr "מועד השינוי"
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
 msgid "Enabled"
-msgstr ""
+msgstr "מופעל"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
@@ -282,7 +283,7 @@ msgstr "מס׳ סידורי"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -307,12 +308,12 @@ msgstr ""
 #. TRANSLATORS: this is a desktop printer
 #: client/cd-util.c:408
 msgid "Printer"
-msgstr ""
+msgstr "מדפסת"
 
 #. TRANSLATORS: a beamer used for presentations
 #: client/cd-util.c:412
 msgid "Projector"
-msgstr ""
+msgstr "מקרן"
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
@@ -363,7 +364,7 @@ msgstr ""
 #. * http://en.wikipedia.org/wiki/Plasma_display
 #: client/cd-util.c:454
 msgid "Plasma"
-msgstr ""
+msgstr "פלזמה"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -401,12 +402,12 @@ msgstr ""
 #. TRANSLATORS: this an unknown display technology
 #: client/cd-util.c:485
 msgid "Unknown"
-msgstr ""
+msgstr "לא ידוע"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: client/cd-util.c:538
 msgid "State"
-msgstr ""
+msgstr "מצב"
 
 #. TRANSLATORS: sensor serial
 #: client/cd-util.c:546
@@ -416,12 +417,12 @@ msgstr ""
 #. TRANSLATORS: sensor identifier
 #: client/cd-util.c:568
 msgid "Sensor ID"
-msgstr ""
+msgstr "מזהה חיישן"
 
 #. TRANSLATORS: the options for the sensor
 #: client/cd-util.c:588
 msgid "Options"
-msgstr ""
+msgstr "אפשרויו"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: client/cd-util.c:606
@@ -431,7 +432,7 @@ msgstr ""
 #. TRANSLATORS: if the sensor is locked
 #: client/cd-util.c:611
 msgid "Locked"
-msgstr ""
+msgstr "נעול"
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
@@ -447,7 +448,7 @@ msgstr ""
 #. TRANSLATORS: this is the sensor title
 #: client/cd-util.c:1060 client/cd-util.c:1197 client/cd-util.c:1289
 msgid "Sensor"
-msgstr ""
+msgstr "חיישן"
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
@@ -475,7 +476,7 @@ msgstr ""
 
 #: client/cd-util.c:1130
 msgid "Color"
-msgstr ""
+msgstr "צבע"
 
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
@@ -654,19 +655,19 @@ msgstr ""
 
 #: client/cd-util.c:2263
 msgid "Client version:"
-msgstr ""
+msgstr "גרסת לקוח:"
 
 #: client/cd-util.c:2265
 msgid "Daemon version:"
-msgstr ""
+msgstr "גרסת תהליך רקע:"
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
-msgstr ""
+msgstr "יצרן המערכת:"
 
 #: client/cd-util.c:2269
 msgid "System model:"
-msgstr ""
+msgstr "דגם המערכת:"
 
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
@@ -675,7 +676,7 @@ msgstr ""
 
 #: contrib/session-helper/cd-debug.c:206 src/cd-debug.c:206
 msgid "Debugging Options"
-msgstr ""
+msgstr "אפשרויות ניפוי תקלות"
 
 #: contrib/session-helper/cd-debug.c:207 src/cd-debug.c:207
 msgid "Show debugging options"
@@ -710,16 +711,6 @@ msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
 msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
@@ -841,7 +832,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr ""
+msgstr "כחול"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8

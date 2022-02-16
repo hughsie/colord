@@ -3,8 +3,8 @@
 # This file is distributed under the same license as the colord package.
 # 
 # Translators:
-# Balázs Meskó <meskobalazs@gmail.com>, 2016,2018
-# Balázs Úr <ur.balazs@fsf.hu>, 2014-2015
+# Balázs Meskó <meskobalazs@mailbox.org>, 2016,2018
+# Balázs Úr, 2014-2015
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2012
 # kelemeng <kelemeng@ubuntu.com>, 2012
 # kelemeng <kelemeng@ubuntu.com>, 2012
@@ -16,9 +16,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 12:39+0000\n"
-"PO-Revision-Date: 2018-04-29 11:57+0000\n"
-"Last-Translator: Balázs Meskó <meskobalazs@gmail.com>\n"
+"POT-Creation-Date: 2022-02-16 15:33+0000\n"
+"PO-Revision-Date: 2022-02-16 15:33+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/freedesktop/colord/language/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -290,7 +290,7 @@ msgstr "Sorozatszám"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -719,16 +719,6 @@ msgid ""
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
 msgstr "Ez a késleltetés a mintaszín beállítása, és a mérőműszer mintavétele között. Azért szükséges, mert a grafikus meghajtó és a megjelenítő maga is okoz késleltetést."
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr "Webszolgáltatás profil feltöltési URI"
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "A webszolgáltatás URI-ja, amely lehetővé teszi a kalibrációs eszközöknek, hogy feltöltsenek egy bizonyos profilt az Internetre."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"

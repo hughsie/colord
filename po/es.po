@@ -7,7 +7,7 @@
 # Adolfo Jayme Barrientos <fito@libreoffice.org>, 2013
 # Adolfo Jayme-Barrientos, 2013
 # Adolfo Jayme-Barrientos, 2015
-# Daniel Mustieles <inactive+leo@transifex.com>, 2012-2013
+# 0f759dd1ea6c4c76cedc299039ca4f23_7584d04 <454cc45058db9632179dc8079c0c1af3_5311>, 2012-2013
 # Facundo Dario Illanes <fdillanes@gmail.com>, 2014
 # Facundo Dario Illanes <fdillanes@gmail.com>, 2014
 # Fernando Gonzalez Blanco <fgonz@fedoraproject.org>, 2009
@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
+"POT-Creation-Date: 2022-02-16 15:33+0000\n"
+"PO-Revision-Date: 2022-02-16 15:33+0000\n"
 "Last-Translator: Richard Hughes <richard@hughsie.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/freedesktop/colord/language/es/)\n"
 "MIME-Version: 1.0\n"
@@ -293,7 +293,7 @@ msgstr "Número de serie"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -722,16 +722,6 @@ msgid ""
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
 msgstr "Esta es la demora entre los seteos de muestra de color y el pedido a los instrumentos de medición de tomar una muestra. Es necesario porque tanto el driver de gráficos y la pantalla misma producen latencias."
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr "Perfil de carga URI del servicio web "
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "La URI del servicio web que permite la calibración de las herramientas para cargar un perfil específico a la internet."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
