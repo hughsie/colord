@@ -33,7 +33,6 @@ Ensure the following packages are installed:
 * glib2-devel
 * gobject-introspection-devel
 * gtk-doc
-* intltool
 * lcms2-devel
 * libgudev1-devel
 * libgusb-devel
