@@ -1,9 +1,7 @@
 *.gmo
 *.header
-Makefile.in.in
 Makevars.template
 POTFILES
 Rules-quot
 *.sed
 *.sin
-stamp-it
