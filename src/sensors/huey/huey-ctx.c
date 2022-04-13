@@ -309,9 +309,12 @@ huey_ctx_take_sample (HueyCtx *ctx, CdSensorCap cap, GError **error)
 		 color_native.R, color_native.G, color_native.B);
 
 	/* try to fill the 16 bit register for accuracy */
-	multiplier.R = HUEY_POLL_FREQUENCY / color_native.R;
-	multiplier.G = HUEY_POLL_FREQUENCY / color_native.G;
-	multiplier.B = HUEY_POLL_FREQUENCY / color_native.B;
+	if (color_native.R != 0)
+		multiplier.R = HUEY_POLL_FREQUENCY / color_native.R;
+	if (color_native.G != 0)
+		multiplier.G = HUEY_POLL_FREQUENCY / color_native.G;
+	if (color_native.B != 0)
+		multiplier.B = HUEY_POLL_FREQUENCY / color_native.B;
 
 	/* don't allow a value of zero */
 	if (multiplier.R == 0)
