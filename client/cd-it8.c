@@ -526,7 +526,7 @@ main (int argc, char *argv[])
 
 	/* set verbose? */
 	if (verbose) {
-		g_setenv ("COLORD_VERBOSE", "1", FALSE);
+		(void)g_setenv ("COLORD_VERBOSE", "1", FALSE);
 	} else {
 		g_log_set_handler (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG,
 				   cd_util_ignore_cb, NULL);

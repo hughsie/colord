@@ -2072,7 +2072,7 @@ colord_icc_store_func (void)
 	g_assert_cmpint (array->len, ==, 2);
 	g_ptr_array_unref (array);
 
-	g_unlink (file2);
+	(void)g_unlink (file2);
 
 	/* wait for file notifier */
 	cd_test_loop_run_with_timeout (5000);
@@ -2082,7 +2082,7 @@ colord_icc_store_func (void)
 	g_assert_cmpint (removed, ==, 1);
 
 	/* remove already-exists.icc */
-	g_unlink (file1);
+	(void)g_unlink (file1);
 
 	/* wait for file notifier */
 	cd_test_loop_run_with_timeout (5000);
@@ -2352,7 +2352,7 @@ int
 main (int argc, char **argv)
 {
 	g_test_init (&argc, &argv, NULL);
-	g_setenv ("G_MESSAGES_DEBUG", "all", TRUE);
+	(void)g_setenv ("G_MESSAGES_DEBUG", "all", TRUE);
 
 	/* only critical and error are fatal */
 	g_log_set_fatal_mask (NULL, G_LOG_LEVEL_ERROR | G_LOG_LEVEL_CRITICAL);
