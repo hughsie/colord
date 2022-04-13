@@ -465,8 +465,6 @@ cd_device_get_profiles (CdDevice *device)
 	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (priv->proxy != NULL, NULL);
-	if (priv->profiles == NULL)
-		return NULL;
 	return g_ptr_array_ref (priv->profiles);
 }
 
@@ -487,8 +485,6 @@ cd_device_get_default_profile (CdDevice *device)
 	CdDevicePrivate *priv = GET_PRIVATE (device);
 	g_return_val_if_fail (CD_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (priv->proxy != NULL, NULL);
-	if (priv->profiles == NULL)
-		return NULL;
 	if (priv->profiles->len == 0)
 		return NULL;
 	if (!priv->enabled)
