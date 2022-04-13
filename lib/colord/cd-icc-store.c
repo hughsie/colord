@@ -408,13 +408,12 @@ cd_icc_store_search_path (CdIccStore *store,
 
 	/* check sanity */
 	if (depth > CD_ICC_STORE_MAX_RECURSION_LEVELS) {
-		ret = FALSE;
 		g_set_error (error,
 			     CD_ICC_ERROR,
 			     CD_ICC_ERROR_FAILED_TO_OPEN,
 			     "cannot recurse more than %i levels deep",
 			     CD_ICC_STORE_MAX_RECURSION_LEVELS);
-		goto out;
+		return FALSE;
 	}
 
 	/* add an inotify watch if not already added */
@@ -428,9 +427,8 @@ cd_icc_store_search_path (CdIccStore *store,
 							    NULL,
 							    error);
 		if (helper->monitor == NULL) {
-			ret = FALSE;
 			cd_icc_store_helper_free (helper);
-			goto out;
+			return FALSE;
 		}
 		g_signal_connect (helper->monitor, "changed",
 				  G_CALLBACK(cd_icc_store_file_monitor_changed_cb),
@@ -447,11 +445,10 @@ cd_icc_store_search_path (CdIccStore *store,
 						cancellable,
 						error);
 	if (enumerator == NULL) {
-		ret = FALSE;
 		helper = cd_icc_store_find_by_directory (store, path);
 		if (helper != NULL)
 			g_ptr_array_remove (priv->directory_array, helper);
-		goto out;
+		return FALSE;
 	}
 
 	/* get all the files */
@@ -460,9 +457,8 @@ cd_icc_store_search_path (CdIccStore *store,
 						    cancellable,
 						    &error_local);
 		if (info == NULL && error_local != NULL) {
-			ret = FALSE;
 			g_propagate_error (error, error_local);
-			goto out;
+			return FALSE;
 		}
 
 		/* special value, meaning "no more files to process" */
@@ -476,12 +472,10 @@ cd_icc_store_search_path (CdIccStore *store,
 						      depth,
 						      cancellable,
 						      error);
-		g_object_unref (info);
 		if (!ret)
-			goto out;
+			return FALSE;
 	}
-out:
-	return ret;
+	return TRUE;
 }
 
 /**
