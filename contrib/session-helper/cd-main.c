@@ -874,28 +874,24 @@ static gchar *
 cd_main_find_argyll_tool (const gchar *command,
 			  GError **error)
 {
-	gboolean ret;
-	gchar *filename;
+	g_autofree gchar *filename = NULL;
 
 	/* try the original argyllcms filename installed in /usr/local/bin */
 	filename = g_strdup_printf ("/usr/local/bin/%s", command);
-	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
-	if (ret)
-		return filename;
+	if (g_file_test (filename, G_FILE_TEST_EXISTS))
+		return g_steal_pointer(&filename);
 
 	/* try the debian filename installed in /usr/bin */
 	g_free (filename);
 	filename = g_strdup_printf ("/usr/bin/argyll-%s", command);
-	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
-	if (ret)
-		return filename;
+	if (g_file_test (filename, G_FILE_TEST_EXISTS))
+		return g_steal_pointer(&filename);
 
 	/* try the original argyllcms filename installed in /usr/bin */
 	g_free (filename);
 	filename = g_strdup_printf ("/usr/bin/%s", command);
-	ret = g_file_test (filename, G_FILE_TEST_EXISTS);
-	if (ret)
-		return filename;
+	if (g_file_test (filename, G_FILE_TEST_EXISTS))
+		return g_steal_pointer(&filename);
 
 	/* eek */
 	g_set_error (error,
