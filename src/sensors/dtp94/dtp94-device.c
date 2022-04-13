@@ -102,7 +102,7 @@ dtp94_device_send_data (GUsbDevice *device,
 					       error);
 	if (!ret)
 		return FALSE;
-	if (reply_read == 0) {
+	if (*reply_read == 0) {
 		g_set_error_literal (error,
 				     DTP94_DEVICE_ERROR,
 				     DTP94_DEVICE_ERROR_INTERNAL,
