@@ -90,6 +90,7 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 {
 	gboolean ret;
 	HueyCtxPrivate *priv = GET_PRIVATE (ctx);
+	g_autofree gchar *calibration_crt = NULL;
 
 	g_return_val_if_fail (HUEY_IS_CTX (ctx), FALSE);
 	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
@@ -113,8 +114,8 @@ huey_ctx_setup (HueyCtx *ctx, GError **error)
 						error);
 	if (!ret)
 		return FALSE;
-	g_debug ("device calibration CRT: %s",
-		 cd_mat33_to_string (&priv->calibration_crt));
+	calibration_crt = cd_mat33_to_string (&priv->calibration_crt);
+	g_debug ("device calibration CRT: %s", calibration_crt);
 
 	/* this number is different on all three hueys */
 	ret = huey_device_read_register_float (priv->device,
