@@ -215,7 +215,7 @@ cd_mapping_db_alter_func (void)
 	g_assert (mdb != NULL);
 
 	/* setup v0.1.0 database for altering */
-	g_unlink (db_filename);
+	(void)g_unlink (db_filename);
 	rc = sqlite3_open (db_filename, &db);
 	g_assert_cmpint (rc, ==, SQLITE_OK);
 	statement = "CREATE TABLE mappings ("
@@ -264,7 +264,7 @@ cd_mapping_db_convert_func (void)
 	g_assert (mdb != NULL);
 
 	/* setup v0.1.8 database for converting */
-	g_unlink (db_filename);
+	(void)g_unlink (db_filename);
 	rc = sqlite3_open (db_filename, &db);
 	g_assert_cmpint (rc, ==, SQLITE_OK);
 	statement = "CREATE TABLE mappings ("
@@ -307,7 +307,7 @@ cd_mapping_db_func (void)
 	g_assert (mdb != NULL);
 
 	/* connect, which should create a v2 table for us */
-	g_unlink (db_filename);
+	(void)g_unlink (db_filename);
 	ret = cd_mapping_db_load (mdb, db_filename, &error);
 	g_assert_no_error (error);
 	g_assert (ret);

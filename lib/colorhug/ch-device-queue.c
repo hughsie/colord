@@ -2824,7 +2824,7 @@ ch_device_queue_set_owner_name (ChDeviceQueue *device_queue,
 	g_return_if_fail (name != NULL);
 
 	memset(buf, 0, CH_OWNER_LENGTH_MAX);
-	g_strlcpy(buf, name, CH_OWNER_LENGTH_MAX);
+	(void)g_strlcpy(buf, name, CH_OWNER_LENGTH_MAX);
 
 	ch_device_queue_add (device_queue,
 			     device,
@@ -2890,7 +2890,7 @@ ch_device_queue_set_owner_email (ChDeviceQueue *device_queue,
 	g_return_if_fail (email != NULL);
 
 	memset (buf, 0, CH_OWNER_LENGTH_MAX);
-	g_strlcpy (buf, email, CH_OWNER_LENGTH_MAX);
+	(void)g_strlcpy (buf, email, CH_OWNER_LENGTH_MAX);
 
 	ch_device_queue_add (device_queue,
 			     device,
