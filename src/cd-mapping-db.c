@@ -67,7 +67,7 @@ cd_mapping_db_open (CdMappingDb *mdb,
 		    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	gchar *error_msg = NULL;
+	g_autofree gchar *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -116,7 +116,6 @@ cd_mapping_db_open (CdMappingDb *mdb,
 				     CD_CLIENT_ERROR_INTERNAL,
 				     "Cannot open mapping database: %s",
 				     error_msg);
-			sqlite3_free (error_msg);
 			return FALSE;
 		}
 	}

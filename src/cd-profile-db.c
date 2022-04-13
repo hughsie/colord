@@ -48,7 +48,7 @@ cd_profile_db_load (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	const gchar *statement;
-	gchar *error_msg = NULL;
+	g_autofree gchar *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
