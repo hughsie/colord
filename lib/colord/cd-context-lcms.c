@@ -163,7 +163,6 @@ cd_context_lcms_free (gpointer ctx)
 	g_clear_error (error_ctx);
 	g_free (error_ctx);
 
-	cmsUnregisterPluginsTHR (ctx);
 	cmsDeleteContext (ctx);
 }
 
