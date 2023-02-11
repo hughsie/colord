@@ -372,6 +372,7 @@ cd_icc_to_string (CdIcc *icc)
 	g_string_append (str, "\n");
 	number_tags = cmsGetTagCount (priv->lcms_profile);
 	for (i = 0; i < number_tags; i++) {
+		gchar *buf = NULL;
 		sig = cmsGetTagSignature (priv->lcms_profile, i);
 
 		/* convert to text */
@@ -397,7 +398,11 @@ cd_icc_to_string (CdIcc *icc)
 			continue;
 		}
 		g_string_append_printf (str, "  size\t%i\n", tag_size);
-		cmsReadRawTag (priv->lcms_profile, sig, &tmp, 4);
+
+		buf = g_malloc (tag_size);
+		cmsReadRawTag (priv->lcms_profile, sig, buf, tag_size);
+		memcpy (tag_str, buf, tag_size < 4 ? tag_size : 4);
+		g_free (buf);
 
 		cd_icc_uint32_to_str (tmp, tag_str);
 		tag_type = GUINT32_FROM_BE (tmp);
