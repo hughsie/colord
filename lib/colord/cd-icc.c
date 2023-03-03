@@ -2099,6 +2099,7 @@ cd_icc_load_handle (CdIcc *icc,
 	/* check the THR version has been correctly set up */
 	context = cmsGetProfileContextID (handle);
 	if (context == NULL) {
+		cmsCloseProfile (handle);
 		g_set_error_literal (error,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_CREATE,
