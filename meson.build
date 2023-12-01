@@ -214,6 +214,9 @@ add_project_arguments('-DCD_COMPILATION', language: 'c')
 
 # Needed for realpath() and PATH_MAX
 add_project_arguments('-D_XOPEN_SOURCE=700', language : 'c')
+# Needed to opt-in to 64-bit time_t on glibc. We pass 64-bit pointers into
+# gmtime_r.
+add_project_arguments('-D_TIME_BITS=64', language : 'c')
 
 prefix = get_option('prefix')
 
