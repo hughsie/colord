@@ -43,7 +43,6 @@ gchar *
 cd_quirk_vendor_name (const gchar *vendor)
 {
 	GString *display_name;
-	guint i;
 	const gchar *suffixes[] =
 		{ "Co.", "Co", "Inc.", "Inc", "Ltd.", "Ltd",
 		  "Corporation", "Incorporated", "Limited",
@@ -108,14 +107,14 @@ cd_quirk_vendor_name (const gchar *vendor)
 	};
 
 	/* correct some company names */
-	for (i = 0; vendor_names[i].old != NULL; i++) {
+	for (guint i = 0; vendor_names[i].old != NULL; i++) {
 		if (g_str_has_prefix (vendor, vendor_names[i].old))
 			return g_strdup (vendor_names[i].new);
 	}
 
 	/* get rid of suffixes */
 	display_name = g_string_new (vendor);
-	for (i = 0; suffixes[i] != NULL; i++) {
+	for (guint i = 0; suffixes[i] != NULL; i++) {
 		if (g_str_has_suffix (display_name->str, suffixes[i]))
 			g_string_truncate (display_name,
 					   display_name->len - strlen (suffixes[i]));
