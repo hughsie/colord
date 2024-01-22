@@ -1711,6 +1711,7 @@ cd_icc_save_data (CdIcc *icc,
 		 */
 		struct tm creation_time;
 		cmsICCHeader *header;
+		time_t creation_time_timet = priv->creation_time;
 		g_autoptr(GByteArray) mutable_data = NULL;
 
 		data = cd_icc_serialize_profile (icc, error);
@@ -1720,7 +1721,7 @@ cd_icc_save_data (CdIcc *icc,
 		mutable_data = g_bytes_unref_to_array (data);
 		data = NULL;
 
-		if (!gmtime_r (&priv->creation_time, &creation_time)) {
+		if (!gmtime_r (&creation_time_timet, &creation_time)) {
 			g_set_error (error,
 				     CD_ICC_ERROR,
 				     CD_ICC_ERROR_FAILED_TO_SAVE,
