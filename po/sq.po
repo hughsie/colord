@@ -4,9 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2024
-# Richard Hughes <richard@hughsie.com>, 2024
-# Remus-Gabriel Chelu, 2024
+# Besnik Bleta <besnik@programeshqip.org>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -15,13 +13,13 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-22 12:38+0000\n"
 "PO-Revision-Date: 2024-01-22 12:38+0000\n"
-"Last-Translator: Remus-Gabriel Chelu, 2024\n"
-"Language-Team: Romanian (https://app.transifex.com/freedesktop/teams/12151/ro/)\n"
+"Last-Translator: Besnik Bleta <besnik@programeshqip.org>, 2024\n"
+"Language-Team: Albanian (https://app.transifex.com/freedesktop/teams/12151/sq/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
-"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"Language: sq\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
@@ -52,7 +50,7 @@ msgstr ""
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
-msgstr "Comandă nerecunoscută, comenzile valide sunt:"
+msgstr "S’u gjet urdhër, urdhrat e vlefshëm janë:"
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
@@ -67,7 +65,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
 msgid "Generate the VCGT calibration of a given size"
-msgstr "Generează calibrarea VCGT de o anumită dimensiune"
+msgstr "Prodho kalibrimin VCGT të një madhësie të dhënë"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
@@ -97,7 +95,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:636
 msgid "Sets the description string"
-msgstr "Stabilește șirul de descriere"
+msgstr "Ujdis vargun e përshkrimit"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:641
@@ -133,7 +131,7 @@ msgstr ""
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
 msgid "ICC profile dump program"
-msgstr "Program de extragere și afișare a profilului ICC"
+msgstr "Program përftimi të dhënash profili ICC"
 
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
@@ -188,7 +186,7 @@ msgstr ""
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: client/cd-util.c:180
 msgid "Qualifier"
-msgstr "Calificativ"
+msgstr "Cilësues"
 
 #. TRANSLATORS: the profile type, e.g. 'output'
 #. TRANSLATORS: the device type, e.g. "printer"
@@ -201,7 +199,7 @@ msgstr ""
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 #: client/cd-util.c:192 client/cd-util.c:342
 msgid "Colorspace"
-msgstr ""
+msgstr "Hapësirë ngjyrash"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: client/cd-util.c:199 client/cd-util.c:336
@@ -254,7 +252,7 @@ msgstr ""
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
 msgid "Enabled"
-msgstr "Activat"
+msgstr "Aktivizuar"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
@@ -312,7 +310,7 @@ msgstr ""
 #. TRANSLATORS: this is a desktop printer
 #: client/cd-util.c:408
 msgid "Printer"
-msgstr "Imprimantă"
+msgstr "Shtypës"
 
 #. TRANSLATORS: a beamer used for presentations
 #: client/cd-util.c:412
@@ -344,12 +342,12 @@ msgstr ""
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
 msgid "Irradiance Calibration"
-msgstr "Calibrare iluminare"
+msgstr "Kalibrim Rrezatimi"
 
 #. TRANSLATORS: this is the sensor capability
 #: client/cd-util.c:438
 msgid "Spectral"
-msgstr "Spectral"
+msgstr "Spektral"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -368,7 +366,7 @@ msgstr ""
 #. * http://en.wikipedia.org/wiki/Plasma_display
 #: client/cd-util.c:454
 msgid "Plasma"
-msgstr "Plasmă"
+msgstr "Plasma"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -525,7 +523,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
 msgid "Gets all the available color sensors"
-msgstr "Obține toți senzorii de culoare disponibili"
+msgstr "Merr krejt ndijuesit e gatshëm të ngjyrave"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
@@ -535,7 +533,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
 msgid "Gets a reading from a sensor"
-msgstr ""
+msgstr "Merr vlerën prej një ndijueso"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2083
@@ -575,7 +573,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
 msgid "Get a standard colorspace"
-msgstr "Obține un spațiu de culoare standard"
+msgstr "Merrni një hapësirë standarde ngjyrash"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2131
@@ -595,7 +593,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2149
 msgid "Deletes a device"
-msgstr ""
+msgstr "Fshin një pajisje"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2155
@@ -610,7 +608,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2167
 msgid "Sets the device model"
-msgstr "Definește modelul dispozitivului"
+msgstr "Ujdis modelin e pajisjes"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2173
@@ -620,7 +618,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2179
 msgid "Gets the default profile for a device"
-msgstr "Obține profilul implicit pentru un dispozitiv"
+msgstr "Merr profilin parazgjedhje për një pajisje"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2185
@@ -640,7 +638,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2203
 msgid "Inhibits color profiles for this device"
-msgstr "Inhibă profilurile de culoare pentru acest dispozitiv"
+msgstr "Pengon profile ngjyrash për këtë pajisje"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2209
@@ -671,7 +669,7 @@ msgstr ""
 
 #: client/cd-util.c:2269
 msgid "System model:"
-msgstr "Modelul sistemului:"
+msgstr "Model sistemi:"
 
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
@@ -695,8 +693,8 @@ msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
 msgstr ""
-"Valoarea gamma standard implicită pentru afișaj. Valorile obișnuite sunt "
-"1,8, 2,2 și 2,4."
+"Vlera parazgjedhje e synuar gamma për ekranin. Vlera të rëndomta janë 1.8, "
+"2.2 dhe 2.4."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
@@ -718,10 +716,9 @@ msgid ""
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
 msgstr ""
-"Aceasta este întârzierea dintre momentul în care se stabilește culoarea "
-"eșantionului și momentul în care se cere instrumentului de măsură să "
-"preleveze o mostră. Este necesară deoarece atât controlorul grafic cât și "
-"afișajul în sine introduc latență."
+"Kjo është vonesa mes ujdisjes së ngjyrës së kampionit dhe kërkesës ndaj "
+"mjetit matës të marrë një kampion. Është e domosdoshme, ngaqë si përudhësi "
+"grafik, ashtu edhe vetë ekrani, sjellin vonesë të tyren."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
@@ -818,10 +815,6 @@ msgid ""
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
 msgstr ""
-"Acest spațiu de editare poate afișa culori mai saturate decât Adobe RGB și "
-"este potrivit pentru imaginile cu culori foarte saturate, utilizate adesea "
-"în reclame. Este foarte asemănător cu DonRGB4, dar poate afișa culori roșii "
-"suprasaturate prezente uneori în Fujichrome Velvia."
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
@@ -855,10 +848,9 @@ msgid ""
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
 msgstr ""
-"Acest profil de testare este utilizat pentru a face ca toate culorile de pe "
-"ecran să fie puțin mai albastre prin modificarea tabelului de configurare al"
-" plăcii video. Acest lucru permite utilizatorului să verifice dacă "
-"calibrarea este aplicată corect."
+"Ky profil testimi përdoret për t’i bërë krejt ngjyrat në ekran pakëz më blu,"
+" duke ndryshuar tabelë kërkimi të kartës video. Kjo i lejon përdoruesit të "
+"kontrollojë se kalibrimi po aplikohet saktë."
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
@@ -891,9 +883,6 @@ msgid ""
 "probably don't want to use this profile as a editing space or a display "
 "profile."
 msgstr ""
-"Acest profil teoretic este conceput pentru a fi utilizat în experimentele de"
-" culoare. Probabil că nu doriți să utilizați acest profil ca spațiu de "
-"editare sau ca profil de afișare."
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
@@ -1033,10 +1022,6 @@ msgid ""
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
 msgstr ""
-"Acest profil este utilizat pentru realizarea plăcilor pozitive, tipărirea pe"
-" hârtie de tip 4 (alb neacoperit cu luciu), tipărire „offset” pe coli/role "
-"de hârtie. Acest profil nu ar trebui să mai fie utilizat pentru producție, "
-"utilizați în schimb FOGRA47."
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
@@ -1085,9 +1070,6 @@ msgid ""
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
 msgstr ""
-"Acest profil, conform ISO 12647-2:2004, este utilizat pentru tipărirea pe "
-"hârtie lucioasă cu greutate redusă (LWC) îmbunătățită pentru tipărirea "
-"„offset” de 60 l/cm. Înlocuiește FOGRA28L."
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
@@ -1128,9 +1110,6 @@ msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
 msgstr ""
-"Acest profil este utilizat pentru tipărirea pe hârtie lucioasă de gradul 1 "
-"și 2 din SUA, tipărire „offset” și gravură. Este echivalentul din SUA al "
-"FOGRA39."
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
@@ -1145,10 +1124,6 @@ msgid ""
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
 msgstr ""
-"Acest profil este utilizat pentru tipărirea pe hârtie de ziar și este un "
-"profil conform ISO12647-3:2005, conceput pentru o presă de tipărire care "
-"prezintă un TVI (creștere a punctului) de 26%. Acesta este recomandat de "
-"WAN-IFRA pentru imprimarea „coldset” pe hârtie de ziar în întreaga lume."
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
@@ -1166,9 +1141,6 @@ msgid ""
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
 msgstr ""
-"Acest profil definește gama de culori utilizate cu standardul video NTSC. "
-"Este un standard învechit care a fost înlocuit de SMTE-C. Ar trebui să "
-"utilizați acest profil numai pentru a decodifica imagini video arhivate."
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
@@ -1233,9 +1205,9 @@ msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
 msgstr ""
-"Acesta este standardul actual utilizat în America de Nord și în Japonia "
-"pentru înregistrarea în studio. Ar trebui să utilizați acest profil numai "
-"pentru a codifica sau decodifica video."
+"Ky është standardi aktual i përdorur për regjistrim në studio nga Amerika e "
+"Veriut dhe Japonia. Këtë profil duhet ta përdorni vetëm për të koduar ose "
+"shkoduar video."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
@@ -1262,11 +1234,6 @@ msgid ""
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
 msgstr ""
-"Acest profil de uz general a fost conceput de Hewlett-Packard și Microsoft "
-"și continuă să fie profilul implicit pe internet pentru culori RGB "
-"neetichetate și utilizat în HDTV. Majoritatea ecranelor necalibrate sunt "
-"capabile să afișeze majoritatea culorilor disponibile în sRGB, deși acest "
-"profil este uneori o alegere proastă pentru imprimare."
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
@@ -1376,7 +1343,7 @@ msgstr ""
 #. - Normal users should not have to authenticate to delete profiles
 #: policy/org.freedesktop.color.policy.in.in:65
 msgid "Remove a color profile"
-msgstr "Elimină un profil de culoare"
+msgstr "Hiqni një profil ngjyrash"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"

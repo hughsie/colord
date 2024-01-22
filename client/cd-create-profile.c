@@ -333,7 +333,7 @@ cd_util_create_named_color (CdUtilPrivate *priv,
 		/* PCS = colours in PCS colour space CIE*Lab
 		 * colorant = colours in device colour space */
 		cmsFloat2LabEncoded (pcs, (cmsCIELab *) &lab);
-		ret = cmsAppendNamedColor (nc2, cd_dom_get_node_data (name), pcs, pcs);
+		ret = cmsAppendNamedColor (nc2, cd_dom_get_node_data (name), pcs, NULL);
 		g_assert (ret);
 	}
 	cmsWriteTag (priv->lcms_profile, cmsSigNamedColor2Tag, nc2);

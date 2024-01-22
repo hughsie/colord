@@ -6,7 +6,7 @@ git shortlog 1.4.6.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
 Version 1.4.7
 ~~~~~~~~~~~~~
-Released: 2022-xx-xx
+Released: 2024-xx-xx
 
 New Features:
 Bugfixes:
@@ -19,7 +19,7 @@ tx pull --all --minimum-perc=5
 git add ../po/*.po
 
 # MAKE SURE THIS IS CORRECT
-export release_ver="1.4.6"
+export release_ver="1.4.7"
 
 3. Generate the tarball:
 git commit -a -m "Release colord ${release_ver}"

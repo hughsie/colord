@@ -1,21 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Anders Jonsson <transifex@norsjovallen.se>, 2017-2018
-# Daniel Nylander <po@danielnylander.se>, 2011
-# Josef Andersson <josef.andersson@fripost.org>, 2017-2018
-# sebras <sebras@gmail.com>, 2015
-# sebras <sebras@gmail.com>, 2015
+# Daniel Nylander <po@danielnylander.se>, 2024
+# Anders Jonsson <transifex@norsjovallen.se>, 2024
+# Josef Andersson <josef.andersson@fripost.org>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-14 01:06+0000\n"
-"Last-Translator: Josef Andersson <josef.andersson@fripost.org>\n"
-"Language-Team: Swedish (http://www.transifex.com/freedesktop/colord/language/sv/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>, 2024\n"
+"Language-Team: Swedish (https://app.transifex.com/freedesktop/teams/12151/sv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -25,29 +27,29 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
 msgid "Profile to create"
-msgstr "Profil att skapa"
+msgstr ""
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
-msgstr "ICC-profilsskapare"
+msgstr ""
 
 #. TRANSLATORS: the user didn't read the man page
 #: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
 #: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
-msgstr "Misslyckades med att tolka argument"
+msgstr ""
 
 #. TRANSLATORS: the user forgot to use -o
 #: client/cd-create-profile.c:880
 msgid "No output filename specified"
-msgstr "Inget utmatningsfilnamn angivet"
+msgstr ""
 
 #. TRANSLATORS: this is a command alias
 #: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
-msgstr "Alias till %s"
+msgstr ""
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
@@ -56,12 +58,12 @@ msgstr "Kommandot hittades inte. Giltiga kommandon är:"
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
-msgstr "Visa extra felsökningsinformation"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:585
 msgid "The locale to use when setting localized text"
-msgstr "Lokalen att använda när lokaliserad text används"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
@@ -71,27 +73,27 @@ msgstr "Generera VCGT-kalibrering med en given storlek"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
 msgid "Clear any metadata in the profile"
-msgstr "Rensa metadata i profilen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:616
 msgid "Initialize any metadata for the profile"
-msgstr "Initiera metadata för profilen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:621
 msgid "Add a metadata item to the profile"
-msgstr "Lägg till ett metadataobjekt till profilen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:626
 msgid "Remove a metadata item from the profile"
-msgstr "Ta bort ett metadataobjekt från profilen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
 msgid "Sets the copyright string"
-msgstr "Sätter upphovsrättssträngen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:636
@@ -101,33 +103,33 @@ msgstr "Sätter beskrivningssträngen"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:641
 msgid "Sets the manufacturer string"
-msgstr "Sätter tillverkarsträngen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:646
 msgid "Sets the model string"
-msgstr "Sätter modellsträngen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:651
 msgid "Automatically fix metadata in the profile"
-msgstr "Fixa automatiskt metadata i profilen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:656
 msgid "Set the ICC profile version"
-msgstr "Sätt versionen för ICC-profilen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
 msgid "Export the tag data"
-msgstr "Exportera taggdatan"
+msgstr ""
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
 #: src/cd-main.c:2373
 msgid "Color Management"
-msgstr "Färghantering"
+msgstr ""
 
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
@@ -137,38 +139,38 @@ msgstr "ICC-profil dumpprogram"
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr "Skriv inbäddade skapelsetidsstämplar"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
-msgstr "Skapa en CMF från CSV-data"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
-msgstr "Skapa ett spektrum från CSV-data"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
-msgstr "Skapa en CCMX från referens och uppmätt data"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: client/cd-util.c:122
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr "%e %B %Y, %H:%M:%S"
+msgstr ""
 
 #. TRANSLATORS: profile owner
 #. TRANSLATORS: profile UID
 #: client/cd-util.c:134 client/cd-util.c:139
 msgid "Owner"
-msgstr "Ägare"
+msgstr ""
 
 #. TRANSLATORS: the internal DBus path
 #: client/cd-util.c:159 client/cd-util.c:262 client/cd-util.c:508
 msgid "Object Path"
-msgstr "Objektsökväg"
+msgstr ""
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -176,13 +178,13 @@ msgstr "Objektsökväg"
 #. * ColorModel.OutputMode.OutputResolution
 #: client/cd-util.c:167 client/cd-util.c:330
 msgid "Format"
-msgstr "Format"
+msgstr ""
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: client/cd-util.c:175
 msgid "Title"
-msgstr "Titel"
+msgstr ""
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: client/cd-util.c:180
@@ -194,7 +196,7 @@ msgstr "Kvalificerare"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: client/cd-util.c:185 client/cd-util.c:281 client/cd-util.c:530
 msgid "Type"
-msgstr "Typ"
+msgstr ""
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -205,50 +207,50 @@ msgstr "Färgrymd"
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: client/cd-util.c:199 client/cd-util.c:336
 msgid "Scope"
-msgstr "Omfattning"
+msgstr ""
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: client/cd-util.c:205
 msgid "Gamma Table"
-msgstr "Gammatabell"
+msgstr ""
 
 #. TRANSLATORS: if the profile is installed for all users
 #: client/cd-util.c:210
 msgid "System Wide"
-msgstr "Systemtäckande"
+msgstr ""
 
 #. TRANSLATORS: profile filename
 #: client/cd-util.c:215
 msgid "Filename"
-msgstr "Filnamn"
+msgstr ""
 
 #. TRANSLATORS: profile identifier
 #: client/cd-util.c:220
 msgid "Profile ID"
-msgstr "Profil-ID"
+msgstr ""
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 #: client/cd-util.c:235 client/cd-util.c:386 client/cd-util.c:601
 msgid "Metadata"
-msgstr "Metadata"
+msgstr ""
 
 #: client/cd-util.c:243
 msgid "Warning"
-msgstr "Varning"
+msgstr ""
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 #: client/cd-util.c:270
 msgid "Created"
-msgstr "Skapad"
+msgstr ""
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 #: client/cd-util.c:276
 msgid "Modified"
-msgstr "Ändrad"
+msgstr ""
 
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
@@ -259,54 +261,54 @@ msgstr "Aktiverad"
 #. * cannot be removed
 #: client/cd-util.c:292
 msgid "Embedded"
-msgstr "Inbäddad"
+msgstr ""
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 #: client/cd-util.c:297 client/cd-util.c:554
 msgid "Model"
-msgstr "Modell"
+msgstr ""
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 #: client/cd-util.c:302 client/cd-util.c:562
 msgid "Vendor"
-msgstr "Tillverkare"
+msgstr ""
 
 #: client/cd-util.c:308
 msgid "Inhibitors"
-msgstr "Hämmare"
+msgstr ""
 
 #. TRANSLATORS: the device serial number
 #: client/cd-util.c:312
 msgid "Serial"
-msgstr "Serienummer"
+msgstr ""
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
-msgstr "Säte"
+msgstr ""
 
 #. TRANSLATORS: the device identifier
 #: client/cd-util.c:347
 msgid "Device ID"
-msgstr "Enhets-ID"
+msgstr ""
 
 #. TRANSLATORS: the profile for the device
 #: client/cd-util.c:356
 msgid "Profile"
-msgstr "Profil"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
 #: client/cd-util.c:404
 msgid "CRT"
-msgstr "CRT"
+msgstr ""
 
 #. TRANSLATORS: this is a desktop printer
 #: client/cd-util.c:408
@@ -316,29 +318,29 @@ msgstr "Skrivare"
 #. TRANSLATORS: a beamer used for presentations
 #: client/cd-util.c:412
 msgid "Projector"
-msgstr "Projektor"
+msgstr ""
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
 #: client/cd-util.c:417
 msgid "Spot"
-msgstr "Punkt"
+msgstr ""
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 #: client/cd-util.c:422
 msgid "Ambient"
-msgstr "Omgivande"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:426
 msgid "Calibration"
-msgstr "Kalibrering"
+msgstr ""
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
 msgid "Dark Calibration"
-msgstr "Mörkerkalibrering"
+msgstr ""
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
@@ -354,13 +356,13 @@ msgstr "Spektral"
 #. * where LCD stands for 'Liquid Crystal Display'
 #: client/cd-util.c:443
 msgid "LCD Generic"
-msgstr "LCD generell"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: client/cd-util.c:448
 msgid "LED Generic"
-msgstr "LED generell"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
@@ -374,152 +376,152 @@ msgstr "Plasma"
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 #: client/cd-util.c:460
 msgid "LCD CCFL"
-msgstr "LCD kallkatodslampa"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 #: client/cd-util.c:466
 msgid "LCD RGB LED"
-msgstr "LCD RGB LED"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 #: client/cd-util.c:472
 msgid "Wide Gamut LCD CCFL"
-msgstr "Bred färgomfångs-LCD kallkatodslampa"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:476
 msgid "Wide Gamut LCD RGB LED"
-msgstr "Bred färgomfångs-LCD RGB LED"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 #: client/cd-util.c:482
 msgid "LCD White LED"
-msgstr "LCD vit LED"
+msgstr ""
 
 #. TRANSLATORS: this an unknown display technology
 #: client/cd-util.c:485
 msgid "Unknown"
-msgstr "Okänd"
+msgstr ""
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: client/cd-util.c:538
 msgid "State"
-msgstr "Tillstånd"
+msgstr ""
 
 #. TRANSLATORS: sensor serial
 #: client/cd-util.c:546
 msgid "Serial number"
-msgstr "Serienummer"
+msgstr ""
 
 #. TRANSLATORS: sensor identifier
 #: client/cd-util.c:568
 msgid "Sensor ID"
-msgstr "Sensor-ID"
+msgstr ""
 
 #. TRANSLATORS: the options for the sensor
 #: client/cd-util.c:588
 msgid "Options"
-msgstr "Alternativ"
+msgstr ""
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: client/cd-util.c:606
 msgid "Native"
-msgstr "Inbyggd"
+msgstr ""
 
 #. TRANSLATORS: if the sensor is locked
 #: client/cd-util.c:611
 msgid "Locked"
-msgstr "Låst"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 #: client/cd-util.c:629
 msgid "Capabilities"
-msgstr "Förmågor"
+msgstr ""
 
 #: client/cd-util.c:971 client/cd-util.c:1000 client/cd-util.c:1048
 #: client/cd-util.c:1176 client/cd-util.c:1260
 msgid "There are no supported sensors attached"
-msgstr "Det finns inga anslutna sensorer som stöds"
+msgstr ""
 
 #. TRANSLATORS: this is the sensor title
 #: client/cd-util.c:1060 client/cd-util.c:1197 client/cd-util.c:1289
 msgid "Sensor"
-msgstr "Sensor"
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr "Ställ in enheten på kalibreringspositionen och tryck retur."
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
 msgid "Set the device to the surface position and press enter."
-msgstr "Ställ in enheten på ytpositionen och tryck retur."
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1097
 msgid "Put the device in a dark place and press enter."
-msgstr "Placera enheten på en mörk plats och tryck retur."
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1107
 msgid "Calibrate with a 3200K light source."
-msgstr "Kalibrera med en 3200K ljuskälla."
+msgstr ""
 
 #: client/cd-util.c:1124
 msgid "Put the device on the color to be measured and press enter."
-msgstr "Placera enheten på färgen som ska mätas och tryck retur."
+msgstr ""
 
 #: client/cd-util.c:1130
 msgid "Color"
-msgstr "Färg"
+msgstr ""
 
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
 msgid "No spectral capability"
-msgstr "Ingen spektral förmåga"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
 msgid "Show client and daemon versions"
-msgstr "Visa klient- och demonversioner"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2019
 msgid "Show the value without any header"
-msgstr "Visa värdet utan något huvud"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2022
 msgid "Filter object properties when displaying"
-msgstr "Filtrera objektegenskaper när de visas"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr "Dumpa all felsökningsdata till en fil"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
 msgid "Gets all the color managed devices"
-msgstr "Hämtar alla färghanterade enheter"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2053
 msgid "Gets all the color managed devices of a specific kind"
-msgstr "Hämtar alla färghanterade enheter av en specifik typ"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
 msgid "Gets all the available color profiles"
-msgstr "Hämtar alla tillgängliga färgprofiler"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
@@ -529,7 +531,7 @@ msgstr "Hämtar alla tillgängliga färgsensorer"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
 msgid "Gets a spectral reading from a sensor"
-msgstr "Hämtar en spektralmätning från en sensor"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
@@ -539,37 +541,37 @@ msgstr "Hämtar en avläsning från en sensor"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2083
 msgid "Locks the color sensor"
-msgstr "Låser färgsensorn"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2089
 msgid "Sets one or more sensor options"
-msgstr "Ställer in en eller flera sensorinställningar"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2095
 msgid "Create a device"
-msgstr "Skapa en enhet"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2101
 msgid "Find a device from the device ID"
-msgstr "Hitta en enhet från enhets-ID:t"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2107
 msgid "Find a device with a given property value"
-msgstr "Hitta en enhet med ett givet egenskapsvärde"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2113
 msgid "Find a profile from the profile ID"
-msgstr "Hitta en profil från profil-ID:t"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr "Hitta en profil via filnamn"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
@@ -579,17 +581,17 @@ msgstr "Hämta en standardfärgrymd"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2131
 msgid "Create a profile"
-msgstr "Skapa en profil"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr "Lägg till en profil till en enhet som redan existerar"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
 msgid "Makes a profile default for a device"
-msgstr "Gör en profil till standard för en enhet"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2149
@@ -599,12 +601,12 @@ msgstr "Tar bort en enhet"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2155
 msgid "Deletes a profile"
-msgstr "Tar bort en profil"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2161
 msgid "Sets extra properties on the profile"
-msgstr "Ställer in extra egenskaper för profilen"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2167
@@ -614,7 +616,7 @@ msgstr "Anger enhetens modell"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2173
 msgid "Enables or disables the device"
-msgstr "Aktiverar eller inaktiverar enheten"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2179
@@ -624,17 +626,17 @@ msgstr "Anger standardprofilen för en enhet"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2185
 msgid "Sets the device vendor"
-msgstr "Anger enhetens tillverkare"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2191
 msgid "Sets the device serial"
-msgstr "Anger enhetens serienummer"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2197
 msgid "Sets the device kind"
-msgstr "Anger enhetens typ"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2203
@@ -644,29 +646,29 @@ msgstr "Hämmar färgprofiler för denna enhet"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2209
 msgid "Returns all the profiles that match a qualifier"
-msgstr "Returnerar alla profiler som matchar en kvalificerare"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2215
 msgid "Import a profile and install it for the user"
-msgstr "Importera en profil och installera den för användaren"
+msgstr ""
 
 #. TRANSLATORS: no colord available
 #: client/cd-util.c:2256
 msgid "No connection to colord:"
-msgstr "Ingen anslutning till colord:"
+msgstr ""
 
 #: client/cd-util.c:2263
 msgid "Client version:"
-msgstr "Klientversion:"
+msgstr ""
 
 #: client/cd-util.c:2265
 msgid "Daemon version:"
-msgstr "Demonversion:"
+msgstr ""
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
-msgstr "Systemtillverkare:"
+msgstr ""
 
 #: client/cd-util.c:2269
 msgid "System model:"
@@ -675,64 +677,58 @@ msgstr "Systemmodell:"
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
 msgid "Show debugging information for all files"
-msgstr "Visa felsökningsinformation för alla filer"
+msgstr ""
 
 #: contrib/session-helper/cd-debug.c:206 src/cd-debug.c:206
 msgid "Debugging Options"
-msgstr "Felsökningsflaggor"
+msgstr ""
 
 #: contrib/session-helper/cd-debug.c:207 src/cd-debug.c:207
 msgid "Show debugging options"
-msgstr "Visa felsökningsflaggor"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:5
 msgid "Default gamma for the display"
-msgstr "Standard gamma för skärmen"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:6
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr "Standardmålvärde för gamma för skärmen. Vanliga värden är 1,8, 2,2 och 2,4."
+msgstr ""
+"Standardmålvärde för gamma för skärmen. Vanliga värden är 1,8, 2,2 och 2,4."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
-msgstr "Standardvitpunkt för skärm"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:14
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr "Standardvitpunkt i Kelvin för skärmkalibrering, där 0 betyder skärmberoende. Vanliga värden är 6500 för D65 och 5000 för D50."
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
-msgstr "Fördröjning mellan sampelintervall"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:23
 msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr "Detta är fördröjningen mellan då sampelfärgen ställs in och när mätinstrumentet ombes att ta ett sampel. Det krävs eftersom både grafikdrivrutinen och skärmen själv introducerar latens."
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr "Profiluppladdnings-URI för webbtjänst"
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "URI:n för webbtjänsten som låter kalibreringsverktyget ladda upp en specifik profil till internet."
+msgstr ""
+"Detta är fördröjningen mellan då sampelfärgen ställs in och när "
+"mätinstrumentet ombes att ta ett sampel. Det krävs eftersom både "
+"grafikdrivrutinen och skärmen själv introducerar latens."
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
-msgstr "AdobeRGB1998"
+msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr "Kompatibel med Adobe RGB (1998)"
+msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -773,7 +769,7 @@ msgstr "Kompatibel med Adobe RGB (1998)"
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr "Denna profil är fri från kända upphovsrättsbegränsningar"
+msgstr ""
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -783,11 +779,11 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr "Denna redigeringsrymd designades som SMPTE-240M och täcker merparten av de möjliga färgerna som finns tillgängliga i en CMYK-färgskrivare. Detta är ett populärt alternativ för att redigera fotografier och för användning inom tryckning då alla SWOP-färgerna kan återges."
+msgstr ""
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr "AppleRGB"
+msgstr ""
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
@@ -802,15 +798,15 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr "Denna föråldrade profil skapades från början av Adobe för att användas med Photoshop och Illustrator. Eftersom den är baserad på Apples 13\" originalfärgskärm och liknar sRGB, bör den inte användas som skärmprofil för nya bilder."
+msgstr ""
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
-msgstr "BestRGB"
+msgstr ""
 
 #: data/profiles/BestRGB.iccprofile.xml:4
 msgid "Best RGB"
-msgstr "Best RGB"
+msgstr ""
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -820,15 +816,19 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr "Denna redigeringsfärgrymd kan visa fler mättade färger än Adobe RGB och är lämplig för bilder med väldigt mättade färger som ofta används i reklam. Den är väldigt lik DonRGB4, men kan visa övermättade röda färger som ibland förekommer i Fujichrome Velvia."
+msgstr ""
+"Denna redigeringsfärgrymd kan visa fler mättade färger än Adobe RGB och är "
+"lämplig för bilder med väldigt mättade färger som ofta används i reklam. Den"
+" är väldigt lik DonRGB4, men kan visa övermättade röda färger som ibland "
+"förekommer i Fujichrome Velvia."
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
-msgstr "BetaRGB"
+msgstr ""
 
 #: data/profiles/BetaRGB.iccprofile.xml:4
 msgid "Beta RGB"
-msgstr "Beta RGB"
+msgstr ""
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 #: data/profiles/BetaRGB.iccprofile.xml:7
@@ -837,15 +837,15 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr "Denna redigeringsrymd kan visa fler mättade färger än Adobe RGB. Den är mindre benägen att skapa kvantiseringsfel jämfört med ProPhoto RGB även om fler skuggdetaljer bevaras. I de flesta fall är ProPhoto RGB troligtvis ett bättre val."
+msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr "bluish"
+msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr "Blå"
+msgstr ""
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -853,15 +853,18 @@ msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr "Denna testprofil används för att göra alla färger på skärmen något mer blå genom att justera grafikkortets uppslagstabell. Detta låter användaren kontrollera att kalibreringen tillämpas korrekt."
+msgstr ""
+"Denna testprofil används för att göra alla färger på skärmen något mer blå "
+"genom att justera grafikkortets uppslagstabell. Detta låter användaren "
+"kontrollera att kalibreringen tillämpas korrekt."
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
-msgstr "BruceRGB"
+msgstr ""
 
 #: data/profiles/BruceRGB.iccprofile.xml:4
 msgid "Bruce RGB"
-msgstr "Bruce RGB"
+msgstr ""
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 #: data/profiles/BruceRGB.iccprofile.xml:7
@@ -869,15 +872,15 @@ msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr "Detta är en RGB-redigeringsrymd som kan användas med Adobe Photoshop 5.0 och senare. Den designades som en utmatningsfokuserad kompromiss mellan ColorMatch RGB och Adobe RGB och brukade föredras av vissa fototrycktjänster."
+msgstr ""
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
-msgstr "CIE-RGB"
+msgstr ""
 
 #: data/profiles/CIE-RGB.iccprofile.xml:4
 msgid "CIE RGB"
-msgstr "CIE RGB"
+msgstr ""
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 #: data/profiles/CIE-RGB.iccprofile.xml:7
@@ -885,7 +888,10 @@ msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr "Denna teoretiska profil är designad för att användas i färgexperiment. Du vill troligen inte använda denna profil som en redigeringsrymd eller en skärmprofil."
+msgstr ""
+"Denna teoretiska profil är designad för att användas i färgexperiment. Du "
+"vill troligen inte använda denna profil som en redigeringsrymd eller en "
+"skärmprofil."
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
@@ -893,7 +899,7 @@ msgstr "ColorMatchRGB"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:4
 msgid "ColorMatch RGB"
-msgstr "ColorMatch RGB"
+msgstr ""
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -903,15 +909,15 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr "Denna profil designades av Radius för PressView-skärmen. Använd bara denna profil som en skärmprofil eller som en redigeringsrymd då profilen inte är väsentligt annorlunda än sRGB. Du bör bara behöva använda denna profil om du ska visa bilder som skapats på en PressView-skärm."
+msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr "Crayons"
+msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
-msgstr "Crayonfärger"
+msgstr ""
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -920,15 +926,15 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr "Denna färgnamnsprofil innehåller alla Crayola-kritfärger som vanligtvis förekommer. Detta är en testprofil designad för att testa att bädda in namngivna färger i dokument."
+msgstr ""
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
-msgstr "DonRGB4"
+msgstr ""
 
 #: data/profiles/DonRGB4.iccprofile.xml:4
 msgid "Don RGB 4"
-msgstr "Don RGB 4"
+msgstr ""
 
 #. TRANSLATORS: saturated means vivid bright colors
 #: data/profiles/DonRGB4.iccprofile.xml:7
@@ -936,15 +942,15 @@ msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr "Denna redigeringsrymd kan visa fler mättade färger än Adobe RGB och är lämplig för bilder med väldigt mättade färger som ofta används i reklam. "
+msgstr ""
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
-msgstr "ECI-RGBv1"
+msgstr ""
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:4
 msgid "eciRGB v1"
-msgstr "eciRGB v1"
+msgstr ""
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 #: data/profiles/ECI-RGBv1.iccprofile.xml:7
@@ -953,15 +959,15 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr "Denna profil rekommenderas av ECI (European Color Initiative) som en redigeringsrymd för professionell bildredigering och ämnar att täcka alla färger som kan skrivas ut av en tryckpress. Den används ibland som ett utbytesformat av färgdata mellan utgivare och tryckerier."
+msgstr ""
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
-msgstr "ECI-RGBv2"
+msgstr ""
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:4
 msgid "eciRGB v2"
-msgstr "eciRGB v2"
+msgstr ""
 
 #. TRANSLATORS: lightness is a technical word for brightness
 #: data/profiles/ECI-RGBv2.iccprofile.xml:7
@@ -969,15 +975,15 @@ msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr "Denna profil designades med en ljusstyrkegammakurva vilket innebär att skärmen också måste kalibreras på samma sätt. Denna profil är endast användbar för avancerade användare och rekommenderas inte för allmänt bruk."
+msgstr ""
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
-msgstr "EktaSpacePS5"
+msgstr ""
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:4
 msgid "Ekta Space PS5"
-msgstr "Ekta Space PS5"
+msgstr ""
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -986,11 +992,11 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr "Denna profil designades för att lagra arkiv av inskannad transparent film. Den är lämplig för att spara bilder från färgnegativ, även om ProPhoto RGB idag är en mer populär profil för arkivering."
+msgstr ""
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
-msgstr "FOGRA27L Bestruket"
+msgstr ""
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:6
@@ -998,11 +1004,11 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr "Denna profil används för positiv plåtframställning, tryck på papper av typ 1 och 2 (bestruket eller matt), arkoffset. Denna profiluppsättning bör inte längre användas för produktion, använd FOGRA39L istället."
+msgstr ""
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
-msgstr "FOGRA28L Rull Bestruket"
+msgstr ""
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -1011,11 +1017,11 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr "Denna profil används för positiv plåtframställning, tryck på papperstyp 3 (LWC), rulloffset. Denna profil bör inte längre användas för produktion, använd FOGRA45 istället."
+msgstr ""
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
-msgstr "FOGRA29L Obestruket"
+msgstr ""
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -1024,18 +1030,21 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 4 "
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
-msgstr "Denna profil används för positiv plåtframställning, tryck på papperstyp 4 (obestruket vitt), arkoffset. Denna profil bör inte längre användas för produktion, använd FOGRA47 istället."
+msgstr ""
+"Denna profil används för positiv plåtframställning, tryck på papperstyp 4 "
+"(obestruket vitt), arkoffset. Denna profil bör inte längre användas för "
+"produktion, använd FOGRA47 istället."
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr "FOGRA30L Obestruket Gulaktigt"
+msgstr ""
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:6
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr "Denna profil används för positiv plåtframställning, tryck på papperstyp 5 (obestruket gulaktig), arkoffset."
+msgstr ""
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
@@ -1049,22 +1058,22 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr "Denna profil används för tryck på papperstyperna 1 och 2 (bestruket eller matt), arkoffset. Denna profil är inte väsentligt annorlunda än U.S. GRACoL 2006 (TR 006)."
+msgstr ""
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
-msgstr "FOGRA40L SC-papper"
+msgstr ""
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:6
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr "Denna profil används för tryck på SC (superkalendrerat) papper, rulloffset. Det finns ingen känd U.S.-motsvarighet."
+msgstr ""
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
-msgstr "FOGRA45L Lättviktsbestruket"
+msgstr ""
 
 #. TRANSLATORS: ISO is a trademark
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:6
@@ -1072,24 +1081,27 @@ msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr "Denna ISO 12647-2:2004-kompatibla profil används för tryck på förbättrat lättviktsbestruket papper (LWC) för 60 l/cm värmehärdat rulloffsettryck. Den ersätter FOGRA28L."
+msgstr ""
+"Denna ISO 12647-2:2004-kompatibla profil används för tryck på förbättrat "
+"lättviktsbestruket papper (LWC) för 60 l/cm värmehärdat rulloffsettryck. Den"
+" ersätter FOGRA28L."
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
-msgstr "FOGRA47L Obestruket"
+msgstr ""
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:6
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr "Denna ISO 12647-2-kompatibla profil används för tryck på 115 gsm obestruket vitt (papperstyp 4) för 60l/cm arkoffsettryck."
+msgstr ""
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
 #: data/profiles/Gamma6500K.iccprofile.xml:3
 msgid "Gamma6500K"
-msgstr "Gamma6500K"
+msgstr ""
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
@@ -1101,22 +1113,24 @@ msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr "D65"
+msgstr ""
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
-msgstr "GRACoL TR006 Obestruket"
+msgstr ""
 
 #. TRANSLATORS: coated = smooth and expensive
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:6
 msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
-msgstr "Denna profil används för tryck på U.S. klass 1 och 2 bestruket papper, arkoffsettryck och gravyr. Det är U.S.-motsvarigheten till FOGRA39."
+msgstr ""
+"Denna profil används för tryck på U.S. klass 1 och 2 bestruket papper, "
+"arkoffsettryck och gravyr. Det är U.S.-motsvarigheten till FOGRA39."
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
-msgstr "IFRA26S 2004 Tidningspapper"
+msgstr ""
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -1126,15 +1140,19 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr "Denna profil används för tryck på tidningspapper och är en ISO 12647-3:2005-kompatibel profil designad för en tryckpress med 26% TVI (punktförstoring). Den rekommenderas av WAN-IFRA för kallhärdat tryck på tidningspapper över hela världen."
+msgstr ""
+"Denna profil används för tryck på tidningspapper och är en ISO "
+"12647-3:2005-kompatibel profil designad för en tryckpress med 26% TVI "
+"(punktförstoring). Den rekommenderas av WAN-IFRA för kallhärdat tryck på "
+"tidningspapper över hela världen."
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr "NTSC-RGB"
+msgstr ""
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr "NTSC RGB"
+msgstr ""
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1143,15 +1161,18 @@ msgid ""
 "This profile defines the range of colors used with the NTSC video standard. "
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
-msgstr "Denna profil definierar mängden färger som används av NTSC-videostandarden. Det är en föråldrad standard som har ersatts av SMTE-C. Du bör bara använda denna profil för att avkoda arkiverad video."
+msgstr ""
+"Denna profil definierar mängden färger som används av NTSC-videostandarden. "
+"Det är en föråldrad standard som har ersatts av SMTE-C. Du bör bara använda "
+"denna profil för att avkoda arkiverad video."
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr "PAL-RGB"
+msgstr ""
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr "PAL/SECAM RGB"
+msgstr ""
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7
@@ -1159,15 +1180,15 @@ msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr "Denna profil definierar mängden färger som används i PAL- och SECAM-videostandarderna och är väldigt lik sRGB. Du bör bara använda denna profil för att koda eller avkoda video."
+msgstr ""
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
-msgstr "ProPhotoRGB"
+msgstr ""
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:4
 msgid "ProPhoto RGB"
-msgstr "ProPhoto RGB"
+msgstr ""
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 #: data/profiles/ProPhotoRGB.iccprofile.xml:7
@@ -1176,15 +1197,15 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr "Denna profil, från början designad av Eastman Koak och kallad ROMM RGB, kan visa en stor mängd färger och används av många fotografer för rendering, redigering och arkivering av RAW-bilder. Om du inte arbetar med 16 bitars precision per kanal, kan du komma att se färgbandning när du redigerar bilder."
+msgstr ""
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
-msgstr "Rec709"
+msgstr ""
 
 #: data/profiles/Rec709.iccprofile.xml:4
 msgid "Rec. 709"
-msgstr "Rec. 709"
+msgstr ""
 
 #. TRANSLATORS: ITU-R is a standards body
 #: data/profiles/Rec709.iccprofile.xml:9
@@ -1192,37 +1213,40 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr "ITU-R rekommendationen BT.709 är en högupplöst televisionsstandard som först godkändes 1990. Rek.709-profilen använder samma mängd färger som sRGB även om luminanskurvan är olika."
+msgstr ""
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
-msgstr "SMPTE-C-RGB"
+msgstr ""
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:4
 msgid "SMPTE-C RGB"
-msgstr "SMPTE-C RGB"
+msgstr ""
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:7
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr "Detta är den nuvarande standard som används av Nordamerika och Japan för studioinspelning. Du bör bara använda denna profil för att koda eller avkoda video."
+msgstr ""
+"Detta är den nuvarande standard som används av Nordamerika och Japan för "
+"studioinspelning. Du bör bara använda denna profil för att koda eller avkoda"
+" video."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
-msgstr "SNAP TR002 Tidningspapper"
+msgstr ""
 
 #. TRANSLATORS: CGATS is a trademark
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:6
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr "Detta är en ANSI CGAT/SNAP TR 002-2007-baserad profil för tryck på tidningspapper i U.S kallhärdad offset. TVI (punktförstoringen) är 26%."
+msgstr ""
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr "sRGB"
+msgstr ""
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1233,15 +1257,20 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr "Denna generella profil designades av Hewlett-Packard och Microsoft och lever vidare som standardprofilen på internet för RGB-färger utan angiven färgprofil och används i HDTV. De flesta okalibrerade skärmar kan visa de flesta av färgerna som finns i sRGB, även om denna profil ibland är ett dåligt val för tryck."
+msgstr ""
+"Denna generella profil designades av Hewlett-Packard och Microsoft och lever"
+" vidare som standardprofilen på internet för RGB-färger utan angiven "
+"färgprofil och används i HDTV. De flesta okalibrerade skärmar kan visa de "
+"flesta av färgerna som finns i sRGB, även om denna profil ibland är ett "
+"dåligt val för tryck."
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
-msgstr "SwappedRedAndGreen"
+msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr "Utbytt röd och grön"
+msgstr ""
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1249,11 +1278,11 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr "Denna testprofil byter ut de röda och gröna färgkanalerna och är användbar som en visuell kontroll att profilerna tillämpas korrekt. Om denna profil tillämpas två gånger ser bilden oförändrad ut."
+msgstr ""
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
-msgstr "SWOP TR003 Bestruket"
+msgstr ""
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:6
@@ -1261,11 +1290,11 @@ msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr "Denna profil används för tryck på U.S. klass 3 bestruket papper, arkoffset och gravyr. Den används för högkvalitativt tidskriftstryck med vitt papper."
+msgstr ""
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
-msgstr "SWOP TR005 Bestruket"
+msgstr ""
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:6
@@ -1273,15 +1302,15 @@ msgid ""
 "This profile is used for printing on U.S. grade 5 coated paper, sheetfed "
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
-msgstr "Denna profil används för tryck på U.S. klass 5 bestruket papper, arkmatad offset och gravyr. Den används för standard tidskriftstryck med gulaktigt papper."
+msgstr ""
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
-msgstr "WideGamutRGB"
+msgstr ""
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
-msgstr "Bred färgomfångs-RGB"
+msgstr ""
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 #: data/profiles/WideGamutRGB.iccprofile.xml:7
@@ -1291,15 +1320,15 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr "Denna redigeringsrymd designades av Adobe Systems för att täcka många fler färger än Adobe RGB. Denna profil används för att trycka på enheter så som filminspelare och kan definiera många färger som inte kan visas på en datorskärm. Om du inte arbetar med 16 bitars precision per kanal, kan du komma att se färgbandning när du redigerar bilder."
+msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
-msgstr "x11-colors"
+msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr "X11-färger"
+msgstr ""
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1307,37 +1336,37 @@ msgstr "X11-färger"
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr "Denna färgnamnsprofil innehåller alla färger som definieras av X11, under antagandet att källfärgerna avsågs vara sRGB."
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #: policy/org.freedesktop.color.policy.in.in:20
 msgid "Create a color managed device"
-msgstr "Skapa en färghanterad enhet"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr "Autentisering krävs för att skapa en färghanterad enhet"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #: policy/org.freedesktop.color.policy.in.in:35
 msgid "Create a color profile"
-msgstr "Skapa en färgprofil"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:36
 msgid "Authentication is required to create a color profile"
-msgstr "Autentisering krävs för att skapa en färgprofil"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 #: policy/org.freedesktop.color.policy.in.in:50
 msgid "Remove a color managed device"
-msgstr "Ta bort en färghanterad enhet"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr "Autentisering krävs för att ta bort en färghanterad enhet"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1347,27 +1376,27 @@ msgstr "Ta bort en färgprofil"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"
-msgstr "Autentisering krävs för att ta bort en färgprofil"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #: policy/org.freedesktop.color.policy.in.in:80
 msgid "Modify color settings for a device"
-msgstr "Ändra färginställningar för en enhet"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Autentisering krävs för att ändra färginställningarna för en enhet"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #: policy/org.freedesktop.color.policy.in.in:95
 msgid "Modify a color profile"
-msgstr "Ändra en färgprofil"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:96
 msgid "Authentication is required to modify a color profile"
-msgstr "Autentisering krävs för att ändra en färgprofil"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -1378,49 +1407,49 @@ msgstr "Autentisering krävs för att ändra en färgprofil"
 #. other sessions unusable.
 #: policy/org.freedesktop.color.policy.in.in:115
 msgid "Install system color profiles"
-msgstr "Installera färgprofiler på systemet"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Autentisering krävs för att installera färgprofilen för alla användare"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
 #: policy/org.freedesktop.color.policy.in.in:131
 msgid "Inhibit color profile selection"
-msgstr "Hämma färgprofilval"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Autentisering krävs för att inaktivera profilmatchning för en enhet"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
 #: policy/org.freedesktop.color.policy.in.in:147
 msgid "Use color sensor"
-msgstr "Använd färgsensor"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"
-msgstr "Autentisering krävs för att använda färgsensorn"
+msgstr ""
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: src/cd-main.c:2355
 msgid "Exit after a small delay"
-msgstr "Avsluta efter en kort fördröjning"
+msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
-msgstr "Avsluta efter att motorn har lästs in"
+msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
-msgstr "Skapa en attrappsensor för testning"
+msgstr ""
 
 #: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
-msgstr "D-Bus-tjänst för färghantering"
+msgstr ""

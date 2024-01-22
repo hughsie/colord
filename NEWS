@@ -1,3 +1,20 @@
+Version 1.4.7
+~~~~~~~~~~~~~
+Released: 2024-01-22
+
+Bugfixes:
+ - Add various hardenings to the systemd service (Johannes Segitz)
+ - Always close the ICC profile when loading fails (Jonas Ådahl)
+ - Avoid destructing LCMS plugin twice with lcms 2.14 (Sam James)
+ - Do not make state files executable in tmpfiles.d/colord.conf (Roshan Shariff)
+ - Fix a double free spotted by Coverity (Richard Hughes)
+ - Fix an error check when parsing the DTP94 data (Richard Hughes)
+ - Fix a -Wincompatible-pointer-types warning (Richard Hughes)
+ - Fix potential crash when reading from broken Huey hardware (Richard Hughes)
+ - Set FILE_OFFSET_BITS explicitly (Sam James)
+ - Use a 64-bit time_t (Sam James)
+ - Use thread context for Gamut Alarm codes (Martin Owens)
+
 Version 1.4.6
 ~~~~~~~~~~~~~
 Released: 2022-02-16

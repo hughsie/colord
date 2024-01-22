@@ -1,23 +1,24 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Boyuan Yang <073plan@gmail.com>, 2017
-# Dz Chen <wsxy162@gmail.com>, 2017
-# Mingcong Bai <jeffbai@aosc.xyz>, 2018
-# Mingye Wang <arthur200126@gmail.com>, 2015-2016
-# Tiansworld <tiansworld@fedoraproject.org>, 2014
-# Tiansworld <tiansworld@fedoraproject.org>, 2014
-# Tommy He <lovenemesis@gmail.com>, 2012
+# Tommy He <lovenemesis@gmail.com>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# Mingcong Bai <jeffbai@aosc.xyz>, 2024
+# Boyuan Yang <073plan@gmail.com>, 2024
+# Mingye Wang <arthur200126@gmail.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 12:39+0000\n"
-"PO-Revision-Date: 2018-05-10 15:20+0000\n"
-"Last-Translator: Mingcong Bai <jeffbai@aosc.xyz>\n"
-"Language-Team: Chinese (China) (http://www.transifex.com/freedesktop/colord/language/zh_CN/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Mingye Wang <arthur200126@gmail.com>, 2024\n"
+"Language-Team: Chinese (China) (https://app.transifex.com/freedesktop/teams/12151/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -27,29 +28,29 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
 msgid "Profile to create"
-msgstr "要创建的配置文件"
+msgstr ""
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
-msgstr "ICC 配置文件创建程序"
+msgstr ""
 
 #. TRANSLATORS: the user didn't read the man page
 #: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
 #: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
-msgstr "传递参数失败"
+msgstr ""
 
 #. TRANSLATORS: the user forgot to use -o
 #: client/cd-create-profile.c:880
 msgid "No output filename specified"
-msgstr "未指定输出文件名"
+msgstr ""
 
 #. TRANSLATORS: this is a command alias
 #: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
-msgstr "%s 的别名"
+msgstr ""
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
@@ -58,12 +59,12 @@ msgstr "未找到命令，有效的命令为："
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
-msgstr "显示额外的除错信息"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:585
 msgid "The locale to use when setting localized text"
-msgstr "设置本地化内容时要使用的区域设置"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
@@ -73,27 +74,27 @@ msgstr "生成给定尺寸的 VCGT 校正"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
 msgid "Clear any metadata in the profile"
-msgstr "清除该配置文件的所有元数据"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:616
 msgid "Initialize any metadata for the profile"
-msgstr "初始化该配置文件的元数据"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:621
 msgid "Add a metadata item to the profile"
-msgstr "向该配置文件添加一个元数据项目"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:626
 msgid "Remove a metadata item from the profile"
-msgstr "从该配置文件移除一个元数据项目"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
 msgid "Sets the copyright string"
-msgstr "设定版权字符串"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:636
@@ -103,33 +104,33 @@ msgstr "设定描述字符串"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:641
 msgid "Sets the manufacturer string"
-msgstr "设定制造商字符串"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:646
 msgid "Sets the model string"
-msgstr "设定型号字符串"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:651
 msgid "Automatically fix metadata in the profile"
-msgstr "自动修复配置文件中的元数据"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:656
 msgid "Set the ICC profile version"
-msgstr "设置 ICC 配置文件版本"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
 msgid "Export the tag data"
-msgstr "导出标记数据"
+msgstr ""
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
 #: src/cd-main.c:2373
 msgid "Color Management"
-msgstr "色彩管理"
+msgstr ""
 
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
@@ -139,38 +140,38 @@ msgstr "ICC 文件转储程序"
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr "嵌入创建时间戳"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
-msgstr "从 CSV 数据中创建 CMF"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
-msgstr "从 CSV 数据创建色谱"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
-msgstr "根据参考数据与测量结果制作 CCMX"
+msgstr ""
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: client/cd-util.c:122
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr "%B %e %Y, %I:%M:%S %p"
+msgstr ""
 
 #. TRANSLATORS: profile owner
 #. TRANSLATORS: profile UID
 #: client/cd-util.c:134 client/cd-util.c:139
 msgid "Owner"
-msgstr "拥有者"
+msgstr ""
 
 #. TRANSLATORS: the internal DBus path
 #: client/cd-util.c:159 client/cd-util.c:262 client/cd-util.c:508
 msgid "Object Path"
-msgstr "对象路径"
+msgstr ""
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -178,13 +179,13 @@ msgstr "对象路径"
 #. * ColorModel.OutputMode.OutputResolution
 #: client/cd-util.c:167 client/cd-util.c:330
 msgid "Format"
-msgstr "格式"
+msgstr ""
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: client/cd-util.c:175
 msgid "Title"
-msgstr "标题"
+msgstr ""
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: client/cd-util.c:180
@@ -196,7 +197,7 @@ msgstr "限定符"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: client/cd-util.c:185 client/cd-util.c:281 client/cd-util.c:530
 msgid "Type"
-msgstr "类型"
+msgstr ""
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -207,50 +208,50 @@ msgstr "色彩空间"
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: client/cd-util.c:199 client/cd-util.c:336
 msgid "Scope"
-msgstr "范围"
+msgstr ""
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: client/cd-util.c:205
 msgid "Gamma Table"
-msgstr "Gamma 表"
+msgstr ""
 
 #. TRANSLATORS: if the profile is installed for all users
 #: client/cd-util.c:210
 msgid "System Wide"
-msgstr "系统范围"
+msgstr ""
 
 #. TRANSLATORS: profile filename
 #: client/cd-util.c:215
 msgid "Filename"
-msgstr "文件名"
+msgstr ""
 
 #. TRANSLATORS: profile identifier
 #: client/cd-util.c:220
 msgid "Profile ID"
-msgstr "配置文件 ID"
+msgstr ""
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 #: client/cd-util.c:235 client/cd-util.c:386 client/cd-util.c:601
 msgid "Metadata"
-msgstr "元数据"
+msgstr ""
 
 #: client/cd-util.c:243
 msgid "Warning"
-msgstr "警告"
+msgstr ""
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 #: client/cd-util.c:270
 msgid "Created"
-msgstr "创建于"
+msgstr ""
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 #: client/cd-util.c:276
 msgid "Modified"
-msgstr "修改于"
+msgstr ""
 
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
@@ -261,54 +262,54 @@ msgstr "已启用"
 #. * cannot be removed
 #: client/cd-util.c:292
 msgid "Embedded"
-msgstr "已嵌入"
+msgstr ""
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 #: client/cd-util.c:297 client/cd-util.c:554
 msgid "Model"
-msgstr "型号"
+msgstr ""
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 #: client/cd-util.c:302 client/cd-util.c:562
 msgid "Vendor"
-msgstr "厂商"
+msgstr ""
 
 #: client/cd-util.c:308
 msgid "Inhibitors"
-msgstr "抑制剂"
+msgstr ""
 
 #. TRANSLATORS: the device serial number
 #: client/cd-util.c:312
 msgid "Serial"
-msgstr "序列号"
+msgstr ""
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
-msgstr "台座"
+msgstr ""
 
 #. TRANSLATORS: the device identifier
 #: client/cd-util.c:347
 msgid "Device ID"
-msgstr "设备 ID"
+msgstr ""
 
 #. TRANSLATORS: the profile for the device
 #: client/cd-util.c:356
 msgid "Profile"
-msgstr "配置文件"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
 #: client/cd-util.c:404
 msgid "CRT"
-msgstr "CRT"
+msgstr ""
 
 #. TRANSLATORS: this is a desktop printer
 #: client/cd-util.c:408
@@ -318,29 +319,29 @@ msgstr "打印机"
 #. TRANSLATORS: a beamer used for presentations
 #: client/cd-util.c:412
 msgid "Projector"
-msgstr "投影仪"
+msgstr ""
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
 #: client/cd-util.c:417
 msgid "Spot"
-msgstr "点距"
+msgstr ""
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 #: client/cd-util.c:422
 msgid "Ambient"
-msgstr "环境光"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:426
 msgid "Calibration"
-msgstr "校正"
+msgstr ""
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
 msgid "Dark Calibration"
-msgstr "暗校准"
+msgstr ""
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
@@ -356,13 +357,13 @@ msgstr "光谱"
 #. * where LCD stands for 'Liquid Crystal Display'
 #: client/cd-util.c:443
 msgid "LCD Generic"
-msgstr "通用 LCD"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: client/cd-util.c:448
 msgid "LED Generic"
-msgstr "通用 LED"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
@@ -376,152 +377,152 @@ msgstr "等离子屏幕"
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 #: client/cd-util.c:460
 msgid "LCD CCFL"
-msgstr "LCD CCFL"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 #: client/cd-util.c:466
 msgid "LCD RGB LED"
-msgstr "LCD RGB LED"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 #: client/cd-util.c:472
 msgid "Wide Gamut LCD CCFL"
-msgstr "宽色域 LCD CCFL"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:476
 msgid "Wide Gamut LCD RGB LED"
-msgstr "宽色域 LCD RGB LED"
+msgstr ""
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 #: client/cd-util.c:482
 msgid "LCD White LED"
-msgstr "LCD 白背光 LED"
+msgstr ""
 
 #. TRANSLATORS: this an unknown display technology
 #: client/cd-util.c:485
 msgid "Unknown"
-msgstr "未知"
+msgstr ""
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: client/cd-util.c:538
 msgid "State"
-msgstr "状态"
+msgstr ""
 
 #. TRANSLATORS: sensor serial
 #: client/cd-util.c:546
 msgid "Serial number"
-msgstr "序列号"
+msgstr ""
 
 #. TRANSLATORS: sensor identifier
 #: client/cd-util.c:568
 msgid "Sensor ID"
-msgstr "传感器 ID"
+msgstr ""
 
 #. TRANSLATORS: the options for the sensor
 #: client/cd-util.c:588
 msgid "Options"
-msgstr "选项"
+msgstr ""
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: client/cd-util.c:606
 msgid "Native"
-msgstr "原生"
+msgstr ""
 
 #. TRANSLATORS: if the sensor is locked
 #: client/cd-util.c:611
 msgid "Locked"
-msgstr "锁定"
+msgstr ""
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 #: client/cd-util.c:629
 msgid "Capabilities"
-msgstr "支持的功能"
+msgstr ""
 
 #: client/cd-util.c:971 client/cd-util.c:1000 client/cd-util.c:1048
 #: client/cd-util.c:1176 client/cd-util.c:1260
 msgid "There are no supported sensors attached"
-msgstr "未连结任何支持的传感器"
+msgstr ""
 
 #. TRANSLATORS: this is the sensor title
 #: client/cd-util.c:1060 client/cd-util.c:1197 client/cd-util.c:1289
 msgid "Sensor"
-msgstr "传感器"
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr "将设备放置于校正位置然后按回车键"
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
 msgid "Set the device to the surface position and press enter."
-msgstr "将设备放置至表面位置然后按回车键。"
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1097
 msgid "Put the device in a dark place and press enter."
-msgstr "请将设备放到阴暗处，再按下 Enter。"
+msgstr ""
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1107
 msgid "Calibrate with a 3200K light source."
-msgstr "以 3200K 光源校准。"
+msgstr ""
 
 #: client/cd-util.c:1124
 msgid "Put the device on the color to be measured and press enter."
-msgstr "请将设备放在要测量的色彩上，再按下 Enter。"
+msgstr ""
 
 #: client/cd-util.c:1130
 msgid "Color"
-msgstr "色彩"
+msgstr ""
 
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
 msgid "No spectral capability"
-msgstr "无光谱能力"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
 msgid "Show client and daemon versions"
-msgstr "显示客户端及守护进程版本信息"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2019
 msgid "Show the value without any header"
-msgstr "不带任何标头地显示数值"
+msgstr ""
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2022
 msgid "Filter object properties when displaying"
-msgstr "显示时过滤对象属性"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr "将所有调试文件转储到文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
 msgid "Gets all the color managed devices"
-msgstr "获取全部色彩管理设备"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2053
 msgid "Gets all the color managed devices of a specific kind"
-msgstr "获取指定类型的全部色彩管理设备"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
 msgid "Gets all the available color profiles"
-msgstr "获取所有可用的色彩配置文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
@@ -531,7 +532,7 @@ msgstr "获取所有可用的色彩传感器"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
 msgid "Gets a spectral reading from a sensor"
-msgstr "从传感器取得光谱数据"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
@@ -541,37 +542,37 @@ msgstr "获得传感器读数"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2083
 msgid "Locks the color sensor"
-msgstr "锁定色彩传感器"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2089
 msgid "Sets one or more sensor options"
-msgstr "设定一个或多个传感器选项"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2095
 msgid "Create a device"
-msgstr "创建设备"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2101
 msgid "Find a device from the device ID"
-msgstr "在设备 ID 中查找设备"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2107
 msgid "Find a device with a given property value"
-msgstr "根据属性值查找设备"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2113
 msgid "Find a profile from the profile ID"
-msgstr "在配置文件 ID 中查找配置文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr "依据文件名查找配置文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
@@ -581,17 +582,17 @@ msgstr "获取标准色彩空间"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2131
 msgid "Create a profile"
-msgstr "创建配置文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr "向已存在的设备添加配置文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
 msgid "Makes a profile default for a device"
-msgstr "设定设备的默认配置文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2149
@@ -601,12 +602,12 @@ msgstr "删除设备"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2155
 msgid "Deletes a profile"
-msgstr "删除配置文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2161
 msgid "Sets extra properties on the profile"
-msgstr "为配置文件设置额外属性"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2167
@@ -616,7 +617,7 @@ msgstr "设定设备型号"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2173
 msgid "Enables or disables the device"
-msgstr "启用或禁用设备"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2179
@@ -626,17 +627,17 @@ msgstr "获取设备的默认配置文件"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2185
 msgid "Sets the device vendor"
-msgstr "设定设备厂商"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2191
 msgid "Sets the device serial"
-msgstr "设定设备序列号"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2197
 msgid "Sets the device kind"
-msgstr "设定设备类型"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2203
@@ -646,17 +647,17 @@ msgstr "该设备禁用色彩配置文件"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2209
 msgid "Returns all the profiles that match a qualifier"
-msgstr "返回所有符合限定符的配置文件"
+msgstr ""
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2215
 msgid "Import a profile and install it for the user"
-msgstr "导入配置文件并为用户安装"
+msgstr ""
 
 #. TRANSLATORS: no colord available
 #: client/cd-util.c:2256
 msgid "No connection to colord:"
-msgstr "未连结到 colord："
+msgstr ""
 
 #: client/cd-util.c:2263
 msgid "Client version:"
@@ -664,11 +665,11 @@ msgstr "客户端版本："
 
 #: client/cd-util.c:2265
 msgid "Daemon version:"
-msgstr "守护进程版本："
+msgstr ""
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
-msgstr "计算机制造商："
+msgstr ""
 
 #: client/cd-util.c:2269
 msgid "System model:"
@@ -677,19 +678,19 @@ msgstr "计算机型号："
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
 msgid "Show debugging information for all files"
-msgstr "显示所有文件的除错信息"
+msgstr ""
 
 #: contrib/session-helper/cd-debug.c:206 src/cd-debug.c:206
 msgid "Debugging Options"
-msgstr "除错设置"
+msgstr ""
 
 #: contrib/session-helper/cd-debug.c:207 src/cd-debug.c:207
 msgid "Show debugging options"
-msgstr "显示除错设置"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:5
 msgid "Default gamma for the display"
-msgstr "用于显示的默认伽马值"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:6
 msgid ""
@@ -699,17 +700,17 @@ msgstr "用于显示对象的默认伽马值。常用值为 1.8，2.2 和 2.4。
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
-msgstr "默认显示对象白点"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:14
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr "显示器校准时的默认白色色温目标，按开氏度（热力学温标）计算，0 代表显示器原生色温。常用的数值是 6500K（D65）和 5000K（D50）。"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
-msgstr "在采样间隔中设置延迟"
+msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:23
 msgid ""
@@ -718,23 +719,13 @@ msgid ""
 " and the display itself introduce latency."
 msgstr "该延迟发生在设置样点颜色和要求测量设备采样的动作之间。由于图形驱动程序和显示器本身都会产生延迟，因此这是必须的。"
 
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr "配置文件上传网络服务 URI"
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "网络服务 URI 可让校正工具向互联网上传特定的配置文件。"
-
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
 msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr "与 Adobe RGB（1998）兼容"
+msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -775,7 +766,7 @@ msgstr "与 Adobe RGB（1998）兼容"
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr "该配置文件免于已知的版权限制"
+msgstr ""
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -785,11 +776,11 @@ msgid ""
 "possible colors available on a CMYK color printer. This is a popular choice "
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
-msgstr "此编辑用空间设计为 SMPTE-240M ，并包含 CMYK 色彩打印机可用的绝大多数色彩。这是相片编辑者与打印用户的偏好选择，因其能再现出所有的 SWOP 色彩。"
+msgstr ""
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr "AppleRGB"
+msgstr ""
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
@@ -804,15 +795,15 @@ msgid ""
 "and Illustrator. As it is based on the original Apple 13\" RGB monitor and "
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
-msgstr "该老式配置文件是 Adobe 公司最初创建用于 Photosohp 和 Illustrator 的。由于它基于原有的苹果 13\" RGB 显示器，并且与 sRGB 相近，因此它不应当用作显示器配置文件或用于现在较新的图像中。"
+msgstr ""
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
-msgstr "BestRGB"
+msgstr ""
 
 #: data/profiles/BestRGB.iccprofile.xml:4
 msgid "Best RGB"
-msgstr "Best RGB"
+msgstr ""
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -822,15 +813,17 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
-msgstr "该色彩空间可显示比 Adobe RGB 更多的饱和色，适合常用于广告中的高饱和颜色图像。它与 DonRGB4 非常相近，但它能显示有时在富士 Fujichrome Velvia 反转片中出现的那种超饱和红色。"
+msgstr ""
+"该色彩空间可显示比 Adobe RGB 更多的饱和色，适合常用于广告中的高饱和颜色图像。它与 DonRGB4 非常相近，但它能显示有时在富士 "
+"Fujichrome Velvia 反转片中出现的那种超饱和红色。"
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
-msgstr "BetaRGB"
+msgstr ""
 
 #: data/profiles/BetaRGB.iccprofile.xml:4
 msgid "Beta RGB"
-msgstr "Beta RGB"
+msgstr ""
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 #: data/profiles/BetaRGB.iccprofile.xml:7
@@ -839,15 +832,15 @@ msgid ""
 "less prone to quantisation errors compared to ProPhoto RGB, although more "
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
-msgstr "该色彩空间可显示比 Adobe RGB 更多的饱和色。尽管会保留更多的阴影区细节，但与 Prohoto RGB 相比，它不易产生量化误差。在大多数情况下，Prophoto RGB 还是更好的选择。"
+msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr "偏蓝"
+msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr "蓝"
+msgstr ""
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -859,11 +852,11 @@ msgstr "该测试配置文件通过变更视频卡查询表，可让显示器上
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
-msgstr "BruceRGB"
+msgstr ""
 
 #: data/profiles/BruceRGB.iccprofile.xml:4
 msgid "Bruce RGB"
-msgstr "Bruce RGB"
+msgstr ""
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 #: data/profiles/BruceRGB.iccprofile.xml:7
@@ -871,15 +864,15 @@ msgid ""
 "This is an RGB editing space for use with Adobe Photoshop 5.0 and later. It "
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
-msgstr "这是一个 RGB 编辑用空间，用于 Adobe Photoshop 5.0 与其后版本。它当初的设计是以输出为中心，在 ColorMatch RGB 与 Adobe RGB 之间作妥协，曾在相片打印服务上较受欢迎。"
+msgstr ""
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
-msgstr "CIE-RGB"
+msgstr ""
 
 #: data/profiles/CIE-RGB.iccprofile.xml:4
 msgid "CIE RGB"
-msgstr "CIE RGB"
+msgstr ""
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 #: data/profiles/CIE-RGB.iccprofile.xml:7
@@ -895,7 +888,7 @@ msgstr "ColorMatchRGB"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:4
 msgid "ColorMatch RGB"
-msgstr "ColorMatch RGB"
+msgstr ""
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -905,15 +898,15 @@ msgid ""
 " profile as a display profile or as a editing space as the profile is not "
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
-msgstr "该配置文件由 Radius 设计用于 PressView 显示器。该文件仅用于显示器配置文件；如果该配置文件与 sRGB 区别不大的话，也会用于编辑时的色彩空间。您只有在浏览用 PressView 显示器创建的图像时，才会用到该配置文件。"
+msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr "Crayons"
+msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
-msgstr "蜡笔色彩"
+msgstr ""
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -922,7 +915,7 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr "该色彩配置文件包含了所有常用的 Crayola 蜡笔颜色。该文件用于测试将命名了的颜色嵌入文档。"
+msgstr ""
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
@@ -930,7 +923,7 @@ msgstr "DonRGB4"
 
 #: data/profiles/DonRGB4.iccprofile.xml:4
 msgid "Don RGB 4"
-msgstr "Don RGB 4"
+msgstr ""
 
 #. TRANSLATORS: saturated means vivid bright colors
 #: data/profiles/DonRGB4.iccprofile.xml:7
@@ -938,15 +931,15 @@ msgid ""
 "This editing space can display more saturated colors than Adobe RGB and is "
 "suitable for images with highly saturated colors often used in "
 "advertisements."
-msgstr "该色彩空间可显示比 Adobe RGB 更多的饱和色，适合常用于广告中的高饱和色图像。"
+msgstr ""
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
-msgstr "ECI-RGBv1"
+msgstr ""
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:4
 msgid "eciRGB v1"
-msgstr "eciRGB v1"
+msgstr ""
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 #: data/profiles/ECI-RGBv1.iccprofile.xml:7
@@ -955,15 +948,15 @@ msgid ""
 "editing space for professional image editing and aims to cover all colors "
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
-msgstr "此描述文件是 ECI（欧洲色彩协会）所建议的编辑用空间，适合专业影像编辑者使用，其设计目标是要覆盖所有印刷业可打打印的色彩。这偶尔用于出版社与印刷厂之间的色彩交换。"
+msgstr ""
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
-msgstr "ECI-RGBv2"
+msgstr ""
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:4
 msgid "eciRGB v2"
-msgstr "eciRGB v2"
+msgstr ""
 
 #. TRANSLATORS: lightness is a technical word for brightness
 #: data/profiles/ECI-RGBv2.iccprofile.xml:7
@@ -971,15 +964,15 @@ msgid ""
 "This profile was designed with a lightness gamma curve which means the "
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
-msgstr "此描述文件是以亮度伽玛曲线设计，因此屏幕必须以相同方式校准。此描述文件仅对高端用户来说会有用处，不建议日常使用。"
+msgstr ""
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
-msgstr "EktaSpacePS5"
+msgstr ""
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:4
 msgid "Ekta Space PS5"
-msgstr "Ekta Space PS5"
+msgstr ""
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -988,11 +981,11 @@ msgid ""
 "This profile was designed for storing archives of scanned transparency film."
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
-msgstr "此描述文件是设计给透明底片的扫描存盘之用。它适用于保存来自负片的影像，虽然现代更常用 ProPhoto RGB 于存盘用途。"
+msgstr ""
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
-msgstr "FOGRA27L 涂料纸"
+msgstr ""
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:6
@@ -1000,11 +993,11 @@ msgid ""
 "This profile is used for positive plate making, printing on paper types 1 "
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
-msgstr "此描述文件用于正版制作，1 或 2 类纸张（涂料纸或雾面纸)、胶印。此描述文件设置不应再用于生产用途，请改用 FOGRA39L。"
+msgstr ""
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
-msgstr "FOGRA28L 卷筒涂料纸"
+msgstr ""
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -1013,11 +1006,11 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 3 "
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
-msgstr "此描述文件用于正版制作，3 类纸张（轻量涂料纸，不是很白）胶版卷筒纸印刷。此描述文件不应再用于生产用途，请改用 FOGRA45。"
+msgstr ""
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
-msgstr "FOGRA47L 无涂料纸"
+msgstr ""
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -1030,14 +1023,14 @@ msgstr "此描述文件用于正版制作，4 类纸张（无涂料白纸，偏�
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr "FOGRA30L 无涂料黄纸"
+msgstr ""
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:6
 msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
-msgstr "此描述文件用于正版制作，5 类纸张（无涂料黄纸）胶印。"
+msgstr ""
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
@@ -1051,22 +1044,22 @@ msgid ""
 "This profile is used for printing on paper types 1 and 2 (coated or matte), "
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
-msgstr "此描述文件用于正版制作，1 或 2 类纸张（涂料纸或雾面纸)、胶印。此描述文件与美国 GRACoL 2006（TR 006）无重大差异。"
+msgstr ""
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
-msgstr "FOGRA40L SC 纸"
+msgstr ""
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:6
 msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
-msgstr "此描述文件用于 SC（SuperCalendered，超级轧光纸）纸张，卷筒纸印刷。无有美规标准可与之对应。"
+msgstr ""
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
-msgstr "FOGRA45L 轻量涂料纸"
+msgstr ""
 
 #. TRANSLATORS: ISO is a trademark
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:6
@@ -1074,24 +1067,25 @@ msgid ""
 "This ISO 12647-2:2004 compliant profile is used for printing on improved "
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
-msgstr "此描述文件遵循 ISO 12647-2:2004，用于 60 l/cm 热固型轮转平版印刷之改进式轻量涂料纸（LWC）的打印。取代 FOGRA28L。"
+msgstr ""
+"此描述文件遵循 ISO 12647-2:2004，用于 60 l/cm 热固型轮转平版印刷之改进式轻量涂料纸（LWC）的打印。取代 FOGRA28L。"
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
-msgstr "FOGRA47L 无涂料纸"
+msgstr ""
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:6
 msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
-msgstr "此描述文件遵循 ISO 12647-2，用于 60 l/cm 胶印之 115 g/m² 无涂料白纸（4 类纸）的打印。"
+msgstr ""
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
 #: data/profiles/Gamma6500K.iccprofile.xml:3
 msgid "Gamma6500K"
-msgstr "Gamma6500K"
+msgstr ""
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
@@ -1103,11 +1097,11 @@ msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr "D65"
+msgstr ""
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
-msgstr "GRACoL TR006 铜版纸"
+msgstr ""
 
 #. TRANSLATORS: coated = smooth and expensive
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:6
@@ -1118,7 +1112,7 @@ msgstr "此描述文件用于美国 1 或 2 类级涂料纸打印、胶印、凸
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
-msgstr "IFRA26S 2004 新闻纸"
+msgstr ""
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -1128,15 +1122,17 @@ msgid ""
 "compliant profile designed for a printing press exhibiting 26% TVI (dot "
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
-msgstr "此描述文件用于新闻纸的印刷，遵循 ISO12647-3:2005，设计给呈现出 26% TVI（网点扩大，dot gain）的印刷用。这是 WAN-IFRA 所建议的冷固型新闻纸印刷标准，全世界通用。"
+msgstr ""
+"此描述文件用于新闻纸的印刷，遵循 ISO12647-3:2005，设计给呈现出 26% TVI（网点扩大，dot gain）的印刷用。这是 WAN-"
+"IFRA 所建议的冷固型新闻纸印刷标准，全世界通用。"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr "NTSC-RGB"
+msgstr ""
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr "NTSC RGB"
+msgstr ""
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1149,11 +1145,11 @@ msgstr "此描述文件定义 NTSC 视频标准所使用的色彩范围。此标
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr "PAL-RGB"
+msgstr ""
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr "PAL/SECAM RGB"
+msgstr ""
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7
@@ -1161,15 +1157,15 @@ msgid ""
 "This profile defines the range of colors used with the PAL and SECAM video "
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
-msgstr "此描述文件定义 PAL 与 SECAM 视频标准所使用的色彩范围，很类似 sRGB。此描述只该用于视频的编码、解码用途。"
+msgstr ""
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
-msgstr "ProPhotoRGB"
+msgstr ""
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:4
 msgid "ProPhoto RGB"
-msgstr "ProPhoto RGB"
+msgstr ""
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 #: data/profiles/ProPhotoRGB.iccprofile.xml:7
@@ -1178,15 +1174,15 @@ msgid ""
 "display a very large range of colors and is used by many photographers for "
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
-msgstr "最初由 Eastman Kodak 设计，称为 ROMM RGB。此描述文件可显示非常大范围的色彩，许多摄影师将它用于 RAW 影像的渲染、编辑、归档用途。除非您正使用每信道有 16 位精度的设备，否则编辑影像时可能会看见色带产生。"
+msgstr ""
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
-msgstr "Rec709"
+msgstr ""
 
 #: data/profiles/Rec709.iccprofile.xml:4
 msgid "Rec. 709"
-msgstr "Rec. 709"
+msgstr ""
 
 #. TRANSLATORS: ITU-R is a standards body
 #: data/profiles/Rec709.iccprofile.xml:9
@@ -1194,15 +1190,15 @@ msgid ""
 "ITU-R recommendation BT.709 is a high-definition television standard that "
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
-msgstr "ITU-R 推荐的 BT.709 是高传真电视标准，最早于 1990 年批准。Rec. 709 描述文件与 sRGB 一样使用相同的色彩范围，不过辉度曲线不同。"
+msgstr ""
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
-msgstr "SMPTE-C-RGB"
+msgstr ""
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:4
 msgid "SMPTE-C RGB"
-msgstr "SMPTE-C RGB"
+msgstr ""
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:7
@@ -1213,18 +1209,18 @@ msgstr "这是目前北美和日本工作室视频录制时时用的标准。该
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
-msgstr "SNAP TR002 新闻纸"
+msgstr ""
 
 #. TRANSLATORS: CGATS is a trademark
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:6
 msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
-msgstr "这是根据 ANSI CGATS/SNAP TR 002-2007 所创建的描述文件，用于美国冷固型胶印之新闻纸印刷。TVI（或称网点扩大，dot gain）为 26%。"
+msgstr ""
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr "sRGB"
+msgstr ""
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1235,15 +1231,17 @@ msgid ""
 "and used in HDTV. Most uncalibrated displays are able to display most of the"
 " colors available in sRGB, although this profile is sometimes a poor choice "
 "for printing."
-msgstr "该配置文件由惠普和微软设计，用于未标记的 RGB 颜色和高清电视中，它一直是互联网上的默认配置文件。尽管该配置文件用于打印往往是个糟糕的选择，但多数未校正的显示器都可以显示出 sRGB 中的大多数颜色。"
+msgstr ""
+"该配置文件由惠普和微软设计，用于未标记的 RGB "
+"颜色和高清电视中，它一直是互联网上的默认配置文件。尽管该配置文件用于打印往往是个糟糕的选择，但多数未校正的显示器都可以显示出 sRGB 中的大多数颜色。"
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
-msgstr "SwappedRedAndGreen"
+msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr "红绿色互换"
+msgstr ""
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1251,11 +1249,11 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr "该配置文件将红绿通道互换，在检查配置文件是否正确应用时非常有用。如果该配置文件应用了两次，那么图像外观不会发生变化。"
+msgstr ""
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
-msgstr "SWOP TR003 铜版纸"
+msgstr ""
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:6
@@ -1263,11 +1261,11 @@ msgid ""
 "This profile is used for printing on U.S. grade 3 coated paper, sheetfed "
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
-msgstr "此描述文件用于美国第 3 级涂料纸、胶印、凹版印刷。可用于高品质杂志的白纸打印。"
+msgstr ""
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
-msgstr "SWOP TR005 铜版纸"
+msgstr ""
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:6
@@ -1279,11 +1277,11 @@ msgstr "此描述文件用于美国第 5 级铜版纸、胶印、凹版印刷。
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
-msgstr "WideGamutRGB"
+msgstr ""
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
-msgstr "宽色域 RGB"
+msgstr ""
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 #: data/profiles/WideGamutRGB.iccprofile.xml:7
@@ -1293,15 +1291,15 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr "此编辑用空间由 Adobe Systems 设计，旨在捕捉比 Adobe RGB 更多样的色彩。此描述文件用来打印至底片纪录器，且可定义许多电脑屏幕无法显示的色彩。除非您正使用每信道 16 位精度的设备，否则您可能在编辑影像时看见色带产生。"
+msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
-msgstr "x11-colors"
+msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr "X11 色彩空间"
+msgstr ""
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1309,37 +1307,37 @@ msgstr "X11 色彩空间"
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr "该色彩空间包含了 X11 定义的所有颜色，它假定来源颜色空间是 sRGB。"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #: policy/org.freedesktop.color.policy.in.in:20
 msgid "Create a color managed device"
-msgstr "创建色彩管理设备"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr "需要授权来创建色彩管理设备"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #: policy/org.freedesktop.color.policy.in.in:35
 msgid "Create a color profile"
-msgstr "创建色彩配置文件"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:36
 msgid "Authentication is required to create a color profile"
-msgstr "需要授权来创建色彩配置文件"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 #: policy/org.freedesktop.color.policy.in.in:50
 msgid "Remove a color managed device"
-msgstr "移除色彩管理设备"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr "需要授权来移除色彩管理设备"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1349,27 +1347,27 @@ msgstr "移除色彩配置文件"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"
-msgstr "需要授权来移除色彩配置文件"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #: policy/org.freedesktop.color.policy.in.in:80
 msgid "Modify color settings for a device"
-msgstr "修改指定设备的色彩设定"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "需要授权来修改指定设备的色彩设定"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #: policy/org.freedesktop.color.policy.in.in:95
 msgid "Modify a color profile"
-msgstr "修改色彩配置文件"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:96
 msgid "Authentication is required to modify a color profile"
-msgstr "需要授权来修改色彩配置文件"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -1380,49 +1378,49 @@ msgstr "需要授权来修改色彩配置文件"
 #. other sessions unusable.
 #: policy/org.freedesktop.color.policy.in.in:115
 msgid "Install system color profiles"
-msgstr "禁止系统色彩配置文件"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "需要授权来为所有用户安装色彩配置文件"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
 #: policy/org.freedesktop.color.policy.in.in:131
 msgid "Inhibit color profile selection"
-msgstr "禁止选择色彩配置文件"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "需要授权来禁用禁用设备的配置文件匹配"
+msgstr ""
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
 #: policy/org.freedesktop.color.policy.in.in:147
 msgid "Use color sensor"
-msgstr "使用色彩传感器"
+msgstr ""
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"
-msgstr "需要授权来使用色彩传感器"
+msgstr ""
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: src/cd-main.c:2355
 msgid "Exit after a small delay"
-msgstr "短暂延迟后退出"
+msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
-msgstr "引擎载入后退出"
+msgstr ""
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
-msgstr "创建用于测试的假感应器"
+msgstr ""
 
 #: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
-msgstr "色彩管理 D-Bus 服务"
+msgstr ""
