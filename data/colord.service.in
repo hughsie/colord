@@ -15,7 +15,6 @@ ProtectKernelModules=true
 ProtectKernelLogs=true
 ProtectControlGroups=true
 RestrictRealtime=true
-RestrictAddressFamilies=AF_UNIX
 
 ConfigurationDirectory=colord
 StateDirectory=colord
