@@ -67,7 +67,7 @@ cd_mapping_db_open (CdMappingDb *mdb,
 		    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	g_autofree gchar *error_msg = NULL;
+	gchar *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -97,6 +97,7 @@ cd_mapping_db_open (CdMappingDb *mdb,
 	if (rc != SQLITE_OK) {
 		/* Database appears to be mangled, so wipe it and try again */
 		sqlite3_close (priv->db);
+		sqlite3_free(error_msg);
 		priv->db = NULL;
 
 		if (retry) {

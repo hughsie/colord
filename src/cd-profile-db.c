@@ -48,7 +48,7 @@ cd_profile_db_load (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	const gchar *statement;
-	g_autofree gchar *error_msg = NULL;
+	gchar *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -69,6 +69,7 @@ cd_profile_db_load (CdProfileDb *pdb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "Can't open database: %s\n",
 			     sqlite3_errmsg (priv->db));
+		sqlite3_free (error_msg);
 		sqlite3_close (priv->db);
 		return FALSE;
 	}
