@@ -48,7 +48,7 @@ cd_profile_db_load (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	const gchar *statement;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -98,7 +98,7 @@ cd_profile_db_empty (CdProfileDb *pdb, GError **error)
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	const gchar *statement;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
@@ -129,7 +129,7 @@ cd_profile_db_set_property (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -169,7 +169,7 @@ cd_profile_db_remove (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement = NULL;
 	gint rc;
 
@@ -223,7 +223,7 @@ cd_profile_db_get_property (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
