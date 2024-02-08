@@ -48,7 +48,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	const gchar *statement;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -109,7 +109,7 @@ cd_device_db_empty (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	const gchar *statement;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
@@ -137,7 +137,7 @@ cd_device_db_add (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -175,7 +175,7 @@ cd_device_db_set_property (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -212,7 +212,7 @@ cd_device_db_remove (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement1 = NULL;
 	gchar *statement2 = NULL;
 	gint rc;
@@ -277,7 +277,7 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 			   GError  **error)
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	gchar *value = NULL;
@@ -331,7 +331,7 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 			  GError  **error)
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -372,7 +372,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 			     GError  **error)
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;

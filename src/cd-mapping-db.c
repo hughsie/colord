@@ -67,7 +67,7 @@ cd_mapping_db_open (CdMappingDb *mdb,
 		    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -131,7 +131,7 @@ cd_mapping_db_load (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	const gchar *statement;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -230,7 +230,7 @@ cd_mapping_db_empty (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	const gchar *statement;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
@@ -259,7 +259,7 @@ cd_mapping_db_add (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	gint64 timestamp;
@@ -307,7 +307,7 @@ cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -351,7 +351,7 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -406,7 +406,7 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 			    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -456,7 +456,7 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 			   GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -522,7 +522,7 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 			     GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	gchar *error_msg = NULL;
+	char *error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	guint64 timestamp = G_MAXUINT64;
