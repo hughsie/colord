@@ -48,7 +48,7 @@ cd_device_db_load (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	const gchar *statement;
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -82,7 +82,6 @@ cd_device_db_load (CdDeviceDb *ddb,
 			   NULL, NULL, &error_msg);
 	if (rc != SQLITE_OK) {
 		g_debug ("CdDeviceDb: creating table to repair: %s", error_msg);
-		sqlite3_free (error_msg);
 		statement = "CREATE TABLE devices ("
 			    "device_id TEXT PRIMARY KEY,"
 			    "device TEXT);";
@@ -109,7 +108,7 @@ cd_device_db_empty (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	const gchar *statement;
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_DEVICE_DB (ddb), FALSE);
@@ -124,7 +123,6 @@ cd_device_db_empty (CdDeviceDb *ddb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		return FALSE;
 	}
 	return TRUE;
@@ -137,7 +135,7 @@ cd_device_db_add (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gboolean ret = TRUE;
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -157,7 +155,6 @@ cd_device_db_add (CdDeviceDb *ddb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		ret = FALSE;
 		goto out;
 	}
@@ -175,7 +172,7 @@ cd_device_db_set_property (CdDeviceDb *ddb,
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
 	gboolean ret = TRUE;
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -196,7 +193,6 @@ cd_device_db_set_property (CdDeviceDb *ddb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		ret = FALSE;
 		goto out;
 	}
@@ -277,7 +273,7 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 			   GError  **error)
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	gchar *value = NULL;
@@ -305,7 +301,6 @@ cd_device_db_get_property (CdDeviceDb *ddb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		goto out;
 	}
 
@@ -331,7 +326,7 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 			  GError  **error)
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -355,7 +350,6 @@ cd_device_db_get_devices (CdDeviceDb *ddb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		goto out;
 	}
 
@@ -372,7 +366,7 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 			     GError  **error)
 {
 	CdDeviceDbPrivate *priv = GET_PRIVATE (ddb);
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -398,7 +392,6 @@ cd_device_db_get_properties (CdDeviceDb *ddb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		goto out;
 	}
 

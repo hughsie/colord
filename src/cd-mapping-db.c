@@ -67,7 +67,7 @@ cd_mapping_db_open (CdMappingDb *mdb,
 		    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -97,7 +97,6 @@ cd_mapping_db_open (CdMappingDb *mdb,
 	if (rc != SQLITE_OK) {
 		/* Database appears to be mangled, so wipe it and try again */
 		sqlite3_close (priv->db);
-		sqlite3_free(error_msg);
 		priv->db = NULL;
 
 		if (retry) {
@@ -230,7 +229,7 @@ cd_mapping_db_empty (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	const gchar *statement;
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
@@ -245,7 +244,6 @@ cd_mapping_db_empty (CdMappingDb *mdb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		return FALSE;
 	}
 	return TRUE;
@@ -259,7 +257,7 @@ cd_mapping_db_add (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	gint64 timestamp;
@@ -282,7 +280,6 @@ cd_mapping_db_add (CdMappingDb *mdb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		ret = FALSE;
 		goto out;
 	}
@@ -307,7 +304,7 @@ cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -328,7 +325,6 @@ cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		ret = FALSE;
 		goto out;
 	}
@@ -351,7 +347,7 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -371,7 +367,6 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		ret = FALSE;
 		goto out;
 	}
@@ -406,7 +401,7 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 			    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -433,7 +428,6 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		goto out;
 	}
 
@@ -456,7 +450,7 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 			   GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -483,7 +477,6 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		goto out;
 	}
 
@@ -522,7 +515,7 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 			     GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	char *error_msg = NULL;
+	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	guint64 timestamp = G_MAXUINT64;
@@ -548,7 +541,6 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
 			     error_msg);
-		sqlite3_free (error_msg);
 		goto out;
 	}
 
