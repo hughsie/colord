@@ -1,29 +1,29 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Claude Paroz <claude@2xlibre.net>, 2017
-# Étienne BERSAC <bersace03@free.fr>, 2013
-# fabricio s <fabrice.silva@gipsa-lab.fr>, 2015
-# frizer23 <jourliiaenne@voila.fr>, 2013
-# frizer23 <jourliiaenne@voila.fr>, 2013
-# Julien Humbert <julroy67@gmail.com>, 2021
-# roumano <roumano@gmail.com>, 2013
-# roumano <roumano@gmail.com>, 2013
+# Claude Paroz <claude@2xlibre.net>, 2024
+# frizer23 <jourliiaenne@voila.fr>, 2024
+# fabricio s <fabrice.silva@gipsa-lab.fr>, 2024
+# Julien Humbert <julroy67@gmail.com>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-16 15:33+0000\n"
-"PO-Revision-Date: 2022-02-16 15:33+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: French (http://www.transifex.com/freedesktop/colord/language/fr/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>, 2024\n"
+"Language-Team: French (https://app.transifex.com/freedesktop/teams/12151/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=3; plural=(n == 0 || n == 1) ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
 
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
@@ -517,7 +517,8 @@ msgstr "Récupère tous les périphériques avec gestion de couleurs"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2053
 msgid "Gets all the color managed devices of a specific kind"
-msgstr "Récupère tous les périphériques avec gestion de couleurs, d'un certain type"
+msgstr ""
+"Récupère tous les périphériques avec gestion de couleurs, d'un certain type"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
@@ -696,7 +697,8 @@ msgstr "Valeur par défaut de gamma pour l'affichage"
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr "La valeur gamma cible par défaut. Les valeurs usuelles sont 1.8, 2.2 et 2.4."
+msgstr ""
+"La valeur gamma cible par défaut. Les valeurs usuelles sont 1.8, 2.2 et 2.4."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
@@ -1200,7 +1202,10 @@ msgstr ""
 msgid ""
 "This is the current standard used by North America and Japan for studio "
 "recording. You should only use this profile to encode or decode video."
-msgstr "Ceci est le standard actuellement utilisé en Amérique du nord et au Japon par les studios d’enregistrement. Vous ne devriez l’utiliser que pour encoder et décoder des vidéos."
+msgstr ""
+"Ceci est le standard actuellement utilisé en Amérique du nord et au Japon "
+"par les studios d’enregistrement. Vous ne devriez l’utiliser que pour "
+"encoder et décoder des vidéos."
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
@@ -1242,7 +1247,10 @@ msgid ""
 "This test profile swaps the red and green channels and is useful as a visual"
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
-msgstr "Ce profil de test échange les canaux rouges et verts. Il permet de vérifier visuellement que les profils sont appliqués correctement. Si ce profil est appliqué deux fois, l’image n’est pas modifiée."
+msgstr ""
+"Ce profil de test échange les canaux rouges et verts. Il permet de vérifier "
+"visuellement que les profils sont appliqués correctement. Si ce profil est "
+"appliqué deux fois, l’image n’est pas modifiée."
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
@@ -1284,7 +1292,13 @@ msgid ""
 "recorders and can define many colors that cannot be displayed on a computer "
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
-msgstr "Cet espace d'édition a été conçu par Adobe Systems pour ?? bien plus de couleurs que Adobe RGB. Ce profil est utilisé pour des appareils de transfert sur pellicule et définit de nombreuses couleurs qui ne peuvent être affichées sur un écran d'ordinateur. À moins de travailler avec une profondeur de 16bits par canal, un effet de postérisation peut apparaître lors de l'édition d'images."
+msgstr ""
+"Cet espace d'édition a été conçu par Adobe Systems pour ?? bien plus de "
+"couleurs que Adobe RGB. Ce profil est utilisé pour des appareils de "
+"transfert sur pellicule et définit de nombreuses couleurs qui ne peuvent "
+"être affichées sur un écran d'ordinateur. À moins de travailler avec une "
+"profondeur de 16bits par canal, un effet de postérisation peut apparaître "
+"lors de l'édition d'images."
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
@@ -1310,7 +1324,9 @@ msgstr "Créer un périphérique avec gestion de couleurs"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr "Il est nécessaire de s'authentifier pour créer un périphérique avec gestion de couleurs"
+msgstr ""
+"Il est nécessaire de s'authentifier pour créer un périphérique avec gestion "
+"de couleurs"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
@@ -1340,7 +1356,8 @@ msgstr "Supprimer un profil de couleur"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"
-msgstr "Il est nécessaire de s’authentifier pour supprimer un profil de couleur"
+msgstr ""
+"Il est nécessaire de s’authentifier pour supprimer un profil de couleur"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
@@ -1350,7 +1367,9 @@ msgstr "Modifier les paramètres de couleur d’un appareil"
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Il est nécessaire de s’authentifier pour modifier les paramètres de couleur d’un appareil"
+msgstr ""
+"Il est nécessaire de s’authentifier pour modifier les paramètres de couleur "
+"d’un appareil"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
@@ -1360,7 +1379,8 @@ msgstr "Modifier un profil de couleur"
 
 #: policy/org.freedesktop.color.policy.in.in:96
 msgid "Authentication is required to modify a color profile"
-msgstr "Il est nécessaire de s’authentifier pour modifier un profil de couleur"
+msgstr ""
+"Il est nécessaire de s’authentifier pour modifier un profil de couleur"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -1375,7 +1395,9 @@ msgstr "Installer le profil de couleur du système"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Il est nécessaire de s’authentifier pour installer le profil de couleur chez tous les utilisateurs"
+msgstr ""
+"Il est nécessaire de s’authentifier pour installer le profil de couleur chez"
+" tous les utilisateurs"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
@@ -1386,7 +1408,9 @@ msgstr "Empêcher la sélection du profil de couleur"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Il est nécessaire de s’authentifier pour désactiver la détection de profil pour un périphérique"
+msgstr ""
+"Il est nécessaire de s’authentifier pour désactiver la détection de profil "
+"pour un périphérique"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
@@ -1397,7 +1421,8 @@ msgstr "Utiliser le capteur de couleur"
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"
-msgstr "Il est nécessaire de s’authentifier pour utiliser le capteur de couleur"
+msgstr ""
+"Il est nécessaire de s’authentifier pour utiliser le capteur de couleur"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: src/cd-main.c:2355

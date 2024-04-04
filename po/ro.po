@@ -5,8 +5,8 @@
 # 
 # Translators:
 # Lucian Adrian Grijincu <lucian.grijincu@gmail.com>, 2024
-# Richard Hughes <richard@hughsie.com>, 2024
 # Remus-Gabriel Chelu, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-01-22 12:38+0000\n"
 "PO-Revision-Date: 2024-01-22 12:38+0000\n"
-"Last-Translator: Remus-Gabriel Chelu, 2024\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>, 2024\n"
 "Language-Team: Romanian (https://app.transifex.com/freedesktop/teams/12151/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -26,29 +26,29 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
 msgid "Profile to create"
-msgstr ""
+msgstr "Profil de creat"
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
-msgstr ""
+msgstr "Program de creare de profiluri ICC"
 
 #. TRANSLATORS: the user didn't read the man page
 #: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
 #: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
-msgstr ""
+msgstr "Nu s-au putut analiza argumentele"
 
 #. TRANSLATORS: the user forgot to use -o
 #: client/cd-create-profile.c:880
 msgid "No output filename specified"
-msgstr ""
+msgstr "Numele fișierului de ieșire nu este specificat"
 
 #. TRANSLATORS: this is a command alias
 #: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
-msgstr ""
+msgstr "Alias către %s"
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
@@ -57,12 +57,14 @@ msgstr "Comandă nerecunoscută, comenzile valide sunt:"
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
-msgstr ""
+msgstr "Afișează informații suplimentare de depanare"
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:585
 msgid "The locale to use when setting localized text"
 msgstr ""
+"Configurația regională care trebuie utilizată la configurarea textului "
+"tradus"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
@@ -72,27 +74,27 @@ msgstr "Generează calibrarea VCGT de o anumită dimensiune"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
 msgid "Clear any metadata in the profile"
-msgstr ""
+msgstr "Șterge orice metadate din profil"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:616
 msgid "Initialize any metadata for the profile"
-msgstr ""
+msgstr "Inițializează orice metadate pentru profil"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:621
 msgid "Add a metadata item to the profile"
-msgstr ""
+msgstr "Adaugă un element de metadate la profil"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:626
 msgid "Remove a metadata item from the profile"
-msgstr ""
+msgstr "Elimină un element de metadate din profil"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
 msgid "Sets the copyright string"
-msgstr ""
+msgstr "Stabilește șirul de drepturi de autor"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:636
@@ -102,33 +104,33 @@ msgstr "Stabilește șirul de descriere"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:641
 msgid "Sets the manufacturer string"
-msgstr ""
+msgstr "Stabilește șirul fabricantului"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:646
 msgid "Sets the model string"
-msgstr ""
+msgstr "Stabilește șirul modelului"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:651
 msgid "Automatically fix metadata in the profile"
-msgstr ""
+msgstr "Repară automat metadatele din profil"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:656
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "Stabilește versiunea profilului ICC"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
 msgid "Export the tag data"
-msgstr ""
+msgstr "Exportă datele etichetei"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
 #: src/cd-main.c:2373
 msgid "Color Management"
-msgstr ""
+msgstr "Administrarea culorii"
 
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
@@ -138,38 +140,38 @@ msgstr "Program de extragere și afișare a profilului ICC"
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr ""
+msgstr "Scrie marcajele de timp de creare"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Creează un CMF (fișier de administrare a culorii) din datele CSV"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "Creează un spectru din datele CSV"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "Creează un CCMX din datele de referință și de măsurare"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: client/cd-util.c:122
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr ""
+msgstr "%e %B %Y, %H:%M:%S"
 
 #. TRANSLATORS: profile owner
 #. TRANSLATORS: profile UID
 #: client/cd-util.c:134 client/cd-util.c:139
 msgid "Owner"
-msgstr ""
+msgstr "Proprietar"
 
 #. TRANSLATORS: the internal DBus path
 #: client/cd-util.c:159 client/cd-util.c:262 client/cd-util.c:508
 msgid "Object Path"
-msgstr ""
+msgstr "Ruta obiectului"
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -177,13 +179,13 @@ msgstr ""
 #. * ColorModel.OutputMode.OutputResolution
 #: client/cd-util.c:167 client/cd-util.c:330
 msgid "Format"
-msgstr ""
+msgstr "Format"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: client/cd-util.c:175
 msgid "Title"
-msgstr ""
+msgstr "Titlu"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: client/cd-util.c:180
@@ -195,61 +197,61 @@ msgstr "Calificativ"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: client/cd-util.c:185 client/cd-util.c:281 client/cd-util.c:530
 msgid "Type"
-msgstr ""
+msgstr "Tip"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 #: client/cd-util.c:192 client/cd-util.c:342
 msgid "Colorspace"
-msgstr ""
+msgstr "Spațiu de culoare"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: client/cd-util.c:199 client/cd-util.c:336
 msgid "Scope"
-msgstr ""
+msgstr "Obiectivul"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: client/cd-util.c:205
 msgid "Gamma Table"
-msgstr ""
+msgstr "Tabelul Gamma"
 
 #. TRANSLATORS: if the profile is installed for all users
 #: client/cd-util.c:210
 msgid "System Wide"
-msgstr ""
+msgstr "La nivel de sistem"
 
 #. TRANSLATORS: profile filename
 #: client/cd-util.c:215
 msgid "Filename"
-msgstr ""
+msgstr "Nume de fișier"
 
 #. TRANSLATORS: profile identifier
 #: client/cd-util.c:220
 msgid "Profile ID"
-msgstr ""
+msgstr "ID profil"
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 #: client/cd-util.c:235 client/cd-util.c:386 client/cd-util.c:601
 msgid "Metadata"
-msgstr ""
+msgstr "Metadate"
 
 #: client/cd-util.c:243
 msgid "Warning"
-msgstr ""
+msgstr "Atenție"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 #: client/cd-util.c:270
 msgid "Created"
-msgstr ""
+msgstr "Creat"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 #: client/cd-util.c:276
 msgid "Modified"
-msgstr ""
+msgstr "Modificat"
 
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
@@ -260,28 +262,28 @@ msgstr "Activat"
 #. * cannot be removed
 #: client/cd-util.c:292
 msgid "Embedded"
-msgstr ""
+msgstr "Încorporat"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 #: client/cd-util.c:297 client/cd-util.c:554
 msgid "Model"
-msgstr ""
+msgstr "Model"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 #: client/cd-util.c:302 client/cd-util.c:562
 msgid "Vendor"
-msgstr ""
+msgstr "Producător"
 
 #: client/cd-util.c:308
 msgid "Inhibitors"
-msgstr ""
+msgstr "Inhibitori"
 
 #. TRANSLATORS: the device serial number
 #: client/cd-util.c:312
 msgid "Serial"
-msgstr ""
+msgstr "Serie"
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
@@ -291,23 +293,23 @@ msgstr ""
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
-msgstr ""
+msgstr "Postul"
 
 #. TRANSLATORS: the device identifier
 #: client/cd-util.c:347
 msgid "Device ID"
-msgstr ""
+msgstr "ID dispozitiv"
 
 #. TRANSLATORS: the profile for the device
 #: client/cd-util.c:356
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
 #: client/cd-util.c:404
 msgid "CRT"
-msgstr ""
+msgstr "CRT"
 
 #. TRANSLATORS: this is a desktop printer
 #: client/cd-util.c:408
@@ -317,29 +319,29 @@ msgstr "Imprimantă"
 #. TRANSLATORS: a beamer used for presentations
 #: client/cd-util.c:412
 msgid "Projector"
-msgstr ""
+msgstr "Proiector"
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
 #: client/cd-util.c:417
 msgid "Spot"
-msgstr ""
+msgstr "Punct"
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 #: client/cd-util.c:422
 msgid "Ambient"
-msgstr ""
+msgstr "Ambient"
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:426
 msgid "Calibration"
-msgstr ""
+msgstr "Calibrare"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
 msgid "Dark Calibration"
-msgstr ""
+msgstr "Calibrare întunecare"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
@@ -355,13 +357,13 @@ msgstr "Spectral"
 #. * where LCD stands for 'Liquid Crystal Display'
 #: client/cd-util.c:443
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD Generic"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: client/cd-util.c:448
 msgid "LED Generic"
-msgstr ""
+msgstr "LED Generic"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
@@ -375,152 +377,155 @@ msgstr "Plasmă"
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 #: client/cd-util.c:460
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 #: client/cd-util.c:466
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 #: client/cd-util.c:472
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL cu o gamă largă de culori"
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:476
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED cu o gamă largă de culori"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 #: client/cd-util.c:482
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD LED alb"
 
 #. TRANSLATORS: this an unknown display technology
 #: client/cd-util.c:485
 msgid "Unknown"
-msgstr ""
+msgstr "Necunoscut"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: client/cd-util.c:538
 msgid "State"
-msgstr ""
+msgstr "Stare"
 
 #. TRANSLATORS: sensor serial
 #: client/cd-util.c:546
 msgid "Serial number"
-msgstr ""
+msgstr "Număr de serie"
 
 #. TRANSLATORS: sensor identifier
 #: client/cd-util.c:568
 msgid "Sensor ID"
-msgstr ""
+msgstr "ID senzor"
 
 #. TRANSLATORS: the options for the sensor
 #: client/cd-util.c:588
 msgid "Options"
-msgstr ""
+msgstr "Opțiuni"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: client/cd-util.c:606
 msgid "Native"
-msgstr ""
+msgstr "Nativ"
 
 #. TRANSLATORS: if the sensor is locked
 #: client/cd-util.c:611
 msgid "Locked"
-msgstr ""
+msgstr "Blocat"
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 #: client/cd-util.c:629
 msgid "Capabilities"
-msgstr ""
+msgstr "Capacități"
 
 #: client/cd-util.c:971 client/cd-util.c:1000 client/cd-util.c:1048
 #: client/cd-util.c:1176 client/cd-util.c:1260
 msgid "There are no supported sensors attached"
-msgstr ""
+msgstr "Nu este atașat niciun senzor compatibil"
 
 #. TRANSLATORS: this is the sensor title
 #: client/cd-util.c:1060 client/cd-util.c:1197 client/cd-util.c:1289
 msgid "Sensor"
-msgstr ""
+msgstr "Senzor"
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "Puneți dispozitivul în poziția de calibrare și apăsați Enter."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
 msgid "Set the device to the surface position and press enter."
-msgstr ""
+msgstr "Puneți dispozitivul în poziția de suprafață și apăsați Enter."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1097
 msgid "Put the device in a dark place and press enter."
-msgstr ""
+msgstr "Puneți dispozitivul într-un loc întunecat și apăsați Enter."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1107
 msgid "Calibrate with a 3200K light source."
-msgstr ""
+msgstr "Calibrare cu o sursă de lumină de 3200K."
 
 #: client/cd-util.c:1124
 msgid "Put the device on the color to be measured and press enter."
 msgstr ""
+"Puneți dispozitivul pe culoarea care urmează să fie măsurată și apăsați "
+"Enter."
 
 #: client/cd-util.c:1130
 msgid "Color"
-msgstr ""
+msgstr "Culoare"
 
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
 msgid "No spectral capability"
-msgstr ""
+msgstr "Fără capacitate spectrală"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "Afișează versiunile de client și demon"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2019
 msgid "Show the value without any header"
-msgstr ""
+msgstr "Afișează valoarea fără niciun titlu"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2022
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "Filtrează proprietățile obiectului la afișare"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "Transferă toate datele de depanare într-un fișier"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
 msgid "Gets all the color managed devices"
-msgstr ""
+msgstr "Obține toate dispozitivele a căror culoare este gestionată"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2053
 msgid "Gets all the color managed devices of a specific kind"
 msgstr ""
+"Obține toate dispozitivele de un anumit tip a căror culoare este gestionată"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
 msgid "Gets all the available color profiles"
-msgstr ""
+msgstr "Obține toate profilurile de culoare disponibile"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
@@ -530,47 +535,47 @@ msgstr "Obține toți senzorii de culoare disponibili"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
 msgid "Gets a spectral reading from a sensor"
-msgstr ""
+msgstr "Obține o citire spectrală de la un senzor"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
 msgid "Gets a reading from a sensor"
-msgstr ""
+msgstr "Obține o citire de la un senzor"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2083
 msgid "Locks the color sensor"
-msgstr ""
+msgstr "Blochează senzorul de culoare"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2089
 msgid "Sets one or more sensor options"
-msgstr ""
+msgstr "Stabilește una sau mai multe opțiuni ale senzorului"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2095
 msgid "Create a device"
-msgstr ""
+msgstr "Creează un dispozitiv"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2101
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "Găsește un dispozitiv căutând după ID-ul dispozitivului"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2107
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "Găsește un dispozitiv cu o valoare de proprietate dată"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2113
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "Găsește un profil pe baza ID-ului profilului"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr ""
+msgstr "Găsește un profil după numele fișierului"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
@@ -580,32 +585,32 @@ msgstr "Obține un spațiu de culoare standard"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2131
 msgid "Create a profile"
-msgstr ""
+msgstr "Creează un profil"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Adaugă un profil la un dispozitiv care există deja"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
 msgid "Makes a profile default for a device"
-msgstr ""
+msgstr "Realizează un profil implicit pentru un dispozitiv"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2149
 msgid "Deletes a device"
-msgstr ""
+msgstr "Șterge un dispozitiv"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2155
 msgid "Deletes a profile"
-msgstr ""
+msgstr "Șterge un profil"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2161
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "Stabilește proprietăți suplimentare pentru profil"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2167
@@ -615,7 +620,7 @@ msgstr "Definește modelul dispozitivului"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2173
 msgid "Enables or disables the device"
-msgstr ""
+msgstr "Activează sau dezactivează dispozitivul"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2179
@@ -625,17 +630,17 @@ msgstr "Obține profilul implicit pentru un dispozitiv"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2185
 msgid "Sets the device vendor"
-msgstr ""
+msgstr "Stabilește producătorul dispozitivului"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2191
 msgid "Sets the device serial"
-msgstr ""
+msgstr "Stabilește seria dispozitivului"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2197
 msgid "Sets the device kind"
-msgstr ""
+msgstr "Stabilește tipul dispozitivului"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2203
@@ -645,29 +650,29 @@ msgstr "Inhibă profilurile de culoare pentru acest dispozitiv"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2209
 msgid "Returns all the profiles that match a qualifier"
-msgstr ""
+msgstr "Returnează toate profilurile care se potrivesc unui calificativ"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2215
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "Importă un profil și-l instalează pentru utilizator"
 
 #. TRANSLATORS: no colord available
 #: client/cd-util.c:2256
 msgid "No connection to colord:"
-msgstr ""
+msgstr "Nicio conexiune către colord:"
 
 #: client/cd-util.c:2263
 msgid "Client version:"
-msgstr ""
+msgstr "Versiune client:"
 
 #: client/cd-util.c:2265
 msgid "Daemon version:"
-msgstr ""
+msgstr "Versiune demon:"
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
-msgstr ""
+msgstr "Producătorul sistemului:"
 
 #: client/cd-util.c:2269
 msgid "System model:"
@@ -676,19 +681,19 @@ msgstr "Modelul sistemului:"
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
 msgid "Show debugging information for all files"
-msgstr ""
+msgstr "Arată informațiile de depanare pentru toate fișierele"
 
 #: contrib/session-helper/cd-debug.c:206 src/cd-debug.c:206
 msgid "Debugging Options"
-msgstr ""
+msgstr "Opțiuni de depanare"
 
 #: contrib/session-helper/cd-debug.c:207 src/cd-debug.c:207
 msgid "Show debugging options"
-msgstr ""
+msgstr "Arată opțiunile de depanare"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:5
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "Gamma implicită pentru afișaj"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:6
 msgid ""
@@ -700,17 +705,20 @@ msgstr ""
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
-msgstr ""
+msgstr "Punctul alb implicit, dorit pentru afișare"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:14
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
 msgstr ""
+"Punctul alb țintă implicit în Kelvin pentru calibrarea afișajului, 0 "
+"însemnând afișaj nativ. Valorile obișnuite sunt 6500 pentru D65 și 5000 "
+"pentru D50."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "Întârzierea dintre intervalele de eșantionare"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:23
 msgid ""
@@ -725,11 +733,11 @@ msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
-msgstr ""
+msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Compatibil cu Adobe RGB (1998)"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -770,7 +778,7 @@ msgstr ""
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "Acest profil este liber de restricții de drepturi de autor cunoscute"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -781,10 +789,14 @@ msgid ""
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
 msgstr ""
+"Acest spațiu de editare a fost conceput ca SMPTE-240M și cuprinde "
+"majoritatea culorilor posibile disponibile pe o imprimantă color CMYK. "
+"Aceasta este o alegere populară pentru editarea fotografiilor și pentru "
+"utilizarea în imprimare, deoarece toate culorile SWOP pot fi reproduse."
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr ""
+msgstr "AppleRGB"
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
@@ -800,14 +812,18 @@ msgid ""
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
 msgstr ""
+"Acest profil moștenit a fost creat inițial de Adobe pentru a fi utilizat cu "
+"Photoshop și Illustrator. Deoarece se bazează pe monitorul RGB original "
+"Apple de 13\" și este similar cu sRGB, nu trebuie utilizat ca profil de "
+"afișare sau pentru imagini noi."
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
-msgstr ""
+msgstr "BestRGB"
 
 #: data/profiles/BestRGB.iccprofile.xml:4
 msgid "Best RGB"
-msgstr ""
+msgstr "Best RGB"
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -825,11 +841,11 @@ msgstr ""
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
-msgstr ""
+msgstr "BetaRGB"
 
 #: data/profiles/BetaRGB.iccprofile.xml:4
 msgid "Beta RGB"
-msgstr ""
+msgstr "Beta RGB"
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 #: data/profiles/BetaRGB.iccprofile.xml:7
@@ -839,14 +855,18 @@ msgid ""
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
 msgstr ""
+"Acest spațiu de editare poate afișa culori mai saturate decât Adobe RGB. "
+"Este mai puțin predispus la erori de cuantificare în comparație cu ProPhoto "
+"RGB, deși se păstrează mai multe detalii ale umbrelor. În majoritatea "
+"cazurilor, ProPhoto RGB este probabil o alegere mai bună."
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "bluish"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr ""
+msgstr "Albastru"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -862,11 +882,11 @@ msgstr ""
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
-msgstr ""
+msgstr "BruceRGB"
 
 #: data/profiles/BruceRGB.iccprofile.xml:4
 msgid "Bruce RGB"
-msgstr ""
+msgstr "Bruce RGB"
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 #: data/profiles/BruceRGB.iccprofile.xml:7
@@ -875,14 +895,18 @@ msgid ""
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
 msgstr ""
+"Acesta este un spațiu de editare RGB pentru utilizare cu Adobe Photoshop 5.0"
+" și versiunile ulterioare. A fost conceput ca un compromis centrat pe "
+"rezultatele de ieșire dintre ColorMatch RGB și Adobe RGB și a fost preferat "
+"de unele servicii de imprimare a fotografiilor."
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
-msgstr ""
+msgstr "CIE-RGB"
 
 #: data/profiles/CIE-RGB.iccprofile.xml:4
 msgid "CIE RGB"
-msgstr ""
+msgstr "CIE RGB"
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 #: data/profiles/CIE-RGB.iccprofile.xml:7
@@ -901,7 +925,7 @@ msgstr "ColorMatchRGB"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:4
 msgid "ColorMatch RGB"
-msgstr ""
+msgstr "ColorMatch RGB"
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -912,14 +936,19 @@ msgid ""
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
 msgstr ""
+"Acest profil a fost conceput de Radius pentru monitorul PressView. Utilizați"
+" acest profil numai ca profil de afișare sau ca spațiu de editare, deoarece "
+"profilul nu diferă semnificativ de sRGB. Ar trebui să aveți nevoie să "
+"utilizați acest profil doar dacă vizualizați imagini create pe un monitor "
+"PressView."
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr ""
+msgstr "Crayons"
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
-msgstr ""
+msgstr "Culori Crayon"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -929,14 +958,17 @@ msgid ""
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
 msgstr ""
+"Acest profil de culoare cu nume conține toate culorile de creioane colorate "
+"Crayola utilizate în mod curent. Este un profil de test conceput pentru "
+"testarea încorporării culorilor numite în documente."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
-msgstr ""
+msgstr "DonRGB4"
 
 #: data/profiles/DonRGB4.iccprofile.xml:4
 msgid "Don RGB 4"
-msgstr ""
+msgstr "Don RGB 4"
 
 #. TRANSLATORS: saturated means vivid bright colors
 #: data/profiles/DonRGB4.iccprofile.xml:7
@@ -945,14 +977,17 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements."
 msgstr ""
+"Acest spațiu de editare poate afișa culori mai saturate decât Adobe RGB și "
+"este potrivit pentru imagini care conțin culori foarte saturate, utilizate "
+"adesea în reclame."
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
-msgstr ""
+msgstr "ECI-RGBv1"
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:4
 msgid "eciRGB v1"
-msgstr ""
+msgstr "eciRGB v1"
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 #: data/profiles/ECI-RGBv1.iccprofile.xml:7
@@ -962,14 +997,19 @@ msgid ""
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
 msgstr ""
+"Acest profil este recomandat de ECI (European Color Initiative) ca spațiu de"
+" editare pentru editarea profesională a imaginilor și are ca scop acoperirea"
+" tuturor culorilor care pot fi tipărite pe mașinile de tipărire. Acesta este"
+" folosit uneori ca format de schimb de date de culoare între edituri și "
+"tipografii."
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
-msgstr ""
+msgstr "ECI-RGBv2"
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:4
 msgid "eciRGB v2"
-msgstr ""
+msgstr "eciRGB v2"
 
 #. TRANSLATORS: lightness is a technical word for brightness
 #: data/profiles/ECI-RGBv2.iccprofile.xml:7
@@ -978,14 +1018,18 @@ msgid ""
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
 msgstr ""
+"Acest profil a fost conceput cu o curbă gamma de luminozitate, ceea ce "
+"înseamnă că monitorul va trebui să fie calibrat în același mod. Acest profil"
+" este util doar pentru utilizatorii avansați și nu este recomandat pentru "
+"utilizare generală."
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
-msgstr ""
+msgstr "EktaSpacePS5"
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:4
 msgid "Ekta Space PS5"
-msgstr ""
+msgstr "Ekta Space PS5"
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -995,10 +1039,14 @@ msgid ""
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
 msgstr ""
+"Acest profil a fost conceput pentru stocarea arhivelor de filme transparente"
+" (rolele de film clasice) scanate. Este potrivit pentru stocarea imaginilor "
+"din negative color, deși în prezent ProPhoto RGB este un profil mai popular "
+"pentru arhivare."
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "FOGRA27L Coated"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:6
@@ -1007,10 +1055,14 @@ msgid ""
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
 msgstr ""
+"Acest profil este utilizat pentru realizarea de plăci pozitive, tipărirea pe"
+" tipurile de hârtie 1 și 2 (lucioasă sau mată), tipărire „offset” pe "
+"coli/role de hârtie pentru publicații. Acest set de profile nu ar trebui să "
+"mai fie utilizat pentru producție, utilizați în schimb FOGRA39L."
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "FOGRA28L Web Coated"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -1020,10 +1072,14 @@ msgid ""
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
 msgstr ""
+"Acest profil este utilizat pentru realizarea plăcilor pozitive, tipărirea pe"
+" hârtie de tip 3 (LWC), tipărire „offset” cu alimentare prin rotativă. Acest"
+" profil nu ar trebui să mai fie utilizat pentru producție, utilizați în "
+"schimb FOGRA45."
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
-msgstr ""
+msgstr "FOGRA29L Uncoated"
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -1040,7 +1096,7 @@ msgstr ""
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr ""
+msgstr "FOGRA30L Uncoated Yellowish"
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:6
@@ -1048,6 +1104,9 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
 msgstr ""
+"Acest profil este utilizat pentru realizarea plăcilor pozitive, tipărirea pe"
+" hârtie tip 5 (neacoperită cu luciu, gălbuie), tipărire „offset” pe "
+"coli/role de hârtie."
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
@@ -1062,10 +1121,13 @@ msgid ""
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
 msgstr ""
+"Acest profil este utilizat pentru tipărirea pe tipurile de hârtie 1 și 2 "
+"(lucioasă sau mată), tipărire „offset” pe coli/role de hârtie. Acest profil "
+"nu diferă semnificativ de U.S. GRACoL 2006 (TR 006)."
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
-msgstr ""
+msgstr "FOGRA40L SC Paper"
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:6
@@ -1073,10 +1135,13 @@ msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
 msgstr ""
+"Acest profil este utilizat pentru tipărirea pe hârtie SC (super-calandrată),"
+" tipărire „offset” cu alimentare prin rotativă. Nu există un echivalent "
+"cunoscut în SUA."
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L Lightweight Coated"
 
 #. TRANSLATORS: ISO is a trademark
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:6
@@ -1091,7 +1156,7 @@ msgstr ""
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "FOGRA47L Uncoated"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:6
@@ -1099,12 +1164,15 @@ msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
 msgstr ""
+"Acest profil compatibil cu ISO 12647-2 este utilizat pentru tipărirea pe "
+"hârtie albă neacoperită de luciu de 115 g/m² (tip 4) pentru tipărirea "
+"„offset” cu alimentare în coli de 60 l/cm."
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
 #: data/profiles/Gamma6500K.iccprofile.xml:3
 msgid "Gamma6500K"
-msgstr ""
+msgstr "Gamma6500K"
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
@@ -1116,11 +1184,11 @@ msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr ""
+msgstr "D65"
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "GRACoL TR006 Coated"
 
 #. TRANSLATORS: coated = smooth and expensive
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:6
@@ -1134,7 +1202,7 @@ msgstr ""
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 Newsprint"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -1152,11 +1220,11 @@ msgstr ""
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr ""
+msgstr "NTSC-RGB"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr ""
+msgstr "NTSC RGB"
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1172,11 +1240,11 @@ msgstr ""
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr ""
+msgstr "PAL-RGB"
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr ""
+msgstr "PAL/SECAM RGB"
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7
@@ -1185,14 +1253,17 @@ msgid ""
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
 msgstr ""
+"Acest profil definește gama de culori utilizate cu standardele video PAL și "
+"SECAM și este foarte asemănător cu sRGB. Ar trebui să utilizați acest profil"
+" numai pentru a codifica sau decodifica imagini video."
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
-msgstr ""
+msgstr "ProPhotoRGB"
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:4
 msgid "ProPhoto RGB"
-msgstr ""
+msgstr "ProPhoto RGB"
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 #: data/profiles/ProPhotoRGB.iccprofile.xml:7
@@ -1202,14 +1273,19 @@ msgid ""
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
 msgstr ""
+"Proiectat inițial de Eastman Kodak și denumit ROMM RGB, acest profil poate "
+"afișa o gamă foarte largă de culori și este utilizat de mulți fotografi "
+"pentru redarea, editarea și arhivarea imaginilor RAW. Dacă nu lucrați cu o "
+"precizie de 16 biți pe canal, este posibil să observați benzi de culoare la "
+"editarea imaginilor."
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
-msgstr ""
+msgstr "Rec709"
 
 #: data/profiles/Rec709.iccprofile.xml:4
 msgid "Rec. 709"
-msgstr ""
+msgstr "Rec. 709"
 
 #. TRANSLATORS: ITU-R is a standards body
 #: data/profiles/Rec709.iccprofile.xml:9
@@ -1218,14 +1294,18 @@ msgid ""
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
 msgstr ""
+"Recomandarea ITU-R BT.709 este un standard de televiziune de înaltă "
+"definiție care a fost aprobat pentru prima dată în 1990. Profilul Rec. 709 "
+"utilizează aceeași gamă de culori ca și sRGB, deși curba de luminanță este "
+"diferită."
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
-msgstr ""
+msgstr "SMPTE-C-RGB"
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:4
 msgid "SMPTE-C RGB"
-msgstr ""
+msgstr "SMPTE-C RGB"
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:7
@@ -1239,7 +1319,7 @@ msgstr ""
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 Newsprint"
 
 #. TRANSLATORS: CGATS is a trademark
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:6
@@ -1247,10 +1327,13 @@ msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
 msgstr ""
+"Acesta este un profil bazat pe ANSI CGATS/SNAP TR 002-2007 pentru tipărirea "
+"pe hârtie de ziar în SUA, „offset coldset”. TVI (creșterea punctului) este "
+"de 26%."
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1270,11 +1353,11 @@ msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
-msgstr ""
+msgstr "SwappedRedAndGreen"
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Roșu și verde interschimbate"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1283,10 +1366,13 @@ msgid ""
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
 msgstr ""
+"Acest profil de testare inversează canalele roșu și verde și este util ca o "
+"verificare vizuală a aplicării corecte a profilurilor. Dacă acest profil "
+"este aplicat de două ori, imaginea arată neschimbată."
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "SWOP TR003 Coated"
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:6
@@ -1295,10 +1381,13 @@ msgid ""
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
 msgstr ""
+"Acest profil este utilizat pentru tipărirea pe hârtie patinată(lucioasă) "
+"U.S. de gradul 3, tipărire „offset” și gravură. Este utilizat pentru "
+"tipărirea revistelor de înaltă calitate cu hârtie albă."
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "SWOP TR005 Coated"
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:6
@@ -1307,14 +1396,17 @@ msgid ""
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
 msgstr ""
+"Acest profil este utilizat pentru tipărirea pe hârtie patinată(lucioasă) "
+"U.S. de gradul 5, tipărire „offset” și gravură. Se utilizează pentru "
+"tipărirea revistelor standard cu hârtie gălbuie."
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
-msgstr ""
+msgstr "WideGamutRGB"
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "Gamă extinsă RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 #: data/profiles/WideGamutRGB.iccprofile.xml:7
@@ -1325,14 +1417,20 @@ msgid ""
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
 msgstr ""
+"Acest spațiu de editare a fost conceput de Adobe Systems pentru a capta mult"
+" mai multe culori decât Adobe RGB. Acest profil este utilizat pentru a "
+"imprima pe dispozitive precum aparatele de filmat și poate defini multe "
+"culori care nu pot fi afișate pe ecranul unui computer. Dacă nu lucrați cu o"
+" precizie de 16 biți pe canal, este posibil să observați benzi de culoare "
+"atunci când editați imagini."
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
-msgstr ""
+msgstr "x11-colors"
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr ""
+msgstr "Culori X11"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1341,36 +1439,42 @@ msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
 msgstr ""
+"Acest profil de culoare numit conține toate culorile definite de X11, "
+"presupunând că culorile sursă vor fi sRGB."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #: policy/org.freedesktop.color.policy.in.in:20
 msgid "Create a color managed device"
-msgstr ""
+msgstr "Creează un dispozitiv cu gestionare a culorilor"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
 msgstr ""
+"Este necesară autentificarea pentru a crea un dispozitiv cu gestionare a "
+"culorilor"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #: policy/org.freedesktop.color.policy.in.in:35
 msgid "Create a color profile"
-msgstr ""
+msgstr "Creează un profil de culoare"
 
 #: policy/org.freedesktop.color.policy.in.in:36
 msgid "Authentication is required to create a color profile"
-msgstr ""
+msgstr "Este necesară autentificarea pentru a crea un profil de culoare"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 #: policy/org.freedesktop.color.policy.in.in:50
 msgid "Remove a color managed device"
-msgstr ""
+msgstr "Elimină un dispozitiv cu gestionare a culorilor"
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
 msgstr ""
+"Este necesară autentificarea pentru a elimina un dispozitiv cu gestionare a "
+"culorilor"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1380,27 +1484,29 @@ msgstr "Elimină un profil de culoare"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"
-msgstr ""
+msgstr "Este necesară autentificarea pentru a elimina un profil de culoare"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #: policy/org.freedesktop.color.policy.in.in:80
 msgid "Modify color settings for a device"
-msgstr ""
+msgstr "Modifică configurația de culoare a unui dispozitiv"
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
 msgstr ""
+"Este necesară autentificarea pentru a modifica configurația de culoare a "
+"unui dispozitiv"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #: policy/org.freedesktop.color.policy.in.in:95
 msgid "Modify a color profile"
-msgstr ""
+msgstr "Modifică un profil de culoare"
 
 #: policy/org.freedesktop.color.policy.in.in:96
 msgid "Authentication is required to modify a color profile"
-msgstr ""
+msgstr "Este necesară autentificarea pentru a modifica un profil de culoare"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -1411,49 +1517,53 @@ msgstr ""
 #. other sessions unusable.
 #: policy/org.freedesktop.color.policy.in.in:115
 msgid "Install system color profiles"
-msgstr ""
+msgstr "Instalează profiluri de culoare de sistem"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
 msgstr ""
+"Este necesară autentificarea pentru a instala profilul de culoare pentru "
+"toți utilizatorii"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
 #: policy/org.freedesktop.color.policy.in.in:131
 msgid "Inhibit color profile selection"
-msgstr ""
+msgstr "Dezactivează selectarea profilului de culoare"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
 msgstr ""
+"Este necesară autentificarea pentru a dezactiva potrivirea profilului pentru"
+" un dispozitiv"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
 #: policy/org.freedesktop.color.policy.in.in:147
 msgid "Use color sensor"
-msgstr ""
+msgstr "Folosește senzorul de culoare"
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"
-msgstr ""
+msgstr "Este necesară autentificarea pentru a folosi senzorul de culoare"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: src/cd-main.c:2355
 msgid "Exit after a small delay"
-msgstr ""
+msgstr "Iese după o mică întârziere"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
-msgstr ""
+msgstr "Iese după ce motorul s-a încărcat"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Creează un senzor fictiv pentru testare"
 
 #: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
-msgstr ""
+msgstr "Serviciul D-Bus de administrare a culorii"

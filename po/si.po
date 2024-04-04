@@ -4,6 +4,7 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
+# HelaBasa Group <transifex-helabasa-group@yalu.lk>, 2024
 # Chamodi Dilrukshi, 2024
 # 
 #, fuzzy
@@ -24,29 +25,29 @@ msgstr ""
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
 msgid "Profile to create"
-msgstr ""
+msgstr "නිර්මාණය කිරීමට පැතිකඩ"
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
-msgstr ""
+msgstr "ICC පැතිකඩ නිර්මාණය කිරීමේ වැඩසටහන"
 
 #. TRANSLATORS: the user didn't read the man page
 #: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
 #: client/cd-iccdump.c:88 client/cd-it8.c:522 client/cd-util.c:2233
 msgid "Failed to parse arguments"
-msgstr ""
+msgstr "තර්ක විග්‍රහ කිරීමට අසමත් විය"
 
 #. TRANSLATORS: the user forgot to use -o
 #: client/cd-create-profile.c:880
 msgid "No output filename specified"
-msgstr ""
+msgstr "ප්‍රතිදාන ගොනු නාමයක් සඳහන් කර නොමැත"
 
 #. TRANSLATORS: this is a command alias
 #: client/cd-fix-profile.c:85 client/cd-it8.c:94 client/cd-util.c:689
 #, c-format
 msgid "Alias to %s"
-msgstr ""
+msgstr "අන්වර්ථ නාමය %s"
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
@@ -55,12 +56,12 @@ msgstr "විධානය හමු නොවීය, වලංගු විධ�
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
-msgstr ""
+msgstr "අමතර දෝශ නිරාකරණ තොරතුරු පෙන්වන්න"
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:585
 msgid "The locale to use when setting localized text"
-msgstr ""
+msgstr "දේශීයකරණය කළ පෙළ සැකසීමේදී භාවිත කළ යුතු පෙදෙසිය"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
@@ -70,27 +71,27 @@ msgstr "දී ඇති ප්‍රමාණයක VCGT ක්‍රමාං�
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
 msgid "Clear any metadata in the profile"
-msgstr ""
+msgstr "පැතිකඩෙහි ඇති ඕනෑම පාරදත්ත හිස් කරන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:616
 msgid "Initialize any metadata for the profile"
-msgstr ""
+msgstr "පැතිකඩ සඳහා ඕනෑම පාරදත්තක් ආරම්භ කරන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:621
 msgid "Add a metadata item to the profile"
-msgstr ""
+msgstr "පැතිකඩ වෙත පාරදත්ත අයිතමයක් එක් කරන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:626
 msgid "Remove a metadata item from the profile"
-msgstr ""
+msgstr "පැතිකඩෙන් පාරදත්ත අයිතමයක් ඉවත් කරන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
 msgid "Sets the copyright string"
-msgstr ""
+msgstr "ප්‍රකාශන හිමිකම් තන්තුව සකසයි"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:636
@@ -100,33 +101,33 @@ msgstr "විස්තර තන්තුව සකසයි"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:641
 msgid "Sets the manufacturer string"
-msgstr ""
+msgstr "නිෂ්පාදක පෙළ සකසයි"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:646
 msgid "Sets the model string"
-msgstr ""
+msgstr "ආකෘති තන්තුව සකසයි"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:651
 msgid "Automatically fix metadata in the profile"
-msgstr ""
+msgstr "පැතිකඩෙහි පාර-දත්ත ස්වයංක්‍රීයව සවි කරන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:656
 msgid "Set the ICC profile version"
-msgstr ""
+msgstr "ICC පැතිකඩ අනුවාදය සකසන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
 msgid "Export the tag data"
-msgstr ""
+msgstr "ටැග් දත්ත අපනයනය කරන්න"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
 #: src/cd-main.c:2373
 msgid "Color Management"
-msgstr ""
+msgstr "වර්ණ කළමනාකරණය"
 
 #. TRANSLATORS: program name
 #: client/cd-iccdump.c:84
@@ -136,38 +137,38 @@ msgstr "ICC පැතිකඩ ඩම්ප් වැඩසටහන"
 #. TRANSLATORS: command line option
 #: client/cd-it8.c:471
 msgid "Write embedded creation timestamps"
-msgstr ""
+msgstr "කාවැද්දූ නිර්මාණ වේලා මුද්දර ලියන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "CSV දත්ත වලින් CMF එකක් සාදන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "CSV දත්ත වලින් වර්ණාවලියක් සාදන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:503
 msgid "Create a CCMX from reference and measurement data"
-msgstr ""
+msgstr "යොමු සහ මිනුම් දත්ත වලින් CCMX සාදන්න"
 
 #. TRANSLATORS: this is the profile creation date strftime format
 #: client/cd-util.c:122
 msgid "%B %e %Y, %I:%M:%S %p"
-msgstr ""
+msgstr "%B %e %Y, %I:%M:%S %p"
 
 #. TRANSLATORS: profile owner
 #. TRANSLATORS: profile UID
 #: client/cd-util.c:134 client/cd-util.c:139
 msgid "Owner"
-msgstr ""
+msgstr "හිමිකරු"
 
 #. TRANSLATORS: the internal DBus path
 #: client/cd-util.c:159 client/cd-util.c:262 client/cd-util.c:508
 msgid "Object Path"
-msgstr ""
+msgstr "වස්තු මාර්ගය"
 
 #. TRANSLATORS: the profile format, e.g.
 #. * ColorModel.OutputMode.OutputResolution
@@ -175,13 +176,13 @@ msgstr ""
 #. * ColorModel.OutputMode.OutputResolution
 #: client/cd-util.c:167 client/cd-util.c:330
 msgid "Format"
-msgstr ""
+msgstr "ආකෘතිය"
 
 #. TRANSLATORS: the profile title, e.g.
 #. * "ColorMunki, HP Deskjet d1300 Series"
 #: client/cd-util.c:175
 msgid "Title"
-msgstr ""
+msgstr "ශීර්ෂය"
 
 #. TRANSLATORS: the profile qualifier, e.g. RGB.Plain.300dpi
 #: client/cd-util.c:180
@@ -193,7 +194,7 @@ msgstr "සුදුසුකම්"
 #. TRANSLATORS: the sensor type, e.g. 'output'
 #: client/cd-util.c:185 client/cd-util.c:281 client/cd-util.c:530
 msgid "Type"
-msgstr ""
+msgstr "ටයිප් කරන්න"
 
 #. TRANSLATORS: the profile colorspace, e.g. 'rgb'
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
@@ -204,50 +205,50 @@ msgstr "වර්ණ අවකාශය"
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: client/cd-util.c:199 client/cd-util.c:336
 msgid "Scope"
-msgstr ""
+msgstr "විෂය පථය"
 
 #. TRANSLATORS: if the profile has a Video Card Gamma Table lookup
 #: client/cd-util.c:205
 msgid "Gamma Table"
-msgstr ""
+msgstr "ගැමා වගුව"
 
 #. TRANSLATORS: if the profile is installed for all users
 #: client/cd-util.c:210
 msgid "System Wide"
-msgstr ""
+msgstr "පද්ධතිය පුරා"
 
 #. TRANSLATORS: profile filename
 #: client/cd-util.c:215
 msgid "Filename"
-msgstr ""
+msgstr "ගොනුවේ නම"
 
 #. TRANSLATORS: profile identifier
 #: client/cd-util.c:220
 msgid "Profile ID"
-msgstr ""
+msgstr "පැතිකඩ හැඳුනුම්පත"
 
 #. TRANSLATORS: the metadata for the device
 #. TRANSLATORS: the metadata for the sensor
 #: client/cd-util.c:235 client/cd-util.c:386 client/cd-util.c:601
 msgid "Metadata"
-msgstr ""
+msgstr "පාරදත්ත"
 
 #: client/cd-util.c:243
 msgid "Warning"
-msgstr ""
+msgstr "අවවාදයයි"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
 #. * unless the device has been explicitly saved in the database
 #: client/cd-util.c:270
 msgid "Created"
-msgstr ""
+msgstr "නිර්මාණය කළා"
 
 #. TRANSLATORS: this is the time of the last calibration or when
 #. * the manufacturer-provided profile was assigned by the user
 #: client/cd-util.c:276
 msgid "Modified"
-msgstr ""
+msgstr "වෙනස් කර ඇත"
 
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
@@ -258,28 +259,28 @@ msgstr "සබල කර ඇත"
 #. * cannot be removed
 #: client/cd-util.c:292
 msgid "Embedded"
-msgstr ""
+msgstr "Embedded"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
 #: client/cd-util.c:297 client/cd-util.c:554
 msgid "Model"
-msgstr ""
+msgstr "ආකෘතිය"
 
 #. TRANSLATORS: the device vendor
 #. TRANSLATORS: sensor vendor
 #: client/cd-util.c:302 client/cd-util.c:562
 msgid "Vendor"
-msgstr ""
+msgstr "වෙළෙන්දා"
 
 #: client/cd-util.c:308
 msgid "Inhibitors"
-msgstr ""
+msgstr "නිෂේධක"
 
 #. TRANSLATORS: the device serial number
 #: client/cd-util.c:312
 msgid "Serial"
-msgstr ""
+msgstr "මාලාව"
 
 #. TRANSLATORS: the device seat identifier, where a seat is
 #. * defined as a monitor, keyboard and mouse.
@@ -289,23 +290,23 @@ msgstr ""
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
-msgstr ""
+msgstr "ආසනය"
 
 #. TRANSLATORS: the device identifier
 #: client/cd-util.c:347
 msgid "Device ID"
-msgstr ""
+msgstr "උපාංග හැඳුනුම්පත"
 
 #. TRANSLATORS: the profile for the device
 #: client/cd-util.c:356
 msgid "Profile"
-msgstr ""
+msgstr "පැතිකඩ"
 
 #. TRANSLATORS: this is the display technology,
 #. * and an abbreviation for "Cathode Ray Tube"
 #: client/cd-util.c:404
 msgid "CRT"
-msgstr ""
+msgstr "CRT"
 
 #. TRANSLATORS: this is a desktop printer
 #: client/cd-util.c:408
@@ -315,29 +316,29 @@ msgstr "මුද්‍රණ යන්ත්‍රය"
 #. TRANSLATORS: a beamer used for presentations
 #: client/cd-util.c:412
 msgid "Projector"
-msgstr ""
+msgstr "ප්‍රොජෙක්ටරය"
 
 #. TRANSLATORS: a spot measurement, e.g.
 #. * getting the color from a color swatch
 #: client/cd-util.c:417
 msgid "Spot"
-msgstr ""
+msgstr "ස්ථානය"
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
 #: client/cd-util.c:422
 msgid "Ambient"
-msgstr ""
+msgstr "අවට"
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:426
 msgid "Calibration"
-msgstr ""
+msgstr "ක්රමාංකනය"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
 msgid "Dark Calibration"
-msgstr ""
+msgstr "අඳුරු ක්රමාංකනය"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
@@ -353,13 +354,13 @@ msgstr "වර්ණාවලි"
 #. * where LCD stands for 'Liquid Crystal Display'
 #: client/cd-util.c:443
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD Generic"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: client/cd-util.c:448
 msgid "LED Generic"
-msgstr ""
+msgstr "LED Generic"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
@@ -373,152 +374,152 @@ msgstr "ප්ලාස්මා"
 #. * and CCFL stands for 'Cold Cathode Fluorescent Lamp'
 #: client/cd-util.c:460
 msgid "LCD CCFL"
-msgstr ""
+msgstr "LCD CCFL"
 
 #. TRANSLATORS: this is the display technology where
 #. * RGB stands for 'Red Green Blue' and LED stands for
 #. * 'Light Emitted Diode'
 #: client/cd-util.c:466
 msgid "LCD RGB LED"
-msgstr ""
+msgstr "LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * wide gamut means the display primaries are much
 #. * better than normal consumer monitors
 #: client/cd-util.c:472
 msgid "Wide Gamut LCD CCFL"
-msgstr ""
+msgstr "පුළුල් ගැමට් LCD CCFL"
 
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:476
 msgid "Wide Gamut LCD RGB LED"
-msgstr ""
+msgstr "පුළුල් ගැමට් LCD RGB LED"
 
 #. TRANSLATORS: this is the display technology, where
 #. * white means the color of the backlight, i.e. not
 #. * RGB LED
 #: client/cd-util.c:482
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD සුදු LED"
 
 #. TRANSLATORS: this an unknown display technology
 #: client/cd-util.c:485
 msgid "Unknown"
-msgstr ""
+msgstr "නොදන්නා"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: client/cd-util.c:538
 msgid "State"
-msgstr ""
+msgstr "රජයේ"
 
 #. TRANSLATORS: sensor serial
 #: client/cd-util.c:546
 msgid "Serial number"
-msgstr ""
+msgstr "අන්රක්රමික අංකය"
 
 #. TRANSLATORS: sensor identifier
 #: client/cd-util.c:568
 msgid "Sensor ID"
-msgstr ""
+msgstr "සංවේදක ID"
 
 #. TRANSLATORS: the options for the sensor
 #: client/cd-util.c:588
 msgid "Options"
-msgstr ""
+msgstr "විකල්ප"
 
 #. TRANSLATORS: if the sensor has a colord native driver
 #: client/cd-util.c:606
 msgid "Native"
-msgstr ""
+msgstr "ස්වදේශික"
 
 #. TRANSLATORS: if the sensor is locked
 #: client/cd-util.c:611
 msgid "Locked"
-msgstr ""
+msgstr "අගුලු දමා ඇත"
 
 #. TRANSLATORS: if the sensor supports calibrating different
 #. * display types, e.g. LCD, LED, Projector
 #: client/cd-util.c:629
 msgid "Capabilities"
-msgstr ""
+msgstr "හැකියාවන්"
 
 #: client/cd-util.c:971 client/cd-util.c:1000 client/cd-util.c:1048
 #: client/cd-util.c:1176 client/cd-util.c:1260
 msgid "There are no supported sensors attached"
-msgstr ""
+msgstr "සහාය දක්වන සංවේදක කිසිවක් අමුණා නැත"
 
 #. TRANSLATORS: this is the sensor title
 #: client/cd-util.c:1060 client/cd-util.c:1197 client/cd-util.c:1289
 msgid "Sensor"
-msgstr ""
+msgstr "සංවේදකය"
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "උපාංගය ක්‍රමාංකන ස්ථානයට සකසා enter ඔබන්න."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
 msgid "Set the device to the surface position and press enter."
-msgstr ""
+msgstr "උපාංගය මතුපිට ස්ථානයට සකසා enter ඔබන්න."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1097
 msgid "Put the device in a dark place and press enter."
-msgstr ""
+msgstr "උපාංගය අඳුරු තැනක තබා enter ඔබන්න."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1107
 msgid "Calibrate with a 3200K light source."
-msgstr ""
+msgstr "3200K ආලෝක ප්‍රභවයක් සමඟ ක්‍රමාංකනය කරන්න."
 
 #: client/cd-util.c:1124
 msgid "Put the device on the color to be measured and press enter."
-msgstr ""
+msgstr "උපාංගය මැනිය යුතු වර්ණය මත තබා enter ඔබන්න."
 
 #: client/cd-util.c:1130
 msgid "Color"
-msgstr ""
+msgstr "වර්ණ"
 
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
 msgid "No spectral capability"
-msgstr ""
+msgstr "වර්ණාවලි හැකියාවක් නොමැත"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
 msgid "Show client and daemon versions"
-msgstr ""
+msgstr "සේවාදායක සහ ඩීමන් අනුවාද පෙන්වන්න"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2019
 msgid "Show the value without any header"
-msgstr ""
+msgstr "කිසිදු ශීර්ෂයක් නොමැතිව අගය පෙන්වන්න"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2022
 msgid "Filter object properties when displaying"
-msgstr ""
+msgstr "දර්ශණය වන විට වස්තු ගුණාංග පෙරහන් කරන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "සියලුම දෝශ නිරාකරණ දත්ත ගොනුවකට දමන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
 msgid "Gets all the color managed devices"
-msgstr ""
+msgstr "සියලුම වර්ණ කළමනාකරණය කළ උපාංග ලබා ගනී"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2053
 msgid "Gets all the color managed devices of a specific kind"
-msgstr ""
+msgstr "විශේෂිත ආකාරයේ වර්ණ කළමනාකරණය කළ උපාංග සියල්ල ලබා ගනී"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
 msgid "Gets all the available color profiles"
-msgstr ""
+msgstr "පවතින සියලුම වර්ණ පැතිකඩ ලබා ගනී"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
@@ -528,7 +529,7 @@ msgstr "පවතින සියලුම වර්ණ සංවේදක ල�
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
 msgid "Gets a spectral reading from a sensor"
-msgstr ""
+msgstr "සංවේදකයකින් වර්ණාවලි කියවීමක් ලබා ගනී"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
@@ -538,37 +539,37 @@ msgstr "සංවේදකයකින් කියවීමක් ලබා ග
 #. TRANSLATORS: command description
 #: client/cd-util.c:2083
 msgid "Locks the color sensor"
-msgstr ""
+msgstr "වර්ණ සංවේදකය අගුළු දමයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2089
 msgid "Sets one or more sensor options"
-msgstr ""
+msgstr "සංවේදක විකල්ප එකක් හෝ කිහිපයක් සකසයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2095
 msgid "Create a device"
-msgstr ""
+msgstr "උපාංගයක් සාදන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2101
 msgid "Find a device from the device ID"
-msgstr ""
+msgstr "උපාංග හැඳුනුම්පතෙන් උපාංගයක් සොයා ගන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2107
 msgid "Find a device with a given property value"
-msgstr ""
+msgstr "දී ඇති දේපල වටිනාකමක් සහිත උපාංගයක් සොයා ගන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2113
 msgid "Find a profile from the profile ID"
-msgstr ""
+msgstr "පැතිකඩ හැඳුනුම්පතෙන් පැතිකඩක් සොයන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr ""
+msgstr "ගොනු නාමයෙන් පැතිකඩක් සොයන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
@@ -578,17 +579,17 @@ msgstr "සම්මත වර්ණ අවකාශයක් ලබා ගන�
 #. TRANSLATORS: command description
 #: client/cd-util.c:2131
 msgid "Create a profile"
-msgstr ""
+msgstr "පැතිකඩක් සාදන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "දැනටමත් පවතින උපාංගයකට පැතිකඩක් එක් කරන්න"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
 msgid "Makes a profile default for a device"
-msgstr ""
+msgstr "උපාංගයක් සඳහා පැතිකඩ පෙරනිමි කරයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2149
@@ -598,12 +599,12 @@ msgstr "උපාංගයක් මකා දමයි"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2155
 msgid "Deletes a profile"
-msgstr ""
+msgstr "පැතිකඩක් මකා දමයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2161
 msgid "Sets extra properties on the profile"
-msgstr ""
+msgstr "පැතිකඩෙහි අමතර ගුණාංග සකසයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2167
@@ -613,7 +614,7 @@ msgstr "උපාංග ආකෘතිය සකසයි"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2173
 msgid "Enables or disables the device"
-msgstr ""
+msgstr "උපාංගය සක්රිය හෝ අක්රිය කරයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2179
@@ -623,17 +624,17 @@ msgstr "උපාංගයක් සඳහා පෙරනිමි පැති
 #. TRANSLATORS: command description
 #: client/cd-util.c:2185
 msgid "Sets the device vendor"
-msgstr ""
+msgstr "උපාංග වෙළෙන්දා සකසයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2191
 msgid "Sets the device serial"
-msgstr ""
+msgstr "උපාංග මාලාව සකසයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2197
 msgid "Sets the device kind"
-msgstr ""
+msgstr "උපාංග වර්ගය සකසයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2203
@@ -643,29 +644,29 @@ msgstr "මෙම උපාංගය සඳහා වර්ණ පැතික�
 #. TRANSLATORS: command description
 #: client/cd-util.c:2209
 msgid "Returns all the profiles that match a qualifier"
-msgstr ""
+msgstr "සුදුසුකම් ලැබීමට ගැළපෙන සියලුම පැතිකඩ ආපසු ලබා දෙයි"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2215
 msgid "Import a profile and install it for the user"
-msgstr ""
+msgstr "පැතිකඩක් ආයාත කර පරිශීලකයා සඳහා එය ස්ථාපනය කරන්න"
 
 #. TRANSLATORS: no colord available
 #: client/cd-util.c:2256
 msgid "No connection to colord:"
-msgstr ""
+msgstr "වර්ණයට සම්බන්ධයක් නැත:"
 
 #: client/cd-util.c:2263
 msgid "Client version:"
-msgstr ""
+msgstr "සේවාදායක අනුවාදය:"
 
 #: client/cd-util.c:2265
 msgid "Daemon version:"
-msgstr ""
+msgstr "ඩීමන් අනුවාදය:"
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
-msgstr ""
+msgstr "පද්ධති වෙළෙන්දා:"
 
 #: client/cd-util.c:2269
 msgid "System model:"
@@ -674,19 +675,19 @@ msgstr "පද්ධති ආකෘතිය:"
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
 msgid "Show debugging information for all files"
-msgstr ""
+msgstr "සියලුම ගොනු සඳහා නිදොස් කිරීමේ තොරතුරු පෙන්වන්න"
 
 #: contrib/session-helper/cd-debug.c:206 src/cd-debug.c:206
 msgid "Debugging Options"
-msgstr ""
+msgstr "දෝශ නිරාකරණ විකල්ප"
 
 #: contrib/session-helper/cd-debug.c:207 src/cd-debug.c:207
 msgid "Show debugging options"
-msgstr ""
+msgstr "නිදොස් කිරීමේ විකල්ප පෙන්වන්න"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:5
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "සංදර්ශකය සඳහා පෙරනිමි ගැමා"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:6
 msgid ""
@@ -696,17 +697,19 @@ msgstr "සංදර්ශකය සඳහා පෙරනිමි ඉලක්
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
-msgstr ""
+msgstr "පෙරනිමි සංදර්ශක ඉලක්ක සුදු ලක්ෂ්‍යය"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:14
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
 msgstr ""
+"සංදර්ශක ක්‍රමාංකනය සඳහා කෙල්වින් හි පෙරනිමි ඉලක්ක වයිට්පොයින්ට්, සංදර්ශක "
+"ස්වදේශීය යන අර්ථයන් 0 සමඟින්. පොදු අගයන් D65 සඳහා 6500 සහ D50 සඳහා 5000 වේ."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
-msgstr ""
+msgstr "නියැදි කාල පරතරයන් අතර ප්‍රමාදය"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:23
 msgid ""
@@ -720,11 +723,11 @@ msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
-msgstr ""
+msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr ""
+msgstr "Adobe RGB (1998) සමඟ අනුකූල වේ"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -765,7 +768,7 @@ msgstr ""
 #: data/profiles/WideGamutRGB.iccprofile.xml:5
 #: data/profiles/x11-colors.iccprofile.xml:5
 msgid "This profile is free of known copyright restrictions"
-msgstr ""
+msgstr "මෙම පැතිකඩ දන්නා ප්‍රකාශන හිමිකම් සීමා කිරීම් වලින් තොරය"
 
 #. TRANSLATORS: a editing space is a profile you use for editing,
 #. 'SWOP' is also a trademark so don't translate that
@@ -776,10 +779,14 @@ msgid ""
 "for editing photographs and for use in printing, as all the SWOP colors can "
 "be reproduced."
 msgstr ""
+"මෙම සංස්කරණ අවකාශය SMPTE-240M ලෙස නිර්මාණය කර ඇති අතර CMYK වර්ණ මුද්‍රණ "
+"යන්ත්‍රයක ලබා ගත හැකි වර්ණ බොහොමයක් ඇතුළත් වේ. සියලුම SWOP වර්ණ "
+"ප්‍රතිනිෂ්පාදනය කළ හැකි බැවින් මෙය ඡායාරූප සංස්කරණය කිරීම සහ මුද්‍රණය සඳහා "
+"භාවිතා කිරීම සඳහා ජනප්‍රිය තේරීමකි."
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr ""
+msgstr "AppleRGB"
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
@@ -795,14 +802,18 @@ msgid ""
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
 msgstr ""
+"මෙම පැරණි පැතිකඩ මුලින්ම Adobe විසින් Photoshop සහ Illustrator සමඟ භාවිතා "
+"කිරීම සඳහා නිර්මාණය කරන ලදී. එය මුල් Apple 13\" RGB මොනිටරය මත පදනම් වී ඇති "
+"අතර sRGB ට සමාන බැවින්, එය සංදර්ශක පැතිකඩක් ලෙස හෝ නව පින්තූර සඳහා භාවිතා "
+"නොකළ යුතුය."
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
-msgstr ""
+msgstr "BestRGB"
 
 #: data/profiles/BestRGB.iccprofile.xml:4
 msgid "Best RGB"
-msgstr ""
+msgstr "හොඳම RGB"
 
 #. TRANSLATORS: super-saturated is in reference to colors you can't show on a
 #. PC screen
@@ -820,11 +831,11 @@ msgstr ""
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
-msgstr ""
+msgstr "බීටාආර්ජීබී"
 
 #: data/profiles/BetaRGB.iccprofile.xml:4
 msgid "Beta RGB"
-msgstr ""
+msgstr "බීටා RGB"
 
 #. TRANSLATORS: 'shadow detail' is the number of black colors you can see
 #: data/profiles/BetaRGB.iccprofile.xml:7
@@ -834,14 +845,18 @@ msgid ""
 "shadow detail is preserved. In most instances ProPhoto RGB is probably a "
 "better choice."
 msgstr ""
+"මෙම සංස්කරණ අවකාශය Adobe RGB වලට වඩා සංතෘප්ත වර්ණ පෙන්විය හැක. ProPhoto RGB "
+"හා සසඳන විට එය ප්‍රමාණකරණ දෝෂ වලට ගොදුරු වීමේ ප්‍රවණතාව අඩුයි, නමුත් වැඩි "
+"සෙවනැලි විස්තර සංරක්ෂණය කර ඇත. බොහෝ අවස්ථාවලදී ProPhoto RGB වඩා හොඳ තේරීමක් "
+"විය හැකිය."
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "නිල්වන්"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr ""
+msgstr "නිල්"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -856,11 +871,11 @@ msgstr ""
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
-msgstr ""
+msgstr "බෲස්ආර්ජීබී"
 
 #: data/profiles/BruceRGB.iccprofile.xml:4
 msgid "Bruce RGB"
-msgstr ""
+msgstr "බෲස් RGB"
 
 #. TRANSLATORS: 'Adobe Photoshop' is a trademark, don't translate
 #: data/profiles/BruceRGB.iccprofile.xml:7
@@ -869,14 +884,17 @@ msgid ""
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
 msgstr ""
+"මෙය Adobe Photoshop 5.0 සහ ඊට පසු භාවිතා කිරීම සඳහා RGB සංස්කරණ අවකාශයකි. එය"
+" ColorMatch RGB සහ Adobe RGB අතර ප්‍රතිදාන-කේන්ද්‍රීය සම්මුතියක් ලෙස "
+"නිර්මාණය කර ඇති අතර සමහර ඡායාරූප මුද්‍රණ සේවා විසින් වඩාත් කැමති විය."
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
-msgstr ""
+msgstr "CIE-RGB"
 
 #: data/profiles/CIE-RGB.iccprofile.xml:4
 msgid "CIE RGB"
-msgstr ""
+msgstr "CIE RGB"
 
 #. TRANSLATORS: theoretical in that the profile primaries are not real colors
 #: data/profiles/CIE-RGB.iccprofile.xml:7
@@ -895,7 +913,7 @@ msgstr "ColorMatchRGB"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:4
 msgid "ColorMatch RGB"
-msgstr ""
+msgstr "ColorMatch RGB"
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -906,14 +924,18 @@ msgid ""
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
 msgstr ""
+"මෙම පැතිකඩ PressView මොනිටරය සඳහා Radius විසින් නිර්මාණය කරන ලදී. පැතිකඩ "
+"sRGB ට සැලකිය යුතු ලෙස වෙනස් නොවන බැවින් මෙම පැතිකඩ සංදර්ශක පැතිකඩක් ලෙස හෝ "
+"සංස්කරණ ඉඩක් ලෙස පමණක් භාවිතා කරන්න. ඔබට මෙම පැතිකඩ භාවිතා කිරීමට අවශ්‍ය "
+"වන්නේ PressView මොනිටරයක සාදන ලද පින්තූර බැලීමේදී පමණි."
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr ""
+msgstr "ක්රෙයොන්ස්"
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
-msgstr ""
+msgstr "Crayon වර්ණ"
 
 #. TRANSLATORS: 'Crayola' is a trademark, please don't translate,
 #. also 'named colors' are color swatches with a name, e.g. 'Royal Rose'
@@ -923,14 +945,17 @@ msgid ""
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
 msgstr ""
+"මෙම නම් කරන ලද වර්ණ පැතිකඩෙහි ජනප්‍රිය භාවිතයේ ඇති සියලුම Crayola crayon "
+"වර්ණ අඩංගු වේ. එය නම් කරන ලද වර්ණ ලේඛනවලට කාවැද්දීම පරීක්ෂා කිරීම සඳහා "
+"නිර්මාණය කර ඇති පරීක්ෂණ පැතිකඩකි."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
-msgstr ""
+msgstr "DonRGB4"
 
 #: data/profiles/DonRGB4.iccprofile.xml:4
 msgid "Don RGB 4"
-msgstr ""
+msgstr "දොන් RGB 4"
 
 #. TRANSLATORS: saturated means vivid bright colors
 #: data/profiles/DonRGB4.iccprofile.xml:7
@@ -939,14 +964,16 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements."
 msgstr ""
+"මෙම සංස්කරණ අවකාශය Adobe RGB වලට වඩා සංතෘප්ත වර්ණ පෙන්විය හැකි අතර වෙළඳ "
+"දැන්වීම්වල බහුලව භාවිතා වන අධික සන්තෘප්ත වර්ණ සහිත රූප සඳහා සුදුසු වේ."
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
-msgstr ""
+msgstr "ECI-RGBv1"
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:4
 msgid "eciRGB v1"
-msgstr ""
+msgstr "eciRGB v1"
 
 #. TRANSLATORS: ECI is a trademark, don't translate
 #: data/profiles/ECI-RGBv1.iccprofile.xml:7
@@ -956,14 +983,18 @@ msgid ""
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
 msgstr ""
+"මෙම පැතිකඩ ECI (යුරෝපීය වර්ණ මුලපිරීම) විසින් වෘත්තීය රූප සංස්කරණය සඳහා "
+"සංස්කරණ අවකාශයක් ලෙස නිර්දේශ කර ඇති අතර මුද්‍රණ යන්ත්‍රවල මුද්‍රණය කළ හැකි "
+"සියලුම වර්ණ ආවරණය කිරීමට අරමුණු කරයි. මෙය සමහර විට ප්‍රකාශකයන් සහ මුද්‍රණ "
+"ආයතන අතර වර්ණ දත්ත හුවමාරු ආකෘතියක් ලෙස භාවිතා කරයි."
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
-msgstr ""
+msgstr "ECI-RGBv2"
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:4
 msgid "eciRGB v2"
-msgstr ""
+msgstr "eciRGB v2"
 
 #. TRANSLATORS: lightness is a technical word for brightness
 #: data/profiles/ECI-RGBv2.iccprofile.xml:7
@@ -972,14 +1003,18 @@ msgid ""
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
 msgstr ""
+"මෙම පැතිකඩ නිර්මාණය කර ඇත්තේ සැහැල්ලු ගැමා වක්‍රයකින් වන අතර එයින් අදහස් "
+"වන්නේ මොනිටරය ද ඒ ආකාරයෙන්ම ක්‍රමාංකනය කළ යුතු බවයි. මෙම පැතිකඩ උසස් "
+"පරිශීලකයින් සඳහා පමණක් ප්‍රයෝජනවත් වන අතර සාමාන්‍ය භාවිතය සඳහා නිර්දේශ "
+"නොකරයි."
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
-msgstr ""
+msgstr "EktaSpacePS5"
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:4
 msgid "Ekta Space PS5"
-msgstr ""
+msgstr "Ekta Space PS5"
 
 #. TRANSLATORS: negatives refers to the film on which a negative image is
 #. stored
@@ -989,10 +1024,13 @@ msgid ""
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
 msgstr ""
+"මෙම පැතිකඩ නිර්මාණය කර ඇත්තේ ස්කෑන් කරන ලද විනිවිද පෙනෙන චිත්‍රපටයේ ලේඛනාගාර"
+" ගබඩා කිරීම සඳහා ය. වර්තමානයේ ProPhoto RGB යනු ලේඛනාගාරය සඳහා වඩාත් ජනප්‍රිය"
+" පැතිකඩක් වුවද, වර්ණ සෘණ වලින් පින්තූර ගබඩා කිරීම සඳහා එය සුදුසු වේ."
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
-msgstr ""
+msgstr "FOGRA27L ආලේප කර ඇත"
 
 #. TRANSLATORS: positive as in not a negative image of what's printed
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:6
@@ -1001,10 +1039,13 @@ msgid ""
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
 msgstr ""
+"මෙම පැතිකඩ ධනාත්මක තහඩු සෑදීම, කඩදාසි වර්ග 1 සහ 2 (ආලේපිත හෝ මැට්) මුද්‍රණය "
+"කිරීම, ෂීට් ෆෙඩ් ඕෆ්සෙට් සඳහා භාවිතා වේ. මෙම පැතිකඩ කට්ටලය නිෂ්පාදනය සඳහා "
+"තවදුරටත් භාවිතා නොකළ යුතුය, ඒ වෙනුවට FOGRA39L භාවිතා කරන්න."
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
-msgstr ""
+msgstr "FOGRA28L වෙබ් ආලේප කර ඇත"
 
 #. TRANSLATORS: paper grade 3 is just a description meaning "not very white",
 #. LCW stands for Light Weight Coated
@@ -1014,10 +1055,13 @@ msgid ""
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
 msgstr ""
+"මෙම පැතිකඩ ධනාත්මක තහඩු සෑදීම, කඩදාසි වර්ගය 3 (LWC) මත මුද්රණය කිරීම, webfed"
+" offset සඳහා භාවිතා වේ. මෙම පැතිකඩ තවදුරටත් නිෂ්පාදනය සඳහා භාවිතා නොකළ "
+"යුතුය, ඒ වෙනුවට FOGRA45 භාවිතා කරන්න."
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
-msgstr ""
+msgstr "FOGRA29L Uncoated"
 
 #. TRANSLATORS: yellowish is in reference to the paper color, i.e. not pure
 #. white
@@ -1033,7 +1077,7 @@ msgstr ""
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
-msgstr ""
+msgstr "FOGRA30L ආලේප නොකළ කහ පැහැති"
 
 #. TRANSLATORS: uncoated means "without expensive glossy coating"
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:6
@@ -1041,6 +1085,8 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
 msgstr ""
+"මෙම පැතිකඩ ධනාත්මක තහඩු සෑදීම, කඩදාසි මත මුද්‍රණය කිරීම 5 (ආලේපන නොකළ කහ "
+"පැහැති), පත්‍ර සහිත ඕෆ්සෙට් සඳහා භාවිතා කරයි."
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
@@ -1055,10 +1101,13 @@ msgid ""
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
 msgstr ""
+"මෙම පැතිකඩ කඩදාසි වර්ග 1 සහ 2 (ආලේපිත හෝ මැට්), ෂීට් ෆෙඩ් ඕෆ්සෙට් මත "
+"මුද්‍රණය කිරීම සඳහා භාවිතා කරයි. මෙම පැතිකඩ US GRACOL 2006 (TR 006) ට වඩා "
+"සැලකිය යුතු ලෙස වෙනස් නොවේ."
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
-msgstr ""
+msgstr "FOGRA40L SC පත්‍රය"
 
 #. TRANSLATORS: supercalendered means "super smoothed and thin"
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:6
@@ -1066,10 +1115,12 @@ msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
 msgstr ""
+"මෙම පැතිකඩ SC (supercalendered) කඩදාසි, webfed offset මත මුද්‍රණය කිරීම සඳහා"
+" භාවිතා කරයි. දන්නා එක්සත් ජනපද සමානකමක් නොමැත."
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
-msgstr ""
+msgstr "FOGRA45L සැහැල්ලු ආලේපිත"
 
 #. TRANSLATORS: ISO is a trademark
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:6
@@ -1084,7 +1135,7 @@ msgstr ""
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
-msgstr ""
+msgstr "FOGRA47L Uncoated"
 
 #. TRANSLATORS: gsm stands for "grams per square meter"
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:6
@@ -1092,12 +1143,14 @@ msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
 msgstr ""
+"මෙම ISO 12647-2 අනුකූල පැතිකඩ 60 l/cm තහඩු සහිත ඕෆ්සෙට් මුද්‍රණය සඳහා 115 "
+"gsm uncoated white (කඩදාසි වර්ගය 4) මුද්‍රණය සඳහා භාවිතා කරයි."
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
 #: data/profiles/Gamma6500K.iccprofile.xml:3
 msgid "Gamma6500K"
-msgstr ""
+msgstr "Gamma6500K"
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
@@ -1109,11 +1162,11 @@ msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr ""
+msgstr "D65"
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
-msgstr ""
+msgstr "GRACOL TR006 ආලේප කර ඇත"
 
 #. TRANSLATORS: coated = smooth and expensive
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:6
@@ -1126,7 +1179,7 @@ msgstr ""
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 පුවත්පත් මුද්‍රණය"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -1144,11 +1197,11 @@ msgstr ""
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr ""
+msgstr "NTSC-RGB"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr ""
+msgstr "NTSC RGB"
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1164,11 +1217,11 @@ msgstr ""
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr ""
+msgstr "PAL-RGB"
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr ""
+msgstr "PAL/SECAM RGB"
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7
@@ -1177,14 +1230,17 @@ msgid ""
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
 msgstr ""
+"මෙම පැතිකඩ PAL සහ SECAM වීඩියෝ ප්‍රමිතීන් සමඟ භාවිතා කරන වර්ණ පරාසය නිර්වචනය"
+" කරන අතර එය sRGB වලට බෙහෙවින් සමාන වේ. ඔබ මෙම පැතිකඩ භාවිතා කළ යුත්තේ "
+"වීඩියෝව සංකේතනය කිරීමට හෝ විකේතනය කිරීමට පමණි."
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
-msgstr ""
+msgstr "ProPhotoRGB"
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:4
 msgid "ProPhoto RGB"
-msgstr ""
+msgstr "ProPhoto RGB"
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 #: data/profiles/ProPhotoRGB.iccprofile.xml:7
@@ -1194,14 +1250,19 @@ msgid ""
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
 msgstr ""
+"මුලින් Eastman Kodak විසින් නිර්මාණය කරන ලද සහ ROMM RGB ලෙස හැඳින්වෙන මෙම "
+"පැතිකඩට ඉතා විශාල වර්ණ පරාසයක් පෙන්විය හැකි අතර බොහෝ ඡායාරූප ශිල්පීන් විසින්"
+" RAW පින්තූර විදැහුම්කරණය, සංස්කරණය කිරීම සහ සංරක්ෂණය කිරීම සඳහා භාවිතා "
+"කරයි. ඔබ එක් නාලිකාවක නිරවද්‍යතාවයකින් බිටු 16ක් සමඟ වැඩ කරන්නේ නම් මිස, "
+"පින්තූර සංස්කරණය කිරීමේදී ඔබට වර්ණ පටියක් දැකිය හැක."
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
-msgstr ""
+msgstr "Rec709"
 
 #: data/profiles/Rec709.iccprofile.xml:4
 msgid "Rec. 709"
-msgstr ""
+msgstr "රෙක්. 709"
 
 #. TRANSLATORS: ITU-R is a standards body
 #: data/profiles/Rec709.iccprofile.xml:9
@@ -1210,14 +1271,17 @@ msgid ""
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
 msgstr ""
+"ITU-R නිර්දේශය BT.709 යනු 1990 දී ප්‍රථම වරට අනුමත කරන ලද අධි-විභේදන "
+"රූපවාහිනී ප්‍රමිතියකි. Rec. 709 පැතිකඩෙහි දීප්තිය වක්‍රය වෙනස් වුවද sRGB "
+"වැනි වර්ණ පරාසයම භාවිතා කරයි."
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
-msgstr ""
+msgstr "SMPTE-C-RGB"
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:4
 msgid "SMPTE-C RGB"
-msgstr ""
+msgstr "SMPTE-C RGB"
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:7
@@ -1231,7 +1295,7 @@ msgstr ""
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 Newsprint"
 
 #. TRANSLATORS: CGATS is a trademark
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:6
@@ -1239,10 +1303,13 @@ msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
 msgstr ""
+"මෙය ANSI CGATS/SNAP TR 002-2007 පාදක කරගත් පැතිකඩක් වන අතර එය එක්සත් ජනපදයේ "
+"ප්‍රවෘත්ති පත්‍ර මුද්‍රණය සඳහා, කෝල්ඩ්සෙට් ඕෆ්සෙට් වේ. TVI (තිත් ලාභය) 26% "
+"කි."
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1261,11 +1328,11 @@ msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:3
 msgid "SwappedRedAndGreen"
-msgstr ""
+msgstr "වෙනස් වූ රතු සහ කොළ"
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "රතු සහ කොළ මාරු කර ඇත"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1274,10 +1341,13 @@ msgid ""
 " check that profiles are being applied correctly. If this profile is applied"
 " twice, the image looks unchanged."
 msgstr ""
+"මෙම පරීක්ෂණ පැතිකඩ රතු සහ කොළ නාලිකා මාරු කරන අතර පැතිකඩ නිවැරදිව යොදන්නේද "
+"යන්න දෘශ්‍ය පරීක්ෂාවක් ලෙස ප්‍රයෝජනවත් වේ. මෙම පැතිකඩ දෙවරක් යෙදුවහොත්, රූපය"
+" නොවෙනස්ව පෙනේ."
 
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:3
 msgid "SWOP TR003 Coated"
-msgstr ""
+msgstr "SWOP TR003 ආලේප කර ඇත"
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR003_coated_3.iccprofile.xml:6
@@ -1286,10 +1356,13 @@ msgid ""
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
 msgstr ""
+"මෙම පැතිකඩ එක්සත් ජනපදයේ 3 ශ්‍රේණියේ ආලේපිත කඩදාසි, පත්‍ර සහිත ඕෆ්සෙට් සහ "
+"ග්‍රේවර් මත මුද්‍රණය සඳහා භාවිතා කරයි. එය සුදු කඩදාසි සමඟ උසස් තත්ත්වයේ සඟරා"
+" මුද්රණය සඳහා භාවිතා වේ."
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
-msgstr ""
+msgstr "SWOP TR005 ආලේප කර ඇත"
 
 #. TRANSLATORS: FOGRA is a trademark
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:6
@@ -1298,14 +1371,17 @@ msgid ""
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
 msgstr ""
+"මෙම පැතිකඩ එක්සත් ජනපදයේ 5 ශ්‍රේණියේ ආලේපිත කඩදාසි, පත්‍ර සහිත ඕෆ්සෙට් සහ "
+"ග්‍රේවර් මත මුද්‍රණය සඳහා භාවිතා කරයි. එය කහ පැහැති කඩදාසි සමග සම්මත සඟරා "
+"මුද්රණය සඳහා භාවිතා වේ."
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
-msgstr ""
+msgstr "WideGamutRGB"
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
-msgstr ""
+msgstr "පුළුල් ගැමට් RGB"
 
 #. TRANSLATORS: 'Adobe Systems' is a trademark, don't translate that
 #: data/profiles/WideGamutRGB.iccprofile.xml:7
@@ -1316,14 +1392,19 @@ msgid ""
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
 msgstr ""
+"මෙම සංස්කරණ අවකාශය Adobe RGB වලට වඩා බොහෝ වර්ණ ග්‍රහණය කර ගැනීමට Adobe "
+"Systems විසින් නිර්මාණය කරන ලදී. මෙම පැතිකඩ ෆිල්ම් රෙකෝඩර වැනි උපාංග වෙත "
+"මුද්‍රණය කිරීමට භාවිතා කරන අතර පරිගණක තිරයක පෙන්විය නොහැකි බොහෝ වර්ණ "
+"නිර්වචනය කළ හැක. ඔබ එක් නාලිකාවක නිරවද්‍යතාවයකින් බිටු 16ක් සමඟ වැඩ කරන්නේ "
+"නම් මිස, පින්තූර සංස්කරණය කිරීමේදී ඔබට වර්ණ පටියක් දැකිය හැක."
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
-msgstr ""
+msgstr "x11-වර්ණ"
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
-msgstr ""
+msgstr "X11 වර්ණ"
 
 #. TRANSLATORS: A 'named color profile' contains a list of color swatches that
 #. look the same on all computer screens
@@ -1332,36 +1413,38 @@ msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
 msgstr ""
+"මෙම නම් කරන ලද වර්ණ පැතිකඩෙහි ප්‍රභව වර්ණ sRGB විය යුතු යැයි උපකල්පනය කරමින්"
+" X11 මගින් අර්ථ දක්වා ඇති සියලුම වර්ණ අඩංගු වේ."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
 #: policy/org.freedesktop.color.policy.in.in:20
 msgid "Create a color managed device"
-msgstr ""
+msgstr "වර්ණ කළමනාකරණය කරන උපාංගයක් සාදන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr ""
+msgstr "වර්ණ කළමනාකරණය කළ උපාංගයක් නිර්මාණය කිරීමට සත්‍යාපනය අවශ්‍ය වේ"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
 #: policy/org.freedesktop.color.policy.in.in:35
 msgid "Create a color profile"
-msgstr ""
+msgstr "වර්ණ පැතිකඩක් සාදන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:36
 msgid "Authentication is required to create a color profile"
-msgstr ""
+msgstr "වර්ණ පැතිකඩක් නිර්මාණය කිරීම සඳහා සත්යාපනය අවශ්ය වේ"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete devices
 #: policy/org.freedesktop.color.policy.in.in:50
 msgid "Remove a color managed device"
-msgstr ""
+msgstr "වර්ණ කළමනාකරණය කළ උපාංගයක් ඉවත් කරන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr ""
+msgstr "වර්ණ කළමනාකරණය කළ උපාංගයක් ඉවත් කිරීමට සත්‍යාපනය අවශ්‍ය වේ"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1371,27 +1454,27 @@ msgstr "වර්ණ පැතිකඩක් ඉවත් කරන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"
-msgstr ""
+msgstr "වර්ණ පැතිකඩක් ඉවත් කිරීමට සත්‍යාපනය අවශ්‍ය වේ"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify devices
 #: policy/org.freedesktop.color.policy.in.in:80
 msgid "Modify color settings for a device"
-msgstr ""
+msgstr "උපාංගයක් සඳහා වර්ණ සැකසුම් වෙනස් කරන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
-msgstr ""
+msgstr "උපාංගයක් සඳහා වර්ණ සැකසුම් වෙනස් කිරීමට සත්‍යාපනය අවශ්‍ය වේ"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
 #: policy/org.freedesktop.color.policy.in.in:95
 msgid "Modify a color profile"
-msgstr ""
+msgstr "වර්ණ පැතිකඩක් වෙනස් කරන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:96
 msgid "Authentication is required to modify a color profile"
-msgstr ""
+msgstr "වර්ණ පැතිකඩක් වෙනස් කිරීමට සත්‍යාපනය අවශ්‍ය වේ"
 
 #. SECURITY:
 #. - Normal users require admin authentication to install files system
@@ -1402,49 +1485,50 @@ msgstr ""
 #. other sessions unusable.
 #: policy/org.freedesktop.color.policy.in.in:115
 msgid "Install system color profiles"
-msgstr ""
+msgstr "පද්ධති වර්ණ පැතිකඩ ස්ථාපනය කරන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
 msgstr ""
+"සියලුම පරිශීලකයින් සඳහා වර්ණ පැතිකඩ ස්ථාපනය කිරීමට සත්‍යාපනය අවශ්‍ය වේ"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
 #: policy/org.freedesktop.color.policy.in.in:131
 msgid "Inhibit color profile selection"
-msgstr ""
+msgstr "වර්ණ පැතිකඩ තේරීම වළක්වන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr ""
+msgstr "උපාංගයක් සඳහා පැතිකඩ ගැලපීම අක්‍රිය කිරීමට සත්‍යාපනය අවශ්‍ය වේ"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
 #: policy/org.freedesktop.color.policy.in.in:147
 msgid "Use color sensor"
-msgstr ""
+msgstr "වර්ණ සංවේදකය භාවිතා කරන්න"
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"
-msgstr ""
+msgstr "වර්ණ සංවේදකය භාවිතා කිරීමට සත්‍යාපනය අවශ්‍ය වේ"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: src/cd-main.c:2355
 msgid "Exit after a small delay"
-msgstr ""
+msgstr "කුඩා ප්‍රමාදයකින් පසු පිටවන්න"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
-msgstr ""
+msgstr "එන්ජිම පූරණය වූ පසු පිටවන්න"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "පරීක්ෂා කිරීම සඳහා ව්යාජ සංවේදකයක් සාදන්න"
 
 #: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"
-msgstr ""
+msgstr "වර්ණ කළමනාකරණ D-බස් සේවාව"

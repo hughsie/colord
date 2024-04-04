@@ -1,18 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Martin Srebotnjak <miles@filmsi.net>, 2011-2013,2021
-# Matej Urbančič <>, 2013
+# Andrej Znidarsic <andrej.znidarsic@gmail.com>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# Martin Srebotnjak <miles@filmsi.net>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-16 15:33+0000\n"
-"PO-Revision-Date: 2021-11-13 23:35+0000\n"
-"Last-Translator: Martin Srebotnjak <miles@filmsi.net>\n"
-"Language-Team: Slovenian (http://www.transifex.com/freedesktop/colord/language/sl/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Martin Srebotnjak <miles@filmsi.net>, 2024\n"
+"Language-Team: Slovenian (https://app.transifex.com/freedesktop/teams/12151/sl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -139,12 +143,12 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Ustvari CMF iz podatkov CSV"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "Ustvari spekter iz podatkov CSV"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:503
@@ -397,7 +401,7 @@ msgstr ""
 #. * RGB LED
 #: client/cd-util.c:482
 msgid "LCD White LED"
-msgstr ""
+msgstr "LCD, beli LED"
 
 #. TRANSLATORS: this an unknown display technology
 #: client/cd-util.c:485
@@ -463,16 +467,16 @@ msgstr "Postavite napravo na mesto površine in pritisnite vnašalko."
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1097
 msgid "Put the device in a dark place and press enter."
-msgstr ""
+msgstr "Postavite napravo v temen prostor in pritisnite vnašalko."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1107
 msgid "Calibrate with a 3200K light source."
-msgstr ""
+msgstr "Kalibrirajte z virom svetlobe 3.200 K."
 
 #: client/cd-util.c:1124
 msgid "Put the device on the color to be measured and press enter."
-msgstr ""
+msgstr "Postavite napravo na barvo, ki bo izmerjena, in pritisnite vnašalko."
 
 #: client/cd-util.c:1130
 msgid "Color"
@@ -511,7 +515,8 @@ msgstr "Pridobi vse naprave, s katerimi je mogoče barvno upravljanje"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2053
 msgid "Gets all the color managed devices of a specific kind"
-msgstr "Pridobi vse naprave določene vrste, s katerimi je mogoče barvno upravljanje"
+msgstr ""
+"Pridobi vse naprave določene vrste, s katerimi je mogoče barvno upravljanje"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
@@ -690,7 +695,9 @@ msgstr "Privzeta vrednost gama za zaslon"
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr "Privzeta ciljna vrednost gama za zaslon. Običajne vrednosti so 1,8, 2,2 in 2,4."
+msgstr ""
+"Privzeta ciljna vrednost gama za zaslon. Običajne vrednosti so 1,8, 2,2 in "
+"2,4."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
@@ -700,7 +707,10 @@ msgstr "Privzeta ciljna bela točka zaslona"
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr "Privzeta ciljna bela točka v Kelvinih za umerjanje zaslona, kjer 0 predstavlja domorodno vrednost zaslona. Pogoste vrednosti so 6500 za D65 in 5000 za D50."
+msgstr ""
+"Privzeta ciljna bela točka v Kelvinih za umerjanje zaslona, kjer 0 "
+"predstavlja domorodno vrednost zaslona. Pogoste vrednosti so 6500 za D65 in "
+"5000 za D50."
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
@@ -1076,11 +1086,11 @@ msgstr ""
 #: data/profiles/Gamma5500K.iccprofile.xml:3
 #: data/profiles/Gamma6500K.iccprofile.xml:3
 msgid "Gamma6500K"
-msgstr ""
+msgstr "Gamma6500K"
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
-msgstr ""
+msgstr "D50"
 
 #: data/profiles/Gamma5500K.iccprofile.xml:5
 msgid "D55"
@@ -1117,11 +1127,11 @@ msgstr ""
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
-msgstr ""
+msgstr "NTSC-RGB"
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:4
 msgid "NTSC RGB"
-msgstr ""
+msgstr "NTSC RGB"
 
 #. TRANSLATORS: A little joke: Color Geeks say that NTSC stands for 'Never The
 #. Same Color' as it's really a poor choice compared to sRGB
@@ -1134,11 +1144,11 @@ msgstr ""
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
-msgstr ""
+msgstr "PAL-RGB"
 
 #: data/profiles/PAL-RGB.iccprofile.xml:4
 msgid "PAL/SECAM RGB"
-msgstr ""
+msgstr "PAL/SECAM RGB"
 
 #. TRANSLATORS: Please don't translate PAL or SECAM
 #: data/profiles/PAL-RGB.iccprofile.xml:7
@@ -1150,11 +1160,11 @@ msgstr ""
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
-msgstr ""
+msgstr "ProPhotoRGB"
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:4
 msgid "ProPhoto RGB"
-msgstr ""
+msgstr "ProPhoto RGB"
 
 #. TRANSLATORS: Please don't translate 'RGB' or 'RAW'
 #: data/profiles/ProPhotoRGB.iccprofile.xml:7
@@ -1167,11 +1177,11 @@ msgstr ""
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
-msgstr ""
+msgstr "Rec709"
 
 #: data/profiles/Rec709.iccprofile.xml:4
 msgid "Rec. 709"
-msgstr ""
+msgstr "Rec. 709"
 
 #. TRANSLATORS: ITU-R is a standards body
 #: data/profiles/Rec709.iccprofile.xml:9
@@ -1183,11 +1193,11 @@ msgstr ""
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
-msgstr ""
+msgstr "SMPTE-C-RGB"
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:4
 msgid "SMPTE-C RGB"
-msgstr ""
+msgstr "SMPTE-C RGB"
 
 #. TRANSLATORS: studio recording means 'shows you'll see on TV'
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:7
@@ -1209,7 +1219,7 @@ msgstr ""
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1304,7 +1314,9 @@ msgstr "Ustvari napravo, s katero je mogoče barvno upravljanje"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr "Za ustvarjanje naprave, s katero lahko je mogoče barvno upravljanje, je zahtevana overitev"
+msgstr ""
+"Za ustvarjanje naprave, s katero lahko je mogoče barvno upravljanje, je "
+"zahtevana overitev"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
@@ -1324,7 +1336,9 @@ msgstr "Odstrani napravo, s katero je mogoče barvno upravljanje"
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr "Za odstranitev naprave, s katero je mogoče barvno upravljanje, je zahtevana overitev"
+msgstr ""
+"Za odstranitev naprave, s katero je mogoče barvno upravljanje, je zahtevana "
+"overitev"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1369,7 +1383,8 @@ msgstr "Namesti sistemske barvne profile"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Za namestitev barvnega profila za vse uporabnike je zahtevana overitev"
+msgstr ""
+"Za namestitev barvnega profila za vse uporabnike je zahtevana overitev"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile

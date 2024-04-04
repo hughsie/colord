@@ -1,21 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Mats Taraldsvik <mats.taraldsvik@gmail.com>, 2008
-# pere <pere-transifex@hungry.com>, 2015
-# pere <pere-transifex@hungry.com>, 2015
-# Torstein Husebø <torstein.huseboe@gmail.com>, 2014
-# Torstein Husebø <torstein@huseboe.net>, 2014
+# pere <pere-transifex@hungry.com>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Norwegian Bokmål (http://www.transifex.com/freedesktop/colord/language/nb/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>, 2024\n"
+"Language-Team: Norwegian Bokmål (https://app.transifex.com/freedesktop/teams/12151/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -286,7 +286,7 @@ msgstr "Serienummer"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -716,16 +716,6 @@ msgid ""
 " and the display itself introduce latency."
 msgstr ""
 
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr "URI-en til nett-tjenesten som gjør det mulig for kalibreringsverktøyet a laste opp en spesifikk profil til Internettet."
-
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
 msgstr ""
@@ -853,7 +843,10 @@ msgid ""
 "This test profile is used to make all colors on the screen slightly more "
 "blue by altering the video card lookup table. This allows the user to check "
 "the calibration is being applied correctly."
-msgstr "Denne testprofilen brukes til å gjøre alle fargene på skjermen litt mer blå ved å endre videokortest oppslagstabell.  Dette gjør det mulig for brukeren å sjekke at kalibrering tas i bruk som den skal."
+msgstr ""
+"Denne testprofilen brukes til å gjøre alle fargene på skjermen litt mer blå "
+"ved å endre videokortest oppslagstabell.  Dette gjør det mulig for brukeren "
+"å sjekke at kalibrering tas i bruk som den skal."
 
 #: data/profiles/BruceRGB.iccprofile.xml:3
 msgid "BruceRGB"
@@ -885,7 +878,10 @@ msgid ""
 "This theoretical profile is designed for use in color experiments. You "
 "probably don't want to use this profile as a editing space or a display "
 "profile."
-msgstr "Denne teoretiske profilen er utformet for bruk i fargeeksperimenter.  Du ønsker antagelig ikke å bruke denne profilen som et redigeringsrom eller en fremvisningsprofil."
+msgstr ""
+"Denne teoretiske profilen er utformet for bruk i fargeeksperimenter.  Du "
+"ønsker antagelig ikke å bruke denne profilen som et redigeringsrom eller en "
+"fremvisningsprofil."
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"

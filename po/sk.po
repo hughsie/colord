@@ -1,22 +1,27 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Dušan Kazik <prescott66@gmail.com>, 2015
+# Peter Mráz <etkinator@gmail.com>, 2024
+# Dušan Kazik <prescott66@gmail.com>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
-"Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
-"Language-Team: Slovak (http://www.transifex.com/freedesktop/colord/language/sk/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>, 2024\n"
+"Language-Team: Slovak (https://app.transifex.com/freedesktop/teams/12151/sk/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sk\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
@@ -282,7 +287,7 @@ msgstr "Sériové číslo"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -710,16 +715,6 @@ msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
 msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
@@ -1313,7 +1308,8 @@ msgstr "Vytvorí zariadenie so správou farieb"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr "Na vytvorenie zariadenia so správou farieb je potrebné overenie totožnosti"
+msgstr ""
+"Na vytvorenie zariadenia so správou farieb je potrebné overenie totožnosti"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
@@ -1333,7 +1329,8 @@ msgstr "Odstráni zariadenie so správou farieb"
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr "Na odstránenie zariadenia so správou farieb je potrebné overenie totožnosti"
+msgstr ""
+"Na odstránenie zariadenia so správou farieb je potrebné overenie totožnosti"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1353,7 +1350,8 @@ msgstr "Upraví nastavenia farieb pre zariadenie"
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Na úpravu nastavení farieb pre zariadenie je potrebné overenie totožnosti"
+msgstr ""
+"Na úpravu nastavení farieb pre zariadenie je potrebné overenie totožnosti"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
@@ -1378,7 +1376,9 @@ msgstr "Nainštaluje profily farieb do systému"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Na inštaláciu profilu farieb pre všetkých používateľov je potrebné overenie totožnosti"
+msgstr ""
+"Na inštaláciu profilu farieb pre všetkých používateľov je potrebné overenie "
+"totožnosti"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
@@ -1389,7 +1389,9 @@ msgstr "Zakáže výber profilu farieb"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Na zakázanie profilu zodpovedajúcemu zariadeniu je potrebné overenie totožnosti"
+msgstr ""
+"Na zakázanie profilu zodpovedajúcemu zariadeniu je potrebné overenie "
+"totožnosti"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the

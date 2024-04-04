@@ -1,22 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Amanpreet Singh Alam <aalam@users.sf.net>, 2008-2009
-# A S Alam <aalam@users.sf.net>, 2009
-# A S Alam, 2021
-# A S Alam, 2011
-# Jaswinder Singh <jsingh@redhat.com>, 2009
-# Richard Hughes <richard@hughsie.com>, 2011
+# Richard Hughes <richard@hughsie.com>, 2024
+# A S Alam, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-16 15:33+0000\n"
-"PO-Revision-Date: 2022-02-16 15:33+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Panjabi (Punjabi) (http://www.transifex.com/freedesktop/colord/language/pa/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: A S Alam, 2024\n"
+"Language-Team: Panjabi (Punjabi) (https://app.transifex.com/freedesktop/teams/12151/pa/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"

@@ -1,32 +1,35 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Moo, 2016
+# Moo, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
-"Last-Translator: Moo\n"
-"Language-Team: Lithuanian (http://www.transifex.com/freedesktop/colord/language/lt/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Moo, 2024\n"
+"Language-Team: Lithuanian (https://app.transifex.com/freedesktop/teams/12151/lt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: lt\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 #. TRANSLATORS: command line option
 #: client/cd-create-profile.c:852
 msgid "Profile to create"
-msgstr ""
+msgstr "Profilis, kurį sukurti"
 
 #. TRANSLATORS: program name
 #: client/cd-create-profile.c:867
 msgid "ICC profile creation program"
-msgstr ""
+msgstr "ICC profilių kūrimo programa"
 
 #. TRANSLATORS: the user didn't read the man page
 #: client/cd-create-profile.c:872 client/cd-fix-profile.c:679
@@ -47,7 +50,7 @@ msgstr ""
 
 #: client/cd-fix-profile.c:153 client/cd-it8.c:164 client/cd-util.c:759
 msgid "Command not found, valid commands are:"
-msgstr ""
+msgstr "Komanda nerasta, tinkamos komandos yra:"
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
@@ -77,12 +80,12 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:621
 msgid "Add a metadata item to the profile"
-msgstr ""
+msgstr "Pridėti į profilį metaduomenų elementą"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:626
 msgid "Remove a metadata item from the profile"
-msgstr ""
+msgstr "Šalinti iš profilio metaduomenų elementą"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
@@ -107,7 +110,7 @@ msgstr "Nustato modelio eilutę"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:651
 msgid "Automatically fix metadata in the profile"
-msgstr ""
+msgstr "Automatiškai ištaisyti profilyje metaduomenis"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:656
@@ -138,7 +141,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-it8.c:491
 msgid "Create a CMF from CSV data"
-msgstr ""
+msgstr "Sukurti CMF iš CSV duomenų"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:497
@@ -282,7 +285,7 @@ msgstr ""
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -515,7 +518,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
 msgid "Gets all the available color profiles"
-msgstr ""
+msgstr "Gauti visus prieinamus spalvų profilius"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
@@ -565,7 +568,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr ""
+msgstr "Rasti profilį pagal failo pavadinimą"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
@@ -580,7 +583,7 @@ msgstr "Sukurti profilį"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr ""
+msgstr "Pridėti profilį į įrenginį, kuris jau yra"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
@@ -683,7 +686,7 @@ msgstr "Rodyti derinimo parametrus"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:5
 msgid "Default gamma for the display"
-msgstr ""
+msgstr "Numatytoji ekrano gama"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:6
 msgid ""
@@ -712,19 +715,9 @@ msgid ""
 " and the display itself introduce latency."
 msgstr ""
 
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
-msgstr ""
-
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
-msgstr ""
+msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
@@ -783,7 +776,7 @@ msgstr ""
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr ""
+msgstr "AppleRGB"
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
@@ -903,7 +896,7 @@ msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr ""
+msgstr "Spalvotos kreidelės"
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
@@ -916,7 +909,10 @@ msgid ""
 "This named color profile contains all the Crayola crayon colors in popular "
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
-msgstr "Šiame išvardytų spalvų profilyje yra visos populiaraus naudojimo Crayola spalvotų kreidelių spalvos. Tai yra bandomasis profilis, sukurtas, išvardytų spalvų įtaisymo į dokumentus, bandymui."
+msgstr ""
+"Šiame išvardytų spalvų profilyje yra visos populiaraus naudojimo „Crayola“ "
+"spalvotų kreidelių spalvos. Tai yra bandomasis profilis, sukurtas, išvardytų"
+" spalvų įtaisymo į dokumentus, bandymui."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
@@ -1089,15 +1085,15 @@ msgstr ""
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
-msgstr ""
+msgstr "D50"
 
 #: data/profiles/Gamma5500K.iccprofile.xml:5
 msgid "D55"
-msgstr ""
+msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr ""
+msgstr "D65"
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
@@ -1291,7 +1287,7 @@ msgstr ""
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
-msgstr ""
+msgstr "x11-colors"
 
 #: data/profiles/x11-colors.iccprofile.xml:4
 msgid "X11 Colors"
@@ -1303,7 +1299,9 @@ msgstr "X11 spalvos"
 msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
-msgstr "Šiame išvardytų spalvų profilyje yra visos X11 apibrėžtos spalvos, turint omenyje, kad šaltinio spalvos turėtų būti sRGB."
+msgstr ""
+"Šiame išvardytų spalvų profilyje yra visos X11 apibrėžtos spalvos, turint "
+"omenyje, kad šaltinio spalvos turėtų būti sRGB."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -1319,7 +1317,7 @@ msgstr ""
 #. - Normal users should not have to authenticate to add profiles
 #: policy/org.freedesktop.color.policy.in.in:35
 msgid "Create a color profile"
-msgstr ""
+msgstr "Sukurti spalvų profilį"
 
 #: policy/org.freedesktop.color.policy.in.in:36
 msgid "Authentication is required to create a color profile"
@@ -1339,7 +1337,7 @@ msgstr ""
 #. - Normal users should not have to authenticate to delete profiles
 #: policy/org.freedesktop.color.policy.in.in:65
 msgid "Remove a color profile"
-msgstr ""
+msgstr "Šalinti spalvų profilį"
 
 #: policy/org.freedesktop.color.policy.in.in:66
 msgid "Authentication is required to remove a color profile"
@@ -1359,7 +1357,7 @@ msgstr ""
 #. - Normal users should not have to authenticate to modify profiles
 #: policy/org.freedesktop.color.policy.in.in:95
 msgid "Modify a color profile"
-msgstr ""
+msgstr "Modifikuoti spalvų profilį"
 
 #: policy/org.freedesktop.color.policy.in.in:96
 msgid "Authentication is required to modify a color profile"
@@ -1374,7 +1372,7 @@ msgstr ""
 #. other sessions unusable.
 #: policy/org.freedesktop.color.policy.in.in:115
 msgid "Install system color profiles"
-msgstr ""
+msgstr "Įdiegti sistemos spalvų profilius"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
@@ -1396,7 +1394,7 @@ msgstr ""
 #. colorimeter device.
 #: policy/org.freedesktop.color.policy.in.in:147
 msgid "Use color sensor"
-msgstr ""
+msgstr "Naudoti spalvų jutiklį"
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"

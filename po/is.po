@@ -1,17 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Sveinn í Felli <sv1@fellsnet.is>, 2016,2022
+# Sveinn í Felli <sv1@fellsnet.is>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-16 15:33+0000\n"
-"PO-Revision-Date: 2022-02-16 15:33+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Icelandic (http://www.transifex.com/freedesktop/colord/language/is/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>, 2024\n"
+"Language-Team: Icelandic (https://app.transifex.com/freedesktop/teams/12151/is/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -452,7 +455,8 @@ msgstr "Skynjari"
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr "Færðu litkvörðunartækið yfir á litkvörðunarstaðinn og ýttu svo á 'Enter'."
+msgstr ""
+"Færðu litkvörðunartækið yfir á litkvörðunarstaðinn og ýttu svo á 'Enter'."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
@@ -658,7 +662,7 @@ msgstr "Útgáfunúmer biðlara:"
 
 #: client/cd-util.c:2265
 msgid "Daemon version:"
-msgstr ""
+msgstr "Útgáfunúmer vaktara:"
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
@@ -1303,7 +1307,7 @@ msgstr "Búa til litastýrt tæki"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr ""
+msgstr "Auðkenningar er krafist til að búa til litastýrt tæki"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
@@ -1323,7 +1327,7 @@ msgstr "Fjarlægja litastýrt tæki"
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr ""
+msgstr "Auðkenningar er krafist til að fjarlægja litastýrt tæki"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1368,18 +1372,19 @@ msgstr "Setja upp litasnið kerfis"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Auðkenningar er krafist til að setja litasniðið upp fyrir alla notendur"
+msgstr ""
+"Auðkenningar er krafist til að setja litasniðið upp fyrir alla notendur"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
 #. devices.
 #: policy/org.freedesktop.color.policy.in.in:131
 msgid "Inhibit color profile selection"
-msgstr ""
+msgstr "Hindra val á litasniði"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr ""
+msgstr "Auðkenningar er krafist til að gera samsvörun litasniða óvirka á tæki"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
@@ -1390,7 +1395,7 @@ msgstr "Nota litmæli"
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"
-msgstr ""
+msgstr "Auðkenningar er krafist til að nota litaskynjara"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
 #: src/cd-main.c:2355
@@ -1400,12 +1405,12 @@ msgstr "Hætti efitir smátöf"
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2358
 msgid "Exit after the engine has loaded"
-msgstr ""
+msgstr "Hætta eftir að kerfið hefur hlaðist inn"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
 #: src/cd-main.c:2361
 msgid "Create a dummy sensor for testing"
-msgstr ""
+msgstr "Búa til platskynjara til prófunar"
 
 #: src/cd-main.c:2377
 msgid "Color Management D-Bus Service"

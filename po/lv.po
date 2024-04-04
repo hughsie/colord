@@ -1,17 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>, 2012-2013
+# Rūdolfs Mazurs <alta.liepa@gmail.com>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Latvian (http://www.transifex.com/freedesktop/colord/language/lv/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>, 2024\n"
+"Language-Team: Latvian (https://app.transifex.com/freedesktop/teams/12151/lv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -282,7 +286,7 @@ msgstr "Sērija"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -689,7 +693,8 @@ msgstr "Displeja noklusējuma gamma"
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr "Noklusējuma gamma vērtība displejam. Parastās vērtības ir 1.8, 2.2 un 2.4"
+msgstr ""
+"Noklusējuma gamma vērtība displejam. Parastās vērtības ir 1.8, 2.2 un 2.4"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
@@ -699,7 +704,9 @@ msgstr "Noklusējuma displeja mērķa baltais punkts"
 msgid ""
 "The default target whitepoint in Kelvin for display calibration, with 0 "
 "meaning display native. Common values are 6500 for D65 and 5000 for D50."
-msgstr "Noklusējuma mērķa baltais punkts Kelvinos displeja kalibrācijai, kur 0 nozīmē displeja vietējais. Parasti vērtības ir 6500 (D65) un 5000 (D50)"
+msgstr ""
+"Noklusējuma mērķa baltais punkts Kelvinos displeja kalibrācijai, kur 0 "
+"nozīmē displeja vietējais. Parasti vērtības ir 6500 (D65) un 5000 (D50)"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:22
 msgid "Delay between sample intervals"
@@ -710,16 +717,6 @@ msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
 msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3

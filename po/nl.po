@@ -1,17 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Richard E. van der Luit <nippur@fedoraproject.org>, 2012
+# Richard E. van der Luit <nippur@fedoraproject.org>, 2024
+# Philip Goto <philip.goto@gmail.com>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-18 10:50+0100\n"
-"PO-Revision-Date: 2018-03-12 19:56+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Dutch (http://www.transifex.com/freedesktop/colord/language/nl/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>, 2024\n"
+"Language-Team: Dutch (https://app.transifex.com/freedesktop/teams/12151/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -117,7 +122,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
 msgid "Export the tag data"
-msgstr ""
+msgstr "Labelgegevens exporteren"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
@@ -143,7 +148,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-it8.c:497
 msgid "Create a spectrum from CSV data"
-msgstr ""
+msgstr "Spectrum vanuit CSV-gegevens aanmaken"
 
 #. TRANSLATORS: command description
 #: client/cd-it8.c:503
@@ -211,7 +216,7 @@ msgstr "Gamma Tafel"
 #. TRANSLATORS: if the profile is installed for all users
 #: client/cd-util.c:210
 msgid "System Wide"
-msgstr ""
+msgstr "Systeembreed"
 
 #. TRANSLATORS: profile filename
 #: client/cd-util.c:215
@@ -231,7 +236,7 @@ msgstr "Metadata"
 
 #: client/cd-util.c:243
 msgid "Warning"
-msgstr ""
+msgstr "Waarschuwing"
 
 #. TRANSLATORS: this is the time the device was registered
 #. * with colord, and probably is the same as the system startup
@@ -249,13 +254,13 @@ msgstr "Aangepast"
 #. TRANSLATORS: the device enabled state
 #: client/cd-util.c:286
 msgid "Enabled"
-msgstr ""
+msgstr "Ingeschakeld"
 
 #. TRANSLATORS: if the device is embedded into the computer and
 #. * cannot be removed
 #: client/cd-util.c:292
 msgid "Embedded"
-msgstr ""
+msgstr "Ingebouwd"
 
 #. TRANSLATORS: the device model
 #. TRANSLATORS: sensor model
@@ -282,7 +287,7 @@ msgstr "Serienummer"
 #. * defined as a monitor, keyboard and mouse.
 #. * For instance, in a public library one central computer can
 #. * have 3 keyboards, 3 displays and 3 mice plugged in and with
-#. * systemd these can be setup as three independant seats with
+#. * systemd these can be setup as three independent seats with
 #. * different sessions running on them
 #: client/cd-util.c:322
 msgid "Seat"
@@ -329,41 +334,41 @@ msgstr "Ambient"
 #. TRANSLATORS: this is the display technology
 #: client/cd-util.c:426
 msgid "Calibration"
-msgstr ""
+msgstr "Kalibratie"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
 msgid "Dark Calibration"
-msgstr ""
+msgstr "Donkere kalibratie"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
 msgid "Irradiance Calibration"
-msgstr ""
+msgstr "Irradiantiekalibratie"
 
 #. TRANSLATORS: this is the sensor capability
 #: client/cd-util.c:438
 msgid "Spectral"
-msgstr ""
+msgstr "Spectraal"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
 #: client/cd-util.c:443
 msgid "LCD Generic"
-msgstr ""
+msgstr "LCD generiek"
 
 #. TRANSLATORS: this is the display technology where
 #. * LED stands for 'Light Emitted Diode'
 #: client/cd-util.c:448
 msgid "LED Generic"
-msgstr ""
+msgstr "LED generiek"
 
 #. TRANSLATORS: this is the display technology,
 #. * sometimes called PDP displays. See
 #. * http://en.wikipedia.org/wiki/Plasma_display
 #: client/cd-util.c:454
 msgid "Plasma"
-msgstr ""
+msgstr "Plasma"
 
 #. TRANSLATORS: this is the display technology,
 #. * where LCD stands for 'Liquid Crystal Display'
@@ -401,7 +406,7 @@ msgstr ""
 #. TRANSLATORS: this an unknown display technology
 #: client/cd-util.c:485
 msgid "Unknown"
-msgstr ""
+msgstr "Onbekend"
 
 #. TRANSLATORS: the sensor state, e.g. 'idle'
 #: client/cd-util.c:538
@@ -416,7 +421,7 @@ msgstr "Serienummer"
 #. TRANSLATORS: sensor identifier
 #: client/cd-util.c:568
 msgid "Sensor ID"
-msgstr ""
+msgstr "Sensor-ID"
 
 #. TRANSLATORS: the options for the sensor
 #: client/cd-util.c:588
@@ -437,7 +442,7 @@ msgstr "Gelockt"
 #. * display types, e.g. LCD, LED, Projector
 #: client/cd-util.c:629
 msgid "Capabilities"
-msgstr ""
+msgstr "Mogelijkheden"
 
 #: client/cd-util.c:971 client/cd-util.c:1000 client/cd-util.c:1048
 #: client/cd-util.c:1176 client/cd-util.c:1260
@@ -500,7 +505,7 @@ msgstr ""
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr ""
+msgstr "Alle foutopsporingsgegevens naar een bestand dumpen"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
@@ -610,7 +615,7 @@ msgstr "Stelt het model van het apparaat in"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2173
 msgid "Enables or disables the device"
-msgstr ""
+msgstr "Schakelt het apparaat in of uit"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2179
@@ -654,19 +659,19 @@ msgstr "Geen verbinding met colord:"
 
 #: client/cd-util.c:2263
 msgid "Client version:"
-msgstr ""
+msgstr "Cliëntversie:"
 
 #: client/cd-util.c:2265
 msgid "Daemon version:"
-msgstr ""
+msgstr "Daemon-versie:"
 
 #: client/cd-util.c:2267
 msgid "System vendor:"
-msgstr ""
+msgstr "Systeemleverancier:"
 
 #: client/cd-util.c:2269
 msgid "System model:"
-msgstr ""
+msgstr "Systeemmodel:"
 
 #. TRANSLATORS: turn on all debugging
 #: contrib/session-helper/cd-debug.c:146 src/cd-debug.c:146
@@ -710,16 +715,6 @@ msgid ""
 "This is the delay between setting the sample color and asking the measuring "
 "instrument to take a sample. It is required because both the graphics driver"
 " and the display itself introduce latency."
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:32
-msgid "Web service profile upload URI"
-msgstr ""
-
-#: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:33
-msgid ""
-"The URI of the web service that allows the calibration tools to upload a "
-"specific profile to the Internet."
 msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
@@ -837,11 +832,11 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "blauwig"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
-msgstr ""
+msgstr "Blauw"
 
 #. TRANSLATORS: the lookup tables in the GPU map one color to another
 #: data/profiles/Bluish.iccprofile.xml:8
@@ -1089,15 +1084,15 @@ msgstr ""
 
 #: data/profiles/Gamma5000K.iccprofile.xml:5
 msgid "D50"
-msgstr ""
+msgstr "D50"
 
 #: data/profiles/Gamma5500K.iccprofile.xml:5
 msgid "D55"
-msgstr ""
+msgstr "D55"
 
 #: data/profiles/Gamma6500K.iccprofile.xml:5
 msgid "D65"
-msgstr ""
+msgstr "D65"
 
 #: data/profiles/GRACoL_TR006_coated.iccprofile.xml:3
 msgid "GRACoL TR006 Coated"
@@ -1218,7 +1213,7 @@ msgstr ""
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1313,7 +1308,9 @@ msgstr "Maak een kleur gemanaged apparaat aan"
 
 #: policy/org.freedesktop.color.policy.in.in:21
 msgid "Authentication is required to create a color managed device"
-msgstr "Authenticatie is verplicht om een kleur gemanaged apparaat aan te kunnen maken"
+msgstr ""
+"Authenticatie is verplicht om een kleur gemanaged apparaat aan te kunnen "
+"maken"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add profiles
@@ -1333,7 +1330,9 @@ msgstr "Verwijder een kleur gemanaged apparaat"
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr "Authenticatie is verplicht om een kleur gemanaged apparaat te kunnen verwijderen"
+msgstr ""
+"Authenticatie is verplicht om een kleur gemanaged apparaat te kunnen "
+"verwijderen"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1353,7 +1352,9 @@ msgstr "Pas de kleurinstellingen van een apparaat aan"
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Authenticatie is verplicht om de kleurinstellingen voor een apparaat aan te kunnen passen"
+msgstr ""
+"Authenticatie is verplicht om de kleurinstellingen voor een apparaat aan te "
+"kunnen passen"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
@@ -1378,7 +1379,9 @@ msgstr "Installeer systeem kleurprofielen"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Authenticatie is verplicht om het kleurprofiel voor alle gebruikers te installeren"
+msgstr ""
+"Authenticatie is verplicht om het kleurprofiel voor alle gebruikers te "
+"installeren"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
@@ -1389,14 +1392,16 @@ msgstr "Belet selectie van een kleurprofiel"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Authenticatie is verplicht om profielmatching voor een apparaat uit te schakelen"
+msgstr ""
+"Authenticatie is verplicht om profielmatching voor een apparaat uit te "
+"schakelen"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
 #. colorimeter device.
 #: policy/org.freedesktop.color.policy.in.in:147
 msgid "Use color sensor"
-msgstr "Gebruik kleur-sensor"
+msgstr "Gebruik kleursensor"
 
 #: policy/org.freedesktop.color.policy.in.in:148
 msgid "Authentication is required to use the color sensor"

@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the colord package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Fran Dieguez <frandieguez@gnome.org>, 2011
-# Fran Diéguez <frandieguez@ubuntu.com>, 2011-2012,2015,2020
-# Miguel Anxo Bouzada <mbouzada@gmail.com>, 2011
-# Miguel Anxo Bouzada <mbouzada@gmail.com>, 2011
+# Fran Diéguez <fran.dieguez@mabishu.com>, 2024
+# Fran Diéguez <frandieguez@ubuntu.com>, 2024
+# Richard Hughes <richard@hughsie.com>, 2024
+# 
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-02-16 15:33+0000\n"
-"PO-Revision-Date: 2022-02-16 15:33+0000\n"
-"Last-Translator: Richard Hughes <richard@hughsie.com>\n"
-"Language-Team: Galician (http://www.transifex.com/freedesktop/colord/language/gl/)\n"
+"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"PO-Revision-Date: 2024-01-22 12:38+0000\n"
+"Last-Translator: Richard Hughes <richard@hughsie.com>, 2024\n"
+"Language-Team: Galician (https://app.transifex.com/freedesktop/teams/12151/gl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -337,12 +339,12 @@ msgstr "Calibrado"
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:430
 msgid "Dark Calibration"
-msgstr ""
+msgstr "Calibración escura"
 
 #. TRANSLATORS: this is the display calibration type
 #: client/cd-util.c:434
 msgid "Irradiance Calibration"
-msgstr ""
+msgstr "Calibración de irradiación"
 
 #. TRANSLATORS: this is the sensor capability
 #: client/cd-util.c:438
@@ -483,7 +485,7 @@ msgstr "Cor"
 #. TRANSLATORS: sensor can't do this
 #: client/cd-util.c:1192 client/cd-util.c:1212
 msgid "No spectral capability"
-msgstr ""
+msgstr "Sen capacidade espectral"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
@@ -528,7 +530,7 @@ msgstr "Obtén tódolos sensores de cor dispoñíbeis"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
 msgid "Gets a spectral reading from a sensor"
-msgstr ""
+msgstr "Recibe unha lectura espectral dun sensor"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
@@ -692,7 +694,9 @@ msgstr "Gamma predefinido para a pantalla"
 msgid ""
 "The default target gamma value for the display. Common values are 1.8, 2.2 "
 "and 2.4."
-msgstr "O valor de gamma de destino predeterminado para a pantalla. Os valores comúns son 1.8, 2.2 e 2.4"
+msgstr ""
+"O valor de gamma de destino predeterminado para a pantalla. Os valores "
+"comúns son 1.8, 2.2 e 2.4"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:13
 msgid "Default display target whitepoint"
@@ -717,7 +721,7 @@ msgstr ""
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:3
 msgid "AdobeRGB1998"
-msgstr ""
+msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
@@ -776,11 +780,11 @@ msgstr ""
 
 #: data/profiles/AppleRGB.iccprofile.xml:3
 msgid "AppleRGB"
-msgstr ""
+msgstr "AppleRGB"
 
 #: data/profiles/AppleRGB.iccprofile.xml:4
 msgid "Apple RGB"
-msgstr ""
+msgstr "Apple RGB"
 
 #. TRANSLATORS: 'Adobe', 'Photoshop', 'Apple' and 'Illustrator' are
 #. trademarks,
@@ -792,6 +796,10 @@ msgid ""
 "is similar to sRGB, it should not be used as a display profile or for new "
 "images."
 msgstr ""
+"Este perfil legado foi orixinalmente creado por Adobe para o seu uso con "
+"Photoshop e Illustrator. Como está baseado no monitor orixinal de Apple 13\""
+" RGB e é similar ao SRGB, non se debe usar como perfil de visualización nin "
+"para novas imaxes."
 
 #: data/profiles/BestRGB.iccprofile.xml:3
 msgid "BestRGB"
@@ -810,6 +818,10 @@ msgid ""
 "advertisements. It is very similar to DonRGB4, but can show super-saturated "
 "red colors sometimes present in Fujichrome Velvia."
 msgstr ""
+"Este espazo de edición pode mostrar cores máis saturadas que Adobe RGB e é "
+"adecuado para imaxes con cores altamente saturadas a miúdo usadas nos "
+"anuncios. É moi similar a DonRGB4, pero pode mostrar cores vermellas "
+"supersaturadas ás veces presentes en Fujichrome Velvia."
 
 #: data/profiles/BetaRGB.iccprofile.xml:3
 msgid "BetaRGB"
@@ -830,7 +842,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "azulado"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
@@ -878,11 +890,11 @@ msgstr ""
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
-msgstr ""
+msgstr "ColorMatchRGB"
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:4
 msgid "ColorMatch RGB"
-msgstr ""
+msgstr "ColorMatch RGB"
 
 #. TRANSLATORS: 'Radius' and 'PressView' are trademarks, please don't
 #. translate
@@ -896,7 +908,7 @@ msgstr ""
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
-msgstr ""
+msgstr "Crayons"
 
 #: data/profiles/Crayons.iccprofile.xml:4
 msgid "Crayon Colors"
@@ -1105,7 +1117,7 @@ msgstr ""
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
-msgstr ""
+msgstr "IFRA26S 2004 Newsprint"
 
 #. TRANSLATORS: TVI stands for 'tone value increase' and is another name for
 #. dot gain, coldset means letting the ink dry without heating it
@@ -1200,7 +1212,7 @@ msgstr ""
 
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:3
 msgid "SNAP TR002 Newsprint"
-msgstr ""
+msgstr "SNAP TR002 Newsprint"
 
 #. TRANSLATORS: CGATS is a trademark
 #: data/profiles/SNAP_TR002_newsprint.iccprofile.xml:6
@@ -1211,7 +1223,7 @@ msgstr ""
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
-msgstr ""
+msgstr "sRGB"
 
 #. TRANSLATORS: Trinitron is a trademark, 'untagged' means an image with an
 #. unspecified color profile
@@ -1266,7 +1278,7 @@ msgstr ""
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
-msgstr ""
+msgstr "WideGamutRGB"
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:4
 msgid "Wide Gamut RGB"
@@ -1326,7 +1338,8 @@ msgstr "Eliminar un dispositivo xestionado por cor"
 
 #: policy/org.freedesktop.color.policy.in.in:51
 msgid "Authentication is required to remove a color managed device"
-msgstr "Requírese autenticación para eliminar un dispositivo xestionado por cor"
+msgstr ""
+"Requírese autenticación para eliminar un dispositivo xestionado por cor"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to delete profiles
@@ -1346,7 +1359,8 @@ msgstr "Modificar as opcións de cor para un dispositivo"
 
 #: policy/org.freedesktop.color.policy.in.in:81
 msgid "Authentication is required to modify the color settings for a device"
-msgstr "Requírese autenticación para modificar as opcións de cor para un dispositivo"
+msgstr ""
+"Requírese autenticación para modificar as opcións de cor para un dispositivo"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to modify profiles
@@ -1371,7 +1385,8 @@ msgstr "Instalar perfiles de cor no sistema"
 
 #: policy/org.freedesktop.color.policy.in.in:116
 msgid "Authentication is required to install the color profile for all users"
-msgstr "Requírese autenticación para instalar un perfíl de cor para tódolos usuarios"
+msgstr ""
+"Requírese autenticación para instalar un perfíl de cor para tódolos usuarios"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to profile
@@ -1382,7 +1397,9 @@ msgstr "Inhibir a selección de perfiles de cor"
 
 #: policy/org.freedesktop.color.policy.in.in:132
 msgid "Authentication is required to disable profile matching for a device"
-msgstr "Requírese autenticación para desactivar un perfíl que coincide cun dispositivo"
+msgstr ""
+"Requírese autenticación para desactivar un perfíl que coincide cun "
+"dispositivo"
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to use the
