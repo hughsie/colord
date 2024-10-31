@@ -14,6 +14,7 @@
   <refmeta>
     <refentrytitle>colormgr</refentrytitle>
     <manvolnum>1</manvolnum>
+    <refmiscinfo class="source">colord</refmiscinfo>
     <refmiscinfo class="manual">User Commands</refmiscinfo>
   </refmeta>
   <refnamediv>
