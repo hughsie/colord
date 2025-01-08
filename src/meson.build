@@ -26,7 +26,7 @@ resources_src = gnome.compile_resources(
 )
 
 colord_extra_deps = []
-if get_option('systemd')
+if get_option('systemd') and libsystemd.found()
   colord_extra_deps += libsystemd
 endif
 

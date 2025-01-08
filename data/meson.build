@@ -18,7 +18,7 @@ con2.set('servicedir', libexecdir)
 con2.set('daemon_user', get_option('daemon_user'))
 
 # replace @servicedir@, @daemon_user@ and @localstatedir@
-if get_option('systemd')
+if get_option('systemd') and systemd.found()
   configure_file(
     input : 'colord.service.in',
     output : 'colord.service',

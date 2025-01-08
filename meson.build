@@ -127,7 +127,7 @@ if get_option('udev_rules')
 endif
 
 if get_option('systemd')
-  systemd = dependency('systemd')
+  systemd = dependency('systemd', required : false)
   libsystemd = dependency('libsystemd')
   conf.set('HAVE_SYSTEMD', '1')
 endif
