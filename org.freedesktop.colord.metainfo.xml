@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>org.freedesktop.colord</id>
+  <metadata_license>MIT</metadata_license>
+  <name>colord</name>
+  <summary>system service to manage device colour profiles -- system daemon</summary>
+  <description>
+    <p>colord is a system service that makes it easy to manage,
+    install and generate colour profiles to accurately colour manage
+    input and output devices.</p>
+    <p>It provides a D-Bus API for system frameworks to query, a
+    persistent data store, and a mechanism for session applications to
+    set system policy.</p>
+    <p>This package contains the dbus-activated colord system
+    daemon.</p>
+  </description>
+  <url type="homepage">https://www.freedesktop.org/software/colord/</url>
+  <provides>
+    <modalias>usb:v0765pD020d*</modalias>
+    <modalias>usb:v0765pD092d*</modalias>
+    <modalias>usb:v0765pD094d*</modalias>
+    <modalias>usb:v0670p0001d*</modalias>
+    <modalias>usb:v0971p2003d*</modalias>
+    <modalias>usb:v0971p2001d*</modalias>
+    <modalias>usb:v0971p2000d*</modalias>
+    <modalias>usb:v0765p5020d*</modalias>
+    <modalias>usb:v0765p6003d*</modalias>
+    <modalias>usb:v0971p2007d*</modalias>
+    <modalias>usb:v04DBp005Bd*</modalias>
+    <modalias>usb:v085Cp0100d*</modalias>
+    <modalias>usb:v085Cp0200d*</modalias>
+    <modalias>usb:v085Cp0300d*</modalias>
+    <modalias>usb:v085Cp0400d*</modalias>
+    <modalias>usb:v085Cp0500d*</modalias>
+    <modalias>usb:v085Cp0A00d*</modalias>
+    <modalias>usb:v0971p2005d*</modalias>
+    <modalias>usb:v0765p5001d*</modalias>
+    <modalias>usb:v0765p5010d*</modalias>
+    <modalias>usb:v04D8pF8DAd*</modalias>
+    <modalias>usb:v273Fp1000d*</modalias>
+    <modalias>usb:v273Fp1005d*</modalias>
+    <modalias>usb:v273Fp1001d*</modalias>
+    <modalias>usb:v273Fp1004d*</modalias>
+    <modalias>usb:v273Fp1002d*</modalias>
+    <modalias>usb:v273Fp1006d*</modalias>
+    <modalias>usb:v273Fp1007d*</modalias>
+    <modalias>usb:v273Fp1008d*</modalias>
+  </provides>
+</component>
