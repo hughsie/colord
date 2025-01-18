@@ -280,3 +280,7 @@ endif
 
 meson.add_install_script('meson_post_install.sh',
                          localstatedir, get_option('daemon_user'))
+
+install_data('org.freedesktop.colord.metainfo.xml',
+  install_dir : join_paths(datadir, 'metainfo')
+  )
