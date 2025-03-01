@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
+<component>
   <id>org.freedesktop.colord</id>
   <metadata_license>MIT</metadata_license>
   <name>colord</name>
