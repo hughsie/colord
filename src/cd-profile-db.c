@@ -48,7 +48,6 @@ cd_profile_db_load (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	const gchar *statement;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -74,12 +73,10 @@ cd_profile_db_load (CdProfileDb *pdb,
 	}
 
 	/* we don't need to keep doing fsync */
-	sqlite3_exec (priv->db, "PRAGMA synchronous=OFF",
-		      NULL, NULL, NULL);
+	sqlite3_exec (priv->db, "PRAGMA synchronous=OFF", NULL, NULL, NULL);
 
 	/* check schema */
-	rc = sqlite3_exec (priv->db, "SELECT * FROM properties_pu LIMIT 1",
-			   NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, "SELECT * FROM properties_pu LIMIT 1", NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		statement = "CREATE TABLE properties_pu ("
 			    "profile_id TEXT,"
@@ -97,21 +94,19 @@ cd_profile_db_empty (CdProfileDb *pdb, GError **error)
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	const gchar *statement;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_PROFILE_DB (pdb), FALSE);
 	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	statement = "DELETE FROM properties_pu;";
-	rc = sqlite3_exec (priv->db, statement,
-			   NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		return FALSE;
 	}
 	return TRUE;
@@ -127,7 +122,6 @@ cd_profile_db_set_property (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -142,13 +136,13 @@ cd_profile_db_set_property (CdProfileDb *pdb,
 				     profile_id, property, uid, value);
 
 	/* insert the entry */
-	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		ret = FALSE;
 		goto out;
 	}
@@ -166,7 +160,6 @@ cd_profile_db_remove (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement = NULL;
 	gint rc;
 
@@ -180,13 +173,13 @@ cd_profile_db_remove (CdProfileDb *pdb,
 				     "uid = '%i' AND "
 				     "property = '%q' LIMIT 1;",
 				     profile_id, uid, property);
-	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		ret = FALSE;
 		goto out;
 	}
@@ -219,7 +212,6 @@ cd_profile_db_get_property (CdProfileDb *pdb,
 {
 	CdProfileDbPrivate *priv = GET_PRIVATE (pdb);
 	gboolean ret = TRUE;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -238,14 +230,14 @@ cd_profile_db_get_property (CdProfileDb *pdb,
 			   statement,
 			   cd_profile_db_sqlite_cb,
 			   value,
-			   &error_msg);
+			   NULL);
 	if (rc != SQLITE_OK) {
 		ret = FALSE;
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		goto out;
 	}
 out:
