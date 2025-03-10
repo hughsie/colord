@@ -13,7 +13,7 @@ con2 = configuration_data()
 con2.set('servicedir', libexecdir)
 
 # replace @servicedir@
-if get_option('systemd')
+if get_option('systemd') and systemd.found()
   configure_file(
     input : 'colord-session.service.in',
     output : 'colord-session.service',
