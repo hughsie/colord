@@ -38,9 +38,6 @@
 #define CD_DBUS_METADATA_KEY_LEN_MAX	256	/* chars */
 #define CD_DBUS_METADATA_VALUE_LEN_MAX	4096	/* chars */
 
-typedef char sqlite_str;
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (sqlite_str, sqlite3_free)
-
 #define CD_CLIENT_ERROR			cd_client_error_quark()
 
 GQuark		 cd_client_error_quark		(void);

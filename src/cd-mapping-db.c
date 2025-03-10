@@ -67,7 +67,6 @@ cd_mapping_db_open (CdMappingDb *mdb,
 		    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -93,7 +92,7 @@ cd_mapping_db_open (CdMappingDb *mdb,
 	}
 
 	/* sanity check of the database */
-	rc = sqlite3_exec (priv->db, "PRAGMA quick_check", NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, "PRAGMA quick_check", NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		/* Database appears to be mangled, so wipe it and try again */
 		sqlite3_close (priv->db);
@@ -115,7 +114,7 @@ cd_mapping_db_open (CdMappingDb *mdb,
 				     CD_CLIENT_ERROR,
 				     CD_CLIENT_ERROR_INTERNAL,
 				     "Cannot open mapping database: %s",
-				     error_msg);
+				     sqlite3_errmsg(priv->db));
 			return FALSE;
 		}
 	}
@@ -130,7 +129,6 @@ cd_mapping_db_load (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	const gchar *statement;
-	char *error_msg = NULL;
 	gint rc;
 	g_autofree gchar *path = NULL;
 
@@ -142,22 +140,20 @@ cd_mapping_db_load (CdMappingDb *mdb,
 
 	/* we don't need to keep doing fsync */
 	rc = sqlite3_exec (priv->db, "PRAGMA synchronous=OFF",
-			   NULL, NULL, &error_msg);
+			   NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "Failed to turn off synchronous operations: SQL error: %s",
-			     error_msg);
-		sqlite3_free (error_msg);
+			     sqlite3_errmsg(priv->db));
 		return FALSE;
 	}
 	/* check mappings */
 	rc = sqlite3_exec (priv->db, "SELECT * FROM mappings LIMIT 1",
-			   NULL, NULL, &error_msg);
+			   NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
-		g_debug ("CdMappingDb: creating table to repair: %s", error_msg);
-		sqlite3_free (error_msg);
+		g_debug ("CdMappingDb: creating table to repair: %s", sqlite3_errmsg(priv->db));
 		statement = "CREATE TABLE mappings ("
 			    "timestamp INTEGER DEFAULT 0,"
 			    "device TEXT,"
@@ -168,20 +164,18 @@ cd_mapping_db_load (CdMappingDb *mdb,
 	/* check mappings has timestamp (since 0.1.8) */
 	rc = sqlite3_exec (priv->db,
 			   "SELECT timestamp FROM mappings LIMIT 1",
-			   NULL, NULL, &error_msg);
+			   NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
-		g_debug ("CdMappingDb: altering table to repair: %s", error_msg);
-		sqlite3_free (error_msg);
+		g_debug ("CdMappingDb: altering table to repair: %s", sqlite3_errmsg(priv->db));
 		statement = "ALTER TABLE mappings ADD COLUMN timestamp INTEGER DEFAULT 0;";
 		sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	}
 
 	/* check mappings version 2 exists (since 0.1.29) */
 	rc = sqlite3_exec (priv->db, "SELECT * FROM mappings_v2 LIMIT 1",
-			   NULL, NULL, &error_msg);
+			   NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
-		g_debug ("CdMappingDb: altering table to convert: %s", error_msg);
-		sqlite3_free (error_msg);
+		g_debug ("CdMappingDb: altering table to convert: %s", sqlite3_errmsg(priv->db));
 		statement = "CREATE TABLE mappings_v2 ("
 			    "timestamp INTEGER DEFAULT 0,"
 			    "device TEXT,"
@@ -195,28 +189,26 @@ cd_mapping_db_load (CdMappingDb *mdb,
 				   statement,
 				   cd_mapping_db_convert_cb,
 				   mdb,
-				   &error_msg);
+				   NULL);
 		if (rc != SQLITE_OK) {
 			g_set_error (error,
 				     CD_CLIENT_ERROR,
 				     CD_CLIENT_ERROR_INTERNAL,
 				     "Failed to migrate mappings: SQL error: %s",
-				     error_msg);
-			sqlite3_free (error_msg);
+				     sqlite3_errmsg(priv->db));
 			return FALSE;
 		}
 
 		/* remove old table data */
 		statement = "DELETE FROM mappings;";
 		rc = sqlite3_exec (priv->db, statement,
-				   NULL, NULL, &error_msg);
+				   NULL, NULL, NULL);
 		if (rc != SQLITE_OK) {
 			g_set_error (error,
 				     CD_CLIENT_ERROR,
 				     CD_CLIENT_ERROR_INTERNAL,
 				     "Failed to migrate mappings: SQL error: %s",
-				     error_msg);
-			sqlite3_free (error_msg);
+				     sqlite3_errmsg(priv->db));
 			return FALSE;
 		}
 	}
@@ -229,21 +221,19 @@ cd_mapping_db_empty (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	const gchar *statement;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gint rc;
 
 	g_return_val_if_fail (CD_IS_MAPPING_DB (mdb), FALSE);
 	g_return_val_if_fail (priv->db != NULL, FALSE);
 
 	statement = "DELETE FROM mappings_v2;";
-	rc = sqlite3_exec (priv->db, statement,
-			   NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		return FALSE;
 	}
 	return TRUE;
@@ -257,7 +247,6 @@ cd_mapping_db_add (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	gint64 timestamp;
@@ -273,13 +262,13 @@ cd_mapping_db_add (CdMappingDb *mdb,
 				     device_id, profile_id, timestamp);
 
 	/* insert the entry */
-	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		ret = FALSE;
 		goto out;
 	}
@@ -304,7 +293,6 @@ cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -318,13 +306,13 @@ cd_mapping_db_clear_timestamp (CdMappingDb *mdb,
 				     device_id, profile_id);
 
 	/* update the entry */
-	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		ret = FALSE;
 		goto out;
 	}
@@ -347,7 +335,6 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
 	gboolean ret = TRUE;
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 
@@ -360,13 +347,13 @@ cd_mapping_db_remove (CdMappingDb *mdb,
 				     device_id, profile_id);
 
 	/* remove the entry */
-	rc = sqlite3_exec (priv->db, statement, NULL, NULL, &error_msg);
+	rc = sqlite3_exec (priv->db, statement, NULL, NULL, NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		ret = FALSE;
 		goto out;
 	}
@@ -401,7 +388,6 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 			    GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -421,13 +407,13 @@ cd_mapping_db_get_profiles (CdMappingDb *mdb,
 			   statement,
 			   cd_mapping_db_sqlite_cb,
 			   array_tmp,
-			   &error_msg);
+			   NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		goto out;
 	}
 
@@ -450,7 +436,6 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 			   GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	GPtrArray *array = NULL;
@@ -470,13 +455,13 @@ cd_mapping_db_get_devices (CdMappingDb *mdb,
 			   statement,
 			   cd_mapping_db_sqlite_cb,
 			   array_tmp,
-			   &error_msg);
+			   NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		goto out;
 	}
 
@@ -515,7 +500,6 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 			     GError  **error)
 {
 	CdMappingDbPrivate *priv = GET_PRIVATE (mdb);
-	g_autoptr(sqlite_str) error_msg = NULL;
 	gchar *statement;
 	gint rc;
 	guint64 timestamp = G_MAXUINT64;
@@ -534,13 +518,13 @@ cd_mapping_db_get_timestamp (CdMappingDb *mdb,
 			   statement,
 			   cd_mapping_db_sqlite_timestamp_cb,
 			   &timestamp,
-			   &error_msg);
+			   NULL);
 	if (rc != SQLITE_OK) {
 		g_set_error (error,
 			     CD_CLIENT_ERROR,
 			     CD_CLIENT_ERROR_INTERNAL,
 			     "SQL error: %s",
-			     error_msg);
+			     sqlite3_errmsg(priv->db));
 		goto out;
 	}
 
