@@ -2147,6 +2147,8 @@ static CdEdid *
 cd_main_get_edid_for_output (const gchar *output_name)
 {
 	gboolean ret;
+	gboolean output_enabled = TRUE;
+	gboolean output_connected = TRUE;
 	gsize len = 0;
 	g_autoptr(GBytes) data = NULL;
 	g_autoptr(GError) error = NULL;
@@ -2154,6 +2156,8 @@ cd_main_get_edid_for_output (const gchar *output_name)
 	g_autofree gchar *edid_fn = NULL;
 	g_autofree gchar *enabled_data = NULL;
 	g_autofree gchar *enabled_fn = NULL;
+	g_autofree gchar *status_data = NULL;
+	g_autofree gchar *status_fn = NULL;
 	g_autoptr(CdEdid) edid = NULL;
 
 	/* check output is actually an output */
@@ -2173,6 +2177,32 @@ cd_main_get_edid_for_output (const gchar *output_name)
 	}
 	g_strdelimit (enabled_data, "\n", '\0');
 	if (g_strcmp0 (enabled_data, "enabled") != 0)
+		output_enabled = FALSE;
+
+	/* check output is really connected, 
+	 * workaround for buggy proprietary nvidia_drm drivers, 
+	 * whose 'enabled' state are always 'disabled'.
+	 */
+	status_fn = g_build_filename ("/sys/class/drm",
+				       output_name,
+					   "status",
+					   NULL);
+	ret = g_file_test (status_fn, G_FILE_TEST_EXISTS);
+	if (!ret)
+		return NULL;
+
+	/* check output is connected */
+	ret = g_file_get_contents (status_fn, &status_data, NULL, &error);
+	if (!ret) {
+		g_warning ("failed to get status data: %s", error->message);
+		return NULL;
+	}
+	g_strdelimit(status_data, "\n", '\0');
+	if (g_strcmp0 (status_data, "connected") != 0)
+		output_connected = FALSE;
+	
+	/* Either 'connected' in status or 'enabled' in enabled should do. */
+	if (!output_enabled && !output_connected)
 		return NULL;
 
 	/* get EDID data */
