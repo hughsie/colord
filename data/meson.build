@@ -34,6 +34,16 @@ if get_option('systemd')
     install: true,
     install_dir: systemd.get_pkgconfig_variable('tmpfilesdir')
   )
+
+  if get_option('daemon_user') != 'root'
+    configure_file(
+      input : 'colord.sysusers.conf.in',
+      output : 'colord.conf',
+      configuration : con2,
+      install: true,
+      install_dir: systemd.get_pkgconfig_variable('sysusersdir')
+    )
+  endif
 endif
 
 # replace @servicedir@ and @daemon_user@
