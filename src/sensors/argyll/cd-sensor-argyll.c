@@ -126,9 +126,9 @@ cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, GTask *task)
 		CdColorXYZ *sample;
 		parts = g_strsplit_set (line, " ,", -1);
 		sample = cd_color_xyz_new ();
-		sample->X = atof (parts[4]);
-		sample->Y = atof (parts[5]);
-		sample->Z = atof (parts[6]);
+		sample->X = g_ascii_strtod (parts[4], NULL);
+		sample->Y = g_ascii_strtod (parts[5], NULL);
+		sample->Z = g_ascii_strtod (parts[6], NULL);
 		g_task_return_pointer (task, sample, (GDestroyNotify) cd_color_xyz_free);
 		g_object_unref (task);
 		return;
