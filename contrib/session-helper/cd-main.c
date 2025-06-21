@@ -1626,7 +1626,6 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 						     NULL,
 						     cd_main_sender_vanished_cb,
 						     priv, NULL);
-		priv->status = CD_SESSION_STATUS_IDLE;
 
 		/* start calibration */
 		priv->device = cd_main_find_device (priv,
@@ -1695,7 +1694,7 @@ cd_main_daemon_method_call (GDBusConnection *connection,
 		}
 
 		/* actually start the process now */
-		priv->status = CD_SESSION_STATUS_IDLE;
+		priv->status = CD_SESSION_STATUS_RUNNING;
 		g_idle_add (cd_main_start_calibration_cb, priv);
 		g_dbus_method_invocation_return_value (invocation, NULL);
 		return;
