@@ -8,55 +8,43 @@
 # popping up all over the place.
 %define enable_sane 0
 
-# Don't build the print profiles for secondary architectures on the
-# logic that these are probably not doing press proofing or editing
-# in different CMYK spaces
-%ifarch %{ix86} x86_64
- %if !0%{?rhel}
-  %define build_print_profiles %{?enable_print_profiles}
- %endif
-%endif
-
 Summary:   Color daemon
 Name:      colord
 Version:   #VERSION#
 Release:   0.#BUILD#%{?alphatag}%{?dist}
-License:   GPLv2+ and LGPLv2+
+License:   GPL-2.0-or-later AND LGPL-2.1-or-later
 URL:       https://www.freedesktop.org/software/colord/
 Source0:   https://www.freedesktop.org/software/colord/releases/%{name}-%{version}.tar.xz
 
-BuildRequires: dbus-devel
-BuildRequires: libxslt
+%if !0%{?rhel}
+BuildRequires:  pkgconfig(bash-completion)
+%endif
+BuildRequires: color-filesystem
 BuildRequires: docbook5-style-xsl
 BuildRequires: gettext
-BuildRequires: glib2-devel
-BuildRequires: systemd-devel
-BuildRequires: lcms2-devel >= 2.6
-BuildRequires: libgudev1-devel
-BuildRequires: polkit-devel >= 0.103
-BuildRequires: sqlite-devel
-BuildRequires: gobject-introspection-devel
-BuildRequires: vala
-BuildRequires: libgusb-devel >= 0.2.2
 BuildRequires: gtk-doc
-BuildRequires: color-filesystem
+BuildRequires: gobject-introspection-devel
+BuildRequires: libxslt
 BuildRequires: meson
-%if !0%{?rhel}
-BuildRequires: bash-completion
-%endif
-%if !0%{?rhel}
-BuildRequires: argyllcms
-%endif
+BuildRequires: vala
+BuildRequires: pkgconfig(gio-unix-2.0)
+BuildRequires: pkgconfig(gudev-1.0)
+BuildRequires: pkgconfig(gusb) >= 0.2.7
+BuildRequires: pkgconfig(lcms2) >= 2.6
+BuildRequires: pkgconfig(libsystemd)
+BuildRequires: pkgconfig(polkit-gobject-1) >= 0.103
+BuildRequires: pkgconfig(sqlite3)
+BuildRequires: pkgconfig(systemd)
 
 # for SANE support
 %if 0%{?enable_sane}
-BuildRequires: sane-backends-devel
-BuildRequires: dbus-devel
+BuildRequires: pkgconfig(dbus-1)
+BuildRequires: pkgconfig(sane-backends)
 %endif
 
 Requires: color-filesystem
-Requires: systemd-units
-Requires(pre): shadow-utils
+BuildRequires: systemd, systemd-rpm-macros
+%{?systemd_requires}
 Requires: colord-libs%{?_isa} = %{version}-%{release}
 
 # Self-obsoletes to fix the multilib upgrade path
@@ -114,7 +102,7 @@ Summary: Data files for installed tests
 Data files for installed tests.
 
 %prep
-%setup -q
+%autosetup -p1
 
 %build
 # Set ~2 GiB limit so that colprof is forced to work in chunks when
@@ -123,13 +111,10 @@ Data files for installed tests.
 ulimit -Sv 2000000
 
 %meson \
+    -Dtests=false \
     -Dvapi=true \
     -Dinstalled_tests=true \
-%if 0%{?build_print_profiles}
-    -Dprint_profiles=true \
-%else
     -Dprint_profiles=false \
-%endif
 %if 0%{?enable_sane}
     -Dsane=true \
 %endif
@@ -153,12 +138,6 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/storage.db
 
 %find_lang %{name}
 
-%pre
-getent group colord >/dev/null || groupadd -r colord
-getent passwd colord >/dev/null || \
-    useradd -r -g colord -d /var/lib/colord -s /sbin/nologin \
-    -c "User for colord" colord
-exit 0
 
 %post
 %systemd_post colord.service
@@ -172,7 +151,8 @@ exit 0
 %ldconfig_scriptlets libs
 
 %files -f %{name}.lang
-%doc README.md AUTHORS NEWS COPYING
+%doc README.md AUTHORS NEWS
+%license COPYING
 %{_libexecdir}/colord
 %attr(755,colord,colord) %dir %{_localstatedir}/lib/colord
 %attr(755,colord,colord) %dir %{_localstatedir}/lib/colord/icc
@@ -182,7 +162,8 @@ exit 0
 %{_datadir}/dbus-1/interfaces/org.freedesktop.ColorManager*.xml
 %{_datadir}/polkit-1/actions/org.freedesktop.color.policy
 %{_datadir}/dbus-1/system-services/org.freedesktop.ColorManager.service
-%{_datadir}/man/man1/*.1.gz
+%{_datadir}/metainfo/org.freedesktop.colord.metainfo.xml
+%{_mandir}/man1/*.1*
 %{_datadir}/colord
 %if !0%{?rhel}
 %{_datadir}/bash-completion/completions/colormgr
@@ -193,6 +174,7 @@ exit 0
 %{_libdir}/colord-plugins
 %ghost %attr(-,colord,colord) %{_localstatedir}/lib/colord/*.db
 %{_unitdir}/colord.service
+%{_sysusersdir}/colord.conf
 
 # session helper
 %{_libexecdir}/colord-session
@@ -213,11 +195,6 @@ exit 0
 %{_icccolordir}/colord/SMPTE-C-RGB.icc
 %{_icccolordir}/colord/sRGB.icc
 
-# so we can display at least something in the default dropdown
-%if 0%{?build_print_profiles}
-%{_icccolordir}/colord/FOGRA39L_coated.icc
-%endif
-
 # monitor test profiles
 %{_icccolordir}/colord/Bluish.icc
 
@@ -236,20 +213,6 @@ exit 0
 %{_libdir}/girepository-1.0/*.typelib
 
 %files extra-profiles
-%if 0%{?build_print_profiles}
-%{_icccolordir}/colord/FOGRA27L_coated.icc
-%{_icccolordir}/colord/FOGRA28L_webcoated.icc
-%{_icccolordir}/colord/FOGRA29L_uncoated.icc
-%{_icccolordir}/colord/FOGRA30L_uncoated_yellowish.icc
-%{_icccolordir}/colord/FOGRA40L_SC_paper.icc
-%{_icccolordir}/colord/FOGRA45L_lwc.icc
-%{_icccolordir}/colord/FOGRA47L_uncoated.icc
-%{_icccolordir}/colord/GRACoL*.icc
-%{_icccolordir}/colord/IFRA26S_2004_newsprint.icc
-%{_icccolordir}/colord/SNAP*.icc
-%{_icccolordir}/colord/SWOP*.icc
-%endif
-
 # other colorspaces not often used
 %{_icccolordir}/colord/AppleRGB.icc
 %{_icccolordir}/colord/BestRGB.icc
