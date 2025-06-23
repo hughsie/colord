@@ -137,13 +137,7 @@ cd_sensor_client_remove (CdSensorClient *sensor_client,
 	CdSensor *sensor;
 	const gchar *device_file;
 	const gchar *device_path;
-	const gchar *tmp;
 	guint i;
-
-	/* interesting device? */
-	tmp = g_udev_device_get_property (device, "COLORD_SENSOR_KIND");
-	if (tmp == NULL)
-		goto out;
 
 	/* actual device? */
 	device_file = g_udev_device_get_device_file (device);
@@ -164,8 +158,6 @@ cd_sensor_client_remove (CdSensorClient *sensor_client,
 		}
 	}
 
-	/* nothing found */
-	g_warning ("removed CM sensor that was never added");
 out:
 	return;
 }
@@ -182,12 +174,7 @@ cd_sensor_client_uevent_cb (GUdevClient *gudev_client,
 	if (g_strcmp0 (action, "remove") == 0) {
 		g_debug ("CdSensorClient: remove %s",
 			 g_udev_device_get_sysfs_path (udev_device));
-		ret = g_udev_device_has_property (udev_device, "COLORD_SENSOR_KIND");
-		if (ret) {
-			cd_sensor_client_remove (sensor_client,
-						 udev_device);
-			goto out;
-		}
+		cd_sensor_client_remove (sensor_client, udev_device);
 		goto out;
 	}
 
