@@ -882,6 +882,7 @@ cd_client_import_mkdir_and_copy (GFile *source,
 }
 
 typedef struct {
+	CdClient		*client;
 	GFile			*dest;
 	GFile			*file;
 	guint			 hangcheck_id;
@@ -914,8 +915,10 @@ cd_client_import_task_data_free (CdClientImportTaskData *tdata)
 {
 	g_object_unref (tdata->file);
 	g_object_unref (tdata->dest);
-//	if (tdata->profile_added_id > 0)
-//		g_signal_handler_disconnect (tdata->client, tdata->profile_added_id);
+	if (tdata->profile_added_id > 0)
+		g_signal_handler_disconnect (tdata->client, tdata->profile_added_id);
+	if (tdata->client != NULL)
+		g_object_unref (tdata->client);
 	if (tdata->hangcheck_id > 0)
 		g_source_remove (tdata->hangcheck_id);
 	g_free (tdata);
@@ -984,6 +987,7 @@ cd_client_import_profile_find_filename_cb (GObject *source_object,
 
 	/* watch for a new profile to be detected and added,
 	 * but time out after a couple of seconds */
+	tdata->client = g_object_ref(client);
 	tdata->hangcheck_id = g_timeout_add (CD_CLIENT_IMPORT_DAEMON_TIMEOUT,
 					     cd_client_import_hangcheck_cb,
 					     task);
