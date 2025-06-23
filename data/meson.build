@@ -38,7 +38,7 @@ if get_option('systemd')
   if get_option('daemon_user') != 'root'
     configure_file(
       input : 'colord.sysusers.conf.in',
-      output : 'colord.conf',
+      output : 'colord-sysusers.conf',
       configuration : con2,
       install: true,
       install_dir: sysusersdir,

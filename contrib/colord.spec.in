@@ -174,7 +174,7 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/lib/colord/storage.db
 %{_libdir}/colord-plugins
 %ghost %attr(-,colord,colord) %{_localstatedir}/lib/colord/*.db
 %{_unitdir}/colord.service
-%{_sysusersdir}/colord.conf
+%{_sysusersdir}/colord-sysusers.conf
 
 # session helper
 %{_libexecdir}/colord-session
