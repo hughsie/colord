@@ -129,8 +129,8 @@ cd_spawn_exit_type_enum_to_string (CdSpawnExitType type)
 		return "success";
 	if (type == CD_SPAWN_EXIT_TYPE_FAILED)
 		return "failed";
-	if (type == CD_SPAWN_EXIT_TYPE_SIGQUIT)
-		return "sigquit";
+	if (type == CD_SPAWN_EXIT_TYPE_SIGTERM)
+		return "sigterm";
 	if (type == CD_SPAWN_EXIT_TYPE_SIGKILL)
 		return "sigkill";
 	return "unknown";
@@ -198,12 +198,12 @@ cd_spawn_check_child (CdSpawn *spawn)
 	spawn->priv->stderr_fd = -1;
 	spawn->priv->child_pid = -1;
 
-	/* use this to detect SIGKILL and SIGQUIT */
+	/* use this to detect SIGKILL and SIGTERM */
 	if (WIFSIGNALED (status)) {
 		retval = WTERMSIG (status);
-		if (retval == SIGQUIT) {
-			g_debug ("the child process was terminated by SIGQUIT");
-			spawn->priv->exit = CD_SPAWN_EXIT_TYPE_SIGQUIT;
+		if (retval == SIGTERM) {
+			g_debug ("the child process was terminated by SIGTERM");
+			spawn->priv->exit = CD_SPAWN_EXIT_TYPE_SIGTERM;
 		} else if (retval == SIGKILL) {
 			g_debug ("the child process was terminated by SIGKILL");
 			spawn->priv->exit = CD_SPAWN_EXIT_TYPE_SIGKILL;
@@ -293,7 +293,7 @@ cd_spawn_is_running (CdSpawn *spawn)
 /**
  * cd_spawn_kill:
  *
- * We send SIGQUIT and after a few ms SIGKILL (if allowed)
+ * We send SIGTERM and after a few ms SIGKILL (if allowed)
  *
  * IMPORTANT: This is not a synchronous operation, and client programs will need
  * to wait for the ::exit signal.
@@ -319,10 +319,10 @@ cd_spawn_kill (CdSpawn *spawn)
 	}
 
 	/* set this in case the script catches the signal and exits properly */
-	spawn->priv->exit = CD_SPAWN_EXIT_TYPE_SIGQUIT;
+	spawn->priv->exit = CD_SPAWN_EXIT_TYPE_SIGTERM;
 
-	g_debug ("sending SIGQUIT %ld", (long)spawn->priv->child_pid);
-	retval = kill (spawn->priv->child_pid, SIGQUIT);
+	g_debug ("sending SIGTERM %ld", (long)spawn->priv->child_pid);
+	retval = kill (spawn->priv->child_pid, SIGTERM);
 	if (retval == EINVAL) {
 		g_warning ("The signum argument is an invalid or unsupported number");
 		return FALSE;
@@ -331,7 +331,7 @@ cd_spawn_kill (CdSpawn *spawn)
 		return FALSE;
 	}
 
-	/* the program might not be able to handle SIGQUIT, give it a few seconds and then SIGKILL it */
+	/* the program might not be able to handle SIGTERM, give it a few seconds and then SIGKILL it */
 	if (spawn->priv->allow_sigkill) {
 		spawn->priv->kill_id = g_timeout_add (CD_SPAWN_SIGKILL_DELAY, (GSourceFunc) cd_spawn_sigkill_cb, spawn);
 		g_source_set_name_by_id (spawn->priv->kill_id, "[CdSpawn] sigkill");
@@ -513,7 +513,7 @@ cd_spawn_finalize (GObject *object)
 	if (spawn->priv->stdin_fd != -1) {
 		g_debug ("killing as still running in finalize");
 		cd_spawn_kill (spawn);
-		/* just hope the script responded to SIGQUIT */
+		/* just hope the script responded to SIGTERM */
 		if (spawn->priv->kill_id != 0)
 			g_source_remove (spawn->priv->kill_id);
 	}
