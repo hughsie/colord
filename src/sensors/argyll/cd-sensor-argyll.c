@@ -418,11 +418,11 @@ cd_sensor_unlock_exit_cb (CdSpawn *spawn,
 			  CdSpawnExitType exit_type,
 			  GTask *task)
 {
-	if (exit_type != CD_SPAWN_EXIT_TYPE_SIGQUIT) {
+	if (exit_type != CD_SPAWN_EXIT_TYPE_SIGTERM) {
 		g_task_return_new_error (task,
 					 CD_SENSOR_ERROR,
 					 CD_SENSOR_ERROR_INTERNAL,
-					 "exited without sigquit");
+					 "exited without sigterm");
 		g_object_unref (task);
 		return;
 	}
