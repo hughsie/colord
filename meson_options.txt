@@ -3,6 +3,7 @@ option('session_example', type : 'boolean', value : false, description : 'Enable
 option('bash_completion', type : 'boolean', value : true, description : 'Enable bash completion')
 option('udev_rules', type: 'boolean', value: true, description: 'Install udev rules')
 option('systemd', type : 'boolean', value : true, description : 'Enable systemd integration')
+option('systemd_root_prefix', type: 'string', value: '', description: 'Directory to base systemd’s installation directories on')
 option('libcolordcompat', type : 'boolean', value : false, description : 'Enable libcolordcompat.so which is used by ArgyllCMS')
 option('argyllcms_sensor', type : 'boolean', value : true, description : 'Enable ArgllCMS sensor')
 option('sane', type : 'boolean', value : false, description : 'Enable SANE support')

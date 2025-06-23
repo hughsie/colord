@@ -130,6 +130,18 @@ if get_option('systemd')
   systemd = dependency('systemd')
   libsystemd = dependency('libsystemd')
   conf.set('HAVE_SYSTEMD', '1')
+  systemd_root_prefix = get_option('systemd_root_prefix')
+  if systemd_root_prefix == ''
+    systemduserunitdir = systemd.get_variable(pkgconfig: 'systemduserunitdir')
+    systemdsystemunitdir = systemd.get_variable(pkgconfig: 'systemdsystemunitdir')
+    tmpfilesdir = systemd.get_variable(pkgconfig: 'tmpfilesdir')
+    sysusersdir = systemd.get_variable(pkgconfig: 'sysusersdir')
+  else
+    systemduserunitdir = systemd.get_variable(pkgconfig: 'systemduserunitdir', pkgconfig_define: ['rootprefix', systemd_root_prefix])
+    systemdsystemunitdir = systemd.get_variable(pkgconfig: 'systemdsystemunitdir', pkgconfig_define: ['rootprefix', systemd_root_prefix])
+    tmpfilesdir = systemd.get_variable(pkgconfig: 'tmpfilesdir', pkgconfig_define: ['rootprefix', systemd_root_prefix])
+    sysusersdir = systemd.get_variable(pkgconfig: 'sysusersdir', pkgconfig_define: ['rootprefix', systemd_root_prefix])
+  endif
 endif
 
 if cc.has_header('pwd.h')

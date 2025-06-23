@@ -19,7 +19,7 @@ if get_option('systemd')
     output : 'colord-session.service',
     configuration : con2,
     install: true,
-    install_dir: systemd.get_pkgconfig_variable('systemduserunitdir'),
+    install_dir: systemduserunitdir,
   )
 endif
 
