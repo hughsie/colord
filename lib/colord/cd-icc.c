@@ -425,8 +425,8 @@ cd_icc_to_string (CdIcc *icc)
 			if (mlu_size == 0)
 				g_string_append_printf (str, "  Info:\t\tMLU empty!\n");
 			for (j = 0; j < mlu_size; j++) {
-				gchar country_code[3] = "\0\0\0";
-				gchar language_code[3] = "\0\0\0";
+				gchar country_code[3] = {0x0};
+				gchar language_code[3] = {0x0};
 				guint32 text_size;
 				g_autofree gchar *text_buffer = NULL;
 				g_autofree gunichar *wtext = NULL;
