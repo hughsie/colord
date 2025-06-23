@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"POT-Creation-Date: 2025-06-23 15:04+0100\n"
 "PO-Revision-Date: 2024-01-22 12:38+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>, 2024\n"
 "Language-Team: Hebrew (https://app.transifex.com/freedesktop/teams/12151/he/)\n"
@@ -126,7 +126,7 @@ msgstr "ייצוא נתוני התגית"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
-#: src/cd-main.c:2373
+#: src/cd-main.c:2374
 msgid "Color Management"
 msgstr "ניהול צבעים"
 
@@ -323,7 +323,7 @@ msgstr "מקרן"
 #. * getting the color from a color swatch
 #: client/cd-util.c:417
 msgid "Spot"
-msgstr ""
+msgstr "נקודה"
 
 #. TRANSLATORS: the sensor can get a reading of the
 #. * ambient light level
@@ -457,7 +457,7 @@ msgstr "חיישן"
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1079
 msgid "Set the device to the calibrate position and press enter."
-msgstr ""
+msgstr "יש להציב את ההתקן במקום הכיול וללחוץ על Enter."
 
 #. TRANSLATORS: the user needs to change something on the device
 #: client/cd-util.c:1088
@@ -1398,20 +1398,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "צריך אימות כדי להשתמש בחיישן הצבע"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2355
+#: src/cd-main.c:2356
 msgid "Exit after a small delay"
 msgstr "לצאת אחרי השהייה קצרה"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2358
+#: src/cd-main.c:2359
 msgid "Exit after the engine has loaded"
 msgstr "לצאת אחרי טעינת המנגנון"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2362
 msgid "Create a dummy sensor for testing"
 msgstr "יצירת חיישן מדומה לבדיקה"
 
-#: src/cd-main.c:2377
+#: src/cd-main.c:2378
 msgid "Color Management D-Bus Service"
 msgstr "שירות D-Bus לניהול צבע"

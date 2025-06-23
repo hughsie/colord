@@ -6,7 +6,7 @@ git shortlog 1.4.7.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
 Version 1.4.8
 ~~~~~~~~~~~~~
-Released: 2024-xx-xx
+Released: 2025-xx-xx
 
 New Features:
 Bugfixes:
@@ -14,9 +14,10 @@ Bugfixes:
 2: Update translations:
 
 ninja colord-pot
+cd ..
 tx push --source
 tx pull --all --minimum-perc=5
-git add ../po/*.po
+git add po/*.po
 
 # MAKE SURE THIS IS CORRECT
 export release_ver="1.4.8"

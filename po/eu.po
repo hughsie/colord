@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"POT-Creation-Date: 2025-06-23 15:04+0100\n"
 "PO-Revision-Date: 2024-01-22 12:38+0000\n"
 "Last-Translator: assar <asier.sarasua@gmail.com>, 2024\n"
 "Language-Team: Basque (https://app.transifex.com/freedesktop/teams/12151/eu/)\n"
@@ -125,7 +125,7 @@ msgstr "Esportatu etiketen datuak"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
-#: src/cd-main.c:2373
+#: src/cd-main.c:2374
 msgid "Color Management"
 msgstr "Kolore-kudeaketa"
 
@@ -836,7 +836,7 @@ msgstr ""
 
 #: data/profiles/Bluish.iccprofile.xml:3
 msgid "bluish"
-msgstr ""
+msgstr "urdinxka"
 
 #: data/profiles/Bluish.iccprofile.xml:5
 msgid "Blue"
@@ -1236,7 +1236,7 @@ msgstr ""
 
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:4
 msgid "Swapped Red and Green"
-msgstr ""
+msgstr "Gorria eta berdea trukatu dira"
 
 #. TRANSLATORS: channels refer to the RGB values in an image
 #: data/profiles/SwappedRedAndGreen.iccprofile.xml:7
@@ -1406,20 +1406,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "Autentifikazioa behar da kolore-sentsorea erabiltzeko"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2355
+#: src/cd-main.c:2356
 msgid "Exit after a small delay"
 msgstr "Irten atzerapen txiki baten ondoren"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2358
+#: src/cd-main.c:2359
 msgid "Exit after the engine has loaded"
 msgstr "Irten motorra kargatu ondoren"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2362
 msgid "Create a dummy sensor for testing"
 msgstr "Sortu imitaziozko sentsore bat probetarako"
 
-#: src/cd-main.c:2377
+#: src/cd-main.c:2378
 msgid "Color Management D-Bus Service"
 msgstr "Kolore-kudeaketarako D-Bus zerbitzua"

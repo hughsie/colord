@@ -1,3 +1,22 @@
+Version 1.4.8
+~~~~~~~~~~~~~
+Released: 2025-06-23
+
+New Features:
+ - Add AppStream metainfo XML with hardware provide info (Petter Reinholdtsen)
+ - Add support for -Dsystemd_root_prefix to make local building easier (Richard Hughes)
+ - Install sysusers.d config file if configured user is not root (Luca Boccassi)
+
+Bugfixes:
+ - Add the source attribute for each man page (Xi Ruoyao)
+ - Drop component type from AppStream metadata XML to avoid parsing error (Petter Reinholdtsen)
+ - Fix a critical warning when running the self tests (Richard Hughes)
+ - Fix USB scanners not working with RestrictAddressFamilies (Ferdinand Bachmann)
+ - Fix writing to the database with ProtectSystem=strict (Richard Hughes)
+ - Properly set the status to CD_SESSION_STATUS_RUNNING (Laurent Bigonville)
+ - Use g_ascii_strtod instead of atof() (Laurent Bigonville)
+ - Use sqlite3_errmsg() to avoid getting a mutable error message (psykose, Richard Hughes)
+
 Version 1.4.7
 ~~~~~~~~~~~~~
 Released: 2024-01-22

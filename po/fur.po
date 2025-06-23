@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"POT-Creation-Date: 2025-06-23 15:04+0100\n"
 "PO-Revision-Date: 2024-01-22 12:38+0000\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>, 2024\n"
 "Language-Team: Friulian (https://app.transifex.com/freedesktop/teams/12151/fur/)\n"
@@ -124,7 +124,7 @@ msgstr "Espuarte il dât de etichete"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
-#: src/cd-main.c:2373
+#: src/cd-main.c:2374
 msgid "Color Management"
 msgstr "Gjestion colôr"
 
@@ -886,6 +886,10 @@ msgid ""
 "was designed as an output-centric compromise between ColorMatch RGB and "
 "Adobe RGB and used to be preferred by some photograph printing services."
 msgstr ""
+"Chest al è un spazi di modifiche RGB di doprâ cun Adobe Photoshop 5.0 e "
+"sucessîfs. Al è stât progjetât come compromès incentrât sul risultât tra "
+"ColorMatch RGB e Adobe RGB e doprât par jessi preferît di cualchi servizi di"
+" stampe fotografiche."
 
 #: data/profiles/CIE-RGB.iccprofile.xml:3
 msgid "CIE-RGB"
@@ -902,6 +906,9 @@ msgid ""
 "probably don't want to use this profile as a editing space or a display "
 "profile."
 msgstr ""
+"Chest profîl teoric al è pensât par fâ esperiments cui colôrs. Al è facil "
+"che no tu desideredis doprâ chest profîl tant che spazi di modifiche o "
+"profîl di visualizazion."
 
 #: data/profiles/ColorMatchRGB.iccprofile.xml:3
 msgid "ColorMatchRGB"
@@ -920,6 +927,10 @@ msgid ""
 "significantly different to sRGB. You should only need to use this profile if"
 " viewing images created on a PressView monitor."
 msgstr ""
+"Chest profîl al è stât progjetât di Radius pal visôr PressView. Dopre chest "
+"profîl dome come profîl di visualizazion o come spazi di modifiche viodût "
+"che il profîl nol è tant diviers di sRGB. Tu varessis di doprâ chest profîl "
+"nome se tu viodis lis imagjins creadis suntun visôr PressView."
 
 #: data/profiles/Crayons.iccprofile.xml:3
 msgid "Crayons"
@@ -937,6 +948,9 @@ msgid ""
 "use. It is a test profile designed for testing embedding named colors into "
 "documents."
 msgstr ""
+"Chest profîl colôr cun non al conten ducj i colôrs pastel Crayola di ûs "
+"comun. Al è un profîl di prove, pensât par provâ colôrs cun non integrâts "
+"tai documents."
 
 #: data/profiles/DonRGB4.iccprofile.xml:3
 msgid "DonRGB4"
@@ -953,6 +967,9 @@ msgid ""
 "suitable for images with highly saturated colors often used in "
 "advertisements."
 msgstr ""
+"Chest spazi di modifiche al pues visualizâ plui colôrs saturâts rispiet a "
+"Adobe RGB e al è adat pes imagjins cun colôrs une vore saturâts, doprâts "
+"dispès tes publicitâts."
 
 #: data/profiles/ECI-RGBv1.iccprofile.xml:3
 msgid "ECI-RGBv1"
@@ -970,6 +987,11 @@ msgid ""
 "that can be printed on printing presses. This is sometimes used as a color "
 "data exchange format between publishers and printing houses."
 msgstr ""
+"Chest profîl al è racomandât dal ECI (European Color Initiative) tant che "
+"spazi di modifiche par modifichis di imagjin professionâls e al ponte a "
+"cuvierzi ducj i colôrs che si puedin stampâ su lis machinis di stampe. Chest"
+" al ven doprât cualchi volte tant che formât di scambi dai dâts sui colôrs "
+"tra editôrs e tipografiis."
 
 #: data/profiles/ECI-RGBv2.iccprofile.xml:3
 msgid "ECI-RGBv2"
@@ -986,6 +1008,10 @@ msgid ""
 "monitor will have to be also calibrated in the same way. This profile is "
 "only useful for advanced users and is not recommended for general use."
 msgstr ""
+"Chest profîl al è stât progjetât cuntune curve di spetri di luminositât, che"
+" al significhe che il visôr al varà di sei calibrât te stesse maniere. Chest"
+" profîl al è util nome pai utents avanzâts e nol è conseât par un ûs "
+"gjeneric."
 
 #: data/profiles/EktaSpacePS5.iccprofile.xml:3
 msgid "EktaSpacePS5"
@@ -1003,6 +1029,10 @@ msgid ""
 " It is suitable for storing images from color negatives, although nowadays "
 "ProPhoto RGB is a more popular profile for archival."
 msgstr ""
+"Chest profîl al è stât progjetât par memorizâ archivis di peliculis "
+"trasparentis scansionadis. Al è adat par memorizâ imagjins dai negatîfs, "
+"ancje se in dì di vuê ProPhoto RGB al è un profîl plui popolâr pe "
+"archiviazion."
 
 #: data/profiles/FOGRA27L_coated.iccprofile.xml:3
 msgid "FOGRA27L Coated"
@@ -1015,6 +1045,10 @@ msgid ""
 "and 2 (coated or matte), sheetfed offset. This profile set should no longer "
 "be used for production, use FOGRA39L instead."
 msgstr ""
+"Chest profîl al ven doprât pe produzion di lastris positivis, pe stampe sui "
+"gjenars di cjarte 1 e 2 (patinade o opache), pe stampe a sfuei cun matriç "
+"indirete. Nol è plui il câs di doprâ chest complès di profîi pal ambit "
+"produtîf, dopre invezit FOGRA39L."
 
 #: data/profiles/FOGRA28L_webcoated.iccprofile.xml:3
 msgid "FOGRA28L Web Coated"
@@ -1028,6 +1062,9 @@ msgid ""
 "(LWC), webfed offset. This profile should no longer be used for production, "
 "use FOGRA45 instead."
 msgstr ""
+"Chest profîl al ven doprât pe produzion di lastris positivis, pe stampe sul "
+"gjenar di cjarte 3 (LWC), pe stampe a bobine cun matriç indirete. Nol è plui"
+" il câs di doprâ chest profîl pal ambit produtîf, dopre invezit FOGRA45."
 
 #: data/profiles/FOGRA29L_uncoated.iccprofile.xml:3
 msgid "FOGRA29L Uncoated"
@@ -1041,6 +1078,10 @@ msgid ""
 "(uncoated white), sheetfed offset. This profile should no longer be used for"
 " production, use FOGRA47 instead."
 msgstr ""
+"Chest profîl al ven doprât pe produzion di lastris positivis, pe stampe sul "
+"gjenar di cjarte 4 (blancje no patinade), pe stampe a sfuei cun matriç "
+"indirete. Nol è plui il câs di doprâ chest profîl pal ambit produtîf, dopre "
+"invezit FOGRA47."
 
 #: data/profiles/FOGRA30L_uncoated_yellowish.iccprofile.xml:3
 msgid "FOGRA30L Uncoated Yellowish"
@@ -1052,6 +1093,9 @@ msgid ""
 "This profile is used for positive plate making, printing on paper type 5 "
 "(uncoated yellowish), sheetfed offset."
 msgstr ""
+"Chest profîl al ven doprât pe produzion di lastris positivis, pe stampe sul "
+"gjenar di cjarte 5 (zalide no patinade), pe stampe a sfuei cun matriç "
+"indirete."
 
 #: data/profiles/FOGRA39L_coated.iccprofile.xml:3
 msgid "FOGRA39L Coated"
@@ -1066,6 +1110,9 @@ msgid ""
 "sheetfed offset. This profile is not significantly different from U.S. "
 "GRACoL 2006 (TR 006)."
 msgstr ""
+"Chest profîl al ven doprât pe stampe sui gjenars di cjarte 1 e 2 (patinade o"
+" opache), pe stampe a sfuei cun matriç indirete. Chest profîl nol è tant "
+"diviers dal U.S. GRACoL 2006 (TR 006)."
 
 #: data/profiles/FOGRA40L_SC_paper.iccprofile.xml:3
 msgid "FOGRA40L SC Paper"
@@ -1077,6 +1124,9 @@ msgid ""
 "This profile is used for printing on SC (supercalendered) paper, webfed "
 "offset. There is no known U.S. equivalent."
 msgstr ""
+"Chest profîl al ven doprât pe stampe su cjarte SC (supercalandrade), pe "
+"stampe a bobine cun matriç indirete. Nol esist nissun ecuivalent cognossût "
+"tai Stâts Unîts."
 
 #: data/profiles/FOGRA45L_lwc.iccprofile.xml:3
 msgid "FOGRA45L Lightweight Coated"
@@ -1089,6 +1139,9 @@ msgid ""
 "light-weight coated (LWC) paper for 60 l/cm heatset web offset printing. It "
 "replaces FOGRA28L."
 msgstr ""
+"Chest profîl conformi ae norme ISO 12647-2:2004 al ven doprât pe stampe su "
+"cjarte patinade lizere miorade (LWC) pe stampe a bobina cun matriç indirete "
+"e suiadure a calôr di 60 l/cm. Al sostituìs il profîl FOGRA28L."
 
 #: data/profiles/FOGRA47L_uncoated.iccprofile.xml:3
 msgid "FOGRA47L Uncoated"
@@ -1100,6 +1153,9 @@ msgid ""
 "This ISO 12647-2 compliant profile is used for printing on 115 gsm uncoated "
 "white (paper type 4) for 60 l/cm sheetfed offset printing."
 msgstr ""
+"Chest profîl conformi ae norme ISO 12647-2 al ven doprât pe stampe su cjarte"
+" blancje no patinade gsm 115 (gjenar di cjarte 4) pe stampe a sfuei cun "
+"matriç indirete di 60l/cm."
 
 #: data/profiles/Gamma5000K.iccprofile.xml:3
 #: data/profiles/Gamma5500K.iccprofile.xml:3
@@ -1129,6 +1185,9 @@ msgid ""
 "This profile is used for printing on U.S. grade 1 and 2 coated paper, "
 "sheetfed offset and gravure. It is the U.S. equivalent of FOGRA39."
 msgstr ""
+"Chest profîl al ven doprât pe stampe su cjarte patinade di grât 1 e 2 dai "
+"Stâts Unîts, pe stampe a sfuei su matriç indirete e rotocalc. Al è "
+"l'ecuivalent dai Stâts Unîts di FOGRA39."
 
 #: data/profiles/IFRA26S_2004_newsprint.iccprofile.xml:3
 msgid "IFRA26S 2004 Newsprint"
@@ -1143,6 +1202,10 @@ msgid ""
 "gain). It is recommended by WAN-IFRA for coldset printing on newsprint "
 "worldwide."
 msgstr ""
+"Chest profîl al ven doprât pe stampe su cjarte di gjornâi e al è un profîl "
+"conformi ae norme ISO12647-3:2005 progjetât par machinis di stampe che a "
+"presentin il 26% di TVI (inspessiment dal pont). Al è racomandât di WAN-IFRA"
+" pe stampe a frêt su cjarte di gjornâl par dut il mont."
 
 #: data/profiles/NTSC-RGB.iccprofile.xml:3
 msgid "NTSC-RGB"
@@ -1160,6 +1223,9 @@ msgid ""
 "It is an obsolete standard that has been replaced by SMTE-C. You should only"
 " use this profile to decode archived video."
 msgstr ""
+"Chest profîl al definìs l'interval dai colôrs doprât cul standard video "
+"NTSC. Al è un standard vecjo che al è stât sostituît di SMTE-C. Tu varessis "
+"di doprâ chest profîl dome par decodificâ un video archiviât."
 
 #: data/profiles/PAL-RGB.iccprofile.xml:3
 msgid "PAL-RGB"
@@ -1176,6 +1242,9 @@ msgid ""
 "standards and is very similar to sRGB. You should only use this profile to "
 "encode or decode video."
 msgstr ""
+"Chest profîl al definìs l'interval dai colôrs doprât cui standards PAL e "
+"SECAM e al è une vore simil a sRGB. Tu varessis di doprâchest profîl dome "
+"par codificâ o decodificâ videos."
 
 #: data/profiles/ProPhotoRGB.iccprofile.xml:3
 msgid "ProPhotoRGB"
@@ -1193,6 +1262,11 @@ msgid ""
 "rendering, editing and archiving RAW images. Unless you are working with 16 "
 "bits per channel precision, you may see color banding when editing images."
 msgstr ""
+"Progjetât tal inprin di Eastman Kodak e clamât ROMM RGB, chest profîl al "
+"pues visualizâ un grant interval di colôrs e al ven doprât di tancj "
+"fotografs pe rapresentazion, modifiche e memorizazion di imagjins RAW "
+"(gresis). Se no tu stâs lavorant cuntune precision di 16 bits par canâl, tu "
+"podaressis viodi bandis di colôr cuant che tu modifichis lis imagjins."
 
 #: data/profiles/Rec709.iccprofile.xml:3
 msgid "Rec709"
@@ -1209,6 +1283,10 @@ msgid ""
 "was first approved in 1990. The Rec. 709 profile uses the same range of "
 "colors as sRGB although the luminance curve is different."
 msgstr ""
+"La racomandazion ITU-R BT.709 e je un standard pe television a alte "
+"definizion aprovât pe prime volte tal 1990. Il profîl Rec. 709 al dopre il "
+"stes spetri di colôrs dal sRGB, ancje se la curve di luminance e je "
+"divierse."
 
 #: data/profiles/SMPTE-C-RGB.iccprofile.xml:3
 msgid "SMPTE-C-RGB"
@@ -1238,6 +1316,9 @@ msgid ""
 "This is an ANSI CGATS/SNAP TR 002-2007 based profile for printing on "
 "newsprint in the U.S., coldset offset. The TVI (dot gain) is 26%."
 msgstr ""
+"Chest al è un profîl basât su ANSI CGATS/SNAP TR 002-2007 pe stampe su "
+"cjarte di gjornâl tai Stâts Unîts, stampe a frêt cun matriç indirete. Il TVI"
+" (inspessiment dal pont) al è dal 26%."
 
 #: data/profiles/sRGB.iccprofile.xml:3 data/profiles/sRGB.iccprofile.xml:4
 msgid "sRGB"
@@ -1289,6 +1370,9 @@ msgid ""
 "offset and gravure. It is used for high quality magazine printing with white"
 " paper."
 msgstr ""
+"Chest profîl al ven doprât pe stampe su cjarte patinade di grât 3 dai Stâts "
+"Unîts, stampe a sfuei cun matriç indirete e rotocalc. Al ven doprât pe "
+"stampe di rivistis a alte cualitât cun pagjinis blancjis."
 
 #: data/profiles/SWOP_TR005_coated_5.iccprofile.xml:3
 msgid "SWOP TR005 Coated"
@@ -1301,6 +1385,9 @@ msgid ""
 "offset and gravure. It is use for standard magazine printing with yellowish "
 "paper."
 msgstr ""
+"Chest profîl al ven doprât pe stampe su cjarte patinade di grât 5 dai Stâts "
+"Unîts, stampe a sfuei cun matriç indirete e rotocalc. Al ven doprât pe "
+"stampe di rivistis su cjarte zalide."
 
 #: data/profiles/WideGamutRGB.iccprofile.xml:3
 msgid "WideGamutRGB"
@@ -1319,6 +1406,12 @@ msgid ""
 "screen. Unless you are working with 16 bits per channel precision, you may "
 "see color banding when editing images."
 msgstr ""
+"Chest spazi di modifiche al è stât progjetât di Adobe Systems par caturâ une"
+" vore plui di colôrs rispiet a Adobe RGB. Chest profîl al ven doprât par "
+"stampâ su dispositîfs come regjistradôrs di filmâts e al pues definî tancj "
+"colôrs che no si puedin visualizâ suntun schermi di computer. Se no tu stâs "
+"lavorant cuntune precision di 16 bits par canâl, tu podaressis viodi bandis "
+"di colôr cuant che tu modifichis lis imagjins."
 
 #: data/profiles/x11-colors.iccprofile.xml:3
 msgid "x11-colors"
@@ -1335,6 +1428,8 @@ msgid ""
 "This named color profile contains all the colors defined by X11, assuming "
 "the source colors were supposed to be sRGB."
 msgstr ""
+"Chest profîl di colôr cun non al conten ducj i colôrs definîts di X11, "
+"suponint che i colôrs sorint a vevin di jessi sRGB."
 
 #. SECURITY:
 #. - Normal users should not have to authenticate to add devices
@@ -1443,20 +1538,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "La autenticazion e je necessarie par doprâ il sensôr di colôr"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2355
+#: src/cd-main.c:2356
 msgid "Exit after a small delay"
 msgstr "Jes dopo un piçul ritart"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2358
+#: src/cd-main.c:2359
 msgid "Exit after the engine has loaded"
 msgstr "Jes dopo che il motôr al sedi cjariât"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2362
 msgid "Create a dummy sensor for testing"
 msgstr "Cree un sensôr pustiç pes provis"
 
-#: src/cd-main.c:2377
+#: src/cd-main.c:2378
 msgid "Color Management D-Bus Service"
 msgstr "Servizi D-Bus di gjestion dal colôr"

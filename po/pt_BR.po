@@ -4,18 +4,18 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # Richard Hughes <richard@hughsie.com>, 2024
 # André Marcelo Alvarenga <alvarenga@kde.org>, 2024
+# Rafael Fontenelle <rffontenelle@gmail.com>, 2024
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: colord\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-22 12:38+0000\n"
+"POT-Creation-Date: 2025-06-23 15:04+0100\n"
 "PO-Revision-Date: 2024-01-22 12:38+0000\n"
-"Last-Translator: André Marcelo Alvarenga <alvarenga@kde.org>, 2024\n"
+"Last-Translator: Rafael Fontenelle <rffontenelle@gmail.com>, 2024\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/freedesktop/teams/12151/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,22 +57,22 @@ msgstr "Comando não encontrado, comandos válidos são:"
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:582 client/cd-it8.c:468 client/cd-util.c:2013
 msgid "Show extra debugging information"
-msgstr "Exibir informações extras de depuração"
+msgstr "Mostra informações extras de depuração"
 
 #. TRANSLATORS: command line option
 #: client/cd-fix-profile.c:585
 msgid "The locale to use when setting localized text"
-msgstr "O local a ser usado ao definir texto localizado"
+msgstr "A localidade a ser usada ao definir texto localizado"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:606
 msgid "Generate the VCGT calibration of a given size"
-msgstr "Gerar a calibração VCGT de um tamanho dado"
+msgstr "Gera a calibração VCGT de um tamanho dado"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:611
 msgid "Clear any metadata in the profile"
-msgstr "Limpar qualquer metadado no perfil"
+msgstr "Limpa qualquer metadado no perfil"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:616
@@ -92,7 +92,7 @@ msgstr "Remove um item de metadado do perfil"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:631
 msgid "Sets the copyright string"
-msgstr "Define a string de copyright"
+msgstr "Define a string de direito autoral"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:636
@@ -117,7 +117,7 @@ msgstr "Corrige automaticamente metadados no perfil"
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:656
 msgid "Set the ICC profile version"
-msgstr "Definir a versão do perfil de ICC"
+msgstr "Define a versão do perfil de ICC"
 
 #. TRANSLATORS: command description
 #: client/cd-fix-profile.c:661
@@ -126,7 +126,7 @@ msgstr "Exporta os dados de etiqueta"
 
 #. TRANSLATORS: program name
 #: client/cd-fix-profile.c:674 client/cd-it8.c:516 client/cd-util.c:2228
-#: src/cd-main.c:2373
+#: src/cd-main.c:2374
 msgid "Color Management"
 msgstr "Gerenciamento de cores"
 
@@ -201,7 +201,7 @@ msgstr "Tipo"
 #. TRANSLATORS: the device colorspace, e.g. "rgb"
 #: client/cd-util.c:192 client/cd-util.c:342
 msgid "Colorspace"
-msgstr "Espaço de Cores"
+msgstr "Espaço de cores"
 
 #. TRANSLATORS: the object scope, e.g. temp, disk, etc
 #: client/cd-util.c:199 client/cd-util.c:336
@@ -221,7 +221,7 @@ msgstr "Todo o sistema"
 #. TRANSLATORS: profile filename
 #: client/cd-util.c:215
 msgid "Filename"
-msgstr "Nome do Arquivo"
+msgstr "Nome do arquivo"
 
 #. TRANSLATORS: profile identifier
 #: client/cd-util.c:220
@@ -276,7 +276,7 @@ msgstr "Fabricante"
 
 #: client/cd-util.c:308
 msgid "Inhibitors"
-msgstr "inibidores"
+msgstr "Inibidores"
 
 #. TRANSLATORS: the device serial number
 #: client/cd-util.c:312
@@ -296,7 +296,7 @@ msgstr "Posição"
 #. TRANSLATORS: the device identifier
 #: client/cd-util.c:347
 msgid "Device ID"
-msgstr "ID do Dispositivo"
+msgstr "ID do dispositivo"
 
 #. TRANSLATORS: the profile for the device
 #: client/cd-util.c:356
@@ -490,7 +490,7 @@ msgstr "Nenhuma capacidade espectral"
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2016
 msgid "Show client and daemon versions"
-msgstr "Mostrar versões de cliente e daemon"
+msgstr "Mostra versões do cliente e do daemon"
 
 #. TRANSLATORS: command line option
 #: client/cd-util.c:2019
@@ -505,28 +505,27 @@ msgstr "Filtra propriedades do objeto ao exibi-lo"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2041
 msgid "Dump all debug data to a file"
-msgstr "Descarregar todos os dados de depuração para um arquivo"
+msgstr "Descarrega todos os dados de depuração para um arquivo"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2047
 msgid "Gets all the color managed devices"
-msgstr "Adquire todos os dispositivos gerenciados de cores"
+msgstr "Obtém todos os dispositivos gerenciados de cores"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2053
 msgid "Gets all the color managed devices of a specific kind"
-msgstr ""
-"Adquire todos os dispositivos gerenciados por cor de um tipo específico"
+msgstr "Obtém todos os dispositivos gerenciados por cor de um tipo específico"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2059
 msgid "Gets all the available color profiles"
-msgstr "Adquire todos perfis de cor disponíveis"
+msgstr "Obtém todos perfis de cor disponíveis"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2065
 msgid "Gets all the available color sensors"
-msgstr "Adquire todos sensores de cor disponíveis"
+msgstr "Obtém todos sensores de cor disponíveis"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2071
@@ -536,7 +535,7 @@ msgstr "Obtém uma leitura espectral a partir um sensor"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2077
 msgid "Gets a reading from a sensor"
-msgstr "Adquire uma leitura de um sensor"
+msgstr "Obtém uma leitura de um sensor"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2083
@@ -551,7 +550,7 @@ msgstr "Define um ou mais opções para sensores"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2095
 msgid "Create a device"
-msgstr "Criar um dispositivo"
+msgstr "Cria um dispositivo"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2101
@@ -571,22 +570,22 @@ msgstr "Localiza um perfil a partir de seu ID"
 #. TRANSLATORS: command description
 #: client/cd-util.c:2119
 msgid "Find a profile by filename"
-msgstr "Pesquisar por perfil por nome de arquivo"
+msgstr "Pesquisa por perfil por nome de arquivo"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2125
 msgid "Get a standard colorspace"
-msgstr "Adquire um padrão de espaço de cor"
+msgstr "Obtém um padrão de espaço de cor"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2131
 msgid "Create a profile"
-msgstr "Criar um perfil"
+msgstr "Cria um perfil"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2137
 msgid "Add a profile to a device that already exists"
-msgstr "Adicionar um perfil a um dispositivo que já existe"
+msgstr "Adiciona um perfil a um dispositivo que já existe"
 
 #. TRANSLATORS: command description
 #: client/cd-util.c:2143
@@ -681,11 +680,11 @@ msgstr "Exibe informações de depuração por todos arquivos"
 
 #: contrib/session-helper/cd-debug.c:206 src/cd-debug.c:206
 msgid "Debugging Options"
-msgstr "Opções de Depuração"
+msgstr "Opções de depuração"
 
 #: contrib/session-helper/cd-debug.c:207 src/cd-debug.c:207
 msgid "Show debugging options"
-msgstr "Exibir opções de depuração"
+msgstr "Mostra opções de depuração"
 
 #: contrib/session-helper/org.freedesktop.ColorHelper.gschema.xml:5
 msgid "Default gamma for the display"
@@ -729,7 +728,7 @@ msgstr "AdobeRGB1998"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:4
 msgid "Compatible with Adobe RGB (1998)"
-msgstr "Compatible com Adobe RGB (1980)"
+msgstr "Compatible com Adobe RGB (1998)"
 
 #: data/profiles/AdobeRGB1998.iccprofile.xml:5
 #: data/profiles/AppleRGB.iccprofile.xml:5
@@ -1538,20 +1537,20 @@ msgid "Authentication is required to use the color sensor"
 msgstr "Autenticação é necessária para usar o sensor de cor"
 
 #. TRANSLATORS: exit after we've started up, used for user profiling
-#: src/cd-main.c:2355
+#: src/cd-main.c:2356
 msgid "Exit after a small delay"
 msgstr "Sair após um pequeno atraso"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2358
+#: src/cd-main.c:2359
 msgid "Exit after the engine has loaded"
 msgstr "Sair após o motor tiver sido carregado"
 
 #. TRANSLATORS: exit straight away, used for automatic profiling
-#: src/cd-main.c:2361
+#: src/cd-main.c:2362
 msgid "Create a dummy sensor for testing"
 msgstr "Criar um sensor fictício para testes"
 
-#: src/cd-main.c:2377
+#: src/cd-main.c:2378
 msgid "Color Management D-Bus Service"
 msgstr "Serviço D-Bus de Gerenciamento de Cores"
