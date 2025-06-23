@@ -1458,7 +1458,8 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		/* set the properties */
 		while (g_variant_iter_next (iter, "{&s&s}",
 					    &prop_key, &prop_value)) {
-			if (g_strcmp0 (prop_key, CD_PROFILE_PROPERTY_FILENAME) == 0)
+			if (filename == NULL &&
+			    g_strcmp0 (prop_key, CD_PROFILE_PROPERTY_FILENAME) == 0)
 				filename = g_strdup (prop_value);
 			ret = cd_profile_set_property_internal (profile,
 								prop_key,
