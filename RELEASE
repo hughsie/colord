@@ -2,9 +2,9 @@ colord Release Notes
 
 1. Write NEWS entries for colord in the same format as usual.
 
-git shortlog 1.4.7.. | grep -i -v trivial | grep -v Merge > NEWS.new
+git shortlog 1.4.8.. | grep -i -v trivial | grep -v Merge > NEWS.new
 
-Version 1.4.8
+Version 1.4.9
 ~~~~~~~~~~~~~
 Released: 2025-xx-xx
 
@@ -20,7 +20,7 @@ tx pull --all --minimum-perc=5
 git add po/*.po
 
 # MAKE SURE THIS IS CORRECT
-export release_ver="1.4.8"
+export release_ver="1.4.9"
 
 3. Generate the tarball:
 git commit -a -m "Release colord ${release_ver}"
