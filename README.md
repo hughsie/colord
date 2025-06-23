@@ -43,27 +43,6 @@ Ensure the following packages are installed:
 
 Then just do `mkdir build && cd build && meson --prefix=/usr .. && ninja`
 
-Compiling for Microsoft Windows
-===============================
-
-* Ensure wine is installed
-
-* Compile with a lot of restricted options, e.g.
-
-    mingw64-configure                               \
-            --disable-argyllcms-sensor              \
-            --disable-bash-completion               \
-            --disable-polkit                        \
-            --disable-print-profiles                \
-            --disable-sane                          \
-            --disable-session-example               \
-            --disable-systemd                 \
-            --disable-udev                          \
-            --disable-unix                          \
-            --without-pic                           \
-            --with-systemdsystemunitdir=/tmp        \
-            --with-udevrulesdir=/tmp && make
-
 Contributing
 ============
 
