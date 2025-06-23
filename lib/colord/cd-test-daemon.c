@@ -144,6 +144,10 @@ colord_device_qualifiers_func (void)
 
 	/* create profile */
 	filename = cd_test_get_filename ("ibm-t61.icc");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
 	g_hash_table_insert (profile_props,
@@ -401,6 +405,10 @@ colord_profile_file_func (void)
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
 	filename = cd_test_get_filename ("ibm-t61.icc");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	g_hash_table_insert (profile_props,
 			     g_strdup (CD_PROFILE_PROPERTY_FILENAME),
 			     g_strdup (filename));
@@ -520,6 +528,10 @@ colord_device_id_mapping_pd_func (void)
 
 	/* create profile */
 	filename = cd_test_get_filename ("ibm-t61.icc");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
 	g_hash_table_insert (profile_props,
@@ -918,6 +930,10 @@ colord_icc_meta_dict_func (void)
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
 	filename = cd_test_get_filename ("ibm-t61.icc");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	g_hash_table_insert (profile_props,
 			     g_strdup (CD_PROFILE_PROPERTY_FILENAME),
 			     g_strdup (filename));
@@ -1411,6 +1427,10 @@ colord_client_fd_pass_func (void)
 
 	/* create extra profile */
 	filename = cd_test_get_filename ("ibm-t61.icc");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
 	g_hash_table_insert (profile_props,
@@ -1481,6 +1501,10 @@ colord_client_import_func (void)
 
 	/* check we can't import random files */
 	filename = cd_test_get_filename ("raw.ti3");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	invalid_file = g_file_new_for_path (filename);
 	profile2 = cd_client_import_profile_sync (client,
 						  invalid_file,
@@ -1495,6 +1519,10 @@ colord_client_import_func (void)
 
 	/* create extra profile */
 	filename = cd_test_get_filename ("ibm-t61.icc");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	file = g_file_new_for_path (filename);
 
 	/* ensure it's deleted */
@@ -1751,6 +1779,10 @@ colord_client_systemwide_func (void)
 
 	/* create extra profile */
 	filename = cd_test_get_filename ("ibm-t61.icc");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
 	g_hash_table_insert (profile_props,
@@ -2594,6 +2626,10 @@ colord_profile_duplicate_func (void)
 
 	/* create extra profile */
 	filename = cd_test_get_filename ("ibm-t61.icc");
+	if (filename == NULL) {
+		g_test_skip("no test data");
+		return;
+	}
 	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
 					       g_free, g_free);
 	g_hash_table_insert (profile_props,
