@@ -697,11 +697,9 @@ cd_client_create_profile (CdClient *client,
 	    g_hash_table_size (properties) > 0) {
 		list = g_hash_table_get_keys (properties);
 		for (l = list; l != NULL; l = l->next) {
-			g_variant_builder_add (&builder,
-					       "{ss}",
-					       l->data,
-					       g_hash_table_lookup (properties,
-								    l->data));
+			const gchar *key = l->data;
+			const gchar *value = g_hash_table_lookup (properties, key);
+			g_variant_builder_add (&builder, "{ss}", key, value);
 		}
 		g_list_free (list);
 	} else {
