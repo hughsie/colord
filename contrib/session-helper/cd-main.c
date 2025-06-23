@@ -1488,7 +1488,8 @@ cd_main_set_basename (CdMainPrivate *priv)
 		g_string_append_printf (str, "%s ", tmp);
 
 	/* remove trailing space */
-	g_string_set_size (str, str->len - 1);
+	if (str->len > 0)
+		g_string_set_size (str, str->len - 1);
 
 	/* make suitable filename */
 	g_strdelimit (str->str, "/\"*?", '_');
