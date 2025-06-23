@@ -509,16 +509,6 @@ cd_util_show_sensor (CdUtilPrivate *priv, CdSensor *sensor)
 			     "object-path", priv,
 			     cd_sensor_get_object_path (sensor));
 
-	/* lock */
-	ret = cd_sensor_lock_sync (sensor,
-				   NULL,
-				   &error);
-	if (!ret) {
-		g_warning ("Failed to lock sensor: %s",
-			   error->message);
-		goto out;
-	}
-
 	/* wait for updates */
 	loop = g_main_loop_new (NULL, FALSE);
 	g_idle_add (cd_util_idle_loop_quit_cb, loop);
@@ -630,15 +620,6 @@ cd_util_show_sensor (CdUtilPrivate *priv, CdSensor *sensor)
 			     "capabilities", priv,
 			     caps_str->str);
 
-	/* unlock */
-	ret = cd_sensor_unlock_sync (sensor,
-				     NULL,
-				     &error);
-	if (!ret) {
-		g_warning ("Failed to unlock sensor: %s",
-			   error->message);
-		goto out;
-	}
 out:
 	if (loop != NULL)
 		g_main_loop_unref (loop);
