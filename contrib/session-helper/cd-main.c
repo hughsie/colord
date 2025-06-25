@@ -796,6 +796,10 @@ static gboolean
 cd_main_finished_quit_cb (gpointer user_data)
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
+	if (priv->sensor)
+		cd_sensor_unlock_sync(priv->sensor, NULL, NULL);
+	if (priv->device)
+		cd_device_profiling_uninhibit_sync(priv->device, NULL, NULL);
 	g_main_loop_quit (priv->loop);
 	return G_SOURCE_REMOVE;
 }
@@ -1500,6 +1504,10 @@ static gboolean
 cd_main_quit_loop_cb (gpointer user_data)
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
+	if (priv->sensor)
+		cd_sensor_unlock_sync(priv->sensor, NULL, NULL);
+	if (priv->device)
+		cd_device_profiling_uninhibit_sync(priv->device, NULL, NULL);
 	g_main_loop_quit (priv->loop);
 	return G_SOURCE_REMOVE;
 }

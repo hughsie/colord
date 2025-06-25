@@ -56,7 +56,7 @@ typedef struct
 typedef enum {
 	CD_SPAWN_EXIT_TYPE_SUCCESS,		/* script run, without any problems */
 	CD_SPAWN_EXIT_TYPE_FAILED,		/* script failed to run */
-	CD_SPAWN_EXIT_TYPE_SIGQUIT,		/* we killed the instance (SIGQUIT) */
+	CD_SPAWN_EXIT_TYPE_SIGTERM,		/* we killed the instance (SIGTERM) */
 	CD_SPAWN_EXIT_TYPE_SIGKILL,		/* we killed the instance (SIGKILL) */
 	CD_SPAWN_EXIT_TYPE_UNKNOWN
 } CdSpawnExitType;
