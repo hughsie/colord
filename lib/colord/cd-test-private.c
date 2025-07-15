@@ -2052,6 +2052,15 @@ colord_icc_store_func (void)
 	g_assert_cmpint (added, ==, 1);
 	g_assert_cmpint (removed, ==, 0);
 
+	/* remove already-exists-duplicate.icc
+	 * the file was not added to the store so we can remove it */
+	ret = g_unlink (file1_dup);
+	g_assert (!ret);
+	cd_test_loop_run_with_timeout (5000);
+	cd_test_loop_quit ();
+	g_assert_cmpint (added, ==, 1);
+	g_assert_cmpint (removed, ==, 0);
+
 	/* create /tmp/colord-foo/new-root/new-icc.icc which should cause a
 	 * new directory notifier to be added and the new file to be
 	 * discovered */
