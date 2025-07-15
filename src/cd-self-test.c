@@ -87,6 +87,7 @@ colord_device_func (void)
 	CdProfileArray *profile_array;
 	gboolean ret;
 	GError *error = NULL;
+	gchar *db_filename, *tmpdir;
 
 	profile_array = cd_profile_array_new ();
 	device = cd_device_new ();
@@ -94,7 +95,12 @@ colord_device_func (void)
 
 	/* create device database */
 	ddb = cd_device_db_new ();
-	ret = cd_device_db_load (ddb, "/tmp/device.db", &error);
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	db_filename = g_strdup_printf ("%s/device.db", tmpdir);
+	ret = cd_device_db_load (ddb, db_filename, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 	ret = cd_device_db_empty (ddb, &error);
@@ -146,6 +152,11 @@ colord_device_func (void)
 	g_assert (!ret);
 	g_clear_error (&error);
 
+	g_remove (db_filename);
+	g_remove (tmpdir);
+	g_free (db_filename);
+	g_free (tmpdir);
+
 	g_object_unref (device);
 	g_object_unref (ddb);
 	g_object_unref (profile);
@@ -160,10 +171,16 @@ colord_device_array_func (void)
 	CdDevice *device;
 	gboolean ret;
 	GError *error = NULL;
+	gchar *db_filename, *tmpdir;
 
 	/* create device database */
 	ddb = cd_device_db_new ();
-	ret = cd_device_db_load (ddb, "/tmp/device.db", &error);
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	db_filename = g_strdup_printf ("%s/device.db", tmpdir);
+	ret = cd_device_db_load (ddb, db_filename, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 	ret = cd_device_db_empty (ddb, &error);
@@ -195,6 +212,11 @@ colord_device_array_func (void)
 	g_assert_cmpstr (cd_device_get_id (device), ==, "dave");
 	g_object_unref (device);
 
+	g_remove (db_filename);
+	g_remove (tmpdir);
+	g_free (db_filename);
+	g_free (tmpdir);
+
 	g_object_unref (device_array);
 	g_object_unref (ddb);
 }
@@ -203,18 +225,23 @@ static void
 cd_mapping_db_alter_func (void)
 {
 	CdMappingDb *mdb;
-	const gchar *db_filename = "/tmp/mapping.db";
 	const gchar *statement;
 	gboolean ret;
 	GError *error = NULL;
 	gint rc;
 	sqlite3 *db;
+	gchar *db_filename, *tmpdir;
 
 	/* create */
 	mdb = cd_mapping_db_new ();
 	g_assert (mdb != NULL);
 
 	/* setup v0.1.0 database for altering */
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	db_filename = g_strdup_printf ("%s/mapping.db", tmpdir);
 	(void)g_unlink (db_filename);
 	rc = sqlite3_open (db_filename, &db);
 	g_assert_cmpint (rc, ==, SQLITE_OK);
@@ -237,6 +264,11 @@ cd_mapping_db_alter_func (void)
 
 	sqlite3_close (db);
 	g_object_unref (mdb);
+
+	g_remove (db_filename);
+	g_remove (tmpdir);
+	g_free (db_filename);
+	g_free (tmpdir);
 }
 
 static gint
@@ -251,19 +283,24 @@ static void
 cd_mapping_db_convert_func (void)
 {
 	CdMappingDb *mdb;
-	const gchar *db_filename = "/tmp/mapping.db";
 	const gchar *statement;
 	gboolean ret;
 	gchar *device_id = NULL;
 	GError *error = NULL;
 	gint rc;
 	sqlite3 *db;
+	gchar *db_filename, *tmpdir;
 
 	/* create */
 	mdb = cd_mapping_db_new ();
 	g_assert (mdb != NULL);
 
 	/* setup v0.1.8 database for converting */
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	db_filename = g_strdup_printf ("%s/mapping.db", tmpdir);
 	(void)g_unlink (db_filename);
 	rc = sqlite3_open (db_filename, &db);
 	g_assert_cmpint (rc, ==, SQLITE_OK);
@@ -290,23 +327,33 @@ cd_mapping_db_convert_func (void)
 
 	sqlite3_close (db);
 	g_object_unref (mdb);
+
+	g_remove (db_filename);
+	g_remove (tmpdir);
+	g_free (db_filename);
+	g_free (tmpdir);
 }
 
 static void
 cd_mapping_db_func (void)
 {
 	CdMappingDb *mdb;
-	const gchar *db_filename = "/tmp/mapping.db";
 	gboolean ret;
 	GError *error = NULL;
 	GPtrArray *array;
 	guint64 timestamp;
+	gchar *db_filename, *tmpdir;
 
 	/* create */
 	mdb = cd_mapping_db_new ();
 	g_assert (mdb != NULL);
 
 	/* connect, which should create a v2 table for us */
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	db_filename = g_strdup_printf ("%s/mapping.db", tmpdir);
 	(void)g_unlink (db_filename);
 	ret = cd_mapping_db_load (mdb, db_filename, &error);
 	g_assert_no_error (error);
@@ -360,6 +407,11 @@ cd_mapping_db_func (void)
 	g_ptr_array_unref (array);
 
 	g_object_unref (mdb);
+
+	g_remove (db_filename);
+	g_remove (tmpdir);
+	g_free (db_filename);
+	g_free (tmpdir);
 }
 
 static void
@@ -370,13 +422,20 @@ cd_device_db_func (void)
 	gboolean ret;
 	GPtrArray *array;
 	gchar *value;
+	gchar *db_filename, *tmpdir;
 
 	/* create */
 	ddb = cd_device_db_new ();
 	g_assert (ddb != NULL);
 
 	/* connect, which should create it for us */
-	ret = cd_device_db_load (ddb, "/tmp/device.db", &error);
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	db_filename = g_strdup_printf ("%s/device.db", tmpdir);
+	g_assert_no_error (error);
+	ret = cd_device_db_load (ddb, db_filename, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -470,6 +529,11 @@ cd_device_db_func (void)
 	g_clear_error (&error);
 	g_free (value);
 
+	g_remove (db_filename);
+	g_remove (tmpdir);
+	g_free (db_filename);
+	g_free (tmpdir);
+
 	g_object_unref (ddb);
 }
 
@@ -480,13 +544,20 @@ cd_profile_db_func (void)
 	GError *error = NULL;
 	gboolean ret;
 	gchar *value = NULL;
+	gchar *db_filename, *tmpdir;
 
 	/* create */
 	pdb = cd_profile_db_new ();
 	g_assert (pdb != NULL);
 
 	/* connect, which should create it for us */
-	ret = cd_profile_db_load (pdb, "/tmp/profile.db", &error);
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	db_filename = g_strdup_printf ("%s/profile.db", tmpdir);
+	g_assert_no_error (error);
+	ret = cd_profile_db_load (pdb, db_filename, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
 
@@ -538,6 +609,11 @@ cd_profile_db_func (void)
 	g_assert (ret);
 	g_assert_cmpstr (value, ==, "My Display Profile");
 	g_free (value);
+
+	g_remove (db_filename);
+	g_remove (tmpdir);
+	g_free (db_filename);
+	g_free (tmpdir);
 
 	g_object_unref (pdb);
 }

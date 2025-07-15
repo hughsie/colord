@@ -565,6 +565,7 @@ colord_it8_raw_func (void)
 	gboolean ret;
 	gchar *data;
 	gchar *filename;
+	gchar *tmpdir;
 	g_autoptr(GError) error = NULL;
 	GFile *file;
 	GFile *file_new;
@@ -590,7 +591,11 @@ colord_it8_raw_func (void)
 	g_free (data);
 
 	/* write this to a new file */
-	file_new = g_file_new_for_path ("/tmp/test.ti3");
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	file_new = g_file_new_build_filename (tmpdir, "test.ti3", NULL);
 	ret = cd_it8_save_to_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -620,8 +625,11 @@ colord_it8_raw_func (void)
 	ret = g_file_delete (file_new, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+	ret = g_remove (tmpdir);
+	g_assert (!ret);
 
 	g_free (filename);
+	g_free (tmpdir);
 	g_object_unref (it8);
 	g_object_unref (file);
 	g_object_unref (file_new);
@@ -673,6 +681,7 @@ colord_it8_normalized_func (void)
 	CdColorXYZ xyz;
 	gboolean ret;
 	g_autofree gchar *filename = NULL;
+	g_autofree gchar *tmpdir = NULL;
 	g_autoptr(CdIt8) it8 = NULL;
 	g_autoptr(GError) error = NULL;
 	g_autoptr(GFile) file_new = NULL;
@@ -689,7 +698,11 @@ colord_it8_normalized_func (void)
 	g_assert (ret);
 
 	/* write this to a new file */
-	file_new = g_file_new_for_path ("/tmp/test.ti3");
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	file_new = g_file_new_build_filename (tmpdir, "test.ti3", NULL);
 	ret = cd_it8_save_to_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -718,6 +731,8 @@ colord_it8_normalized_func (void)
 	ret = g_file_delete (file_new, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+	ret = g_remove (tmpdir);
+	g_assert (!ret);
 }
 
 static void
@@ -772,6 +787,7 @@ colord_it8_ccmx_func (void)
 	g_autoptr(GFile) file_new = NULL;
 	g_autoptr(GFile) file = NULL;
 	g_autofree gchar *filename = NULL;
+	g_autofree gchar *tmpdir = NULL;
 
 	it8 = cd_it8_new ();
 	g_assert (it8 != NULL);
@@ -784,7 +800,11 @@ colord_it8_ccmx_func (void)
 	g_assert (ret);
 
 	/* write this to a new file */
-	file_new = g_file_new_for_path ("/tmp/test.ccmx");
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	file_new = g_file_new_build_filename (tmpdir, "test.ccmx", NULL);
 	ret = cd_it8_save_to_file (it8, file_new, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
@@ -811,6 +831,8 @@ colord_it8_ccmx_func (void)
 	ret = g_file_delete (file_new, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (ret);
+	ret = g_remove (tmpdir);
+	g_assert (!ret);
 }
 
 static void
@@ -1675,6 +1697,7 @@ colord_icc_save_func (void)
 	const gchar *str;
 	gboolean ret;
 	gchar *filename;
+	gchar *tmpdir;
 	g_autoptr(GError) error = NULL;
 	GFile *file;
 
@@ -1706,7 +1729,11 @@ colord_icc_save_func (void)
 	cd_icc_set_description (icc, "fr.UTF-8", "Couleurs crayon");
 
 	/* Save to /tmp and reparse new file */
-	file = g_file_new_for_path ("/tmp/new.icc");
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+
+	file = g_file_new_build_filename (tmpdir, "new.icc", NULL);
 	ret = cd_icc_save_file (icc,
 				file,
 				CD_ICC_SAVE_FLAGS_NONE,
@@ -1724,7 +1751,6 @@ colord_icc_save_func (void)
 				&error);
 	g_assert_no_error (error);
 	g_assert (ret);
-	g_object_unref (file);
 
 	/* verify changed values */
 	g_assert_cmpfloat_with_epsilon (cd_icc_get_version (icc), 2.09, 0.001);
@@ -1737,6 +1763,15 @@ colord_icc_save_func (void)
 	g_assert_cmpstr (str, ==, "Couleurs crayon");
 	str = cd_icc_get_characterization_data (icc);
 	g_assert_cmpstr (str, ==, "[TI3]");
+
+	/* remove temp file */
+	ret = g_file_delete (file, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+	ret = g_remove (tmpdir);
+	g_assert (!ret);
+	g_object_unref (file);
+	g_free (tmpdir);
 
 	g_object_unref (icc);
 }
@@ -1989,7 +2024,6 @@ colord_icc_store_func (void)
 	gchar *root;
 	g_autoptr(GError) error = NULL;
 	GPtrArray *array;
-	gint rc;
 	guint added = 0;
 	guint removed = 0;
 
@@ -2008,13 +2042,9 @@ colord_icc_store_func (void)
 	g_assert (filename2 != NULL);
 
 	/* create test directory */
-	root = g_strdup_printf ("/tmp/colord-%c%c%c%c",
-				g_random_int_range ('a', 'z'),
-				g_random_int_range ('a', 'z'),
-				g_random_int_range ('a', 'z'),
-				g_random_int_range ('a', 'z'));
-	rc = g_mkdir_with_parents (root, 0777);
-	g_assert (rc == 0);
+	root = g_dir_make_tmp("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (root != NULL);
 
 	file1 = g_build_filename (root, "already-exists.icc", NULL);
 	_copy_files (filename1, file1);

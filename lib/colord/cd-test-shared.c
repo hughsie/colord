@@ -27,6 +27,7 @@
 
 #include <limits.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <glib.h>
 
@@ -102,18 +103,24 @@ gboolean
 cd_test_compare_lines (const gchar *txt1, const gchar *txt2, GError **error)
 {
 	g_autofree gchar *output = NULL;
+	g_autofree gchar *file_a = NULL;
+	g_autofree gchar *file_b = NULL;
+	g_autofree gchar *cmdline = NULL;
 
 	/* exactly the same */
 	if (g_strcmp0 (txt1, txt2) == 0)
 		return TRUE;
 
+	file_a = g_strdup_printf("/tmp/a-%u-%d", getuid(), getpid());
+	file_b = g_strdup_printf("/tmp/b-%u-%d", getuid(), getpid());
+	cmdline = g_strdup_printf("diff -urNp %s %s", file_b, file_a);
+
 	/* save temp files and diff them */
-	if (!g_file_set_contents ("/tmp/a", txt1, -1, error))
+	if (!g_file_set_contents (file_a, txt1, -1, error))
 		return FALSE;
-	if (!g_file_set_contents ("/tmp/b", txt2, -1, error))
+	if (!g_file_set_contents (file_b, txt2, -1, error))
 		return FALSE;
-	if (!g_spawn_command_line_sync ("diff -urNp /tmp/b /tmp/a",
-					&output, NULL, NULL, error))
+	if (!g_spawn_command_line_sync (cmdline, &output, NULL, NULL, error))
 		return FALSE;
 
 	/* just output the diff */
