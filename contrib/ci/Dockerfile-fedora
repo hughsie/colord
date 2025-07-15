@@ -3,7 +3,7 @@ FROM fedora:42
 RUN dnf -y update
 RUN dnf -y install \
 	argyllcms \
-	bash-completion \
+	bash-completion-devel \
 	color-filesystem \
 	dbus-devel \
 	libxslt \
