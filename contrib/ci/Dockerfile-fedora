@@ -1,4 +1,4 @@
-FROM fedora:31
+FROM fedora:42
 
 RUN dnf -y update
 RUN dnf -y install \
@@ -24,7 +24,7 @@ RUN dnf -y install \
 	sqlite-devel \
 	systemd-devel \
 	systemd-udev \
-	vala-tools
+	vala
 
 RUN mkdir /build
 WORKDIR /build
