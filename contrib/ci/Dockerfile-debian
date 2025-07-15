@@ -24,7 +24,7 @@ RUN apt-get install -yq --no-install-recommends \
 	libudev-dev \
 	meson \
 	pkg-config \
-	policykit-1 \
+	polkitd \
 	shared-mime-info \
 	systemd \
 	udev \
