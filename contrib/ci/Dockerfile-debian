@@ -25,7 +25,7 @@ RUN apt-get install -yq --no-install-recommends \
 	pkg-config \
 	polkitd \
 	shared-mime-info \
-	systemd \
+	systemd-dev \
 	udev \
 	valac \
 	valgrind
