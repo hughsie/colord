@@ -1339,7 +1339,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		/* require auth */
 		ret = cd_main_sender_authenticated (connection,
 						    sender,
-						    "org.freedesktop.color-manager.create-profile",
+						    "org.freedesktop.color-manager.delete-profile",
 						    &error);
 		if (!ret) {
 			g_dbus_method_invocation_return_gerror (invocation, error);
