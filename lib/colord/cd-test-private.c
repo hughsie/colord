@@ -1447,6 +1447,37 @@ colord_icc_clear_func (void)
 }
 
 static void
+colord_icc_empty_desc_func (void)
+{
+	CdIcc *icc;
+	const gchar *tmp;
+	gboolean ret;
+	g_autofree gchar *filename = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GFile) file = NULL;
+
+	/* empty-desc.icc has a 'desc' (mluc) tag whose single en-US record has
+	 * a string length of zero, so lcms parses it as present-but-empty
+	 * (cmsMLUgetWide() returns 0). Regression test: cd_icc_get_description()
+	 * must return NULL *with* a GError set, never NULL with error==NULL --
+	 * the latter crashed the daemon in cd_main_daemon_method_call() (via
+	 * error->message) when a client loaded the profile with CreateProfile. */
+	icc = cd_icc_new ();
+	filename = cd_test_get_filename ("empty-desc.icc");
+	g_assert (filename != NULL);
+	file = g_file_new_for_path (filename);
+	ret = cd_icc_load_file (icc, file, CD_ICC_LOAD_FLAGS_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (ret);
+
+	tmp = cd_icc_get_description (icc, NULL, &error);
+	g_assert_error (error, CD_ICC_ERROR, CD_ICC_ERROR_NO_DATA);
+	g_assert_cmpstr (tmp, ==, NULL);
+
+	g_object_unref (icc);
+}
+
+static void
 colord_icc_func (void)
 {
 	CdIcc *icc;
@@ -2410,6 +2441,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc{characterization}", colord_icc_characterization_func);
 	g_test_add_func ("/colord/icc{save}", colord_icc_save_func);
 	g_test_add_func ("/colord/icc{empty}", colord_icc_empty_func);
+	g_test_add_func ("/colord/icc{empty-desc}", colord_icc_empty_desc_func);
 	g_test_add_func ("/colord/icc{corrupt-dict}", colord_icc_corrupt_dict_func);
 	g_test_add_func ("/colord/icc{clear}", colord_icc_clear_func);
 	g_test_add_func ("/colord/icc{tags}", colord_icc_tags_func);
