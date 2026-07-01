@@ -2619,8 +2619,13 @@ cd_icc_get_mluc_data (CdIcc *icc,
 				   country_code,
 				   NULL,
 				   0);
-	if (text_size == 0)
+	if (text_size == 0) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_NO_DATA,
+				     "cmsSigProfile*Tag is empty");
 		goto out;
+	}
 
 	/* load wide chars */
 	wtext = g_new (gunichar, text_size);
@@ -2629,8 +2634,13 @@ cd_icc_get_mluc_data (CdIcc *icc,
 				   country_code,
 				   (wchar_t *) wtext,
 				   text_size);
-	if (text_size == 0)
+	if (text_size == 0) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_NO_DATA,
+				     "cmsSigProfile*Tag is empty");
 		goto out;
+	}
 
 	/* insert UTF-8 value into locale cache */
 	text_buffer = g_ucs4_to_utf8 (wtext, -1, NULL, NULL, error);
