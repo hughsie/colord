@@ -4,6 +4,7 @@ if get_option('installed_tests')
       'corrupt-dict.icc',
       'crayons.icc',
       'DELL-U2713H.bin',
+      'empty-desc.icc',
       'empty.icc',
       'example.cmf',
       'example.sp',
