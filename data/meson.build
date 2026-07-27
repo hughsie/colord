@@ -16,6 +16,7 @@ con2 = configuration_data()
 con2.set('localstatedir', localstatedir)
 con2.set('servicedir', libexecdir)
 con2.set('daemon_user', get_option('daemon_user'))
+con2.set('daemon_uid', get_option('daemon_uid'))
 
 # replace @servicedir@, @daemon_user@ and @localstatedir@
 if get_option('systemd')
