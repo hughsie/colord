@@ -1,1 +1,1 @@
-u @daemon_user@ - "colord colour management daemon" @localstatedir@/lib/colord
+u @daemon_user@ @daemon_uid@ "colord colour management daemon" @localstatedir@/lib/colord
