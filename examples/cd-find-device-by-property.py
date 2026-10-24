@@ -3,6 +3,9 @@
 # Copyright (C) 2011-2012 Richard Hughes <richard@hughsie.com>
 # Licensed under the GNU General Public License Version 2
 
+import gi
+gi.require_version('Colord', '1.0')
+
 from gi.repository import Colord
 from gi.repository import Gio
 
@@ -19,4 +22,4 @@ device.connect_sync(cancellable)
 profile = device.get_default_profile()
 profile.connect_sync(cancellable)
 
-print "default profile filename", profile.get_filename()
+print("default profile filename", profile.get_filename())

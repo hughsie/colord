@@ -3,6 +3,9 @@
 # Copyright (C) 2013 Richard Hughes <richard@hughsie.com>
 # Licensed under the GNU General Public License Version 2
 
+import gi
+gi.require_version('Colord', '1.0')
+
 from gi.repository import Colord
 from gi.repository import Gio
 
@@ -22,7 +25,7 @@ for d in devices:
     if not p:
         continue
     p.connect_sync(cancellable)
-    print d.get_id(), "has default profile filename", p.get_filename()
+    print(d.get_id(), "has default profile filename", p.get_filename())
     metadata = p.get_metadata()
-    if metadata.has_key('SCREEN_brightness'):
-        print "and device sets brightness", metadata['SCREEN_brightness']
+    if 'SCREEN_brightness' in metadata:
+        print("and device sets brightness", metadata['SCREEN_brightness'])

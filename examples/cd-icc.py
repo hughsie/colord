@@ -3,7 +3,8 @@
 # Copyright(C) 2013 Richard Hughes <richard@hughsie.com>
 # Licensed under the GNU General Public License Version 2
 
-from __future__ import print_function
+import gi
+gi.require_version('Colord', '1.0')
 
 from gi.repository import Colord
 from gi.repository import Gio
