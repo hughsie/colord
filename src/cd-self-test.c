@@ -164,6 +164,20 @@ colord_device_func (void)
 }
 
 static void
+cd_device_match_qualifier_func (void)
+{
+	/* https://github.com/hughsie/colord/issues/212 */
+	g_assert (cd_device_match_qualifier ("foo", "foo"));
+	g_assert (cd_device_match_qualifier ("foo.bar", "foo.bar"));
+	g_assert (cd_device_match_qualifier ("foo.bar.baz", "foo.bar.baz"));
+	g_assert (cd_device_match_qualifier ("foo", "foo.*"));
+	g_assert (cd_device_match_qualifier ("foo.bar", "*.*"));
+	g_assert (!cd_device_match_qualifier ("foo", "foo.bar"));
+	g_assert (!cd_device_match_qualifier ("foo.bar", "foo"));
+	g_assert (!cd_device_match_qualifier ("foo.bar.baz", "foo.bar"));
+}
+
+static void
 colord_device_array_func (void)
 {
 	CdDeviceArray *device_array;
@@ -635,6 +649,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/profile", colord_profile_func);
 	g_test_add_func ("/colord/profile-db", cd_profile_db_func);
 	g_test_add_func ("/colord/device", colord_device_func);
+	g_test_add_func ("/colord/device{qualifier}", cd_device_match_qualifier_func);
 	g_test_add_func ("/colord/device-array", colord_device_array_func);
 	return g_test_run ();
 }
