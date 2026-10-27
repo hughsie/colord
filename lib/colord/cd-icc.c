@@ -397,7 +397,14 @@ cd_icc_to_string (CdIcc *icc)
 			continue;
 		}
 		g_string_append_printf (str, "  size\t%i\n", tag_size);
-		cmsReadRawTag (priv->lcms_profile, sig, &tmp, 4);
+
+		/* cmsReadRawTag() returns the number of bytes read. lcms2 2.14
+		 * rejects partial reads, so never use a tag type left over from the
+		 * previous tag: https://github.com/hughsie/colord/issues/213 */
+		if (cmsReadRawTag (priv->lcms_profile, sig, &tmp, 4) != 4) {
+			g_string_append_printf (str, "WARNING: Failed to read tag type\n");
+			continue;
+		}
 
 		cd_icc_uint32_to_str (tmp, tag_str);
 		tag_type = GUINT32_FROM_BE (tmp);
