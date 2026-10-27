@@ -388,10 +388,14 @@ cd_device_dbus_emit_device_changed (CdDevice *device)
 				       NULL);
 }
 
-static gboolean
+gboolean
 cd_device_match_qualifier (const gchar *qual1, const gchar *qual2)
 {
+	const gchar *str1;
+	const gchar *str2;
 	guint i;
+	guint len1;
+	guint len2;
 	g_auto(GStrv) split1 = NULL;
 	g_auto(GStrv) split2 = NULL;
 
@@ -399,19 +403,26 @@ cd_device_match_qualifier (const gchar *qual1, const gchar *qual2)
 	split1 = g_strsplit (qual1, ".", 3);
 	split2 = g_strsplit (qual2, ".", 3);
 
+	/* a qualifier can have fewer than three components, and indexing past
+	 * the end of the vector is an out-of-bounds read: #212 */
+	len1 = g_strv_length (split1);
+	len2 = g_strv_length (split2);
+
 	/* ensure all substrings match */
 	for (i = 0; i < 3; i++) {
+		str1 = i < len1 ? split1[i] : NULL;
+		str2 = i < len2 ? split2[i] : NULL;
 
 		/* wildcard in query */
-		if (g_strcmp0 (split1[i], "*") == 0)
+		if (g_strcmp0 (str1, "*") == 0)
 			continue;
 
 		/* wildcard in qualifier */
-		if (g_strcmp0 (split2[i], "*") == 0)
+		if (g_strcmp0 (str2, "*") == 0)
 			continue;
 
 		/* exact match */
-		if (g_strcmp0 (split1[i], split2[i]) == 0)
+		if (g_strcmp0 (str1, str2) == 0)
 			continue;
 
 		/* failed to match substring */

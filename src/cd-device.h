@@ -90,6 +90,9 @@ gboolean	 cd_device_set_property_internal	(CdDevice	*device,
 							 const gchar	*value,
 							 gboolean	 save_in_db,
 							 GError		**error);
+gboolean	 cd_device_match_qualifier		(const gchar	*qual1,
+							 const gchar	*qual2)
+							 G_GNUC_WARN_UNUSED_RESULT;
 const gchar	*cd_device_get_metadata			(CdDevice	*device,
 							 const gchar	*key);
 
