@@ -299,7 +299,7 @@ cd_icc_store_file_monitor_changed_cb (GFileMonitor *monitor,
 				      CdIccStore *store)
 {
 	CdIccStorePrivate *priv = GET_PRIVATE (store);
-	CdIcc *tmp;
+	g_autoptr(CdIcc) tmp = NULL;
 	CdIccStoreDirHelper *helper;
 	g_autofree gchar *path = NULL;
 
