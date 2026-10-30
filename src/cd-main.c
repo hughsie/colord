@@ -1656,6 +1656,7 @@ cd_main_icc_store_added_cb (CdIccStore *icc_store,
 	if (!ret) {
 		g_warning ("CdMain: failed to emit ProfileAdded: %s",
 			   error->message);
+		cd_profile_array_remove (priv->profiles_array, profile);
 		return;
 	}
 }
@@ -1666,7 +1667,7 @@ cd_main_icc_store_removed_cb (CdIccStore *icc_store,
 			      gpointer user_data)
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
-	CdProfile *profile;
+	g_autoptr(CdProfile) profile = NULL;
 
 	/* check the profile should be invalidated automatically */
 	profile = cd_profile_array_get_by_filename (priv->profiles_array,
