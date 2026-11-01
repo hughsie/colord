@@ -546,7 +546,7 @@ cd_transform_setup (CdTransform *transform, GError **error)
 
 	/* find the bpp value */
 	priv->bpp_input = cd_transform_get_bpp (priv->input_pixel_format);
-	priv->bpp_output = cd_transform_get_bpp (priv->input_pixel_format);
+	priv->bpp_output = cd_transform_get_bpp (priv->output_pixel_format);
 
 	/* failed? */
 	if (priv->lcms_transform == NULL) {

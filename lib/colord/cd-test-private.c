@@ -2006,6 +2006,46 @@ colord_transform_func (void)
 	g_object_unref (transform);
 }
 
+static void
+colord_transform_formats_func (void)
+{
+	const guint height = 4;
+	const guint width = 64;
+	gboolean ret;
+	g_autoptr(CdIcc) icc = cd_icc_new ();
+	g_autoptr(CdTransform) transform = cd_transform_new ();
+	g_autoptr(GError) error = NULL;
+	g_autofree guint8 *data_in = NULL;
+	g_autofree guint8 *data_out = NULL;
+	guint i;
+
+	/* RGBA in, RGB out: the output rows are narrower than the input rows */
+	ret = cd_icc_create_default_full (icc, CD_ICC_LOAD_FLAGS_NONE, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	cd_transform_set_input_icc (transform, icc);
+	cd_transform_set_output_icc (transform, icc);
+	cd_transform_set_rendering_intent (transform, CD_RENDERING_INTENT_PERCEPTUAL);
+	cd_transform_set_input_pixel_format (transform, CD_PIXEL_FORMAT_RGBA32);
+	cd_transform_set_output_pixel_format (transform, CD_PIXEL_FORMAT_RGB24);
+	cd_transform_set_max_threads (transform, 1);
+
+	/* the output buffer is followed by a guard area that must not change */
+	data_in = g_new0 (guint8, height * width * 4);
+	data_out = g_new0 (guint8, height * width * 4);
+	memset (data_out + height * width * 3, 0xaa, height * width);
+	ret = cd_transform_process (transform,
+				    data_in,
+				    data_out,
+				    width, height, width,
+				    NULL,
+				    &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	for (i = height * width * 3; i < height * width * 4; i++)
+		g_assert_cmpint (data_out[i], ==, 0xaa);
+}
+
 #include <glib/gstdio.h>
 
 static void
@@ -2434,6 +2474,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/spectrum{cx}", colord_spect_cx_func);
 	g_test_add_func ("/colord/edid", colord_edid_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);
+	g_test_add_func ("/colord/transform{formats}", colord_transform_formats_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/icc{util}", colord_icc_util_func);
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
