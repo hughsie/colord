@@ -1479,6 +1479,14 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		fd_list = g_dbus_message_get_unix_fd_list (message);
 		if (fd_list != NULL && g_unix_fd_list_get_length (fd_list) == 1) {
 			gint fd;
+			if (fd_handle != 0) {
+				g_dbus_method_invocation_return_error (invocation,
+								       CD_CLIENT_ERROR,
+								       CD_CLIENT_ERROR_INPUT_INVALID,
+								       "invalid fd index %i",
+								       fd_handle);
+				return;
+			}
 			fd = g_unix_fd_list_get (fd_list, fd_handle, &error);
 			if (fd < 0) {
 				g_warning ("CdMain: failed to get fd from message: %s",
