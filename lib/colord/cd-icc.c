@@ -2014,6 +2014,8 @@ cd_icc_load_fd (CdIcc *icc,
 			     CD_ICC_ERROR_FAILED_TO_OPEN,
 			     "failed to open stream from fd %i",
 			     fd);
+		/* the fd is owned by the stream on every other path */
+		g_close (fd, NULL);
 		return FALSE;
 	}
 
