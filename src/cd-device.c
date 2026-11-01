@@ -325,8 +325,10 @@ cd_device_dbus_emit_property_changed (CdDevice *device,
 	GVariantBuilder invalidated_builder;
 
 	/* not yet connected */
-	if (priv->connection == NULL)
+	if (priv->connection == NULL) {
+		g_variant_unref (g_variant_ref_sink (property_value));
 		return;
+	}
 
 	/* build the dict */
 	g_variant_builder_init (&invalidated_builder, G_VARIANT_TYPE ("as"));
@@ -1156,7 +1158,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 	if (g_strcmp0 (method_name, "GetProfileRelation") == 0) {
 
 		/* find the profile relation */
-		g_variant_get (parameters, "(o)", &property_value);
+		g_variant_get (parameters, "(&o)", &property_value);
 		g_debug ("CdDevice %s:GetProfileRelation(%s)",
 			 sender, property_value);
 
@@ -1179,7 +1181,7 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 
 	/* return 'o' */
 	if (g_strcmp0 (method_name, "GetProfileForQualifiers") == 0) {
-		gchar **regexes = NULL;
+		g_autofree gchar **regexes = NULL;
 		g_autofree gchar *strv_debug = NULL;
 
 		/* find the profile by the qualifier search string */
