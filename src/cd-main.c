@@ -2073,7 +2073,7 @@ cd_main_load_plugin (CdMainPrivate *priv,
 	}
 
 	/* give the module the option to opt-out */
-	if (g_module_symbol (module, "cd_plugin_enabled",
+	if (g_module_symbol (module, "cd_plugin_config_enabled",
 			     (gpointer *) &plugin_enabled)) {
 		if (!plugin_enabled ()) {
 			g_set_error_literal (error,
