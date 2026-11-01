@@ -249,7 +249,7 @@ cd_interp_eval (CdInterp *interp, gdouble value, GError **error)
 		dx = x[1] - x[0];
 		dy = y[1] - y[0];
 		m = dy / dx;
-		return y[0] + m * value;
+		return y[0] + m * (value - x[0]);
 	}
 
 	/* no support */

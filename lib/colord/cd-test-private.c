@@ -1331,6 +1331,26 @@ colord_interp_linear_func (void)
 }
 
 static void
+colord_interp_two_points_func (void)
+{
+	g_autoptr(CdInterp) interp = cd_interp_linear_new ();
+	g_autoptr(GError) error = NULL;
+	gboolean ret;
+	gdouble y;
+
+	/* a line that does not start at x=0 */
+	cd_interp_insert (interp, 1.00, 2.00);
+	cd_interp_insert (interp, 3.00, 6.00);
+	ret = cd_interp_prepare (interp, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	g_assert_cmpint (cd_interp_get_size (interp), ==, 2);
+	y = cd_interp_eval (interp, 2.00, &error);
+	g_assert_no_error (error);
+	g_assert_cmpfloat_with_epsilon (y, 4.00, 0.0001);
+}
+
+static void
 colord_interp_akima_func (void)
 {
 	g_autoptr(CdInterp) interp = NULL;
@@ -2493,6 +2513,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/dom{color}", colord_dom_color_func);
 	g_test_add_func ("/colord/dom{localized}", colord_dom_localized_func);
 	g_test_add_func ("/colord/interp{linear}", colord_interp_linear_func);
+	g_test_add_func ("/colord/interp{two-points}", colord_interp_two_points_func);
 	g_test_add_func ("/colord/interp{akima}", colord_interp_akima_func);
 	g_test_add_func ("/colord/color", colord_color_func);
 	g_test_add_func ("/colord/color{interpolate}", colord_color_interpolate_func);
