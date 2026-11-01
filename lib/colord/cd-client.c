@@ -977,7 +977,7 @@ cd_client_import_profile_find_filename_cb (GObject *source_object,
 			      CD_CLIENT_ERROR,
 			      CD_CLIENT_ERROR_NOT_FOUND)) {
 		cd_client_fixup_dbus_error (error);
-		g_task_return_error (task, error);
+		g_task_return_error (task, g_steal_pointer (&error));
 		g_object_unref (task);
 		return;
 	}
