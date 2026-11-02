@@ -2206,6 +2206,59 @@ colord_transform_formats_func (void)
 		g_assert_cmpint (data_out[i], ==, 0xaa);
 }
 
+static void
+colord_transform_threads_func (void)
+{
+	const guint heights[] = { 17, 2, 0 };
+	const guint width = 33;
+	gboolean ret;
+	g_autoptr(CdIcc) icc_in = cd_icc_new ();
+	g_autoptr(CdIcc) icc_out = cd_icc_new ();
+	g_autoptr(CdTransform) transform = cd_transform_new ();
+	g_autoptr(GError) error = NULL;
+	g_autofree gchar *filename = cd_test_get_filename ("ibm-t61.icc");
+	g_autoptr(GFile) file = g_file_new_for_path (filename);
+
+	ret = cd_icc_create_default_full (icc_in, CD_ICC_LOAD_FLAGS_NONE, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	ret = cd_icc_load_file (icc_out, file, CD_ICC_LOAD_FLAGS_NONE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	cd_transform_set_input_icc (transform, icc_in);
+	cd_transform_set_output_icc (transform, icc_out);
+	cd_transform_set_rendering_intent (transform, CD_RENDERING_INTENT_PERCEPTUAL);
+	cd_transform_set_input_pixel_format (transform, CD_PIXEL_FORMAT_RGBA32);
+	cd_transform_set_output_pixel_format (transform, CD_PIXEL_FORMAT_RGB24);
+
+	/* the threaded result must match the unthreaded one, also when there
+	 * are fewer rows than threads */
+	for (guint j = 0; heights[j] != 0; j++) {
+		const guint height = heights[j];
+		g_autofree guint8 *data_in = g_new0 (guint8, height * width * 4);
+		g_autofree guint8 *data_out = g_new0 (guint8, height * width * 3);
+		g_autofree guint8 *data_check = g_new0 (guint8, height * width * 3);
+
+		for (guint i = 0; i < height * width * 4; i++)
+			data_in[i] = (i * 7) % 0xff;
+		cd_transform_set_max_threads (transform, 1);
+		ret = cd_transform_process (transform,
+					    data_in, data_check,
+					    width, height, width,
+					    NULL, &error);
+		g_assert_no_error (error);
+		g_assert_true (ret);
+		cd_transform_set_max_threads (transform, 4);
+		ret = cd_transform_process (transform,
+					    data_in, data_out,
+					    width, height, width,
+					    NULL, &error);
+		g_assert_no_error (error);
+		g_assert_true (ret);
+		g_assert_cmpint (memcmp (data_out, data_check, height * width * 3), ==, 0);
+	}
+}
+
 #include <glib/gstdio.h>
 
 static void
@@ -2761,6 +2814,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/edid{color-point}", colord_edid_color_point_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/transform{formats}", colord_transform_formats_func);
+	g_test_add_func ("/colord/transform{threads}", colord_transform_threads_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/icc{created}", colord_icc_created_func);
 	g_test_add_func ("/colord/icc{util}", colord_icc_util_func);
