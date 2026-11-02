@@ -422,6 +422,16 @@ cd_sensor_set_next_option (GTask *task)
 	value = g_hash_table_lookup (options, key);
 	if (g_strcmp0 (key, "remote-profile-hash") == 0) {
 
+		/* check the type */
+		if (!g_variant_is_of_type (value, G_VARIANT_TYPE_STRING)) {
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_INTERNAL,
+						 "Sensor option %s is not a string",
+						 key);
+			return;
+		}
+
 		/* parse the hash */
 		ret = ch_sha1_parse (g_variant_get_string (value, NULL),
 				     &sha1,
