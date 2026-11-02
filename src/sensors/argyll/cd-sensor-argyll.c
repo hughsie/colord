@@ -125,6 +125,15 @@ cd_sensor_get_sample_stdout_cb (CdSpawn *spawn, const gchar *line, GTask *task)
 	if (g_str_has_prefix (line, " Result is XYZ:")) {
 		CdColorXYZ *sample;
 		parts = g_strsplit_set (line, " ,", -1);
+		if (g_strv_length (parts) < 7) {
+			g_task_return_new_error (task,
+						 CD_SENSOR_ERROR,
+						 CD_SENSOR_ERROR_INTERNAL,
+						 "failed to parse result: %s",
+						 line);
+			g_object_unref (task);
+			return;
+		}
 		sample = cd_color_xyz_new ();
 		sample->X = g_ascii_strtod (parts[4], NULL);
 		sample->Y = g_ascii_strtod (parts[5], NULL);
