@@ -416,20 +416,20 @@ cd_sensor_find_device_details (CdSensor *sensor, GError **error)
 static void
 cd_sensor_unlock_exit_cb (CdSpawn *spawn,
 			  CdSpawnExitType exit_type,
-			  GTask *task)
+			  gpointer user_data)
 {
+	g_autoptr(GTask) task = G_TASK (user_data);
+
 	if (exit_type != CD_SPAWN_EXIT_TYPE_SIGTERM) {
 		g_task_return_new_error (task,
 					 CD_SENSOR_ERROR,
 					 CD_SENSOR_ERROR_INTERNAL,
 					 "exited without sigterm");
-		g_object_unref (task);
 		return;
 	}
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
-	g_object_unref (task);
 }
 
 void
@@ -440,31 +440,37 @@ cd_sensor_unlock_async (CdSensor *sensor,
 {
 	CdSensorArgyllPrivate *priv = cd_sensor_argyll_get_private (sensor);
 	CdSensorTaskData *data;
-	GTask *task = NULL;
+	g_autoptr(GTask) task = NULL;
 
 	g_return_if_fail (CD_IS_SENSOR (sensor));
 
 	task = g_task_new (sensor, cancellable, callback, user_data);
+
+	/* spotread was never started or has already exited */
+	if (!cd_spawn_is_running (priv->spawn)) {
+		g_task_return_boolean (task, TRUE);
+		return;
+	}
 
 	/* set state */
 	data = g_new0 (CdSensorTaskData, 1);
 	data->sensor = g_object_ref (sensor);
 	g_task_set_task_data (task, data, (GDestroyNotify) cd_sensor_task_data_free);
 
-	/* wait for exit */
-	data->exit_id = g_signal_connect (priv->spawn,
-					  "exit",
-					  G_CALLBACK (cd_sensor_unlock_exit_cb),
-					  task);
 	/* kill spotread */
 	if (!cd_spawn_kill (priv->spawn)) {
 		g_task_return_new_error (task,
 					 CD_SENSOR_ERROR,
 					 CD_SENSOR_ERROR_INTERNAL,
 					 "failed to kill spotread");
-		g_object_unref (task);
 		return;
 	}
+
+	/* wait for exit, which is emitted from the main loop */
+	data->exit_id = g_signal_connect (priv->spawn,
+					  "exit",
+					  G_CALLBACK (cd_sensor_unlock_exit_cb),
+					  g_steal_pointer (&task));
 }
 
 gboolean
