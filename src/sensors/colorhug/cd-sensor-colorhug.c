@@ -348,7 +348,7 @@ cd_sensor_colorhug_set_options_cb (GObject *object,
 				   gpointer user_data)
 {
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GError) error = NULL;
 
 	/* get data */
@@ -371,7 +371,7 @@ cd_sensor_colorhug_write_eeprom_cb (GObject *object,
 {
 	gboolean ret = FALSE;
 	ChDeviceQueue *device_queue = CH_DEVICE_QUEUE (object);
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	g_autoptr(GError) error = NULL;
 
 	/* get data */
@@ -412,7 +412,7 @@ cd_sensor_set_next_option (GTask *task)
 					       CH_DEVICE_QUEUE_PROCESS_FLAGS_NONE,
 					       g_task_get_cancellable (task),
 					       cd_sensor_colorhug_write_eeprom_cb,
-					       task);
+					       g_object_ref (task));
 		return;
 	}
 
@@ -446,7 +446,7 @@ cd_sensor_set_next_option (GTask *task)
 					       CH_DEVICE_QUEUE_PROCESS_FLAGS_NONE,
 					       g_task_get_cancellable (task),
 					       cd_sensor_colorhug_set_options_cb,
-					       task);
+					       g_object_ref (task));
 	} else {
 		g_task_return_new_error (task,
 					 CD_SENSOR_ERROR,
