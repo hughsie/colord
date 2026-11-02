@@ -211,11 +211,11 @@ ch_device_reply_cb (GObject *source_object,
 		    gpointer user_data)
 {
 	ChError error_enum;
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gsize actual_len;
-	gchar *msg = NULL;
+	g_autofree gchar *msg = NULL;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
@@ -227,7 +227,6 @@ ch_device_reply_cb (GObject *source_object,
 					 CH_DEVICE_ERROR,
 					 CH_ERROR_INVALID_VALUE,
 					 "%s", error->message);
-		g_object_unref (task);
 		return;
 	}
 
@@ -262,8 +261,7 @@ ch_device_reply_cb (GObject *source_object,
 							       CH_DEVICE_USB_TIMEOUT,
 							       g_task_get_cancellable (task),
 							       ch_device_request_cb,
-							       tdata);
-			/* we're re-using the tdata, so don't deallocate it */
+							       g_object_ref (task));
 			return;
 		}
 
@@ -283,7 +281,6 @@ ch_device_reply_cb (GObject *source_object,
 					 CH_DEVICE_ERROR,
 					 error_enum,
 					 "%s", msg);
-		g_object_unref (task);
 		return;
 	}
 
@@ -296,7 +293,6 @@ ch_device_reply_cb (GObject *source_object,
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
-	g_object_unref (task);
 }
 
 static void
@@ -304,22 +300,29 @@ ch_device_request_cb (GObject *source_object,
 		      GAsyncResult *res,
 		      gpointer user_data)
 {
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gssize actual_len;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
 	actual_len = g_usb_device_interrupt_transfer_finish (device,
 							     res,
 							     &error);
-	if (actual_len < CH_USB_HID_EP_SIZE) {
+	if (actual_len < 0) {
 		g_task_return_new_error (task,
 					 CH_DEVICE_ERROR,
 					 CH_ERROR_INVALID_VALUE,
 					 "%s", error->message);
-		g_object_unref (task);
+		return;
+	}
+	if (actual_len < CH_USB_HID_EP_SIZE) {
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_INVALID_VALUE,
+					 "short transfer: got %" G_GSSIZE_FORMAT " bytes, expected %u",
+					 actual_len, (guint) CH_USB_HID_EP_SIZE);
 		return;
 	}
 
@@ -331,7 +334,7 @@ ch_device_request_cb (GObject *source_object,
 					       CH_DEVICE_USB_TIMEOUT,
 					       g_task_get_cancellable (task),
 					       ch_device_reply_cb,
-					       task);
+					       g_object_ref (task));
 }
 
 static void
@@ -384,29 +387,35 @@ ch_device_sensor_hid_set_cb (GObject *source_object,
 			     GAsyncResult *res,
 			     gpointer user_data)
 {
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gssize actual_len;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
 	actual_len = g_usb_device_control_transfer_finish (device,
 							   res,
 							   &error);
-	if (actual_len != tdata->report_length) {
+	if (actual_len < 0) {
 		g_task_return_new_error (task,
 					 CH_DEVICE_ERROR,
 					 CH_ERROR_INVALID_VALUE,
 					 "%s", error->message);
-		g_object_unref (task);
+		return;
+	}
+	if (actual_len != tdata->report_length) {
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_INVALID_VALUE,
+					 "short transfer: got %" G_GSSIZE_FORMAT " bytes, expected %u",
+					 actual_len, tdata->report_length);
 		return;
 	}
 //	ch_print_data_buffer ("reply", tdata->buffer, tdata->report_length);
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
-	g_object_unref (task);
 }
 
 static void
@@ -414,10 +423,10 @@ ch_device_sensor_hid_report_cb (GObject *source_object,
 				GAsyncResult *res,
 				gpointer user_data)
 {
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gsize actual_len;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
@@ -429,7 +438,6 @@ ch_device_sensor_hid_report_cb (GObject *source_object,
 					 CH_DEVICE_ERROR,
 					 CH_ERROR_INVALID_VALUE,
 					 "%s", error->message);
-		g_object_unref (task);
 		return;
 	}
 
@@ -438,7 +446,6 @@ ch_device_sensor_hid_report_cb (GObject *source_object,
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
-	g_object_unref (task);
 }
 
 static void
@@ -446,23 +453,30 @@ ch_device_sensor_hid_get_cb (GObject *source_object,
 			     GAsyncResult *res,
 			     gpointer user_data)
 {
-	GError *error = NULL;
+	g_autoptr(GError) error = NULL;
 	gssize actual_len;
 	gboolean another_request_required = FALSE;
 	GUsbDevice *device = G_USB_DEVICE (source_object);
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	/* get the result */
 	actual_len = g_usb_device_control_transfer_finish (device,
 							   res,
 							   &error);
-	if (actual_len != tdata->report_length) {
+	if (actual_len < 0) {
 		g_task_return_new_error (task,
 					 CH_DEVICE_ERROR,
 					 CH_ERROR_INVALID_VALUE,
 					 "%s", error->message);
-		g_object_unref (task);
+		return;
+	}
+	if (actual_len != tdata->report_length) {
+		g_task_return_new_error (task,
+					 CH_DEVICE_ERROR,
+					 CH_ERROR_INVALID_VALUE,
+					 "short transfer: got %" G_GSSIZE_FORMAT " bytes, expected %u",
+					 actual_len, tdata->report_length);
 		return;
 	}
 //	ch_print_data_buffer ("reply", tdata->buffer, tdata->report_length);
@@ -526,14 +540,12 @@ ch_device_sensor_hid_get_cb (GObject *source_object,
 					 CH_ERROR_UNKNOWN_CMD,
 					 "No Sensor HID support for 0x%02x",
 					 tdata->cmd);
-		g_object_unref (task);
 		return;
 	}
 
 	/* getting the value was enough */
 	if (!another_request_required) {
 		g_task_return_boolean (task, TRUE);
-		g_object_unref (task);
 		return;
 	}
 
@@ -550,7 +562,7 @@ ch_device_sensor_hid_get_cb (GObject *source_object,
 					     CH_DEVICE_USB_TIMEOUT,
 					     g_task_get_cancellable (task),
 					     ch_device_sensor_hid_set_cb,
-					     task);
+					     g_object_ref (task));
 }
 
 /**
