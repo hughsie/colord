@@ -39,10 +39,10 @@
 gint32
 ch_packed_float_get_value (const ChPackedFloat *pf)
 {
-	return (pf->bytes[3] << 24) |
-	       (pf->bytes[2] << 16) |
-	       (pf->bytes[1] << 8) |
-	       (pf->bytes[0]);
+	return (gint32) (((guint32) pf->bytes[3] << 24) |
+			 ((guint32) pf->bytes[2] << 16) |
+			 ((guint32) pf->bytes[1] << 8) |
+			 ((guint32) pf->bytes[0]));
 }
 
 /**
