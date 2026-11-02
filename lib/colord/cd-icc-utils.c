@@ -289,7 +289,13 @@ cd_icc_utils_get_adaptation_matrix (CdIcc *icc,
 
 	/* invert the adjusted measured chroma matrix and multiply by the
 	 * reference colors to compute the resulting CSC matrix */
-	cd_mat33_reciprocal (&measured, &measured_inv);
+	if (!cd_mat33_reciprocal (&measured, &measured_inv)) {
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_INVALID_COLORSPACE,
+				     "measured chroma matrix is not invertible");
+		return FALSE;
+	}
 	cd_mat33_matrix_multiply (&measured_inv,
 				  &reference,
 				  mat);
