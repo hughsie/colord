@@ -535,13 +535,13 @@ cd_sensor_connect_cb (GObject *source_object,
 	state = g_dbus_proxy_get_cached_property (priv->proxy,
 						  CD_SENSOR_PROPERTY_STATE);
 	if (state != NULL)
-		priv->state = cd_colorspace_from_string (g_variant_get_string (state, NULL));
+		priv->state = cd_sensor_state_from_string (g_variant_get_string (state, NULL));
 
 	/* get mode */
 	mode = g_dbus_proxy_get_cached_property (priv->proxy,
 						 CD_SENSOR_PROPERTY_MODE);
 	if (mode != NULL)
-		priv->mode = cd_sensor_cap_from_string (g_variant_get_string (state, NULL));
+		priv->mode = cd_sensor_cap_from_string (g_variant_get_string (mode, NULL));
 
 	/* get sensor serial */
 	serial = g_dbus_proxy_get_cached_property (priv->proxy,
