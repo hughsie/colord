@@ -121,7 +121,7 @@ dtp94_device_send_cmd_issue (GUsbDevice *device,
 {
 	gboolean ret;
 	gsize reply_read;
-	guint8 buffer[128];
+	guint8 buffer[128] = { 0 };
 	guint8 rc;
 	guint command_len;
 
@@ -134,11 +134,12 @@ dtp94_device_send_cmd_issue (GUsbDevice *device,
 				      (const guint8 *) command,
 				      command_len,
 				      buffer,
-				      sizeof (buffer),
+				      sizeof (buffer) - 1,
 				      &reply_read,
 				      error);
 	if (!ret)
 		return FALSE;
+	buffer[reply_read] = '\0';
 
 	/* device busy */
 	rc = dtp94_rc_parse (buffer, reply_read);
@@ -152,7 +153,6 @@ dtp94_device_send_cmd_issue (GUsbDevice *device,
 
 	/* no success */
 	if (rc != DTP94_RC_OK) {
-		buffer[reply_read] = '\0';
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,
 			     DTP94_DEVICE_ERROR_INTERNAL,
@@ -259,7 +259,7 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 	gboolean ret = FALSE;
 	gchar *tmp;
 	gsize reply_read;
-	guint8 buffer[128];
+	guint8 buffer[128] = { 0 };
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
@@ -289,14 +289,14 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 	/* get sample */
 	ret = dtp94_device_send_data (device,
 				      (const guint8 *) "RM\r", 3,
-				      buffer, sizeof (buffer),
+				      buffer, sizeof (buffer) - 1,
 				      &reply_read,
 				      error);
 	if (!ret)
 		return NULL;
+	buffer[reply_read] = '\0';
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
-	if (tmp == NULL || memcmp (tmp + 1, "<00>", 4) != 0) {
-		buffer[reply_read] = '\0';
+	if (tmp == NULL || !g_str_has_prefix (tmp + 1, "<00>")) {
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,
 			     DTP94_DEVICE_ERROR_INTERNAL,
@@ -330,21 +330,21 @@ dtp94_device_get_serial (GUsbDevice *device, GError **error)
 	gboolean ret;
 	gchar *tmp;
 	gsize reply_read;
-	guint8 buffer[128];
+	guint8 buffer[128] = { 0 };
 
 	g_return_val_if_fail (G_USB_IS_DEVICE (device), NULL);
 	g_return_val_if_fail (error == NULL || *error == NULL, NULL);
 
 	ret = dtp94_device_send_data (device,
 				      (const guint8 *) "SV\r", 3,
-				      buffer, sizeof (buffer),
+				      buffer, sizeof (buffer) - 1,
 				      &reply_read,
 				      error);
 	if (!ret)
 		return NULL;
+	buffer[reply_read] = '\0';
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
-	if (tmp == NULL || memcmp (tmp + 1, "<00>", 4) != 0) {
-		buffer[reply_read] = '\0';
+	if (tmp == NULL || !g_str_has_prefix (tmp + 1, "<00>")) {
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,
 			     DTP94_DEVICE_ERROR_INTERNAL,
