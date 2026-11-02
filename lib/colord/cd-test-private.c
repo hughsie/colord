@@ -726,6 +726,8 @@ colord_it8_normalized_func (void)
 	g_assert_cmpfloat (ABS (xyz.X - 90.21f), <, 0.01f);
 	g_assert_cmpfloat (ABS (xyz.Y - 41.22f), <, 0.01f);
 	g_assert_cmpfloat (ABS (xyz.Z - 56.16f), <, 0.01f);
+	ret = cd_it8_get_data_item (it8, 2, &rgb, &xyz);
+	g_assert_false (ret);
 
 	/* remove temp file */
 	ret = g_file_delete (file_new, NULL, &error);
