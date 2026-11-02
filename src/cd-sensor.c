@@ -631,6 +631,9 @@ cd_sensor_set_options_cb (GObject *source_object,
 	GDBusMethodInvocation *invocation = (GDBusMethodInvocation *) user_data;
 	g_autoptr(GError) error = NULL;
 
+	/* set here to avoid every sensor doing this */
+	cd_sensor_set_state (sensor, CD_SENSOR_STATE_IDLE);
+
 	/* get the result */
 	ret = priv->desc->set_options_finish (sensor, res, &error);
 	if (!ret) {
