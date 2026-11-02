@@ -1716,7 +1716,7 @@ cd_it8_get_data_item (CdIt8 *it8, guint idx, CdColorRGB *rgb, CdColorXYZ *xyz)
 
 	g_return_val_if_fail (CD_IS_IT8 (it8), FALSE);
 
-	if (idx > priv->array_xyz->len)
+	if (idx >= priv->array_xyz->len)
 		return FALSE;
 	if (rgb != NULL) {
 		rgb_tmp = g_ptr_array_index (priv->array_rgb, idx);
