@@ -328,6 +328,7 @@ gchar *
 dtp94_device_get_serial (GUsbDevice *device, GError **error)
 {
 	gboolean ret;
+	gchar *serial;
 	gchar *tmp;
 	gsize reply_read;
 	guint8 buffer[128] = { 0 };
@@ -352,6 +353,8 @@ dtp94_device_get_serial (GUsbDevice *device, GError **error)
 			     (const gchar *) buffer);
 		return NULL;
 	}
-	tmp[0] = '\0';
-	return g_strdup (tmp);
+	serial = cd_buffer_strsafe (buffer, tmp - (const gchar *) buffer);
+	if (serial == NULL)
+		return g_strdup ("");
+	return serial;
 }
