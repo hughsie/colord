@@ -265,13 +265,14 @@ cd_sane_populate_existing_devices_cb (GObject *source_object,
 				      gpointer user_data)
 {
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
-	GPtrArray *devices;
+	g_autoptr(GPtrArray) devices = NULL;
 	g_autoptr(GError) error = NULL;
 
 	devices = cd_client_get_devices_by_kind_finish (priv->client, res, &error);
-	if (error != NULL) {
+	if (devices == NULL) {
 		g_warning ("failed to receive list of devices: %s",
 			   error->message);
+		g_main_loop_quit (priv->loop);
 		return;
 	}
 
@@ -296,6 +297,7 @@ cd_main_colord_connect_cb (GObject *source_object,
 	if (!ret) {
 		g_warning ("failed to connect to colord: %s",
 			   error->message);
+		g_main_loop_quit (priv->loop);
 		return;
 	}
 
