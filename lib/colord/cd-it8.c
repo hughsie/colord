@@ -541,12 +541,11 @@ cd_it8_load_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		xyz->Y = _cmsIT8GetDataRowColDbl (it8_lcms, i, 5);
 		xyz->Z = _cmsIT8GetDataRowColDbl (it8_lcms, i, 6);
 		if (scaled_to_y100) {
-			xyz->X /= 100.0f;
-			xyz->Y /= 100.0f;
-			xyz->Z /= 100.0f;
-			xyz->X *= luminance.X;
-			xyz->Y *= luminance.Y;
-			xyz->Z *= luminance.Z;
+			/* all channels were scaled by the same
+			 * factor to make the white Y 100 */
+			xyz->X *= luminance.Y / 100.0f;
+			xyz->Y *= luminance.Y / 100.0f;
+			xyz->Z *= luminance.Y / 100.0f;
 		}
 		g_ptr_array_add (priv->array_xyz, xyz);
 	}
@@ -1037,8 +1036,6 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 			lumi_xyz.X += xyz_tmp->X;
 			lumi_xyz.Y += xyz_tmp->Y;
 			lumi_xyz.Z += xyz_tmp->Z;
-			if (xyz_tmp->Y > normalize)
-				normalize = xyz_tmp->Y;
 		}
 		if (luminance_samples == 0) {
 			g_set_error_literal (error,
@@ -1051,8 +1048,9 @@ cd_it8_save_to_file_ti1_ti3 (CdIt8 *it8, cmsHANDLE it8_lcms, GError **error)
 		lumi_xyz.Y /= luminance_samples;
 		lumi_xyz.Z /= luminance_samples;
 
-		/* scale all the readings to 100 */
-		normalize = 100.0f / normalize;
+		/* scale all the readings so that the white Y written as the
+		 * luminance is 100 */
+		normalize = 100.0f / lumi_xyz.Y;
 	}
 	lumi_str = cd_it8_convert_xyz_to_string (&lumi_xyz);
 

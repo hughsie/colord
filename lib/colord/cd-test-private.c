@@ -696,6 +696,49 @@ colord_it8_locale_func (void)
 }
 
 static void
+colord_it8_normalized_roundtrip_func (void)
+{
+	CdColorRGB rgb;
+	CdColorXYZ xyz;
+	gboolean ret;
+	gsize size = 0;
+	g_autofree gchar *data = NULL;
+	g_autoptr(CdIt8) it8 = cd_it8_new_with_kind (CD_IT8_KIND_TI3);
+	g_autoptr(CdIt8) it8_new = cd_it8_new ();
+	g_autoptr(GError) error = NULL;
+
+	/* two white readings that differ slightly, and one colored */
+	cd_color_rgb_set (&rgb, 1.f, 1.f, 1.f);
+	cd_color_xyz_set (&xyz, 95.f, 100.f, 108.f);
+	cd_it8_add_data (it8, &rgb, &xyz);
+	cd_color_xyz_set (&xyz, 104.5f, 110.f, 118.8f);
+	cd_it8_add_data (it8, &rgb, &xyz);
+	cd_color_rgb_set (&rgb, 1.f, 0.f, 0.f);
+	cd_color_xyz_set (&xyz, 40.f, 20.f, 2.f);
+	cd_it8_add_data (it8, &rgb, &xyz);
+	cd_it8_set_normalized (it8, TRUE);
+	ret = cd_it8_save_to_data (it8, &data, &size, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+
+	/* the absolute values survive saving normalized and loading again */
+	ret = cd_it8_load_from_data (it8_new, data, size, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	g_assert_cmpint (cd_it8_get_data_size (it8_new), ==, 3);
+	ret = cd_it8_get_data_item (it8_new, 1, NULL, &xyz);
+	g_assert_true (ret);
+	g_assert_cmpfloat_with_epsilon (xyz.X, 104.5f, 0.01f);
+	g_assert_cmpfloat_with_epsilon (xyz.Y, 110.f, 0.01f);
+	g_assert_cmpfloat_with_epsilon (xyz.Z, 118.8f, 0.01f);
+	ret = cd_it8_get_data_item (it8_new, 2, NULL, &xyz);
+	g_assert_true (ret);
+	g_assert_cmpfloat_with_epsilon (xyz.X, 40.f, 0.01f);
+	g_assert_cmpfloat_with_epsilon (xyz.Y, 20.f, 0.01f);
+	g_assert_cmpfloat_with_epsilon (xyz.Z, 2.f, 0.01f);
+}
+
+static void
 colord_it8_normalized_func (void)
 {
 	CdColorRGB rgb;
@@ -744,9 +787,9 @@ colord_it8_normalized_func (void)
 	g_assert_cmpfloat (ABS (rgb.R - 1.0f), <, 0.01f);
 	g_assert_cmpfloat (ABS (rgb.G - 1.0f), <, 0.01f);
 	g_assert_cmpfloat (ABS (rgb.B - 1.0f), <, 0.01f);
-	g_assert_cmpfloat (ABS (xyz.X - 90.21f), <, 0.01f);
+	g_assert_cmpfloat (ABS (xyz.X - 60.03f), <, 0.01f);
 	g_assert_cmpfloat (ABS (xyz.Y - 41.22f), <, 0.01f);
-	g_assert_cmpfloat (ABS (xyz.Z - 56.16f), <, 0.01f);
+	g_assert_cmpfloat (ABS (xyz.Z - 48.11f), <, 0.01f);
 	ret = cd_it8_get_data_item (it8, 2, &rgb, &xyz);
 	g_assert_false (ret);
 
@@ -2709,6 +2752,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/it8{gamma}", colord_it8_gamma_func);
 	g_test_add_func ("/colord/it8{locale}", colord_it8_locale_func);
 	g_test_add_func ("/colord/it8{normalized}", colord_it8_normalized_func);
+	g_test_add_func ("/colord/it8{normalized-roundtrip}", colord_it8_normalized_roundtrip_func);
 	g_test_add_func ("/colord/it8{ccmx}", colord_it8_ccmx_func);
 	g_test_add_func ("/colord/it8{ccmx-util}", colord_it8_ccmx_util_func);
 	g_test_add_func ("/colord/it8{spectra-util}", colord_it8_spectra_util_func);
