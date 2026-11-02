@@ -591,8 +591,8 @@ cd_transform_process_func (gpointer data, gpointer user_data)
 				      job->p_out,
 				      job->width,
 				      job->rowstride);
-		job->p_in += job->rowstride;
-		job->p_out += job->rowstride;
+		job->p_in += job->rowstride * priv->bpp_input;
+		job->p_out += job->rowstride * priv->bpp_output;
 	}
 	g_slice_free (CdTransformJob, job);
 }
@@ -731,7 +731,7 @@ cd_transform_process (CdTransform *transform,
 	/* do conversion */
 	p_in = data_in;
 	p_out = data_out;
-	rows_to_process = height / priv->max_threads;
+	rows_to_process = MAX (height / priv->max_threads, 1);
 	for (i = 0; i < height; i += rows_to_process) {
 		job = g_slice_new (CdTransformJob);
 		job->p_in = p_in;
