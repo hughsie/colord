@@ -2405,6 +2405,35 @@ colord_icc_util_func (void)
 }
 
 static void
+colord_edid_color_point_func (void)
+{
+	gboolean ret;
+	gsize length = 0;
+	g_autofree gchar *data = NULL;
+	g_autofree gchar *filename = NULL;
+	g_autoptr(CdEdid) edid = cd_edid_new ();
+	g_autoptr(GBytes) bytes = NULL;
+	g_autoptr(GError) error = NULL;
+	const guint8 descriptor[] = { 0x00, 0x00, 0x00, 0xfb, 0x00,
+				      0x01, 0x00, 0x50, 0x54, 0x8c,	/* white point 1, gamma 2.4 */
+				      0x00, 0x00, 0x00, 0x00, 0x00,	/* white point 2 not used */
+				      0x0a, 0x20, 0x20 };
+
+	/* replace the range limits descriptor with a color point descriptor */
+	filename = cd_test_get_filename ("LG-L225W-External.bin");
+	ret = g_file_get_contents (filename, &data, &length, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	g_assert_cmpint (length, >=, 0x5a + sizeof (descriptor));
+	memcpy (data + 0x5a, descriptor, sizeof (descriptor));
+	bytes = g_bytes_new (data, length);
+	ret = cd_edid_parse (edid, bytes, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	g_assert_cmpfloat_with_epsilon (cd_edid_get_gamma (edid), 2.4f, 0.01f);
+}
+
+static void
 colord_edid_func (void)
 {
 	CdEdid *edid;
@@ -2625,6 +2654,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/spectrum{subtract}", colord_spectrum_subtract_func);
 	g_test_add_func ("/colord/spectrum{cx}", colord_spect_cx_func);
 	g_test_add_func ("/colord/edid", colord_edid_func);
+	g_test_add_func ("/colord/edid{color-point}", colord_edid_color_point_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/transform{formats}", colord_transform_formats_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);

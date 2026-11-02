@@ -615,15 +615,15 @@ cd_edid_parse (CdEdid *edid, GBytes *edid_data, GError **error)
 				priv->eisa_id = tmp;
 			}
 		} else if (data[i+3] == CD_DESCRIPTOR_COLOR_POINT) {
-			if (data[i+3+9] != 0xff) {
+			if (data[i+5] != 0x00 && data[i+9] != 0xff) {
 				/* extended EDID block(1) which contains
 				 * a better gamma value */
-				priv->gamma = ((gfloat) data[i+3+9] / 100) + 1;
+				priv->gamma = ((gfloat) data[i+9] / 100) + 1;
 			}
-			if (data[i+3+14] != 0xff) {
+			if (data[i+10] != 0x00 && data[i+14] != 0xff) {
 				/* extended EDID block(2) which contains
 				 * a better gamma value */
-				priv->gamma = ((gfloat) data[i+3+9] / 100) + 1;
+				priv->gamma = ((gfloat) data[i+14] / 100) + 1;
 			}
 		}
 	}
