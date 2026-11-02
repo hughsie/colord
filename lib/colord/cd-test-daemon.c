@@ -1400,6 +1400,134 @@ colord_device_mapping_func (void)
 	g_object_unref (client);
 }
 
+/*
+ * 1. Hard add profile1 to the device
+ * 2. Create profile2 with MAPPING_device_id, which is soft added with a
+ *    newer timestamp than profile1
+ * 3. Make profile2 the default
+ *
+ * profile2 should be the default profile afterwards
+ */
+static void
+colord_device_make_default_soft_func (void)
+{
+	CdDeviceRelation relation;
+	gboolean ret;
+	g_autofree gchar *device_id = NULL;
+	g_autofree gchar *profile_id1 = NULL;
+	g_autofree gchar *profile_id2 = NULL;
+	g_autoptr(CdClient) client = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdProfile) profile1 = NULL;
+	g_autoptr(CdProfile) profile2 = NULL;
+	g_autoptr(CdProfile) profile_tmp = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GHashTable) device_props = NULL;
+	g_autoptr(GHashTable) profile_props = NULL;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
+	/* get random IDs as we're using the mapping DB */
+	device_id = colord_get_random_device_id ();
+	profile_id1 = g_strdup_printf ("%s-profile1", device_id);
+	profile_id2 = g_strdup_printf ("%s-profile2", device_id);
+
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+
+	/* create a device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
+	device = cd_client_create_device_sync (client,
+					       device_id,
+					       CD_OBJECT_SCOPE_TEMP,
+					       device_props,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (device);
+	ret = cd_device_connect_sync (device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+
+	/* hard add the first profile */
+	profile1 = cd_client_create_profile_sync (client,
+						  profile_id1,
+						  CD_OBJECT_SCOPE_TEMP,
+						  NULL,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (profile1);
+	ret = cd_device_add_profile_sync (device,
+					  CD_DEVICE_RELATION_HARD,
+					  profile1,
+					  NULL,
+					  &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+
+	/* soft add the second profile using metadata */
+	profile_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					       g_free, g_free);
+	g_hash_table_insert (profile_props,
+			     g_strdup (CD_PROFILE_METADATA_MAPPING_DEVICE_ID),
+			     g_strdup (device_id));
+	profile2 = cd_client_create_profile_sync (client,
+						  profile_id2,
+						  CD_OBJECT_SCOPE_TEMP,
+						  profile_props,
+						  NULL,
+						  &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (profile2);
+	relation = cd_device_get_profile_relation_sync (device,
+							profile2,
+							NULL,
+							&error);
+	g_assert_no_error (error);
+	g_assert_cmpint (relation, ==, CD_DEVICE_RELATION_SOFT);
+
+	/* the hard profile is the default */
+	profile_tmp = cd_device_get_default_profile (device);
+	g_assert_nonnull (profile_tmp);
+	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp), ==,
+			 cd_profile_get_object_path (profile1));
+	g_clear_object (&profile_tmp);
+
+	/* make the soft profile the default */
+	ret = cd_device_make_profile_default_sync (device,
+						   profile2,
+						   NULL,
+						   &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	profile_tmp = cd_device_get_default_profile (device);
+	g_assert_nonnull (profile_tmp);
+	g_assert_cmpstr (cd_profile_get_object_path (profile_tmp), ==,
+			 cd_profile_get_object_path (profile2));
+
+	/* clean up */
+	ret = cd_client_delete_device_sync (client, device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	ret = cd_client_delete_profile_sync (client, profile1, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	ret = cd_client_delete_profile_sync (client, profile2, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+}
+
 static void
 colord_client_fd_pass_func (void)
 {
@@ -2759,6 +2887,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/profile{ordering}", colord_profile_ordering_func);
 	g_test_add_func ("/colord/profile{duplicate}", colord_profile_duplicate_func);
 	g_test_add_func ("/colord/device{mapping}", colord_device_mapping_func);
+	g_test_add_func ("/colord/device{make-default-soft}", colord_device_make_default_soft_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/device{modified}", colord_device_modified_func);
 	g_test_add_func ("/colord/client{standard-space}", colord_client_standard_space_func);

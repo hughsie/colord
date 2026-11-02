@@ -946,7 +946,7 @@ cd_device_make_default (CdDevice *device,
 	}
 
 	/* make the profile first in the array */
-	for (i=1; i<priv->profiles->len; i++) {
+	for (i = 0; i < priv->profiles->len; i++) {
 		item = g_ptr_array_index (priv->profiles, i);
 		if (item->profile == profile) {
 			item->timestamp = g_get_real_time ();
