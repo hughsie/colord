@@ -35,6 +35,7 @@ typedef struct {
 	CdClient	*client;
 	GMainLoop	*loop;
 	GPtrArray	*array; /* of CdMainDev's */
+	guint		 pending;
 } CdMainPrivate;
 
 typedef struct {
@@ -81,11 +82,20 @@ typedef struct {
 } CdMainCreateDeviceHelper;
 
 static void
+cd_main_request_done (CdMainPrivate *priv)
+{
+	/* quit when all the create and delete requests have finished */
+	if (--priv->pending == 0)
+		g_main_loop_quit (priv->loop);
+}
+
+static void
 cd_main_colord_create_device_cb (GObject *source_object,
 				 GAsyncResult *res,
 				 gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (source_object);
+	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	g_autoptr(GError) error = NULL;
 	g_autoptr(CdDevice) device = NULL;
 
@@ -93,6 +103,7 @@ cd_main_colord_create_device_cb (GObject *source_object,
 	device = cd_client_create_device_finish (client, res, &error);
 	if (device == NULL)
 		g_warning ("failed to create device: %s", error->message);
+	cd_main_request_done (priv);
 }
 
 static void
@@ -153,13 +164,14 @@ cd_sane_client_add (CdMainPrivate *priv, const SANE_Device *sane_device)
 			     (gpointer) CD_DEVICE_METADATA_OWNER_CMDLINE,
 			     (gpointer) priv->argv0);
 #endif
+	priv->pending++;
 	cd_client_create_device (priv->client,
 				 id,
 				 CD_OBJECT_SCOPE_NORMAL,
 				 properties,
 				 NULL,
 				 cd_main_colord_create_device_cb,
-				 NULL);
+				 priv);
 }
 
 static void
@@ -168,17 +180,20 @@ cd_main_colord_delete_device_cb (GObject *source_object,
 				 gpointer user_data)
 {
 	CdClient *client = CD_CLIENT (source_object);
+	CdMainPrivate *priv = (CdMainPrivate *) user_data;
 	g_autoptr(GError) error = NULL;
 
 	/* get result */
 	if (!cd_client_delete_device_finish (client, res, &error))
 		g_warning ("failed to delete device: %s", error->message);
+	cd_main_request_done (priv);
 }
 
 static void
 cd_sane_client_remove (CdMainPrivate *priv, CdDevice *device)
 {
 	g_debug ("Deleting device: %s", cd_device_get_object_path (device));
+	priv->pending++;
 	cd_client_delete_device (priv->client,
 				 device,
 				 NULL,
@@ -210,12 +225,8 @@ cd_sane_client_refresh (CdMainPrivate *priv)
 		goto out;
 	}
 
-	/* nothing */
-	if (device_list == NULL || device_list[0] == NULL)
-		goto out;
-
 	/* add them */
-	for (idx = 0; device_list[idx] != NULL; idx++)
+	for (idx = 0; device_list != NULL && device_list[idx] != NULL; idx++)
 		cd_sane_client_add (priv, device_list[idx]);
 
 	/* remove any that are invalid */
@@ -226,7 +237,9 @@ cd_sane_client_refresh (CdMainPrivate *priv)
 		cd_sane_client_remove (priv, tmp->device);
 	}
 out:
-	g_main_loop_quit (priv->loop);
+	/* wait for the create and delete requests to finish */
+	if (priv->pending == 0)
+		g_main_loop_quit (priv->loop);
 }
 
 static void
@@ -236,9 +249,9 @@ cd_sane_add_device_if_from_colord_sane (gpointer data,
 	CdDevice *device = (CdDevice *) data;
 	CdMainDev *sane_device;
 	CdMainPrivate *priv = (CdMainPrivate *) user_data;
-	const gchar *cmdline;
 	gboolean ret;
 	g_autoptr(GError) error = NULL;
+	g_autofree gchar *cmdline = NULL;
 
 	ret = cd_device_connect_sync (device, NULL, &error);
 
@@ -248,12 +261,15 @@ cd_sane_add_device_if_from_colord_sane (gpointer data,
 		return;
 	}
 
-	cmdline = cd_device_get_metadata_item (device,
-					       CD_DEVICE_METADATA_OWNER_CMDLINE);
+	/* the daemon turns the NUL separators into spaces */
+	cmdline = g_strdup (cd_device_get_metadata_item (device,
+							 CD_DEVICE_METADATA_OWNER_CMDLINE));
+	if (cmdline != NULL)
+		g_strchomp (cmdline);
 	if (g_strcmp0 (cmdline, priv->argv0) == 0) {
 		sane_device = g_new (CdMainDev, 1);
 		sane_device->device = g_object_ref (device);
-		sane_device->id = (gchar *)cd_device_get_id (device);
+		sane_device->id = g_strdup (cd_device_get_id (device));
 		sane_device->valid = FALSE;
 		g_ptr_array_add (priv->array, sane_device);
 	}
