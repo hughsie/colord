@@ -112,6 +112,11 @@ colord_it8_cri_util_func (void)
 	g_assert_cmpfloat (value, <, 52);
 	g_assert_cmpfloat (value, >, 50);
 
+	/* not enough TCS samples */
+	ret = cd_it8_utils_calculate_cri_from_cmf (cmf, test, f4, &value, 1.0f, &error);
+	g_assert_error (error, CD_IT8_ERROR, CD_IT8_ERROR_INVALID_FORMAT);
+	g_assert_false (ret);
+
 	g_object_unref (test);
 	g_object_unref (cmf);
 	g_object_unref (tcs);

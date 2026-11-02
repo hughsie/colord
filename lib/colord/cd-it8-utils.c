@@ -340,6 +340,17 @@ cd_it8_utils_calculate_cri_from_cmf (CdIt8 *cmf,
 	guint i;
 	g_autoptr(CdSpectrum) reference_illuminant = NULL;
 
+	/* the first eight TCS samples are used */
+	samples = cd_it8_get_spectrum_array (tcs);
+	if (samples->len < 8) {
+		g_set_error (error,
+			     CD_IT8_ERROR,
+			     CD_IT8_ERROR_INVALID_FORMAT,
+			     "need at least 8 TCS samples, got %u",
+			     samples->len);
+		return FALSE;
+	}
+
 	/* get the illuminant CCT */
 	unity = cd_spectrum_new ();
 	ret = cd_it8_utils_calculate_xyz_from_cmf (cmf,
