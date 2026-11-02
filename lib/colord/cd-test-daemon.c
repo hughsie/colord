@@ -1528,6 +1528,99 @@ colord_device_make_default_soft_func (void)
 	g_assert_true (ret);
 }
 
+/* creating a device that already exists as a virtual device promotes it */
+static void
+colord_device_promote_func (void)
+{
+	gboolean ret;
+	guint cnt = 0;
+	guint i;
+	g_autofree gchar *device_id = NULL;
+	g_autoptr(CdClient) client = NULL;
+	g_autoptr(CdDevice) device1 = NULL;
+	g_autoptr(CdDevice) device2 = NULL;
+	g_autoptr(CdDevice) device3 = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GHashTable) device_props = NULL;
+	g_autoptr(GPtrArray) devices = NULL;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
+	device_id = colord_get_random_device_id ();
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+
+	/* create a virtual device */
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_MODE),
+			     g_strdup (cd_device_mode_to_string (CD_DEVICE_MODE_VIRTUAL)));
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_VENDOR),
+			     g_strdup ("Old"));
+	device1 = cd_client_create_device_sync (client,
+						device_id,
+						CD_OBJECT_SCOPE_TEMP,
+						device_props,
+						NULL,
+						&error);
+	g_assert_no_error (error);
+	g_assert_nonnull (device1);
+
+	/* create it again as a physical device */
+	g_hash_table_remove (device_props, CD_DEVICE_PROPERTY_MODE);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_VENDOR),
+			     g_strdup ("New"));
+	device2 = cd_client_create_device_sync (client,
+						device_id,
+						CD_OBJECT_SCOPE_TEMP,
+						device_props,
+						NULL,
+						&error);
+	g_assert_no_error (error);
+	g_assert_nonnull (device2);
+	g_assert_cmpstr (cd_device_get_object_path (device1), ==,
+			 cd_device_get_object_path (device2));
+
+	/* the existing device was updated */
+	ret = cd_device_connect_sync (device2, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	g_assert_cmpint (cd_device_get_mode (device2), ==, CD_DEVICE_MODE_PHYSICAL);
+	g_assert_cmpstr (cd_device_get_vendor (device2), ==, "New");
+
+	/* and there is still only one of them */
+	devices = cd_client_get_devices_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (devices);
+	for (i = 0; i < devices->len; i++) {
+		CdDevice *device_tmp = g_ptr_array_index (devices, i);
+		if (g_strcmp0 (cd_device_get_object_path (device_tmp),
+			       cd_device_get_object_path (device2)) == 0)
+			cnt++;
+	}
+	g_assert_cmpint (cnt, ==, 1);
+
+	/* clean up */
+	ret = cd_client_delete_device_sync (client, device2, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	device3 = cd_client_find_device_sync (client, device_id, NULL, &error);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_NOT_FOUND);
+	g_assert_null (device3);
+}
+
 static void
 colord_client_fd_pass_func (void)
 {
@@ -2887,6 +2980,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/profile{ordering}", colord_profile_ordering_func);
 	g_test_add_func ("/colord/profile{duplicate}", colord_profile_duplicate_func);
 	g_test_add_func ("/colord/device{mapping}", colord_device_mapping_func);
+	g_test_add_func ("/colord/device{promote}", colord_device_promote_func);
 	g_test_add_func ("/colord/device{make-default-soft}", colord_device_make_default_soft_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/device{modified}", colord_device_modified_func);
