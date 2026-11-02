@@ -1679,6 +1679,7 @@ cd_device_finalize (GObject *object)
 	g_object_unref (priv->profile_array);
 	g_object_unref (priv->mapping_db);
 	g_object_unref (priv->device_db);
+	g_signal_handlers_disconnect_by_data (priv->inhibit, object);
 	g_object_unref (priv->inhibit);
 	g_hash_table_unref (priv->metadata);
 
