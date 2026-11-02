@@ -10,7 +10,7 @@ upstream but may be supported by your distributor or distribution.
 ## Reporting a Vulnerability
 
 If you find a vulnerability in colord you should let us know using a
-[private vulnerability disclosure](https://github.com/colord/colord/security/advisories/new) on GitHub,
+[private vulnerability disclosure](https://github.com/hughsie/colord/security/advisories/new) on GitHub,
 with a description of the issue, the steps you took to create the issue, affected versions, and, if known,
 mitigations for the issue.
 
