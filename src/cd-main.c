@@ -1675,7 +1675,7 @@ cd_main_icc_store_removed_cb (CdIccStore *icc_store,
 	if (profile == NULL)
 		return;
 	g_debug ("%s removed, so invalidating", cd_icc_get_filename (icc));
-	cd_profile_array_remove (priv->profiles_array, profile);
+	cd_main_profile_removed (priv, profile);
 }
 
 static void
