@@ -191,6 +191,27 @@ colord_spectrum_planckian_func (void)
 }
 
 static void
+colord_spectrum_multiply_scalar_func (void)
+{
+	g_autoptr(CdSpectrum) s = NULL;
+	g_autoptr(CdSpectrum) s1 = NULL;
+
+	s1 = cd_spectrum_new ();
+	cd_spectrum_set_start (s1, 360);
+	cd_spectrum_set_end (s1, 780);
+	cd_spectrum_add_value (s1, 1);
+	cd_spectrum_add_value (s1, 2);
+	cd_spectrum_add_value (s1, 3);
+	cd_spectrum_set_norm (s1, 2);
+
+	s = cd_spectrum_multiply_scalar (s1, 10);
+	g_assert_cmpint (cd_spectrum_get_size (s), ==, 3);
+	g_assert_cmpfloat_with_epsilon (cd_spectrum_get_value (s, 0), 20.f, 0.001f);
+	g_assert_cmpfloat_with_epsilon (cd_spectrum_get_value (s, 1), 40.f, 0.001f);
+	g_assert_cmpfloat_with_epsilon (cd_spectrum_get_value (s, 2), 60.f, 0.001f);
+}
+
+static void
 colord_spectrum_subtract_func (void)
 {
 	g_autoptr(CdSpectrum) s = NULL;
@@ -2491,6 +2512,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/spectrum", colord_spectrum_func);
 	g_test_add_func ("/colord/spectrum{planckian}", colord_spectrum_planckian_func);
 	g_test_add_func ("/colord/spectrum{subtract}", colord_spectrum_subtract_func);
+	g_test_add_func ("/colord/spectrum{multiply-scalar}", colord_spectrum_multiply_scalar_func);
 	g_test_add_func ("/colord/spectrum{cx}", colord_spect_cx_func);
 	g_test_add_func ("/colord/edid", colord_edid_func);
 	g_test_add_func ("/colord/transform", colord_transform_func);

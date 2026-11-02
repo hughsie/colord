@@ -758,7 +758,7 @@ cd_spectrum_multiply_scalar (CdSpectrum *spectrum, gdouble value)
 {
 	CdSpectrum *s = cd_spectrum_dup (spectrum);
 	for (guint i = 0; i < spectrum->data->len; i++)
-		cd_spectrum_add_value (s, cd_spectrum_get_value (spectrum, i) * value);
+		cd_spectrum_set_value (s, i, cd_spectrum_get_value (spectrum, i) * value);
 	return s;
 }
 
