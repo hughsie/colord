@@ -334,6 +334,14 @@ ch_device_request_cb (GObject *source_object,
 					       task);
 }
 
+static void
+ch_device_emulate_set_byte (ChDeviceTaskData *tdata, gsize idx, guint8 value)
+{
+	if (tdata->buffer_out == NULL || idx >= tdata->buffer_out_len)
+		return;
+	tdata->buffer_out[idx] = value;
+}
+
 static gboolean
 ch_device_emulate_cb (gpointer user_data)
 {
@@ -342,14 +350,14 @@ ch_device_emulate_cb (gpointer user_data)
 
 	switch (tdata->cmd) {
 	case CH_CMD_GET_SERIAL_NUMBER:
-		tdata->buffer_out[6] = 42;
+		ch_device_emulate_set_byte (tdata, 0, 42);
 		break;
 	case CH_CMD_GET_FIRMWARE_VERSION:
-		tdata->buffer_out[0] = 0x01;
-		tdata->buffer_out[4] = 0x01;
+		ch_device_emulate_set_byte (tdata, 0, 0x01);
+		ch_device_emulate_set_byte (tdata, 4, 0x01);
 		break;
 	case CH_CMD_GET_HARDWARE_VERSION:
-		tdata->buffer_out[0] = 0xff;
+		ch_device_emulate_set_byte (tdata, 0, 0xff);
 		break;
 	default:
 		g_debug ("Ignoring command %s",
