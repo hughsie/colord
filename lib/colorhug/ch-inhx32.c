@@ -77,6 +77,7 @@ ch_inhx32_to_bin_full (const gchar *in_buffer,
 	guint j;
 	guint len_tmp;
 	guint type;
+	gsize in_len;
 	g_autoptr(GString) string = NULL;
 
 	g_return_val_if_fail (in_buffer != NULL, FALSE);
@@ -84,6 +85,7 @@ ch_inhx32_to_bin_full (const gchar *in_buffer,
 
 	/* only if set */
 	verbose = g_getenv ("VERBOSE") != NULL;
+	in_len = strlen (in_buffer);
 	string = g_string_new ("");
 	while (TRUE) {
 
@@ -97,6 +99,11 @@ ch_inhx32_to_bin_full (const gchar *in_buffer,
 
 		/* position of checksum */
 		end = offset + 9 + len_tmp * 2;
+		if ((gsize) end + 2 > in_len) {
+			g_set_error_literal (error, 1, 0,
+					     "inhx32 record too short");
+			return FALSE;
+		}
 
 		/* verify checksum */
 		checksum = 0;
@@ -122,6 +129,14 @@ ch_inhx32_to_bin_full (const gchar *in_buffer,
 			for (i = offset + 9; i < end; i += 2) {
 				if (addr32 >= runcode_addr &&
 				    addr32 < 0xfff0) {
+
+					/* the image is written in order */
+					if (addr32_last > 0x0 && addr32 <= addr32_last) {
+						g_set_error (error, 1, 0,
+							     "inhx32 address 0x%04x not after 0x%04x",
+							     addr32, addr32_last);
+						return FALSE;
+					}
 
 					/* find out if there are any
 					 * holes in the hex record */

@@ -32,6 +32,7 @@
 #include "ch-hash.h"
 #include "ch-device.h"
 #include "ch-device-queue.h"
+#include "ch-inhx32.h"
 
 static void
 ch_test_hash_func (void)
@@ -1229,6 +1230,40 @@ out:
 }
 
 static void
+ch_test_inhx32_func (void)
+{
+	gboolean ret;
+	gsize len = 0;
+	g_autofree gchar *truncated = g_strdup (":FF000000");
+	g_autofree guint8 *data = NULL;
+	g_autoptr(GError) error = NULL;
+
+	/* valid */
+	ret = ch_inhx32_to_bin_full (":0400200001020304D2\n"
+				     ":00000001FF\n",
+				     &data, &len, 0x10, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	g_assert_cmpint (len, ==, 0x10);
+	g_assert_cmpint (data[0], ==, 0x01);
+	g_assert_cmpint (data[3], ==, 0x04);
+
+	/* record longer than the data */
+	ret = ch_inhx32_to_bin_full (truncated, NULL, NULL, 0x10, &error);
+	g_assert_error (error, 1, 0);
+	g_assert_false (ret);
+	g_clear_error (&error);
+
+	/* address going backwards */
+	ret = ch_inhx32_to_bin_full (":0400200001020304D2\n"
+				     ":020010000506E3\n"
+				     ":00000001FF\n",
+				     NULL, NULL, 0x10, &error);
+	g_assert_error (error, 1, 0);
+	g_assert_false (ret);
+}
+
+static void
 ch_test_firmware_func (void)
 {
 	ChDeviceMode device_mode;
@@ -1274,6 +1309,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/ColorHug/reading-xyz", ch_test_reading_xyz_func);
 	g_test_add_func ("/ColorHug/device-incomplete-request", ch_test_incomplete_request_func);
 	g_test_add_func ("/ColorHug/firmware", ch_test_firmware_func);
+	g_test_add_func ("/ColorHug/inhx32", ch_test_inhx32_func);
 
 	return g_test_run ();
 }
