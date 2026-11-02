@@ -3910,16 +3910,16 @@ cd_icc_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *
 		g_value_set_string (value, priv->checksum);
 		break;
 	case PROP_WHITE:
-		g_value_set_boxed (value, g_boxed_copy (CD_TYPE_COLOR_XYZ, &priv->white));
+		g_value_set_boxed (value, &priv->white);
 		break;
 	case PROP_RED:
-		g_value_set_boxed (value, g_boxed_copy (CD_TYPE_COLOR_XYZ, &priv->red));
+		g_value_set_boxed (value, &priv->red);
 		break;
 	case PROP_GREEN:
-		g_value_set_boxed (value, g_boxed_copy (CD_TYPE_COLOR_XYZ, &priv->green));
+		g_value_set_boxed (value, &priv->green);
 		break;
 	case PROP_BLUE:
-		g_value_set_boxed (value, g_boxed_copy (CD_TYPE_COLOR_XYZ, &priv->blue));
+		g_value_set_boxed (value, &priv->blue);
 		break;
 	case PROP_TEMPERATURE:
 		g_value_set_uint (value, priv->temperature);

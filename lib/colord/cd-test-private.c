@@ -2244,6 +2244,7 @@ colord_icc_util_func (void)
 {
 	CdIcc *icc_measured;
 	CdIcc *icc_reference;
+	CdColorXYZ *white = NULL;
 	gboolean ret;
 	gdouble coverage = 0;
 	g_autoptr(GError) error = NULL;
@@ -2267,6 +2268,11 @@ colord_icc_util_func (void)
 	g_assert (ret);
 	g_assert_cmpfloat (coverage, >, 0.99);
 	g_assert_cmpfloat (coverage, <, 1.01);
+
+	/* get the whitepoint as a property */
+	g_object_get (icc_reference, "white", &white, NULL);
+	g_assert_nonnull (white);
+	cd_color_xyz_free (white);
 
 	g_object_unref (icc_reference);
 	g_object_unref (icc_measured);
