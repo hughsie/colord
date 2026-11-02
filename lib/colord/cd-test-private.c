@@ -2101,6 +2101,95 @@ colord_icc_store_removed_cb (CdIccStore *store, CdIcc *icc, guint *cnt)
 }
 
 static void
+colord_icc_store_wait_for (guint *cnt, guint value)
+{
+	for (guint i = 0; i < 10 && *cnt < value; i++) {
+		cd_test_loop_run_with_timeout (1000);
+		cd_test_loop_quit ();
+	}
+}
+
+static void
+colord_icc_store_remove_dir_func (void)
+{
+	gboolean ret;
+	guint added = 0;
+	guint removed = 0;
+	g_autofree gchar *filename1 = cd_test_get_filename ("ibm-t61.icc");
+	g_autofree gchar *filename2 = cd_test_get_filename ("crayons.icc");
+	g_autofree gchar *filename3 = cd_test_get_filename ("empty-desc.icc");
+	g_autofree gchar *root = NULL;
+	g_autofree gchar *outside = NULL;
+	g_autofree gchar *outside_dir = NULL;
+	g_autofree gchar *dir = NULL;
+	g_autofree gchar *dir_old = NULL;
+	g_autofree gchar *file1 = NULL;
+	g_autofree gchar *file2 = NULL;
+	g_autofree gchar *file3 = NULL;
+	g_autoptr(CdIcc) icc = NULL;
+	g_autoptr(CdIccStore) store = cd_icc_store_new ();
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GPtrArray) array = NULL;
+
+	g_signal_connect (store, "added",
+			  G_CALLBACK (colord_icc_store_added_cb),
+			  &added);
+	g_signal_connect (store, "removed",
+			  G_CALLBACK (colord_icc_store_removed_cb),
+			  &removed);
+	cd_icc_store_set_load_flags (store, CD_ICC_LOAD_FLAGS_NONE);
+
+	root = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	outside = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	ret = cd_icc_store_search_location (store, root,
+					    CD_ICC_STORE_SEARCH_FLAGS_NONE,
+					    NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+
+	/* two profiles in one directory, one in a directory with the same prefix */
+	dir = g_build_filename (root, "dir", NULL);
+	dir_old = g_build_filename (root, "dir-old", NULL);
+	g_assert_cmpint (g_mkdir (dir, 0700), ==, 0);
+	g_assert_cmpint (g_mkdir (dir_old, 0700), ==, 0);
+	cd_test_loop_run_with_timeout (500);
+	cd_test_loop_quit ();
+	file1 = g_build_filename (dir, "1.icc", NULL);
+	file2 = g_build_filename (dir, "2.icc", NULL);
+	file3 = g_build_filename (dir_old, "3.icc", NULL);
+	_copy_files (filename1, file1);
+	_copy_files (filename2, file2);
+	_copy_files (filename3, file3);
+	colord_icc_store_wait_for (&added, 3);
+	g_assert_cmpint (added, ==, 3);
+
+	/* move the directory away, which removes everything in it */
+	outside_dir = g_build_filename (outside, "dir", NULL);
+	g_assert_cmpint (g_rename (dir, outside_dir), ==, 0);
+	colord_icc_store_wait_for (&removed, 2);
+	g_assert_cmpint (removed, ==, 2);
+	array = cd_icc_store_get_all (store);
+	g_assert_cmpint (array->len, ==, 1);
+	icc = cd_icc_store_find_by_filename (store, file3);
+	g_assert_nonnull (icc);
+
+	/* cleanup */
+	g_assert_cmpint (g_unlink (file3), ==, 0);
+	g_assert_cmpint (g_rmdir (dir_old), ==, 0);
+	g_assert_cmpint (g_rmdir (root), ==, 0);
+	g_free (file1);
+	file1 = g_build_filename (outside_dir, "1.icc", NULL);
+	g_assert_cmpint (g_unlink (file1), ==, 0);
+	g_free (file2);
+	file2 = g_build_filename (outside_dir, "2.icc", NULL);
+	g_assert_cmpint (g_unlink (file2), ==, 0);
+	g_assert_cmpint (g_rmdir (outside_dir), ==, 0);
+	g_assert_cmpint (g_rmdir (outside), ==, 0);
+}
+
+static void
 colord_icc_store_func (void)
 {
 	CdIccStore *store;
@@ -2507,6 +2596,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc{clear}", colord_icc_clear_func);
 	g_test_add_func ("/colord/icc{tags}", colord_icc_tags_func);
 	g_test_add_func ("/colord/icc-store", colord_icc_store_func);
+	g_test_add_func ("/colord/icc-store{remove-dir}", colord_icc_store_remove_dir_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/dom", colord_dom_func);
