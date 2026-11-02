@@ -439,6 +439,7 @@ cd_sensor_set_next_option (GTask *task)
 		g_debug ("setting remote hash value %s",
 			 g_variant_get_string (value, NULL));
 		cd_sensor_add_option (sensor, key, value);
+		g_hash_table_remove (options, key);
 		ch_device_queue_set_remote_hash (priv->device_queue,
 						 priv->device,
 						 &sha1);
