@@ -50,6 +50,8 @@
 
 #include "cd-test-shared.h"
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(cmsToneCurve, cmsFreeToneCurve)
+
 static void
 colord_it8_cri_util_func (void)
 {
@@ -1636,6 +1638,28 @@ colord_icc_created_func (void)
 }
 
 static void
+colord_icc_rec709_func (void)
+{
+	const cmsFloat64Number params[5] = { 1.0 / 0.45, 1.099, 0.099, 4.500, 0.018 };
+	const gfloat values[] = { 0.f, 0.01f, 0.25f, 0.5f, 1.f };
+	g_autoptr(CdIcc) icc = cd_icc_new ();
+	g_autoptr(cmsToneCurve) curve = NULL;
+	g_autoptr(cmsToneCurve) curve_rev = NULL;
+
+	/* the inverse of the Rec.709 curve has to undo the curve */
+	curve = cmsBuildParametricToneCurve (cd_icc_get_context (icc), 1024, params);
+	g_assert_nonnull (curve);
+	curve_rev = cmsReverseToneCurve (curve);
+	g_assert_nonnull (curve_rev);
+	g_assert_cmpfloat_with_epsilon (cmsEvalToneCurveFloat (curve_rev, 1.f), 1.f, 0.001);
+	for (guint i = 0; i < G_N_ELEMENTS (values); i++) {
+		gfloat tmp = cmsEvalToneCurveFloat (curve, values[i]);
+		g_assert_cmpfloat_with_epsilon (cmsEvalToneCurveFloat (curve_rev, tmp),
+						values[i], 0.001);
+	}
+}
+
+static void
 colord_icc_func (void)
 {
 	CdIcc *icc;
@@ -2817,6 +2841,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/transform{threads}", colord_transform_threads_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);
 	g_test_add_func ("/colord/icc{created}", colord_icc_created_func);
+	g_test_add_func ("/colord/icc{rec709}", colord_icc_rec709_func);
 	g_test_add_func ("/colord/icc{util}", colord_icc_util_func);
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
 	g_test_add_func ("/colord/icc{edid}", colord_icc_edid_func);

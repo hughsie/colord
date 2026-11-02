@@ -109,7 +109,7 @@ cd_context_lcms_plugins_cb (int type, const double params[], double x)
 		if (x < params[4])
 			val = x * params[3];
 		else
-			val = params[1] * pow (x, (1.f / params[0])) + params[2];
+			val = params[1] * pow (x, (1.f / params[0])) - params[2];
 		break;
 	case LCMS_CURVE_PLUGIN_TYPE_REC709:
 		if (x <= (params[3] * params[4]))
