@@ -161,11 +161,13 @@ cd_interp_akima_eval (CdInterp *interp, gdouble value, GError **error)
 	gdouble result;
 	gdouble xd;
 	gint p = 2;
+	gint n = cd_interp_get_x (interp)->len;
 
 	/* find first point to interpolate from */
 	x = &g_array_index (cd_interp_get_x (interp), gdouble, 0);
 	y = &g_array_index (cd_interp_get_y (interp), gdouble, 0);
-	while (value >= x[p]) p++;
+	while (p < n - 1 && value >= x[p])
+		p++;
 
 	/* evaluate polynomials */
 	xd = value - x[p-1];
