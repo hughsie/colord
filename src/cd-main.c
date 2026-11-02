@@ -1220,20 +1220,22 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 
-		/* create device */
-		device = cd_main_create_device (priv,
-						sender,
-						device_id,
-						uid,
-						pid,
-						scope,
-						CD_DEVICE_MODE_UNKNOWN,
-						&error);
+		/* create device unless an existing one is being promoted */
 		if (device == NULL) {
-			g_warning ("CdMain: failed to create device: %s",
-				   error->message);
-			g_dbus_method_invocation_return_gerror (invocation, error);
-			return;
+			device = cd_main_create_device (priv,
+							sender,
+							device_id,
+							uid,
+							pid,
+							scope,
+							CD_DEVICE_MODE_UNKNOWN,
+							&error);
+			if (device == NULL) {
+				g_warning ("CdMain: failed to create device: %s",
+					   error->message);
+				g_dbus_method_invocation_return_gerror (invocation, error);
+				return;
+			}
 		}
 
 		/* set the properties */
