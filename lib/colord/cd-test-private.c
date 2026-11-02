@@ -1389,6 +1389,11 @@ colord_interp_akima_func (void)
 		g_assert_cmpfloat (y, <, data[i] + 0.01);
 		g_assert_cmpfloat (y, >, data[i] - 0.01);
 	}
+
+	/* values far outside the range do not read past the data */
+	y = cd_interp_eval (interp, 10.f, &error);
+	g_assert_no_error (error);
+	g_assert_cmpfloat_with_epsilon (y, cd_interp_eval (interp, 1.4f, NULL), 0.001);
 }
 
 static void
