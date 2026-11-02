@@ -303,8 +303,8 @@ ch_device_queue_process_data (GTask *task, ChDeviceQueueData *data)
 	ChDeviceQueueData *data_tmp;
 	const gchar *device_id;
 
-	/* is this command already complete? */
-	if (data->state == CH_DEVICE_QUEUE_DATA_STATE_COMPLETE)
+	/* is this command already submitted, complete or cancelled? */
+	if (data->state != CH_DEVICE_QUEUE_DATA_STATE_PENDING)
 		return FALSE;
 
 	/* is this device already busy? */
