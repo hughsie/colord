@@ -280,12 +280,14 @@ cd_icc_store_remove_from_prefix (CdIccStore *store, const gchar *prefix)
 	CdIcc *tmp;
 	const gchar *filename;
 	guint i;
+	g_autofree gchar *prefix_dir = g_strconcat (prefix, G_DIR_SEPARATOR_S, NULL);
 
-	for (i = 0; i < priv->icc_array->len; i++) {
-		tmp = g_ptr_array_index (priv->icc_array, i);
+	/* iterate backwards as items are removed from the array */
+	for (i = priv->icc_array->len; i > 0; i--) {
+		tmp = g_ptr_array_index (priv->icc_array, i - 1);
 		filename = cd_icc_get_filename (tmp);
-		if (g_str_has_prefix (filename, prefix)) {
-			g_debug ("auto-removed %s as path removed", prefix);
+		if (g_str_has_prefix (filename, prefix_dir)) {
+			g_debug ("auto-removed %s as path removed", filename);
 			cd_icc_store_remove_icc (store, filename);
 		}
 	}
