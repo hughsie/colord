@@ -1104,7 +1104,7 @@ cd_sensor_get_metadata_as_variant (CdSensor *sensor)
 
 	/* we always must have at least one bit of metadata */
 	if (g_hash_table_size (priv->metadata) == 0)
-		return g_variant_new_array (G_VARIANT_TYPE ("{sv}"), NULL, 0);
+		return g_variant_new_array (G_VARIANT_TYPE ("{ss}"), NULL, 0);
 
 	/* add all the keys in the dictionary to the variant builder */
 	list = g_hash_table_get_keys (priv->metadata);
