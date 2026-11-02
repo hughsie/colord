@@ -394,7 +394,7 @@ cd_it8_utils_calculate_cri_from_cmf (CdIt8 *cmf,
 							   reference_illuminant,
 							   sample,
 							   &sample_xyz,
-							   1.f,
+							   resolution,
 							   error);
 		if (!ret)
 			return FALSE;
