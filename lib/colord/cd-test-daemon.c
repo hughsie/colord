@@ -1043,7 +1043,7 @@ colord_sensor_func (void)
 	g_assert (ret);
 
 	g_assert_cmpint (cd_sensor_get_kind (sensor), ==, CD_SENSOR_KIND_DUMMY);
-	g_assert_cmpint (cd_sensor_get_state (sensor), ==, CD_SENSOR_STATE_UNKNOWN);
+	g_assert_cmpint (cd_sensor_get_state (sensor), ==, CD_SENSOR_STATE_IDLE);
 	g_assert (!cd_sensor_get_locked (sensor));
 	g_assert_cmpstr (cd_sensor_get_serial (sensor), ==, "0123456789a");
 	g_assert_cmpstr (cd_sensor_get_vendor (sensor), ==, "Acme Corp");
