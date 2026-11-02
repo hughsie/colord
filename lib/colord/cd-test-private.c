@@ -1556,6 +1556,38 @@ colord_icc_empty_desc_func (void)
 }
 
 static void
+colord_icc_created_func (void)
+{
+	const gint64 created_unix = 1262304000;	/* 2010-01-01 00:00:00 UTC */
+	gboolean ret;
+	g_autoptr(CdIcc) icc = cd_icc_new ();
+	g_autoptr(CdIcc) icc_new = cd_icc_new ();
+	g_autoptr(GBytes) data = NULL;
+	g_autoptr(GDateTime) created = NULL;
+	g_autoptr(GDateTime) created_in = g_date_time_new_from_unix_utc (created_unix);
+	g_autoptr(GError) error = NULL;
+
+	/* the header is UTC, so the local timezone must not matter */
+	ret = cd_icc_create_default_full (icc, CD_ICC_LOAD_FLAGS_NONE, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	cd_icc_set_created (icc, created_in);
+	data = cd_icc_save_data (icc, CD_ICC_SAVE_FLAGS_NONE, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (data);
+	ret = cd_icc_load_data (icc_new,
+				g_bytes_get_data (data, NULL),
+				g_bytes_get_size (data),
+				CD_ICC_LOAD_FLAGS_NONE,
+				&error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	created = cd_icc_get_created (icc_new);
+	g_assert_nonnull (created);
+	g_assert_cmpint (g_date_time_to_unix (created), ==, created_unix);
+}
+
+static void
 colord_icc_func (void)
 {
 	CdIcc *icc;
@@ -1568,6 +1600,7 @@ colord_icc_func (void)
 	gchar *filename;
 	gchar *tmp;
 	GDateTime *created;
+	g_autoptr(GDateTime) created_utc = NULL;
 	g_autoptr(GError) error = NULL;
 	GFile *file;
 	GHashTable *metadata;
@@ -1665,7 +1698,8 @@ colord_icc_func (void)
 	/* check created time */
 	created = cd_icc_get_created (icc);
 	g_assert (created != NULL);
-	created_str = g_date_time_format (created, "%F, %T");
+	created_utc = g_date_time_to_utc (created);
+	created_str = g_date_time_format (created_utc, "%F, %T");
 	g_assert_cmpstr (created_str, ==, "2009-12-23, 22:20:46");
 	g_free (created_str);
 	g_date_time_unref (created);
@@ -2680,6 +2714,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/transform", colord_transform_func);
 	g_test_add_func ("/colord/transform{formats}", colord_transform_formats_func);
 	g_test_add_func ("/colord/icc", colord_icc_func);
+	g_test_add_func ("/colord/icc{created}", colord_icc_created_func);
 	g_test_add_func ("/colord/icc{util}", colord_icc_util_func);
 	g_test_add_func ("/colord/icc{localized}", colord_icc_localized_func);
 	g_test_add_func ("/colord/icc{edid}", colord_icc_edid_func);

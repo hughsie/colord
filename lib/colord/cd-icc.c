@@ -2469,7 +2469,7 @@ cd_icc_get_created (CdIcc *icc)
 {
 	CdIccPrivate *priv = GET_PRIVATE (icc);
 	struct tm created_tm;
-	time_t created_t;
+	g_autoptr(GDateTime) created_utc = NULL;
 
 	g_return_val_if_fail (CD_IS_ICC (icc), NULL);
 
@@ -2481,15 +2481,18 @@ cd_icc_get_created (CdIcc *icc)
 	if (!cmsGetHeaderCreationDateTime (priv->lcms_profile, &created_tm))
 		return NULL;
 
-	created_tm.tm_isdst = -1;
-
-	/* convert to UNIX time */
-	created_t = mktime (&created_tm);
-	if (created_t == (time_t) -1)
+	/* the header date is in UTC */
+	created_utc = g_date_time_new_utc (created_tm.tm_year + 1900,
+					   created_tm.tm_mon + 1,
+					   created_tm.tm_mday,
+					   created_tm.tm_hour,
+					   created_tm.tm_min,
+					   created_tm.tm_sec);
+	if (created_utc == NULL)
 		return NULL;
 
 	/* instantiate object */
-	return g_date_time_new_from_unix_local (created_t);
+	return g_date_time_to_local (created_utc);
 }
 
 /**
