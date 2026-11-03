@@ -99,10 +99,17 @@ cd_plugin_uevent_cb (GUdevClient *udev_client,
 		     GUdevDevice *udev_device,
 		     CdPlugin *plugin)
 {
-	if (g_strcmp0 (action, "remove") == 0 ||
-	    g_strcmp0 (action, "add") == 0) {
-		cd_plugin_config_enabled_sane_devices (plugin->priv);
-	}
+	if (g_strcmp0 (action, "remove") != 0 &&
+	    g_strcmp0 (action, "add") != 0)
+		return;
+
+	/* rescanning probes the network backends too, which wakes up
+	 * network scanners, so only do it for devices libsane matched */
+	if (g_strcmp0 (g_udev_device_get_property (udev_device, "libsane_matched"),
+		       "yes") != 0)
+		return;
+
+	cd_plugin_config_enabled_sane_devices (plugin->priv);
 }
 
 void
