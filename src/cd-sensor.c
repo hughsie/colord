@@ -861,6 +861,16 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 
+		/* the device cannot be closed while a request uses it */
+		if (priv->state != CD_SENSOR_STATE_IDLE) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_IN_USE,
+							       "sensor not idle: %s",
+							       cd_sensor_state_to_string (priv->state));
+			return;
+		}
+
 		/* un-watch this bus name */
 		if (priv->watcher_id != 0) {
 			g_bus_unwatch_name (priv->watcher_id);
@@ -938,6 +948,9 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 
+		/* not idle until the request completes */
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
+
 		/* proxy */
 		priv->desc->get_sample_async (sensor,
 					      cap,
@@ -1005,6 +1018,9 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 
+		/* not idle until the request completes */
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_MEASURING);
+
 		/* proxy */
 		priv->desc->get_spectrum_async (sensor,
 						cap,
@@ -1058,6 +1074,9 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 		g_variant_iter_init (&iter, result);
 		while (g_variant_iter_next (&iter, "{sv}", &key, &value))
 			g_hash_table_insert (options, key, value);
+
+		/* not idle until the request completes */
+		cd_sensor_set_state (sensor, CD_SENSOR_STATE_BUSY);
 
 		/* proxy */
 		priv->desc->set_options_async (sensor,
