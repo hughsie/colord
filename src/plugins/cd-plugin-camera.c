@@ -55,6 +55,8 @@ cd_plugin_get_camera_id_for_udev_device (GUdevDevice *udev_device)
 	/* fallback */
 	if (string->len == 5) {
 		tmp = g_udev_device_get_device_file (udev_device);
+		if (tmp == NULL)
+			tmp = g_udev_device_get_name (udev_device);
 		g_string_append_printf (string, "-%s", tmp);
 	}
 
