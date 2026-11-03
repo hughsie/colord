@@ -786,10 +786,9 @@ static gchar *
 cd_main_get_cmdline_for_pid (guint pid)
 {
 	gboolean ret;
-	gchar *cmdline = NULL;
 	gsize len = 0;
-	guint i;
 	g_autoptr(GError) error = NULL;
+	g_autofree gchar *cmdline = NULL;
 	g_autofree gchar *proc_path = NULL;
 
 	/* just read the link */
@@ -800,18 +799,14 @@ cd_main_get_cmdline_for_pid (guint pid)
 			   proc_path, error->message);
 		return NULL;
 	}
-	if (len == 0) {
+	if (len == 0 || cmdline[0] == '\0') {
 		g_debug ("CdMain: failed to read %s", proc_path);
-		g_free (cmdline);
 		return NULL;
 	}
 
-	/* turn all the \0's into spaces */
-	for (i = 0; i < len; i++) {
-		if (cmdline[i] == '\0')
-			cmdline[i] = ' ';
-	}
-	return cmdline;
+	/* the arguments follow the first NUL, so only argv[0] is exposed to
+	 * the clients that can read the metadata */
+	return g_steal_pointer (&cmdline);
 }
 
 static void
