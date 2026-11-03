@@ -337,43 +337,6 @@ ch_device_request_cb (GObject *source_object,
 					       g_object_ref (task));
 }
 
-static void
-ch_device_emulate_set_byte (ChDeviceTaskData *tdata, gsize idx, guint8 value)
-{
-	if (tdata->buffer_out == NULL || idx >= tdata->buffer_out_len)
-		return;
-	tdata->buffer_out[idx] = value;
-}
-
-static gboolean
-ch_device_emulate_cb (gpointer user_data)
-{
-	g_autoptr(GTask) task = G_TASK (user_data);
-	ChDeviceTaskData *tdata = g_task_get_task_data (task);
-
-	switch (tdata->cmd) {
-	case CH_CMD_GET_SERIAL_NUMBER:
-		ch_device_emulate_set_byte (tdata, 0, 42);
-		break;
-	case CH_CMD_GET_FIRMWARE_VERSION:
-		ch_device_emulate_set_byte (tdata, 0, 0x01);
-		ch_device_emulate_set_byte (tdata, 4, 0x01);
-		break;
-	case CH_CMD_GET_HARDWARE_VERSION:
-		ch_device_emulate_set_byte (tdata, 0, 0xff);
-		break;
-	default:
-		g_debug ("Ignoring command %s",
-			 ch_command_to_string (tdata->cmd));
-		break;
-	}
-
-	/* success */
-	g_task_return_boolean (task, TRUE);
-
-	return G_SOURCE_REMOVE;
-}
-
 #define CH_REPORT_ALS				0x00
 #define CH_REPORT_HID_SENSOR			0x01
 #define CH_REPORT_SENSOR_SETTINGS		0x02
@@ -621,12 +584,6 @@ ch_device_write_command_async (GUsbDevice *device,
 		ch_print_data_buffer ("request",
 				      tdata->buffer,
 				      buffer_in_len + 1);
-	}
-
-	/* dummy hardware */
-	if (g_getenv ("COLORHUG_EMULATE") != NULL) {
-		g_timeout_add (20, ch_device_emulate_cb, task);
-		return;
 	}
 
 	/* handle ALS in sensor-hid mode differently */
