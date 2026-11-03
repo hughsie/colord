@@ -159,7 +159,7 @@ cd_main_device_removed (CdMainPrivate *priv, CdDevice *device)
 				       "DeviceRemoved",
 				       g_variant_new ("(o)",
 						      object_path_tmp),
-				       &error);
+				       NULL);
 }
 
 static void
