@@ -157,35 +157,41 @@ ch_packed_float_multiply (const ChPackedFloat *pf1,
 			  const ChPackedFloat *pf2,
 			  ChPackedFloat *result)
 {
-	ChPackedFloat pf1_tmp;
-	ChPackedFloat pf2_tmp;
+	gint32 value1;
+	gint32 value2;
+	guint32 offset1;
+	guint32 offset2;
+	guint32 fraction1;
+	guint32 fraction2;
 	gint32 tmp;
 
 	g_return_val_if_fail (pf1 != NULL, CH_ERROR_INVALID_VALUE);
 	g_return_val_if_fail (pf2 != NULL, CH_ERROR_INVALID_VALUE);
 	g_return_val_if_fail (result != NULL, CH_ERROR_INVALID_VALUE);
 
-	/* make positive */
-	pf1_tmp.raw = ABS(ch_packed_float_get_value (pf1));
-	pf2_tmp.raw = ABS(ch_packed_float_get_value (pf2));
+	/* make positive and split into the 16 bit parts, using the value
+	 * in host byte order as the union members are only correct on
+	 * little endian machines */
+	value1 = ch_packed_float_get_value (pf1);
+	value2 = ch_packed_float_get_value (pf2);
+	offset1 = (guint32) ABS (value1) >> 16;
+	offset2 = (guint32) ABS (value2) >> 16;
+	fraction1 = (guint32) ABS (value1) & 0xffff;
+	fraction2 = (guint32) ABS (value2) & 0xffff;
 
 	/* check for overflow */
-	if (pf1_tmp.offset > 0 &&
-	    0x8000 / pf1_tmp.offset < pf2_tmp.offset)
+	if (offset1 > 0 &&
+	    0x8000 / offset1 < offset2)
 		return CH_ERROR_OVERFLOW_MULTIPLY;
 
 	/* do long multiplication on each 16 bit part */
-	tmp = ((guint32) pf1_tmp.fraction *
-	       (guint32) pf2_tmp.fraction) / 0x10000;
-	tmp += ((guint32) pf1_tmp.offset *
-		(guint32) pf2_tmp.offset) * 0x10000;
-	tmp += (guint32) pf1_tmp.fraction *
-	       (guint32) pf2_tmp.offset;
-	tmp += (guint32) pf1_tmp.offset *
-	       (guint32) pf2_tmp.fraction;
+	tmp = (fraction1 * fraction2) / 0x10000;
+	tmp += (offset1 * offset2) * 0x10000;
+	tmp += fraction1 * offset2;
+	tmp += offset1 * fraction2;
 
 	/* correct sign bit */
-	if ((pf1->raw < 0) ^ (pf2->raw < 0))
+	if ((value1 < 0) ^ (value2 < 0))
 		tmp = -tmp;
 	ch_packed_float_set_value (result, tmp);
 	return CH_ERROR_NONE;
