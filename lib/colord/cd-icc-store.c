@@ -406,7 +406,6 @@ cd_icc_store_search_path (CdIccStore *store,
 	gboolean ret = TRUE;
 	g_autoptr(GFileEnumerator) enumerator = NULL;
 	g_autoptr(GFile) file = NULL;
-	g_autoptr(GFileInfo) info = NULL;
 
 	/* check sanity */
 	if (depth > CD_ICC_STORE_MAX_RECURSION_LEVELS) {
@@ -455,6 +454,8 @@ cd_icc_store_search_path (CdIccStore *store,
 
 	/* get all the files */
 	while (TRUE) {
+		g_autoptr(GFileInfo) info = NULL;
+
 		info = g_file_enumerator_next_file (enumerator,
 						    cancellable,
 						    &error_local);
