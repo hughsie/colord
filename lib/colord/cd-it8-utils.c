@@ -331,7 +331,6 @@ cd_it8_utils_calculate_cri_from_cmf (CdIt8 *cmf,
 	CdColorXYZ sample_xyz;
 	CdColorYxy yxy;
 	CdSpectrum *sample;
-	CdSpectrum *unity;
 	GPtrArray *samples;
 	gboolean ret;
 	gdouble cct;
@@ -339,6 +338,7 @@ cd_it8_utils_calculate_cri_from_cmf (CdIt8 *cmf,
 	gdouble val;
 	guint i;
 	g_autoptr(CdSpectrum) reference_illuminant = NULL;
+	g_autoptr(CdSpectrum) unity = NULL;
 
 	/* the first eight TCS samples are used */
 	samples = cd_it8_get_spectrum_array (tcs);
