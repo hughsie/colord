@@ -153,11 +153,12 @@ dtp94_device_send_cmd_issue (GUsbDevice *device,
 
 	/* no success */
 	if (rc != DTP94_RC_OK) {
+		g_autofree gchar *str = cd_buffer_strsafe (buffer, reply_read);
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,
 			     DTP94_DEVICE_ERROR_INTERNAL,
 			     "unexpected response from device: %s [%s]",
-			     (const gchar *) buffer,
+			     str != NULL ? str : "unknown",
 			     dtp94_rc_to_string (rc));
 		return FALSE;
 	}
@@ -297,11 +298,12 @@ dtp94_device_take_sample (GUsbDevice *device, CdSensorCap cap, GError **error)
 	buffer[reply_read] = '\0';
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
 	if (tmp == NULL || !g_str_has_prefix (tmp + 1, "<00>")) {
+		g_autofree gchar *str = cd_buffer_strsafe (buffer, reply_read);
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,
 			     DTP94_DEVICE_ERROR_INTERNAL,
 			     "unexpected response from device: %s",
-			     (const gchar *) buffer);
+			     str != NULL ? str : "unknown");
 		return NULL;
 	}
 
@@ -346,11 +348,12 @@ dtp94_device_get_serial (GUsbDevice *device, GError **error)
 	buffer[reply_read] = '\0';
 	tmp = g_strstr_len ((const gchar *) buffer, reply_read, "\r");
 	if (tmp == NULL || !g_str_has_prefix (tmp + 1, "<00>")) {
+		g_autofree gchar *str = cd_buffer_strsafe (buffer, reply_read);
 		g_set_error (error,
 			     DTP94_DEVICE_ERROR,
 			     DTP94_DEVICE_ERROR_INTERNAL,
 			     "unexpected response from device: %s",
-			     (const gchar *) buffer);
+			     str != NULL ? str : "unknown");
 		return NULL;
 	}
 	serial = cd_buffer_strsafe (buffer, tmp - (const gchar *) buffer);
