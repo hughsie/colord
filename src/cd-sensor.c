@@ -660,6 +660,10 @@ cd_sensor_lock_cb (GObject *source_object,
 	/* get the result */
 	ret = priv->desc->lock_finish (sensor, res, &error);
 	if (!ret) {
+		if (priv->watcher_id != 0) {
+			g_bus_unwatch_name (priv->watcher_id);
+			priv->watcher_id = 0;
+		}
 		g_dbus_method_invocation_return_error (invocation,
 						       CD_SENSOR_ERROR,
 						       CD_SENSOR_ERROR_NO_SUPPORT,
@@ -794,6 +798,15 @@ cd_sensor_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 							       CD_SENSOR_ERROR,
 							       CD_SENSOR_ERROR_ALREADY_LOCKED,
 							       "sensor is already locked");
+			return;
+		}
+
+		/* check not being locked by another client */
+		if (priv->watcher_id != 0) {
+			g_dbus_method_invocation_return_error (invocation,
+							       CD_SENSOR_ERROR,
+							       CD_SENSOR_ERROR_IN_USE,
+							       "sensor is being locked");
 			return;
 		}
 
