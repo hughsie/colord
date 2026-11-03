@@ -61,9 +61,9 @@ colord_client_get_devices_cb (GObject *object,
 static gchar *
 colord_get_random_device_id (void)
 {
-	guint32 key;
-	key = g_random_int_range (0x00, 0xffff);
-	return g_strdup_printf ("self-test-%04x", key);
+	/* mapping.db keeps the removed mappings of earlier runs, so use
+	 * enough bits that the same ID is not picked again */
+	return g_strdup_printf ("self-test-%08x", g_random_int ());
 }
 
 static void
