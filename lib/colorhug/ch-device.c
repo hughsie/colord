@@ -337,7 +337,7 @@ ch_device_request_cb (GObject *source_object,
 static gboolean
 ch_device_emulate_cb (gpointer user_data)
 {
-	GTask *task = G_TASK (user_data);
+	g_autoptr(GTask) task = G_TASK (user_data);
 	ChDeviceTaskData *tdata = g_task_get_task_data (task);
 
 	switch (tdata->cmd) {
@@ -359,7 +359,6 @@ ch_device_emulate_cb (gpointer user_data)
 
 	/* success */
 	g_task_return_boolean (task, TRUE);
-	g_object_unref (task);
 
 	return G_SOURCE_REMOVE;
 }
@@ -606,7 +605,7 @@ ch_device_write_command_async (GUsbDevice *device,
 
 	/* dummy hardware */
 	if (g_getenv ("COLORHUG_EMULATE") != NULL) {
-		g_timeout_add (20, ch_device_emulate_cb, tdata);
+		g_timeout_add (20, ch_device_emulate_cb, task);
 		return;
 	}
 
