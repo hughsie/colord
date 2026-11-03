@@ -1672,38 +1672,15 @@ colord_client_fd_pass_func (void)
 	g_free (filename);
 }
 
-static GFile *
-colord_get_profile_destination (GFile *file)
-{
-	gchar *basename;
-	gchar *destination;
-	GFile *dest;
-
-	g_return_val_if_fail (file != NULL, NULL);
-
-	/* get destination filename for this source file */
-	basename = g_file_get_basename (file);
-	destination = g_build_filename (g_get_user_data_dir (), "icc", basename, NULL);
-	dest = g_file_new_for_path (destination);
-
-	g_free (basename);
-	g_free (destination);
-	return dest;
-}
-
 static void
 colord_client_import_func (void)
 {
-	CdClient *client;
-	CdProfile *profile;
-	CdProfile *profile2;
 	gboolean ret;
-	GFile *file;
-	GFile *invalid_file;
-	GFile *dest;
+	g_autofree gchar *filename = NULL;
+	g_autoptr(CdClient) client = NULL;
+	g_autoptr(CdProfile) profile = NULL;
 	g_autoptr(GError) error = NULL;
-	gchar *dest_path;
-	gchar *filename;
+	g_autoptr(GFile) file = NULL;
 
 	/* no running colord to use */
 	if (!has_colord_process) {
@@ -1713,88 +1690,25 @@ colord_client_import_func (void)
 
 	/* create */
 	client = cd_client_new ();
-	g_assert (client != NULL);
+	g_assert_nonnull (client);
 
 	/* connect */
 	ret = cd_client_connect_sync (client, NULL, &error);
 	g_assert_no_error (error);
-	g_assert (ret);
+	g_assert_true (ret);
 
-	/* check we can't import random files */
+	/* check we can't import random files; importing a real profile is
+	 * not tested as it needs a session component to add the copied
+	 * file to the daemon */
 	filename = cd_test_get_filename ("raw.ti3");
 	if (filename == NULL) {
-		g_test_skip("no test data");
-		return;
-	}
-	invalid_file = g_file_new_for_path (filename);
-	profile2 = cd_client_import_profile_sync (client,
-						  invalid_file,
-						  NULL,
-						  &error);
-	g_assert_error (error,
-			CD_CLIENT_ERROR,
-			CD_CLIENT_ERROR_FILE_INVALID);
-	g_assert (profile2 == NULL);
-	g_clear_error (&error);
-	g_free (filename);
-
-	/* create extra profile */
-	filename = cd_test_get_filename ("ibm-t61.icc");
-	if (filename == NULL) {
-		g_test_skip("no test data");
+		g_test_skip ("no test data");
 		return;
 	}
 	file = g_file_new_for_path (filename);
-
-	/* ensure it's deleted */
-	dest = colord_get_profile_destination (file);
-	if (g_file_query_exists (dest, NULL)) {
-		ret = g_file_delete (dest, NULL, &error);
-		g_assert_no_error (error);
-		g_assert (ret);
-
-		/* wait for daemon to DTRT */
-		cd_test_loop_run_with_timeout (2000);
-	}
-
-	/* import it */
-	profile = cd_client_import_profile_sync (client,
-						 file,
-						 NULL,
-						 &error);
-	g_assert_no_error (error);
-	g_assert (profile != NULL);
-
-	/* connect */
-	ret = cd_profile_connect_sync (profile, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (ret);
-
-	/* make sure it's now installed in the right place */
-	dest_path = g_file_get_path (dest);
-	g_assert_cmpstr (cd_profile_get_filename (profile), ==, dest_path);
-
-	/* make sure we can't import it again */
-	profile2 = cd_client_import_profile_sync (client,
-						  file,
-						  NULL,
-						  &error);
-	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_ALREADY_EXISTS);
-	g_assert (profile2 == NULL);
-	g_clear_error (&error);
-
-	/* delete it */
-	ret = g_file_delete (dest, NULL, &error);
-	g_assert_no_error (error);
-	g_assert (ret);
-
-	g_free (dest_path);
-	g_free (filename);
-	g_object_unref (invalid_file);
-	g_object_unref (file);
-	g_object_unref (dest);
-	g_object_unref (profile);
-	g_object_unref (client);
+	profile = cd_client_import_profile_sync (client, file, NULL, &error);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_FILE_INVALID);
+	g_assert_null (profile);
 }
 
 static void
