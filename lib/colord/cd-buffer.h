@@ -51,6 +51,8 @@ void		 cd_buffer_write_uint32_be	(guint8		*buffer,
 						 guint32	 value);
 void		 cd_buffer_write_uint32_le	(guint8		*buffer,
 						 guint32	 value);
+gchar		*cd_buffer_strsafe		(const guint8	*data,
+						 gsize		 length);
 
 G_END_DECLS
 

@@ -191,3 +191,39 @@ cd_buffer_debug (CdBufferKind buffer_kind,
 	}
 	g_print ("%c[%dm\n", 0x1B, 0);
 }
+
+/**
+ * cd_buffer_strsafe:
+ * @data: (array length=length): the data of size @length
+ * @length: the size of data
+ *
+ * Converts data received from a device into a string that is safe to print.
+ * The conversion stops at the first NUL byte and any non-printable characters
+ * are replaced with '.'.
+ *
+ * Returns: a newly allocated string, or %NULL if there was nothing printable
+ *
+ * Since: 1.4.9
+ **/
+gchar *
+cd_buffer_strsafe (const guint8 *data, gsize length)
+{
+	gboolean valid = FALSE;
+	g_autoptr(GString) str = NULL;
+
+	g_return_val_if_fail (data != NULL || length == 0, NULL);
+
+	str = g_string_new (NULL);
+	for (gsize i = 0; i < length && data[i] != '\0'; i++) {
+		if (!g_ascii_isprint (data[i])) {
+			g_string_append_c (str, '.');
+			continue;
+		}
+		g_string_append_c (str, data[i]);
+		if (!g_ascii_isspace (data[i]))
+			valid = TRUE;
+	}
+	if (!valid)
+		return NULL;
+	return g_string_free (g_steal_pointer (&str), FALSE);
+}

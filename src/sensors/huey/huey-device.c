@@ -116,10 +116,13 @@ huey_device_send_data (GUsbDevice *device,
 
 		/* failure, the return buffer is set to "NoCmd" */
 		if (reply[0] == HUEY_RC_ERROR) {
+			g_autofree gchar *str = NULL;
+			str = cd_buffer_strsafe (reply + 2, *reply_read > 2 ? *reply_read - 2 : 0);
 			g_set_error (error,
 				     G_IO_ERROR,
 				     G_IO_ERROR_FAILED,
-				     "failed to issue command: %s", &reply[2]);
+				     "failed to issue command: %s",
+				     str != NULL ? str : "unknown");
 			return FALSE;
 		}
 
