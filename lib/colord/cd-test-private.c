@@ -1407,6 +1407,36 @@ colord_buffer_func (void)
 	g_assert_cmpint (cd_buffer_read_uint16_le (buffer), ==, 8192);
 }
 
+static void
+colord_buffer_strsafe_func (void)
+{
+	const guint8 nul[] = { 'N', 'o', 'C', 'm', 'd', '\0', 'X', 'Y' };
+	const guint8 unterminated[] = { 'N', 'o', 'C', 'm', 'd', 'X' };
+	const guint8 unprintable[] = { 'a', 0x01, 0xff, 'b' };
+	const guint8 spaces[] = { ' ', ' ' };
+	g_autofree gchar *str1 = NULL;
+	g_autofree gchar *str2 = NULL;
+	g_autofree gchar *str3 = NULL;
+	g_autofree gchar *str4 = NULL;
+	g_autofree gchar *str5 = NULL;
+
+	/* stops at the NUL and never reads past the length */
+	str1 = cd_buffer_strsafe (nul, sizeof (nul));
+	g_assert_cmpstr (str1, ==, "NoCmd");
+	str2 = cd_buffer_strsafe (unterminated, 5);
+	g_assert_cmpstr (str2, ==, "NoCmd");
+
+	/* non-printable characters are replaced */
+	str3 = cd_buffer_strsafe (unprintable, sizeof (unprintable));
+	g_assert_cmpstr (str3, ==, "a..b");
+
+	/* nothing useful */
+	str4 = cd_buffer_strsafe (spaces, sizeof (spaces));
+	g_assert_null (str4);
+	str5 = cd_buffer_strsafe (nul, 0);
+	g_assert_null (str5);
+}
+
 /* 1. create a valid profile with metadata and model and save it
  * 2. open profile, delete meta and dscm tags, and resave
  * 3. open profile and verify meta and dscm information is not present */
@@ -2514,6 +2544,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/icc{tags}", colord_icc_tags_func);
 	g_test_add_func ("/colord/icc-store", colord_icc_store_func);
 	g_test_add_func ("/colord/buffer", colord_buffer_func);
+	g_test_add_func ("/colord/buffer{strsafe}", colord_buffer_strsafe_func);
 	g_test_add_func ("/colord/enum", colord_enum_func);
 	g_test_add_func ("/colord/dom", colord_dom_func);
 	g_test_add_func ("/colord/dom{color}", colord_dom_color_func);
