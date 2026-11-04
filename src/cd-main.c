@@ -1316,8 +1316,9 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							  CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
 		if (device == NULL) {
 			/* fall back to checking the object path */
-			device = cd_device_array_get_by_object_path (priv->devices_array,
-								     device_id);
+			device = cd_device_array_get_by_object_path_for_owner (priv->devices_array,
+									       device_id,
+									       uid);
 			if (device == NULL) {
 				g_dbus_method_invocation_return_error (invocation,
 								       CD_CLIENT_ERROR,
@@ -1357,8 +1358,9 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 							    uid);
 		if (profile == NULL) {
 			/* fall back to checking the object path */
-			profile = cd_profile_array_get_by_object_path (priv->profiles_array,
-								       device_id);
+			profile = cd_profile_array_get_by_object_path_for_owner (priv->profiles_array,
+									 device_id,
+									 uid);
 			if (profile == NULL) {
 				g_dbus_method_invocation_return_error (invocation,
 								       CD_CLIENT_ERROR,
