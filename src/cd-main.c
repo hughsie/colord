@@ -197,6 +197,7 @@ cd_main_create_profile (CdMainPrivate *priv,
 			CdObjectScope scope,
 			GError **error)
 {
+	g_autoptr(CdProfile) profile_old = NULL;
 	g_autoptr(CdProfile) profile_tmp = NULL;
 
 	g_assert (priv->connection != NULL);
@@ -207,9 +208,17 @@ cd_main_create_profile (CdMainPrivate *priv,
 	cd_profile_set_id (profile_tmp, profile_id);
 	cd_profile_set_scope (profile_tmp, scope);
 
-	/* add the profile */
-	if (!cd_main_add_profile (priv, profile_tmp, error))
+	/* different IDs can map to the same object path */
+	profile_old = cd_profile_array_get_by_object_path (priv->profiles_array,
+							   cd_profile_get_object_path (profile_tmp));
+	if (profile_old != NULL) {
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_ALREADY_EXISTS,
+			     "profile object path '%s' already exists",
+			     cd_profile_get_object_path (profile_tmp));
 		return NULL;
+	}
 
 	/* different persistent scope */
 	switch (scope) {
@@ -523,6 +532,7 @@ cd_main_create_device (CdMainPrivate *priv,
 		       GError **error)
 {
 	g_autofree gchar *seat = NULL;
+	g_autoptr(CdDevice) device_old = NULL;
 	g_autoptr(CdDevice) device_tmp = NULL;
 
 	g_assert (priv->connection != NULL);
@@ -537,6 +547,19 @@ cd_main_create_device (CdMainPrivate *priv,
 	cd_device_set_scope (device_tmp, scope);
 	cd_device_set_mode (device_tmp, mode);
 	cd_device_set_seat (device_tmp, seat);
+
+	/* different IDs can map to the same object path */
+	device_old = cd_device_array_get_by_object_path (priv->devices_array,
+							 cd_device_get_object_path (device_tmp));
+	if (device_old != NULL) {
+		g_set_error (error,
+			     CD_CLIENT_ERROR,
+			     CD_CLIENT_ERROR_ALREADY_EXISTS,
+			     "device object path '%s' already exists",
+			     cd_device_get_object_path (device_tmp));
+		return NULL;
+	}
+
 	if (!cd_main_device_add (priv, device_tmp, sender, error))
 		return NULL;
 
@@ -825,6 +848,7 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 	CdObjectScope scope;
 	GVariant *tuple = NULL;
 	GVariant *value = NULL;
+	GVariantIter iter_check;
 	const gchar *device_id = NULL;
 	const gchar *metadata_key = NULL;
 	const gchar *metadata_value = NULL;
@@ -1220,6 +1244,25 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 
+		/* check the properties before anything is added */
+		g_variant_iter_init (&iter_check, dict);
+		while (g_variant_iter_next (&iter_check, "{&s&s}",
+					    &prop_key, &prop_value)) {
+			if (!cd_device_check_property (prop_key, prop_value, &error)) {
+				g_dbus_method_invocation_return_gerror (invocation,
+									error);
+				return;
+			}
+		}
+		cmdline = cd_main_get_cmdline_for_pid (pid);
+		if (cmdline != NULL &&
+		    !cd_device_check_property (CD_DEVICE_METADATA_OWNER_CMDLINE,
+					       cmdline,
+					       &error)) {
+			g_dbus_method_invocation_return_gerror (invocation, error);
+			return;
+		}
+
 		/* create device unless an existing one is being promoted */
 		if (device == NULL) {
 			device = cd_main_create_device (priv,
@@ -1260,7 +1303,6 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 		}
 
 		/* add any extra metadata */
-		cmdline = cd_main_get_cmdline_for_pid (pid);
 		if (cmdline != NULL) {
 			ret = cd_device_set_property_internal (device,
 							       CD_DEVICE_METADATA_OWNER_CMDLINE,
@@ -1539,9 +1581,11 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 #endif
-		/* auto add profiles from the database and metadata */
-		cd_main_profile_auto_add_from_db (priv, profile);
-		cd_main_profile_auto_add_from_md (priv, profile);
+		/* only add the profile when it is complete */
+		if (!cd_main_add_profile (priv, profile, &error)) {
+			g_dbus_method_invocation_return_gerror (invocation, error);
+			return;
+		}
 
 		/* register on bus */
 		ret = cd_main_profile_register_on_bus (priv,
@@ -1552,6 +1596,10 @@ cd_main_daemon_method_call (GDBusConnection *connection, const gchar *sender,
 			g_dbus_method_invocation_return_gerror (invocation, error);
 			return;
 		}
+
+		/* auto add profiles from the database and metadata */
+		cd_main_profile_auto_add_from_db (priv, profile);
+		cd_main_profile_auto_add_from_md (priv, profile);
 
 		/* format the value */
 		value = g_variant_new_object_path (cd_profile_get_object_path (profile));

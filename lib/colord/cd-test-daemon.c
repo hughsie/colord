@@ -1621,6 +1621,130 @@ colord_device_promote_func (void)
 	g_assert_null (device3);
 }
 
+/* a failed CreateDevice or CreateProfile must not leave anything behind */
+static void
+colord_client_create_failure_func (void)
+{
+	gboolean ret;
+	g_autofree gchar *device_id = NULL;
+	g_autofree gchar *device_id_dash = NULL;
+	g_autofree gchar *device_id_underscore = NULL;
+	g_autofree gchar *key_long = NULL;
+	g_autofree gchar *profile_id = NULL;
+	g_autoptr(CdClient) client = NULL;
+	g_autoptr(CdDevice) device = NULL;
+	g_autoptr(CdDevice) device_dash = NULL;
+	g_autoptr(CdDevice) device_tmp = NULL;
+	g_autoptr(CdProfile) profile = NULL;
+	g_autoptr(GError) error = NULL;
+	g_autoptr(GHashTable) device_props = NULL;
+
+	/* no running colord to use */
+	if (!has_colord_process) {
+		g_print ("[DISABLED] ");
+		return;
+	}
+
+	device_id = colord_get_random_device_id ();
+	profile_id = g_strdup_printf ("%s-profile", device_id);
+
+	client = cd_client_new ();
+	ret = cd_client_connect_sync (client, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+
+	/* persistent profiles are not supported */
+	profile = cd_client_create_profile_sync (client,
+						 profile_id,
+						 CD_OBJECT_SCOPE_DISK,
+						 NULL,
+						 NULL,
+						 &error);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_NOT_SUPPORTED);
+	g_assert_null (profile);
+	g_clear_error (&error);
+
+	/* the same profile ID can be used again */
+	profile = cd_client_create_profile_sync (client,
+						 profile_id,
+						 CD_OBJECT_SCOPE_TEMP,
+						 NULL,
+						 NULL,
+						 &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (profile);
+
+	/* a metadata key that is too long */
+	key_long = g_strnfill (300, 'k');
+	device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+					      g_free, g_free);
+	g_hash_table_insert (device_props,
+			     g_strdup (CD_DEVICE_PROPERTY_KIND),
+			     g_strdup (cd_device_kind_to_string (CD_DEVICE_KIND_DISPLAY)));
+	g_hash_table_insert (device_props,
+			     g_strdup (key_long),
+			     g_strdup ("value"));
+	device = cd_client_create_device_sync (client,
+					       device_id,
+					       CD_OBJECT_SCOPE_TEMP,
+					       device_props,
+					       NULL,
+					       &error);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_INPUT_INVALID);
+	g_assert_null (device);
+	g_clear_error (&error);
+
+	/* the same device ID can be used again */
+	g_hash_table_remove (device_props, key_long);
+	device = cd_client_create_device_sync (client,
+					       device_id,
+					       CD_OBJECT_SCOPE_TEMP,
+					       device_props,
+					       NULL,
+					       &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (device);
+
+	/* an ID that maps to the object path of an existing device */
+	device_id_dash = g_strdup_printf ("%s-path", device_id);
+	device_id_underscore = g_strdup_printf ("%s_path", device_id);
+	device_dash = cd_client_create_device_sync (client,
+						    device_id_dash,
+						    CD_OBJECT_SCOPE_TEMP,
+						    device_props,
+						    NULL,
+						    &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (device_dash);
+	device_tmp = cd_client_create_device_sync (client,
+						   device_id_underscore,
+						   CD_OBJECT_SCOPE_TEMP,
+						   device_props,
+						   NULL,
+						   &error);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_ALREADY_EXISTS);
+	g_assert_null (device_tmp);
+	g_clear_error (&error);
+	device_tmp = cd_client_find_device_sync (client,
+						 device_id_underscore,
+						 NULL,
+						 &error);
+	g_assert_error (error, CD_CLIENT_ERROR, CD_CLIENT_ERROR_NOT_FOUND);
+	g_assert_null (device_tmp);
+	g_clear_error (&error);
+
+	/* clean up */
+	ret = cd_client_delete_device_sync (client, device_dash, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	ret = cd_client_delete_device_sync (client, device, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+	ret = cd_client_delete_profile_sync (client, profile, NULL, &error);
+	g_assert_no_error (error);
+	g_assert_true (ret);
+}
+
 static void
 colord_client_fd_pass_func (void)
 {
@@ -2982,6 +3106,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/device{mapping}", colord_device_mapping_func);
 	g_test_add_func ("/colord/device{promote}", colord_device_promote_func);
 	g_test_add_func ("/colord/device{make-default-soft}", colord_device_make_default_soft_func);
+	g_test_add_func ("/colord/client{create-failure}", colord_client_create_failure_func);
 	g_test_add_func ("/colord/sensor", colord_sensor_func);
 	g_test_add_func ("/colord/device{modified}", colord_device_modified_func);
 	g_test_add_func ("/colord/client{standard-space}", colord_client_standard_space_func);
