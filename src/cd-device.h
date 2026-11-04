@@ -50,6 +50,8 @@ void		 cd_device_set_scope			(CdDevice	*device,
 void		 cd_device_set_owner			(CdDevice	*device,
 							 guint		 owner);
 guint		 cd_device_get_owner			(CdDevice	*device);
+gboolean	 cd_device_can_modify			(CdDevice	*device,
+							 guint		 uid);
 void		 cd_device_set_seat			(CdDevice	*device,
 							 const gchar	*seat);
 const gchar	*cd_device_get_seat			(CdDevice	*device);
