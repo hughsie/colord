@@ -52,6 +52,10 @@ CdProfile	*cd_profile_array_get_by_property	(CdProfileArray	*profile_array,
 							 const gchar	*value);
 CdProfile	*cd_profile_array_get_by_object_path	(CdProfileArray	*profile_array,
 							 const gchar	*object_path);
+CdProfile	*cd_profile_array_get_by_object_path_for_owner
+							(CdProfileArray	*profile_array,
+							 const gchar	*object_path,
+							 guint		 owner);
 GPtrArray	*cd_profile_array_get_by_kind		(CdProfileArray	*profile_array,
 							 CdProfileKind	 kind);
 GPtrArray	*cd_profile_array_get_by_metadata	(CdProfileArray	*profile_array,

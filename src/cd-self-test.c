@@ -23,6 +23,7 @@
 
 #include <limits.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -632,6 +633,124 @@ cd_profile_db_func (void)
 	g_object_unref (pdb);
 }
 
+static void
+colord_profile_array_owner_func (void)
+{
+	CdProfileArray *array;
+	CdProfile *own;
+	CdProfile *system;
+	CdProfile *profile;
+	guint uid = getuid ();
+
+	array = cd_profile_array_new ();
+	own = cd_profile_new ();
+	cd_profile_set_owner (own, uid);
+	cd_profile_set_id (own, "own");
+	system = cd_profile_new ();
+	cd_profile_set_owner (system, 0);
+	cd_profile_set_id (system, "system");
+	cd_profile_array_add (array, own);
+	cd_profile_array_add (array, system);
+
+	/* own profile is visible */
+	profile = cd_profile_array_get_by_object_path_for_owner (array,
+								  cd_profile_get_object_path (own),
+								  uid);
+	g_assert (profile == own);
+	g_object_unref (profile);
+
+	/* system-wide profile is not deletable by a normal caller */
+	profile = cd_profile_array_get_by_object_path_for_owner (array,
+								  cd_profile_get_object_path (system),
+								  uid);
+	g_assert (profile == NULL);
+	profile = cd_profile_array_get_by_id_owner (array, "system", uid);
+	g_assert (profile == system);
+	g_object_unref (profile);
+
+	/* root may still resolve it */
+	profile = cd_profile_array_get_by_object_path_for_owner (array,
+								  cd_profile_get_object_path (system),
+								  0);
+	g_assert (profile == system);
+	g_object_unref (profile);
+	profile = cd_profile_array_get_by_id_owner (array, "system", 0);
+	g_assert (profile == system);
+	g_object_unref (profile);
+
+	g_object_unref (own);
+	g_object_unref (system);
+	g_object_unref (array);
+}
+
+static void
+colord_device_array_owner_func (void)
+{
+	CdDeviceArray *array;
+	CdDeviceDb *ddb;
+	CdDevice *own;
+	CdDevice *system;
+	CdDevice *device;
+	GError *error = NULL;
+	gchar *db_filename, *tmpdir;
+	guint uid = getuid ();
+
+	/* initialize the shared device database used by CdDevice */
+	ddb = cd_device_db_new ();
+	tmpdir = g_dir_make_tmp ("colord-XXXXXX", &error);
+	g_assert_no_error (error);
+	g_assert (tmpdir != NULL);
+	db_filename = g_strdup_printf ("%s/device.db", tmpdir);
+	g_assert (cd_device_db_load (ddb, db_filename, &error));
+	g_assert_no_error (error);
+	g_assert (cd_device_db_empty (ddb, &error));
+	g_assert_no_error (error);
+
+	array = cd_device_array_new ();
+	own = cd_device_new ();
+	cd_device_set_owner (own, uid);
+	cd_device_set_id (own, "own");
+	system = cd_device_new ();
+	cd_device_set_owner (system, 0);
+	cd_device_set_id (system, "system");
+	cd_device_array_add (array, own);
+	cd_device_array_add (array, system);
+
+	device = cd_device_array_get_by_object_path_for_owner (array,
+								cd_device_get_object_path (own),
+								uid);
+	g_assert (device == own);
+	g_object_unref (device);
+
+	device = cd_device_array_get_by_object_path_for_owner (array,
+								cd_device_get_object_path (system),
+								uid);
+	g_assert (device == NULL);
+	device = cd_device_array_get_by_id_owner (array, "system", uid,
+						   CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
+	g_assert (device == system);
+	g_object_unref (device);
+
+	device = cd_device_array_get_by_object_path_for_owner (array,
+								cd_device_get_object_path (system),
+								0);
+	g_assert (device == system);
+	g_object_unref (device);
+	device = cd_device_array_get_by_id_owner (array, "system", 0,
+						   CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL);
+	g_assert (device == system);
+	g_object_unref (device);
+
+	g_object_unref (own);
+	g_object_unref (system);
+	g_object_unref (array);
+	g_object_unref (ddb);
+	g_remove (db_filename);
+	g_remove (tmpdir);
+	g_free (db_filename);
+	g_free (tmpdir);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -647,10 +766,12 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/mapping-db", cd_mapping_db_func);
 	g_test_add_func ("/colord/device-db", cd_device_db_func);
 	g_test_add_func ("/colord/profile", colord_profile_func);
+	g_test_add_func ("/colord/profile-array-owner", colord_profile_array_owner_func);
 	g_test_add_func ("/colord/profile-db", cd_profile_db_func);
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/device{qualifier}", cd_device_match_qualifier_func);
 	g_test_add_func ("/colord/device-array", colord_device_array_func);
+	g_test_add_func ("/colord/device-array-owner", colord_device_array_owner_func);
 	return g_test_run ();
 }
 

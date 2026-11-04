@@ -84,6 +84,8 @@ cd_device_array_get_by_id_owner (CdDeviceArray *device_array,
 	if (flags & CD_DEVICE_ARRAY_FLAG_OWNER_OPTIONAL) {
 		for (i = 0; i < priv->array->len; i++) {
 			device_tmp = g_ptr_array_index (priv->array, i);
+			if (owner != 0 && cd_device_get_owner (device_tmp) != 0)
+				continue;
 			if (g_strcmp0 (cd_device_get_id (device_tmp), id) == 0)
 				return g_object_ref (device_tmp);
 		}
@@ -102,6 +104,25 @@ cd_device_array_get_by_object_path (CdDeviceArray *device_array,
 	/* find device */
 	for (i = 0; i < priv->array->len; i++) {
 		device_tmp = g_ptr_array_index (priv->array, i);
+		if (g_strcmp0 (cd_device_get_object_path (device_tmp), object_path) == 0)
+			return g_object_ref (device_tmp);
+	}
+	return NULL;
+}
+
+CdDevice *
+cd_device_array_get_by_object_path_for_owner (CdDeviceArray *device_array,
+					       const gchar *object_path,
+					       guint owner)
+{
+	CdDeviceArrayPrivate *priv = GET_PRIVATE (device_array);
+	CdDevice *device_tmp;
+	guint i;
+
+	for (i = 0; i < priv->array->len; i++) {
+		device_tmp = g_ptr_array_index (priv->array, i);
+		if (owner != 0 && cd_device_get_owner (device_tmp) != owner)
+			continue;
 		if (g_strcmp0 (cd_device_get_object_path (device_tmp), object_path) == 0)
 			return g_object_ref (device_tmp);
 	}

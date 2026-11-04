@@ -76,6 +76,8 @@ cd_profile_array_get_by_id_owner (CdProfileArray *profile_array,
 	}
 	for (i = 0; i < priv->array->len; i++) {
 		profile_tmp = g_ptr_array_index (priv->array, i);
+		if (owner != 0 && cd_profile_get_owner (profile_tmp) != 0)
+			continue;
 		if (g_strcmp0 (cd_profile_get_id (profile_tmp), id) == 0)
 			return g_object_ref (profile_tmp);
 	}
@@ -211,6 +213,25 @@ cd_profile_array_get_by_object_path (CdProfileArray *profile_array,
 			return g_object_ref (profile_tmp);
 	}
 	return profile;
+}
+
+CdProfile *
+cd_profile_array_get_by_object_path_for_owner (CdProfileArray *profile_array,
+					       const gchar *object_path,
+					       guint owner)
+{
+	CdProfileArrayPrivate *priv = GET_PRIVATE (profile_array);
+	CdProfile *profile_tmp;
+	guint i;
+
+	for (i = 0; i < priv->array->len; i++) {
+		profile_tmp = g_ptr_array_index (priv->array, i);
+		if (owner != 0 && cd_profile_get_owner (profile_tmp) != owner)
+			continue;
+		if (g_strcmp0 (cd_profile_get_object_path (profile_tmp), object_path) == 0)
+			return g_object_ref (profile_tmp);
+	}
+	return NULL;
 }
 
 GVariant *
