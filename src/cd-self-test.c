@@ -23,6 +23,7 @@
 
 #include <limits.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <glib.h>
 #include <glib-object.h>
@@ -632,6 +633,25 @@ cd_profile_db_func (void)
 	g_object_unref (pdb);
 }
 
+static void
+colord_device_owner_func (void)
+{
+	CdDevice *device;
+	guint uid = getuid ();
+
+	device = cd_device_new ();
+	cd_device_set_owner (device, uid);
+	g_assert (cd_device_can_modify (device, uid));
+	g_assert (!cd_device_can_modify (device, uid + 1));
+	g_assert (cd_device_can_modify (device, 0));
+
+	cd_device_set_owner (device, 0);
+	g_assert (!cd_device_can_modify (device, uid));
+	g_assert (cd_device_can_modify (device, 0));
+
+	g_object_unref (device);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -651,6 +671,7 @@ main (int argc, char **argv)
 	g_test_add_func ("/colord/device", colord_device_func);
 	g_test_add_func ("/colord/device{qualifier}", cd_device_match_qualifier_func);
 	g_test_add_func ("/colord/device-array", colord_device_array_func);
+	g_test_add_func ("/colord/device-owner", colord_device_owner_func);
 	return g_test_run ();
 }
 

@@ -137,6 +137,13 @@ cd_device_get_owner (CdDevice *device)
 	return priv->owner;
 }
 
+gboolean
+cd_device_can_modify (CdDevice *device, guint uid)
+{
+	g_return_val_if_fail (CD_IS_DEVICE (device), FALSE);
+	return uid == 0 || cd_device_get_owner (device) == uid;
+}
+
 void
 cd_device_set_owner (CdDevice *device, guint owner)
 {
@@ -1013,6 +1020,25 @@ cd_device_set_enabled (CdDevice *device,
 	return TRUE;
 }
 
+static gboolean
+cd_device_check_owner (CdDevice *device,
+		       GDBusConnection *connection,
+		       const gchar *sender,
+		       GError **error)
+{
+	guint uid = cd_main_get_sender_uid (connection, sender, error);
+	if (uid == G_MAXUINT)
+		return FALSE;
+	if (cd_device_can_modify (device, uid))
+		return TRUE;
+	g_set_error (error,
+		     CD_DEVICE_ERROR,
+		     CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
+		     "not authorized to modify device owned by uid %u",
+		     cd_device_get_owner (device));
+	return FALSE;
+}
+
 static void
 cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			    const gchar *object_path, const gchar *interface_name,
@@ -1046,6 +1072,11 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 							       CD_DEVICE_ERROR,
 							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
 							       "%s", error->message);
+			return;
+		}
+
+		if (!cd_device_check_owner (device, connection, sender, &error)) {
+			g_dbus_method_invocation_return_gerror (invocation, error);
 			return;
 		}
 
@@ -1117,6 +1148,11 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 							       CD_DEVICE_ERROR,
 							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
 							       "%s", error->message);
+			return;
+		}
+
+		if (!cd_device_check_owner (device, connection, sender, &error)) {
+			g_dbus_method_invocation_return_gerror (invocation, error);
 			return;
 		}
 
@@ -1250,6 +1286,11 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 
+		if (!cd_device_check_owner (device, connection, sender, &error)) {
+			g_dbus_method_invocation_return_gerror (invocation, error);
+			return;
+		}
+
 		/* check the profile_object_path exists */
 		g_variant_get (parameters, "(&o)",
 			       &profile_object_path);
@@ -1306,6 +1347,11 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 			return;
 		}
 
+		if (!cd_device_check_owner (device, connection, sender, &error)) {
+			g_dbus_method_invocation_return_gerror (invocation, error);
+			return;
+		}
+
 		/* set, and parse */
 		g_variant_get (parameters, "(b)",
 			       &enabled);
@@ -1333,6 +1379,11 @@ cd_device_dbus_method_call (GDBusConnection *connection, const gchar *sender,
 							       CD_DEVICE_ERROR,
 							       CD_DEVICE_ERROR_FAILED_TO_AUTHENTICATE,
 							       "%s", error->message);
+			return;
+		}
+
+		if (!cd_device_check_owner (device, connection, sender, &error)) {
+			g_dbus_method_invocation_return_gerror (invocation, error);
 			return;
 		}
 
