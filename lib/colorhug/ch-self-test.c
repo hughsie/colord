@@ -212,6 +212,27 @@ out:
 	g_object_unref (usb_ctx);
 }
 
+/* the union members are only correct on little endian machines, so
+ * split the value in host byte order instead */
+static gint16
+ch_test_packed_float_get_offset (const ChPackedFloat *pf)
+{
+	return (gint16) ((guint32) ch_packed_float_get_value (pf) >> 16);
+}
+
+static guint16
+ch_test_packed_float_get_fraction (const ChPackedFloat *pf)
+{
+	return (guint32) ch_packed_float_get_value (pf) & 0xffff;
+}
+
+static void
+ch_test_packed_float_set (ChPackedFloat *pf, gint16 offset, guint16 fraction)
+{
+	ch_packed_float_set_value (pf, (gint32) (((guint32) (guint16) offset << 16) |
+						 fraction));
+}
+
 static void
 ch_test_math_convert_func (void)
 {
@@ -224,42 +245,35 @@ ch_test_math_convert_func (void)
 	/* test converting to packed struct */
 	value = 3.1415927f;
 	ch_double_to_packed_float (value, &pf);
-	pf.raw = ch_packed_float_get_value (&pf);
-	g_assert_cmpint (pf.offset, ==, 3);
-	g_assert_cmpint (pf.fraction, <, 0x249f);
-	g_assert_cmpint (pf.fraction, >, 0x240f);
+	g_assert_cmpint (ch_test_packed_float_get_offset (&pf), ==, 3);
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), <, 0x249f);
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), >, 0x240f);
 
 	/* test converting to packed struct */
 	value = -3.1415927f;
 	ch_double_to_packed_float (value, &pf);
-	pf.raw = ch_packed_float_get_value (&pf);
-	g_assert_cmpint (pf.offset, ==, -4);
-	g_assert_cmpint (pf.fraction, <, (0x240f ^ 0xffff));
-	g_assert_cmpint (pf.fraction, >, (0x249f ^ 0xffff));
+	g_assert_cmpint (ch_test_packed_float_get_offset (&pf), ==, -4);
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), <, (0x240f ^ 0xffff));
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), >, (0x249f ^ 0xffff));
 
 	/* test converting positive to float */
-	pf.offset = 3;
-	pf.fraction = 0x243c;
-	pf.raw = ch_packed_float_get_value (&pf);
+	ch_test_packed_float_set (&pf, 3, 0x243c);
 	ch_packed_float_to_double (&pf, &value);
 	g_assert_cmpfloat (value, >, 3.1415);
 	g_assert_cmpfloat (value, <, 3.1416);
 
 	/* test converting negative to float */
-	pf.offset = -4;
-	pf.fraction = 0x243b ^ 0xffff;
+	ch_test_packed_float_set (&pf, -4, 0x243b ^ 0xffff);
 	ch_packed_float_to_double (&pf, &value);
-	pf.raw = ch_packed_float_get_value (&pf);
 	g_assert_cmpfloat (value, >, -3.1416);
 	g_assert_cmpfloat (value, <, -3.1415);
 
 	/* test converting zero */
 	value = 0.0f;
 	ch_double_to_packed_float (value, &pf);
-	pf.raw = ch_packed_float_get_value (&pf);
-	g_assert_cmpint (pf.offset, ==, 0);
-	g_assert_cmpint (pf.fraction, ==, 0);
-	ch_packed_float_set_value (&pf, pf.raw);
+	g_assert_cmpint (ch_test_packed_float_get_offset (&pf), ==, 0);
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), ==, 0);
+	ch_packed_float_set_value (&pf, ch_packed_float_get_value (&pf));
 	ch_packed_float_to_double (&pf, &value);
 	g_assert_cmpfloat (value, >, -0.001f);
 	g_assert_cmpfloat (value, <, +0.001f);
@@ -267,11 +281,10 @@ ch_test_math_convert_func (void)
 	/* test converting positive */
 	value = +1.4f;
 	ch_double_to_packed_float (value, &pf);
-	pf.raw = ch_packed_float_get_value (&pf);
-	g_assert_cmpint (pf.offset, ==, 1);
-	g_assert_cmpint (pf.fraction, <, 0x6668);
-	g_assert_cmpint (pf.fraction, >, 0x6663);
-	ch_packed_float_set_value (&pf, pf.raw);
+	g_assert_cmpint (ch_test_packed_float_get_offset (&pf), ==, 1);
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), <, 0x6668);
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), >, 0x6663);
+	ch_packed_float_set_value (&pf, ch_packed_float_get_value (&pf));
 	ch_packed_float_to_double (&pf, &value);
 	g_assert_cmpfloat (value, <, 1.41);
 	g_assert_cmpfloat (value, >, 1.39);
@@ -279,11 +292,10 @@ ch_test_math_convert_func (void)
 	/* test converting negative */
 	value = -1.4f;
 	ch_double_to_packed_float (value, &pf);
-	pf.raw = ch_packed_float_get_value (&pf);
-	g_assert_cmpint (pf.offset, ==, -2);
-	g_assert_cmpint (pf.fraction, <, (0x6662 ^ 0xffff));
-	g_assert_cmpint (pf.fraction, >, (0x6668 ^ 0xffff));
-	ch_packed_float_set_value (&pf, pf.raw);
+	g_assert_cmpint (ch_test_packed_float_get_offset (&pf), ==, -2);
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), <, (0x6662 ^ 0xffff));
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), >, (0x6668 ^ 0xffff));
+	ch_packed_float_set_value (&pf, ch_packed_float_get_value (&pf));
 	ch_packed_float_to_double (&pf, &value);
 	g_assert_cmpfloat (value, <, -1.39);
 	g_assert_cmpfloat (value, >, -1.41);
@@ -291,10 +303,9 @@ ch_test_math_convert_func (void)
 	/* test converting negative max */
 	value = -0x7fff;
 	ch_double_to_packed_float (value, &pf);
-	pf.raw = ch_packed_float_get_value (&pf);
-	g_assert_cmpint (pf.offset, ==, -32767);
-	g_assert_cmpint (pf.fraction, ==, 0);
-	ch_packed_float_set_value (&pf, pf.raw);
+	g_assert_cmpint (ch_test_packed_float_get_offset (&pf), ==, -32767);
+	g_assert_cmpint (ch_test_packed_float_get_fraction (&pf), ==, 0);
+	ch_packed_float_set_value (&pf, ch_packed_float_get_value (&pf));
 	ch_packed_float_to_double (&pf, &value);
 	g_assert_cmpfloat (value, >, -32768.0001);
 	g_assert_cmpfloat (value, <, +32767.9999);
