@@ -85,6 +85,9 @@ gboolean	 cd_device_register_object		(CdDevice	*device,
 							 G_GNUC_WARN_UNUSED_RESULT;
 void		 cd_device_watch_sender			(CdDevice	*device,
 							 const gchar	*sender);
+gboolean	 cd_device_check_property	(const gchar	*property,
+							 const gchar	*value,
+							 GError		**error);
 gboolean	 cd_device_set_property_internal	(CdDevice	*device,
 							 const gchar	*property,
 							 const gchar	*value,

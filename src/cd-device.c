@@ -833,15 +833,10 @@ cd_device_set_serial (CdDevice *device, const gchar *value)
 }
 
 gboolean
-cd_device_set_property_internal (CdDevice *device,
-				 const gchar *property,
-				 const gchar *value,
-				 gboolean save_in_db,
-				 GError **error)
+cd_device_check_property (const gchar *property,
+			  const gchar *value,
+			  GError **error)
 {
-	gboolean is_metadata = FALSE;
-	CdDevicePrivate *priv = GET_PRIVATE (device);
-
 	/* sanity check the length of the key and value */
 	if (strlen (property) > CD_DBUS_METADATA_KEY_LEN_MAX) {
 		g_set_error_literal (error,
@@ -857,6 +852,21 @@ cd_device_set_property_internal (CdDevice *device,
 				     "metadata value length invalid");
 		return FALSE;
 	}
+	return TRUE;
+}
+
+gboolean
+cd_device_set_property_internal (CdDevice *device,
+				 const gchar *property,
+				 const gchar *value,
+				 gboolean save_in_db,
+				 GError **error)
+{
+	gboolean is_metadata = FALSE;
+	CdDevicePrivate *priv = GET_PRIVATE (device);
+
+	if (!cd_device_check_property (property, value, error))
+		return FALSE;
 
 	g_debug ("CdDevice: Attempting to set %s to %s on %s",
 		 property, value, priv->id);
