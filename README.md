@@ -28,7 +28,6 @@ Ensure the following packages are installed:
 
 * dbus-devel
 * libxslt
-* docbook5-style-xsl
 * gettext
 * glib2-devel
 * gobject-introspection-devel

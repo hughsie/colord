@@ -7,7 +7,6 @@ RUN dnf -y install \
 	color-filesystem \
 	dbus-devel \
 	libxslt \
-	docbook5-style-xsl \
 	gettext \
 	glib2-devel \
 	gobject-introspection-devel \
