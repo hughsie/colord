@@ -153,6 +153,11 @@ gboolean	 cd_icc_load_handle			(CdIcc		*icc,
 							 CdIccLoadFlags	 flags,
 							 GError		**error)
 							 G_GNUC_WARN_UNUSED_RESULT;
+gboolean	 cd_icc_load_borrowed_handle			(CdIcc		*icc,
+							 gpointer	 handle,
+							 CdIccLoadFlags	 flags,
+							 GError		**error)
+							 G_GNUC_WARN_UNUSED_RESULT;
 GBytes		*cd_icc_save_data			(CdIcc		*icc,
 							 CdIccSaveFlags	 flags,
 							 GError		**error)

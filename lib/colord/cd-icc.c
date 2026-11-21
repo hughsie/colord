@@ -81,6 +81,7 @@ typedef struct
 	CdColorXYZ		 red;
 	CdColorXYZ		 green;
 	CdColorXYZ		 blue;
+	gboolean		 borrowed_lcms_profile;
 } CdIccPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (CdIcc, cd_icc, G_TYPE_OBJECT)
@@ -2124,6 +2125,46 @@ cd_icc_load_handle (CdIcc *icc,
 }
 
 /**
+ * cd_icc_load_borrowed_handle:
+ * @icc: a #CdIcc instance.
+ * @handle: a cmsHPROFILE instance
+ * @flags: a set of #CdIccLoadFlags
+ * @error: A #GError or %NULL
+ *
+ * Like cd_icc_load_handle(), but does NOT take ownership (adopt) @handle.
+ **/
+gboolean
+cd_icc_load_borrowed_handle (CdIcc *icc,
+		    gpointer handle,
+		    CdIccLoadFlags flags,
+		    GError **error)
+{
+	CdIccPrivate *priv = GET_PRIVATE (icc);
+	cmsContext context;
+
+	g_return_val_if_fail (CD_IS_ICC (icc), FALSE);
+	g_return_val_if_fail (handle != NULL, FALSE);
+	g_return_val_if_fail (priv->lcms_profile == NULL, FALSE);
+
+	/* check the THR version has been correctly set up */
+	context = cmsGetProfileContextID (handle);
+	if (context == NULL) {
+		// don't close the handle here!
+		g_set_error_literal (error,
+				     CD_ICC_ERROR,
+				     CD_ICC_ERROR_FAILED_TO_CREATE,
+				     "lcms2 threadsafe version (THR) not used, "
+				     "or context not set");
+		return FALSE;
+	}
+
+	/* load profile */
+	priv->lcms_profile = handle;
+	priv->borrowed_lcms_profile = TRUE;
+	return cd_icc_load (icc, flags, error);
+}
+
+/**
  * cd_icc_get_size:
  *
  * Gets the ICC profile file size
@@ -4103,9 +4144,10 @@ cd_icc_finalize (GObject *object)
 	g_hash_table_destroy (priv->metadata);
 	for (i = 0; i < CD_MLUC_LAST; i++)
 		g_hash_table_destroy (priv->mluc_data[i]);
-	if (priv->lcms_profile != NULL)
+	if (priv->lcms_profile != NULL && !priv->borrowed_lcms_profile) {
 		cmsCloseProfile (priv->lcms_profile);
-	cd_context_lcms_free (priv->context_lcms);
+		cd_context_lcms_free (priv->context_lcms);
+	}
 
 	G_OBJECT_CLASS (cd_icc_parent_class)->finalize (object);
 }
