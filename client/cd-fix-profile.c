@@ -285,7 +285,10 @@ cd_util_get_coverage (cmsHPROFILE profile_proof,
 
 	/* load proofing profile */
 	icc_ref = cd_icc_new ();
-	ret = cd_icc_load_handle (icc_ref, profile_proof,
+	// profile_proof is the ICC profile we're working on and so
+	// we cannot let icc_ref close it when being deleted itself.
+	// IOW, icc_ref must borrow instead of adopt profile_proof.
+	ret = cd_icc_load_borrowed_handle (icc_ref, profile_proof,
 				  CD_ICC_LOAD_FLAGS_NONE, error);
 	if (!ret)
 		goto out;
