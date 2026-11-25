@@ -397,7 +397,7 @@ cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 	/* get coverages of common spaces */
 	if (cd_icc_get_colorspace (priv->icc) == CD_COLORSPACE_RGB) {
 
-		/* get the gamut coverage for sRGB */
+		/* get the gamut coverage for AdobeRGB */
 		coverage = cd_util_get_profile_coverage (priv,
 							 CD_STANDARD_SPACE_ADOBE_RGB,
 							 error);
@@ -410,7 +410,7 @@ cd_util_set_fix_metadata (CdUtilPrivate *priv, gchar **values, GError **error)
 		g_free (coverage_tmp);
 		g_debug ("coverage of AdobeRGB: %f%%", coverage * 100.0f);
 
-		/* get the gamut coverage for AdobeRGB */
+		/* get the gamut coverage for sRGB */
 		coverage = cd_util_get_profile_coverage (priv,
 							 CD_STANDARD_SPACE_SRGB,
 							 error);
