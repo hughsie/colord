@@ -264,8 +264,8 @@ cd_util_get_standard_space_filename (CdUtilPrivate *priv,
 
 /**
  * cd_util_get_coverage:
- * @profile: A valid #CdUtil
- * @filename_in: A filename to proof against
+ * @icc: A #CdIcc of the profile to check
+ * @filename_in: A filename of the reference profile, e.g. sRGB
  * @error: A #GError, or %NULL
  *
  * Gets the gamut coverage of two profiles
@@ -273,41 +273,25 @@ cd_util_get_standard_space_filename (CdUtilPrivate *priv,
  * Return value: A positive value for success, or -1.0 for error.
  **/
 static gdouble
-cd_util_get_coverage (cmsHPROFILE profile_proof,
+cd_util_get_coverage (CdIcc *icc,
 		      const gchar *filename_in,
 		      GError **error)
 {
 	gdouble coverage = -1.0;
 	gboolean ret;
-	GFile *file = NULL;
-	CdIcc *icc = NULL;
-	CdIcc *icc_ref;
+	g_autoptr(GFile) file = NULL;
+	g_autoptr(CdIcc) icc_in = NULL;
 
-	/* load proofing profile */
-	icc_ref = cd_icc_new ();
-	ret = cd_icc_load_handle (icc_ref, profile_proof,
-				  CD_ICC_LOAD_FLAGS_NONE, error);
-	if (!ret)
-		goto out;
-
-	/* load target profile */
-	icc = cd_icc_new ();
+	/* load reference profile */
+	icc_in = cd_icc_new ();
 	file = g_file_new_for_path (filename_in);
-	ret = cd_icc_load_file (icc, file, CD_ICC_LOAD_FLAGS_NONE, NULL, error);
+	ret = cd_icc_load_file (icc_in, file, CD_ICC_LOAD_FLAGS_NONE, NULL, error);
 	if (!ret)
-		goto out;
+		return coverage;
 
 	/* get coverage */
-	ret = cd_icc_utils_get_coverage (icc, icc_ref, &coverage, error);
-	if (!ret)
-		return FALSE;
-out:
-	if (file != NULL)
-		g_object_unref (file);
-	if (icc != NULL)
-		g_object_unref (icc);
-	g_object_unref (icc_ref);
-	return ret;
+	ret = cd_icc_utils_get_coverage (icc_in, icc, &coverage, error);
+	return coverage;
 }
 
 static gdouble
@@ -315,9 +299,8 @@ cd_util_get_profile_coverage (CdUtilPrivate *priv,
 			      CdStandardSpace standard_space,
 			      GError **error)
 {
-	gchar *filename = NULL;
+	g_autofree gchar *filename = NULL;
 	gdouble coverage = -1.0f;
-	cmsHPROFILE profile;
 
 	/* get the correct standard space */
 	filename = cd_util_get_standard_space_filename (priv,
@@ -327,12 +310,10 @@ cd_util_get_profile_coverage (CdUtilPrivate *priv,
 		goto out;
 
 	/* work out the coverage */
-	profile = cd_icc_get_handle (priv->icc);
-	coverage = cd_util_get_coverage (profile, filename, error);
+	coverage = cd_util_get_coverage (priv->icc, filename, error);
 	if (coverage < 0.0f)
 		goto out;
 out:
-	g_free (filename);
 	return coverage;
 }
 
